@@ -33,7 +33,7 @@ extension POSItemActionHandler {
                     productType: .simple
                 )
             )
-        case .variation:
+        case .variation, .searchResultVariation:
             analytics.track(
                 event: .PointOfSale.addItemToCart(
                     sourceView: sourceView,

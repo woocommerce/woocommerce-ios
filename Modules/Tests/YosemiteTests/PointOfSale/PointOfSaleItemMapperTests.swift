@@ -213,4 +213,112 @@ struct PointOfSaleItemMapperTests {
             price: "20.00"
         )
     }
+
+    // MARK: - Single Product Mapping Tests
+
+    @Test("Map single simple product to POS item")
+    func mapSingleSimpleProductToPOSItem() {
+        // Given
+        let product = Self.createSimpleProduct1()
+
+        // When
+        let item = sut.mapProductToPOSItem(product: product)
+
+        // Then
+        guard case let .simpleProduct(mappedProduct) = item else {
+            Issue.record("Expected simple product, but got \(String(describing: item))")
+            return
+        }
+        #expect(mappedProduct.name == product.name)
+        #expect(mappedProduct.price == product.price)
+        #expect(mappedProduct.productID == product.productID)
+        #expect(mappedProduct.productImageSource == product.images.first?.src)
+        #expect(mappedProduct.manageStock == product.manageStock)
+        #expect(mappedProduct.stockQuantity == product.stockQuantity)
+        #expect(mappedProduct.stockStatusKey == product.stockStatusKey)
+    }
+
+    @Test("Map single variable product to POS item")
+    func mapSingleVariableProductToPOSItem() {
+        // Given
+        let product = Self.createVariableProduct1()
+
+        // When
+        let item = sut.mapProductToPOSItem(product: product)
+
+        // Then
+        guard case let .variableParentProduct(mappedProduct) = item else {
+            Issue.record("Expected variable product, but got \(String(describing: item))")
+            return
+        }
+        #expect(mappedProduct.name == product.name)
+        #expect(mappedProduct.productID == product.productID)
+        #expect(mappedProduct.productImageSource == product.images.first?.src)
+
+        let sourceAttributes = product.attributes.filter { $0.variation }
+        #expect(mappedProduct.allAttributes.count == sourceAttributes.count)
+    }
+
+    @Test("Map unsupported product type returns nil")
+    func mapUnsupportedProductTypeReturnsNil() {
+        // Given
+        let product = POSProduct.fake().copy(productTypeKey: "grouped")
+
+        // When
+        let item = sut.mapProductToPOSItem(product: product)
+
+        // Then
+        #expect(item == nil)
+    }
+
+    // MARK: - Search Result Variation Mapping Tests
+
+    @Test("Map variation to search result POS item")
+    func mapVariationToSearchResultPOSItem() {
+        // Given
+        let parentProduct = Self.createVariableProduct1()
+        let variation = Self.createVariation1()
+
+        // When
+        let item = sut.mapVariationToSearchResultPOSItem(variation: variation, parentProduct: parentProduct)
+
+        // Then
+        guard case let .searchResultVariation(mappedVariation, mappedParent) = item else {
+            Issue.record("Expected searchResultVariation, but got \(String(describing: item))")
+            return
+        }
+
+        // Verify variation properties
+        #expect(mappedVariation.price == variation.price)
+        #expect(mappedVariation.productVariationID == variation.productVariationID)
+        #expect(mappedVariation.productImageSource == variation.image?.src)
+        #expect(mappedVariation.parentProductName == parentProduct.name)
+        #expect(mappedVariation.productID == variation.productID)
+
+        // Verify parent product properties
+        #expect(mappedParent.name == parentProduct.name)
+        #expect(mappedParent.productID == parentProduct.productID)
+        #expect(mappedParent.productImageSource == parentProduct.images.first?.src)
+    }
+
+    @Test("Search result variation has correct formatted price")
+    func searchResultVariationHasCorrectFormattedPrice() {
+        // Given
+        let parentProduct = Self.createVariableProduct1()
+        let variation = POSProductVariation.fake().copy(
+            productID: parentProduct.productID,
+            productVariationID: 999,
+            price: "25.50"
+        )
+
+        // When
+        let item = sut.mapVariationToSearchResultPOSItem(variation: variation, parentProduct: parentProduct)
+
+        // Then
+        guard case let .searchResultVariation(mappedVariation, _) = item else {
+            Issue.record("Expected searchResultVariation, but got \(String(describing: item))")
+            return
+        }
+        #expect(mappedVariation.formattedPrice == "$25.50")
+    }
 }

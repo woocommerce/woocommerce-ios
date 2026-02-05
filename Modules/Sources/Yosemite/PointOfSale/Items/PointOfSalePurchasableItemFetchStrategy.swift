@@ -6,6 +6,11 @@ public protocol PointOfSalePurchasableItemFetchStrategy {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 
+    /// Fetches mixed POSItem results (products and variations together).
+    /// Override this in strategies that need to return both products and variations (e.g., FTS search).
+    /// Default implementation returns nil, indicating the service should use fetchProducts instead.
+    func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>?
+
     /// The debouncing strategy to use for search input.
     /// Default is `.immediate` (no debouncing) for non-search strategies.
     var debounceStrategy: SearchDebounceStrategy { get }
@@ -15,6 +20,11 @@ public extension PointOfSalePurchasableItemFetchStrategy {
     /// Default implementation returns `.immediate` for strategies that don't need debouncing
     var debounceStrategy: SearchDebounceStrategy {
         .immediate
+    }
+
+    /// Default implementation returns nil, indicating the service should use fetchProducts instead.
+    func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
+        nil
     }
 }
 

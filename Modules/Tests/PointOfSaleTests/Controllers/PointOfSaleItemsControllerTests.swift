@@ -6,6 +6,7 @@ import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
 import enum Yosemite.PointOfSaleItemServiceError
 import class Yosemite.PointOfSaleItemFetchStrategyFactory
+import WooFoundation
 @testable import struct Yosemite.PointOfSaleSearchPurchasableItemFetchStrategy
 import Observation
 
@@ -15,7 +16,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -38,7 +39,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -60,7 +61,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -82,7 +83,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -108,7 +109,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -121,7 +122,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -142,7 +143,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -165,7 +166,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -188,7 +189,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -208,7 +209,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -233,7 +234,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -265,7 +266,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -299,7 +300,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -320,7 +321,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -340,7 +341,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -371,7 +372,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -395,7 +396,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -417,7 +418,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -442,7 +443,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -462,7 +463,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -493,7 +494,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -519,7 +520,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -558,7 +559,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 
@@ -575,7 +576,7 @@ final class PointOfSaleItemsControllerTests {
         let itemProvider = MockPointOfSaleItemService()
         let sut = PointOfSaleItemsController(
             itemProvider: itemProvider,
-            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil),
+            itemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactory(siteID: 1, credentials: nil, currencySettings: CurrencySettings()),
             analyticsProvider: MockPOSAnalytics()
         )
 

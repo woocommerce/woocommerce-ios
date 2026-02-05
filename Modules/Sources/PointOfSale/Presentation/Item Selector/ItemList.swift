@@ -189,6 +189,13 @@ struct ItemListRow: View {
             }, label: {
                 VariationCardView(variation: variation)
             })
+        case let .searchResultVariation(variation, parentProduct):
+            Button(action: {
+                itemActionHandler.handleTap(item)
+            }, label: {
+                SearchResultVariationCardView(variation: variation, parentProduct: parentProduct)
+            })
+            .accessibilityIdentifier("pos-search-variation-card-\(variation.productVariationID)")
         case let .coupon(coupon):
             Button(action: {
                 if !coupon.isExpired {

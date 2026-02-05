@@ -1,32 +1,43 @@
 import Foundation
 import protocol Storage.GRDBManagerProtocol
+import struct Storage.POSSearchIndex
+import struct Storage.POSSearchIndexBuilder
+import struct Storage.PersistedProduct
+import struct Storage.PersistedProductVariation
 import protocol Networking.ProductVariationsRemoteProtocol
 
-/// Fetch strategy for searching products in the local GRDB catalog using SQL LIKE queries
+/// Fetch strategy for searching products in the local GRDB catalog.
+/// Uses FTS5 full-text search when enabled, otherwise falls back to LIKE-based queries.
 struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let searchTerm: String
     private let grdbManager: GRDBManagerProtocol
     // periphery:ignore - Reserved for future variation fetching from remote when not in local catalog
     private let variationsRemote: ProductVariationsRemoteProtocol
+    private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
     private let posProductsOnly: Bool
+    private let isFTSSearchEnabled: Bool
 
     init(siteID: Int64,
          searchTerm: String,
          grdbManager: GRDBManagerProtocol,
          variationsRemote: ProductVariationsRemoteProtocol,
+         itemMapper: PointOfSaleItemMapperProtocol,
          analytics: POSItemFetchAnalyticsTracking,
          pageSize: Int = 25,
-         posProductsOnly: Bool = false) {
+         posProductsOnly: Bool = false,
+         isFTSSearchEnabled: Bool = true) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.grdbManager = grdbManager
         self.variationsRemote = variationsRemote
+        self.itemMapper = itemMapper
         self.analytics = analytics
         self.pageSize = pageSize
         self.posProductsOnly = posProductsOnly
+        self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 
     var debounceStrategy: SearchDebounceStrategy {
@@ -99,5 +110,97 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         return PagedItems(items: variations,
                          hasMorePages: hasMorePages,
                          totalItems: totalCount)
+    }
+
+    func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
+        // When FTS is disabled, return nil to fall back to LIKE-based fetchProducts()
+        guard isFTSSearchEnabled else { return nil }
+
+        let startTime = Date()
+        let offset = (pageNumber - 1) * pageSize
+
+        let (searchResults, totalCount) = try await grdbManager.databaseConnection.read { db in
+            let results = try POSSearchIndexBuilder.search(
+                siteID: siteID,
+                term: searchTerm,
+                limit: pageSize,
+                offset: offset,
+                in: db
+            )
+            let count = try POSSearchIndexBuilder.searchCount(siteID: siteID, term: searchTerm, in: db)
+            return (results, count)
+        }
+
+        let items = try await hydrateSearchResults(searchResults)
+        let hasMorePages = (pageNumber * pageSize) < totalCount
+
+        if pageNumber == 1 {
+            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
+            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
+                                                           totalItems: totalCount)
+        }
+
+        return PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalCount)
+    }
+
+    private func hydrateSearchResults(_ searchResults: [POSSearchIndex]) async throws -> [POSItem] {
+        try await withThrowingTaskGroup(of: POSItem?.self) { group in
+            for index in searchResults {
+                group.addTask {
+                    try await self.hydrateSearchResult(index)
+                }
+            }
+
+            var items: [POSItem?] = Array(repeating: nil, count: searchResults.count)
+            var resultIndex = 0
+            for try await item in group {
+                items[resultIndex] = item
+                resultIndex += 1
+            }
+
+            // Filter out nils and maintain order based on search results
+            return searchResults.compactMap { index in
+                items.first { item in
+                    guard let item else { return false }
+                    return item.id == POSItemIdentifier(
+                        underlyingType: index.itemType == .variation ? .variation : .product,
+                        itemID: index.itemID
+                    )
+                } ?? nil
+            }
+        }
+    }
+
+    private func hydrateSearchResult(_ index: POSSearchIndex) async throws -> POSItem? {
+        switch index.itemType {
+        case .product:
+            guard let product = try await grdbManager.databaseConnection.read({ db in
+                try PersistedProduct.fetchOne(db, key: ["siteID": index.siteID, "id": index.itemID])
+            }) else {
+                return nil
+            }
+            let posProduct = try product.toPOSProduct(db: grdbManager.databaseConnection)
+            return itemMapper.mapProductToPOSItem(product: posProduct)
+
+        case .variation:
+            guard let parentProductID = index.parentProductID else { return nil }
+
+            guard let variation = try await grdbManager.databaseConnection.read({ db in
+                try PersistedProductVariation.fetchOne(db, key: ["siteID": index.siteID, "id": index.itemID])
+            }) else {
+                return nil
+            }
+
+            guard let parentProduct = try await grdbManager.databaseConnection.read({ db in
+                try PersistedProduct.fetchOne(db, key: ["siteID": index.siteID, "id": parentProductID])
+            }) else {
+                return nil
+            }
+
+            let posVariation = try variation.toPOSProductVariation(db: grdbManager.databaseConnection)
+            let posParentProduct = try parentProduct.toPOSProduct(db: grdbManager.databaseConnection)
+
+            return itemMapper.mapVariationToSearchResultPOSItem(variation: posVariation, parentProduct: posParentProduct)
+        }
     }
 }

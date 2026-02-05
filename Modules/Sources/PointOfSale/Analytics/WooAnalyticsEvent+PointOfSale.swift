@@ -314,13 +314,13 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func pointOfSaleSearchResultsFetched(source: SourceView,
+        static func pointOfSaleSearchResultsFetched(source: String,
                                                     resultsCount: Int,
                                                     millisecondsSinceRequestSent: Int,
                                                     searchMethod: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchResultsFetched,
                               properties: [
-                                Key.sourceView: source.rawValue,
+                                Key.sourceView: source,
                                 Key.resultsCount: "\(resultsCount)",
                                 Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)",
                                 Key.searchMethod: searchMethod

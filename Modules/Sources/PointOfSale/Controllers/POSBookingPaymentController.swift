@@ -169,6 +169,8 @@ final class POSBookingPaymentController: Identifiable, Equatable {
                 // Skip paymentSuccess - our view has its own success UI with appropriate buttons
                 if case .paymentSuccess = messageType {
                     cardPresentPaymentInlineMessage = nil
+                    // Transition to success immediately to avoid showing processingContent on light background
+                    paymentState = .success
                 } else {
                     cardPresentPaymentAlertViewModel = nil
                     cardPresentPaymentInlineMessage = messageType

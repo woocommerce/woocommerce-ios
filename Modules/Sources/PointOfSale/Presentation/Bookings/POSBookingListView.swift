@@ -41,7 +41,7 @@ struct POSBookingListView: View {
     private var loadingView: some View {
         ScrollView {
             VStack(spacing: POSSpacing.medium) {
-                ForEach(0..<5, id: \.self) { _ in
+                ForEach(0..<3, id: \.self) { _ in
                     POSGhostBookingRowView()
                 }
             }

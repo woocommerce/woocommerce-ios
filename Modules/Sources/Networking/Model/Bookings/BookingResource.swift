@@ -6,10 +6,10 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
     public let resourceID: Int64
     public let name: String
     public let quantity: Int64
-    public let role: String
+    public let role: String?  // Optional - v1 API may not include this
     public let email: String?
     public let phoneNumber: String?
-    public let imageID: Int64
+    public let imageID: Int64?  // Optional - v1 API may not include this
     public let imageURL: String?
     public let description: String?
 
@@ -17,10 +17,10 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
                 resourceID: Int64,
                 name: String,
                 quantity: Int64,
-                role: String,
+                role: String?,
                 email: String?,
                 phoneNumber: String?,
-                imageID: Int64,
+                imageID: Int64?,
                 imageURL: String?,
                 description: String?) {
         self.siteID = siteID
@@ -44,11 +44,11 @@ public struct BookingResource: Hashable, Decodable, GeneratedFakeable, Generated
 
         let resourceID = try container.decode(Int64.self, forKey: .resourceID)
         let name = try container.decode(String.self, forKey: .name)
-        let quantity = try container.decode(Int64.self, forKey: .quantity)
-        let role = try container.decode(String.self, forKey: .role)
+        let quantity = try container.decodeIfPresent(Int64.self, forKey: .quantity) ?? 1
+        let role = try container.decodeIfPresent(String.self, forKey: .role)
         let email = try container.decodeIfPresent(String.self, forKey: .email)
         let phoneNumber = try container.decodeIfPresent(String.self, forKey: .phoneNumber)
-        let imageID = try container.decode(Int64.self, forKey: .imageID)
+        let imageID = try container.decodeIfPresent(Int64.self, forKey: .imageID)
         let imageURL = try container.decodeIfPresent(String.self, forKey: .imageURL)
         let description = try container.decodeIfPresent(String.self, forKey: .description)
 

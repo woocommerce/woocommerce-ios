@@ -15,7 +15,7 @@ extension Storage.BookingResource: ReadOnlyConvertible {
         role = resource.role
         email = resource.email
         phoneNumber = resource.phoneNumber
-        imageID = resource.imageID
+        imageID = resource.imageID ?? 0
         imageURL = resource.imageURL
         descriptionText = resource.description
     }
@@ -27,7 +27,7 @@ extension Storage.BookingResource: ReadOnlyConvertible {
                         resourceID: resourceID,
                         name: name ?? "",
                         quantity: quantity,
-                        role: role ?? "",
+                        role: role,
                         email: email,
                         phoneNumber: phoneNumber,
                         imageID: imageID,

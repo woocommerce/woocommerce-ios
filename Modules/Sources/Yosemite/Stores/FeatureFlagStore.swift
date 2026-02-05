@@ -3,6 +3,7 @@ import Storage
 
 public final class FeatureFlagStore: Store {
     private let remote: FeatureFlagRemoteProtocol
+    private var cachedFeatureFlags: [RemoteFeatureFlag: Bool]?
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
@@ -40,8 +41,8 @@ public final class FeatureFlagStore: Store {
         }
 
         switch action {
-        case let .isRemoteFeatureFlagEnabled(featureFlag, defaultValue, completion):
-            isRemoteFeatureFlagEnabled(featureFlag, defaultValue: defaultValue, completion: completion)
+        case let .isRemoteFeatureFlagEnabled(featureFlag, defaultValue, useCache, completion):
+            isRemoteFeatureFlagEnabled(featureFlag, defaultValue: defaultValue, useCache: useCache, completion: completion)
         }
     }
 }
@@ -49,11 +50,20 @@ public final class FeatureFlagStore: Store {
 // MARK: - Services
 //
 private extension FeatureFlagStore {
-    func isRemoteFeatureFlagEnabled(_ featureFlag: RemoteFeatureFlag, defaultValue: Bool, completion: @escaping (Bool) -> Void) {
+    func isRemoteFeatureFlagEnabled(_ featureFlag: RemoteFeatureFlag,
+                                    defaultValue: Bool,
+                                    useCache: Bool,
+                                    completion: @escaping (Bool) -> Void) {
+        if useCache, let cachedFlags = cachedFeatureFlags {
+            completion(cachedFlags[featureFlag] ?? defaultValue)
+            return
+        }
+
         Task { @MainActor in
             do {
                 let featureFlags = try await remote.loadAllFeatureFlags()
                 await MainActor.run {
+                    self.cachedFeatureFlags = featureFlags
                     completion(featureFlags[featureFlag] ?? defaultValue)
                 }
             } catch {

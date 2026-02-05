@@ -505,6 +505,81 @@ struct POSSearchIndexBuilderTests {
         #expect(needsRebuild == false)
     }
 
+    // MARK: - removeFromIndex Tests
+
+    @Test("removeFromIndex removes specific item from FTS index")
+    func test_removeFromIndex_removes_specific_item() async throws {
+        // Given: Two products in the FTS index
+        try await grdbManager.databaseConnection.write { db in
+            try insertProduct(id: 2000, name: "Product One", productTypeKey: "simple", in: db)
+            try insertProduct(id: 2001, name: "Product Two", productTypeKey: "simple", in: db)
+        }
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+
+        // Verify both are searchable
+        let beforeResults = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "Product", in: db)
+        }
+        #expect(beforeResults.count == 2)
+
+        // When: Remove one product from index
+        try await grdbManager.databaseConnection.write { db in
+            try POSSearchIndexBuilder.removeFromIndex(itemID: 2000, itemType: .product, siteID: siteID, in: db)
+        }
+
+        // Then: Only the other product is searchable
+        let afterResults = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "Product", in: db)
+        }
+        #expect(afterResults.count == 1)
+        #expect(afterResults.first?.itemID == 2001)
+    }
+
+    @Test("removeVariationsFromIndex removes all variations of a product")
+    func test_removeVariationsFromIndex_removes_all_variations_of_product() async throws {
+        // Given: A variable product with multiple variations in the FTS index
+        try await grdbManager.databaseConnection.write { db in
+            try insertProduct(id: 3000, name: "Variable Shirt", productTypeKey: "variable", in: db)
+            try insertVariation(id: 3001, productID: 3000, sku: "VSHIRT-S", in: db)
+            try insertVariation(id: 3002, productID: 3000, sku: "VSHIRT-M", in: db)
+            try insertVariation(id: 3003, productID: 3000, sku: "VSHIRT-L", in: db)
+            // Also add another product's variation to ensure we only remove the right ones
+            try insertProduct(id: 3100, name: "Variable Pants", productTypeKey: "variable", in: db)
+            try insertVariation(id: 3101, productID: 3100, sku: "VPANTS-S", in: db)
+        }
+        try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+
+        // Verify all variations are indexed (search by SKU prefix to get only variations, not parent products)
+        let shirtVariations = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VSHIRT", in: db)
+        }
+        #expect(shirtVariations.count == 3)
+        #expect(shirtVariations.allSatisfy { $0.itemType == .variation })
+
+        let pantsVariations = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VPANTS", in: db)
+        }
+        #expect(pantsVariations.count == 1)
+        #expect(pantsVariations.first?.itemType == .variation)
+
+        // When: Remove all variations of the shirt product
+        try await grdbManager.databaseConnection.write { db in
+            try POSSearchIndexBuilder.removeVariationsFromIndex(parentProductID: 3000, siteID: siteID, in: db)
+        }
+
+        // Then: Shirt variations are gone, pants variation remains
+        let shirtVariationsAfter = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VSHIRT", in: db)
+        }
+        #expect(shirtVariationsAfter.count == 0)
+
+        let pantsVariationsAfter = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VPANTS", in: db)
+        }
+        #expect(pantsVariationsAfter.count == 1)
+        #expect(pantsVariationsAfter.first?.itemType == .variation)
+    }
+
     // MARK: - Tokenization Tests
 
     @Test("search tokenization matches FTS5 unicode61 behavior")

@@ -894,6 +894,86 @@ struct POSCatalogPersistenceServiceTests {
             #expect(products.first?.id == 100)
         }
     }
+
+    @Test func deleteProducts_removes_cascade_deleted_variations_from_fts_index() async throws {
+        // Given - A variable product with variations (all FTS-eligible)
+        let product = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 100,
+            name: "Variable Shirt",
+            productTypeKey: "variable",
+            statusKey: "publish"
+        )
+        let variation1 = POSProductVariation.fake().copy(
+            siteID: sampleSiteID,
+            productID: 100,
+            productVariationID: 501,
+            sku: "SHIRT-S"
+        )
+        let variation2 = POSProductVariation.fake().copy(
+            siteID: sampleSiteID,
+            productID: 100,
+            productVariationID: 502,
+            sku: "SHIRT-M"
+        )
+        let catalog = POSCatalog(
+            products: [product],
+            variations: [variation1, variation2],
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Verify FTS index has product and variations
+        let initialIndexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(initialIndexCount == 3) // 1 product + 2 variations
+
+        // When - Delete the product without specifying variation IDs
+        // (simulates cascade delete scenario where variations are deleted by GRDB cascade)
+        try await sut.deleteProducts([100], variationIDs: [], siteID: sampleSiteID)
+
+        // Then - FTS index should also have the variations removed
+        let finalIndexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(finalIndexCount == 0) // All entries removed
+    }
+
+    // MARK: - FTS Index Rebuild Tests
+
+    @Test func replaceAllCatalogData_rebuilds_fts_index() async throws {
+        // Given - product with valid productTypeKey and statusKey for FTS indexing
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Coffee Beans", productTypeKey: "simple", statusKey: "publish")
+        let catalog = POSCatalog(products: [product], variations: [], syncDate: .now)
+
+        // When
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        let indexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(indexCount == 1)
+    }
+
+    @Test func persistIncrementalCatalogData_rebuilds_fts_index() async throws {
+        // Given - products with valid productTypeKey and statusKey for FTS indexing
+        let product1 = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Coffee", productTypeKey: "simple", statusKey: "publish")
+        let initialCatalog = POSCatalog(products: [product1], variations: [], syncDate: .now)
+        try await sut.replaceAllCatalogData(initialCatalog, siteID: sampleSiteID)
+
+        // When
+        let product2 = POSProduct.fake().copy(siteID: sampleSiteID, productID: 2, name: "Tea", productTypeKey: "simple", statusKey: "publish")
+        let incrementalCatalog = POSCatalog(products: [product2], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(incrementalCatalog, siteID: sampleSiteID)
+
+        // Then
+        let indexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(indexCount == 2)
+    }
 }
 
 private extension POSCatalogPersistenceServiceTests {

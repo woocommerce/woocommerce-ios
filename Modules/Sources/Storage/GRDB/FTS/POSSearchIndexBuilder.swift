@@ -81,12 +81,92 @@ public struct POSSearchIndexBuilder {
         return indexCount < productCount + variationCount
     }
 
+    // MARK: - Inline Indexing (same transaction)
+
     /// Clears the FTS index for a site.
     /// - Parameters:
     ///   - siteID: The site ID to clear
     ///   - db: The database (must be called within a write transaction)
     public static func clearIndex(for siteID: Int64, in db: Database) throws {
         try db.execute(sql: "DELETE FROM pos_search_fts WHERE siteID = ?", arguments: [siteID])
+    }
+
+    /// Indexes a product inline within an existing transaction.
+    /// - Parameters:
+    ///   - product: The persisted product to index
+    ///   - siteID: The site ID
+    ///   - db: The database (must be called within a write transaction)
+    public static func indexProduct(_ product: PersistedProduct, siteID: Int64, in db: Database) throws {
+        guard ["simple", "variable"].contains(product.productTypeKey),
+              !product.downloadable,
+              !["trash", "draft", "pending"].contains(product.statusKey) else {
+            return
+        }
+
+        let searchableText = buildSearchableText(
+            name: product.name,
+            sku: product.sku,
+            globalUniqueID: product.globalUniqueID,
+            attributes: nil
+        )
+
+        try db.execute(
+            sql: "INSERT INTO pos_search_fts (searchable_text, siteID, itemType, itemID, parentProductID) VALUES (?, ?, ?, ?, ?)",
+            arguments: [searchableText, siteID, POSSearchIndex.ItemType.product.rawValue, product.id, nil as Int64?]
+        )
+    }
+
+    /// Indexes a variation inline within an existing transaction.
+    /// - Parameters:
+    ///   - variation: The persisted variation to index
+    ///   - parentProductName: The name of the parent product
+    ///   - attributes: The variation's attribute options (e.g., ["Red", "Large"])
+    ///   - siteID: The site ID
+    ///   - db: The database (must be called within a write transaction)
+    public static func indexVariation(_ variation: PersistedProductVariation,
+                                      parentProductName: String?,
+                                      attributes: [String],
+                                      siteID: Int64,
+                                      in db: Database) throws {
+        guard !variation.downloadable else { return }
+
+        let searchableText = buildSearchableText(
+            name: parentProductName,
+            sku: variation.sku,
+            globalUniqueID: variation.globalUniqueID,
+            attributes: attributes.joined(separator: " ")
+        )
+
+        try db.execute(
+            sql: "INSERT INTO pos_search_fts (searchable_text, siteID, itemType, itemID, parentProductID) VALUES (?, ?, ?, ?, ?)",
+            arguments: [searchableText, siteID, POSSearchIndex.ItemType.variation.rawValue, variation.id, variation.productID]
+        )
+    }
+
+    /// Removes a product or variation from the FTS index.
+    /// - Parameters:
+    ///   - itemID: The ID of the item to remove
+    ///   - itemType: Whether this is a product or variation
+    ///   - siteID: The site ID
+    ///   - db: The database (must be called within a write transaction)
+    public static func removeFromIndex(itemID: Int64, itemType: POSSearchIndex.ItemType, siteID: Int64, in db: Database) throws {
+        try db.execute(
+            sql: "DELETE FROM pos_search_fts WHERE siteID = ? AND itemType = ? AND itemID = ?",
+            arguments: [siteID, itemType.rawValue, itemID]
+        )
+    }
+
+    /// Removes all variations of a product from the FTS index.
+    /// Use this when deleting a product to ensure its cascade-deleted variations are also removed from the index.
+    /// - Parameters:
+    ///   - parentProductID: The ID of the parent product whose variations should be removed
+    ///   - siteID: The site ID
+    ///   - db: The database (must be called within a write transaction)
+    public static func removeVariationsFromIndex(parentProductID: Int64, siteID: Int64, in db: Database) throws {
+        try db.execute(
+            sql: "DELETE FROM pos_search_fts WHERE siteID = ? AND parentProductID = ?",
+            arguments: [siteID, parentProductID]
+        )
     }
 
     // MARK: - Private
@@ -111,17 +191,7 @@ public struct POSSearchIndexBuilder {
             .fetchAll(db)
 
         for product in products {
-            let searchableText = buildSearchableText(
-                name: product.name,
-                sku: product.sku,
-                globalUniqueID: product.globalUniqueID,
-                attributes: nil
-            )
-
-            try db.execute(
-                sql: "INSERT INTO pos_search_fts (searchable_text, siteID, itemType, itemID, parentProductID) VALUES (?, ?, ?, ?, ?)",
-                arguments: [searchableText, siteID, POSSearchIndex.ItemType.product.rawValue, product.id, nil as Int64?]
-            )
+            try indexProduct(product, siteID: siteID, in: db)
         }
     }
 
@@ -139,17 +209,11 @@ public struct POSSearchIndexBuilder {
                 .fetchAll(db)
                 .map(\.option)
 
-            let searchableText = buildSearchableText(
-                name: parentProduct?.name,
-                sku: variation.sku,
-                globalUniqueID: variation.globalUniqueID,
-                attributes: attributes.joined(separator: " ")
-            )
-
-            try db.execute(
-                sql: "INSERT INTO pos_search_fts (searchable_text, siteID, itemType, itemID, parentProductID) VALUES (?, ?, ?, ?, ?)",
-                arguments: [searchableText, siteID, POSSearchIndex.ItemType.variation.rawValue, variation.id, variation.productID]
-            )
+            try indexVariation(variation,
+                               parentProductName: parentProduct?.name,
+                               attributes: attributes,
+                               siteID: siteID,
+                               in: db)
         }
     }
 

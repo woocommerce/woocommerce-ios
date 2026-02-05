@@ -2176,6 +2176,7 @@
 		DE0A2EAD281BA1FA007A8015 /* ProductCategorySelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */; };
 		DE0A2EAF281BA278007A8015 /* ProductCategorySelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */; };
 		DE0A2EB1281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0A2EB0281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift */; };
+		DE0B02A42F34A101009CE891 /* RemoteFeatureFlagOverrideStoreAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0B02A32F34A101009CE891 /* RemoteFeatureFlagOverrideStoreAdapter.swift */; };
 		DE0BE0BC2F333B9B009CE891 /* PushNotificationSharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */; };
 		DE0BE0BD2F333BA6009CE891 /* PushNotificationSharedConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */; };
 		DE0BE0BE2F333BB0009CE891 /* PushNotificationRegistrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389232F278E17006A6618 /* PushNotificationRegistrationState.swift */; };
@@ -4958,6 +4959,7 @@
 		DE0A2EAC281BA1FA007A8015 /* ProductCategorySelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelector.swift; sourceTree = "<group>"; };
 		DE0A2EAE281BA278007A8015 /* ProductCategorySelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModel.swift; sourceTree = "<group>"; };
 		DE0A2EB0281BED38007A8015 /* ProductCategorySelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategorySelectorViewModelTests.swift; sourceTree = "<group>"; };
+		DE0B02A32F34A101009CE891 /* RemoteFeatureFlagOverrideStoreAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteFeatureFlagOverrideStoreAdapter.swift; sourceTree = "<group>"; };
 		DE0BE0BB2F333B9B009CE891 /* PushNotificationSharedConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSharedConstants.swift; sourceTree = "<group>"; };
 		DE0BE0C02F333BC0009CE891 /* NotificationServiceSuppressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceSuppressionTests.swift; sourceTree = "<group>"; };
 		DE0CDC932B1ECFF000C98800 /* LocalFileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalFileUploader.swift; sourceTree = "<group>"; };
@@ -11486,6 +11488,7 @@
 			isa = PBXGroup;
 			children = (
 				D8D15F82230A17A000D48B3F /* ServiceLocator.swift */,
+				DE0B02A32F34A101009CE891 /* RemoteFeatureFlagOverrideStoreAdapter.swift */,
 				E1C47208267A1ECC00D06DA1 /* CrashLoggingStack.swift */,
 				D8C251D8230D256F00F49782 /* NoticePresenter.swift */,
 				D8C251DA230D288A00F49782 /* PushNotesManager.swift */,
@@ -15017,6 +15020,7 @@
 				26B9875D273C6A830090E8CA /* SimplePaymentsNoteViewModel.swift in Sources */,
 				CE6302482BAB60AE00E3325C /* CustomerDetailViewModel.swift in Sources */,
 				DEF36DEA2898D3CF00178AC2 /* AuthenticatedWebViewModel.swift in Sources */,
+				DE0B02A42F34A101009CE891 /* RemoteFeatureFlagOverrideStoreAdapter.swift in Sources */,
 				26132B3C2C3DA20C004C157F /* PushNotificationBackgroundSynchronizer.swift in Sources */,
 				45A0E4CB2566B56000D4E8C3 /* NumberOfLinkedProductsTableViewCell.swift in Sources */,
 				038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */,

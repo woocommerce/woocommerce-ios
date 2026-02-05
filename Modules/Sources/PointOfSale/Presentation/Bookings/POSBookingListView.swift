@@ -2,14 +2,18 @@
 import SwiftUI
 
 struct POSBookingListView: View {
-    @Environment(POSBookingListController.self) private var controller
+    @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.siteTimezone) private var siteTimezone
 
     let onClose: () -> Void
 
     private var bookingsViewState: POSBookingListState {
-        controller.state
+        bookingsModel.bookingListController.state
+    }
+
+    private var controller: POSBookingListController {
+        bookingsModel.bookingListController
     }
 
     var body: some View {

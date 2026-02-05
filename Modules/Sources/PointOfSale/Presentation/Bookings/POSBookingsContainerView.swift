@@ -44,7 +44,7 @@ struct POSBookingsContainerView: View {
             )
         ) { _ in
             POSBookingListView(onClose: { isPresented = false })
-                .environment(bookingListController)
+                .environment(bookingsModel)
         } detail: { booking in
             POSBookingDetailView(
                 booking: booking,

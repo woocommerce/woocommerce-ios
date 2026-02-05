@@ -540,25 +540,27 @@ struct POSSearchIndexBuilderTests {
         // Given: A variable product with multiple variations in the FTS index
         try await grdbManager.databaseConnection.write { db in
             try insertProduct(id: 3000, name: "Variable Shirt", productTypeKey: "variable", in: db)
-            try insertVariation(id: 3001, productID: 3000, sku: "SHIRT-S", in: db)
-            try insertVariation(id: 3002, productID: 3000, sku: "SHIRT-M", in: db)
-            try insertVariation(id: 3003, productID: 3000, sku: "SHIRT-L", in: db)
+            try insertVariation(id: 3001, productID: 3000, sku: "VSHIRT-S", in: db)
+            try insertVariation(id: 3002, productID: 3000, sku: "VSHIRT-M", in: db)
+            try insertVariation(id: 3003, productID: 3000, sku: "VSHIRT-L", in: db)
             // Also add another product's variation to ensure we only remove the right ones
             try insertProduct(id: 3100, name: "Variable Pants", productTypeKey: "variable", in: db)
-            try insertVariation(id: 3101, productID: 3100, sku: "PANTS-S", in: db)
+            try insertVariation(id: 3101, productID: 3100, sku: "VPANTS-S", in: db)
         }
         try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
 
-        // Verify all variations are indexed
-        let shirtResults = try await grdbManager.databaseConnection.read { db in
-            try POSSearchIndexBuilder.search(siteID: siteID, term: "SHIRT", in: db)
+        // Verify all variations are indexed (search by SKU prefix to get only variations, not parent products)
+        let shirtVariations = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VSHIRT", in: db)
         }
-        #expect(shirtResults.count == 3)
+        #expect(shirtVariations.count == 3)
+        #expect(shirtVariations.allSatisfy { $0.itemType == .variation })
 
-        let pantsResults = try await grdbManager.databaseConnection.read { db in
-            try POSSearchIndexBuilder.search(siteID: siteID, term: "PANTS", in: db)
+        let pantsVariations = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VPANTS", in: db)
         }
-        #expect(pantsResults.count == 1)
+        #expect(pantsVariations.count == 1)
+        #expect(pantsVariations.first?.itemType == .variation)
 
         // When: Remove all variations of the shirt product
         try await grdbManager.databaseConnection.write { db in
@@ -566,15 +568,16 @@ struct POSSearchIndexBuilderTests {
         }
 
         // Then: Shirt variations are gone, pants variation remains
-        let shirtResultsAfter = try await grdbManager.databaseConnection.read { db in
-            try POSSearchIndexBuilder.search(siteID: siteID, term: "SHIRT", in: db)
+        let shirtVariationsAfter = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VSHIRT", in: db)
         }
-        #expect(shirtResultsAfter.count == 0)
+        #expect(shirtVariationsAfter.count == 0)
 
-        let pantsResultsAfter = try await grdbManager.databaseConnection.read { db in
-            try POSSearchIndexBuilder.search(siteID: siteID, term: "PANTS", in: db)
+        let pantsVariationsAfter = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: siteID, term: "VPANTS", in: db)
         }
-        #expect(pantsResultsAfter.count == 1)
+        #expect(pantsVariationsAfter.count == 1)
+        #expect(pantsVariationsAfter.first?.itemType == .variation)
     }
 
     // MARK: - Tokenization Tests

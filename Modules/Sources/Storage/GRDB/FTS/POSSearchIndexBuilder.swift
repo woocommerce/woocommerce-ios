@@ -34,7 +34,7 @@ public struct POSSearchIndexBuilder {
             FROM pos_search_fts
             WHERE pos_search_fts MATCH ?
               AND siteID = ?
-            ORDER BY bm25(pos_search_fts)
+            ORDER BY bm25(pos_search_fts), itemID
             LIMIT ? OFFSET ?
         """, arguments: [ftsQuery, siteID, limit, offset])
     }

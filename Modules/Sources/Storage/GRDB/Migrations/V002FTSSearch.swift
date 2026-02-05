@@ -9,14 +9,12 @@ struct V002FTSSearch {
     }
 
     private static func createSearchFTSTable(_ db: Database) throws {
-        try db.execute(sql: """
-            CREATE VIRTUAL TABLE pos_search_fts USING fts5(
-                searchable_text,
-                siteID UNINDEXED,
-                itemType UNINDEXED,
-                itemID UNINDEXED,
-                parentProductID UNINDEXED
-            )
-        """)
+        try db.create(virtualTable: "pos_search_fts", using: FTS5()) { t in
+            t.column("searchable_text")
+            t.column("siteID").notIndexed()
+            t.column("itemType").notIndexed()
+            t.column("itemID").notIndexed()
+            t.column("parentProductID").notIndexed()
+        }
     }
 }

@@ -1,4 +1,2 @@
-- [Internal]: Update Stripe SDK to 5.1.1 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
-- [*] Fix product type filters issue when adding a product to order [https://github.com/woocommerce/woocommerce-ios/pull/16580]
-- [**] POS: Full Text Search for both products and variations, when local catalog used. Prefix matching, any word order, relevance scoring. [https://github.com/woocommerce/woocommerce-ios/pull/16626]
-- [*] Make phone number mandatory for shipping destination addresses [https://github.com/woocommerce/woocommerce-ios/pull/16625]
+Our improved Point of Sale item search is faster than ever. It lets you locate products, and now the results include variations too! Results are instant, and you can use any word order for your search.
+We’ve also smoothed out order creation, with fixes to product filters and shipping address updates. Update today to keep your store running perfectly!

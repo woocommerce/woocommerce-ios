@@ -7,7 +7,10 @@ Crie pedidos na hora
 Depois de criar alguns produtos, é simples. Escolha itens do seu catálogo, adicione envio e preencha os dados do cliente para criar rapidamente um pedido que sincronize com seu inventário.
 
 Aceite pagamentos presenciais
-Receba pagamentos físicos usando o WooCommerce In-Person Payments e um leitor de cartão (disponível nos EUA e Canadá). Comece um novo pedido, ou encontre um existente que esteja com pagamento pendente, e receba o pagamento usando o leitor de cartão ou uma carteira digital, como o Apple Pay.
+Receba pagamentos físicos usando o WooCommerce In-Person Payments, um leitor de cartão (disponível nos EUA, Reino Unido e Canadá), o Tap to Pay on iPhone ou uma carteira digital, como o Apple Pay. Comece um novo pedido (ou encontre um existente com pagamento pendente) e aceite o pagamento sem dificuldades.
+
+Vá do online ao presencial
+Transforme qualquer tablet em um potente ponto de venda com o WooCommerce POS. Pesquise produtos, leia códigos de barra, aplique cupons e envie recibos por e-mail, com todas as suas vendas físicas e online sincronizadas em tempo real. Disponível nos EUA e no Reino Unido.
 
 Receba notificações de todas as vendas
 Agora que você está ativo nas vendas, nunca perca um pedido ou uma avaliação. Fique por dentro do que está acontecendo. Ative os alertas em tempo real e ouça o som de notificações para cada nova venda!

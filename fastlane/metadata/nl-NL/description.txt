@@ -7,7 +7,10 @@ Maak overal en altijd bestellingen aan
 Heb je je product aangemaakt? Kies dan simpelweg het artikel uit je catalogus, voeg de verzending toe, vul ten slotte de klantgegevens in en je hebt razendsnel een bestelling die met je inventaris synchroniseert.
 
 Ontvang betalingen in hoogsteigen persoon.
-Neem fysieke betalingen aan met WooCommerce Fysieke betalingen en een kaartlezer (beschikbaar in de VS en Canada). Begin een nieuwe bestelling of selecteer een bestelling met een openstaande betaling en neem de betaling aan met de kaartlezer of een digitale portemonnee, zoals Apple Pay.
+Neem fysieke betalingen aan met WooCommerce Fysieke betalingen en een kaartlezer (beschikbaar in de VS, het VK en Canada), Tap to Pay op iPhone of een digitale portemonnee, zoals Apple Pay. Begin een nieuwe bestelling, of vind een bestaande bestelling die in afwachting is van betaling, en accepteer vervolgens naadloos de betaling.
+
+Van klikken naar stenen
+Maak van elke tablet een krachtig verkooppunt met WooCommerce POS. Zoek producten, scan streepjescodes, pas kortingsbonnen toe en verstuur betalingsbewijzen per e-mail, waarbij al je online en fysieke verkopen in realtime gesynchroniseerd zijn. Beschikbaar in de VS en het VK.
 
 Ontvang een melding van elke aankoop
 Nu je aan de slag bent gegaan met verkopen, wil je nooit meer een bestelling of een beoordeling missen. Blijf op de hoogte; schakel realtime meldingen in en wacht op dat verslavende 'katsjing!' bij elke aankoop!

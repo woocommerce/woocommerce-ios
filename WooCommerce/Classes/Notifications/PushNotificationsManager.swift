@@ -185,7 +185,7 @@ extension PushNotificationsManager {
 
         let group = DispatchGroup()
 
-        if selfDrivenPushNotificationEnabled == true  {
+        if selfDrivenPushNotificationEnabled == true {
             group.enter()
             unregisterFromWooPushNotificationsIfPossible { result in
                 switch result {

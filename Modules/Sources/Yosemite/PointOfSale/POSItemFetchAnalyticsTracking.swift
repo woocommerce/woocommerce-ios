@@ -1,5 +1,17 @@
 import Foundation
 
+/// The search method used for local search
+public enum POSSearchMethod: String {
+    case fts
+    case like
+}
+
+/// The source of search results
+public enum POSSearchSource: String {
+    case product
+    case purchasableItems = "purchasable_items"
+}
+
 /// Protocol defining analytics tracking for Point of Sale items fetch functionality
 public protocol POSItemFetchAnalyticsTracking {
     /// Tracks when a remote items fetch completes
@@ -17,10 +29,10 @@ public protocol POSItemFetchAnalyticsTracking {
     /// - Parameters:
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
-    ///   - searchMethod: The search method used ("fts" or "like")
-    ///   - source: The source of the results ("product" or "purchasable_items")
+    ///   - searchMethod: The search method used (FTS or LIKE)
+    ///   - source: The source of the results
     func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,
                                               totalItems: Int,
-                                              searchMethod: String,
-                                              source: String)
+                                              searchMethod: POSSearchMethod,
+                                              source: POSSearchSource)
 }

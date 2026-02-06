@@ -1,5 +1,7 @@
 import Foundation
 import enum Yosemite.POSItemType
+import enum Yosemite.POSSearchMethod
+import enum Yosemite.POSSearchSource
 import protocol Yosemite.POSItemFetchAnalyticsTracking
 
 /// Analytics tracking for Point of Sale item fetch functionality
@@ -48,18 +50,18 @@ struct POSItemFetchAnalytics: POSItemFetchAnalyticsTracking {
     /// - Parameters:
     ///   - millisecondsSinceRequestSent: The time taken to fetch results in milliseconds
     ///   - totalItems: The total number of items found in the search
-    ///   - searchMethod: The search method used ("fts" or "like")
-    ///   - source: The source of the results ("product" or "purchasable_items")
+    ///   - searchMethod: The search method used (FTS or LIKE)
+    ///   - source: The source of the results
     func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,
                                               totalItems: Int,
-                                              searchMethod: String,
-                                              source: String) {
+                                              searchMethod: POSSearchMethod,
+                                              source: POSSearchSource) {
         analytics.track(
             event: .PointOfSale.pointOfSaleSearchResultsFetched(
-                source: source,
+                source: source.rawValue,
                 resultsCount: totalItems,
                 millisecondsSinceRequestSent: millisecondsSinceRequestSent,
-                searchMethod: searchMethod
+                searchMethod: searchMethod.rawValue
             )
         )
     }

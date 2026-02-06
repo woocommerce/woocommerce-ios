@@ -15,6 +15,12 @@ protocol POSItemActionHandler {
 
 extension POSItemActionHandler {
     /// Default implementation for analytics tracking
+    /// - Parameters:
+    ///   - item: The item that was tapped
+    ///   - sourceView: The source view of the event
+    ///   - sourceViewType: The type of the source view
+    ///   - resultPosition: The position of the item in the list (0-based)
+    ///   - analytics: The analytics service to track to
     func trackTapAnalytics(
         for item: POSItem,
         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,

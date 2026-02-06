@@ -7,8 +7,8 @@ final class MockPOSItemFetchAnalyticsTracking: POSItemFetchAnalyticsTracking {
     private(set) var spySearchTotalItems: Int?
     private(set) var spyLocalSearchMilliseconds: Int?
     private(set) var spyLocalSearchTotalItems: Int?
-    private(set) var spyLocalSearchMethod: String?
-    private(set) var spyLocalSearchSource: String?
+    private(set) var spyLocalSearchMethod: POSSearchMethod?
+    private(set) var spyLocalSearchSource: POSSearchSource?
 
     func trackItemsFetchComplete(totalItems: Int) {
         spyTotalItems = totalItems
@@ -21,8 +21,8 @@ final class MockPOSItemFetchAnalyticsTracking: POSItemFetchAnalyticsTracking {
 
     func trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: Int,
                                               totalItems: Int,
-                                              searchMethod: String,
-                                              source: String) {
+                                              searchMethod: POSSearchMethod,
+                                              source: POSSearchSource) {
         spyLocalSearchMilliseconds = millisecondsSinceRequestSent
         spyLocalSearchTotalItems = totalItems
         spyLocalSearchMethod = searchMethod

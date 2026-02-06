@@ -1,1 +1,2 @@
-This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
+Our improved Point of Sale item search is faster than ever. It lets you locate products, and now the results include variations too! Results are instant, and you can use any word order for your search.
+We’ve also smoothed out order creation, with fixes to product filters and shipping address updates. Update today to keep your store running perfectly!

@@ -9209,8 +9209,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "Order status: %1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "No order to display";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "No order selected.";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Order";
@@ -9220,6 +9220,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totals";
+
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "Please try again.";
+
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "Failed to create refund";
 
 /* Accessibility label for discount total. %1$@ is the discount amount. */
 "pos.orderDetailsView.discount.accessibilityLabel" = "Discount total: %1$@";
@@ -9244,6 +9250,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Issue refund";
+
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "Please try again.";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "Couldn't load refund details";
 
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "More actions";
@@ -9405,7 +9417,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.closeButton.accessibilityLabel" = "Close";
 
 /* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat" = "Are you sure you wish to process to refund %1$@ %2$@? This action cannot be undone.";
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "Are you sure you wish to refund %1$@ %2$@? This action cannot be undone.";
 
 /* Button to confirm and process the refund */
 "pos.refundConfirmationView.confirmButton" = "Yes, proceed";
@@ -9427,12 +9439,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to retry the refund creation */
 "pos.refundErrorView.retryButton" = "Retry";
-
-/* Subtitle shown when a refund creation has failed */
-"pos.refundErrorView.subtitle" = "Please try again.";
-
-/* Title shown when a refund creation has failed */
-"pos.refundErrorView.title" = "Failed to create refund";
 
 /* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
 "pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
@@ -9470,6 +9476,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "Select items to refund";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "Loading refund details...";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Close";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "Done";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "All items in this order have already been refunded.";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "Nothing to refund";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Add";
@@ -14188,6 +14209,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "Please enter a valid phone number for the destination address.";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "Phone number is required for the destination address.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Add company";
 
@@ -14328,6 +14355,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "Total shipment weight (with package)";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "Edit address";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "Please enter a valid phone number for the destination address.";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "Invalid phone number.";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Learn how to print from your mobile device";

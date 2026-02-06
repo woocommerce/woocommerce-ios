@@ -390,7 +390,6 @@ final class POSBookingPaymentController {
 - Even though the order exists, we still need `validatingOrder` phase, as the card payment service will check it is payable.
 
 **Key differences from AggregateModel:**
-- No `validatingOrder` phase (order pre-exists)
 - `validatingOrderError` CAN happen (order fetch failure)
 - No order creation, no cart, no order stage
 - Error action closures reset to idle (no "new order" or "edit order" concepts)

@@ -437,7 +437,7 @@ Add `isBookingOrder: Bool = false` parameter. When `true`, force `isEligibleForP
 ### Phase 3: Convergence
 
 #### C1. Wire payment into POSBookingsContainerView
-- Create `POSBookingPaymentController` when user taps "Pay by Card" / "Pay by Cash"
+- Create `POSBookingPaymentController` when user taps "Collect Payment"
 - On success → dismiss → refresh list → booking shows "Paid"
 - Receipt sending uses `isBookingOrder: true`
 

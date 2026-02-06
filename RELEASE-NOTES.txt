@@ -2,12 +2,9 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.1
 -----
-
-
-24.1
------
 - [Internal]: Update Stripe SDK to 5.1.1 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
 - [*] Fix product type filters issue when adding a product to order [https://github.com/woocommerce/woocommerce-ios/pull/16580]
+- [**] POS: Full Text Search for both products and variations, when local catalog used. Prefix matching, any word order, relevance scoring. [https://github.com/woocommerce/woocommerce-ios/pull/16626]
 - [*] Make phone number mandatory for shipping destination addresses [https://github.com/woocommerce/woocommerce-ios/pull/16625]
 
 24.0

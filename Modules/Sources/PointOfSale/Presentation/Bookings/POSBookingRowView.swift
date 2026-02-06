@@ -90,7 +90,7 @@ struct POSBookingRowView: View {
         case .cancelled:
             return .posError
         case .unpaid, .pendingConfirmation:
-            return .posWarning
+            return .posAlert
         case .unknown:
             return .posOnSurfaceVariantHighest
         }

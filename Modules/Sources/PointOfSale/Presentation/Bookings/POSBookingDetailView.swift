@@ -6,11 +6,17 @@ struct POSBookingDetailView: View {
     let booking: POSBooking
     let onBack: () -> Void
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var shouldShowBackButton: Bool {
+        horizontalSizeClass == .compact
+    }
+
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: booking.serviceName.isEmpty ? Localization.bookingTitle : booking.serviceName,
-                backButtonConfiguration: .init(state: .enabled, action: onBack)
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil
             )
 
             ScrollView {
@@ -105,7 +111,7 @@ struct POSBookingDetailView: View {
         case .cancelled:
             return .posError
         case .unpaid, .pendingConfirmation:
-            return .posWarning
+            return .posAlert
         case .unknown:
             return .posOnSurfaceVariantHighest
         }

@@ -27,7 +27,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
-    @State private var bookingsModel: POSBookingsModel
+    @State private var bookingsModel: POSBookingsModel?
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -147,9 +147,7 @@ public struct PointOfSaleEntryPointView: View {
             let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
             self.bookingsModel = POSBookingsModel(bookingsController: bookingsController)
         } else {
-            self.bookingsModel = POSBookingsModel(bookingsController: POSBookingListController(
-                bookingListFetchStrategyFactory: POSNoOpBookingListFetchStrategyFactory()
-            ))
+            self.bookingsModel = nil
         }
         self.siteTimezone = siteTimezone
         self.services = services
@@ -199,7 +197,9 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
-        .environment(bookingsModel)
+        .if(bookingsModel != nil) { view in
+            view.environment(bookingsModel!)
+        }
         .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .onAppear {

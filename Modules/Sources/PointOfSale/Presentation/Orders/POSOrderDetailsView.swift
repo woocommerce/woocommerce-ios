@@ -420,20 +420,7 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return {
-                refundModalState = .loading
-                Task { @MainActor in
-                    let result = await orderListModel.ordersController.startRefundFlow()
-                    switch result {
-                    case .hasItemsToRefund:
-                        refundModalState = .itemSelection
-                    case .nothingToRefund:
-                        refundModalState = .nothingToRefund
-                    case .failed:
-                        refundModalState = .loadingError
-                    }
-                }
-            }
+            return { initiateRefundFlow() }
         }
     }
 
@@ -510,6 +497,25 @@ private extension POSOrderDetailsView {
     }
 }
 
+// MARK: - Refund Flow Helpers
+
+private extension POSOrderDetailsView {
+    func initiateRefundFlow() {
+        refundModalState = .loading
+        Task { @MainActor in
+            let result = await orderListModel.ordersController.startRefundFlow()
+            switch result {
+            case .hasItemsToRefund:
+                refundModalState = .itemSelection
+            case .nothingToRefund:
+                refundModalState = .nothingToRefund
+            case .failed:
+                refundModalState = .loadingError
+            }
+        }
+    }
+}
+
 // MARK: - Refund Modal State
 
 enum RefundModalState: Identifiable, Equatable {
@@ -552,20 +558,7 @@ private extension POSOrderDetailsView {
             POSRefundErrorView(
                 title: Localization.loadRefundErrorTitle,
                 subtitle: Localization.loadRefundErrorSubtitle,
-                onRetry: {
-                    refundModalState = .loading
-                    Task { @MainActor in
-                        let result = await orderListModel.ordersController.startRefundFlow()
-                        switch result {
-                        case .hasItemsToRefund:
-                            refundModalState = .itemSelection
-                        case .nothingToRefund:
-                            refundModalState = .nothingToRefund
-                        case .failed:
-                            refundModalState = .loadingError
-                        }
-                    }
-                },
+                onRetry: { initiateRefundFlow() },
                 onCancel: { refundModalState = nil },
                 onClose: { refundModalState = nil }
             )

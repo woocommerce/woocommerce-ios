@@ -2,9 +2,9 @@ import Testing
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSBooking
-import struct NetworkingCore.PagedItems
-import enum Networking.BookingStatus
-import enum Networking.BookingAttendanceStatus
+import struct Yosemite.PagedItems
+import enum Yosemite.BookingStatus
+import enum Yosemite.BookingAttendanceStatus
 
 @MainActor
 final class POSBookingListControllerTests {

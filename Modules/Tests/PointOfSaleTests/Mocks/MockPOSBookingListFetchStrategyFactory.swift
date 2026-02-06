@@ -3,7 +3,7 @@ import Foundation
 import struct Yosemite.POSBooking
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
-import struct NetworkingCore.PagedItems
+import struct Yosemite.PagedItems
 
 final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol {
     var defaultStrategyResult: POSBookingListFetchStrategy = MockPOSBookingListFetchStrategy()

@@ -1,7 +1,7 @@
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import struct Yosemite.POSBooking
-import struct NetworkingCore.PagedItems
+import struct Yosemite.PagedItems
 
 struct POSNoOpBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol {
     func defaultStrategy() -> POSBookingListFetchStrategy {

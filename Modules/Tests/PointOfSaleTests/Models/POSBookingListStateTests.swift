@@ -2,8 +2,8 @@ import Testing
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSBooking
-import enum Networking.BookingStatus
-import enum Networking.BookingAttendanceStatus
+import enum Yosemite.BookingStatus
+import enum Yosemite.BookingAttendanceStatus
 
 struct POSBookingListStateTests {
 

@@ -1,6 +1,6 @@
 import SwiftUI
 import struct Yosemite.POSBooking
-import enum Networking.BookingStatus
+import enum Yosemite.BookingStatus
 
 struct POSBookingDetailView: View {
     let booking: POSBooking

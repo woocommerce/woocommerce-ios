@@ -35,8 +35,8 @@ import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import struct Yosemite.POSBooking
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
-import enum Networking.BookingStatus
-import enum Networking.BookingAttendanceStatus
+import enum Yosemite.BookingStatus
+import enum Yosemite.BookingAttendanceStatus
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol

@@ -295,7 +295,7 @@ extension PushNotificationsManager {
                     analytics.track(.wooPushTokenRegisterSuccess)
                 }
             }
-        } else {
+        } else if !stores.isAuthenticatedWithoutWPCom {
             registerForWPComPushNotifications()
         }
     }

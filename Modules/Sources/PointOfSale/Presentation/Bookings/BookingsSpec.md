@@ -39,8 +39,8 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 
 **Booking Detail (right pane)**
 - Selecting a booking shows its details: service, date/time, customer, resource (staff), amount
-- Payment action buttons: "Pay by Card" and "Pay by Cash"
-- Buttons hidden when booking is already paid or cancelled
+- Payment action button: "Collect Payment"
+- Button hidden when booking is already paid or cancelled
 - State for bookings with no linked order (payment not possible)
 
 **Card Payment**

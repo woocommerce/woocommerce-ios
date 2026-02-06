@@ -60,6 +60,7 @@ struct POSOrdersView: View {
                 guard horizontalSizeClass == .regular else { return }
 
                 guard let firstOrder = newOrders.first else {
+                    orderListModel.ordersController.selectOrder(nil)
                     return
                 }
 

@@ -32,6 +32,11 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import struct Yosemite.POSBooking
+import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSBookingListFetchStrategy
+import enum Networking.BookingStatus
+import enum Networking.BookingAttendanceStatus
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -489,6 +494,93 @@ struct POSPreviewHelpers {
             formattedNetAmount: "$153.50"
         )
     }
+}
+
+// MARK: - Preview Bookings
+
+final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
+    func defaultStrategy() -> POSBookingListFetchStrategy {
+        POSBookingListFetchStrategyPreview()
+    }
+
+    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
+        POSBookingListFetchStrategyPreview()
+    }
+}
+
+final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
+    var supportsCaching: Bool = true
+    var showsLoadingWithItems: Bool = false
+    var id: String = "BookingPreview"
+
+    func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+}
+
+extension POSPreviewHelpers {
+    static func makePreviewBookingsModel(state: POSBookingListState = .empty) -> POSBookingsModel {
+        let controller = POSConfigurablePreviewBookingListController(state: state)
+        return POSBookingsModel(bookingsController: controller)
+    }
+
+    static func makePreviewBookings() -> [POSBooking] {
+        [
+            POSBooking(
+                id: 1,
+                customerName: "John Smith",
+                serviceName: "Haircut",
+                startDate: Date(),
+                endDate: Date().addingTimeInterval(3600),
+                formattedAmount: "$45.00",
+                status: .confirmed,
+                attendanceStatus: .booked,
+                orderID: 101,
+                resourceName: "Station A"
+            ),
+            POSBooking(
+                id: 2,
+                customerName: "Jane Doe",
+                serviceName: "Massage",
+                startDate: Date().addingTimeInterval(7200),
+                endDate: Date().addingTimeInterval(10800),
+                formattedAmount: "$90.00",
+                status: .paid,
+                attendanceStatus: .booked,
+                orderID: 102,
+                resourceName: nil
+            ),
+            POSBooking(
+                id: 3,
+                customerName: "Alex Johnson",
+                serviceName: "Consultation",
+                startDate: Date().addingTimeInterval(-3600),
+                endDate: Date(),
+                formattedAmount: "$25.00",
+                status: .cancelled,
+                attendanceStatus: .booked,
+                orderID: nil,
+                resourceName: nil
+            )
+        ]
+    }
+}
+
+final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
+    let bookingsViewState: POSBookingListState
+    var selectedBooking: POSBooking?
+
+    init(state: POSBookingListState) {
+        self.bookingsViewState = state
+        self.selectedBooking = state.bookings.first
+    }
+
+    func loadBookings() async {}
+    func refreshBookings() async {}
+    func loadNextBookings() async {}
+    func selectBooking(_ booking: POSBooking?) { }
+    func searchBookings(searchTerm: String) async {}
+    func clearSearchBookings() {}
 }
 
 // MARK: - Preview Orders Controller

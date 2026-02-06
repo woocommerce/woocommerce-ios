@@ -392,7 +392,7 @@ final class POSBookingPaymentController {
 **Key differences from AggregateModel:**
 - `validatingOrderError` CAN happen (order fetch failure)
 - No order creation, no cart, no order stage
-- Error action closures reset to idle (no "new order" or "edit order" concepts)
+- Error action closures reset to idle and go back to the booking (no "new order" or "edit order" concepts.) We need to make the button text modifiable for the context.
 
 **Cash methods:**
 - `startCashPayment()` — cancel card, set `cash = .collectingCash`

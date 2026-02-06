@@ -266,6 +266,16 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory? =
+                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings)
+                    ? POSBookingListFetchStrategyFactory(
+                        siteID: siteID,
+                        credentials: credentials,
+                        selectedSite: defaultSitePublisher,
+                        appPasswordSupportState: isAppPasswordSupported,
+                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
+                    ) : nil
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -280,6 +290,7 @@ private extension POSTabCoordinator {
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
+                    bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
                     orderService: orderService,
                     refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

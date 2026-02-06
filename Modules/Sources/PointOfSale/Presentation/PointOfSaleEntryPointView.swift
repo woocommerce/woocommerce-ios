@@ -3,6 +3,7 @@ import class WooFoundation.CurrencyFormatter
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -26,6 +27,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
+    @State private var bookingsModel: POSBookingsModel
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -54,6 +56,7 @@ public struct PointOfSaleEntryPointView: View {
          couponProvider: PointOfSaleCouponServiceProtocol,
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
+         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol?,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
@@ -140,6 +143,14 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencySettingsProvider: services.currency,
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+        if let bookingListFetchStrategyFactory {
+            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
+            self.bookingsModel = POSBookingsModel(bookingsController: bookingsController)
+        } else {
+            self.bookingsModel = POSBookingsModel(bookingsController: POSBookingListController(
+                bookingListFetchStrategyFactory: POSNoOpBookingListFetchStrategyFactory()
+            ))
+        }
         self.siteTimezone = siteTimezone
         self.services = services
         self.siteID = siteID
@@ -188,6 +199,7 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
+        .environment(bookingsModel)
         .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .onAppear {
@@ -210,6 +222,7 @@ public struct PointOfSaleEntryPointView: View {
         couponProvider: PointOfSaleCouponServicePreview(),
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
+        bookingListFetchStrategyFactory: nil,
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),
         onPointOfSaleModeActiveStateChange: { _ in },

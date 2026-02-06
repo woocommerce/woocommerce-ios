@@ -387,6 +387,7 @@ final class POSBookingPaymentController {
   2. Events → `cardPresentPaymentInlineMessage` (inline)
   3. Events → `paymentState.card` via `PointOfSaleCardPaymentState(from:using:)`
 - On `cardPaymentSuccessful`: call `bookingService.markBookingAsPaid()`
+- Even though the order exists, we still need `validatingOrder` phase, as the card payment service will check it is payable.
 
 **Key differences from AggregateModel:**
 - No `validatingOrder` phase (order pre-exists)

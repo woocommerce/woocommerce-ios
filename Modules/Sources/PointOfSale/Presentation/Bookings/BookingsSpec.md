@@ -350,7 +350,7 @@ protocol POSBookingListFetchStrategy {
 **New file:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
 - Sections: booking info, status badges, customer, payment breakdown, action buttons
-- Contextual states: paid → checkmark, cancelled → label, noLinkedOrder → explanation
+- Contextual states: paid → checkmark, cancelled → label, noLinkedOrder → explanation, unpaid with order → collect payment button
 
 #### A8. Empty/Loading/Error views
 **New files:** `POSBookingDetailsEmptyView.swift`, `POSBookingDetailsLoadingView.swift`

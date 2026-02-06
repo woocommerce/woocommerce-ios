@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct POSRefundErrorView: View {
+    let title: String
+    let subtitle: String
     let onRetry: () -> Void
     let onCancel: () -> Void
     let onClose: () -> Void
@@ -50,14 +52,14 @@ private extension POSRefundErrorView {
                 .opacity(isViewLoaded ? 1 : 0)
 
             VStack(spacing: POSSpacing.small) {
-                Text(Localization.title)
+                Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)
 
-                Text(Localization.subtitle)
+                Text(subtitle)
                     .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posOnSurface)
                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
@@ -95,18 +97,6 @@ private extension POSRefundErrorView {
 
 private extension POSRefundErrorView {
     enum Localization {
-        static let title = NSLocalizedString(
-            "pos.refundErrorView.title",
-            value: "Failed to create refund",
-            comment: "Title shown when a refund creation has failed"
-        )
-
-        static let subtitle = NSLocalizedString(
-            "pos.refundErrorView.subtitle",
-            value: "Please try again.",
-            comment: "Subtitle shown when a refund creation has failed"
-        )
-
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundErrorView.closeButton.accessibilityLabel",
             value: "Close",
@@ -128,8 +118,21 @@ private extension POSRefundErrorView {
 }
 
 #if DEBUG
-#Preview("POSRefundErrorView") {
+#Preview("POSRefundErrorView - Create Error") {
     POSRefundErrorView(
+        title: "Failed to create refund",
+        subtitle: "Please try again.",
+        onRetry: {},
+        onCancel: {},
+        onClose: {}
+    )
+    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+}
+
+#Preview("POSRefundErrorView - Load Error") {
+    POSRefundErrorView(
+        title: "Couldn't load refund details",
+        subtitle: "Please try again.",
         onRetry: {},
         onCancel: {},
         onClose: {}

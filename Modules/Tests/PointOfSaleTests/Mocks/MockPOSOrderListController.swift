@@ -38,11 +38,14 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func clearSearchOrders() {}
 
-    func startRefundFlow() {
-        guard let order = selectedOrder else { return }
+    var stubStartRefundFlowResult: StartRefundFlowResult = .hasItemsToRefund
+
+    func startRefundFlow() async -> StartRefundFlowResult {
+        guard let order = selectedOrder else { return .failed }
         refundSelectableItems = order.lineItems.map {
             POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
         }
+        return stubStartRefundFlowResult
     }
 
     func toggleRefundItemSelection(at index: Int) {

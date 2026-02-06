@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
@@ -419,10 +420,7 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return {
-                orderListModel.ordersController.startRefundFlow()
-                refundModalState = .itemSelection
-            }
+            return { initiateRefundFlow() }
         }
     }
 
@@ -499,24 +497,51 @@ private extension POSOrderDetailsView {
     }
 }
 
+// MARK: - Refund Flow Helpers
+
+private extension POSOrderDetailsView {
+    func initiateRefundFlow() {
+        refundModalState = .loading
+        Task { @MainActor in
+            let result = await orderListModel.ordersController.startRefundFlow()
+            switch result {
+            case .hasItemsToRefund:
+                refundModalState = .itemSelection
+            case .nothingToRefund:
+                refundModalState = .nothingToRefund
+            case .failed:
+                refundModalState = .loadingError
+            }
+        }
+    }
+}
+
 // MARK: - Refund Modal State
 
 enum RefundModalState: Identifiable, Equatable {
+    case loading
+    case loadingError
+    case nothingToRefund
     case itemSelection
     case review(POSRefundReviewData)
     case reasonInput(POSRefundReviewData)
     case confirmation(POSRefundReviewData)
     case processing(POSRefundReviewData)
     case success(POSRefundReviewData)
+    case error(POSRefundReviewData)
 
     var id: String {
         switch self {
+        case .loading: return "loading"
+        case .loadingError: return "loadingError"
+        case .nothingToRefund: return "nothingToRefund"
         case .itemSelection: return "itemSelection"
         case .review: return "review"
         case .reasonInput: return "reasonInput"
         case .confirmation: return "confirmation"
         case .processing: return "processing"
         case .success: return "success"
+        case .error: return "error"
         }
     }
 }
@@ -527,6 +552,20 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundModalContent(for state: RefundModalState) -> some View {
         switch state {
+        case .loading:
+            POSRefundLoadingView()
+        case .loadingError:
+            POSRefundErrorView(
+                title: Localization.loadRefundErrorTitle,
+                subtitle: Localization.loadRefundErrorSubtitle,
+                onRetry: { initiateRefundFlow() },
+                onCancel: { refundModalState = nil },
+                onClose: { refundModalState = nil }
+            )
+        case .nothingToRefund:
+            POSRefundNothingToRefundView(
+                onClose: { refundModalState = nil }
+            )
         case .itemSelection:
             POSRefundItemsSelectionView(
                 onClose: { refundModalState = nil },
@@ -610,6 +649,20 @@ private extension POSOrderDetailsView {
                     refundModalState = nil
                 }
             )
+        case .error(let reviewData):
+            POSRefundErrorView(
+                title: Localization.createRefundErrorTitle,
+                subtitle: Localization.createRefundErrorSubtitle,
+                onRetry: {
+                    refundModalState = .confirmation(reviewData)
+                },
+                onCancel: {
+                    refundModalState = nil
+                },
+                onClose: {
+                    refundModalState = nil
+                }
+            )
         }
     }
 
@@ -624,8 +677,8 @@ private extension POSOrderDetailsView {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             refundModalState = .success(reviewData)
         } catch {
-            // TODO: Handle error - show error state
-            refundModalState = .confirmation(reviewData)
+            DDLogError("⛔️ Failed to process refund: \(error)")
+            refundModalState = .error(reviewData)
         }
     }
 }
@@ -853,6 +906,32 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
+
+    // MARK: - Refund Error Messages
+
+    static let createRefundErrorTitle = NSLocalizedString(
+        "pos.orderDetailsView.createRefundError.title",
+        value: "Failed to create refund",
+        comment: "Title shown when a refund creation has failed"
+    )
+
+    static let createRefundErrorSubtitle = NSLocalizedString(
+        "pos.orderDetailsView.createRefundError.subtitle",
+        value: "Please try again.",
+        comment: "Subtitle shown when a refund creation has failed"
+    )
+
+    static let loadRefundErrorTitle = NSLocalizedString(
+        "pos.orderDetailsView.loadRefundError.title",
+        value: "Couldn't load refund details",
+        comment: "Title shown when loading refund information has failed"
+    )
+
+    static let loadRefundErrorSubtitle = NSLocalizedString(
+        "pos.orderDetailsView.loadRefundError.subtitle",
+        value: "Please try again.",
+        comment: "Subtitle shown when loading refund information has failed"
+    )
 }
 
 #if DEBUG

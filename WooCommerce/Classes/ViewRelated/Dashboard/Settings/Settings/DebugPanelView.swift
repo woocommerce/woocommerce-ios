@@ -19,6 +19,17 @@ struct DebugPanelView: View {
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
             }
+
+            DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
+                let viewModel = WPComConnectionSetupViewModel(
+                    storeName: "nicestore.com",
+                    handler: WPComConnectionSetupHandler(),
+                    onDismiss: dismiss,
+                    onGoToStore: dismiss,
+                    onUpdatePlugin: {}
+                )
+                WPComConnectionSetupView(viewModel: viewModel)
+            }
         }
         .contentMargins(20)
         .navigationTitle("Debug Panel")

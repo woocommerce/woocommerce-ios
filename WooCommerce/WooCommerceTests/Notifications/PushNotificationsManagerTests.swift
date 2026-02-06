@@ -135,7 +135,7 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// deviceID is known.
     ///
     func testUnregisterForRemoteNotificationsEffectivelyDispatchesUnregisterDeviceAction() {
-        defaults.set(Sample.deviceID, forKey: .deviceID)
+        defaults.set(Sample.deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
         manager = makeManager()
         manager.unregisterForRemoteNotifications {}
 
@@ -152,8 +152,8 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Action is successful.
     ///
     func testUnregisterForRemoteNotificationsEffectivelyNukesDeviceIdentifierAndTokenOnSuccess() {
-        defaults.set(Sample.deviceID, forKey: .deviceID)
-        defaults.set(Sample.deviceToken, forKey: .deviceToken)
+        defaults.set(Sample.deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        defaults.set(Sample.deviceToken, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
         manager = makeManager()
 
         manager.unregisterForRemoteNotifications {}
@@ -165,8 +165,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         onCompletion(nil)
 
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceID))
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID))
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
     }
 
 
@@ -178,15 +178,15 @@ final class PushNotificationsManagerTests: XCTestCase {
             return
         }
 
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
         manager.registerDeviceToken(with: tokenAsData)
-        XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
     }
 
     /// Verifies that `registrationDidFail` enqueues a `unregisterDevice` NotificationAction.
     ///
     func testRegistrationDidFailDispatchesUnregisterDeviceAction() {
-        defaults.set(Sample.deviceID, forKey: .deviceID)
+        defaults.set(Sample.deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
         manager = makeManager()
 
         manager.registrationDidFail(with: SampleError.first)
@@ -336,7 +336,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         let siteID: Int64 = 132
         let payload = notificationPayload(siteID: siteID, title: Sample.defaultTitle, message: nil)
-        defaults.set("\(siteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
         manager = {
             let configuration = PushNotificationsConfiguration(application: self.application,
                                                                defaults: self.defaults,
@@ -659,7 +659,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     func test_registerDeviceToken_when_self_driven_gate_enabled_registers_self_driven_token_and_disables_WPCom_notifications() {
         // Given
-        defaults.set("456", forKey: .deviceID)
+        defaults.set("456", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
         mockSelfDrivenRegistrationActions(token: 123)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
@@ -693,11 +693,11 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
 
         // It does not clear WPcom token
-        XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
 
         // It persists Woo token and registered site ID
-        XCTAssertTrue(defaults.containsObject(forKey: .wooPushNotificationToken))
-        XCTAssertTrue(defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications))
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken))
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications))
 
         // It dispatches the WPCom PN setting update to disable mobile PNs from WPCom for the current siteID and deviceID
         let accountActions = storesManager.receivedActions.compactMap { $0 as? AccountAction }

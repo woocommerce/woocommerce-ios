@@ -1,6 +1,7 @@
 import Foundation
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class WPComPushNotificationsBenefitsViewModel {
 
     private let analytics: Analytics

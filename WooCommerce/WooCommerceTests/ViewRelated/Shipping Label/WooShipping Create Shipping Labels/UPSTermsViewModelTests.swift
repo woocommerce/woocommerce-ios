@@ -8,6 +8,7 @@ struct UPSTermsViewModelTests {
         // Given
         let originAddress = WooShippingAddress(company: "A8C",
                                                name: "Teddy Bear",
+                                               email: nil,
                                                phone: "0985728394",
                                                country: "US",
                                                state: "New York",
@@ -37,6 +38,7 @@ struct UPSTermsViewModelTests {
         // Given
         let originAddress = WooShippingAddress(company: "A8C",
                                                name: "Teddy Bear",
+                                               email: nil,
                                                phone: "0985728394",
                                                country: "US",
                                                state: "New York",
@@ -59,6 +61,7 @@ struct UPSTermsViewModelTests {
         // Given
         let originAddress = WooShippingAddress(company: "A8C",
                                                name: "Teddy Bear",
+                                               email: nil,
                                                phone: "0985728394",
                                                country: "US",
                                                state: "New York",
@@ -82,6 +85,7 @@ struct UPSTermsViewModelTests {
         // Given
         let originAddress = WooShippingAddress(company: "A8C",
                                                name: "Teddy Bear",
+                                               email: nil,
                                                phone: "0985728394",
                                                country: "US",
                                                state: "New York",

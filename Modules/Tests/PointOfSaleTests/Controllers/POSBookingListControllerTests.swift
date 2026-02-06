@@ -1,4 +1,5 @@
-import XCTest
+import Testing
+import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSBooking
 import struct NetworkingCore.PagedItems
@@ -6,30 +7,19 @@ import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
 
 @MainActor
-final class POSBookingListControllerTests: XCTestCase {
+final class POSBookingListControllerTests {
 
-    private var mockFactory: MockPOSBookingListFetchStrategyFactory!
-    private var mockStrategy: MockPOSBookingListFetchStrategy!
-    private var sut: POSBookingListController!
-
-    override func setUp() {
-        super.setUp()
-        mockStrategy = MockPOSBookingListFetchStrategy()
-        mockFactory = MockPOSBookingListFetchStrategyFactory()
-        mockFactory.defaultStrategyResult = mockStrategy
-        sut = POSBookingListController(bookingListFetchStrategyFactory: mockFactory)
-    }
-
-    override func tearDown() {
-        sut = nil
-        mockFactory = nil
-        mockStrategy = nil
-        super.tearDown()
-    }
+    private let mockStrategy = MockPOSBookingListFetchStrategy()
+    private lazy var mockFactory: MockPOSBookingListFetchStrategyFactory = {
+        let factory = MockPOSBookingListFetchStrategyFactory()
+        factory.defaultStrategyResult = mockStrategy
+        return factory
+    }()
+    private lazy var sut = POSBookingListController(bookingListFetchStrategyFactory: mockFactory)
 
     // MARK: - loadBookings
 
-    func test_loadBookings_results_in_loaded_state() async {
+    @Test func test_loadBookings_results_in_loaded_state() async {
         // Given
         let bookings = [makeBooking(id: 1), makeBooking(id: 2)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
@@ -38,10 +28,10 @@ final class POSBookingListControllerTests: XCTestCase {
         await sut.loadBookings()
 
         // Then
-        XCTAssertEqual(sut.bookingsViewState, .loaded(bookings, hasMoreItems: false))
+        #expect(sut.bookingsViewState == .loaded(bookings, hasMoreItems: false))
     }
 
-    func test_loadBookings_when_empty_results_in_empty_state() async {
+    @Test func test_loadBookings_when_empty_results_in_empty_state() async {
         // Given
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
 
@@ -49,10 +39,10 @@ final class POSBookingListControllerTests: XCTestCase {
         await sut.loadBookings()
 
         // Then
-        XCTAssertEqual(sut.bookingsViewState, .empty)
+        #expect(sut.bookingsViewState == .empty)
     }
 
-    func test_loadBookings_when_error_results_in_error_state() async {
+    @Test func test_loadBookings_when_error_results_in_error_state() async {
         // Given
         mockStrategy.fetchBookingsResult = .failure(NSError(domain: "test", code: 1))
 
@@ -60,16 +50,15 @@ final class POSBookingListControllerTests: XCTestCase {
         await sut.loadBookings()
 
         // Then
-        if case .error = sut.bookingsViewState {
-            // Expected
-        } else {
-            XCTFail("Expected error state, got \(sut.bookingsViewState)")
+        guard case .error = sut.bookingsViewState else {
+            Issue.record("Expected error state, got \(sut.bookingsViewState)")
+            return
         }
     }
 
     // MARK: - loadNextBookings
 
-    func test_loadNextBookings_appends_to_existing() async {
+    @Test func test_loadNextBookings_appends_to_existing() async {
         // Given
         let firstPage = [makeBooking(id: 1)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: firstPage, hasMorePages: true, totalItems: nil))
@@ -83,12 +72,12 @@ final class POSBookingListControllerTests: XCTestCase {
 
         // Then
         let allBookings = firstPage + secondPage
-        XCTAssertEqual(sut.bookingsViewState, .loaded(allBookings, hasMoreItems: false))
+        #expect(sut.bookingsViewState == .loaded(allBookings, hasMoreItems: false))
     }
 
     // MARK: - Duplicate prevention
 
-    func test_loadBookings_when_called_multiple_times_then_bookings_are_not_duplicated() async {
+    @Test func test_loadBookings_when_called_multiple_times_then_bookings_are_not_duplicated() async {
         // Given
         let bookings = [makeBooking(id: 1)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
@@ -98,12 +87,12 @@ final class POSBookingListControllerTests: XCTestCase {
         await sut.loadBookings()
 
         // Then
-        XCTAssertEqual(sut.bookingsViewState.bookings.count, 1)
+        #expect(sut.bookingsViewState.bookings.count == 1)
     }
 
     // MARK: - selectBooking
 
-    func test_selectBooking_updates_selectedBooking() async {
+    @Test func test_selectBooking_updates_selectedBooking() {
         // Given
         let booking = makeBooking(id: 1)
 
@@ -111,10 +100,10 @@ final class POSBookingListControllerTests: XCTestCase {
         sut.selectBooking(booking)
 
         // Then
-        XCTAssertEqual(sut.selectedBooking, booking)
+        #expect(sut.selectedBooking == booking)
     }
 
-    func test_selectBooking_nil_clears_selectedBooking() async {
+    @Test func test_selectBooking_nil_clears_selectedBooking() {
         // Given
         sut.selectBooking(makeBooking(id: 1))
 
@@ -122,12 +111,12 @@ final class POSBookingListControllerTests: XCTestCase {
         sut.selectBooking(nil)
 
         // Then
-        XCTAssertNil(sut.selectedBooking)
+        #expect(sut.selectedBooking == nil)
     }
 
     // MARK: - searchBookings
 
-    func test_searchBookings_switches_strategy_and_loads() async {
+    @Test func test_searchBookings_switches_strategy_and_loads() async {
         // Given
         let searchBookings = [makeBooking(id: 10)]
         let searchStrategy = MockPOSBookingListFetchStrategy()
@@ -140,12 +129,12 @@ final class POSBookingListControllerTests: XCTestCase {
         await sut.searchBookings(searchTerm: "test")
 
         // Then
-        XCTAssertEqual(sut.bookingsViewState, .loaded(searchBookings, hasMoreItems: false))
+        #expect(sut.bookingsViewState == .loaded(searchBookings, hasMoreItems: false))
     }
 
     // MARK: - clearSearchBookings
 
-    func test_clearSearchBookings_restores_cached_bookings() async {
+    @Test func test_clearSearchBookings_restores_cached_bookings() async {
         // Given - load initial bookings (cached)
         let initialBookings = [makeBooking(id: 1), makeBooking(id: 2)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: initialBookings, hasMorePages: false, totalItems: nil))
@@ -163,23 +152,23 @@ final class POSBookingListControllerTests: XCTestCase {
         sut.clearSearchBookings()
 
         // Then - should restore cached bookings
-        XCTAssertEqual(sut.bookingsViewState, .loaded(initialBookings, hasMoreItems: true))
+        #expect(sut.bookingsViewState == .loaded(initialBookings, hasMoreItems: true))
     }
 
     // MARK: - Caching
 
-    func test_loadBookings_uses_cached_data_on_reload() async {
+    @Test func test_loadBookings_uses_cached_data_on_reload() async {
         // Given - load initial bookings
         let bookings = [makeBooking(id: 1)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
         await sut.loadBookings()
 
-        // When - reload (strategy will now return empty, simulating in-progress load)
+        // When - reload
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
         await sut.loadBookings()
 
-        // Then - should still have the bookings (from cache during loading)
-        XCTAssertEqual(sut.bookingsViewState.bookings, bookings)
+        // Then - should still have the bookings
+        #expect(sut.bookingsViewState.bookings == bookings)
     }
 }
 

@@ -7,7 +7,10 @@ Buat pesanan dari mana saja
 Setelah Anda membuat beberapa produk, selebihnya mudah. Pilih item dari katalog Anda, tambahkan pengiriman, lalu isi detail pelanggan untuk membuat pesanan secara cepat yang tersinkronisasi dengan inventaris Anda.
 
 Terima pembayaran secara langsung
-Terima pembayaran fisik menggunakan Pembayaran Langsung WooCommerce dan pembaca kartu (tersedia di Amerika Serikat dan Kanada). Buat pesanan baru – atau temukan pesanan lama yang pembayarannya tertunda – lalu terima pembayaran menggunakan pembaca kartu atau dompet digital, seperti Apple Pay.
+Terima pembayaran fisik menggunakan Pembayaran Langsung WooCommerce dan pembaca kartu (tersedia di Amerika Serikat, Britania Raya, dan Kanada), Tap to Pay di iPhone, atau dompet digital, seperti Apple Pay. Mulai pesanan baru atau cari pesanan yang masih menunggu pembayaran, lalu terima pembayaran dengan mudah.
+
+Dari toko online ke toko fisik
+Ubah tablet menjadi point of sale andal dengan WooCommerce POS. Cari produk, pindai barcode, terapkan kupon, dan kirim resi lewat email sementara semua penjualan online dan fisik tersinkronisasi secara real time. Tersedia di Amerika Serikat dan Britania Raya.
 
 Dapatkan pemberitahuan untuk setiap penjualan
 Kini setelah Anda aktif berjualan, jangan lewatkan pesanan atau ulasan. Terus pantau prosesnya dengan mengaktifkan peringatan real-time – dan dengarkan bunyi “cring-cring” setiap kali ada penjualan!

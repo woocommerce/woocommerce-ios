@@ -387,12 +387,12 @@ final class POSBookingPaymentController {
   2. Events → `cardPresentPaymentInlineMessage` (inline)
   3. Events → `paymentState.card` via `PointOfSaleCardPaymentState(from:using:)`
 - On `cardPaymentSuccessful`: call `bookingService.markBookingAsPaid()`
-- Even though the order exists, we still need `validatingOrder` phase, as the card payment service will check it is payable.
+- Even though the booking already has a linked order, we still need the `validatingOrder` phase — the card payment service fetches and validates the order is payable before proceeding. This means `validatingOrderError` is a real error path (e.g. order fetch failure, order already paid) and must be handled.
 
 **Key differences from AggregateModel:**
 - `validatingOrderError` CAN happen (order fetch failure)
 - No order creation, no cart, no order stage
-- Error action closures reset to idle and go back to the booking (no "new order" or "edit order" concepts.) We need to make the button text modifiable for the context.
+- Error action closures reset to idle and go back to the booking (no "new order" or "edit order" concepts). The existing error states use button text like "New Order" / "Edit Order" which don't apply to bookings — the payment error views need configurable button text so bookings can show contextually appropriate labels (e.g. "Back to Booking" / "Try Again").
 
 **Cash methods:**
 - `startCashPayment()` — cancel card, set `cash = .collectingCash`

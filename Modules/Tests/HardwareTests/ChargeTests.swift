@@ -1,48 +1,49 @@
-import XCTest
+import Testing
 @testable import Hardware
 
 /// Tests the mapping between Charge and SCPCharge
-final class ChargeTests: XCTestCase {
-    func test_charge_maps_id() {
+@Suite("Charge Tests")
+struct ChargeTests {
+    @Test func test_charge_maps_id() {
         let mockCharge = MockStripeCharge.mock()
         let charge = Charge(charge: mockCharge)
 
-        XCTAssertEqual(charge.id, mockCharge.stripeId)
+        #expect(charge.id == mockCharge.stripeId)
     }
 
-    func test_charge_maps_amount() {
+    @Test func test_charge_maps_amount() {
         let mockCharge = MockStripeCharge.mock()
         let charge = Charge(charge: mockCharge)
 
-        XCTAssertEqual(charge.amount, mockCharge.amount)
+        #expect(charge.amount == mockCharge.amount)
     }
 
-    func test_charge_maps_currency() {
+    @Test func test_charge_maps_currency() {
         let mockCharge = MockStripeCharge.mock()
         let charge = Charge(charge: mockCharge)
 
-        XCTAssertEqual(charge.currency, mockCharge.currency)
+        #expect(charge.currency == mockCharge.currency)
     }
 
-    func test_charge_maps_status() {
+    @Test func test_charge_maps_status() {
         let mockCharge = MockStripeCharge.mock()
         let charge = Charge(charge: mockCharge)
 
-        XCTAssertEqual(charge.status, .succeeded)
+        #expect(charge.status == .succeeded)
     }
 
-    func test_charge_maps_description() {
+    @Test func test_charge_maps_description() {
         let mockCharge = MockStripeCharge.mock()
         let charge = Charge(charge: mockCharge)
 
-        XCTAssertEqual(charge.description, mockCharge.stripeDescription)
+        #expect(charge.description == mockCharge.stripeDescription)
     }
 
-    func test_charge_maps_metadata() {
+    @Test func test_charge_maps_metadata() {
         let mockCharge = MockStripeCharge.mock()
         let charge = Charge(charge: mockCharge)
 
-        XCTAssertNotNil(charge.metadata)
-        XCTAssertEqual(charge.metadata, mockCharge.metadata)
+        #expect(charge.metadata != nil)
+        #expect(charge.metadata == mockCharge.metadata)
     }
 }

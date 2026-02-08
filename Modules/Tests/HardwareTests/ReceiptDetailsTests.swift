@@ -1,60 +1,61 @@
-import XCTest
+import Testing
 @testable import Hardware
 
 /// Tests the mapping between ReceiptDetails and SCPReceiptDetails
-final class ReceiptDetailsTests: XCTestCase {
-    func test_card_receipts_details_maps_app_preferred_name() {
+@Suite("Receipt Details Tests")
+struct ReceiptDetailsTests {
+    @Test func test_card_receipts_details_maps_app_preferred_name() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.applicationPreferredName, mockDetails.applicationPreferredName)
+        #expect(details?.applicationPreferredName == mockDetails.applicationPreferredName)
     }
 
-    func test_card_receipts_details_maps_dedicated_file_name() {
+    @Test func test_card_receipts_details_maps_dedicated_file_name() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.dedicatedFileName, mockDetails.dedicatedFileName)
+        #expect(details?.dedicatedFileName == mockDetails.dedicatedFileName)
     }
 
-    func test_card_receipts_details_maps_auth_response_code() {
+    @Test func test_card_receipts_details_maps_auth_response_code() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.authorizationResponseCode, mockDetails.authorizationResponseCode)
+        #expect(details?.authorizationResponseCode == mockDetails.authorizationResponseCode)
     }
 
-    func test_card_receipts_details_maps_application_cryptogram() {
+    @Test func test_card_receipts_details_maps_application_cryptogram() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.applicationCryptogram, mockDetails.applicationCryptogram)
+        #expect(details?.applicationCryptogram == mockDetails.applicationCryptogram)
     }
 
-    func test_card_receipts_details_maps_terminal_verification_results() {
+    @Test func test_card_receipts_details_maps_terminal_verification_results() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.terminalVerificationResults, mockDetails.terminalVerificationResults)
+        #expect(details?.terminalVerificationResults == mockDetails.terminalVerificationResults)
     }
 
-    func test_card_receipts_details_maps_tsi() {
+    @Test func test_card_receipts_details_maps_tsi() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.transactionStatusInformation, mockDetails.transactionStatusInformation)
+        #expect(details?.transactionStatusInformation == mockDetails.transactionStatusInformation)
     }
 
-    func test_card_receipts_details_maps_account_type() {
+    @Test func test_card_receipts_details_maps_account_type() {
         let mockDetails = MockStripeReceiptDetails.mock()
         let details = ReceiptDetails(receiptDetails: mockDetails)
 
-        XCTAssertEqual(details?.accountType, mockDetails.accountType)
+        #expect(details?.accountType == mockDetails.accountType)
     }
 
-    func test_card_receipts_details_initializes_to_nil_with_nil_data() {
+    @Test func test_card_receipts_details_initializes_to_nil_with_nil_data() {
         let details = ReceiptDetails(receiptDetails: nil)
 
-        XCTAssertNil(details)
+        #expect(details == nil)
     }
 }

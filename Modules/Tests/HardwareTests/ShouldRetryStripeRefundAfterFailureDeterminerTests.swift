@@ -1,8 +1,9 @@
-import XCTest
+import Testing
 @testable import Hardware
 
-final class ShouldRetryStripeRefundAfterFailureDeterminerTests: XCTestCase {
-    func test_shouldRetryRefund_when_failure_reasons_are_not_retryable_returns_false() {
+@Suite("Should Retry Stripe Refund After Failure Determiner Tests")
+struct ShouldRetryStripeRefundAfterFailureDeterminerTests {
+    @Test func test_shouldRetryRefund_when_failure_reasons_are_not_retryable_returns_false() {
         let sut = ShouldRetryStripeRefundAfterFailureDeterminer()
         let nonRetryableFailureReasons = [
             "call_issuer",
@@ -28,11 +29,11 @@ final class ShouldRetryStripeRefundAfterFailureDeterminerTests: XCTestCase {
         ]
 
         for failureReason in nonRetryableFailureReasons {
-            XCTAssertFalse(sut.shouldRetryRefund(after: failureReason))
+            #expect(!sut.shouldRetryRefund(after: failureReason))
         }
     }
 
-    func test_shouldRetryRefund_when_failure_reasons_are_retryable_returns_true() {
+    @Test func test_shouldRetryRefund_when_failure_reasons_are_retryable_returns_true() {
         let sut = ShouldRetryStripeRefundAfterFailureDeterminer()
         let retryableFailureReasons = [
             "approve_with_id",
@@ -58,15 +59,15 @@ final class ShouldRetryStripeRefundAfterFailureDeterminerTests: XCTestCase {
         ]
 
         for failureReason in retryableFailureReasons {
-            XCTAssertTrue(sut.shouldRetryRefund(after: failureReason))
+            #expect(sut.shouldRetryRefund(after: failureReason))
         }
     }
 
-    func test_shouldRetryRefund_when_failure_reason_is_nil_returns_false() {
-        XCTAssertFalse(ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: nil))
+    @Test func test_shouldRetryRefund_when_failure_reason_is_nil_returns_false() {
+        #expect(!ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: nil))
     }
 
-    func test_shouldRetryRefund_when_failure_reason_is_unknown_returns_true() {
-        XCTAssertTrue(ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: "not-a-stripe-error-for-sure"))
+    @Test func test_shouldRetryRefund_when_failure_reason_is_unknown_returns_true() {
+        #expect(ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: "not-a-stripe-error-for-sure"))
     }
 }

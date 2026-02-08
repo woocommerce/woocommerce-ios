@@ -1,70 +1,71 @@
-import XCTest
+import Testing
 @testable import Hardware
 
 /// Tests the mapping between CardPresentDetails and SCPCardPresentDetails
-final class CardPresentDetailsTests: XCTestCase {
-    func test_card_present_details_maps_last_4() {
+@Suite("Card Present Details Tests")
+struct CardPresentDetailsTests {
+    @Test func test_card_present_details_maps_last_4() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.last4, mockDetails.last4)
+        #expect(details.last4 == mockDetails.last4)
     }
 
-    func test_card_present_details_maps_expiration_month() {
+    @Test func test_card_present_details_maps_expiration_month() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.expMonth, mockDetails.expMonth)
+        #expect(details.expMonth == mockDetails.expMonth)
     }
 
-    func test_card_present_details_maps_expiration_year() {
+    @Test func test_card_present_details_maps_expiration_year() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.expYear, mockDetails.expYear)
+        #expect(details.expYear == mockDetails.expYear)
     }
 
-    func test_card_present_details_maps_cardholder_name() {
+    @Test func test_card_present_details_maps_cardholder_name() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.cardholderName, mockDetails.cardholderName)
+        #expect(details.cardholderName == mockDetails.cardholderName)
     }
 
-    func test_card_present_details_maps_card_brand() {
+    @Test func test_card_present_details_maps_card_brand() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         let hardwareCardBrand = Hardware.CardBrand(brand: mockDetails.brand)
 
-        XCTAssertEqual(details.brand, hardwareCardBrand)
+        #expect(details.brand == hardwareCardBrand)
     }
 
-    func test_card_present_details_maps_generated_card() {
+    @Test func test_card_present_details_maps_generated_card() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.generatedCard, mockDetails.generatedCard)
+        #expect(details.generatedCard == mockDetails.generatedCard)
     }
 
-    func test_card_present_details_maps_auth_data() {
+    @Test func test_card_present_details_maps_auth_data() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.emvAuthData, mockDetails.emvAuthData)
+        #expect(details.emvAuthData == mockDetails.emvAuthData)
     }
 
-    func test_card_present_details_maps_wallet() {
+    @Test func test_card_present_details_maps_wallet() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.wallet?.type, mockDetails.wallet?.type)
+        #expect(details.wallet?.type == mockDetails.wallet?.type)
     }
 
-    func test_card_present_details_maps_network() {
+    @Test func test_card_present_details_maps_network() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
-        XCTAssertEqual(details.network, mockDetails.network)
+        #expect(details.network == mockDetails.network)
     }
 }

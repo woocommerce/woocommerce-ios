@@ -1,34 +1,35 @@
-import XCTest
+import Testing
 @testable import Hardware
 
-final class StripeCardReaderCacheTests: XCTestCase {
-    func test_cache_is_initialized_empty() {
+@Suite("Stripe Card Reader Cache Tests")
+struct StripeCardReaderCacheTests {
+    @Test func test_cache_is_initialized_empty() {
         let cache = StripeCardReaderDiscoveryCache()
 
-        XCTAssertTrue(cache.cachedReaders.isEmpty)
+        #expect(cache.cachedReaders.isEmpty)
     }
 
-    func test_cache_contains_cached_readers_after_adding_one_reader() {
+    @Test func test_cache_contains_cached_readers_after_adding_one_reader() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
         cache.insert(mockReader)
 
-        XCTAssertEqual(cache.cachedReaders.count, 1)
-        XCTAssertEqual(cache.cachedReaders.first?.serialNumber, mockReader.serialNumber)
+        #expect(cache.cachedReaders.count == 1)
+        #expect(cache.cachedReaders.first?.serialNumber == mockReader.serialNumber)
     }
 
-    func test_cache_contains_cached_readers_after_adding_an_array_of_readers() {
+    @Test func test_cache_contains_cached_readers_after_adding_an_array_of_readers() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
         cache.insert([mockReader])
 
-        XCTAssertEqual(cache.cachedReaders.count, 1)
-        XCTAssertEqual(cache.cachedReaders.first?.serialNumber, mockReader.serialNumber)
+        #expect(cache.cachedReaders.count == 1)
+        #expect(cache.cachedReaders.first?.serialNumber == mockReader.serialNumber)
     }
 
-    func test_cache_matches_stripe_reader() {
+    @Test func test_cache_matches_stripe_reader() {
         let mockStripeBBPOSReader = MockStripeCardReader.bbposChipper2XBT()
         let mockStripeM2Reader = MockStripeCardReader.stripeM2()
 
@@ -46,10 +47,10 @@ final class StripeCardReaderCacheTests: XCTestCase {
 
         let readerMatching = cache.reader(matching: cardReader)
 
-        XCTAssertEqual(mockStripeBBPOSReader.serialNumber, readerMatching?.serialNumber)
+        #expect(mockStripeBBPOSReader.serialNumber == readerMatching?.serialNumber)
     }
 
-    func test_cache_clears_cache() {
+    @Test func test_cache_clears_cache() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
@@ -57,6 +58,6 @@ final class StripeCardReaderCacheTests: XCTestCase {
 
         cache.clear()
 
-        XCTAssertTrue(cache.cachedReaders.isEmpty)
+        #expect(cache.cachedReaders.isEmpty)
     }
 }

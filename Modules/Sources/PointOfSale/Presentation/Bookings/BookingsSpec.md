@@ -760,18 +760,66 @@ Plus sort controls:
 - Caches current results before filter (like search does)
 - `clearFilters()` restores default strategy
 
-#### M3-A4. View related order — present POSOrdersView
+#### M3-A4. View related order — push POSOrderDetailsView directly
+
+**Alternative to showing the full order list:** navigate directly to `POSOrderDetailsView` from booking detail. This is simpler, faster for the merchant, and avoids the need for M3-B1 (order list integration) as a prerequisite.
+
+**How it works:**
+
+`POSOrderDetailsView` requires two init parameters: `order: POSOrder` and `onBack: () -> Void`. It also reads these from the environment:
+- `POSOrderListModel` — used for receipt sending and refund flow
+- `\.horizontalSizeClass`, `\.siteTimezone`, `\.posAnalytics`, `\.posFeatureFlags`, `\.posCurrencyProvider`
+
+All of these are already available to booking views — `PointOfSaleEntryPointView` injects `orderListModel` and all POS environment values at the root level (lines 190-203).
+
+**Loading the order:** `POSOrderListService.loadOrder(orderID:)` fetches a single order by ID from the API and maps it to `POSOrder` via `POSOrderMapper` (handles all currency formatting). This method is exposed through `POSOrderListFetchStrategy.loadOrder(orderID:)`. The booking's `orderID` field provides the link.
+
+**Implementation:**
+
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-- Add "View Order" button when booking has a linked order and order is visible in POS order list
-- Present `POSOrdersView` as `.posFullScreenCover` on top of bookings
-- `POSOrderListModel` is `@Observable` and propagates through `.fullScreenCover` automatically
-- Add `preselectedOrderID` parameter to `POSOrdersView` — after orders load, select matching order instead of first
-- Requires M3-B1 (booking orders in POS order list) so the order is actually in the list
+```swift
+@Environment(POSOrderListModel.self) private var orderListModel
 
-**Modify:** `PointOfSale/Presentation/Orders/POSOrdersView.swift`
-- Add optional `preselectedOrderID: Int64?` parameter
-- After orders load, if set, find and select that order
+@State private var linkedOrder: POSOrder?
+@State private var isLoadingOrder = false
+@State private var showOrderDetail = false
+
+func viewLinkedOrder() async {
+    isLoadingOrder = true
+    defer { isLoadingOrder = false }
+    guard let orderID = booking.orderID else { return }
+    do {
+        linkedOrder = try await orderListModel.ordersController.fetchStrategy.loadOrder(orderID: orderID)
+        showOrderDetail = true
+    } catch {
+        // show error notice
+    }
+}
+```
+
+Present via `.posFullScreenCover(isPresented: $showOrderDetail)`:
+```swift
+.posFullScreenCover(isPresented: $showOrderDetail) {
+    if let linkedOrder {
+        POSOrderDetailsView(order: linkedOrder, onBack: { showOrderDetail = false })
+            .environment(orderListModel)
+    }
+}
+```
+
+**Advantages over the order list approach:**
+- No dependency on M3-B1 (no need to add booking orders to POS order list)
+- No need to modify `POSOrdersView` with `preselectedOrderID`
+- Faster UX — merchant goes straight to the order they care about
+- Simpler implementation — single API call, no list loading/searching
+- Refund flow works out of the box (`POSOrderDetailsView` handles it internally via `orderListModel`)
+
+**Required change:** Add `loadOrder(orderID:)` to `POSOrderListControllerProtocol` and implement in `POSOrderListController` (delegates to `fetchStrategy.loadOrder(orderID:)`). The fetch strategy is currently private, so the controller must expose this method.
+
+**Considerations:**
+- Receipt sending via `orderListModel.sendReceipt(order:email:)` works because it only needs the `POSOrder` object, not list membership.
+- The "back" action simply dismisses the cover — no list state to restore.
 
 ### Stream B: Order List Integration
 

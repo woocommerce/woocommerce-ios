@@ -410,6 +410,7 @@
 		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
 		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
 		3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */; };
+		71E7782632CC7D5213733333 /* MockJetpackConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */; };
 		3F0904092D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -951,17 +952,6 @@
 		DE279BAD26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BAC26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift */; };
 		DE279BAF26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE279BAE26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift */; };
 		DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */; };
-		DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */; };
-		DE2FE58D292617C30018040A /* SiteCredentialLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE58C292617C30018040A /* SiteCredentialLoginViewModel.swift */; };
-		DE2FE59029261DED0018040A /* SiteCredentialLoginViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */; };
-		DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE594292737330018040A /* JetpackSetupView.swift */; };
-		DE2FE597292737630018040A /* JetpackSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2FE596292737630018040A /* JetpackSetupViewModel.swift */; };
-		F51BF8AF43A912AAA0E09F6E /* JetpackConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F3DE2E082ADBAD89A2C291 /* JetpackConnectionService.swift */; };
-		983521AFF082F78FC8D7BA5C /* JetpackConnectionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E140965C8B468705DCA051ED /* JetpackConnectionServiceTests.swift */; };
-		71E7782632CC7D5213733333 /* MockJetpackConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */; };
-		DE3144862C5780250015F089 /* UnavailableAnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3144852C5780250015F089 /* UnavailableAnalyticsView.swift */; };
-		DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */; };
-		DE3404EA28B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */; };
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
 		DE36E09C2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */; };
 		DE4B3B2C2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */; };
@@ -2181,17 +2171,9 @@
 		DE279BAC26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelPackagesFormViewModelTests.swift; sourceTree = "<group>"; };
 		DE279BAE26EA03EA002BA963 /* ShippingLabelSinglePackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelSinglePackageViewModelTests.swift; sourceTree = "<group>"; };
 		DE2FE5872925DD950018040A /* JetpackInstallHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackInstallHeaderView.swift; sourceTree = "<group>"; };
-		DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginJetpackSetupCoordinator.swift; sourceTree = "<group>"; };
-		DE2FE594292737330018040A /* JetpackSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupView.swift; sourceTree = "<group>"; };
-		DE2FE596292737630018040A /* JetpackSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackSetupViewModel.swift; sourceTree = "<group>"; };
-		A4F3DE2E082ADBAD89A2C291 /* JetpackConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionService.swift; sourceTree = "<group>"; };
-		E140965C8B468705DCA051ED /* JetpackConnectionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionServiceTests.swift; sourceTree = "<group>"; };
-		5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockJetpackConnectionService.swift; sourceTree = "<group>"; };
-		DE3144852C5780250015F089 /* UnavailableAnalyticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnavailableAnalyticsView.swift; sourceTree = "<group>"; };
-		DE3404E728B4B96800CF0D97 /* NonAtomicSiteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModel.swift; sourceTree = "<group>"; };
-		DE3404E928B4C1D000CF0D97 /* NonAtomicSiteViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonAtomicSiteViewModelTests.swift; sourceTree = "<group>"; };
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 		DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModelTests.swift; sourceTree = "<group>"; };
+		DE4B3B2B2692DC2200EEF2D8 /* ReviewOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewOrderViewModelTests.swift; sourceTree = "<group>"; };
 		DE4B3B2D269455D400EEF2D8 /* MockShipmentActionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockShipmentActionStoresManager.swift; sourceTree = "<group>"; };
 		DE4B3B5726A7041800EEF2D8 /* EdgeInsets+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EdgeInsets+Woo.swift"; sourceTree = "<group>"; };
 		DE4C23B82EA09AFA0079240D /* Booking+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Booking+Helpers.swift"; sourceTree = "<group>"; };
@@ -2327,6 +2309,7 @@
 		EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
 		EEF5C14F2BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModelTests.swift; sourceTree = "<group>"; };
 		F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MockWPComConnectionSetupHandler.swift; sourceTree = "<group>"; };
+		5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockJetpackConnectionService.swift; sourceTree = "<group>"; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCase.swift; sourceTree = "<group>"; };
 		FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoleEligibilityUseCase.swift; sourceTree = "<group>"; };
@@ -5104,67 +5087,6 @@
 			path = "Multi-package";
 			sourceTree = "<group>";
 		};
-		DE2FE5842925D9040018040A /* Jetpack Setup */ = {
-			isa = PBXGroup;
-			children = (
-				DE2FE593292736F90018040A /* Native Jetpack Setup */,
-				DE2FE58B2926179A0018040A /* Site Credential Login */,
-				DE2FE5892925EAAE0018040A /* LoginJetpackSetupCoordinator.swift */,
-				A4F3DE2E082ADBAD89A2C291 /* JetpackConnectionService.swift */,
-			);
-			path = "Jetpack Setup";
-			sourceTree = "<group>";
-		};
-		DE2FE58B2926179A0018040A /* Site Credential Login */ = {
-			isa = PBXGroup;
-			children = (
-				DE2FE5852925DA050018040A /* SiteCredentialLoginView.swift */,
-				DE2FE58C292617C30018040A /* SiteCredentialLoginViewModel.swift */,
-			);
-			path = "Site Credential Login";
-			sourceTree = "<group>";
-		};
-		DE2FE58E29261DCE0018040A /* Jetpack Setup */ = {
-			isa = PBXGroup;
-			children = (
-				DE2FE58F29261DED0018040A /* SiteCredentialLoginViewModelTests.swift */,
-				DEE183EC292BD900008818AB /* JetpackSetupViewModelTests.swift */,
-				EEC2D27E292CF60E0072132E /* JetpackSetupHostingControllerTests.swift */,
-				EEC2D280292D10520072132E /* SiteCredentialLoginHostingViewControllerTests.swift */,
-				E140965C8B468705DCA051ED /* JetpackConnectionServiceTests.swift */,
-			);
-			path = "Jetpack Setup";
-			sourceTree = "<group>";
-		};
-		DE2FE593292736F90018040A /* Native Jetpack Setup */ = {
-			isa = PBXGroup;
-			children = (
-				DE2FE594292737330018040A /* JetpackSetupView.swift */,
-				DE2FE596292737630018040A /* JetpackSetupViewModel.swift */,
-				DEE183F0292E0ED0008818AB /* JetpackSetupInterruptedView.swift */,
-			);
-			path = "Native Jetpack Setup";
-			sourceTree = "<group>";
-		};
-		DE3650642B512864001569A7 /* TargetLocations */ = {
-			isa = PBXGroup;
-			children = (
-				DE3650652B512889001569A7 /* BlazeTargetLocationPickerView.swift */,
-				DE02ABAC2B55288D008E0AC4 /* BlazeTargetLocationSearchView.swift */,
-				DE3650672B5128CE001569A7 /* BlazeTargetLocationPickerViewModel.swift */,
-			);
-			path = TargetLocations;
-			sourceTree = "<group>";
-		};
-		DE36E0962A8634DB00B98496 /* StoreName */ = {
-			isa = PBXGroup;
-			children = (
-				DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */,
-				DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */,
-			);
-			path = StoreName;
-			sourceTree = "<group>";
-		};
 		DE4B3B2A2692DBF200EEF2D8 /* Review Order */ = {
 			isa = PBXGroup;
 			children = (
@@ -6708,10 +6630,6 @@
 				DEEDA239298A11FB0088256B /* SiteCredentialLoginUseCase.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
 				45F627B9253603AE00894B86 /* ProductDownloadSettingsViewModel.swift in Sources */,
-				031B10E3274FE2AE007390BA /* CardPresentModalConnectionFailedUpdateAddress.swift in Sources */,
-				DE2FE597292737630018040A /* JetpackSetupViewModel.swift in Sources */,
-				F51BF8AF43A912AAA0E09F6E /* JetpackConnectionService.swift in Sources */,
-				4572641727F1EB0D004E1F95 /* AddEditCoupon.swift in Sources */,
 				318109E825E5B8D600EE0BE7 /* NumberedListItemTableViewCell.swift in Sources */,
 				DE9F2D292A1B1AB2004E5957 /* FirstProductCreatedView.swift in Sources */,
 				02D29A9229F7C39200473D6D /* UIImage+Text.swift in Sources */,
@@ -7060,16 +6978,9 @@
 				B56C721421B5BBC000E5E85B /* MockStoresManager.swift in Sources */,
 				EE2A57D929E39A9C009F61E1 /* CaseIterable+HelpersTests.swift in Sources */,
 				D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */,
-				EEBDF7E72A31A59F00EFEF47 /* FirstProductCreatedViewModelTests.swift in Sources */,
-				8697AFBD2B60F56A00EFAF21 /* BlazeAdDestinationSettingViewModelTests.swift in Sources */,
-				D8025496265530E0001B2CC1 /* CardPresentModalFoundReaderTests.swift in Sources */,
-				DEE183ED292BD900008818AB /* JetpackSetupViewModelTests.swift in Sources */,
-				983521AFF082F78FC8D7BA5C /* JetpackConnectionServiceTests.swift in Sources */,
-				71E7782632CC7D5213733333 /* MockJetpackConnectionService.swift in Sources */,
-				028E19BC2805BD22001C36E0 /* RefundSubmissionUseCaseTests.swift in Sources */,
-				02645D8C27BA342D0065DC68 /* InboxNoteRowViewModelTests.swift in Sources */,
 				D85136D5231E40B500DD0539 /* ProductReviewTableViewCellTests.swift in Sources */,
 				021125B82578ECF10075AD2A /* BoldableTextParserTests.swift in Sources */,
+				4569D3F425DC1BFF00CDC3E2 /* ShippingLabelFormViewModelTests.swift in Sources */,
 				57F2C6CD246DECC10074063B /* SummaryTableViewCellViewModelTests.swift in Sources */,
 				DEDA8DC02B19CDC50076BF0F /* ThemeSettingViewModelTests.swift in Sources */,
 				CE7CEC2D2C2EF0E50066FD53 /* GoogleAdsCampaignReportCardViewModelTests.swift in Sources */,
@@ -7214,6 +7125,7 @@
 				57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */,
 				DE0BE0C12F333BC0009CE891 /* NotificationServiceSuppressionTests.swift in Sources */,
 				3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */,
+				71E7782632CC7D5213733333 /* MockJetpackConnectionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

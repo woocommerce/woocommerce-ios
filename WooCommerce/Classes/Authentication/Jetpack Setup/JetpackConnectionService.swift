@@ -5,6 +5,7 @@ import class Networking.AlamofireNetwork
 /// Performs the native Jetpack/WPCom connection sequence:
 /// register (if needed) → provision → finalize.
 protocol JetpackConnectionServiceProtocol {
+    @MainActor
     func connect(with connectionData: JetpackConnectionData,
                  siteURL: String,
                  credentials: Credentials) async throws

@@ -98,7 +98,7 @@ final class JetpackSetupViewModel: ObservableObject {
          wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         connectionService: JetpackConnectionServiceProtocol = ServiceLocator.jetpackConnectionService,
+         connectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          delayBeforeRetry: Double = Constants.delayBeforeRetry,
          onStoreNavigation: @escaping (String?) -> Void = { _ in}) {
         self.siteURL = siteURL
@@ -389,13 +389,7 @@ private extension JetpackSetupViewModel {
                     if error.errorCode == 404 {
                         /// For Jetpack-connected sites, if `isRegistered` is not returned,
                         /// check for `connectionOwner` instead.
-                        let syntheticData = JetpackConnectionData(
-                            currentUser: data.currentUser,
-                            isRegistered: data.connectionOwner != nil,
-                            connectionOwner: data.connectionOwner,
-                            blogID: data.blogID
-                        )
-                        startNativeConnection(with: syntheticData)
+                        startNativeConnection(with: data.copy(isRegistered: data.connectionOwner != nil))
                     } else {
                         didFailJetpackConnection(with: error)
                     }

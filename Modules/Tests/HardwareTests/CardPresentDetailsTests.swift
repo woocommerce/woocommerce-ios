@@ -2,37 +2,36 @@ import Testing
 @testable import Hardware
 
 /// Tests the mapping between CardPresentDetails and SCPCardPresentDetails
-@Suite("Card Present Details Tests")
-struct CardPresentDetailsTests {
-    @Test func test_card_present_details_maps_last_4() {
+struct `Card Present Details Tests` {
+    @Test func `card present details maps last 4`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.last4 == mockDetails.last4)
     }
 
-    @Test func test_card_present_details_maps_expiration_month() {
+    @Test func `card present details maps expiration month`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.expMonth == mockDetails.expMonth)
     }
 
-    @Test func test_card_present_details_maps_expiration_year() {
+    @Test func `card present details maps expiration year`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.expYear == mockDetails.expYear)
     }
 
-    @Test func test_card_present_details_maps_cardholder_name() {
+    @Test func `card present details maps cardholder name`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.cardholderName == mockDetails.cardholderName)
     }
 
-    @Test func test_card_present_details_maps_card_brand() {
+    @Test func `card present details maps card brand`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
@@ -41,28 +40,28 @@ struct CardPresentDetailsTests {
         #expect(details.brand == hardwareCardBrand)
     }
 
-    @Test func test_card_present_details_maps_generated_card() {
+    @Test func `card present details maps generated card`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.generatedCard == mockDetails.generatedCard)
     }
 
-    @Test func test_card_present_details_maps_auth_data() {
+    @Test func `card present details maps auth data`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.emvAuthData == mockDetails.emvAuthData)
     }
 
-    @Test func test_card_present_details_maps_wallet() {
+    @Test func `card present details maps wallet`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 
         #expect(details.wallet?.type == mockDetails.wallet?.type)
     }
 
-    @Test func test_card_present_details_maps_network() {
+    @Test func `card present details maps network`() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)
 

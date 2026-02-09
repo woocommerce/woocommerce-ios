@@ -37,11 +37,20 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 - Error state with retry
 - In-memory caching: retains content when bookings is closed and reopened
 
-**Booking Detail (right pane)**
-- Selecting a booking shows its details: service, date/time, customer, resource (staff), amount
-- Payment action button: "Collect Payment"
-- Button hidden when booking is already paid or cancelled
-- State for bookings with no linked order (payment not possible)
+**Booking Detail (right pane) — before payment:**
+1. **Header** — time range, service + customer, status badges ("Unattended" + "Unpaid")
+2. **Booking details** — date, time, team member, location, duration
+3. **Customer** — name, email, phone, billing address
+4. **Customer note** — free-text note from the customer
+5. **Attendance status** — toggle ("Attended" / "Unattended")
+6. **Payment** — breakdown (Service, Taxes, Discount, Total)
+7. **Collect Payment** — button (hidden when already paid or cancelled, or no linked order)
+8. **Booking note** — internal note area + "Add note"
+
+**Booking Detail (right pane) — after payment:**
+Same sections 1–6, then:
+7. **Payment status** — confirmation row ("Paid" checkmark)
+8. **Booking note** — internal note area + "Add note", plus ellipsis menu (top right) with: View Order, Issue Refund, Cancel Booking
 
 **Card Payment**
 - Same card reader flow as POS product checkout (connect reader → tap/insert card → process → success)
@@ -56,7 +65,7 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 
 **Receipt**
 - After successful payment (card or cash), option to email a receipt
-- Booking orders use the **standard WooCommerce receipt template** (not the POS-specific template)
+- Receipt template is determined by order origin: orders created via POS (`created_via: pos_rest_api`) use the POS receipt template; all other orders (including booking orders) use the standard WooCommerce receipt template
 
 **Data Enrichment**
 - Booking API returns raw IDs only (customer_id, product_id, resource_id, order_id)
@@ -74,11 +83,11 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 - Badges displayed in booking detail and list rows
 
 **Booking Detail Enrichment**
-- Duration (formatted from start/end, e.g. "1h 30m")
-- Time range (e.g. "9:00 AM – 10:30 AM")
-- Booking notes
-- Customer email and phone (from order billing address)
-- Sections: service summary → status badges → customer info → notes → payment breakdown → actions
+- Booking notes (internal notes, with "Add note")
+- Post-payment ellipsis menu: View Order, Issue Refund, Cancel Booking
+- Action-gating computed properties (canMarkAttended, canCancel, canCollectPayment)
+
+Note: Duration, location, customer email/phone/billing address, and customer note are already part of the M1 model and detail view.
 
 **Booking List Enrichment**
 - Attendance badge next to payment badge in each row
@@ -204,7 +213,7 @@ Reuse the production payment states:
 | Success action     | "New order" (clears cart)                 | "Done" (back to booking list)                 |
 | Error actions      | "New order" / "Edit order"                | "Back to Booking" / "Try Again"               |
 | Barcode on success | Enabled                                   | Disabled                                      |
-| Receipt            | POS receipt template                      | Standard receipt template (non-POS order)     |
+| Receipt            | POS template (`created_via: pos_rest_api`)| Standard template (order not created via POS) |
 | Reader reconnect   | Subscription-based auto-collect           | Same subscription-based pattern               |
 
 ### Navigation
@@ -298,7 +307,25 @@ enum POSBookingListState: Equatable {
 #### F4. Create POSBooking model
 **New file:** `Modules/Sources/PointOfSale/Models/POSBooking.swift`
 
-Simple struct for booking display. Properties: id, customerName, serviceName, startDate, endDate, amount (formatted), status (`BookingStatus`), attendanceStatus (`BookingAttendanceStatus`), orderID, resourceName. No cart-related properties. Uses the raw API enum values — the POS presentation layer interprets them into three display dimensions (see Status Presentation Model). Reuses `PointOfSalePaymentState` for payment — no separate `POSBookingPaymentState`.
+Simple struct for booking display. Uses the raw API enum values — the POS presentation layer interprets them into three display dimensions (see Status Presentation Model). Reuses `PointOfSalePaymentState` for payment — no separate `POSBookingPaymentState`.
+
+Properties:
+- `id: Int64`
+- `customerName: String`
+- `serviceName: String`
+- `startDate: Date`, `endDate: Date`
+- `formattedAmount: String`
+- `status: BookingStatus`, `attendanceStatus: BookingAttendanceStatus`
+- `orderID: Int64?`
+- `resourceName: String?` (team member / staff)
+- `customerEmail: String?` (from order billing address)
+- `customerPhone: String?` (from order billing address)
+- `billingAddress: String?` (formatted from order billing address)
+- `customerNote: String?` (from order customer note)
+- `location: String?` (from resource or order billing address)
+- `duration: String` (formatted from start/end, e.g. "60 min")
+
+All customer-related fields come from the order enrichment that already happens in `POSBookingService` (batch-fetching linked orders). No additional API calls needed.
 
 ---
 
@@ -369,8 +396,19 @@ protocol POSBookingListFetchStrategy {
 #### A7. POSBookingDetailView
 **New file:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-- Sections: booking info, cancelled badge (if applicable), attendance + payment status badges, customer, payment breakdown, action buttons
-- Contextual states: paid → checkmark, cancelled → label, noLinkedOrder → explanation, unpaid with order → collect payment button
+M1 layout (before payment):
+1. **Header** — time range, service + customer name, status badges (attendance + payment)
+2. **Booking details** — date, time, team member, location, duration
+3. **Customer** — name, email, phone, billing address
+4. **Customer note**
+5. **Attendance status** — toggle
+6. **Payment** — breakdown (service, taxes, discount, total)
+7. **Collect Payment** button
+8. **Booking note** — internal note + "Add note"
+
+After payment: sections 1–6 remain, "Collect Payment" replaced by "Paid" confirmation row, ellipsis menu added (View Order, Issue Refund, Cancel Booking)
+
+Contextual states: paid → checkmark + ellipsis menu, cancelled → cancelled label, noLinkedOrder → explanation, unpaid with order → collect payment button
 
 #### A8. Empty/Loading/Error views
 **New files:** `POSBookingDetailsEmptyView.swift`, `POSBookingDetailsLoadingView.swift`
@@ -435,22 +473,21 @@ Manages the payment state machine for a booking. Mirrors `PointOfSaleAggregateMo
 
 **Notes:**
 - The `validatingOrder` phase is real — the card payment service validates the order is payable. `validatingOrderError` handles order fetch failure, already paid, etc.
-- Receipt: uses standard WooCommerce template (not POS template)
+- Receipt: template determined by order origin (`created_via`), not by booking context
 
-#### B3. Receipt handling — standard template for bookings
+#### B3. Receipt handling — template based on order origin
 **Modify:** `PointOfSale/Utils/POSReceiptSender.swift`
 
-Add `isBookingOrder: Bool = false` parameter. When `true`, force `isEligibleForPOSReceipt = false` to use standard receipt template instead of POS template.
+Use the order's `created_via` field to determine receipt template. Orders created via POS (`created_via: pos_rest_api`) use the POS receipt template; all other orders use the standard WooCommerce receipt template. No booking-specific flag needed — the distinction is already encoded in the order's origin.
 
 ---
 
 ### Phase 3: Convergence
 
 #### C1. Wire payment into POSBookingsContainerView
-- Create `POSBookingPaymentController` when user taps "Collect Payment"
-- Present `TotalsView` with booking-specific `POSPaymentViewConfiguration`
+- "Collect Payment" in booking detail triggers the reusable payment flow (see B1 for approach options)
 - On success → dismiss → refresh list → booking shows "Paid"
-- Receipt sending uses `isBookingOrder: true`
+- Receipt template determined by order's `created_via` field (see B3)
 
 #### C2. Entry point wiring
 - Strategy factory + all dependencies injected in `PointOfSaleEntryPointView`
@@ -550,29 +587,22 @@ See "Status Presentation Model" in Architecture Decisions for the full mapping.
 **Modify:** `PointOfSale/Models/POSBooking.swift`
 
 Add properties:
-- `duration: String` (formatted from start/end, e.g. "1h 30m")
-- `timeRange: String` (e.g. "9:00 AM – 10:30 AM")
-- `notes: String`
-- `customerEmail: String?`
-- `customerPhone: String?`
+- `notes: [String]` (internal booking notes)
 
 Add computed properties (use POS presentation types to derive from raw API enums):
 - `canMarkAttended: Bool` — true when `POSBookingAttendanceDisplay(attendanceStatus:)` is `.unattended`
 - `canCancel: Bool` — true when `POSBookingLifecycleStatus(bookingStatus:)` is NOT `.cancelled`/`.completed`
 - `canCollectPayment: Bool` — true when `POSBookingPaymentStatus(bookingStatus:)` is `.unpaid` AND has orderID
 
-All new data comes from existing enrichment (order billing address for email/phone, booking fields for dates/notes). No additional API calls.
+Note: Most customer/detail data (email, phone, billing address, customer note, location, duration) is already on the M1 model (F4). M2 adds booking notes and action-gating computed properties.
 
 #### M2-A2. POSBookingDetailView enrichment
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-Sections (top to bottom):
-1. **Service summary** — service name, date, time range, duration, resource
-2. **Status badges** — cancelled badge (if applicable), payment status + attendance status side by side
-3. **Customer info** — name, email, phone
-4. **Notes** — booking notes (if any)
-5. **Payment breakdown** — booking cost, any existing payments
-6. **Actions** — Pay by Card, Pay by Cash (from M1), Mark Attended, Cancel
+M1 already renders the full detail layout (header, booking details, customer, customer note, attendance, payment, collect payment / paid status). M2 adds:
+- **Booking note section** — internal booking notes with "Add note" support
+- **Post-payment ellipsis menu** — View Order, Issue Refund, Cancel Booking (shown only after payment, top-right of booking note section)
+- **Action-gating** — use `canMarkAttended`, `canCancel`, `canCollectPayment` to control button/toggle visibility
 
 #### M2-A3. POSBookingRowView enrichment
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingRowView.swift`
@@ -601,16 +631,16 @@ func cancelBooking(booking: POSBooking) async throws
 #### M2-B2. Attendance update UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-- "Mark Attended" button — shown when `canMarkAttended`, `.posModal()` confirmation dialog, calls bookingsModel
-- On success: badge updates inline, list row updates via `updateBooking()`
-- On failure: error alert with retry
-
-**Confirmation pattern:** Uses `.posModal()` modifier (not native `.alert()` or `.confirmationDialog()`) — matches POS design patterns (e.g. `POSRefundConfirmationView`).
+- Attendance toggle in the detail view (section 5) — switches between "Attended" / "Unattended"
+- Calls `bookingsModel.markAttended(booking:)` or equivalent on toggle
+- On success: badge updates inline, header status badges update, list row updates via `updateBooking()`
+- On failure: error alert with retry, toggle reverts
 
 #### M2-B3. Cancel booking UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-- "Cancel Booking" button — destructive style, shown when `canCancel`
+- Before payment: "Cancel Booking" shown as a button (when `canCancel`)
+- After payment: "Cancel Booking" available via ellipsis menu (top-right)
 - `.posModal()` confirmation: "Cancel this booking? This cannot be undone."
 - On success: booking shows cancelled state, payment buttons hidden, list updates
 - On failure: error alert with retry
@@ -858,7 +888,7 @@ M3-C1/C2 ── after all above
 ### M1: Receipts
 | Scenario | Expected |
 |----------|----------|
-| Booking receipt | Standard template (NOT POS) |
+| Booking receipt | Standard template (order not `created_via: pos_rest_api`) |
 | Invalid email | Validation error |
 
 ### M1: Navigation
@@ -937,7 +967,7 @@ M3-C1/C2 ── after all above
 ### M1 — Modify (existing files on `trunk`)
 - `PointOfSale/Presentation/TotalsView.swift` + related payment views — decouple cart-specific behaviors to enable booking reuse (see B1 for options)
 - `Networking/Remote/BookingsRemote.swift` — ensure v2 endpoints are used
-- `PointOfSale/Utils/POSReceiptSender.swift` — booking order flag
+- `PointOfSale/Utils/POSReceiptSender.swift` — use `created_via` for template selection
 - `PointOfSale/Presentation/PointOfSaleEntryPointView.swift` — wiring
 
 ### M2 — New

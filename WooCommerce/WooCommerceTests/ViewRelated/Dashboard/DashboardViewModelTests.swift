@@ -89,7 +89,7 @@ final class DashboardViewModelTests: XCTestCase {
         // FeatureFlagAction - dispatched by child view models checking feature availability
         storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, onCompletion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
             }
         }
@@ -1145,7 +1145,7 @@ private extension DashboardViewModelTests {
 
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, onCompletion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
             }
         }

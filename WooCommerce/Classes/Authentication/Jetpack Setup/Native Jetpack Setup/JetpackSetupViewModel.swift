@@ -136,30 +136,14 @@ final class JetpackSetupViewModel: ObservableObject {
 
     func startSetup() {
         if connectionOnly {
-            checkJetpackConnection()
+            checkJetpackConnection(afterConnection: false)
         } else {
             retrieveJetpackPluginDetails()
         }
     }
 
     func didAuthorizeJetpackConnection() {
-        currentConnectionStep = .inProgress
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let email = try await self.connectionService.verifyConnection()
-                self.didCompleteJetpackConnection(connectedEmail: email)
-            } catch is JetpackConnectionServiceError {
-                let missingWpcomUserError = NSError(
-                    domain: Constants.errorDomain,
-                    code: Constants.errorCodeNoWPComUser,
-                    userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser]
-                )
-                self.didFailJetpackConnection(with: missingWpcomUserError)
-            } catch {
-                self.didFailJetpackConnection(with: error)
-            }
-        }
+        checkJetpackConnection(afterConnection: true)
     }
 
     func didEncounterErrorDuringConnection(code: Int?) {
@@ -189,7 +173,7 @@ final class JetpackSetupViewModel: ObservableObject {
     /// LoginJetpackSetupInterruptedView
     func didTapContinueConnectionButton() {
         trackSetup(tap: .continueSetup)
-        checkJetpackConnection()
+        checkJetpackConnection(afterConnection: false)
     }
 
     /// Tracks events if the current flow is Jetpack setup after login with site credentials
@@ -215,7 +199,7 @@ private extension JetpackSetupViewModel {
                 if plugin.status == .inactive {
                     self.activateJetpack()
                 } else {
-                    self.checkJetpackConnection()
+                    self.checkJetpackConnection(afterConnection: false)
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error retrieving Jetpack: \(error)")
@@ -264,7 +248,7 @@ private extension JetpackSetupViewModel {
             switch result {
             case .success:
                 isPluginActivated = true
-                self.checkJetpackConnection()
+                self.checkJetpackConnection(afterConnection: false)
             case .failure(let error):
                 self.trackSetup(failure: error)
                 DDLogError("⛔️ Error activating Jetpack: \(error)")
@@ -334,23 +318,49 @@ private extension JetpackSetupViewModel {
 // MARK: Handle connection steps
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
-    func checkJetpackConnection(retryCount: Int = 0) {
+    func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
+        if afterConnection {
+            currentConnectionStep = .inProgress
+        }
         let action = JetpackConnectionAction.fetchJetpackConnectionData { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let connectionData):
-                handleJetpackConnectionData(connectionData)
+                if afterConnection {
+                    checkConnectedUser(data: connectionData, retryCount: retryCount)
+                } else {
+                    handleJetpackConnectionData(connectionData)
+                }
             case .failure(let error):
                 DDLogError("⛔️ Error checking Jetpack connection: \(error)")
                 if retryCount == Constants.maxRetryCount {
                     return didFailJetpackConnection(with: error)
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
-                    self?.checkJetpackConnection(retryCount: retryCount + 1)
+                    self?.checkJetpackConnection(afterConnection: afterConnection, retryCount: retryCount + 1)
                 }
             }
         }
         stores.dispatch(action)
+    }
+
+    func checkConnectedUser(data: JetpackConnectionData, retryCount: Int = 0) {
+        let connectedEmail = data.currentUser.wpcomUser?.email
+        if let connectedEmail {
+            return didCompleteJetpackConnection(connectedEmail: connectedEmail)
+        }
+
+        DDLogWarn("⚠️ Cannot find connected WPcom user")
+        let missingWpcomUserError = NSError(domain: Constants.errorDomain,
+                                            code: Constants.errorCodeNoWPComUser,
+                                            userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
+        if retryCount == Constants.maxRetryCount {
+            return didFailJetpackConnection(with: missingWpcomUserError)
+        }
+        // Retry fetching user in case Jetpack sync takes some time.
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
+            self?.checkJetpackConnection(afterConnection: true, retryCount: retryCount + 1)
+        }
     }
 
     func handleJetpackConnectionData(_ data: JetpackConnectionData) {
@@ -400,19 +410,12 @@ private extension JetpackSetupViewModel {
         Task { [weak self] in
             guard let self else { return }
             do {
-                let email = try await self.connectionService.connect(
+                try await self.connectionService.connect(
                     with: data,
                     siteURL: self.siteURL,
                     credentials: self.wpcomCredentials
                 )
-                self.didCompleteJetpackConnection(connectedEmail: email)
-            } catch is JetpackConnectionServiceError {
-                let missingWpcomUserError = NSError(
-                    domain: Constants.errorDomain,
-                    code: Constants.errorCodeNoWPComUser,
-                    userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser]
-                )
-                self.didFailJetpackConnection(with: missingWpcomUserError)
+                self.checkJetpackConnection(afterConnection: true)
             } catch {
                 self.didFailJetpackConnection(with: error)
             }

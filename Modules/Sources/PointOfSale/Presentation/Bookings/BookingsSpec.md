@@ -68,9 +68,10 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 **Goal:** Make bookings actionable and understandable for merchants.
 
 **Status Badges**
-- Payment status badge: color-coded for unpaid (warning), paid/complete (info), cancelled (error), pending/confirmed (default)
-- Attendance status badge: color-coded for booked (default), checked-in (success), no-show (error), cancelled (muted)
-- Both displayed in booking detail and list rows
+- Booking status: booked/completed are automatic and never shown as badges. Only cancelled is displayed (as a badge).
+- Attendance status badge: color-coded for unattended (default), attended (success)
+- Payment status badge: color-coded for unpaid (warning), paid (info), refunded (muted)
+- Badges displayed in booking detail and list rows
 
 **Booking Detail Enrichment**
 - Duration (formatted from start/end, e.g. "1h 30m")
@@ -85,14 +86,13 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 - More visible time range
 
 **Update Attendance Status**
-- "Check In" button — shown when `canCheckIn` (status is confirmed/paid AND attendance is booked)
-- "No Show" button — shown when `canCheckIn`
-- Both require `.posModal()` confirmation dialog before executing
+- "Mark Attended" button — shown when attendance is `unattended`
+- Requires `.posModal()` confirmation dialog before executing
 - On success: badge updates, list row refreshes
 - On failure: error alert with retry
 
 **Cancel Booking**
-- "Cancel Booking" button — destructive style, shown when `canCancel` (status is NOT cancelled/complete)
+- "Cancel Booking" button — destructive style, shown when `canCancel` (booking status is NOT cancelled/completed)
 - Requires `.posModal()` confirmation: "Cancel this booking? This cannot be undone."
 - On success: booking shows cancelled state, payment buttons hidden, list updates
 - On failure: error alert with retry
@@ -119,7 +119,7 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 - Full filter parity with the main app Bookings tab (5 filter types):
   1. Team Member (resource) — picker that fetches available resources
   2. Service / Event (product) — picker that fetches bookable products
-  3. Attendance Status — multi-select from booked/checkedIn/noShow/cancelled
+  3. Attendance Status — multi-select from unattended/attended
   4. Customer — picker that fetches/searches customers
   5. Date & Time — custom date range with from/to pickers
 - Sort by date only: "Newest to Oldest" / "Oldest to Newest" (matching main app Bookings tab — `BookingListViewModel.SortBy` only supports date sorting by `startDate`)
@@ -184,7 +184,7 @@ This mirrors `BookingStore`'s existing enrichment pattern (lines 216-234 of `Boo
 - Injected as `@Environment` into bookings views
 - Shares `CardPresentPaymentFacade` with POS (received at init)
 - Does NOT share `PointOfSaleOrderController` — bookings fetch existing orders, not create new ones
-- M2 booking actions (check-in, no-show, cancel) are methods on this model directly
+- M2 booking actions (mark attended, cancel) are methods on this model directly
 
 ### Strategies Pattern (like Products/Orders)
 - `POSBookingListFetchStrategy` protocol — remote-first, pluggable for local later
@@ -250,7 +250,7 @@ protocol POSBookingServiceProtocol: Sendable {
 
 **Existing code to reuse:**
 - `BookingsRemote` at `Networking/Remote/BookingsRemote.swift` — `loadAllBookings(for:pageNumber:pageSize:filters:searchQuery:order:)`
-- `BookingFilters` — supports productIDs, customerIDs, resourceIDs, dates, attendanceStatuses, paymentStatuses
+- `BookingFilters` — supports productIDs, customerIDs, resourceIDs, dates, attendanceStatuses
 - `BookingOrderInfo(booking:order:)` at `Networking/Model/Bookings/BookingOrderInfo.swift`
 - `BookingStore` lines 216-234 — reference for enrichment pattern
 
@@ -278,7 +278,7 @@ enum POSBookingListState: Equatable {
 #### F4. Create POSBooking model
 **New file:** `Modules/Sources/PointOfSale/Models/POSBooking.swift`
 
-Simple struct for booking display. Properties: id, customerName, serviceName, startDate, endDate, amount (formatted), status, attendanceStatus, orderID, resourceName. No cart-related properties. Reuses `PointOfSalePaymentState` for payment — no separate `POSBookingPaymentState`.
+Simple struct for booking display. Properties: id, customerName, serviceName, startDate, endDate, amount (formatted), bookingStatus, attendanceStatus, paymentStatus, orderID, resourceName. No cart-related properties. Reuses `PointOfSalePaymentState` for payment — no separate `POSBookingPaymentState`.
 
 ---
 
@@ -349,7 +349,7 @@ protocol POSBookingListFetchStrategy {
 #### A7. POSBookingDetailView
 **New file:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-- Sections: booking info, status badges, customer, payment breakdown, action buttons
+- Sections: booking info, cancelled badge (if applicable), attendance + payment status badges, customer, payment breakdown, action buttons
 - Contextual states: paid → checkmark, cancelled → label, noLinkedOrder → explanation, unpaid with order → collect payment button
 
 #### A8. Empty/Loading/Error views
@@ -497,31 +497,31 @@ func cancelBooking(siteID: Int64, bookingID: Int64) async throws
 - `BookingsRemote.updateBooking()` at `Networking/Remote/BookingsRemote.swift` — single PUT with optional `attendanceStatus`, `bookingStatus`, `note` params
 - Uses the v2 API (see Constraints)
 
-#### M2-F2. POSBookingStatusBadgeView — payment status
-**New file:** `PointOfSale/Presentation/Bookings/POSBookingStatusBadgeView.swift`
+#### M2-F2. POSBookingPaymentBadgeView — payment status
+**New file:** `PointOfSale/Presentation/Bookings/POSBookingPaymentBadgeView.swift`
 
-Color-coded badge for `BookingStatus`:
+Color-coded badge for `BookingPaymentStatus`:
 - `unpaid` → `.posWarningLowest` bg, `.posOnWarningLowest` text
-- `paid` / `complete` → `.posInfoLowest` bg, `.posOnInfoLowest` text
-- `cancelled` → `.posErrorLowest` bg, `.posOnErrorLowest` text
-- `pendingConfirmation` / `confirmed` → `.posDefault` bg, `.posOnDefault` text
+- `paid` → `.posInfoLowest` bg, `.posOnInfoLowest` text
+- `refunded` → muted/grey
 
 Uses `.posCaptionRegular` font, `POSPadding.small`/`.xSmall`, `POSCornerRadiusStyle.small`.
 
 **Mirrors:** `PointOfSale/Presentation/Orders/POSOrderBadgeView.swift`
 
-#### M2-F3. POSBookingAttendanceBadgeView — attendance status
-**New file:** `PointOfSale/Presentation/Bookings/POSBookingAttendanceBadgeView.swift`
+#### M2-F3. POSBookingCancelledBadgeView + AttendanceBadgeView
 
-Color-coded badge for `BookingAttendanceStatus`:
-- `booked` → `.posDefault` bg, `.posOnDefault` text
-- `checkedIn` → `.posSuccessLowest` bg, `.posOnSuccessLowest` text
-- `noShow` → `.posErrorLowest` bg, `.posOnErrorLowest` text
-- `cancelled` → muted/grey
+**Cancelled badge:** Shown only when `bookingStatus == .cancelled` → `.posErrorLowest` bg, `.posOnErrorLowest` text.
+Booking statuses `booked` and `completed` are automatic and never displayed as badges.
+
+**Attendance badge** for `BookingAttendanceStatus`:
+- `unattended` → `.posDefault` bg, `.posOnDefault` text
+- `attended` → `.posSuccessLowest` bg, `.posOnSuccessLowest` text
 
 **Existing enums:**
-- `BookingAttendanceStatus` at `Networking/Model/Bookings/Booking.swift` — booked, checkedIn, cancelled, noShow, unknown
-- `BookingStatus` at same file — complete, paid, unpaid, cancelled, pendingConfirmation, confirmed, unknown
+- `BookingAttendanceStatus` at `Networking/Model/Bookings/Booking.swift` — unattended, attended, unknown
+- `BookingStatus` at same file — booked, completed, cancelled, unknown
+- `BookingPaymentStatus` at same file — paid, unpaid, refunded, unknown
 
 ---
 
@@ -540,9 +540,9 @@ Add properties:
 - `customerPhone: String?`
 
 Add computed properties:
-- `canCheckIn: Bool` — true when status is confirmed/paid AND attendance is booked
-- `canCancel: Bool` — true when status is NOT cancelled/complete
-- `canCollectPayment: Bool` — true when unpaid/pendingConfirmation AND has orderID
+- `canMarkAttended: Bool` — true when attendance is `unattended`
+- `canCancel: Bool` — true when booking status is NOT `cancelled`/`completed`
+- `canCollectPayment: Bool` — true when payment status is `unpaid` AND has orderID
 
 All new data comes from existing enrichment (order billing address for email/phone, booking fields for dates/notes). No additional API calls.
 
@@ -551,11 +551,11 @@ All new data comes from existing enrichment (order billing address for email/pho
 
 Sections (top to bottom):
 1. **Service summary** — service name, date, time range, duration, resource
-2. **Status badges** — payment status + attendance status side by side
+2. **Status badges** — cancelled badge (if applicable), payment status + attendance status side by side
 3. **Customer info** — name, email, phone
 4. **Notes** — booking notes (if any)
 5. **Payment breakdown** — booking cost, any existing payments
-6. **Actions** — Pay by Card, Pay by Cash (from M1), Check In, No Show, Cancel
+6. **Actions** — Pay by Card, Pay by Cash (from M1), Mark Attended, Cancel
 
 #### M2-A3. POSBookingRowView enrichment
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingRowView.swift`
@@ -572,21 +572,19 @@ Add to existing 3-line layout:
 
 Add methods directly on `POSBookingsModel`:
 ```swift
-func checkIn(booking: POSBooking) async throws
-func markNoShow(booking: POSBooking) async throws
+func markAttended(booking: POSBooking) async throws
 func cancelBooking(booking: POSBooking) async throws
 ```
 
 - Calls `POSBookingServiceProtocol.updateAttendanceStatus()` / `.cancelBooking()`
 - On success: calls `updateBooking(bookingID:)` to refresh the specific booking in list + detail
 - On failure: surfaces error to UI
-- Analytics events: `booking_checked_in`, `booking_marked_no_show`, `booking_cancelled`
+- Analytics events: `booking_marked_attended`, `booking_cancelled`
 
 #### M2-B2. Attendance update UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
 
-- "Check In" button — shown when `canCheckIn`, `.posModal()` confirmation dialog, calls bookingsModel
-- "No Show" button — shown when `canCheckIn`, `.posModal()` confirmation dialog
+- "Mark Attended" button — shown when `canMarkAttended`, `.posModal()` confirmation dialog, calls bookingsModel
 - On success: badge updates inline, list row updates via `updateBooking()`
 - On failure: error alert with retry
 
@@ -605,8 +603,7 @@ func cancelBooking(booking: POSBooking) async throws
 
 Events:
 - `booking_detail_viewed` — when detail pane shows a booking
-- `booking_checked_in` — attendance updated to checkedIn
-- `booking_marked_no_show` — attendance updated to noShow
+- `booking_marked_attended` — attendance updated to attended
 - `booking_cancelled` — booking cancelled
 
 ---
@@ -614,9 +611,9 @@ Events:
 ### Phase 3: Convergence
 
 #### M2-C1. Testing
-- Unit tests for booking actions (check-in, no-show, cancel, error handling)
+- Unit tests for booking actions (mark attended, cancel, error handling)
 - Unit tests for badge color mapping
-- Unit tests for `canCheckIn`/`canCancel`/`canCollectPayment` computed properties
+- Unit tests for `canMarkAttended`/`canCancel`/`canCollectPayment` computed properties
 - Manual: verify badge colors, action flows, list refresh after status change
 
 ---
@@ -625,8 +622,8 @@ Events:
 
 ```
 M2-F1 (Service expand) ── M2-B1 (Actions on model) ── M2-B2/B3 (Action UI)
-M2-F2 (Status badge) ──┐
-M2-F3 (Attendance badge) ┼── M2-A2 (Detail enrichment)
+M2-F2 (Payment badge) ──┐
+M2-F3 (Cancelled + Attendance badge) ┼── M2-A2 (Detail enrichment)
 M2-A1 (Model enrichment) ┘
 M2-A1 ── M2-A3 (Row enrichment)
 ```
@@ -635,7 +632,7 @@ M2-A1 ── M2-A3 (Row enrichment)
 
 | Person A (UI-focused)                          | Person B (Actions-focused)                    |
 | ---------------------------------------------- | --------------------------------------------- |
-| M2-F2 (status badge), M2-F3 (attendance badge) | M2-F1 (service expand + mock)                |
+| M2-F2 (payment badge), M2-F3 (cancelled + attendance badge) | M2-F1 (service expand + mock)                |
 | M2-A1 (model), M2-A2 (detail), M2-A3 (row)    | M2-B1 (actions), M2-B2/B3 (action UI)        |
 | Testing (badges, computed properties)           | M2-B4 (analytics) + testing (actions)         |
 
@@ -666,7 +663,7 @@ Reuses existing data models from the main app Bookings tab:
 - `BookingProductFilter` (name + productID)
 - `BookingCustomerFilter` (name + customerID)
 - `BookingDateRangeFilter` (startDate + endDate)
-- `BookingAttendanceStatus` enum
+- `BookingAttendanceStatus` enum (unattended, attended)
 
 #### M3-F2. ~~Add `orderby` to BookingFilters~~ (No longer needed)
 
@@ -697,7 +694,7 @@ Update `POSBookingListFetchStrategyFactory` to produce filtered strategy.
 Sheet or inline panel with all 5 filter types (matching Bookings tab):
 1. **Team Member** — picker fetches available resources
 2. **Service / Event** — picker fetches bookable products
-3. **Attendance Status** — multi-select from booked/checkedIn/noShow/cancelled
+3. **Attendance Status** — multi-select from unattended/attended
 4. **Customer** — picker fetches/searches customers
 5. **Date & Time** — date range picker (can adapt existing `BookingDateTimeFilterView` which is SwiftUI)
 
@@ -779,7 +776,7 @@ When `.pointOfSaleBookings` is enabled, include booking orders:
 
 Full regression across all milestones:
 - M1: list → select → pay (card + cash) → receipt → done
-- M2: badges → check-in → no-show → cancel
+- M2: badges → mark attended → cancel
 - M3: filter → sort → view order → refund (via order view) → order list integration
 
 #### M3-C2. Bug fixes and polish
@@ -854,11 +851,11 @@ M3-C1/C2 ── after all above
 ### M2: Attendance Updates
 | Scenario | Expected |
 |----------|----------|
-| Check in already checked-in booking | Button hidden (not applicable) |
-| Check in cancelled booking | Button hidden |
-| Network failure on check-in | Error alert with retry |
-| Two people check in same booking simultaneously | Last write wins, refresh shows latest |
-| Check in booking with no linked order | Allowed (attendance is independent of payment) |
+| Mark attended on already attended booking | Button hidden (not applicable) |
+| Mark attended on cancelled booking | Button hidden |
+| Network failure on mark attended | Error alert with retry |
+| Two people mark attended same booking simultaneously | Last write wins, refresh shows latest |
+| Mark attended booking with no linked order | Allowed (attendance is independent of payment) |
 
 ### M2: Cancel Booking
 | Scenario | Expected |
@@ -920,11 +917,12 @@ M3-C1/C2 ── after all above
 - `PointOfSale/Presentation/PointOfSaleEntryPointView.swift` — wiring
 
 ### M2 — New
-- `PointOfSale/Presentation/Bookings/POSBookingStatusBadgeView.swift`
+- `PointOfSale/Presentation/Bookings/POSBookingPaymentBadgeView.swift`
+- `PointOfSale/Presentation/Bookings/POSBookingCancelledBadgeView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingAttendanceBadgeView.swift`
 
 ### M2 — Modify
-- `Yosemite/Tools/POS/POSBookingService.swift` — add attendance + cancel methods
+- `Yosemite/Tools/POS/POSBookingService.swift` — add mark attended + cancel methods
 - `PointOfSale/Models/POSBooking.swift` — enriched properties + computed properties
 - `PointOfSale/Models/POSBookingsModel.swift` — add action methods
 - `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift` — enrichment + action buttons + confirmation modals
@@ -972,10 +970,15 @@ Note: No customer name, product name, or resource name — these require separat
 - `search`: customer name search
 
 ### Booking Statuses
-`unpaid` · `pending-confirmation` · `confirmed` · `paid` · `complete` · `cancelled` · `in-cart`
+`booked` · `completed` · `cancelled`
+
+Booked and completed are automatic transitions — never shown as badges to the merchant. Only cancelled is displayed.
 
 ### Attendance Statuses
-`booked` · `checked-in` · `no-show` · `cancelled`
+`unattended` · `attended`
+
+### Payment Statuses
+`paid` · `unpaid` · `refunded`
 
 ### Orders API: created_via
 `created_via` parameter: `type: array`, `sanitize_callback: wp_parse_list`, `compare: IN`

@@ -528,15 +528,23 @@ extension POSPreviewHelpers {
         [
             POSBooking(
                 id: 1,
-                customerName: "John Smith",
-                serviceName: "Haircut",
+                customerName: "Margarita Nikolaevna",
+                serviceName: "Women's Haircut",
                 startDate: Date(),
                 endDate: Date().addingTimeInterval(3600),
-                formattedAmount: "$45.00",
+                formattedAmount: "$55.00",
                 status: .confirmed,
                 attendanceStatus: .booked,
                 orderID: 101,
-                resourceName: "Station A"
+                resourceName: "Marianne Renoir",
+                customerEmail: "margarita.n@gmail.com",
+                customerPhone: "+1 742582943798",
+                billingAddress: "238 Willow Creek Drive, Montgomery, AL 36109",
+                customerNote: "Prefers eco-friendly products, shorter length cuts",
+                location: "238 Willow Creek Drive, Montgomery",
+                duration: "60 min",
+                formattedSubtotal: "$55.00",
+                formattedTax: "$0.00"
             ),
             POSBooking(
                 id: 2,
@@ -548,7 +556,15 @@ extension POSPreviewHelpers {
                 status: .paid,
                 attendanceStatus: .booked,
                 orderID: 102,
-                resourceName: nil
+                resourceName: nil,
+                customerEmail: "jane.doe@email.com",
+                customerPhone: nil,
+                billingAddress: nil,
+                customerNote: nil,
+                location: nil,
+                duration: "60 min",
+                formattedSubtotal: "$90.00",
+                formattedTax: "$0.00"
             ),
             POSBooking(
                 id: 3,
@@ -560,7 +576,8 @@ extension POSPreviewHelpers {
                 status: .cancelled,
                 attendanceStatus: .booked,
                 orderID: nil,
-                resourceName: nil
+                resourceName: nil,
+                duration: "60 min"
             )
         ]
     }

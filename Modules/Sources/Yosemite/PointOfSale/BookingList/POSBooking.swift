@@ -13,6 +13,14 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let attendanceStatus: BookingAttendanceStatus
     public let orderID: Int64?
     public let resourceName: String?
+    public let customerEmail: String?
+    public let customerPhone: String?
+    public let billingAddress: String?
+    public let customerNote: String?
+    public let location: String?
+    public let duration: String
+    public let formattedSubtotal: String?
+    public let formattedTax: String?
 
     public init(id: Int64,
                 customerName: String,
@@ -23,7 +31,15 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
                 status: BookingStatus,
                 attendanceStatus: BookingAttendanceStatus,
                 orderID: Int64?,
-                resourceName: String?) {
+                resourceName: String?,
+                customerEmail: String? = nil,
+                customerPhone: String? = nil,
+                billingAddress: String? = nil,
+                customerNote: String? = nil,
+                location: String? = nil,
+                duration: String = "",
+                formattedSubtotal: String? = nil,
+                formattedTax: String? = nil) {
         self.id = id
         self.customerName = customerName
         self.serviceName = serviceName
@@ -34,5 +50,13 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         self.attendanceStatus = attendanceStatus
         self.orderID = orderID
         self.resourceName = resourceName
+        self.customerEmail = customerEmail
+        self.customerPhone = customerPhone
+        self.billingAddress = billingAddress
+        self.customerNote = customerNote
+        self.location = location
+        self.duration = duration
+        self.formattedSubtotal = formattedSubtotal
+        self.formattedTax = formattedTax
     }
 }

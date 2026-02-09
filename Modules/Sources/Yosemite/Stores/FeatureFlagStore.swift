@@ -1,3 +1,4 @@
+import Foundation
 import Networking
 import Storage
 
@@ -5,13 +6,20 @@ public final class FeatureFlagStore: Store {
     private let remote: FeatureFlagRemoteProtocol
     private let overrideStore: RemoteFeatureFlagOverrideStore?
     private var cachedFeatureFlags: [RemoteFeatureFlag: Bool]?
+    private var cacheTimestamp: Date?
+    private let cacheMaxAge: TimeInterval
+    private let currentDate: () -> Date
 
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
          remote: FeatureFlagRemoteProtocol,
-         overrideStore: RemoteFeatureFlagOverrideStore? = nil) {
+         overrideStore: RemoteFeatureFlagOverrideStore? = nil,
+         cacheMaxAge: TimeInterval = 24 * 60 * 60,
+         currentDate: @escaping () -> Date = { Date() }) {
         self.remote = remote
+        self.cacheMaxAge = cacheMaxAge
+        self.currentDate = currentDate
         self.overrideStore = overrideStore
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -65,6 +73,11 @@ public final class FeatureFlagStore: Store {
 // MARK: - Services
 //
 private extension FeatureFlagStore {
+    var isCacheExpired: Bool {
+        guard let cacheTimestamp else { return true }
+        return currentDate().timeIntervalSince(cacheTimestamp) >= cacheMaxAge
+    }
+
     func isRemoteFeatureFlagEnabled(_ featureFlag: RemoteFeatureFlag,
                                     defaultValue: Bool,
                                     useCache: Bool,
@@ -75,7 +88,7 @@ private extension FeatureFlagStore {
             return
         }
 
-        if useCache, let cachedFlags = cachedFeatureFlags {
+        if useCache, let cachedFlags = cachedFeatureFlags, !isCacheExpired {
             completion(cachedFlags[featureFlag] ?? defaultValue)
             return
         }
@@ -85,6 +98,7 @@ private extension FeatureFlagStore {
                 let featureFlags = try await remote.loadAllFeatureFlags()
                 await MainActor.run {
                     self.cachedFeatureFlags = featureFlags
+                    self.cacheTimestamp = self.currentDate()
                     completion(featureFlags[featureFlag] ?? defaultValue)
                 }
             } catch {

@@ -301,6 +301,20 @@ private extension WooShippingCreateLabelsView {
                                        onTap: {
                         viewModel.editSelectedOriginAddress()
                     })
+                } else if let destinationPhoneNumberNoticeLabel = viewModel.destinationPhoneNumberNoticeLabel {
+                    // Phone number notice for destination address
+                    verificationNotice(
+                        with: destinationPhoneNumberNoticeLabel,
+                        isVerified: false,
+                        onDismiss: {
+                            withAnimation {
+                                viewModel.destinationPhoneNumberNoticeLabel = nil
+                            }
+                        },
+                        onTap: {
+                            viewModel.editDestinationAddress()
+                        }
+                    )
                 } else if let destinationAddressStatusNoticeLabel = viewModel.destinationAddressStatusNoticeLabel {
                     // Verification notice for destination address
                     verificationNotice(with: destinationAddressStatusNoticeLabel,

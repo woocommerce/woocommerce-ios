@@ -65,7 +65,7 @@ private extension POSRefundConfirmationView {
     var loadingSection: some View {
         VStack {
             ProgressView()
-                .progressViewStyle(POSProgressViewStyle(size: 64, lineWidth: 20))
+                .progressViewStyle(POSRefundModalLayout.progressViewStyle)
         }
         .frame(maxWidth: .infinity)
         .padding(POSPadding.xLarge)
@@ -106,8 +106,8 @@ private extension POSRefundConfirmationView {
         )
 
         static let confirmationMessageFormat = NSLocalizedString(
-            "pos.refundConfirmationView.confirmationMessageFormat",
-            value: "Are you sure you wish to process to refund %1$@ %2$@? This action cannot be undone.",
+            "pos.refundConfirmationView.confirmationMessageFormat.1",
+            value: "Are you sure you wish to refund %1$@ %2$@? This action cannot be undone.",
             comment: "Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description."
         )
 

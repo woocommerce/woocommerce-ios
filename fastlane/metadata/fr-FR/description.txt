@@ -7,7 +7,10 @@ Créez des commandes à la volée
 C’est un jeu d’enfant dès que vous avez créé quelques produits. Choisissez des articles dans votre catalogue, ajoutez les frais d’expédition, puis remplissez les coordonnées du client pour créer rapidement une commande qui se synchronise avec votre inventaire.
 
 Acceptez les paiements en personne
-Recueillez les paiements physiques à l’aide de WooCommerce In-Person Payments et d’un lecteur de carte (option disponible aux États-Unis et au Canada). Créez une commande, ou trouvez une commande existante en attente de paiement, et encaissez le paiement à l’aide d’un lecteur de carte ou d’un portefeuille numérique, tel qu’Apple Pay.
+Recueillez les paiements physiques à l’aide de WooCommerce In-Person Payments et d’un lecteur de carte (option disponible au Canada, aux États-Unis et au Royaume-Uni), de Tap to Pay sur iPhone ou d’un portefeuille numérique, comme Apple Pay. Commencez une nouvelle commande (ou trouvez une commande existante en attente de paiement) puis acceptez le paiement en toute transparence.
+
+De l’e-commerce aux points de vente physiques
+Transformez n’importe quelle tablette en un puissant point de vente avec WooCommerce POS. Recherchez des produits, scannez des codes-barres, appliquez des codes promo et envoyez des reçus par e-mail, toutes vos ventes en ligne et physiques étant synchronisées en temps réel. Disponible aux États-Unis et au Royaume-Uni.
 
 Recevez des notifications lors de chaque vente
 Maintenant que vous vendez activement, ne manquez jamais une commande ou un avis.  Restez au courant en activant les alertes en temps réel et ne manquez pas ce « gling-gling » addictif qui retentit lors de chaque nouvelle vente ! 

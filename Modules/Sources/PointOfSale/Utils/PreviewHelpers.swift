@@ -156,7 +156,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 }
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
-    func handleTap(_ item: Yosemite.POSItem) { }
+    func handleTap(_ item: Yosemite.POSItem, position: Int) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
@@ -514,8 +514,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func loadRefunds(of order: POSOrder) async throws {}
-    func startRefundFlow() {}
+    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
@@ -722,6 +721,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     }
 
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
+
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
 }

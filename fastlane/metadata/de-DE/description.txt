@@ -7,7 +7,10 @@ Erstelle Bestellungen im Handumdrehen
 Sobald du einige Produkte erstellt hast, ist es ein Kinderspiel. Wähle Elemente aus deinem Katalog, füge den Versand hinzu und fülle die Kundendetails aus, um schnell eine Bestellung zu erstellen, die sich mit deinem Bestand synchronisiert.
 
 Nimm Zahlungen persönlich entgegen
-Empfange physische Zahlungen mithilfe von WooCommerce In-Person Payments und einem Kartenlesegerät (verfügbar in den USA und Kanada). Beginne mit einer neuen Bestellung oder suche nach einer bestehenden mit ausstehender Zahlung. Empfange die Zahlung dann mithilfe des Kartenlesegeräts oder einer digitalen Wallet, wie z. B. Apple Pay.
+Empfange physische Zahlungen mithilfe von WooCommerce In-Person Payments und einem Kartenlesegerät (verfügbar in den USA, Großbritannien und Kanada), „Tap to Pay“ auf dem iPhone oder einem digitalen Wallet wie Apple Pay. Starte eine neue Bestellung – oder suche eine bestehende, für die eine Zahlung aussteht, – und akzeptiere dann nahtlos die Zahlung.
+
+Nutze die Click-to-Brick-Strategie
+Mache aus jedem Tablet mit WooCommerce POS einen leistungsstarken Verkaufsort. Durchsuche Produkte, scanne Barcodes, wende Gutscheine an und sende E-Mail-Belege – dabei werden deine gesamten Online- und physischen Verkäufe in Echtzeit synchronisiert. Verfügbar in den USA und Großbritannien.
 
 Erhalte Benachrichtigungen zu jedem Verkauf
 Jetzt wo du aktiv Verkäufe tätigst, verpasse nie wieder eine Bestellung oder Bewertung. Aktiviere Echtzeitbenachrichtigungen und bleibe so stets auf dem Laufenden. So kannst du dich ganz entspannt auf's Geldverdienen konzentrieren!

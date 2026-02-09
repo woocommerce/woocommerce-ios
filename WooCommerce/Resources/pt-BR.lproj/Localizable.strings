@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-01-12 18:54:04+0000 */
+/* Translation-Revision-Date: 2026-02-04 14:10:11+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -57,6 +57,9 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ fez uma avaliação sobre %2$@";
 
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "%1$@ de desconto em %2$@";
+
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "Reembolso de %1$@ solicitado (%2$@)";
 
@@ -68,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ via %2$@";
+
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "%1$@, exceto %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -82,11 +88,26 @@ which should be translated separately and considered part of this sentence. */
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% de bateria";
 
+/* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
+"%1$@, %2$@" = "%1$@, %2$@";
+
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
+
+/* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
+"%1$d Categories" = "%1$d categorias";
+
+/* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
+"%1$d Category" = "%1$d categoria";
+
+/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+"%1$d Product" = "%1$d produto";
+
+/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+"%1$d Products" = "%1$d produtos";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
 "%1$d Products Selected" = "%1$d produtos selecionados";
@@ -242,6 +263,9 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "É necessário imprimir uma declaração aduaneira e incluí-la neste envio internacional";
 
+/* Message when attempting to pay for a test transaction with a live card. */
+"A live card was used on a site in test mode. Use a test card instead." = "Um cartão ativo foi usado em um site em modo de teste. Use um cartão de teste no lugar dele.";
+
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "Ocorreu um erro de rede. Verifique sua conexão e tente novamente.";
 
@@ -263,6 +287,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "ADICIONAR OPÇÕES";
 
+/* Reads as 'AID'. Part of the mandatory data in receipts */
+"AID" = "AID";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Sobre o aplicativo";
 
@@ -276,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
 "Account Settings" = "Configurações da conta";
+
+/* Reads as 'Account Type'. Part of the mandatory data in receipts */
+"Account Type" = "Tipo de conta";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Conta conectada";
@@ -508,21 +538,34 @@ which should be translated separately and considered part of this sentence. */
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Ferramenta avançada para revisar o status do aplicativo";
 
+/* Country option for a site address. */
+"Afghanistan" = "Afeganistão";
+
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Pacote com etanol elegível para envio aéreo - (envios de higienizador para mãos e fragrância autorizados)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
+/* Country option for a site address. */
+"Albania" = "Albânia";
+
 /* Description of albums in the photo libraries */
 "Albums" = "Álbuns";
+
+/* Country option for a site address. */
+"Algeria" = "Argélia";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "Todos os pedidos";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
+   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen
    Title of the product search filter to search for all products. */
 "All Products" = "Todos os produtos";
+
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "Todos os produtos, exceto %1$@";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "Todos os itens elegíveis";
@@ -539,6 +582,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the notice when there were no variations to generate */
 "All variations are already generated." = "Todas as variações já foram geradas.";
 
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "Permitir";
+
 /* Title of alert that links to settings for camera access. */
 "Allow camera access" = "Permitir acesso à câmera";
 
@@ -548,6 +594,9 @@ which should be translated separately and considered part of this sentence. */
 /* Analytics toggle description in the privacy screen.
    Description for the analytics toggle in the privacy banner */
 "Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "Dê permissão para otimizarmos o desempenho com a coleta de dados sobre a interação dos usuários com nossos aplicativos móveis.";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "Permitir, mas notificar o cliente";
 
 /* Title for the allowed email row in coupon usage restrictions screen.
    Title for the Allowed Emails screen */
@@ -565,6 +614,9 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "Ou:";
 
+/* Country option for a site address. */
+"American Samoa" = "Samoa Americana";
+
 /* Title above the amount field on the add custom amount view in orders.
    Title of the Amount label on Coupon Details screen */
 "Amount" = "Quantidade";
@@ -578,6 +630,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "Valor elegível para reembolso";
 
+/* Line description for 'Amount Paid' cart total on the receipt
+   Title of 'Amount Paid' section in the receipt */
+"Amount Paid" = "Quantia paga";
+
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "Um código de erro HTTP %i foi retornado.";
 
@@ -587,11 +643,26 @@ which should be translated separately and considered part of this sentence. */
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "Ocorreu um erro ao encerrar a conta.";
 
+/* Error message when Bluetooth is not enabled for this application. */
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "Ocorreu um erro ao acessar o Bluetooth. Ative-o e tente novamente.";
+
+/* Message when it looks like a duplicate transaction is being attempted. */
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "Uma transação idêntica foi enviada recentemente. Se quiser continuar, tente outro meio de pagamento";
+
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "Falha no upload de uma imagem";
 
+/* Message when an incorrect PIN has been entered too many times. */
+"An incorrect PIN has been entered too many times. Try another means of payment." = "Um PIN incorreto foi inserido vezes demais. Tente outro meio de pagamento";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "Um PIN incorreto foi inserido. Tente novamente ou use outro meio de pagamento";
+
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "Uma observação opcional para enviar ao cliente após a compra";
+
+/* Error message when an order already exists in the backend for a given receipt */
+"An order already exists for this receipt" = "Já existe um pedido para este recibo";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Ocorreu um erro desconhecido.";
@@ -605,6 +676,21 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "Análise ativada com sucesso.";
 
+/* Country option for a site address. */
+"Andorra" = "Andorra";
+
+/* Country option for a site address. */
+"Angola" = "Angola";
+
+/* Country option for a site address. */
+"Anguilla" = "Anguilla";
+
+/* Country option for a site address. */
+"Antarctica" = "Antártida";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "Antígua e Barbuda";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -612,7 +698,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "Qualquer";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "Qualquer %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -623,6 +710,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Logs de aplicativos";
+
+/* Reads as 'Application name'. Part of the mandatory data in receipts */
+"Application Name" = "Nome do aplicativo";
 
 /* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
@@ -643,7 +733,8 @@ which should be translated separately and considered part of this sentence. */
 /* Approve a comment */
 "Approve" = "Aprovar";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Aprovado";
 
 /* Approves a comment. Spoken Hint. */
@@ -688,6 +779,15 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "Você tem certeza? As mensagens da caixa de entrada serão dispensadas para sempre.";
 
+/* Country option for a site address. */
+"Argentina" = "Argentina";
+
+/* Country option for a site address. */
+"Armenia" = "Armênia";
+
+/* Country option for a site address. */
+"Aruba" = "Aruba";
+
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "Nome do atributo";
 
@@ -701,6 +801,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "Áudio, %@";
 
+/* Country option for a site address. */
+"Australia" = "Austrália";
+
+/* Country option for a site address. */
+"Austria" = "Áustria";
+
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticando";
 
@@ -710,6 +816,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Autenticação requerida pelo host: %@";
+
+/* User's Author role. */
+"Author" = "Autor";
 
 /* Title for the bottom sheet when there is a tax rate stored */
 "Automatically adding tax rate" = "Inclusão automática de imposto";
@@ -735,6 +844,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "Aguardando pagamento via %@";
 
+/* Country option for a site address. */
+"Azerbaijan" = "Azerbaijão";
+
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -759,11 +871,44 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "Pedidos em atraso";
 
+/* Country option for a site address. */
+"Bahamas" = "Bahamas";
+
+/* Country option for a site address. */
+"Bahrain" = "Bahrein";
+
+/* Country option for a site address. */
+"Bangladesh" = "Bangladesh";
+
+/* Country option for a site address. */
+"Barbados" = "Barbados";
+
 /* Title for the instructions on the Woo payments setup instructions screen. */
 "Before you start setup" = "Antes de começar a configuração";
 
 /* Title on the action button on the Woo payments setup instructions screen. */
 "Begin Setup" = "Comece a configuração";
+
+/* Country option for a site address. */
+"Belarus" = "Bielorrússia";
+
+/* Country option for a site address. */
+"Belau" = "Palau";
+
+/* Country option for a site address. */
+"Belgium" = "Bélgica";
+
+/* Country option for a site address. */
+"Belize" = "Belize";
+
+/* Country option for a site address. */
+"Benin" = "Benin";
+
+/* Country option for a site address. */
+"Bermuda" = "Bermudas";
+
+/* Country option for a site address. */
+"Bhutan" = "Butão";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data */
@@ -792,6 +937,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "Negrito";
+
+/* Country option for a site address. */
+"Bolivia" = "Bolívia";
+
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "Países Baixos Caribenhos";
+
+/* Display label for bookable product type. */
+"Bookable" = "Reservável";
 
 /* Title for 'Booked' booking attendance status. */
 "BookingAttendanceStatus.booked" = "Reservado";
@@ -949,8 +1103,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "Impulsione suas vendas com produtos vinculados";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "Bósnia e Herzegovina";
+
+/* Country option for a site address. */
+"Botswana" = "Botsuana";
+
+/* Country option for a site address. */
+"Bouvet Island" = "Ilha Bouvet";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "Caixa";
+
+/* Country option for a site address. */
+"Brazil" = "Brasil";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "Território Britânico do Oceano Índico";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "Ilhas Virgens Britânicas";
+
+/* Country option for a site address. */
+"Brunei" = "Brunei";
+
+/* Country option for a site address. */
+"Bulgaria" = "Bulgária";
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
@@ -958,6 +1136,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "Atualizar em massa";
+
+/* Display label for bundle product type. */
+"Bundle" = "Pacote";
 
 /* Title for the bundled products screen */
 "Bundled Products" = "Produtos agrupados";
@@ -970,6 +1151,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
 "Bundles Sold" = "Pacotes vendidos";
+
+/* Country option for a site address. */
+"Burkina Faso" = "Burkina Faso";
+
+/* Country option for a site address. */
+"Burundi" = "Burundi";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "Texto do botão";
@@ -1005,6 +1192,9 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "Ligar";
 
+/* Country option for a site address. */
+"Cambodia" = "Camboja";
+
 /* Accessibility label for the camera tile in the collection view */
 "Camera" = "Câmera";
 
@@ -1020,6 +1210,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action sheet button that links to settings for camera access */
 "Camera permissions" = "Permissões de câmera";
 
+/* Country option for a site address. */
+"Cameroon" = "Camarões";
+
 /* Title of the Blaze campaign details view. */
 "Campaign Details" = "Detalhes da campanha";
 
@@ -1031,6 +1224,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "Pode ser usado %1$d vezes";
+
+/* Country option for a site address. */
+"Canada" = "Canadá";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
@@ -1098,12 +1294,12 @@ which should be translated separately and considered part of this sentence. */
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
    Text for the cancel button in the Select Products screen
-   The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "Cancelar";
 
@@ -1131,13 +1327,21 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Não é possível adicionar o pacote";
 
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "Não foi possível aplicar o vale-presente ao pedido";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "Erro ao aplicar o vale-presente ao pedido: %1$@";
+
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Não é possível duplicar o produto";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "Não é possível encontrar informações sobre o Painel WP Admin do seu site. Tente novamente.";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "Não foi possível atualizar o produto";
 
 /* Title of the notice when there is an error updating selected products */
@@ -1151,6 +1355,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Não foi possível verificar a instalação do WooCommerce no seu site.";
+
+/* Country option for a site address. */
+"Cape Verde" = "Cabo Verde";
 
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
@@ -1170,6 +1377,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Manuais de leitor de cartão";
+
+/* Error message when a card is left in the reader and another transaction started. */
+"Card was left in reader - please remove and reinsert card." = "O cartão foi deixado no leitor. Remova e insira-o novamente.";
+
+/* Error message when the card is removed from the reader prematurely. */
+"Card was removed too soon - please try transaction again." = "O cartão foi removido muito cedo. Tente novamente.";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "Cancelar";
@@ -1200,11 +1413,20 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categorias";
 
+/* Country option for a site address. */
+"Cayman Islands" = "Ilhas Cayman";
+
+/* Country option for a site address. */
+"Central African Republic" = "República Centro-Africana";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "Em alguns campos é necessário atenção.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Erro do certificado";
+
+/* Country option for a site address. */
+"Chad" = "Chade";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "Altere o tipo de produto";
@@ -1237,6 +1459,12 @@ which should be translated separately and considered part of this sentence. */
 /* Bottom title of the alert presented with a spinner while the order is being validated */
 "Checking order" = "Verificando pedido";
 
+/* Country option for a site address. */
+"Chile" = "Chile";
+
+/* Country option for a site address. */
+"China" = "China";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Escolher o tamanho do papel";
 
@@ -1263,6 +1491,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Escolha a forma de pagamento";
+
+/* Country option for a site address. */
+"Christmas Island" = "Ilha Christmas";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -1348,6 +1579,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "Encerrando conta…";
 
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "Ilhas Cocos (Keeling)";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Recolhido";
 
@@ -1391,8 +1625,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "Receba pagamentos, configure o Tap to Pay, peça leitores de cartão e muito mais.";
 
+/* Country option for a site address. */
+"Colombia" = "Colômbia";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "Volte mais tarde para ver outras dicas e informações de como ampliar sua loja";
+
+/* Country option for a site address. */
+"Comoros" = "Comores";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1417,6 +1657,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "Escreve uma nova nota para o pedido.";
 
+/* Display label for composite product type. */
+"Composite" = "Composto";
+
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configuração atualizada";
 
@@ -1432,6 +1675,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Confirmar forma de pagamento";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "Congo";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "República Democrática do Congo";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "Parabéns, você leu tudo!";
@@ -1500,6 +1749,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "Conectando o leitor";
+
+/* Error message when establishing a connection to the card reader times out. */
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "A conexão com o leitor de cartão atingiu o tempo limite. Certifique-se de que ele está próximo e carregado e tente novamente.";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "Conectando à sua conta";
@@ -1575,6 +1827,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Taxa de conversão";
 
+/* Country option for a site address. */
+"Cook Islands" = "Ilhas Cook";
+
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Política de cookies";
 
@@ -1596,6 +1851,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "Copie o número de rastreamento";
+
+/* Country option for a site address. */
+"Costa Rica" = "Costa Rica";
+
+/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Could not launch your store" = "Não foi possível lançar sua loja";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "Não foi possível conectar com o site do WordPress. Não há sites do WordPress válidos neste endereço. Verifique o endereço do site (URL) inserido.";
@@ -1659,9 +1920,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "Cupons";
-
-/* The title for a button that causes the app to deliberately crash for debugging purposes */
-"Crash Immediately" = "Falhar de imediato";
 
 /* Action for creating a Coupon remotely
    Button to create an order on the Order screen
@@ -1732,9 +1990,18 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "Cartões de crédito recuperados da seguinte conta do WordPress.com: %1$@ <%2$@>";
 
+/* Country option for a site address. */
+"Croatia" = "Croácia";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "Venda cruzada";
+
+/* Country option for a site address. */
+"Cuba" = "Cuba";
+
+/* Country option for a site address. */
+"Curacao" = "Curaçao";
 
 /* Cell title: the current date. */
 "Current" = "Atual";
@@ -1754,7 +2021,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "Atualmente, a criação é compatível com 100 variações no máximo. Gerar variações para este produto criaria %d variações.";
 
-/* Name of the section for custom shipment tracking carriers
+/* Name of the group of tracking providers created manually by users
+   Name of the section for custom shipment tracking carriers
    Title of the Analytics Hub Custom selection range */
 "Custom" = "Personalizada";
 
@@ -1792,7 +2060,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Customer info section title
    Customer info section title in Review Order screen
-   Title text of the section that shows Customer details when creating a new order */
+   Title text of the section that shows Customer details when creating a new order
+   User's Customer role. */
 "Customer" = "Cliente";
 
 /* Title text of the section that shows the Order customer note when creating a new order */
@@ -1823,6 +2092,12 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "É necessário imprimir declarações aduaneiras e incluí-las nestes envios internacionais";
 
+/* Country option for a site address. */
+"Cyprus" = "Chipre";
+
+/* Country option for a site address. */
+"Czech Republic" = "República Tcheca";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "DETALHES";
 
@@ -1833,6 +2108,9 @@ which should be translated separately and considered part of this sentence. */
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "Período";
+
+/* Title of 'Date Paid' section in the receipt */
+"Date paid" = "Data de pagamento";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "Data do envio";
@@ -1862,6 +2140,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Delete tracking button title */
 "Delete Tracking" = "Excluir rastreamento";
+
+/* Country option for a site address. */
+"Denmark" = "Dinamarca";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Descreva o produto";
@@ -1910,6 +2191,9 @@ which should be translated separately and considered part of this sentence. */
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "Desconto";
+
+/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
+"Discount %1$@" = "Desconto: %1$@";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -1974,6 +2258,12 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Divisão 6.2 - Materiais perigosos - Materiais biológicos (como kits de teste em laboratório, resultados de kit de teste de covid autorizados)";
 
+/* Country option for a site address. */
+"Djibouti" = "Djibuti";
+
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "Não permitir";
+
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "Quer adicionar a opção de pagamento presencial à finalização da compra online?";
 
@@ -1992,11 +2282,16 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "Documentos";
 
+/* Country option for a site address. */
+"Dominica" = "Dominica";
+
+/* Country option for a site address. */
+"Dominican Republic" = "República Dominicana";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Não tem uma conta? _Cadastre-se_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again
-   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
+/* Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Não mostrar novamente";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2034,6 +2329,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "Não sabe como imprimir usando o seu dispositivo móvel?";
+
+/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"Dotcom Error: [%1$@] %2$@" = "Erro Dotcom: [%1$@] %2$@";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Rota REST Dotcom inválida";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Token Dotcom ausente";
+
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "Sem permissão de estatísticas Dotcom";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Falha na solicitação Dotcom";
+
+/* WordPress.com error thrown when a requested resource does not exist remotely. */
+"Dotcom Resource does not exist" = "Recurso Dotcom inexistente";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Resposta Dotcom em branco";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "Módulo Estatísticas Dotcom do site desativado";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Token Dotcom inválido";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "Clique duas vezes para dispensar";
@@ -2073,6 +2395,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "Arquivos para download";
 
+/* Display label for the product's draft status */
+"Draft" = "Rascunho";
+
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "Impulsione as vendas na sua loja com o Blaze";
 
@@ -2084,6 +2409,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifique com facilidade seus produtos usando códigos exclusivos";
+
+/* Country option for a site address. */
+"Ecuador" = "Equador";
 
 /* Button to edit a product category
    Button to edit an order on Order Details screen
@@ -2141,6 +2469,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Edite o status ou o preço de vários produtos de uma só vez";
+
+/* User's Editor role. */
+"Editor" = "Editor";
+
+/* Country option for a site address. */
+"Egypt" = "Egito";
+
+/* Country option for a site address. */
+"El Salvador" = "El Salvador";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "Elegível para retirada gratuita";
@@ -2269,9 +2606,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Inserir descrição";
 
-/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
-"Enter email or username" = "Insira o e-mail ou nome de usuário";
-
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "Inserir URL de arquivo";
 
@@ -2279,8 +2613,7 @@ which should be translated separately and considered part of this sentence. */
 "Enter number (Optional)" = "Inserir código (opcional)";
 
 /* Enter password placeholder in Product Visibility
-   Placeholder for the password field on the site credential login screen
-   Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
+   Placeholder for the password field on the site credential login screen */
 "Enter password" = "Digite a senha";
 
 /* Text for the input textfield placeholder when no value has been added yet */
@@ -2317,9 +2650,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the username field on the site credential login screen */
 "Enter username" = "Digite o nome de usuário";
 
-/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
-"Enter your WordPress.com password" = "Digite sua senha do WordPress.com";
-
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "Insira as informações da sua conta do %@.";
 
@@ -2347,6 +2677,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "Envelope";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "Guiné Equatorial";
+
+/* Country option for a site address. */
+"Eritrea" = "Eritreia";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "Erro";
@@ -2410,6 +2746,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "Tempo estimado para configurar:";
+
+/* Country option for a site address. */
+"Estonia" = "Estônia";
+
+/* Country option for a site address. */
+"Ethiopia" = "Etiópia";
 
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
@@ -2489,6 +2831,9 @@ which should be translated separately and considered part of this sentence. */
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales." = "Veja como aumentar as vendas da sua loja";
 
+/* Display label for affiliate product type. */
+"External\/Affiliate" = "Externo\/vinculado";
+
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "Falha ao excluir cupom. Tente novamente.";
 
@@ -2519,6 +2864,12 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "Ocorreu uma falha ao concluir o pedido nº %1$d";
 
+/* Country option for a site address. */
+"Falkland Islands" = "Ilhas Malvinas";
+
+/* Country option for a site address. */
+"Faroe Islands" = "Ilhas Faroé";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -2531,8 +2882,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Feedback enviado!";
 
+/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
+"Fees" = "Taxas";
+
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Buscando variações...";
+
+/* Country option for a site address. */
+"Fiji" = "Fiji";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2587,6 +2944,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "Finalizar configuração de %1$@ na administração da loja";
 
+/* Country option for a site address. */
+"Finland" = "Finlândia";
+
 /* Text field name in Edit Address Form */
 "First name" = "Nome";
 
@@ -2617,8 +2977,20 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "Encaminhar";
 
+/* Country option for a site address. */
+"France" = "França";
+
 /* Plan name for an active free trial */
 "Free Trial" = "Teste gratuito";
+
+/* Country option for a site address. */
+"French Guiana" = "Guiana Francesa";
+
+/* Country option for a site address. */
+"French Polynesia" = "Polinésia Francesa";
+
+/* Country option for a site address. */
+"French Southern Territories" = "Terras Austrais e Antárticas Francesas";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "De";
@@ -2637,6 +3009,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
 "GTIN, UPC, EAN, ISBN: %@" = "GTIN, UPC, EAN, ISBN: %@";
+
+/* Country option for a site address. */
+"Gabon" = "Gabão";
+
+/* Country option for a site address. */
+"Gambia" = "Gâmbia";
 
 /* General section title in the hub menu */
 "General" = "Geral";
@@ -2664,6 +3042,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "Limite de geração excedido";
+
+/* Country option for a site address. */
+"Georgia" = "Geórgia";
+
+/* Country option for a site address. */
+"Germany" = "Alemanha";
 
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
@@ -2710,6 +3094,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "Preparando para receber pagamentos";
 
+/* Country option for a site address. */
+"Ghana" = "Gana";
+
+/* Country option for a site address. */
+"Gibraltar" = "Gibraltar";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Presente";
 
@@ -2722,6 +3112,13 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "Código do vale-presente";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "Vale-presente inválido";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "Vale-presente não aplicado";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    Title of the button to give feedback about the add-ons feature
@@ -2754,6 +3151,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title in AI product description celebration screen. */
 "Great start!" = "Ótimo começo!";
 
+/* Country option for a site address. */
+"Greece" = "Grécia";
+
+/* Country option for a site address. */
+"Greenland" = "Groenlândia";
+
+/* Country option for a site address. */
+"Grenada" = "Granada";
+
 /* A hazardous material description stating when a package can fit into this category */
 "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Materiais perigosos apenas para envio terrestre (para itens que não estejam listados, mas sejam restritos a superfícies)";
 
@@ -2763,11 +3169,35 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
 "Group of: %@" = "Grupo de: %@";
 
+/* Display label for grouped product type. */
+"Grouped" = "Agrupado";
+
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "Produtos agrupados";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Produtos agrupados";
+
+/* Country option for a site address. */
+"Guadeloupe" = "Guadalupe";
+
+/* Country option for a site address. */
+"Guam" = "Guam";
+
+/* Country option for a site address. */
+"Guatemala" = "Guatemala";
+
+/* Country option for a site address. */
+"Guernsey" = "Guernsey";
+
+/* Country option for a site address. */
+"Guinea" = "Guiné";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "Guiné-Bissau";
+
+/* Country option for a site address. */
+"Guyana" = "Guiana";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "COMO PODEMOS AJUDAR?";
@@ -2783,6 +3213,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "Conteúdo HTML";
+
+/* Country option for a site address. */
+"Haiti" = "Haiti";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Deixe as credenciais da sua loja prontas.";
@@ -2826,6 +3259,9 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "Título 6";
 
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "Ilha Heard e Ilhas McDonald";
+
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "Altura";
@@ -2852,7 +3288,8 @@ which should be translated separately and considered part of this sentence. */
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Olá! Este é um link para fazer download do aplicativo do WooCommerce. Eu estou gostando muito de usá-lo e acho que talvez você goste também.";
 
-/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks). */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Display label for the product's catalog visibility */
 "Hidden" = "Oculta";
 
 /* Title of the Hide store setup list button in the action sheet. */
@@ -2861,8 +3298,17 @@ which should be translated separately and considered part of this sentence. */
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Destaque o público e as funcionalidades exclusivas do seu produto com palavras-chave para criar uma descrição personalizada.";
 
+/* Country option for a site address. */
+"Honduras" = "Honduras";
+
+/* Country option for a site address. */
+"Hong Kong" = "Hong Kong";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "Como podemos melhorar?";
+
+/* Country option for a site address. */
+"Hungary" = "Hungria";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Preciso de ajuda com";
@@ -2881,6 +3327,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "O ITN é obrigatório para envios de itens com valor superior a US$ 2.500 por código tarifário";
+
+/* Country option for a site address. */
+"Iceland" = "Islândia";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Se estiverem desativadas, a observação será em caráter privado";
@@ -2918,7 +3367,11 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "Em %1$@, os cartões podem ser usados com o Tap to Pay apenas para transações até o limite do pagamento por aproximação.";
 
-/* Display label for the bundle item's inventory stock status */
+/* Accessibility label for an indeterminate loading indicator */
+"In progress" = "Em andamento";
+
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "In stock" = "em estoque";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -2953,6 +3406,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Aumente as vendas com vendas adicionais e cruzadas";
 
+/* Country option for a site address. */
+"India" = "Índia";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "Somente para uso individual";
 
@@ -2962,14 +3418,23 @@ which should be translated separately and considered part of this sentence. */
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "Item enviado separadamente";
 
+/* Country option for a site address. */
+"Indonesia" = "Indonésia";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "Inserir";
+
+/* Message from the in-person payment card reader prompting user to insert their card */
+"Insert Card" = "Insira o cartão";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "Inserir linha horizontal";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Inserir link";
+
+/* Message from the in-person payment card reader prompting user to insert or swipe their card */
+"Insert Or Swipe Card" = "Insira ou passe o cartão";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Insert card to pay" = "Insira um cartão para pagar";
@@ -3011,6 +3476,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "Instalando Jetpack";
 
+/* Display label for the product's inventory stock status */
+"Insufficient stock" = "Estoque insuficiente";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "Seguro (%1$@)";
 
@@ -3026,6 +3494,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "Identificador inválido";
 
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "Nome de pacote inválido";
+
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "SKU do produto inválida";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Endereço do site inválido";
 
@@ -3040,6 +3514,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "URL inválida. Verifique novamente e tente outra vez.";
+
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "Erro de vale-presente inválido: %1$@";
 
 /* No comment provided by engineer. */
 "Invalid username" = "Nome de usuário inválido";
@@ -3074,11 +3551,26 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments isn't available for this store" = "O pagamento presencial não está disponível para esta loja";
 
+/* Country option for a site address. */
+"Iran" = "Irã";
+
+/* Country option for a site address. */
+"Iraq" = "Iraque";
+
+/* Country option for a site address. */
+"Ireland" = "Irlanda";
+
 /* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
 "Is the generated description helpful?" = "A descrição gerada é útil?";
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "A mensagem gerada é útil?";
+
+/* Country option for a site address. */
+"Isle of Man" = "Ilha de Man";
+
+/* Country option for a site address. */
+"Israel" = "Israel";
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Emitir reembolso";
@@ -3117,6 +3609,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "Itálico";
 
+/* Country option for a site address. */
+"Italy" = "Itália";
+
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "A descrição do item é obrigatória";
 
@@ -3133,6 +3628,21 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "Itens vendidos";
 
+/* Country option for a site address. */
+"Ivory Coast" = "Costa do Marfim";
+
+/* Country option for a site address. */
+"Jamaica" = "Jamaica";
+
+/* Country option for a site address. */
+"Japan" = "Japão";
+
+/* Country option for a site address. */
+"Jersey" = "Jersey";
+
+/* WordPress.com error thrown when Jetpack is not connected. */
+"Jetpack Not Connected" = "Jetpack não conectado";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Configuração do Jetpack";
 
@@ -3145,6 +3655,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Participe de qualquer lugar";
 
+/* Country option for a site address. */
+"Jordan" = "Jordânia";
+
+/* Country option for a site address. */
+"Kazakhstan" = "Cazaquistão";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "Continuar editando";
 
@@ -3154,11 +3670,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "Lembre-se de que isso não é um tíquete de suporte e nós não poderemos analisar feedbacks individuais";
 
+/* Country option for a site address. */
+"Kenya" = "Quênia";
+
+/* Country option for a site address. */
+"Kiribati" = "Kiribati";
+
+/* Country option for a site address. */
+"Kuwait" = "Kuwait";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "Quirguistão";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etiqueta (10 x 15 cm)";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "Opções de formato da etiqueta";
+
+/* Country option for a site address. */
+"Laos" = "Laos";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "Últimos 2 dias";
@@ -3197,6 +3728,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text field name in Edit Address Form */
 "Last name" = "Sobrenome";
+
+/* Country option for a site address. */
+"Latvia" = "Letônia";
 
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "Publique sua loja";
@@ -3237,6 +3771,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Saiba mais sobre os dados que coletamos sobre a sua loja e suas opções para controlar esse compartilhamento.";
 
+/* Country option for a site address. */
+"Lebanon" = "Líbano";
+
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal (22 x 36 cm)";
 
@@ -3247,11 +3784,23 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "Comprimento";
 
+/* Country option for a site address. */
+"Lesotho" = "Lesoto";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Carta (22 x 28 cm)";
 
 /* Title to let the user know what do we want on the support screen. */
 "Let’s get this sorted" = "Vamos resolver isso";
+
+/* Country option for a site address. */
+"Liberia" = "Libéria";
+
+/* Country option for a site address. */
+"Libya" = "Líbia";
+
+/* Country option for a site address. */
+"Liechtenstein" = "Liechtenstein";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Lighters Package - Authorized Lighters" = "Pacote de isqueiros - Isqueiros autorizados";
@@ -3287,6 +3836,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "Lista de imagens do produto";
+
+/* Country option for a site address. */
+"Lithuania" = "Lituânia";
 
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "Carregando";
@@ -3388,6 +3940,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button. */
 "Lost your password?" = "Esqueceu sua senha?";
 
+/* Country option for a site address. */
+"Luxembourg" = "Luxemburgo";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "Macau, China";
+
+/* Country option for a site address. */
+"Macedonia" = "Macedônia";
+
+/* Country option for a site address. */
+"Madagascar" = "Madagascar";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Feito com amor pela Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">Estamos contratando!<\/a>";
 
@@ -3402,6 +3966,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "Use tags para ser mais fácil encontrar seus produtos";
+
+/* Country option for a site address. */
+"Malawi" = "Malawi";
+
+/* Country option for a site address. */
+"Malaysia" = "Malásia";
+
+/* Country option for a site address. */
+"Maldives" = "Maldivas";
+
+/* Country option for a site address. */
+"Mali" = "Mali";
+
+/* Country option for a site address. */
+"Malta" = "Malta";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3457,6 +4036,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "Marcar este pedido como concluído e notificar o cliente";
 
+/* Country option for a site address. */
+"Marshall Islands" = "Ilhas Marshall";
+
+/* Country option for a site address. */
+"Martinique" = "Martinica";
+
+/* Country option for a site address. */
+"Mauritania" = "Mauritânia";
+
+/* Country option for a site address. */
+"Mauritius" = "Ilhas Maurício";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "Gasto máx. (%1$@)";
 
@@ -3471,6 +4062,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dismiss button title for modally presented Just in Time Messages */
 "Maybe Later" = "Talvez mais tarde";
+
+/* Country option for a site address. */
+"Mayotte" = "Mayotte";
 
 /* Title for alert when access to media capture is not granted */
 "Media Capture" = "Captura de mídia";
@@ -3502,6 +4096,12 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message phone number button title */
 "Message" = "Mensagem";
 
+/* Country option for a site address. */
+"Mexico" = "México";
+
+/* Country option for a site address. */
+"Micronesia" = "Micronésia";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3523,8 +4123,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the mobile app support area option */
 "Mobile App" = "Aplicativo móvel";
 
+/* Country option for a site address. */
+"Moldova" = "Moldávia";
+
+/* Country option for a site address. */
+"Monaco" = "Mônaco";
+
+/* Country option for a site address. */
+"Mongolia" = "Mongólia";
+
+/* Country option for a site address. */
+"Montenegro" = "Montenegro";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "Acumulado mensal";
+
+/* Country option for a site address. */
+"Montserrat" = "Montserrat";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3546,6 +4161,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* More Privacy toggle section in the privacy screen. */
 "More privacy options available for woocommerce.com users. Check here to learn more." = "Mais opções de privacidade disponíveis para usuários do woocommerce.com. Clique aqui para saber mais.";
 
+/* Country option for a site address. */
+"Morocco" = "Marrocos";
+
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "Mover";
 
@@ -3561,6 +4179,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "Move o comentário para a lixeira";
 
+/* Country option for a site address. */
+"Mozambique" = "Moçambique";
+
 /* Cancel button title for the discard changes confirmation dialog in the multiline text editor. */
 "MultilineEditableTextDetailView.discardChanges.alert.cancelAction" = "Cancelar";
 
@@ -3573,13 +4194,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "Concluído";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"Multiple Contactless Cards Detected" = "Vários cartões por aproximação detectados";
+
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Várias lojas";
 
-/* Placeholder store name on a notification
-   Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Minha loja";
+
+/* Country option for a site address. */
+"Myanmar" = "Mianmar";
 
 /* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "N\/D";
@@ -3592,6 +4218,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Informe o nome";
+
+/* Country option for a site address. */
+"Namibia" = "Namíbia";
+
+/* Country option for a site address. */
+"Nauru" = "Nauru";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "Precisa de uma etiqueta de envio?";
@@ -3616,6 +4248,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "Precisa de ajuda? %1$@";
 
+/* Country option for a site address. */
+"Nepal" = "Nepal";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "Pagamento líquido";
 
@@ -3624,6 +4259,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "Vendas líquidas: %@";
+
+/* Country option for a site address. */
+"Netherlands" = "Países Baixos";
+
+/* Error message when session cookie has expired. */
+"NetworkError.invalidCookieNonce" = "Sua sessão expirou. Faça login novamente.";
+
+/* Error message when the URL is invalid. */
+"NetworkError.invalidURL" = "A URL é inválida. Tente novamente.";
+
+/* Error message when we receive not found error */
+"NetworkError.notFound" = "Não encontramos o que você procurava. Tente novamente. Resposta: %1$@";
+
+/* Error message when a request times out. */
+"NetworkError.timeout" = "A solicitação demorou demais para ser processada. Tente novamente mais tarde. Resposta: %1$@";
+
+/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
+"NetworkError.unacceptableStatusCode" = "Ocorreu um problema com o servidor. Tente novamente mais tarde. (Código do erro: %1$d.) Resposta: %2$@";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Nunca expira";
@@ -3634,8 +4287,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "Nome do novo atributo";
 
+/* Country option for a site address. */
+"New Caledonia" = "Nova Caledônia";
+
 /* Title for the order creation screen */
 "New Order" = "Novo pedido";
+
+/* Country option for a site address. */
+"New Zealand" = "Nova Zelândia";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "Com as novas visualizações de análise, você vê os visitantes, relatórios e muito mais.";
@@ -3658,6 +4317,18 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the next button in the issue refund screen */
 "Next" = "Próximo";
 
+/* Country option for a site address. */
+"Nicaragua" = "Nicarágua";
+
+/* Country option for a site address. */
+"Niger" = "Níger";
+
+/* Country option for a site address. */
+"Nigeria" = "Nigéria";
+
+/* Country option for a site address. */
+"Niue" = "Niue";
+
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "Nenhuma avaliação (aprovada)";
 
@@ -3678,11 +4349,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the empty state of the Blaze campaign list view */
 "No campaigns yet" = "Nenhuma campanha ainda";
 
+/* Error message when a card reader was expected to already have been connected. */
+"No card reader is connected - connect a reader and try again." = "Nenhum leitor de cartão está conectado. Conecte um leitor e tente novamente.";
+
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "Nenhuma categoria selecionada";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "Sem conexão";
+
+/* Error message when there is no connection to the Internet. */
+"No connection to the Internet - please connect to the Internet and try again." = "Não há conexão com a Internet. Conecte-se e tente novamente.";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "Nenhum cupom encontrado";
@@ -3765,11 +4442,25 @@ If your translation of that term also happens to contains a hyphen, please be su
 "No variations to generate" = "Nenhuma variação a ser gerada";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
+   Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option
    Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "Nenhum";
+
+/* Country option for a site address. */
+"Norfolk Island" = "Ilha Norfolk";
+
+/* Country option for a site address. */
+"North Korea" = "Coreia do Norte";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "Ilhas Marianas do Norte";
+
+/* Country option for a site address. */
+"Norway" = "Noruega";
 
 /* Description when no 'group of' quantity is set in quantity rules. */
 "Not grouped" = "Não agrupado";
@@ -3787,6 +4478,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Nota para o cliente";
+
+/* Title of order note section in the receipt, commonly used for Quick Orders. */
+"Notes" = "Anotações";
 
 /* Default message for empty media picker */
 "Nothing to show" = "Nada para mostrar";
@@ -3808,7 +4502,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information. */
+   Submit button on prompt for user information.
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "OK" = "OK";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -3833,10 +4528,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Weeks Section Header */
 "Older than a Week" = "Há mais de uma semana";
 
+/* Country option for a site address. */
+"Oman" = "Omã";
+
 /* Display label for the subscription status type */
 "On Hold" = "Suspensa";
 
-/* Display label for the bundle item's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "On back order" = "pedido em espera";
 
 /* Helper text above photo list in Product images screen */
@@ -3847,6 +4546,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Apenas o proprietário do site pode gerenciar as formas de pagamento de etiquetas de envio. Fale com %1$@ (%2$@) para gerenciá-las.";
+
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Oops, some unexpected errors happened." = "Ops! Houve alguns erros inesperados.";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Abrir configurações do dispositivo";
@@ -3909,9 +4611,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Ou";
-
-/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
-"Or Continue using Magic Link" = "Ou continuar usando um link mágico";
 
 /* Instruction text for other forms of two-factor auth methods. */
 "Or choose another form of authentication." = "Você também pode escolher outra forma de autenticação.";
@@ -4041,7 +4740,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Outros sites";
 
-/* Display label for the bundle item's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "Out of stock" = "esgotado";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -4089,8 +4789,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Rich order notification text, will read as: Paid with Visa credit card */
 "Paid with %@" = "Pago com %@";
 
+/* Country option for a site address. */
+"Pakistan" = "Paquistão";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "Territórios Palestinos";
+
+/* Country option for a site address. */
+"Panama" = "Panamá";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "Tamanho do papel";
+
+/* Country option for a site address. */
+"Papua New Guinea" = "Papua-Nova Guiné";
+
+/* Country option for a site address. */
+"Paraguay" = "Paraguai";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "Categoria mãe";
@@ -4137,10 +4852,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Payment section title */
 "Payment Totals" = "Totais de pagamentos";
 
+/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
+"Payment declined due to insufficient funds. Try another means of payment." = "Pagamento recusado por saldo insuficiente Tente outro meio de pagamento";
+
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "Falha no pagamento";
 
-/* Title of the webview of adding a payment method in Shipping Labels */
+/* Title of 'Payment method' section in the receipt
+   Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "Forma de pagamento";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -4149,13 +4868,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Pagamento realizado com êxito";
 
+/* Message when we don't know exactly why the payment was declined. */
+"Payment was declined for an unknown reason. Try another means of payment." = "Pagamento recusado por motivos desconhecidos. Tente outro meio de pagamento";
+
+/* Message when payment is declined for a non specific reason. */
+"Payment was declined for an unspecified reason. Try another means of payment." = "Pagamento recusado por motivo não especificado. Tente outro meio de pagamento";
+
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
    Title of the hub menu payments button
    Title of the webview for payments setup from onboarding. */
 "Payments" = "Pagamentos";
 
-/* Display label for the subscription status type */
+/* Display label for the review's pending status
+   Display label for the subscription status type */
 "Pending" = "Pendente";
 
 /* Display label for the subscription status type */
@@ -4163,6 +4889,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Avaliação pendente";
+
+/* Display label for the product's pending status */
+"Pending review" = "Revisão pendente";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Desconto em porcentagem";
@@ -4178,6 +4907,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "Encerrar conta permanentemente";
+
+/* Country option for a site address. */
+"Peru" = "Peru";
+
+/* Country option for a site address. */
+"Philippines" = "Filipinas";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -4201,17 +4936,32 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "Escolha um pedido, pague, imprima a etiqueta, embale o produto e envie.";
 
+/* Country option for a site address. */
+"Pitcairn" = "Ilhas Pitcairn";
+
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "Colocando seu produto na lixeira...";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "Carregue o leitor";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "Verifique se o seu telefone atende a estes requisitos: iPhone XS ou mais recente com iOS 16.7 ou superior. Entre em contato com o suporte se esse erro aparecer em um dispositivo compatível.";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "Verifique o saldo restante do vale-presente.";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "Verifique se o seu Apple ID é válido e tente novamente. Um Apple ID válido é obrigatório para aceitar os Termos de serviço da Apple";
+
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "Conecte o Jetpack pela sua página de administração em um navegador ou entre em contato com o suporte.";
 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "Conecte sua loja ao Jetpack para acessá-lo neste aplicativo.";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "Fale com o suporte: houve um problema ao iniciar o Tap to Pay on iPhone";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "Para usar o aplicativo, entre em contato com o proprietário do site e solicite um convite para o site como administrador ou gerente de loja.";
@@ -4300,6 +5050,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Selecione um pacote";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "Faça login no iCloud neste dispositivo para usar o Tap to Pay on iPhone";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Tente novamente mais tarde ou fale conosco. Teremos prazer em ajudar você!";
 
@@ -4311,6 +5064,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "Tente novamente ou fale conosco. Teremos prazer em ajudar você!";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "Tente novamente e aceite os Termos de serviço da Apple para poder usar o Tap to Pay on iPhone";
 
 /* Account creation error when an unexpected error occurs. */
 "Please try again." = "Tente novamente.";
@@ -4396,8 +5152,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation title for the help settings list. */
 "PointOfSaleSettingsHelpDetailView.help.title" = "Ajuda";
 
+/* Country option for a site address. */
+"Poland" = "Polônia";
+
 /* Section title for popular products on the Select Product screen. */
 "Popular" = "Popular";
+
+/* Country option for a site address. */
+"Portugal" = "Portugal";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -4512,7 +5274,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Privacy settings screen title */
 "Privacy Settings" = "Configurações de privacidade";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "Privado";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -4651,8 +5414,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle of the store onboarding task to launch the store. */
 "Publish your site to the world anytime you want!" = "Publique seu site para o mundo quando quiser!";
 
+/* Display label for the product's published status */
+"Published" = "Publicado";
+
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "Publicando o produto...";
+
+/* Country option for a site address. */
+"Puerto Rico" = "Porto Rico";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "Data da compra";
@@ -4675,6 +5444,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Quantity abbreviation for section title */
 "QTY" = "QTD";
+
+/* Country option for a site address. */
+"Qatar" = "Catar";
 
 /* Quantity abbreviation for section title */
 "Qty" = "Qtd";
@@ -4727,8 +5499,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "Motivo do reembolso do pedido";
 
-/* The title of the view containing a receipt preview */
+/* The title of the view containing a receipt preview
+   Title of receipt. */
 "Receipt" = "Recibo";
+
+/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
+"Receipt from %1$@" = "Recibo de %1$@";
 
 /* Button label to refresh a web page
    Button to refresh the state of the in-person payments setup
@@ -4809,8 +5585,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Preço normal: %@";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
-   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
+/* Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Lembre-me depois";
 
 /* Add asset to media picker list
@@ -4821,6 +5596,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "Remover atributo";
+
+/* Message from the in-person payment card reader prompting user to remove their card */
+"Remove Card" = "Remova o cartão";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -4892,9 +5670,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Excluir log de atividades";
 
-/* The title for a menu to reset the privacy choice banner presentation */
-"Reset Privacy Choice Banner State" = "Redefinir estado do banner de opção de privacidade";
-
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -4943,11 +5718,17 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "Tentar novamente após atualizar";
 
+/* Message from the in-person payment card reader prompting user to retry payment with their card */
+"Retry Card" = "Tente o cartão novamente";
+
 /* Action button to check site's connection again. */
 "Retry Connection" = "Tentar conexão novamente";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Devolver o pacote ao remetente caso não possa ser enviado";
+
+/* Country option for a site address. */
+"Reunion" = "Ilha da Reunião";
 
 /* Title of Review Order screen */
 "Review Order" = "Revisar pedido";
@@ -4966,8 +5747,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Post Rich content */
 "Rich Content" = "Conteúdo avançado";
 
+/* Country option for a site address. */
+"Romania" = "Romênia";
+
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Faça um pedido de teste para garantir que seu processo do WooCommerce fornece uma experiência do cliente simplificada.";
+
+/* Country option for a site address. */
+"Russia" = "Rússia";
+
+/* Country option for a site address. */
+"Rwanda" = "Ruanda";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "SESSÕES";
@@ -4975,6 +5765,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
+
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "O SKU já foi usado por outro produto";
 
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
@@ -4990,6 +5783,30 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "St. Barth";
+
+/* Country option for a site address. */
+"Saint Helena" = "Santa Helena";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "São Cristóvão e Névis";
+
+/* Country option for a site address. */
+"Saint Lucia" = "Santa Lúcia";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "Ilha de São Martinho (parte holandesa)";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "Ilha de São Martinho (parte francesa)";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "São Pedro e Miquelão";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "São Vicente e Granadinas";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "Datas da venda: %@";
 
@@ -5002,11 +5819,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Preço promocional: %@";
 
+/* Country option for a site address. */
+"Samoa" = "Samoa";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "Amostra";
 
+/* Country option for a site address. */
+"San Marino" = "San Marino";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "Inspeção sanitária\/fitossanitária";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "Arábia Saudita";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -5102,6 +5928,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Products Search Placeholder
    Search Products */
 "Search products" = "Pesquisar produtos";
+
+/* Display label for the product's catalog visibility */
+"Search results only" = "Apenas resultados da busca";
 
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
@@ -5216,6 +6045,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "Enviar link de verificação de e-mail";
 
+/* Country option for a site address. */
+"Senegal" = "Senegal";
+
+/* Country option for a site address. */
+"Serbia" = "Sérvia";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Pacote de serviços";
 
@@ -5267,6 +6102,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "Vários leitores encontrados";
+
+/* Country option for a site address. */
+"Seychelles" = "Seychelles";
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
@@ -5321,7 +6159,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Date an item was shipped */
 "Shipped %@" = "Enviado em %@";
 
-/* Product Shipping Settings navigation title
+/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
+   Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the Shipping Settings row on Product main screen */
@@ -5365,6 +6204,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "Etiquetas de envio compradas!";
 
+/* Display label for the product's tax status setting option */
+"Shipping only" = "Somente envio";
+
+/* Display label for the product's catalog visibility */
+"Shop and search results" = "Resultados para compra e pesquisa";
+
+/* Display label for the product's catalog visibility */
+"Shop only" = "Apenas compra";
+
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
    Title of the Short Description row on Product main screen */
@@ -5404,6 +6252,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Mostra mais opções.";
 
+/* Country option for a site address. */
+"Sierra Leone" = "Serra Leoa";
+
 /* View title during the sign up process. */
 "Sign Up" = "Registrar-se";
 
@@ -5428,6 +6279,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Você efetuou login como @%1$@";
 
+/* Display label for simple product type. */
+"Simple" = "Simples";
+
+/* Country option for a site address. */
+"Singapore" = "Singapura";
+
 /* Site Address title on the support form */
 "Site Address" = "Endereço do site";
 
@@ -5447,6 +6304,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "Pular por enquanto";
 
+/* Country option for a site address. */
+"Slovakia" = "Eslováquia";
+
+/* Country option for a site address. */
+"Slovenia" = "Eslovênia";
+
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
@@ -5457,6 +6320,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "Software atualizado";
+
+/* Country option for a site address. */
+"Solomon Islands" = "Ilhas Salomão";
+
+/* Country option for a site address. */
+"Somalia" = "Somália";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "Algum endereço de e-mail não é válido.";
@@ -5482,6 +6351,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Desculpe, mas seu nome de usuário contém uma frase inválida%@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "A remoção de imagens nas variações do produto só é permitida no WooCommerce 4.7 ou versões posteriores. Atualize seu site.";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "Desculpe, endereços de sites só podem conter letras minúsculas (a-z) e números.";
@@ -5526,6 +6398,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Sorry, this payment couldn’t be processed" = "Não foi possível processar este pagamento";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "Não foi possível processar este pagamento.";
+
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled." = "Não foi possível cancelar este reembolso";
+
+/* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "Não foi possível processar este reembolso";
 
 /* No comment provided by engineer. */
@@ -5537,6 +6415,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "Lamentamos, o nome de usuário deve incluir letras (a-z) também!";
 
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "Não foi possível concluir esta ação já que nenhum pagamento ativo foi encontrado.";
+
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "Não foi possível conectar ao leitor. Tente novamente.";
+
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "Não foi possível iniciar o Tap to Pay on iPhone. Verifique sua conexão e tente novamente.";
 
@@ -5547,11 +6431,30 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "Classificar por";
 
-/* Verb, spam a comment */
+/* Country option for a site address. */
+"South Africa" = "África do Sul";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "Ilhas Geórgia do Sul e Sandwich do Sul";
+
+/* Country option for a site address. */
+"South Korea" = "Coreia do Sul";
+
+/* Country option for a site address. */
+"South Sudan" = "Sudão do Sul";
+
+/* Country option for a site address. */
+"Spain" = "Espanha";
+
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
+
+/* Country option for a site address. */
+"Sri Lanka" = "Sri Lanka";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Classificação padrão";
@@ -5624,10 +6527,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title to submit a support request. */
 "Submit Support Request" = "Enviar solicitação de suporte";
 
+/* Display label for simple subscription product type. */
+"Subscription" = "Assinatura";
+
 /* Subscriptions section title */
 "Subscriptions" = "Assinaturas";
 
 /* Create Shipping Label form -> Subtotal label
+   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
    Subtotal label for a refund details view
    Title on the refund screen that lists the fees subtotal cost
    Title on the refund screen that lists the products refund subtotal cost
@@ -5638,11 +6545,35 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice text after updating the order successfully */
 "Successfully updated" = "Atualizado com sucesso";
 
+/* Country option for a site address. */
+"Sudan" = "Sudão";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "Soma dos produtos e peso do pacote";
 
+/* Title of 'Summary' section in the receipt when the order number is unknown */
+"Summary" = "Resumo";
+
+/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
+"Summary: Order #%1$@" = "Resumo: pedido #%1$@";
+
 /* In Order Details, the name of the billed person when there are no name and last name. */
 "SummaryTableViewCellViewModel.guestName" = "Visitante";
+
+/* Country option for a site address. */
+"Suriname" = "Suriname";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "Svalbard e Jan Mayen";
+
+/* Country option for a site address. */
+"Swaziland" = "eSwatini";
+
+/* Country option for a site address. */
+"Sweden" = "Suécia";
+
+/* Message from the in-person payment card reader prompting user to swipe their card */
+"Swipe Card" = "Passe o cartão";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Alterar loja";
@@ -5671,8 +6602,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Alterna para o tamanho padrão";
 
+/* Country option for a site address. */
+"Switzerland" = "Suíça";
+
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "Sincronizando dados";
+
+/* Country option for a site address. */
+"Syria" = "Síria";
 
 /* View system status report cell title on Help screen */
 "System Status Report" = "Relatório de status do sistema";
@@ -5680,10 +6617,22 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "Relatório de status do sistema copiado para a área de transferência";
 
+/* Message when attempting to pay for a live transaction with a test card. */
+"System test cards are not permitted for payment. Try another means of payment." = "Cartões de teste do sistema não são permitidos para pagamentos. Tente outro meio de pagamento";
+
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "São Tomé e Príncipe";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "Tags";
+
+/* Country option for a site address. */
+"Taiwan" = "Taiwan";
+
+/* Country option for a site address. */
+"Tajikistan" = "Tajiquistão";
 
 /* Title for the simple payments screen */
 "Take Payment" = "Aceitar pagamento";
@@ -5700,6 +6649,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Trazendo você de volta para receber um pagamento";
+
+/* Country option for a site address. */
+"Tanzania" = "Tanzânia";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "Toque em um cartão para pagar";
@@ -5722,6 +6674,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Tap to Pay on iPhone";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "Não é possível usar o Tap to Pay on iPhone durante uma ligação. Tente novamente quando desligar.";
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "O Tap to Pay on iPhone está pronto";
@@ -5817,7 +6772,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Status do imposto";
 
-/* Taxes label for payment view */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
+"Taxable" = "Tributável";
+
+/* Line description for tax charged on the whole cart. Only shown when non-zero
+   Taxes label for payment view */
 "Taxes" = "Impostos";
 
 /* Title for the tax educational dialog */
@@ -5849,6 +6809,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button's title text to send a 2FA code via SMS text message. */
 "Text me a code via SMS" = "Enviar código por SMS";
+
+/* Country option for a site address. */
+"Thailand" = "Tailândia";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "Obrigado por compartilhar sua opinião conosco";
@@ -5892,11 +6855,20 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "A extensão %1$@ está instalada na sua loja, mas precisa ser atualizada para aceitar pagamentos presenciais. Atualize-a para a versão mais recente.";
 
+/* Error message when the card reader loses its Bluetooth connection to the card reader. */
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "A conexão Bluetooth com o leitor de cartão caiu inesperadamente";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "A conta do Google \"%@\" não corresponde à nenhuma conta do WordPress.com";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "O pedido não foi carregado!";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "O valor não é compatível com o Tap to Pay on iPhone. Tente um leitor de hardware ou outra forma de pagamento.";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "Não foi possível ativar o Tap to Pay on iPhone pelo aplicativo porque o chip NFC está desativado. Fale com o suporte para mais detalhes.";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "Não foi possível remover o atributo.";
@@ -5904,20 +6876,62 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "Não foi possível salvar o atributo.";
 
+/* Message when the card presented does not support the order currency. */
+"The card does not support this currency. Try another means of payment." = "O cartão não é compatível com esta moeda. Tente outro meio de pagamento";
+
+/* Message when the card presented does not allow this type of purchase. */
+"The card does not support this type of purchase. Try another means of payment." = "O cartão não é compatível com este tipo de compra. Tente outro meio de pagamento";
+
+/* Message when the presented card is past its expiration date. */
+"The card has expired. Try another means of payment." = "O cartão expirou. Tente outro meio de pagamento";
+
+/* Message when payment is declined for a non specific reason. */
+"The card or card account is invalid. Try another means of payment." = "O cartão ou a conta do cartão são inválidos. Tente outro meio de pagamento";
+
+/* Error message when the card reader is busy executing another command. */
+"The card reader is busy executing another command - please try again." = "O leitor de cartão está ocupado executando outro comando. Tente novamente.";
+
+/* Error message when the card reader is incompatible with the application. */
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "O leitor de cartão não é compatível com este aplicativo. Atualize o aplicativo ou use um leitor diferente.";
+
+/* Error message when the card reader session has timed out. */
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "A sessão do leitor de cartão expirou. Desconecte e reconecte-o e tente novamente.";
+
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "O software do leitor de cartão está desatualizado. Atualize-o antes de tentar processar pagamentos.";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "O software do leitor de cartão está desatualizado. Atualize-o antes de tentar processar pagamentos.";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "O software leitor do cartão está desatualizado - atualize-o antes de tentar processar reembolsos";
 
+/* Error message when the card reader software update fails due to a communication error. */
+"The card reader software update failed due to a communication error - please try again." = "A atualização do software do leitor de cartão falhou devido à um problema de comunicação. Tente novamente.";
+
+/* Error message when the card reader software update fails due to a problem with the update server. */
+"The card reader software update failed due to a problem with the update server - please try again." = "A atualização do software do leitor de cartão falhou devido à um problema com o servidor de atualização. Tente novamente.";
+
+/* Error message when the card reader software update fails unexpectedly. */
+"The card reader software update failed unexpectedly - please try again." = "A atualização do software do leitor de cartão falhou inesperadamente. Tente novamente.";
+
+/* Error message when the card reader software update is interrupted. */
+"The card reader software update was interrupted before it could complete - please try again." = "A atualização do software do leitor de cartão foi interrompida antes da conclusão. Tente novamente.";
+
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "O cartão foi recusado pelo leitor. Tente outro meio de pagamento.";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "O cartão foi recusado pelo leitor. Tente outro meio de pagamento.";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "O cartão foi recusado pelo leitor: tente outra forma de reembolso";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "O cartão foi recusado pelo leitor de iPhone. Tente outra forma de pagamento";
+
+/* Error message when the card processor declines the payment. */
+"The card was declined by the payment processor - please try another means of payment." = "O cartão foi recusado pelo processador. Tente outro meio de pagamento.";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "O certificado para este servidor é inválido. Você talvez esteja conectando a um servidor que está fingindo ser \"%@\", o que poderia colocar suas informações confidenciais em risco.";
@@ -5931,17 +6945,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "O código do cupom não pode estar vazio";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "A moeda não é compatível com o Tap to Pay on iPhone. Tente um leitor de hardware ou outra forma de pagamento.";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "O cliente receberá um e-mail assim que o pedido for concluído";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Na primeira vez em que você usar o Tap to Pay on iPhone, talvez seja solicitado que aceite os Termos de serviço da Apple.";
 
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "O vale-presente não foi aplicado.";
+
+/* Message shown when an image failed to load while trying to add it to the Media library. */
+"The image could not be added to the Media Library." = "Não foi possível adicionar a imagem à biblioteca de mídia.";
+
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "O novo nome do pacote personalizado não é exclusivo.";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "O novo nome do pacote de serviços não é exclusivo.";
+
+/* Message when the presented card does not allow the purchase amount. */
+"The payment amount is not allowed for the card presented. Try another means of payment." = "O valor do pagamento não é permitido para o cartão informado. Tente outro meio de pagamento.";
+
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "O pagamento não pode ser processado pelo processador de pagamento.";
 
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "O cartão de pagamento foi removido antes da hora. Tente novamente.";
+
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "A forma de pagamento não oferece reembolso automático. Para concluir o reembolso, transfira o dinheiro manualmente para o cliente.";
+
+/* Error message when the cancel button on the reader is used. */
+"The payment was canceled on the reader." = "O pagamento foi cancelado no leitor";
+
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "O pagamento foi cancelado.";
 
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "O pagamento foi interrompido e não pode ser retomado. Tente efetuar o pagamento novamente na tela do pedido.";
@@ -5969,6 +7010,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The refund can not be processed by the payment processor." = "O reembolso não pode ser processado pelo processador de pagamentos.";
+
+/* Error message when a request times out. */
+"The request timed out - please try again." = "O tempo da solicitação atingiu o limite. Tente novamente.";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "A solicitação para gerar a senha do aplicativo não foi autorizada.";
@@ -6009,8 +7053,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "A quantidade em estoque deste produto. Editável.";
 
+/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
+"The store address is incomplete or missing, please update it before continuing." = "O endereço da loja está incompleto ou ausente. Atualize-o antes de prosseguir.";
+
+/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
+"The store postal code is invalid or missing, please update it before continuing." = "O código postal da loja é inválido ou está ausente. Atualize-o antes de prosseguir.";
+
+/* Error message when the system cancels a command. */
+"The system canceled the command unexpectedly - please try again." = "O sistema cancelou seu comando inesperadamente. Tente novamente.";
+
+/* Error message when the card reader service experiences an unexpected software error. */
+"The system experienced an unexpected software error." = "Ocorreu um erro de software inesperado.";
+
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "Não é possível obter o relatório de status do sistema para o seu site no momento. Tente novamente.";
+
+/* Message when the presented card postal code doesn't match the order postal code. */
+"The transaction postal code and card postal code do not match. Try another means of payment." = "O código postal da transação e o código postal do cartão não são o mesmo. Tente outro meio de pagamento";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "O teste de pagamento não pôde ser iniciado. Tente novamente mais tarde ou entre em contato com o suporte se esse problema persistir.";
@@ -6094,12 +7153,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "Ocorreu um erro ao tentar receber o pagamento.";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "Ocorreu um problema ao conectar o Tap to Pay on iPhone. Tente novamente.";
+
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "Licenças de terceiros";
 
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "Este mês";
+
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "O SKU foi usado em outro produto ou é inválido.";
 
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "Esta semana";
@@ -6118,6 +7183,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "Este aplicativo é compatível somente com as funções de administrador e gerente da loja. Entre em contato com o proprietário da loja para fazer upgrade da sua função.";
+
+/* Message when a card requires a PIN code and we have no means of entering such a code. */
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "Este cartão requer um código PIN e, por isso, não pode ser processado. Tente outro meio de pagamento";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "Talvez seja porque sua loja tem algumas etapas extras de segurança definidas.";
@@ -6149,11 +7217,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Este item está no pacote %1$d: %2$@. Para onde você quer mover isso?";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "Este pagamento já foi concluído. Verifique os detalhes do pedido.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Não foi possível carregar este produto";
 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "Esse produto foi excluído e não está mais visível";
+
+/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
+"This receipt's transaction type is not expected from the app [%1$@]" = "Tipo de transação deste recibo inesperado no aplicativo [%1$@]";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "Esta configuração determina em quais páginas o produto estará listado.";
@@ -6175,6 +7249,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "Acabou o tempo, mas não se preocupe, nossa prioridade é sua segurança. Tente novamente.";
+
+/* Country option for a site address. */
+"Timor-Leste" = "Timor-Leste";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "Dica";
@@ -6256,6 +7333,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "Alterna o estilo de lista fora de ordem";
 
+/* Country option for a site address. */
+"Togo" = "Togo";
+
+/* Country option for a site address. */
+"Tokelau" = "Toquelau";
+
+/* Country option for a site address. */
+"Tonga" = "Tonga";
+
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "Total de pedidos";
 
@@ -6292,8 +7378,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Número de rastreamento %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Enviar para a lixeira";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "Trindade e Tobago";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "Solução de problemas";
@@ -6319,6 +7409,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Try Another Address" = "Tentar outro endereço";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
+"Try Another Card" = "Tente outro cartão";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
+"Try Another Read Method" = "Tente outro método de leitura";
 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "Tentar autorizar novamente";
@@ -6348,11 +7444,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Try a test order" = "Experimente um pedido de teste";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
+   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "Tente novamente";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
 "Try again with WP-Admin page" = "Tente novamente com a página WP-Admin.";
+
+/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
+"Try another means of payment." = "Tente outro meio de pagamento";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "Tente se conectar novamente para acessar sua loja.";
@@ -6366,6 +7466,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Tentar com o endereço do site";
 
+/* Message when a card is declined due to a potentially temporary problem. */
+"Trying again may succeed, or try another means of payment." = "Tente novamente ou experimente outro meio de pagamento";
+
+/* Country option for a site address. */
+"Tunisia" = "Tunísia";
+
+/* Country option for a site address. */
+"Turkey" = "Turquia";
+
+/* Country option for a site address. */
+"Turkmenistan" = "Turcomenistão";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "Ilhas Turks e Caicos";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "Ative o leitor de cartão e coloque-o próximo ao dispositivo móvel";
 
@@ -6377,6 +7492,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Ative para não aplicar o cupom a itens em promoção. Cupons por item só funcionarão se o item não estiver em promoção. Já cupons por carrinho só funcionarão se houver itens que não estejam em promoção no carrinho.";
+
+/* Country option for a site address. */
+"Tuvalu" = "Tuvalu";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "Tipo de conteúdo";
@@ -6391,8 +7509,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A clickable text link that willredirect the user to a website */
 "USPS HAZMAT Search Tool" = "Ferramenta de pesquisa de HAZMAT da USPS";
 
+/* Country option for a site address. */
+"Uganda" = "Uganda";
+
+/* Country option for a site address. */
+"Ukraine" = "Ucrânia";
+
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Não foi possível conectar";
+
+/* Error message when Bluetooth is not enabled or available. */
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "Não foi possível acessar o Bluetooth. Ative-o e tente novamente.";
+
+/* Error message when location services is not enabled for this application. */
+"Unable to access Location Services - please enable Location Services and try again." = "Não foi possível acessar os serviços de localização. Ative-os e tente novamente.";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "Não foi possível adicionar o cupom.";
@@ -6405,6 +7535,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "Não foi possível mudar o status do pedido %1$d";
+
+/* Error message when communication with the card reader is disrupted. */
+"Unable to communicate with reader - please try again." = "Não foi possível estabelecer comunicação com o leitor. Tente novamente.";
+
+/* Error message when attempting to connect to a card reader which is already in use. */
+"Unable to connect to card reader - the card reader is already in use." = "Não foi possível conectar ao leitor de cartão porque ele já está em uso.";
+
+/* Error message when a card reader is already connected and we were not expecting one. */
+"Unable to connect to reader - another reader is already connected." = "Não foi possível conectar ao leitor porque outro leitor já está conectado.";
+
+/* Error message the card reader battery level is too low to connect to the phone or tablet. */
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "Não foi possível conectar ao leitor porque ele está com a bateria muito baixa. Carregue-o e tente novamente.";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "Não foi possível criar um novo pedido";
@@ -6481,14 +7623,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message explaining login failure due to blocked wp-login.php */
 "Unable to login because we cannot identify your store's login URL." = "Não foi possível fazer login porque não conseguimos identificar a URL de login da sua loja.";
 
-/* Error message explaining login failure due to unexpected response. */
-"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "Não foi possível fazer login devido a uma resposta inesperada do seu site. Estamos trabalhando para corrigir esse problema.";
-
 /* Error message explaining login failure due to unacceptable status code. */
 "Unable to login with response status code %1$d." = "Não foi possível fazer login com o código do status de resposta %1$d.";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "Não foi possível marcar a avaliação como %@";
+
+/* Error message when the card reader cannot be used to perform the requested task. */
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "Não foi possível realizar solicitação ao leitor conectado. O recurso não é compatível. Tente novamente com outro leitor.";
+
+/* Error message when the application is so out of date that the backend refuses to work with it. */
+"Unable to perform software request - please update this application and try again." = "Não foi possível realizar solicitação ao software. Atualize o aplicativo e tente novamente.";
+
+/* Error message when the payment intent is invalid. */
+"Unable to process payment due to invalid data - please try again." = "Não foi possível processar o pagamento devido a dados inválidos. Tente novamente.";
+
+/* Error message when the order amount is below the minimum amount allowed. */
+"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "Não é possível processar o pagamento. O valor total do pedido está abaixo do valor mínimo que você pode cobrar, %1$@.";
+
+/* Error message when the order amount is not valid. */
+"Unable to process payment. Order total amount is not valid." = "Não é possível processar o pagamento. O valor total do pedido não é válido.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Não é possível processar o pagamento. Este pedido já está pago. Fazer outro pagamento resultaria em uma cobrança dupla para o cliente pelo mesmo pedido.";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Não é possível processar o pagamento. Não conseguimos nos conectar ao sistema de pagamento. Entre em contato com o suporte se o erro persistir.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Não é possível processar o pagamento. Não conseguimos obter os detalhes mais recentes do pedido. Verifique sua conexão de rede e tente novamente. Erro estrutural: %1$@";
+
+/* Error message when the card reader times out while reading a card. */
+"Unable to read card - the system timed out - please try again." = "Não foi possível ler o cartão. O sistema atingiu o tempo limite. Tente novamente.";
+
+/* Error message when the card reader is unable to read any chip on the inserted card. */
+"Unable to read inserted card - please try removing and inserting card again." = "Não foi possível ler o cartão. Insira-o novamente.";
+
+/* Error message when the card reader is unable to read a swiped card. */
+"Unable to read swiped card - please try swiping again." = "Não foi possível ler o cartão. Passe-o novamente.";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "Não foi possível ler o site do WordPress nessa URL. Toque em 'Precisa de mais ajuda?' para ver as perguntas frequentes.";
@@ -6512,11 +7684,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice displayed when data cannot be synced for edited order */
 "Unable to save changes. Please try again." = "Não é possível salvar as mudanças. Tente novamente.";
 
+/* Error message when Bluetooth Low Energy is not supported on the user device. */
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "Não foi possível pesquisar leitores de cartão porque o Bluetooth Low Energy não é compatível com este dispositivo. Use outro dispositivo.";
+
+/* Error message when Bluetooth scan times out during reader discovery. */
+"Unable to search for card readers - Bluetooth timed out - please try again." = "Não foi possível pesquisar leitores de cartão porque o Bluetooth atingiu o tempo limite. Tente novamente.";
+
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "Não é possível definir os detalhes do cliente.";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "Não é possível atualizar o endereço.";
+
+/* Error message when the card reader battery level is too low to safely perform a software update. */
+"Unable to update card reader software - the reader battery is too low." = "Não foi possível atualizar o software do leitor de cartão porque a bateria está muito fraca.";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "Não foi possível atualizar o preço";
@@ -6538,8 +7719,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Undo Action */
 "Undo" = "Desfazer";
 
-/* The message of the alert when there is an unexpected error adding the package */
+/* The message of the alert when there is an unexpected error adding the package
+   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Unexpected error" = "Erro inesperado";
+
+/* Country option for a site address. */
+"United Arab Emirates" = "Emirados Árabes Unidos";
+
+/* Country option for a site address. */
+"United Kingdom" = "Reino Unido";
+
+/* Country option for a site address. */
+"United States" = "Estados Unidos";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "Ilhas Menores Distantes dos Estados Unidos";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "Ilhas Virgens Americanas";
 
 /* Unknown Application State
    Unknown product name, displayed in a review */
@@ -6550,6 +7747,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Versão de software desconhecida";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "País desconhecido";
 
 /* Label to use when creation date from media asset is not know. */
 "Unknown creation date" = "Data de criação desconhecida";
@@ -6569,8 +7769,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Lista fora de ordem";
 
+/* Display label for the review's unspam status */
+"Unspam" = "Não é spam";
+
 /* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
 "Unsupported %1$@ version" = "Versão %1$@ incompatível";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Restaurar";
 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Up to date" = "Atualizado";
@@ -6668,6 +7874,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "Aumentar vendas";
 
+/* Country option for a site address. */
+"Uruguay" = "Uruguai";
+
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "Detalhes de uso";
 
@@ -6727,11 +7936,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "O nome de usuário deve ter pelo menos 4 caracteres.";
 
+/* Country option for a site address. */
+"Uzbekistan" = "Uzbequistão";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "Validando";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "Valor (%1$@ por unidade)";
+
+/* Country option for a site address. */
+"Vanuatu" = "Vanuatu";
+
+/* Display label for variable product type. */
+"Variable" = "Variável";
+
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "Assinatura variável";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "Variação #%1$@";
@@ -6753,6 +7974,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "Diversas informações do sistema sobre o seu site";
 
+/* Country option for a site address. */
+"Vatican" = "Vaticano";
+
+/* Country option for a site address. */
+"Venezuela" = "Venezuela";
+
 /* two factor code placeholder */
 "Verification code" = "Código de verificação";
 
@@ -6770,6 +7997,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
 "Video, %@" = "Vídeo, %@";
+
+/* Country option for a site address. */
+"Vietnam" = "Vietnã";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6848,6 +8078,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* View title during the Google auth process. */
 "Waiting..." = "Aguardando…";
 
+/* Country option for a site address. */
+"Wallis and Futuna" = "Wallis e Futuna";
+
 /* Error message when the merchant's payment account has been rejected
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
@@ -6910,6 +8143,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "Ocorreu um problema ao carregar a análise";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"We found that the store has already launched." = "Vimos que a loja já foi lançada.";
+
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "Nós suspendemos a sua loja. Você pode adquirir outro plano ao fazer login no WordPress.com no seu navegador.";
 
@@ -6942,6 +8178,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Não foi possível verificar automaticamente o endereço de envio. Encontre-o no Apple Maps para confirmar se o endereço está correto.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "Não foi possível tentar refazer o pagamento. Comece novamente.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Não foi possível enviar um e-mail para você no momento. Tente novamente mais tarde.";
@@ -6998,6 +8237,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "Peso: %1$@%2$@";
+
+/* Country option for a site address. */
+"Western Sahara" = "Saara Ocidental";
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Usaremos as informações em suas configurações de envio, impostos e pagamentos.";
@@ -7080,6 +8322,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
+/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"WordPress API Error: [%1$@] %2$@" = "Erro na API do WordPress: [%1$@] %2$@";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "Biblioteca de mídia do WordPress";
@@ -7116,6 +8361,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "Acumulado anual";
+
+/* Country option for a site address. */
+"Yemen" = "Iêmen";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "Sim, alterar";
@@ -7182,6 +8430,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "Você precisa adicionar uma senha para que o produto seja protegido por senha";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "É necessário definir uma senha de tela de bloqueio para usar o Tap to Pay on iPhone";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Parece que você instalou um plugin mobile proveniente de DudaMobile que está evitando o app de se conectar ao seu blog";
@@ -7267,6 +8518,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "Quase pronto! Finalize a configuração de %1$@ para começar a aceitar pagamentos presenciais.";
+
+/* Country option for a site address. */
+"Zambia" = "Zâmbia";
+
+/* Country option for a site address. */
+"Zimbabwe" = "Zimbábue";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "Cancelar";
@@ -7450,6 +8707,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "Métrica";
+
+/* Alert confirmation button displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "Entendi";
+
+/* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
+"appCoordinator.ineligibleAgeRangeAlert.message" = "A idade na sua conta da Apple está abaixo do mínimo necessário para este aplicativo (%1d anos).";
+
+/* Alert title displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.title" = "Restrição de acesso";
 
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "Cancelar";
@@ -8665,6 +9931,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "O total do pedido mudou ao começar o pagamento. Volte e verifique se o pedido está correto. Depois tente fazer o pagamento de novo.";
+
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "Troco: %1$@";
 
@@ -9109,6 +10378,15 @@ which should be translated separately and considered part of this sentence. */
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Indisponível";
 
+/* Button to hide the Connect WPCom card from the My Store screen */
+"dashboardView.connectWPComCard.hideButton" = "Ocultar este conteúdo";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"dashboardView.connectWPComCard.subtitle" = "Conecte sua loja a uma conta do WordPress.com para receber alertas de novos pedidos e avaliações.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"dashboardView.connectWPComCard.title" = "Nunca perca um novo pedido";
+
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "Editar";
 
@@ -9311,6 +10589,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "Produtos favoritos";
 
+/* Menu item to dismiss a feature announcement card */
+"featureAnnouncementCardView.hideContent" = "Ocultar este conteúdo";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "Aplicar";
 
@@ -9416,6 +10697,135 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "Ver todas as campanhas";
 
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "Este app precisa de permissão para acessar o Bluetooth e se conectar ao seu leitor de cartão. Para conceder permissão, acesse a seção do Woo no app de configurações do sistema.";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "O leitor de Bluetooth já está pareado com outro dispositivo. Você precisa redefinir o pareamento do leitor para conectá-lo a este dispositivo.";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "A conexão por Bluetooth tem uma ID de localização inválida.";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "Este app precisa de permissão para acessar o Bluetooth e se conectar ao seu leitor de cartão. Para conceder permissão, acesse a seção do Woo no app de configurações do sistema.";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "O leitor removeu as informações de pareamento deste dispositivo. Esqueça o leitor nas preferências do iOS.";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "O leitor por Bluetooth foi desconectado, e estamos tentando conectar novamente.";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "A operação não foi cancelada porque ela já foi concluída.";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "A funcionalidade de passar o cartão está indisponível.";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "Entre em contato com o suporte: não é permitido executar o comando pelo sistema operacional.";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "O titular do cartão precisa dar consentimento para concluir esta operação.";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "Ocorreu um erro ao buscar o token de conexão.";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "O token de conexão expirou.";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "Entre em contato com o suporte: a funcionalidade está indisponível.";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "É proibido redirecionar um pagamento do modo ativo no modo de teste.";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "É proibido redirecionar um pagamento do modo de teste no modo ativo.";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "O Interac não é compatível com o modo offline.";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "Ocorreu um erro de rede desconhecido.";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "A conexão com o leitor pela Internet expirou. Verifique se o dispositivo e o leitor estão na mesma rede Wi-Fi e se o leitor está conectado a ela.";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "Entre em contato com o suporte: a chave secreta do cliente é inválida.";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "Entre em contato com o suporte: a configuração de descoberta é inválida.";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "A ID de localização é inválida.";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "O leitor da atualização é inválido.";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "Entre em contato com o suporte: os parâmetros de reembolso são inválidos.";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "Entre em contato com o suporte: um parâmetro obrigatório é inválido.";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "O leitor não conseguiu ler os dados do método de pagamento fornecido. Se este erro acontecer várias vezes, o leitor poderá estar com uma falha. Nesse caso, entre em contato com o suporte.";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "Entre em contato com o suporte: o intent de pagamento está faltando.";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "Entre em contato com o suporte: o método de pagamento de reembolso está faltando.";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "Entre em contato com o suporte: o intent da configuração está faltando.";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "A confirmação offline de pagamento e o cartão foram identificados como expirados.";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "Verifique se a conexão de rede é consistente durante o recebimento e confirmação do pagamento.";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "Um cartão de teste é usado no modo ativo quando offline.";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "A confirmação offline de pagamento e a verificação do cartão falharam.";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "O PIN online não é compatível com o modo offline. Tente fazer o pagamento de novo com outro cartão.";
+
+/* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
+"hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "Nenhum cartão foi informado dentro do prazo.";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "A configuração de conexão do leitor é inválida.";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "O leitor está sem as chaves de criptografia necessárias para receber pagamentos e foi desconectado e reinicializado. Conecte-se novamente ao leitor para tentar reinstalar as chaves. Se o problema continuar, entre em contato com o suporte.";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "Falha ao atualizar o software do leitor porque a atualização expirou. Conecte-se novamente ao leitor para realizar uma nova atualização.";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "Entre em contato com o suporte: o parâmetro de gorjeta do leitor é inválido.";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "Falha no reembolso. O banco ou emissor do cartão do cliente não conseguiu fazer o processamento corretamente (por exemplo, conta bancária encerrada ou problema com o cartão).";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "Entre em contato com o suporte. Ocorreu um erro ao decodificar a resposta da Stripe API.";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "A conta Apple vinculada foi desativada.";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "Ocorreu um erro inesperado com o leitor.";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "O leitor que a descoberta retornou não tem um endereço de IP e não pode ser conectado.";
+
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Cupons";
 
@@ -9430,12 +10840,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "Avaliações";
-
-/* Title of the hub menu AI settings button */
-"hubMenuViewModel.aiSettings" = "Configurações de IA";
-
-/* Description of the hub menu AI settings button */
-"hubMenuViewModel.aiSettingsDescription" = "Gerencie as funcionalidades com tecnologia de IA da sua loja";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google para WooCommerce";
@@ -10109,6 +11513,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "Impostos";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "Rascunho";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "Cancelado";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "Concluído";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "Com falha";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "Em espera";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "Pagamento pendente";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "Processando";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "Reembolsado";
+
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
 
@@ -10682,6 +12110,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "Cancelar";
 
+/* Title for the payment method used when collecting cash payment in Point of Sale. */
+"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pagamento presencial";
+
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
 
@@ -11012,6 +12443,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title appearing in a modal when there's an error refreshing the catalog. */
 "pos.catalog.refreshFailedTitle" = "Não é possível atualizar o catálogo";
 
+/* Accessibility label for a selected checkbox */
+"pos.checkbox.selected.accessibilityLabel" = "Selecionado";
+
+/* Accessibility label for an unselected checkbox */
+"pos.checkbox.unselected.accessibilityLabel" = "Não selecionado";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "Sem conexão com a internet";
 
@@ -11249,14 +12686,11 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "Não foi possível carregar os pedidos";
 
+/* Description for refund via a specific payment method. %@ is the payment method name */
+"pos.orderListController.refund.viaPaymentMethodFormat" = "Via %@";
+
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "Saiba mais";
-
-/* Hint text suggesting to modify search terms when no orders are found. */
-"pos.orderListView.emptyOrdersSearchHint" = "Tente ajustar o termo da pesquisa.";
-
-/* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle.1" = "Não encontramos nenhum pedido com esse nome.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Nenhum pedido encontrado";
@@ -11336,6 +12770,112 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "OK";
 
+/* Button to go back to the previous screen */
+"pos.refundConfirmationView.backButton" = "Voltar";
+
+/* Accessibility label for close button on refund confirmation modal */
+"pos.refundConfirmationView.closeButton.accessibilityLabel" = "Fechar";
+
+/* Button to confirm and process the refund */
+"pos.refundConfirmationView.confirmButton" = "Sim, continuar";
+
+/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationMessageFormat" = "Tem certeza de que deseja processar o reembolso de %1$@ %2$@? Essa ação não pode ser desfeita.";
+
+/* Title for the refund confirmation modal. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.titleFormat" = "Reembolsar %@";
+
+/* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
+"pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
+
+/* Accessibility label format for refund item with attributes.
+%1$@ is the product name.
+%2$@ is the attributes list.
+%3$@ is the price.
+%4$@ is the selection state. */
+"pos.refundItemRow.accessibilityLabelWithAttributesFormat" = "%1$@, %2$@, %3$@, %4$@";
+
+/* Format for a single attribute in accessibility label. %1$@ is the attribute name, %2$@ is the attribute value. Example: 'Size: Medium' */
+"pos.refundItemRow.attributeFormat" = "%1$@: %2$@";
+
+/* Accessibility state when item is selected for refund */
+"pos.refundItemRow.selectedState" = "Selecionado para reembolso";
+
+/* Accessibility state when item is not selected for refund */
+"pos.refundItemRow.unselectedState" = "Não selecionado para reembolso";
+
+/* Accessibility label for close button on refund items selection modal */
+"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "Fechar";
+
+/* Button to continue with selected items for refund */
+"pos.refundItemsSelectionView.continueButton" = "Continuar";
+
+/* Header label for items in the refund items selection modal */
+"pos.refundItemsSelectionView.itemsHeaderTitle" = "Selecionar todos os itens";
+
+/* Label showing number of selected items in the refund items selection modal */
+"pos.refundItemsSelectionView.itemsSelectedCountFormat" = "(%d selecionado[s])";
+
+/* Accessibility label for the select-all checkbox in the refund items selection modal */
+"pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "Marque ou desmarque todos os itens";
+
+/* Title for the refund items selection modal */
+"pos.refundItemsSelectionView.title" = "Selecione itens para reembolsar";
+
+/* Button to add the refund reason */
+"pos.refundReasonView.addButton" = "Adicionar";
+
+/* Accessibility label for back button on refund reason screen */
+"pos.refundReasonView.backButton.accessibilityLabel" = "Voltar";
+
+/* Accessibility label for close button on refund reason screen */
+"pos.refundReasonView.closeButton.accessibilityLabel" = "Fechar";
+
+/* Placeholder text for the refund reason text field */
+"pos.refundReasonView.placeholder" = "Motivo do reembolso do pedido";
+
+/* Title for the refund reason input screen */
+"pos.refundReasonView.title" = "Motivo do reembolso";
+
+/* Accessibility label for add reason button in refund review */
+"pos.refundReviewView.addReason.accessibilityLabel" = "Adicionar motivo do reembolso";
+
+/* Button to add a reason for the refund */
+"pos.refundReviewView.addReasonButton" = "Adicionar motivo";
+
+/* Accessibility label for close button on refund review modal */
+"pos.refundReviewView.closeButton.accessibilityLabel" = "Fechar";
+
+/* Button to continue with the refund */
+"pos.refundReviewView.continueButton" = "Continuar";
+
+/* Accessibility label for edit reason button in refund review */
+"pos.refundReviewView.editReason.accessibilityLabel" = "Editar motivo do reembolso";
+
+/* Button to edit an existing refund reason */
+"pos.refundReviewView.editReasonButton" = "Editar motivo";
+
+/* Button to go back and edit the refund items */
+"pos.refundReviewView.editRefundButton" = "Editar reembolso";
+
+/* Label for items subtotal row in refund review. %d is the number of items. */
+"pos.refundReviewView.itemsSubtotalFormat" = "Subtotal de itens (%d itens)";
+
+/* Placeholder text when no refund reason has been added */
+"pos.refundReviewView.reasonPlaceholder" = "Motivo do reembolso do pedido";
+
+/* Label for refund reason section in refund review */
+"pos.refundReviewView.refundReasonLabel" = "Motivo do reembolso";
+
+/* Label for refund total row in refund review */
+"pos.refundReviewView.refundTotalLabel" = "Reembolso total";
+
+/* Label for tax row in refund review */
+"pos.refundReviewView.taxLabel" = "Imposto";
+
+/* Title for the refund review modal */
+"pos.refundReviewView.title" = "Revisar reembolso";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Limpar pesquisa";
 
@@ -11389,6 +12929,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "Ponto de venda não tem compatibilidade com esta largura de tela.";
+
+/* Button title for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.buttonTitle" = "Saiba mais";
+
+/* Message for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.message" = "Aceite pagamentos presenciais com o WooCommerce POS. Configure em um tablet e comece a vender hoje mesmo.";
+
+/* Title for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.title" = "Execute o WooCommerce POS no seu tablet";
+
+/* Button to open the POS learn more page in Safari (final step of POS promotion modal) */
+"posPromotion.button.explorePOS" = "Conheça o WooCommerce POS";
+
+/* Button to go to the next step in the POS promotion modal */
+"posPromotion.button.next" = "Avançar";
+
+/* Description for the first step of the POS promotion modal */
+"posPromotion.step1.description" = "Receba pagamentos pessoalmente e os conecte à sua loja, tudo no aplicativo móvel do WooCommerce.";
+
+/* Description for the second step of the POS promotion modal */
+"posPromotion.step2.description" = "Sincronização em tempo real para dados de inventário, cliente e pedido entre sua loja online e o ponto de venda.";
+
+/* Description for the third step of the POS promotion modal */
+"posPromotion.step3.description" = "Rápido e simples de aprender.";
+
+/* Description for the fourth step of the POS promotion modal */
+"posPromotion.step4.description" = "Integrado diretamente ao aplicativo móvel do WooCommerce, sem precisar de integração com terceiros.";
+
+/* Description for the fifth step of the POS promotion modal */
+"posPromotion.step5.description" = "Use com os gateways de pagamento Stripe ou WooPayments.";
+
+/* Title for the POS promotion modal (shown on all steps) */
+"posPromotion.title" = "Ponto de venda do WooCommerce";
 
 /* Label for allow sync on cellular data toggle in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "Permitir sincronização usando dados móveis";
@@ -11705,6 +13278,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN, UPC, EAN, ISBN";
 
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "Insira somente números e hifens (-).";
+
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "Intervalo de cobrança";
 
@@ -11894,6 +13470,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Pagamento concluído";
 
+/* Settings > Store Settings row that starts the flow to enable push notifications. */
+"settings.enablePushNotifications" = "Ativar notificações por push";
+
 /* Navigates to connectivity test screen. */
 "settingsViewController.connectivity" = "Solucionar problema de conexão";
 
@@ -11969,6 +13548,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d itens de %2$@";
+
+/* Error message explaining login failure due to an unexpected authentication challenge. */
+"siteCredentialLoginError.failedAuthenticationChallenge.message" = "Não foi possível fazer login devido a uma medida de segurança inesperada em sua loja. Entre em contato com o suporte para solucionar o problema.";
+
+/* Error message explaining login failure due to unexpected response. */
+"siteCredentialLoginError.invalidLoginResponse.message" = "Não foi possível fazer login devido a uma resposta inesperada do seu site.";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "Cancelar";
@@ -13444,6 +15029,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show to user when the app can't find WordPress.org REST API URL. */
 "wordpresskit.org-rest-api.not-found" = "Não foi possível encontrar a URL da API REST do seu site. O aplicativo precisa disso para se comunicar com o seu site. Entre em contato com seu host para resolver este problema.";
 
+/* Text to suggest another form of 2FA authentication */
+"wpCom2FALoginView.anotherFormText" = "Você também pode escolher outra forma de autenticação.";
+
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "Usar uma chave de segurança";
 
@@ -13471,6 +15059,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "Se você não tiver uma conta, usaremos este e-mail para criar uma.";
 
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.enterEmail" = "Digite o endereço de e-mail ou nome de usuário";
+
 /* Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow. */
 "wpComEmailLoginView.enterUsername" = "Digite o nome de usuário";
 
@@ -13489,6 +15080,18 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Confirme se o e-mail está correto e verifique sua pasta de spam.";
 
+/* Button to submit a WPCom email on the login screen for push notification setup */
+"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "Continuar";
+
+/* Subtitle for the WPCom email login screen for push notification setup */
+"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "Faça login com sua conta do WordPress.com para conectar sua loja.";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
+"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "Ao continuar, você concorda com nossos %1$@ e em %2$@ com o WordPress.com.";
+
+/* Title for the WPCom email login screen for push notification setup */
+"wpcomEmailLoginViewModel.connectWPCom.title" = "Conectar ao WordPress.com";
+
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "Enviaremos um e-mail com um link que fará você se conectar instantaneamente, sem precisar de senha.";
 
@@ -13497,6 +15100,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title for the action of signing in using WordPress.com username and password. */
 "wpcomMagicLinkRequestView.useUsernamePassword" = "Usar nome de usuário e senha";
+
+/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.password" = "Senha";
+
+/* Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.passwordPlaceholder" = "Digite a senha da sua conta";
+
+/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.secondaryAction" = "ou continuar usando um link mágico";
+
+/* Cancel button title in the WordPress.com Push Notifications Benefits View toolbar */
+"wpcomPushNotificationsBenefitsView.cancelButton" = "Cancelar";
+
+/* Continue button title in the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.continueButton" = "Continuar";
+
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.description" = "Conecte sua loja a uma conta do WordPress.com para ter acesso às notificações por push de novos pedidos, avaliações e muito mais.";
+
+/* Not now button title in the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.notNowButton" = "Agora não";
+
+/* Secondary description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.subdescription" = "Leva apenas um minuto.";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.title" = "Desbloquear notificações por push com o WordPress.com";
+
+/* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.whatIsWPCom" = "O que é o WordPress.com?";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "https:\/\/www.usps.com\/hazmat";
@@ -13513,6 +15146,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} Acessar com o Google.";
+
+/* Country option for a site address. */
+"Åland Islands" = "Ilhas Aland";
 
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 Novo imposto definido";

@@ -19,9 +19,9 @@ struct POSItemActionHandlerTests {
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
 
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
 
         #expect(aggregateModel.cart.coupons.count == 1)
     }
@@ -38,9 +38,9 @@ struct POSItemActionHandlerTests {
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
 
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
 
         #expect(aggregateModel.cart.coupons.count == 1)
     }
@@ -56,9 +56,9 @@ struct POSItemActionHandlerTests {
 
         let product = makeProductItem()
 
-        sut.handleTap(product)
-        sut.handleTap(product)
-        sut.handleTap(product)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 0)
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }
@@ -75,9 +75,9 @@ struct POSItemActionHandlerTests {
 
         let product = makeProductItem()
 
-        sut.handleTap(product)
-        sut.handleTap(product)
-        sut.handleTap(product)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 1)
+        sut.handleTap(product, position: 2)
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }

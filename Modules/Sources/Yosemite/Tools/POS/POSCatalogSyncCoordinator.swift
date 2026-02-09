@@ -70,6 +70,9 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - variationIDs: Variation IDs to delete
     ///   - siteID: The site ID
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
+
+    /// Starts background FTS rebuild if needed (products exist but index empty)
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -123,6 +126,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     /// Tracks ongoing incremental sync tasks by site ID for cancellation
     private var ongoingIncrementalSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
+
+    /// Tracks background FTS rebuild tasks by site ID
+    private var backgroundFTSRebuildTasks: [Int64: Task<Void, Never>] = [:]
 
     /// Observable model for full sync state updates
     public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
@@ -667,6 +673,45 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
         try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
     }
+
+    // MARK: - FTS Rebuild
+
+    public func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
+        do {
+            let needsRebuild = try await grdbManager.databaseConnection.read { db in
+                try POSSearchIndexBuilder.needsRebuild(for: siteID, in: db)
+            }
+
+            guard needsRebuild else {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: FTS rebuild not needed for site \(siteID)")
+                return
+            }
+
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Starting background FTS rebuild for site \(siteID)")
+
+            let task = Task {
+                defer {
+                    backgroundFTSRebuildTasks.removeValue(forKey: siteID)
+                }
+                do {
+                    try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+                    DDLogInfo("✅ POSCatalogSyncCoordinator: Background FTS rebuild complete for site \(siteID)")
+                } catch {
+                    DDLogError("⛔️ POSCatalogSyncCoordinator: Background FTS rebuild failed for site \(siteID): \(error)")
+                }
+            }
+            backgroundFTSRebuildTasks[siteID] = task
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Failed to check FTS rebuild need: \(error)")
+        }
+    }
+
+    /// Waits for any pending background FTS rebuild task to complete.
+    public func awaitBackgroundFTSRebuild(for siteID: Int64) async {
+        guard let task = backgroundFTSRebuildTasks[siteID] else { return }
+        await task.value
+    }
+
 }
 
 // MARK: - Syncing State

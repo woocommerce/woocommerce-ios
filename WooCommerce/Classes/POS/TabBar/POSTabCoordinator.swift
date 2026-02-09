@@ -51,12 +51,15 @@ final class POSTabCoordinator {
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
         let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
+        let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
+                                                   currencySettings: currencySettings,
                                                    isLocalCatalogEnabled: isLocalCatalogEnabled,
+                                                   isFTSSearchEnabled: isFTSSearchEnabled,
                                                    posProductsOnlyEnabled: posProductsOnlyEnabled)
     }
 

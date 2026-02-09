@@ -14,6 +14,7 @@ final class FeatureFlagStoreTests: XCTestCase {
 
     private var remote: MockFeatureFlagRemote!
     private var store: FeatureFlagStore!
+    private var currentDate: Date!
 
     override func setUp() {
         super.setUp()
@@ -21,10 +22,12 @@ final class FeatureFlagStoreTests: XCTestCase {
         storageManager = MockStorageManager()
         network = MockNetwork()
         remote = MockFeatureFlagRemote()
+        currentDate = Date()
         store = FeatureFlagStore(dispatcher: dispatcher,
                                  storageManager: storageManager,
                                  network: network,
-                                 remote: remote)
+                                 remote: remote,
+                                 currentDate: { self.currentDate })
     }
 
     override func tearDown() {
@@ -33,6 +36,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         network = nil
         storageManager = nil
         dispatcher = nil
+        currentDate = nil
         super.tearDown()
     }
 
@@ -122,6 +126,70 @@ final class FeatureFlagStoreTests: XCTestCase {
         // Then - should return the new remote value (false)
         XCTAssertFalse(isEnabled)
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
+    }
+
+    func test_isRemoteFeatureFlagEnabled_when_cache_is_expired_fetches_from_remote() throws {
+        // Given
+        let cacheMaxAge: TimeInterval = 24 * 60 * 60
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
+
+        // First call to populate the cache
+        waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { _ in
+                    promise(())
+                })
+        }
+
+        // Advance time past the 24-hour limit
+        currentDate = currentDate.addingTimeInterval(cacheMaxAge + 1)
+
+        // Change the remote response
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: false]))
+
+        // When - useCache is true but cache is expired
+        let isEnabled = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: true, useCache: true) { result in
+                    promise(result)
+                })
+        }
+
+        // Then - should fetch from remote and return the new value (false)
+        XCTAssertFalse(isEnabled)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
+    }
+
+    func test_isRemoteFeatureFlagEnabled_when_cache_is_not_expired_returns_cached_value() throws {
+        // Given
+        let cacheMaxAge: TimeInterval = 24 * 60 * 60
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
+
+        // First call to populate the cache
+        waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { _ in
+                    promise(())
+                })
+        }
+
+        // Advance time but stay within the 24-hour limit
+        currentDate = currentDate.addingTimeInterval(cacheMaxAge - 1)
+
+        // Change the remote response
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: false]))
+
+        // When
+        let isEnabled = waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { result in
+                    promise(result)
+                })
+        }
+
+        // Then - should return cached value (true), not the new remote value (false)
+        XCTAssertTrue(isEnabled)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 1)
     }
 
     func test_isRemoteFeatureFlagEnabled_when_useCache_is_false_updates_cache() throws {

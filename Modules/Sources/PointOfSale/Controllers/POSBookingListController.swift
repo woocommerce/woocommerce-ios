@@ -36,7 +36,7 @@ final class POSBookingListController {
                 state = .empty
             } else {
                 let posBookings = result.bookings.map { mapToPOSBooking($0) }
-                    .sorted { $0.startTime < $1.startTime }
+                    .sorted { $0.startTime > $1.startTime }
                 state = .loaded(posBookings)
             }
         } catch {
@@ -60,7 +60,7 @@ final class POSBookingListController {
                 selectedBooking = nil
             } else {
                 let posBookings = result.bookings.map { mapToPOSBooking($0) }
-                    .sorted { $0.startTime < $1.startTime }
+                    .sorted { $0.startTime > $1.startTime }
                 state = .loaded(posBookings)
 
                 // Update selected booking with fresh data

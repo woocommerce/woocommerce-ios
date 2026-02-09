@@ -1,17 +1,17 @@
-import XCTest
-
+import Testing
+import UIKit
 import WordPressUI
 
-class ResourcesBundleTests: XCTestCase {
+@MainActor
+struct `Resources Bundle Tests` {
 
-    func testResourceBundleImageCanBeLoaded() {
+    @Test func `resource bundle image can be loaded`() {
         let icon = UIImage(named: "icon-url-field", in: Bundle.wordPressUIBundle, compatibleWith: nil)
-        XCTAssertNotNil(icon)
+        #expect(icon != nil)
     }
 
-    func testFancyAlertStoryboardCanBeLoaded() {
+    @Test func `fancy alert storyboard can be loaded`() {
         let storyboard = UIStoryboard(name: "FancyAlerts", bundle: .wordPressUIBundle)
-        XCTAssertNotNil(storyboard.instantiateInitialViewController())
+        #expect(storyboard.instantiateInitialViewController() != nil)
     }
-
 }

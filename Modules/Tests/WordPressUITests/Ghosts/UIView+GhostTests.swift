@@ -1,26 +1,27 @@
-import XCTest
-
+import Testing
+import UIKit
 @testable import WordPressUI
 
-class UIViewGhostTests: XCTestCase {
-    func testAddGhostLayer() {
+@MainActor
+struct `UIView Ghost Tests` {
+    @Test func `add ghost layer`() {
         let view = UIView()
 
         view.startGhostAnimation()
 
-        XCTAssertNotNil(view.layer.sublayers?.first(where: { $0 is GhostLayer }))
+        #expect(view.layer.sublayers?.first(where: { $0 is GhostLayer }) != nil)
     }
 
-    func testDoNotAddGhostLayer() {
+    @Test func `do not add ghost layer`() {
         let view = UIView()
         view.isGhostableDisabled = true
 
         view.startGhostAnimation()
 
-        XCTAssertNil(view.layer.sublayers?.first(where: { $0 is GhostLayer }))
+        #expect(view.layer.sublayers?.first(where: { $0 is GhostLayer }) == nil)
     }
 
-    func testDoNotAddGhostLayerInSubviews() {
+    @Test func `do not add ghost layer in subviews`() {
         let subview = UIView()
         let view = UIView()
         view.addSubview(subview)
@@ -28,6 +29,6 @@ class UIViewGhostTests: XCTestCase {
 
         view.startGhostAnimation()
 
-        XCTAssertNil(subview.layer.sublayers?.first(where: { $0 is GhostLayer }))
+        #expect(subview.layer.sublayers?.first(where: { $0 is GhostLayer }) == nil)
     }
 }

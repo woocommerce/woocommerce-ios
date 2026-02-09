@@ -2,9 +2,8 @@ import Foundation
 import Testing
 @testable import Hardware
 
-@Suite("Payment Intent Parameters Tests")
-struct PaymentIntentParametersTests {
-    @Test func test_validEmail_is_saved() {
+struct `Payment Intent Parameters Tests` {
+    @Test func `validEmail is saved`() {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -14,7 +13,7 @@ struct PaymentIntentParametersTests {
         #expect(params.receiptEmail != nil)
     }
 
-    @Test func test_not_validEmail_is_ignored() {
+    @Test func `not validEmail is ignored`() {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -24,7 +23,7 @@ struct PaymentIntentParametersTests {
         #expect(params.receiptEmail == nil)
     }
 
-    @Test func test_currency_is_lowercased() {
+    @Test func `currency is lowercased`() {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "USD",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -33,7 +32,7 @@ struct PaymentIntentParametersTests {
         #expect(params.currency == "usd")
     }
 
-    @Test func test_parameters_do_not_validate_if_currency_code_is_not_supported() {
+    @Test func `parameters do not validate if currency code is not supported`() {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "cesar",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -42,7 +41,7 @@ struct PaymentIntentParametersTests {
         #expect(params.toStripe() == nil)
     }
 
-    @Test func test_parameters_do_not_validate_if_currency_code_is_empty() {
+    @Test func `parameters do not validate if currency code is empty`() {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -51,7 +50,7 @@ struct PaymentIntentParametersTests {
         #expect(params.toStripe() == nil)
     }
 
-    @Test func test_parameters_do_not_validate_if_payment_methods_is_empty() {
+    @Test func `parameters do not validate if payment methods is empty`() {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -60,7 +59,7 @@ struct PaymentIntentParametersTests {
         #expect(params.toStripe() == nil)
     }
 
-    @Test func test_amount_is_converted_to_smallest_unit_before_being_passed_to_stripe() throws {
+    @Test func `amount is converted to smallest unit before being passed to stripe`() throws {
         let stripeSmallestCurrencyUnitMultiplier: Decimal = 200
         let amount = Decimal(120.10)
         let amountInSmallestUnit = amount * stripeSmallestCurrencyUnitMultiplier
@@ -75,7 +74,7 @@ struct PaymentIntentParametersTests {
         #expect(expectation == stripeParams.amount)
     }
 
-    @Test func test_statementDescription_replaces_expected_characters() throws {
+    @Test func `statementDescription replaces expected characters`() throws {
         let params = PaymentIntentParameters(
             amount: 100,
             currency: "usd",
@@ -90,7 +89,7 @@ struct PaymentIntentParametersTests {
         #expect(params.statementDescription == "A - DESCRIPTION- longe")
     }
 
-    @Test func test_statementDescription_leaves_strings_untouched_when_no_replacement_is_necessary() throws {
+    @Test func `statementDescription leaves strings untouched when no replacement is necessary`() throws {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -102,7 +101,7 @@ struct PaymentIntentParametersTests {
         #expect(statementDescription == "A DESCRIPTION")
     }
 
-    @Test func test_statementDescription_trims_strings_to_22_characters() throws {
+    @Test func `statementDescription trims strings to 22 characters`() throws {
         let params = PaymentIntentParameters(
             amount: 100,
             currency: "usd",
@@ -116,7 +115,7 @@ struct PaymentIntentParametersTests {
         #expect(statementDescription == "A DESCRIPTION LONGER T")
     }
 
-    @Test func test_statementDescription_is_passed_as_nil_when_empty() throws {
+    @Test func `statementDescription is passed as nil when empty`() throws {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -128,7 +127,7 @@ struct PaymentIntentParametersTests {
         #expect(stripeParameters?.statementDescriptor == nil)
     }
 
-    @Test func test_statementDescription_is_passed_as_nil_when_nil() throws {
+    @Test func `statementDescription is passed as nil when nil`() throws {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "usd",
                                              stripeSmallestCurrencyUnitMultiplier: 100,
@@ -140,7 +139,7 @@ struct PaymentIntentParametersTests {
         #expect(stripeParameters?.statementDescriptor == nil)
     }
 
-    @Test func test_cardReaderMetadata_is_passed_to_paymentIntent_when_sent_toStripe_then_stripeParameters_contains_cardReaderMetadata() {
+    @Test func `cardReaderMetadata is passed to paymentIntent when sent toStripe then stripeParameters contains cardReaderMetadata`() {
         // Given
         let expectedMetaKeys = ["reader_ID": "", "reader_model": "", "platform": ""]
         let readerID = "somereaderID"
@@ -159,7 +158,7 @@ struct PaymentIntentParametersTests {
         #expect(stripeParameters?.metadata?["platform"] == platform)
     }
 
-    @Test func test_cardReaderMetadata_is_nil_when_sent_toStripe_then_stripeParameters_does_not_contain_cardReaderMetadata() {
+    @Test func `cardReaderMetadata is nil when sent toStripe then stripeParameters does not contain cardReaderMetadata`() {
         // Given
         let sut = createPaymentIntentParameters()
 
@@ -174,7 +173,7 @@ struct PaymentIntentParametersTests {
 }
 
 /// Test helpers
-private extension PaymentIntentParametersTests {
+private extension `Payment Intent Parameters Tests` {
     func createPaymentIntentParameters(withMetaKeys: [String: String]? = nil) -> PaymentIntentParameters {
         PaymentIntentParameters(amount: 100,
                                 currency: "usd",

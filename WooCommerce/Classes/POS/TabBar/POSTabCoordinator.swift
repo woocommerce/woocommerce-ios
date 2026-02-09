@@ -266,6 +266,9 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                let isBookingsEligible = storesManager.sessionManager.defaultSite
+                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+
                 let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory? =
                     ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings)
                     ? POSBookingListFetchStrategyFactory(
@@ -291,6 +294,7 @@ private extension POSTabCoordinator {
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
                     bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
+                    isBookingsEligible: isBookingsEligible,
                     orderService: orderService,
                     refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

@@ -183,7 +183,7 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .bookingCustomers(siteID: siteID),
                                        selectedValue: MultipleFilterSelection(items: filters.customers))
         case .attendanceStatus:
-            let options: [BookingAttendanceStatus?] = [.unattended, .attended]
+            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .noShow, .cancelled]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: MultipleFilterSelection(items: filters.attendanceStatuses))
@@ -206,7 +206,7 @@ extension BookingAttendanceStatus: FilterType {
 
     var isActive: Bool {
         switch self {
-        case .unattended, .attended:
+        case .booked, .checkedIn, .cancelled, .noShow:
             return true
         case .unknown:
             return false

@@ -4,23 +4,41 @@ import enum Networking.BookingStatus
 extension BookingStatus {
     var localizedTitle: String {
         switch self {
-        case .booked:
+        case .complete:
             NSLocalizedString(
-                "bookingStatus.title.booked",
-                value: "Booked",
-                comment: "Status of a booked booking"
+                "bookingStatus.title.complete",
+                value: "Complete",
+                comment: "Status of a complete booking"
             )
-        case .completed:
+        case .paid:
             NSLocalizedString(
-                "bookingStatus.title.completed",
-                value: "Completed",
-                comment: "Status of a completed booking"
+                "bookingStatus.title.paid",
+                value: "Paid",
+                comment: "Status of a paid booking"
+            )
+        case .unpaid:
+            NSLocalizedString(
+                "bookingStatus.title.unpaid",
+                value: "Unpaid",
+                comment: "Status of an unpaid booking"
             )
         case .cancelled:
             NSLocalizedString(
                 "bookingStatus.title.canceled",
                 value: "Cancelled",
                 comment: "Status of a canceled booking"
+            )
+        case .pendingConfirmation:
+            NSLocalizedString(
+                "bookingStatus.title.pendingConfirmation",
+                value: "Pending confirmation",
+                comment: "Status of a pending confirmation booking"
+            )
+        case .confirmed:
+            NSLocalizedString(
+                "bookingStatus.title.confirmed",
+                value: "Confirmed",
+                comment: "Status of a confirmed booking"
             )
         case .unknown:
             NSLocalizedString(

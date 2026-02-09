@@ -21,7 +21,6 @@ public protocol BookingsRemoteProtocol {
         bookingID: Int64,
         attendanceStatus: BookingAttendanceStatus?,
         bookingStatus: BookingStatus?,
-        paymentStatus: BookingPaymentStatus?,
         note: String?
     ) async throws -> Booking?
 
@@ -161,7 +160,6 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         bookingID: Int64,
         attendanceStatus: BookingAttendanceStatus?,
         bookingStatus: BookingStatus?,
-        paymentStatus: BookingPaymentStatus? = nil,
         note: String?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
@@ -173,8 +171,6 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         if let bookingStatus {
             parameters[ParameterKey.status] = bookingStatus.rawValue
-        } else if let paymentStatus {
-            parameters[ParameterKey.status] = paymentStatus.rawValue
         }
 
         if let note {

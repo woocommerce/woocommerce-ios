@@ -1,7 +1,6 @@
 import SwiftUI
 import struct Yosemite.POSBooking
 import enum Yosemite.BookingStatus
-import enum Yosemite.BookingPaymentStatus
 
 struct POSBookingRowView: View {
     let booking: POSBooking
@@ -72,15 +71,9 @@ struct POSBookingRowView: View {
 
     @ViewBuilder
     private var statusText: some View {
-        if booking.bookingStatus == .cancelled {
-            Text(booking.bookingStatus.displayName)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posError)
-        } else {
-            Text(booking.paymentStatus.displayName)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(paymentStatusColor)
-        }
+        Text(booking.status.displayName)
+            .font(.posBodySmallRegular())
+            .foregroundStyle(statusColor)
     }
 
     private var formattedTimeRange: String {
@@ -90,13 +83,15 @@ struct POSBookingRowView: View {
         return "\(start) – \(end)"
     }
 
-    private var paymentStatusColor: Color {
-        switch booking.paymentStatus {
-        case .paid:
+    private var statusColor: Color {
+        switch booking.status {
+        case .confirmed, .paid, .complete:
             return .posSuccess
-        case .unpaid:
+        case .cancelled:
+            return .posError
+        case .unpaid, .pendingConfirmation:
             return .posAlert
-        case .refunded, .unknown:
+        case .unknown:
             return .posOnSurfaceVariantHighest
         }
     }
@@ -119,29 +114,20 @@ private extension DateFormatter {
 extension BookingStatus {
     var displayName: String {
         switch self {
-        case .booked:
-            return NSLocalizedString("pos.bookingStatus.booked", value: "Booked", comment: "Booking status: booked")
-        case .completed:
-            return NSLocalizedString("pos.bookingStatus.completed", value: "Completed", comment: "Booking status: completed")
+        case .complete:
+            return NSLocalizedString("pos.bookingStatus.complete", value: "Complete", comment: "Booking status: complete")
+        case .paid:
+            return NSLocalizedString("pos.bookingStatus.paid", value: "Paid", comment: "Booking status: paid")
+        case .unpaid:
+            return NSLocalizedString("pos.bookingStatus.unpaid", value: "Unpaid", comment: "Booking status: unpaid")
         case .cancelled:
             return NSLocalizedString("pos.bookingStatus.cancelled", value: "Cancelled", comment: "Booking status: cancelled")
+        case .pendingConfirmation:
+            return NSLocalizedString("pos.bookingStatus.pendingConfirmation", value: "Pending", comment: "Booking status: pending confirmation")
+        case .confirmed:
+            return NSLocalizedString("pos.bookingStatus.confirmed", value: "Confirmed", comment: "Booking status: confirmed")
         case .unknown:
             return NSLocalizedString("pos.bookingStatus.unknown", value: "Unknown", comment: "Booking status: unknown")
-        }
-    }
-}
-
-extension BookingPaymentStatus {
-    var displayName: String {
-        switch self {
-        case .paid:
-            return NSLocalizedString("pos.paymentStatus.paid", value: "Paid", comment: "Payment status: paid")
-        case .unpaid:
-            return NSLocalizedString("pos.paymentStatus.unpaid", value: "Unpaid", comment: "Payment status: unpaid")
-        case .refunded:
-            return NSLocalizedString("pos.paymentStatus.refunded", value: "Refunded", comment: "Payment status: refunded")
-        case .unknown:
-            return NSLocalizedString("pos.paymentStatus.unknown", value: "Unknown", comment: "Payment status: unknown")
         }
     }
 }

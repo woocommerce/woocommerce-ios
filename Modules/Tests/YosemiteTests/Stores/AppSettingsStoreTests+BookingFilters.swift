@@ -55,7 +55,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
-            attendanceStatuses: [.unattended, .attended],
+            attendanceStatuses: [.booked, .noShow],
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -95,7 +95,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters1 = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
-            attendanceStatuses: [.unattended],
+            attendanceStatuses: [.booked],
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -103,7 +103,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters2 = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 200, name: "Team Member 2")],
             products: [BookingProductFilter(productID: 2, name: "Product 2")],
-            attendanceStatuses: [.attended],
+            attendanceStatuses: [.noShow],
             customers: [],
             dateRange: nil
         )
@@ -166,7 +166,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let updatedFilters = StoredBookingFilters.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [.unattended],
+            attendanceStatuses: [.booked],
             customers: [BookingCustomerFilter(customerID: 20, name: "Customer 2")],
             dateRange: nil
         )
@@ -215,7 +215,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [],
-            attendanceStatuses: [.unattended],
+            attendanceStatuses: [.booked],
             customers: [],
             dateRange: nil
         )

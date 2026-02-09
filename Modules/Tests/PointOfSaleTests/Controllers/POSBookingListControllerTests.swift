@@ -183,9 +183,8 @@ private extension POSBookingListControllerTests {
             startDate: Date(),
             endDate: Date().addingTimeInterval(3600),
             formattedAmount: "$50.00",
-            bookingStatus: .booked,
-            attendanceStatus: .unattended,
-            paymentStatus: .unpaid,
+            status: .confirmed,
+            attendanceStatus: .booked,
             orderID: id * 10,
             resourceName: nil
         )

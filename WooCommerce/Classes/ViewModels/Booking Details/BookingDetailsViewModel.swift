@@ -119,7 +119,7 @@ private extension BookingDetailsViewModel {
     }
 
     func setupAttendanceSectionVisibility() {
-        if booking.bookingStatus == .cancelled {
+        if booking.attendanceStatus == .cancelled || booking.bookingStatus == .cancelled {
             deleteAttendanceSectionIfPresent()
         } else {
             insertAttendanceSectionIfAbsent()
@@ -312,7 +312,7 @@ extension BookingDetailsViewModel {
 /// Cancel booking
 extension BookingDetailsViewModel {
     var isBookingCancellable: Bool {
-        let ineligibleStatuses: [BookingStatus] = [.cancelled, .completed, .unknown]
+        let ineligibleStatuses: [BookingStatus] = [.cancelled, .complete, .unknown]
         return !ineligibleStatuses.contains(booking.bookingStatus)
     }
 

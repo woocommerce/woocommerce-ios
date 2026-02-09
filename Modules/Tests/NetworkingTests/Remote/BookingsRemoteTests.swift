@@ -139,7 +139,7 @@ struct BookingsRemoteTests {
         let booking = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .attended,
+            attendanceStatus: .noShow,
             bookingStatus: nil,
             note: nil
         )
@@ -160,7 +160,7 @@ struct BookingsRemoteTests {
         _ = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .attended,
+            attendanceStatus: .noShow,
             bookingStatus: nil,
             note: nil
         )
@@ -169,7 +169,7 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["attendance_status"] as? String) == "attended")
+        #expect((parameters["attendance_status"] as? String) == "no-show")
         #expect(parameters["status"] == nil)
     }
 
@@ -184,7 +184,7 @@ struct BookingsRemoteTests {
             from: sampleSiteID,
             bookingID: bookingID,
             attendanceStatus: nil,
-            bookingStatus: .cancelled,
+            bookingStatus: .confirmed,
             note: nil
         )
 
@@ -193,7 +193,7 @@ struct BookingsRemoteTests {
         let parameters = request.parameters
 
         #expect(parameters["attendance_status"] == nil)
-        #expect((parameters["status"] as? String) == "cancelled")
+        #expect((parameters["status"] as? String) == "confirmed")
     }
 
     @Test func test_updateBooking_sends_correct_parameters_for_both_statuses() async throws {
@@ -206,8 +206,8 @@ struct BookingsRemoteTests {
         _ = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .unattended,
-            bookingStatus: .booked,
+            attendanceStatus: .booked,
+            bookingStatus: .paid,
             note: nil
         )
 
@@ -215,8 +215,8 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["attendance_status"] as? String) == "unattended")
-        #expect((parameters["status"] as? String) == "booked")
+        #expect((parameters["attendance_status"] as? String) == "booked")
+        #expect((parameters["status"] as? String) == "paid")
     }
 
     @Test func test_fetchResources_properly_returns_parsed_resources() async throws {

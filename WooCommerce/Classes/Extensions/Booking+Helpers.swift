@@ -14,7 +14,7 @@ extension Booking {
     }
 
     var isEligibleForMarkAsPaid: Bool {
-        paymentStatus == .unpaid
+        bookingStatus == .unpaid
     }
 
     var hasAssociatedOrder: Bool {

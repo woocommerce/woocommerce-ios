@@ -317,8 +317,7 @@ private extension BookingStore {
                         bookingID: bookingID,
                         attendanceStatus: status,
                         bookingStatus: nil,
-                        paymentStatus: nil,
-                        note: nil
+                        note: nil,
                     ) {
                         await self.upsertStoredBookingsInBackground(
                             readOnlyBookings: [remoteBooking],
@@ -357,8 +356,7 @@ private extension BookingStore {
                     bookingID: bookingID,
                     attendanceStatus: nil,
                     bookingStatus: nil,
-                    paymentStatus: nil,
-                    note: note
+                    note: note,
                 ) {
                     await self.upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],
@@ -417,8 +415,7 @@ private extension BookingStore {
                     bookingID: bookingID,
                     attendanceStatus: nil,
                     bookingStatus: .cancelled,
-                    paymentStatus: nil,
-                    note: nil
+                    note: nil,
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],
@@ -448,9 +445,8 @@ private extension BookingStore {
                     from: siteID,
                     bookingID: bookingID,
                     attendanceStatus: nil,
-                    bookingStatus: nil,
-                    paymentStatus: .paid,
-                    note: nil
+                    bookingStatus: .paid,
+                    note: nil,
                 ) {
                     await upsertStoredBookingsInBackground(
                         readOnlyBookings: [remoteBooking],

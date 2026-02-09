@@ -273,7 +273,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let booking = Booking.fake()
         let viewModel = givenViewModel(booking: booking)
-        let newStatus = BookingAttendanceStatus.attended
+        let newStatus = BookingAttendanceStatus.checkedIn
 
         // When
         viewModel.updateAttendanceStatus(to: newStatus)
@@ -295,14 +295,14 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(status, newStatus)
 
         analyticsProvider.assertReceived(event: "booking_detail_attendance_status_updated",
-                                         with: ["booking_status": "attended"])
+                                         with: ["booking_status": "checked-in"])
     }
 
     func test_error_notice_displayed_when_attendance_staus_update_fails() {
         // Given
         let booking = Booking.fake()
         let viewModel = givenViewModel(booking: booking)
-        let newStatus = BookingAttendanceStatus.attended
+        let newStatus = BookingAttendanceStatus.checkedIn
         enum TestError: Error { case generic }
 
         // When

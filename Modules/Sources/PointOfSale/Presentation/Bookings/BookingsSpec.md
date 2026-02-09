@@ -110,9 +110,13 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 - No changes to the POS order list — bookings navigate directly to the order detail
 
 **Refunds**
-- Handled via the order detail view — when user taps "View Order", `POSOrderDetailsView` already has the complete refund flow
-- No separate "Refund" button on booking detail view
-- Refund flow: select items → reason → review → confirm → success (all existing)
+Two refund paths supported:
+1. **From order detail** — "View Order" navigates to `POSOrderDetailsView`, which has the full refund flow built in (available from M3 with View Order)
+2. **From booking detail** — "Issue Refund" button directly on the booking detail view (available when paid with linked order). M3 scope.
+
+Implementation options to explore:
+- **POC approach ([PR #16638](https://github.com/woocommerce/woocommerce-ios/pull/16638)):** Booking-specific `POSBookingRefundController` that reuses existing refund infrastructure (`POSRefundsServiceProtocol`, `POSRefundReviewData`, all 5 refund modal screens). The POC duplicated `POSRefundItemsSelectionView` because it's coupled to `POSOrderListModel` — decoupling that view would eliminate the duplication.
+- **Deep linking:** Navigate from booking detail directly into the order detail's refund flow (e.g. open `POSOrderDetailsView` with the refund modal pre-triggered), avoiding new refund controller code entirely.
 
 **Sort & Filter**
 - Full filter parity with the main app Bookings tab (5 filter types):
@@ -781,9 +785,17 @@ Present via `.posFullScreenCover(isPresented: $showOrderDetail)`:
 
 **Notes:**
 - `POSOrderListModel` is already in the environment (injected at `PointOfSaleEntryPointView`), so all environment dependencies are satisfied.
-- Refund flow works out of the box — `POSOrderDetailsView` handles it internally via `orderListModel`.
+- Refund flow works out of the box via View Order — `POSOrderDetailsView` handles it internally via `orderListModel`. Direct "Issue Refund" from booking detail is covered in M3-A5.
 - Receipt sending works because it only needs the `POSOrder` object, not list membership.
 - No changes to `POSOrdersView`, `OrdersRemote`, or `POSOrder` model needed.
+
+#### M3-A5. Issue Refund from booking detail
+
+"Issue Refund" button on `POSBookingDetailView` — shown when `POSBookingPaymentStatus` is `.paid` AND booking has a linked `orderID`.
+
+**Two implementation options to explore:**
+1. **POC approach ([PR #16638](https://github.com/woocommerce/woocommerce-ios/pull/16638)):** Create `POSBookingRefundController` that fetches the order via `POSOrderProviding`, converts line items to `[POSRefundSelectableItem]`, manages selection state, and delegates to `POSRefundsServiceProtocol`. Reuses all existing refund modal screens (`POSRefundReviewView`, `POSRefundReasonView`, `POSRefundConfirmationView`, `POSRefundSuccessView`, `POSRefundErrorView`) and data types (`POSRefundReviewData`, `POSRefundableItem`). The POC duplicated `POSRefundItemsSelectionView` because it reads `@Environment(POSOrderListModel.self)` — decoupling that view to accept items + closures as parameters would eliminate the duplication.
+2. **Deep linking:** Navigate from booking detail directly into the order detail's refund flow (e.g. open `POSOrderDetailsView` with the refund modal pre-triggered), avoiding new refund controller code entirely.
 
 ---
 
@@ -794,7 +806,7 @@ Present via `.posFullScreenCover(isPresented: $showOrderDetail)`:
 Full regression across all milestones:
 - M1: list → select → pay (card + cash) → receipt → done
 - M2: badges → mark attended → cancel
-- M3: filter → sort → view order → refund (via order detail)
+- M3: filter → sort → view order → refund (via order detail + from booking detail)
 
 #### M3-C2. Bug fixes and polish
 
@@ -813,16 +825,17 @@ Address issues found in testing. Focus areas:
 M3-F1 (Filter state) ── M3-F3 (Filter strategy) ── M3-A1 (Filter UI) ── M3-A2 (List update)
 M3-F3 ── M3-A3 (Controller update)
 M3-A4 (View order) ── no deps, can start immediately
+M3-A5 (Issue refund) ── depends on M3-A4 (View order provides POSOrderProviding wiring)
 
 M3-C1/C2 ── after all above
 ```
 
 ### M3 Suggested Work Split
 
-| Person A (Filter UI-focused)                   | Person B (View Order + Polish)                |
+| Person A (Filter UI-focused)                   | Person B (View Order + Refund + Polish)        |
 | ---------------------------------------------- | --------------------------------------------- |
 | M3-F1 (filter state)                           | M3-F3 (filter strategy)                       |
-| M3-A1 (filter UI), M3-A2/A3 (list+controller)  | M3-A4 (view order)                            |
+| M3-A1 (filter UI), M3-A2/A3 (list+controller)  | M3-A4 (view order), M3-A5 (issue refund)      |
 | M3-C1 + M3-C2 (testing + polish)               | M3-C1 + M3-C2 (testing + polish)             |
 
 ---
@@ -886,6 +899,16 @@ M3-C1/C2 ── after all above
 | Booking has no linked order | "View Order" button hidden |
 | Order fetch fails | Error notice with retry |
 
+### M3: Refund from Booking Detail
+| Scenario | Expected |
+|----------|----------|
+| Paid booking with linked order | "Issue Refund" button shown |
+| Unpaid booking | "Issue Refund" button hidden |
+| Cancelled booking | "Issue Refund" button hidden |
+| Booking with no linked order | "Issue Refund" button hidden |
+| Already fully refunded order | Refund flow detects and prevents double refund |
+| Refund succeeds | Booking list refreshes to reflect updated status |
+
 ### M3: Sort & Filter
 | Scenario | Expected |
 |----------|----------|
@@ -944,8 +967,9 @@ M3-C1/C2 ── after all above
 ### M3 — Modify
 - `PointOfSale/Presentation/Bookings/POSBookingListView.swift` — filter button
 - `PointOfSale/Controllers/POSBookingListController.swift` — filter strategy support
-- `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift` — "View Order" button
+- `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift` — "View Order" button + "Issue Refund" button
 - `PointOfSale/Controllers/POSOrderListController.swift` — expose `loadOrder(orderID:)` on protocol
+- `PointOfSale/Presentation/Orders/Refund/POSRefundItemsSelectionView.swift` — decouple from `POSOrderListModel` (if POC approach chosen)
 
 ---
 

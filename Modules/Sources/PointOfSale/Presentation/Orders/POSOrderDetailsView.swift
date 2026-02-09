@@ -521,6 +521,7 @@ private extension POSOrderDetailsView {
 enum RefundModalState: Identifiable, Equatable {
     case loading
     case loadingError
+    case preparationError
     case nothingToRefund
     case itemSelection
     case review(POSRefundReviewData)
@@ -534,6 +535,7 @@ enum RefundModalState: Identifiable, Equatable {
         switch self {
         case .loading: return "loading"
         case .loadingError: return "loadingError"
+        case .preparationError: return "preparationError"
         case .nothingToRefund: return "nothingToRefund"
         case .itemSelection: return "itemSelection"
         case .review: return "review"
@@ -559,6 +561,14 @@ private extension POSOrderDetailsView {
                 title: Localization.loadRefundErrorTitle,
                 subtitle: Localization.loadRefundErrorSubtitle,
                 onRetry: { initiateRefundFlow() },
+                onCancel: { refundModalState = nil },
+                onClose: { refundModalState = nil }
+            )
+        case .preparationError:
+            POSRefundErrorView(
+                title: Localization.prepareRefundErrorTitle,
+                subtitle: Localization.prepareRefundErrorSubtitle,
+                onRetry: { refundModalState = .itemSelection },
                 onCancel: { refundModalState = nil },
                 onClose: { refundModalState = nil }
             )
@@ -667,7 +677,10 @@ private extension POSOrderDetailsView {
     }
 
     func navigateToRefundReview() {
-        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else { return }
+        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+            refundModalState = .preparationError
+            return
+        }
         refundModalState = .review(reviewData)
     }
 
@@ -931,6 +944,18 @@ private enum Localization {
         "pos.orderDetailsView.loadRefundError.subtitle",
         value: "Please try again.",
         comment: "Subtitle shown when loading refund information has failed"
+    )
+
+    static let prepareRefundErrorTitle = NSLocalizedString(
+        "pos.orderDetailsView.prepareRefundError.title",
+        value: "Couldn't prepare refund",
+        comment: "Title shown when refund data preparation fails"
+    )
+
+    static let prepareRefundErrorSubtitle = NSLocalizedString(
+        "pos.orderDetailsView.prepareRefundError.subtitle",
+        value: "Please try again.",
+        comment: "Subtitle shown when refund data preparation fails"
     )
 }
 

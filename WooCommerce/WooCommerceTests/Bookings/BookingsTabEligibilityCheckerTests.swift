@@ -285,6 +285,108 @@ struct BookingsTabEligibilityCheckerTests {
         #expect(result == false)
     }
 
+    // MARK: - POS Bookings Interaction Tests
+
+    @Test func checkInitialVisibility_returns_false_when_pos_bookings_enabled_and_pos_tab_visible() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        userDefaults[.ciabBookingsTabAvailable] = [siteID.description: true]
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleBookings] = true
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults,
+                                                    isPOSTabVisible: { true })
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkInitialVisibility_returns_cached_value_when_pos_bookings_not_enabled() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        userDefaults[.ciabBookingsTabAvailable] = [siteID.description: true]
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleBookings] = false
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults,
+                                                    isPOSTabVisible: { true })
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func checkInitialVisibility_returns_cached_value_when_pos_tab_not_visible() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        userDefaults[.ciabBookingsTabAvailable] = [siteID.description: true]
+        let featureFlagService = MockFeatureFlagService()
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleBookings] = true
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults,
+                                                    isPOSTabVisible: { false })
+
+        // When
+        let result = checker.checkInitialVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func checkVisibility_returns_false_when_pos_bookings_enabled_and_pos_tab_visible() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleBookings] = true
+        setupStoreHasBookableProducts(hasProducts: true)
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults,
+                                                    isPOSTabVisible: { true })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func checkVisibility_returns_true_when_pos_bookings_enabled_but_pos_tab_not_visible() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
+        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSaleBookings] = true
+        setupStoreHasBookableProducts(hasProducts: true)
+        let checker = BookingsTabEligibilityChecker(site: site,
+                                                    stores: stores,
+                                                    featureFlagService: featureFlagService,
+                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+                                                    userDefaults: userDefaults,
+                                                    isPOSTabVisible: { false })
+
+        // When
+        let result = await checker.checkVisibility()
+
+        // Then
+        #expect(result == true)
+    }
+
     // MARK: - UserDefaults Extension Tests
 
     @Test func userDefaults_loadCachedBookingsTabVisibility_returns_false_when_no_cache() async throws {

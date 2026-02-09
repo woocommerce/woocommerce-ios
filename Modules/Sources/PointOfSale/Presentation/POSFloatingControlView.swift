@@ -15,6 +15,7 @@ struct POSFloatingControlView: View {
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
     @State private var showBookings: Bool = false
+    @Environment(\.posBookingsEligible) private var isBookingsEligible
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -106,7 +107,7 @@ private extension POSFloatingControlView {
             }
         }
 
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
             Button {
                 showBookings = true
             } label: {

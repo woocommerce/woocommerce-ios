@@ -146,7 +146,7 @@ final class MainTabBarController: UITabBarController {
     private let analytics: Analytics
     private let posTabVisibilityCheckerFactory: ((_ site: Site) -> POSTabVisibilityCheckerProtocol)
     private let posEligibilityService: POSEligibilityServiceProtocol
-    private let bookingsEligibilityCheckerFactory: ((_ site: Site) -> BookingsTabEligibilityCheckerProtocol)
+    private let bookingsEligibilityCheckerFactory: ((_ site: Site, _ isPOSTabVisible: @escaping () -> Bool) -> BookingsTabEligibilityCheckerProtocol)
     private let userDefaults: UserDefaults
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
@@ -172,7 +172,7 @@ final class MainTabBarController: UITabBarController {
           stores: StoresManager = ServiceLocator.stores,
           posTabVisibilityCheckerFactory: ((Site) -> POSTabVisibilityCheckerProtocol)? = nil,
           posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
-          bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
+          bookingsEligibilityCheckerFactory: ((_ site: Site, _ isPOSTabVisible: @escaping () -> Bool) -> BookingsTabEligibilityCheckerProtocol)? = nil,
           userDefaults: UserDefaults = .standard) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
@@ -183,8 +183,8 @@ final class MainTabBarController: UITabBarController {
             POSTabVisibilityChecker(site: site)
         }
         self.posEligibilityService = posEligibilityService
-        self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory ?? { site in
-            BookingsTabEligibilityChecker(site: site)
+        self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory ?? { site, isPOSTabVisible in
+            BookingsTabEligibilityChecker(site: site, isPOSTabVisible: isPOSTabVisible)
         }
         self.userDefaults = userDefaults
         super.init(coder: coder)
@@ -201,8 +201,8 @@ final class MainTabBarController: UITabBarController {
             POSTabVisibilityChecker(site: site)
         }
         self.posEligibilityService = POSEligibilityService()
-        self.bookingsEligibilityCheckerFactory = { site in
-            BookingsTabEligibilityChecker(site: site)
+        self.bookingsEligibilityCheckerFactory = { site, isPOSTabVisible in
+            BookingsTabEligibilityChecker(site: site, isPOSTabVisible: isPOSTabVisible)
         }
         self.userDefaults = .standard
         super.init(coder: coder)
@@ -355,6 +355,7 @@ final class MainTabBarController: UITabBarController {
         )
         let isBookingsTabVisible = BookingsTabEligibilityChecker.checkInitialVisibility(
             for: siteID,
+            isPOSTabVisible: isPOSTabVisible,
             in: userDefaults
         )
 
@@ -902,7 +903,7 @@ private extension MainTabBarController {
     }
 
     func observeBookingsEligibilityForBookingsTabVisibility(site: Site) {
-        let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
+        let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site, { [weak self] in self?.isPOSTabVisible ?? false })
         self.bookingsEligibilityChecker = bookingsEligibilityChecker
 
         // Sets Bookings tab initial visibility based on cached value if available.

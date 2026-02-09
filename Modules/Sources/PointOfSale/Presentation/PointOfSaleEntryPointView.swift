@@ -48,6 +48,7 @@ public struct PointOfSaleEntryPointView: View {
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let isLocalCatalogEligible: Bool
+    private let isBookingsEligible: Bool
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -57,6 +58,7 @@ public struct PointOfSaleEntryPointView: View {
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol?,
+         isBookingsEligible: Bool,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
@@ -154,6 +156,7 @@ public struct PointOfSaleEntryPointView: View {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
+        self.isBookingsEligible = isBookingsEligible
     }
 
     public var body: some View {
@@ -193,6 +196,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
+        .environment(\.posBookingsEligible, isBookingsEligible)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
@@ -223,6 +227,7 @@ public struct PointOfSaleEntryPointView: View {
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
         bookingListFetchStrategyFactory: nil,
+        isBookingsEligible: true,
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),
         onPointOfSaleModeActiveStateChange: { _ in },

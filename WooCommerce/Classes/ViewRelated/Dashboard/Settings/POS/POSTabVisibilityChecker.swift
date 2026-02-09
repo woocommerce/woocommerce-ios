@@ -56,8 +56,10 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
 
     /// Checks the final visibility of the POS tab.
     func checkVisibility() async -> Bool {
-        guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
-            return false
+        if !featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings) {
+            guard siteCIABEligibilityChecker.isFeatureSupported(.pointOfSale, for: site) else {
+                return false
+            }
         }
 
         guard userInterfaceIdiom == .pad else {

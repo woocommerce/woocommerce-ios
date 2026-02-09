@@ -634,8 +634,8 @@ final class MainTabBarControllerTests: XCTestCase {
                                      POSTabVisibilityChecker(site: site, eligibilityService: mockPOSEligibilityService)
                                  },
                                  posEligibilityService: mockPOSEligibilityService,
-                                 bookingsEligibilityCheckerFactory: { site in
-                                     BookingsTabEligibilityChecker(site: site, userDefaults: userDefaults)
+                                 bookingsEligibilityCheckerFactory: { site, isPOSTabVisible in
+                                     BookingsTabEligibilityChecker(site: site, userDefaults: userDefaults, isPOSTabVisible: isPOSTabVisible)
                                  },
                                  userDefaults: userDefaults)
         }))
@@ -680,7 +680,7 @@ final class MainTabBarControllerTests: XCTestCase {
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
             return MainTabBarController(coder: coder,
                                         stores: stores,
-                                        bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
+                                        bookingsEligibilityCheckerFactory: { _, _ in mockBookingsEligibilityChecker })
         }) else {
             return
         }

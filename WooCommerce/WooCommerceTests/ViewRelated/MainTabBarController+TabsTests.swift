@@ -169,7 +169,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
-                                        bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
+                                        bookingsEligibilityCheckerFactory: { _, _ in mockBookingsEligibilityChecker })
         }) else {
             return
         }
@@ -227,7 +227,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
-                                        bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
+                                        bookingsEligibilityCheckerFactory: { _, _ in mockBookingsEligibilityChecker })
         }) else {
             return
         }
@@ -280,7 +280,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             return MainTabBarController(coder: coder,
                                         featureFlagService: MockFeatureFlagService(),
                                         stores: storesManager,
-                                        bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker })
+                                        bookingsEligibilityCheckerFactory: { _, _ in mockBookingsEligibilityChecker })
         }) else {
             return
         }

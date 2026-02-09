@@ -15,35 +15,51 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
     private let featureFlagService: FeatureFlagService
     private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let userDefaults: UserDefaults
+    private let isPOSTabVisible: () -> Bool
 
     init(site: Site,
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         isPOSTabVisible: @escaping () -> Bool = { false }) {
         self.site = site
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.ciabEligibilityChecker = ciabEligibilityChecker
         self.userDefaults = userDefaults
+        self.isPOSTabVisible = isPOSTabVisible
     }
 
     /// Checks the initial visibility of the Bookings tab using cached result.
     func checkInitialVisibility() -> Bool {
-        userDefaults.loadCachedBookingsTabVisibility(siteID: site.siteID)
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings) && isPOSTabVisible() {
+            return false
+        }
+        return userDefaults.loadCachedBookingsTabVisibility(siteID: site.siteID)
     }
 
     /// Checks the initial visibility without the `BookingsTabEligibilityChecker` instsance
     /// Used for the initial state check when a site instance hasn't been loaded but a `siteID` is available
     static func checkInitialVisibility(
         for siteID: Int64,
+        isPOSTabVisible: Bool = false,
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
         in userDefaults: UserDefaults = .standard
     ) -> Bool {
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings) && isPOSTabVisible {
+            return false
+        }
         return userDefaults.loadCachedBookingsTabVisibility(siteID: siteID)
     }
 
     /// Checks the final visibility of the Bookings tab.
     func checkVisibility() async -> Bool {
+        // When POS bookings is enabled and POS tab is visible, bookings are accessed through POS
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings) && isPOSTabVisible() {
+            return false
+        }
+
         // Check feature flag
         guard featureFlagService.isFeatureFlagEnabled(.ciabBookings) else {
             return false

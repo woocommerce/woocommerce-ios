@@ -33,6 +33,11 @@ struct POSFeatureFlagsKey: EnvironmentKey {
     static let defaultValue: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
 }
 
+/// Environment key for POS bookings eligibility (true if the site supports bookings)
+struct POSBookingsEligibilityKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
 /// Environment key for POS connectivity
 struct POSConnectivityKey: EnvironmentKey {
     static let defaultValue: POSConnectivityProviding = EmptyPOSConnectivityProvider()
@@ -67,6 +72,11 @@ extension EnvironmentValues {
     var posFeatureFlags: POSFeatureFlagProviding {
         get { self[POSFeatureFlagsKey.self] }
         set { self[POSFeatureFlagsKey.self] = newValue }
+    }
+
+    var posBookingsEligible: Bool {
+        get { self[POSBookingsEligibilityKey.self] }
+        set { self[POSBookingsEligibilityKey.self] = newValue }
     }
 
     var posConnectivityProvider: POSConnectivityProviding {

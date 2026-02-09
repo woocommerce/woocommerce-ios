@@ -1,15 +1,14 @@
 import Testing
 @testable import Hardware
 
-@Suite("Stripe Card Reader Cache Tests")
-struct StripeCardReaderCacheTests {
-    @Test func test_cache_is_initialized_empty() {
+struct `Stripe Card Reader Cache Tests` {
+    @Test func `cache is initialized empty`() {
         let cache = StripeCardReaderDiscoveryCache()
 
         #expect(cache.cachedReaders.isEmpty)
     }
 
-    @Test func test_cache_contains_cached_readers_after_adding_one_reader() {
+    @Test func `cache contains cached readers after adding one reader`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
@@ -19,7 +18,7 @@ struct StripeCardReaderCacheTests {
         #expect(cache.cachedReaders.first?.serialNumber == mockReader.serialNumber)
     }
 
-    @Test func test_cache_contains_cached_readers_after_adding_an_array_of_readers() {
+    @Test func `cache contains cached readers after adding an array of readers`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()
@@ -29,7 +28,7 @@ struct StripeCardReaderCacheTests {
         #expect(cache.cachedReaders.first?.serialNumber == mockReader.serialNumber)
     }
 
-    @Test func test_cache_matches_stripe_reader() {
+    @Test func `cache matches stripe reader`() {
         let mockStripeBBPOSReader = MockStripeCardReader.bbposChipper2XBT()
         let mockStripeM2Reader = MockStripeCardReader.stripeM2()
 
@@ -50,7 +49,7 @@ struct StripeCardReaderCacheTests {
         #expect(mockStripeBBPOSReader.serialNumber == readerMatching?.serialNumber)
     }
 
-    @Test func test_cache_clears_cache() {
+    @Test func `cache clears cache`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
 
         let cache = StripeCardReaderDiscoveryCache()

@@ -2,47 +2,46 @@ import Testing
 @testable import Hardware
 
 /// Tests the mapping between PaymentIntent and SCPPaymentIntent
-@Suite("Payment Intent Tests")
-struct PaymentIntentTests {
+struct `Payment Intent Tests` {
     private let mockIntent = MockStripePaymentIntent.mock()
 
-    @Test func test_intent_maps_id() {
+    @Test func `intent maps id`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         #expect(intent.id == mockIntent.stripeId)
     }
 
-    @Test func test_intent_maps_status() {
+    @Test func `intent maps status`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         #expect(intent.status == .succeeded)
     }
 
-    @Test func test_intent_maps_date_created() {
+    @Test func `intent maps date created`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         #expect(intent.created == mockIntent.created)
     }
 
-    @Test func test_intent_maps_amount() {
+    @Test func `intent maps amount`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         #expect(intent.amount == mockIntent.amount)
     }
 
-    @Test func test_intent_maps_currency() {
+    @Test func `intent maps currency`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         #expect(intent.currency == mockIntent.currency)
     }
 
-    @Test func test_intent_maps_metadata() {
+    @Test func `intent maps metadata`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         #expect(intent.metadata == nil)
     }
 
-    @Test func test_intent_maps_charges() {
+    @Test func `intent maps charges`() {
         let intent = PaymentIntent(intent: mockIntent)
 
         // Very indirect test, that doesn't really test much.
@@ -54,7 +53,7 @@ struct PaymentIntentTests {
         #expect(intent.charges.count == mockIntent.charges.count)
     }
 
-    @Test func test_paymentMethod_is_nil_when_there_are_no_charges() {
+    @Test func `paymentMethod is nil when there are no charges`() {
         // When
         let intent = PaymentIntent(intent: mockIntent)
 
@@ -62,7 +61,7 @@ struct PaymentIntentTests {
         #expect(intent.paymentMethod() == nil)
     }
 
-    @Test func test_paymentMethod_is_set_by_the_first_charge_when_there_are_two_charges() {
+    @Test func `paymentMethod is set by the first charge when there are two charges`() {
         // When
         let intent = PaymentIntent(id: "",
                                    status: .processing,

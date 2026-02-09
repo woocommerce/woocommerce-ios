@@ -123,7 +123,7 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
   5. Date & Time — custom date range with from/to pickers
 - Sort by date only: "Newest to Oldest" / "Oldest to Newest" (matching main app Bookings tab — `BookingListViewModel.SortBy` only supports date sorting by `startDate`)
 - SwiftUI POS-styled rebuild (existing Bookings tab uses UIKit `FilterListViewController`)
-- Reuse existing data models: `BookingTeamMemberFilter`, `BookingProductFilter`, `BookingCustomerFilter`, `BookingDateRangeFilter`
+- The API contract is `BookingFilters` (Networking) — POS filter UI types are an implementation detail decided at build time
 - Sort handled via `BookingsRemote.Order` enum (`.ascending`/`.descending`) — no changes to `BookingFilters` needed
 - Filter button in list header with active filter count badge
 - "Apply" + "Reset" buttons
@@ -664,25 +664,16 @@ M2-A1 ── M2-A3 (Row enrichment)
 #### M3-F1. POSBookingFilterState
 **New file:** `PointOfSale/Models/POSBookingFilterState.swift`
 
-```swift
-struct POSBookingFilterState: Equatable {
-    var teamMembers: [BookingTeamMemberFilter]
-    var products: [BookingProductFilter]
-    var attendanceStatuses: [BookingAttendanceStatus]
-    var customers: [BookingCustomerFilter]
-    var dateRange: BookingDateRangeFilter?
-    var sortOrder: BookingsRemote.Order  // .ascending (oldest first) or .descending (newest first)
-}
-```
+Filter state model that captures the user's filter selections. Must produce a `BookingFilters` (Networking) for the API call. The specific filter value types used in the POS UI are an implementation detail — they may reuse existing types from the main app (`BookingTeamMemberFilter`, `BookingProductFilter`, etc.) or use POS-specific types, depending on what the filter UI needs at build time.
 
-Sort is always by `startDate` — matching the main app's Bookings tab behavior. No `BookingSortOption` enum needed.
+**API contract:** The filtered strategy must produce a `BookingFilters` object with:
+- `resourceIDs: [Int64]` (team member filter)
+- `productIDs: [Int64]` (product filter)
+- `customerIDs: [Int64]` (customer filter)
+- `attendanceStatuses: [String]` (attendance filter)
+- `startDateBefore` / `startDateAfter` (date range filter)
 
-Reuses existing data models from the main app Bookings tab:
-- `BookingTeamMemberFilter` (name + resourceID)
-- `BookingProductFilter` (name + productID)
-- `BookingCustomerFilter` (name + customerID)
-- `BookingDateRangeFilter` (startDate + endDate)
-- `BookingAttendanceStatus` enum (unattended, attended)
+Sort is always by `startDate` via `BookingsRemote.Order` (`.ascending`/`.descending`).
 
 #### M3-F2. ~~Add `orderby` to BookingFilters~~ (No longer needed)
 
@@ -691,13 +682,7 @@ Sort is handled by the existing `BookingsRemote.Order` enum (`.ascending`/`.desc
 #### M3-F3. POSFilteredBookingListFetchStrategy
 **New file:** `Yosemite/PointOfSale/BookingList/POSFilteredBookingListFetchStrategy.swift`
 
-New strategy that builds `BookingFilters` from `POSBookingFilterState`:
-- Maps `teamMembers` → `BookingFilters.resourceIDs`
-- Maps `products` → `BookingFilters.productIDs`
-- Maps `customers` → `BookingFilters.customerIDs`
-- Maps `attendanceStatuses` → `BookingFilters.attendanceStatuses`
-- Maps `dateRange` → `startDateBefore`/`startDateAfter`
-- Maps `sortOrder` → `BookingsRemote.Order` (`.ascending`/`.descending`) — always sorts by `startDate`
+New strategy that converts `POSBookingFilterState` into a `BookingFilters` object and passes it to the service. The mapping from filter state to `BookingFilters` fields (`resourceIDs`, `productIDs`, `customerIDs`, `attendanceStatuses`, dates) is straightforward regardless of the POS-side filter types chosen.
 
 Update `POSBookingListFetchStrategyFactory` to produce filtered strategy.
 
@@ -723,11 +708,10 @@ Plus sort controls:
 
 "Apply" + "Reset" buttons. Active filter count shown on filter button in list header.
 
-**Existing data models to reuse:**
-- `BookingTeamMemberFilter`, `BookingProductFilter`, `BookingCustomerFilter`, `BookingDateRangeFilter`
-- `BookingDateTimeFilterView` (SwiftUI, potentially adaptable to POS styling)
-- `BookingFiltersViewModel.BookingListFilter` enum + `createViewModel()` pattern
-- Note: The main app filter UI uses UIKit `FilterListViewController` — POS needs SwiftUI rebuild
+**References:**
+- Main app filter UI uses UIKit `FilterListViewController` — POS needs a SwiftUI rebuild
+- `BookingDateTimeFilterView` is already SwiftUI and may be adaptable to POS styling
+- The main app's `BookingFiltersViewModel` and filter models are reference implementations, not necessarily the types POS will use
 
 #### M3-A2. POSBookingListView — add filter button
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingListView.swift`

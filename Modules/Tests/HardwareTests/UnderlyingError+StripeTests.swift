@@ -2,10 +2,9 @@ import Testing
 @testable import Hardware
 import StripeTerminal
 
-@Suite("Underlying Error Stripe Tests")
-struct UnderlyingError_StripeTests {
+struct `Underlying Error Stripe Tests` {
 
-    @Test func test_stripe_stripeAPIDeclineCode_used_to_determine_decline_reason() {
+    @Test func `stripe stripeAPIDeclineCode used to determine decline reason`() {
         // Given
         let fakeStripeDeclineError = NSError(domain: ErrorDomain,
                                              code: ErrorCode.declinedByStripeAPI.rawValue,

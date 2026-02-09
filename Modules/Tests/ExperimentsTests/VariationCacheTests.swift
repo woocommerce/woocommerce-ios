@@ -1,9 +1,8 @@
 import Testing
 @testable import Experiments
 
-@Suite("Variation Cache Tests")
-struct VariationCacheTests {
-    @Test func test_variation_is_nil_when_the_value_does_not_exist() throws {
+struct `Variation Cache Tests` {
+    @Test func `variation is nil when the value does not exist`() throws {
         // Given
         let userDefaults = try #require(UserDefaults(suiteName: UUID().uuidString))
 
@@ -14,7 +13,7 @@ struct VariationCacheTests {
         #expect(cache.variation(for: .mockLoggedOut) == nil)
     }
 
-    @Test func test_correct_variation_is_returned_after_setting_it() throws {
+    @Test func `correct variation is returned after setting it`() throws {
         // Given
         let userDefaults = try #require(UserDefaults(suiteName: UUID().uuidString))
         let cache = VariationCache(userDefaults: userDefaults)
@@ -26,7 +25,7 @@ struct VariationCacheTests {
         #expect(cache.variation(for: .mockLoggedOut) == .treatment)
     }
 
-    @Test func test_it_throws_when_trying_to_cache_logged_in_experiment() throws {
+    @Test func `it throws when trying to cache logged in experiment`() throws {
         // Given
         let userDefaults = try #require(UserDefaults(suiteName: UUID().uuidString))
         let cache = VariationCache(userDefaults: userDefaults)

@@ -62,9 +62,11 @@ final class POSBookingRefundController {
     }
 
     /// Whether the payment gateway likely supports automatic refunds.
+    /// Returns `false` when no gateway is associated (e.g. order manually marked as completed).
     var supportsAutomaticRefund: Bool {
         guard let order = fetchedOrder else { return false }
-        return order.paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+        let methodID = order.paymentMethodID
+        return !methodID.isEmpty && methodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
     }
 
     /// A human-readable description of the payment method (e.g. "via Credit Card").

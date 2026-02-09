@@ -71,14 +71,24 @@ public final class POSBookingService: POSBookingServiceProtocol, @unchecked Send
             startDateAfter: dateFormatter.string(from: startOfDay)
         )
 
-        let bookings = try await bookingsRemote.loadAllBookings(
-            for: siteID,
-            pageNumber: 1,
-            pageSize: 100,
-            filters: filters,
-            searchQuery: nil,
-            order: .ascending
-        )
+        DDLogInfo("📚 POSBookingService: Fetching bookings for siteID=\(siteID), after=\(dateFormatter.string(from: startOfDay)), before=\(dateFormatter.string(from: endOfDay))")
+
+        let bookings: [Booking]
+        do {
+            bookings = try await bookingsRemote.loadAllBookings(
+                for: siteID,
+                pageNumber: 1,
+                pageSize: 100,
+                filters: filters,
+                searchQuery: nil,
+                order: .ascending
+            )
+            DDLogInfo("📚 POSBookingService: Fetched \(bookings.count) bookings successfully")
+        } catch {
+            DDLogError("⛔️ POSBookingService: loadAllBookings failed with error: \(error)")
+            DDLogError("⛔️ POSBookingService: error localizedDescription: \(error.localizedDescription)")
+            throw error
+        }
 
         // Fetch orders for all bookings that have order IDs
         let orderIDs = bookings.compactMap { $0.orderID > 0 ? $0.orderID : nil }

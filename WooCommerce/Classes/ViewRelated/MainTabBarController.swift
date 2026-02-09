@@ -70,15 +70,15 @@ extension WooTab {
     ///   - isBookingsTabVisible: indicates if the Bookings tab is visible.
     /// - Returns: visible tabs in the tab bar.
     static func visibleTabs(isPOSTabVisible: Bool, isBookingsTabVisible: Bool = false) -> [WooTab] {
-        var tabs: [WooTab] = [.myStore, .orders, .products]
+        var tabs: [WooTab] = [.myStore, .orders, .products, .pointOfSale, .bookings]
 
-        if isBookingsTabVisible {
-            tabs.append(.bookings)
-        }
-
-        if isPOSTabVisible {
-            tabs.append(.pointOfSale)
-        }
+//        if isBookingsTabVisible {
+//            tabs.append(.bookings)
+//        }
+//
+//        if isPOSTabVisible {
+//            tabs.append(.pointOfSale)
+//        }
 
         tabs.append(.hubMenu)
         return tabs

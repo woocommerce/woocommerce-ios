@@ -147,10 +147,11 @@ public struct PointOfSaleEntryPointView: View {
 
         // Create bookings model if booking service and order provider are provided
         if let bookingService, let bookingOrderProvider {
+            let currencyFormatter = CurrencyFormatter(currencySettings: services.currency.currencySettings)
             let bookingListController = POSBookingListController(
                 siteID: siteID,
                 bookingService: bookingService,
-                currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings)
+                currencyFormatter: currencyFormatter
             )
             self.bookingsModel = POSBookingsModel(
                 bookingListController: bookingListController,
@@ -158,7 +159,9 @@ public struct PointOfSaleEntryPointView: View {
                 bookingService: bookingService,
                 cardPaymentFacade: cardPresentPaymentService,
                 receiptSender: receiptSender,
-                orderProvider: bookingOrderProvider
+                orderProvider: bookingOrderProvider,
+                refundsService: refundsService,
+                currencyFormatter: currencyFormatter
             )
         } else {
             self.bookingsModel = nil

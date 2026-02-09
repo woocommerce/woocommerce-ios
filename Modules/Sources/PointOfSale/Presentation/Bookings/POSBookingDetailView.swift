@@ -7,17 +7,20 @@ struct POSBookingDetailView: View {
     let onBack: () -> Void
     let onPayByCard: () -> Void
     let onPayByCash: () -> Void
+    let onIssueRefund: (() -> Void)?
 
     init(booking: POSBooking,
          isRefreshing: Bool = false,
          onBack: @escaping () -> Void,
          onPayByCard: @escaping () -> Void,
-         onPayByCash: @escaping () -> Void) {
+         onPayByCash: @escaping () -> Void,
+         onIssueRefund: (() -> Void)? = nil) {
         self.booking = booking
         self.isRefreshing = isRefreshing
         self.onBack = onBack
         self.onPayByCard = onPayByCard
         self.onPayByCash = onPayByCash
+        self.onIssueRefund = onIssueRefund
     }
 
     @Environment(\.siteTimezone) private var siteTimezone
@@ -280,11 +283,20 @@ struct POSBookingDetailView: View {
                 }
 
             case .paid:
-                statusMessage(
-                    icon: "checkmark.circle.fill",
-                    text: Localization.paymentComplete,
-                    color: .posSuccess
-                )
+                VStack(spacing: POSSpacing.medium) {
+                    statusMessage(
+                        icon: "checkmark.circle.fill",
+                        text: Localization.paymentComplete,
+                        color: .posSuccess
+                    )
+
+                    if let onIssueRefund {
+                        Button(Localization.issueRefund) {
+                            onIssueRefund()
+                        }
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
+                    }
+                }
 
             case .cancelled:
                 statusMessage(
@@ -360,6 +372,11 @@ struct POSBookingDetailView: View {
             "posBookingDetail.paymentComplete",
             value: "Payment Complete",
             comment: "Status for paid booking"
+        )
+        static let issueRefund = NSLocalizedString(
+            "posBookingDetail.issueRefund",
+            value: "Issue Refund",
+            comment: "Button to start the refund flow for a paid booking"
         )
         static let bookingCancelled = NSLocalizedString(
             "posBookingDetail.bookingCancelled",

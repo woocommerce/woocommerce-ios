@@ -1,4 +1,5 @@
 // periphery:ignore:all
+import CocoaLumberjackSwift
 import Foundation
 
 /// Protocol for `BookingsRemote` mainly used for mocking.
@@ -134,7 +135,30 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         let request = JetpackRequest(wooApiVersion: .wcBookings, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = ListMapper<Booking>(siteID: siteID)
 
-        return try await enqueue(request, mapper: mapper)
+        do {
+            let result = try await enqueue(request, mapper: mapper)
+            DDLogInfo("📚 BookingsRemote.loadAllBookings: Successfully decoded \(result.count) bookings")
+            return result
+        } catch {
+            DDLogError("⛔️ BookingsRemote.loadAllBookings FAILED - path: \(path), siteID: \(siteID)")
+            DDLogError("⛔️ BookingsRemote.loadAllBookings error type: \(type(of: error))")
+            DDLogError("⛔️ BookingsRemote.loadAllBookings error: \(error)")
+            if let decodingError = error as? DecodingError {
+                switch decodingError {
+                case .typeMismatch(let type, let context):
+                    DDLogError("⛔️ DecodingError.typeMismatch: expected \(type), path: \(context.codingPath), \(context.debugDescription)")
+                case .valueNotFound(let type, let context):
+                    DDLogError("⛔️ DecodingError.valueNotFound: \(type), path: \(context.codingPath), \(context.debugDescription)")
+                case .keyNotFound(let key, let context):
+                    DDLogError("⛔️ DecodingError.keyNotFound: \(key), path: \(context.codingPath), \(context.debugDescription)")
+                case .dataCorrupted(let context):
+                    DDLogError("⛔️ DecodingError.dataCorrupted: path: \(context.codingPath), \(context.debugDescription)")
+                @unknown default:
+                    DDLogError("⛔️ DecodingError unknown: \(decodingError)")
+                }
+            }
+            throw error
+        }
     }
 
     public func loadBooking(

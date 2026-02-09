@@ -1,17 +1,19 @@
-import XCTest
+import Testing
+import UIKit
 @testable import WordPressUI
 
-class UIViewControllerHelperTest: XCTestCase {
+@MainActor
+struct `UIViewController Helper Tests` {
     let vca = UIViewController()
     let vcb = UIViewController()
 
-    func testAddChildViewController() {
+    @Test func `add child view controller`() {
         vca.add(vcb)
-        XCTAssertFalse(vca.children.isEmpty, "vca.children shouldn't be empty")
+        #expect(!vca.children.isEmpty, "vca.children shouldn't be empty")
     }
 
-    func testRemoveChildViewController() {
+    @Test func `remove child view controller`() {
         vca.remove(vcb)
-        XCTAssertTrue(vca.children.isEmpty, "vca.children should be empty")
+        #expect(vca.children.isEmpty, "vca.children should be empty")
     }
 }

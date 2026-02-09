@@ -1,48 +1,49 @@
-import XCTest
-
+import Testing
+import UIKit
 @testable import WordPressUI
 
-class UITableViewGhostTests: XCTestCase {
-    func test_call_will_start_ghost_animation_before_animating() {
+@MainActor
+struct `UITableView Ghost Tests` {
+    @Test func `call will start ghost animation before animating`() {
         let tableView = UITableView()
         tableView.register(GhostMockCell.self, forCellReuseIdentifier: "ghost")
         tableView.displayGhostContent(options: GhostOptions(reuseIdentifier: "ghost", rowsPerSection: [1]), style: .default)
 
         tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 0, section: 0))
 
-        XCTAssertTrue(GhostMockCell.willStartGhostAnimationCalled)
+        #expect(GhostMockCell.willStartGhostAnimationCalled)
     }
 
-    func test_cell_doesnt_have_to_conform_to_GhostCellDelegate() {
+    @Test func `cell doesnt have to conform to GhostCellDelegate`() {
         let tableView = UITableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.displayGhostContent(options: GhostOptions(reuseIdentifier: "cell", rowsPerSection: [1]), style: .default)
 
         let cell = tableView.dataSource?.tableView(tableView, cellForRowAt: IndexPath(row: 0, section: 0))
 
-        XCTAssertNotNil(cell)
+        #expect(cell != nil)
     }
 
-    func test_tableview_will_disable_selection_when_animating() {
+    @Test func `tableview will disable selection when animating`() {
         // Given
         let tableView = UITableView()
         tableView.register(GhostMockCell.self, forCellReuseIdentifier: "ghost")
-        XCTAssertTrue(tableView.allowsSelection)
+        #expect(tableView.allowsSelection)
 
         // When
         tableView.displayGhostContent(options: GhostOptions(reuseIdentifier: "ghost", rowsPerSection: [1]), style: .default)
 
         // Then
-        XCTAssertFalse(tableView.allowsSelection)
+        #expect(!tableView.allowsSelection)
 
         // When
         tableView.removeGhostContent()
 
         // Then
-        XCTAssertTrue(tableView.allowsSelection)
+        #expect(tableView.allowsSelection)
     }
 
-    func test_tableview_will_have_original_selection_state_after_removing_ghost_content() {
+    @Test func `tableview will have original selection state after removing ghost content`() {
         // Given
         let tableView = UITableView()
         tableView.register(GhostMockCell.self, forCellReuseIdentifier: "ghost")
@@ -52,13 +53,13 @@ class UITableViewGhostTests: XCTestCase {
         tableView.displayGhostContent(options: GhostOptions(reuseIdentifier: "ghost", rowsPerSection: [1]), style: .default)
 
         // Then
-        XCTAssertFalse(tableView.allowsSelection)
+        #expect(!tableView.allowsSelection)
 
         // When
         tableView.removeGhostContent()
 
         // Then
-        XCTAssertFalse(tableView.allowsSelection)
+        #expect(!tableView.allowsSelection)
     }
 }
 

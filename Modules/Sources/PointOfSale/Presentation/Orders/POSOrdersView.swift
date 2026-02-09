@@ -5,6 +5,7 @@ import struct WooFoundation.SafariView
 
 struct POSOrdersView: View {
     @Binding var isPresented: Bool
+    var initialOrderID: Int64? = nil
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
@@ -16,6 +17,10 @@ struct POSOrdersView: View {
         contentView
             .task {
                 await orderListModel.ordersController.loadOrders()
+                if let initialOrderID,
+                   let order = orderListModel.ordersController.ordersViewState.orders.first(where: { $0.id == initialOrderID }) {
+                    orderListModel.ordersController.selectOrder(order)
+                }
             }
     }
 

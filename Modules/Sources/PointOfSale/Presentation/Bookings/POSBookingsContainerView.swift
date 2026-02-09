@@ -10,6 +10,7 @@ struct POSBookingsContainerView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Binding var isPresented: Bool
+    var onNavigateToPOSOrder: ((Int64) -> Void)?
     @State private var showingCashPayment: Bool = false
     @State private var showingEmailReceipt: Bool = false
     @State private var cardPaymentController: POSBookingPaymentController?
@@ -59,6 +60,9 @@ struct POSBookingsContainerView: View {
                 onIssueRefund: booking.status == .paid ? { startRefundFlow(for: booking) } : nil,
                 onViewOrder: booking.orderID != nil ? {
                     externalNavigation.navigateToOrderDetails(orderID: booking.orderID!, siteID: bookingsModel.siteID)
+                } : nil,
+                onViewOrderInPOS: booking.orderID != nil ? {
+                    onNavigateToPOSOrder?(booking.orderID!)
                 } : nil
             )
             .id(booking.bookingID)

@@ -9,6 +9,7 @@ struct POSBookingDetailView: View {
     let onPayByCash: () -> Void
     let onIssueRefund: (() -> Void)?
     let onViewOrder: (() -> Void)?
+    let onViewOrderInPOS: (() -> Void)?
 
     init(booking: POSBooking,
          isRefreshing: Bool = false,
@@ -16,7 +17,8 @@ struct POSBookingDetailView: View {
          onPayByCard: @escaping () -> Void,
          onPayByCash: @escaping () -> Void,
          onIssueRefund: (() -> Void)? = nil,
-         onViewOrder: (() -> Void)? = nil) {
+         onViewOrder: (() -> Void)? = nil,
+         onViewOrderInPOS: (() -> Void)? = nil) {
         self.booking = booking
         self.isRefreshing = isRefreshing
         self.onBack = onBack
@@ -24,6 +26,7 @@ struct POSBookingDetailView: View {
         self.onPayByCash = onPayByCash
         self.onIssueRefund = onIssueRefund
         self.onViewOrder = onViewOrder
+        self.onViewOrderInPOS = onViewOrderInPOS
     }
 
     @Environment(\.siteTimezone) private var siteTimezone
@@ -319,6 +322,13 @@ struct POSBookingDetailView: View {
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
                 }
+
+                if let onViewOrderInPOS {
+                    Button(Localization.viewInPOSOrders) {
+                        onViewOrderInPOS()
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                }
             }
         }
     }
@@ -388,8 +398,13 @@ struct POSBookingDetailView: View {
         )
         static let viewOrder = NSLocalizedString(
             "posBookingDetail.viewOrder",
-            value: "View Order",
+            value: "View Order in App",
             comment: "Button to navigate to the order details in the main app"
+        )
+        static let viewInPOSOrders = NSLocalizedString(
+            "posBookingDetail.viewInPOSOrders",
+            value: "View in POS Orders",
+            comment: "Button to navigate to the order within the POS orders view"
         )
         static let bookingCancelled = NSLocalizedString(
             "posBookingDetail.bookingCancelled",

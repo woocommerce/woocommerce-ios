@@ -15,6 +15,8 @@ struct POSFloatingControlView: View {
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
     @State private var showBookings: Bool = false
+    @State private var pendingPOSOrderID: Int64?
+    @State private var initialOrderIDForOrders: Int64?
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -59,11 +61,25 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showBarcodeScanningModal) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
-        .posFullScreenCover(isPresented: $showOrders) {
-            POSOrdersView(isPresented: $showOrders)
+        .posFullScreenCover(isPresented: $showOrders, onDismiss: {
+            initialOrderIDForOrders = nil
+        }) {
+            POSOrdersView(isPresented: $showOrders, initialOrderID: initialOrderIDForOrders)
         }
-        .posFullScreenCover(isPresented: $showBookings) {
-            POSBookingsContainerView(isPresented: $showBookings)
+        .posFullScreenCover(isPresented: $showBookings, onDismiss: {
+            if let orderID = pendingPOSOrderID {
+                pendingPOSOrderID = nil
+                initialOrderIDForOrders = orderID
+                showOrders = true
+            }
+        }) {
+            POSBookingsContainerView(
+                isPresented: $showBookings,
+                onNavigateToPOSOrder: { orderID in
+                    pendingPOSOrderID = orderID
+                    showBookings = false
+                }
+            )
         }
         .frame(height: Constants.size)
         .background(Color.clear)

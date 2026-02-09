@@ -186,21 +186,24 @@ This mirrors `BookingStore`'s existing enrichment pattern (lines 216-234 of `Boo
 - Default strategy fetches today's bookings; search strategy passes search query; filtered strategy builds from `POSBookingFilterState`
 - Start with remote-only via `BookingsRemote`, via a new service in Yosemite providing an async/await interface. Consider adding async networking functions too, if needed.
 
-### Payment: Reuse `PointOfSalePaymentState`
+### Payment: Reuse `TotalsView`
 Reuse the production payment states:
 - `PointOfSaleCardPaymentState` (11 states: idle, acceptingCard, cardInserted, preparingReader, processingPayment, paymentError, cardPaymentSuccessful, validatingOrder, validatingOrderError, paymentIntentCreationError)
 - `PointOfSaleCashPaymentState` (idle, collectingCash, paymentSuccess)
 - Combined via `PointOfSalePaymentState` struct
 
-These drive UI identically to TotalsView (background colors, full-screen states, inline messages).
+**Goal:** Reuse all or parts of `TotalsView` for booking payment rather than building separate booking payment views. Investigation found only 4 cart-specific coupling points in the view hierarchy (success actions, error button text, cash flow closures, discount field). Everything else is payment-generic. See B1 for the coupling analysis and implementation options to explore.
 
 ### Payment Flow Differences from POS Products
 
 |                    | POS Products                              | POS Bookings                                  |
 | ------------------ | ----------------------------------------- | --------------------------------------------- |
 | Order              | Created during checkout (`syncOrder`)     | Fetched by order ID from booking              |
-| **Cart**           | **Cart, Checkout button tapped → order synced (created)** | **Collect Payment button tapped — booking already has an order, fetch it** |
-| Payment UI         | Driven by `PointOfSaleAggregateModel`     | Driven by `POSBookingsModel`                  |
+| **Entry**          | **Checkout button → order synced**        | **Collect Payment button → order fetched**    |
+| Payment UI         | `TotalsView` driven by AggregateModel    | Reuse TotalsView (see B1 for options)         |
+| Success action     | "New order" (clears cart)                 | "Done" (back to booking list)                 |
+| Error actions      | "New order" / "Edit order"                | "Back to Booking" / "Try Again"               |
+| Barcode on success | Enabled                                   | Disabled                                      |
 | Receipt            | POS receipt template                      | Standard receipt template (non-POS order)     |
 | Reader reconnect   | Subscription-based auto-collect           | Same subscription-based pattern               |
 
@@ -381,70 +384,60 @@ Pass strategy factory to booking list controller. `POSFloatingControlView` alrea
 
 ### Stream B: Payment & Checkout
 
-#### B1. POSBookingPaymentController — full payment state machine
+#### B1. Make TotalsView reusable for booking payment
+
+**Goal:** When a merchant taps "Collect Payment" on a booking, they see the same payment experience as cart checkout — card reader connection, inline payment messages, cash payment entrance. Reuse as much of `TotalsView` and its sub-views as possible rather than building booking-specific payment views.
+
+**What's already reusable (no changes needed):**
+- All payment state types (`PointOfSalePaymentState`, `PointOfSaleCardPaymentState`, `PointOfSaleCashPaymentState`)
+- Card reader connection UI, inline payment messages, `TotalsViewHelper` (except one method), layout/animation logic
+- `PointOfSaleCardPaymentState(from:using:)` event-to-state mapping
+- `PointOfSaleCardPresentPaymentEventPresentationStyle` event routing
+- `CardPresentPaymentFacade` payment service
+
+**What's cart-specific (the 4 coupling points to address):**
+
+| Coupling | File | What's cart-specific |
+|----------|------|---------------------|
+| Success view | `PointOfSalePaymentSuccessView` | Reads `posModel` from environment. "New order" calls `startNewCart()`. Barcode scanning. |
+| Cash collection | `PointOfSaleCollectCashView` | Reads `posModel` from environment. Calls `cancelCashPayment()` / `collectCashPayment()`. |
+| Error button text | 3 error message VMs | "New order" / "Edit order" / "Go back to checkout" — don't apply to bookings |
+| Discount field | `TotalsFieldsContent` | Takes a `Cart` to check `cart.coupons.isNotEmpty` |
+
+**Booking equivalents for cart-specific behaviors:**
+- Success: "Done" (dismiss, refresh list) instead of "New order". No barcode scanning.
+- Error: "Back to Booking" / "Try Again" instead of "New order" / "Edit order"
+- Cash: same flow, different action targets
+- Discount field: not shown for bookings
+
+**Implementation options to explore:**
+- **Configuration-based:** Introduce a configuration struct that abstracts the 4 coupling points (success actions, error button text, cash closures, discount visibility). `TotalsView` accepts configuration; `PointOfSaleAggregateModel` provides cart config, booking controller provides booking config. Single view, zero duplication.
+- **Extract sub-views:** Make the currently `private` sub-views in `TotalsView` (`PaymentViewContent`, `CardPaymentView`, `CashPaymentButton`, `TotalsFieldsContent`) `internal`. Build a booking payment view that composes the same sub-views with booking-specific wiring. More duplication at the composition level, but less invasive.
+- **Hybrid:** Extract + decouple the two views that read `@Environment(PointOfSaleAggregateModel.self)` directly (`PointOfSalePaymentSuccessView`, `PointOfSaleCollectCashView`) to accept closures instead. This alone may be sufficient to make `TotalsView` reusable without a full configuration struct.
+
+**Key principle:** Any refactoring must be zero-behavior-change for the existing cart flow.
+
+#### B2. POSBookingPaymentController — payment orchestration for bookings
 **New file:** `PointOfSale/Controllers/POSBookingPaymentController.swift`
 
-```swift
-@MainActor @Observable
-final class POSBookingPaymentController {
-    private(set) var paymentState: PointOfSalePaymentState
-    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
-    private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
-    let booking: POSBooking
-}
-```
+Manages the payment state machine for a booking. Mirrors `PointOfSaleAggregateModel`'s payment orchestration but without cart/catalog/order-creation concerns.
 
-**Key methods (mirror AggregateModel):**
-- `startPaymentWhenCardReaderConnected()` — subscription-based: if connected, collect immediately; otherwise subscribe to connection status and collect on connect
-- `collectCardPayment()` — fetch order via `orderProvider.fetchOrder(siteID:orderID:)`, then `cardPaymentFacade.collectPayment(for:using:channel:)`
+**State:** `paymentState`, `cardPresentPaymentAlertViewModel`, `cardPresentPaymentInlineMessage`, `cardReaderConnectionStatus`
+
+**Key methods:**
+- `startPaymentWhenCardReaderConnected()` — if connected, collect immediately; otherwise subscribe and collect on connect
+- `collectCardPayment()` — fetch order via `orderProvider`, then `cardPaymentFacade.collectPayment(for:using:channel:)`
 - `cancelThenCollectPayment()` — cancel current and retry
-- `publishPaymentMessages()` — 3 subscription chains:
-  1. Events → `cardPresentPaymentAlertViewModel` (modals)
-  2. Events → `cardPresentPaymentInlineMessage` (inline)
-  3. Events → `paymentState.card` via `PointOfSaleCardPaymentState(from:using:)`
+- `publishPaymentMessages()` — 3 Combine subscription chains (events → alerts, inline messages, card state)
 - On `cardPaymentSuccessful`: call `bookingService.markBookingAsPaid()`
-- Even though the booking already has a linked order, we still need the `validatingOrder` phase — the card payment service fetches and validates the order is payable before proceeding. This means `validatingOrderError` is a real error path (e.g. order fetch failure, order already paid) and must be handled.
+- Cash: `startCashPayment()`, `cancelCashPayment()`, `collectCashPayment(changeDueAmount:)`
+- Reader reconnection: subscription-based (same pattern as AggregateModel)
 
-**Key differences from AggregateModel:**
-- `validatingOrderError` CAN happen (order fetch failure)
-- No order creation, no cart, no order stage
-- Error action closures reset to idle and go back to the booking (no "new order" or "edit order" concepts). The existing error states use button text like "New Order" / "Edit Order" which don't apply to bookings — the payment error views need configurable button text so bookings can show contextually appropriate labels (e.g. "Back to Booking" / "Try Again").
+**Notes:**
+- The `validatingOrder` phase is real — the card payment service validates the order is payable. `validatingOrderError` handles order fetch failure, already paid, etc.
+- Receipt: uses standard WooCommerce template (not POS template)
 
-**Cash methods:**
-- `startCashPayment()` — cancel card, set `cash = .collectingCash`
-- `cancelCashPayment()` — set `cash = .idle`, resume card if connected
-- `collectCashPayment(changeDueAmount:)` — mark paid, set `cash = .paymentSuccess`
-
-**Reader reconnection:** subscription-based (like AggregateModel)
-
-**Reuses:**
-- `PointOfSaleCardPaymentState(from:using:)` initializer
-- `PointOfSaleCardPresentPaymentEventPresentationStyle`
-- `CardPresentPaymentFacade`
-- Subscription patterns from `PointOfSaleAggregateModel` lines 352-654
-
-#### B2. POSBookingPaymentView — card payment UI
-**New file:** `PointOfSale/Presentation/Bookings/POSBookingPaymentView.swift`
-
-State-driven rendering based on `paymentState.card`:
-- `idle/preparingReader/acceptingCard/cardInserted` — inline messages + booking amount
-- `processingPayment` — purple background
-- `paymentError` — error with retry
-- `cardPaymentSuccessful` — "Email Receipt" + "Done"
-
-Uses: `PointOfSaleCardPresentPaymentInLineMessage`, `PointOfSaleCardPresentPaymentAlert`, `PointOfSaleCardPresentPaymentReaderDisconnectedMessageView`
-
-#### B3. POSBookingCashPaymentView
-**New file:** `PointOfSale/Presentation/Bookings/POSBookingCashPaymentView.swift`
-
-- Closure-based actions (no `@Environment(PointOfSaleAggregateModel.self)`)
-- `FormattableAmountTextField` + `CollectCashViewHelper` for currency/change
-- Success state with receipt sending
-
-**Mirrors:** `PointOfSaleCollectCashView.swift` but with closures
-
-#### B4. Receipt handling — standard template for bookings
+#### B3. Receipt handling — standard template for bookings
 **Modify:** `PointOfSale/Utils/POSReceiptSender.swift`
 
 Add `isBookingOrder: Bool = false` parameter. When `true`, force `isEligibleForPOSReceipt = false` to use standard receipt template instead of POS template.
@@ -455,6 +448,7 @@ Add `isBookingOrder: Bool = false` parameter. When `true`, force `isEligibleForP
 
 #### C1. Wire payment into POSBookingsContainerView
 - Create `POSBookingPaymentController` when user taps "Collect Payment"
+- Present `TotalsView` with booking-specific `POSPaymentViewConfiguration`
 - On success → dismiss → refresh list → booking shows "Paid"
 - Receipt sending uses `isBookingOrder: true`
 
@@ -468,15 +462,15 @@ Add `isBookingOrder: Bool = false` parameter. When `true`, force `isEligibleForP
 ```
 F1 (Service + enrichment) ──┬── F2 (Mock)
                                   ├── A1 (Strategies) → A2 (Controller) → A5 (ListView) → A4 (Container)
-                                  ├── B1 (Payment controller) → B2 (Payment view) → B3 (Cash view)
-                                  └── B4 (Receipt)
+                                  └── B3 (Receipt)
 
 F3 (List state)  ─── A2 (Controller)
-F4 (Booking model) ── A2 (Controller), B1 (Payment controller)
+F4 (Booking model) ── A2 (Controller)
 
 A6, A7, A8 ─── no deps, start immediately
 
-C1 (Wire payment) ─── after A4 + B2 + B3 + B4
+B1 (Refactor TotalsView) → B2 (Booking payment controller)
+C1 (Wire payment) ─── after A4 + B2 + B3
 C2 (Entry point) ─── after A2 + A1
 ```
 
@@ -485,9 +479,9 @@ C2 (Entry point) ─── after A2 + A1
 | Person A (UI-focused)                         | Person B (Payment-focused)                    |
 | --------------------------------------------- | --------------------------------------------- |
 | F3 (list state), F4 (model)                   | F1 (service + enrichment), F2 (mock)          |
-| A6 (row), A7 (detail), A8 (empty/loading)     | B1 (payment controller)                       |
-| A1 (strategies) → A2 (controller)             | B2 (payment view) → B3 (cash view)            |
-| A5 (list) → A4 (container) → A3 (model)       | B4 (receipt)                                  |
+| A6 (row), A7 (detail), A8 (empty/loading)     | B1 (refactor TotalsView + configuration)      |
+| A1 (strategies) → A2 (controller)             | B2 (booking payment controller)               |
+| A5 (list) → A4 (container) → A3 (model)       | B3 (receipt)                                  |
 | C1 + C2 (wire + test)                          | C1 + C2 (wire + test)                         |
 
 ---
@@ -936,13 +930,12 @@ M3-C1/C2 ── after all above
 - `PointOfSale/Presentation/Bookings/POSBookingListView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingRowView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
-- `PointOfSale/Presentation/Bookings/POSBookingPaymentView.swift`
-- `PointOfSale/Presentation/Bookings/POSBookingCashPaymentView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingDetailsEmptyView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingDetailsLoadingView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingStatusPresentation.swift`
 
 ### M1 — Modify (existing files on `trunk`)
+- `PointOfSale/Presentation/TotalsView.swift` + related payment views — decouple cart-specific behaviors to enable booking reuse (see B1 for options)
 - `Networking/Remote/BookingsRemote.swift` — ensure v2 endpoints are used
 - `PointOfSale/Utils/POSReceiptSender.swift` — booking order flag
 - `PointOfSale/Presentation/PointOfSaleEntryPointView.swift` — wiring

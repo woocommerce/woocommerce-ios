@@ -35,12 +35,7 @@ extension BookingBadgeView {
 
 extension BookingAttendanceStatus: BookingBadgeable {
     var badgeColor: Color {
-        switch self {
-        case .noShow:
-            return BadgeColor.info
-        default:
-            return BadgeColor.default
-        }
+        return BadgeColor.default
     }
 
     var text: String {
@@ -51,7 +46,7 @@ extension BookingAttendanceStatus: BookingBadgeable {
 extension BookingStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
-        case .unpaid:
+        case .cancelled:
             return BadgeColor.info
         default:
             return BadgeColor.default

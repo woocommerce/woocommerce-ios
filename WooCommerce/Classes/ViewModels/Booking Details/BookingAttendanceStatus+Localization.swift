@@ -4,29 +4,17 @@ import Networking
 extension BookingAttendanceStatus {
     var localizedTitle: String {
         switch self {
-        case .booked:
+        case .unattended:
             return NSLocalizedString(
-                "BookingAttendanceStatus.booked",
-                value: "Booked",
-                comment: "Title for 'Booked' booking attendance status."
+                "BookingAttendanceStatus.unattended",
+                value: "Unattended",
+                comment: "Title for 'Unattended' booking attendance status."
             )
-        case .checkedIn:
+        case .attended:
             return NSLocalizedString(
-                "BookingAttendanceStatus.checkedIn",
-                value: "Checked-in",
-                comment: "Title for 'Checked In' booking attendance status."
-            )
-        case .cancelled:
-            return NSLocalizedString(
-                "BookingAttendanceStatus.canceled",
-                value: "Canceled",
-                comment: "Title for 'Cancelled' booking attendance status."
-            )
-        case .noShow:
-            return NSLocalizedString(
-                "BookingAttendanceStatus.noShow",
-                value: "No-show",
-                comment: "Title for 'No Show' booking attendance status."
+                "BookingAttendanceStatus.attended",
+                value: "Attended",
+                comment: "Title for 'Attended' booking attendance status."
             )
         case .unknown:
             return NSLocalizedString(

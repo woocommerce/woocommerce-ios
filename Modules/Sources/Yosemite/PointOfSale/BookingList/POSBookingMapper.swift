@@ -37,8 +37,9 @@ struct POSBookingMapper {
             startDate: booking.startDate,
             endDate: booking.endDate,
             formattedAmount: formattedAmount,
-            status: booking.bookingStatus,
+            bookingStatus: booking.bookingStatus,
             attendanceStatus: booking.attendanceStatus,
+            paymentStatus: booking.paymentStatus,
             orderID: orderID,
             resourceName: resource?.name
         )

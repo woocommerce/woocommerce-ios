@@ -61,6 +61,7 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
                        bookingID: Int64,
                        attendanceStatus: BookingAttendanceStatus?,
                        bookingStatus: BookingStatus?,
+                       paymentStatus: BookingPaymentStatus?,
                        note: String?) async throws -> Booking? {
         guard let result = updateBookingResult else {
             throw NetworkError.timeout()

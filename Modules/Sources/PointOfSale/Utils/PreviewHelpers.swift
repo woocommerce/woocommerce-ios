@@ -37,6 +37,7 @@ import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.BookingPaymentStatus
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -533,8 +534,9 @@ extension POSPreviewHelpers {
                 startDate: Date(),
                 endDate: Date().addingTimeInterval(3600),
                 formattedAmount: "$45.00",
-                status: .confirmed,
-                attendanceStatus: .booked,
+                bookingStatus: .booked,
+                attendanceStatus: .unattended,
+                paymentStatus: .unpaid,
                 orderID: 101,
                 resourceName: "Station A"
             ),
@@ -545,8 +547,9 @@ extension POSPreviewHelpers {
                 startDate: Date().addingTimeInterval(7200),
                 endDate: Date().addingTimeInterval(10800),
                 formattedAmount: "$90.00",
-                status: .paid,
-                attendanceStatus: .booked,
+                bookingStatus: .booked,
+                attendanceStatus: .unattended,
+                paymentStatus: .paid,
                 orderID: 102,
                 resourceName: nil
             ),
@@ -557,8 +560,9 @@ extension POSPreviewHelpers {
                 startDate: Date().addingTimeInterval(-3600),
                 endDate: Date(),
                 formattedAmount: "$25.00",
-                status: .cancelled,
-                attendanceStatus: .booked,
+                bookingStatus: .cancelled,
+                attendanceStatus: .unattended,
+                paymentStatus: .unpaid,
                 orderID: nil,
                 resourceName: nil
             )

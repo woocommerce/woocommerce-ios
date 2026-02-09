@@ -21,6 +21,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let startDate: Date
     public let statusKey: String
     public let attendanceStatusKey: String
+    public let paymentStatusKey: String
     public let localTimezone: String
     public let currency: String
     public let orderInfo: BookingOrderInfo?
@@ -32,6 +33,10 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
 
     public var attendanceStatus: BookingAttendanceStatus {
         return BookingAttendanceStatus(rawValue: attendanceStatusKey) ?? .unknown
+    }
+
+    public var paymentStatus: BookingPaymentStatus {
+        return BookingPaymentStatus(rawValue: paymentStatusKey) ?? .unknown
     }
 
     /// Booking struct initializer.
@@ -53,6 +58,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                 startDate: Date,
                 statusKey: String,
                 attendanceStatusKey: String,
+                paymentStatusKey: String,
                 localTimezone: String,
                 currency: String,
                 orderInfo: BookingOrderInfo?,
@@ -74,6 +80,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         self.startDate = startDate
         self.statusKey = statusKey
         self.attendanceStatusKey = attendanceStatusKey
+        self.paymentStatusKey = paymentStatusKey
         self.localTimezone = localTimezone
         self.currency = currency
         self.orderInfo = orderInfo
@@ -129,6 +136,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         let startDate = Date(timeIntervalSince1970: try container.decode(Double.self, forKey: .startDate))
         let statusKey = try container.decode(String.self, forKey: .statusKey)
         let attendanceStatusKey = container.failsafeDecodeIfPresent(String.self, forKey: .attendanceStatusKey) ?? ""
+        let paymentStatusKey = container.failsafeDecodeIfPresent(String.self, forKey: .paymentStatusKey) ?? ""
         let localTimezone = try container.decode(String.self, forKey: .localTimezone)
         let currency = try container.decode(String.self, forKey: .currency)
         let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
@@ -151,6 +159,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                   startDate: startDate,
                   statusKey: statusKey,
                   attendanceStatusKey: attendanceStatusKey,
+                  paymentStatusKey: paymentStatusKey,
                   localTimezone: localTimezone,
                   currency: currency,
                   orderInfo: orderInfo,
@@ -176,6 +185,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         try container.encode(startDate, forKey: .startDate)
         try container.encode(statusKey, forKey: .statusKey)
         try container.encode(attendanceStatusKey, forKey: .attendanceStatusKey)
+        try container.encode(paymentStatusKey, forKey: .paymentStatusKey)
         try container.encode(localTimezone, forKey: .localTimezone)
     }
 }
@@ -206,6 +216,7 @@ private extension Booking {
         case startDate = "start"
         case statusKey = "status"
         case attendanceStatusKey = "attendance_status"
+        case paymentStatusKey = "payment_status"
         case localTimezone = "local_timezone"
         case currency
         case note
@@ -223,19 +234,21 @@ enum BookingDecodingError: Error {
 
 /// Represents a Booking Status.
 public enum BookingStatus: String, CaseIterable, Codable {
-    case complete
-    case paid
-    case unpaid
+    case booked
+    case completed
     case cancelled
-    case pendingConfirmation = "pending-confirmation"
-    case confirmed
     case unknown
 }
 
 public enum BookingAttendanceStatus: String, CaseIterable, Codable {
-    case booked
-    case checkedIn = "checked-in"
-    case cancelled
-    case noShow = "no-show"
+    case unattended
+    case attended
+    case unknown
+}
+
+public enum BookingPaymentStatus: String, CaseIterable, Codable {
+    case paid
+    case unpaid
+    case refunded
     case unknown
 }

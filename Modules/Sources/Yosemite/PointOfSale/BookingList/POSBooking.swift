@@ -1,6 +1,7 @@
 import Foundation
 import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
+import enum Networking.BookingPaymentStatus
 
 public struct POSBooking: Equatable, Hashable, Identifiable {
     public let id: Int64
@@ -9,8 +10,9 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let startDate: Date
     public let endDate: Date
     public let formattedAmount: String
-    public let status: BookingStatus
+    public let bookingStatus: BookingStatus
     public let attendanceStatus: BookingAttendanceStatus
+    public let paymentStatus: BookingPaymentStatus
     public let orderID: Int64?
     public let resourceName: String?
 
@@ -20,8 +22,9 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
                 startDate: Date,
                 endDate: Date,
                 formattedAmount: String,
-                status: BookingStatus,
+                bookingStatus: BookingStatus,
                 attendanceStatus: BookingAttendanceStatus,
+                paymentStatus: BookingPaymentStatus,
                 orderID: Int64?,
                 resourceName: String?) {
         self.id = id
@@ -30,8 +33,9 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         self.startDate = startDate
         self.endDate = endDate
         self.formattedAmount = formattedAmount
-        self.status = status
+        self.bookingStatus = bookingStatus
         self.attendanceStatus = attendanceStatus
+        self.paymentStatus = paymentStatus
         self.orderID = orderID
         self.resourceName = resourceName
     }

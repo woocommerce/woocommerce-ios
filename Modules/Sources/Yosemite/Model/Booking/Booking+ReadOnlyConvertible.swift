@@ -55,6 +55,7 @@ extension Storage.Booking: ReadOnlyConvertible {
                 startDate: startDate ?? Date(),
                 statusKey: statusKey ?? "",
                 attendanceStatusKey: attendanceStatusKey ?? "",
+                paymentStatusKey: "",
                 localTimezone: localTimezone ?? "",
                 currency: currency ?? "USD",
                 orderInfo: orderInfo?.toReadOnly(),

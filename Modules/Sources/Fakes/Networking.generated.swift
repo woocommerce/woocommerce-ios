@@ -341,6 +341,7 @@ extension Networking.Booking {
             startDate: .fake(),
             statusKey: .fake(),
             attendanceStatusKey: .fake(),
+            paymentStatusKey: .fake(),
             localTimezone: .fake(),
             currency: .fake(),
             orderInfo: .fake(),

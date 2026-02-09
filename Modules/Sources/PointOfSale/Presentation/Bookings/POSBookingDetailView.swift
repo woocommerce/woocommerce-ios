@@ -1,6 +1,7 @@
 import SwiftUI
 import struct Yosemite.POSBooking
 import enum Yosemite.BookingStatus
+import enum Yosemite.BookingPaymentStatus
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
@@ -87,9 +88,15 @@ struct POSBookingDetailView: View {
 
             Spacer()
 
-            Text(booking.status.displayName)
-                .font(.posBodySmallBold())
-                .foregroundStyle(statusColor)
+            if booking.bookingStatus == .cancelled {
+                Text(booking.bookingStatus.displayName)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posError)
+            } else {
+                Text(booking.paymentStatus.displayName)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(paymentStatusColor)
+            }
         }
     }
 
@@ -104,15 +111,13 @@ struct POSBookingDetailView: View {
         return "\(start) – \(end)"
     }
 
-    private var statusColor: Color {
-        switch booking.status {
-        case .confirmed, .paid, .complete:
+    private var paymentStatusColor: Color {
+        switch booking.paymentStatus {
+        case .paid:
             return .posSuccess
-        case .cancelled:
-            return .posError
-        case .unpaid, .pendingConfirmation:
+        case .unpaid:
             return .posAlert
-        case .unknown:
+        case .refunded, .unknown:
             return .posOnSurfaceVariantHighest
         }
     }

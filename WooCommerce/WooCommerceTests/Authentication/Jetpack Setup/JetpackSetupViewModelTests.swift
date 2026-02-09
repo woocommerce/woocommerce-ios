@@ -266,7 +266,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
         let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
 
         var triggeredRetrieveJetpackPluginDetails = false
@@ -316,7 +317,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
 
         var triggeredRetrieveJetpackPluginDetails = false
         var triggeredInstallation = false
@@ -425,7 +427,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
 
         var triggeredInstallation = false
@@ -502,7 +505,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
 
         var fetchedConnectionData = false
         var triggeredConnectionURL = false
@@ -542,7 +546,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
 
         var fetchedConnectionData = false
         var triggeredConnectionURL = false
@@ -843,7 +848,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
         mockService.connectResult = .failure(NSError(domain: "Test", code: -1001))
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -872,7 +878,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
         mockService.connectResult = .failure(NSError(domain: "Test", code: -1001))
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
@@ -901,7 +908,8 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockService = MockJetpackConnectionService()
         mockService.connectResult = .failure(NSError(domain: "Test", code: -1001))
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores, connectionService: mockService, delayBeforeRetry: 0)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials,
+                                                      stores: stores, connectionService: mockService, delayBeforeRetry: 0)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {

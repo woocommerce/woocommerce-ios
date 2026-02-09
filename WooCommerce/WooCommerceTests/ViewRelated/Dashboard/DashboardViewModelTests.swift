@@ -862,6 +862,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockReloadingData()
 
         // When
+        await viewModel.reloadAllData()
         await viewModel.onViewAppear()
 
         // Then

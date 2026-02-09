@@ -135,6 +135,8 @@ final class ServiceLocator {
 
     /// Age rating change detector
     ///
+    private static var _jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService()
+
     private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
         defaults: .standard,
         provider: StoreKitAgeRatingProvider()
@@ -344,6 +346,10 @@ final class ServiceLocator {
 
     static var ageRangeVerificationService: AgeRangeVerificationServiceProtocol {
         _ageRangeVerificationService
+    }
+
+    static var jetpackConnectionService: JetpackConnectionServiceProtocol {
+        _jetpackConnectionService
     }
 
     static var ageRatingChangeDetector: AgeRatingChangeDetector {

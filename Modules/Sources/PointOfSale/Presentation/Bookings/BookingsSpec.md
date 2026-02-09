@@ -106,12 +106,11 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 
 **View Related Order**
 - "View Order" button in booking detail (shown when booking has a linked order)
-- Presents `POSOrdersView` as `.posFullScreenCover` on top of bookings (same pattern as orders from POS floating menu)
-- Pre-selects the linked order in the orders list
-- Requires booking orders to be visible in POS order list (see below)
+- Loads the linked order by ID via `POSOrderListService.loadOrder(orderID:)` and pushes `POSOrderDetailsView` directly
+- No changes to the POS order list — bookings navigate directly to the order detail
 
 **Refunds**
-- Handled via the orders view — when user taps "View Order", the `POSOrderDetailsView` already has the complete refund flow
+- Handled via the order detail view — when user taps "View Order", `POSOrderDetailsView` already has the complete refund flow
 - No separate "Refund" button on booking detail view
 - Refund flow: select items → reason → review → confirm → success (all existing)
 
@@ -130,15 +129,6 @@ A Bookings screen inside Point of Sale that lets merchants **view their bookings
 - "Apply" + "Reset" buttons
 - Empty state: "No bookings match filters" with clear button
 - Filters reset to default (today) when bookings is closed and reopened
-
-**Order List Integration**
-- Show booking orders in the POS order list alongside POS orders
-- Change `created_via` parameter from `"pos-rest-api"` to `["pos-rest-api", "bookings"]` when `.pointOfSaleBookings` flag is enabled
-- WC REST API `created_via` parameter natively supports arrays (`type: array`, `compare: IN`)
-- Apply to both `loadPOSOrders()` and `searchPOSOrders()` in `OrdersRemote`
-- Add `createdVia` field to `POSOrder` model for visual distinction
-- Show "Booking" indicator on booking-originated order rows
-- Customer-checkout bookings (`created_via: "checkout"` or `"store-api"`) are too broad — these values are shared by all WooCommerce orders, not just bookings. Only include admin/API-created (`"bookings"`). **Needs clarification:** whether customer-created booking orders should also appear in the POS order list, and if so, how to distinguish them.
 
 **Testing & Stabilization**
 - Full regression across all milestones
@@ -243,11 +233,6 @@ The backend API uses a single `status` field that mixes booking lifecycle and pa
 | `booked`, `no-show`, `cancelled` | `.booked`, `.noShow`, `.cancelled` | Unattended |
 
 The `POSBooking` model stores the raw `BookingStatus` and `BookingAttendanceStatus` values. Views use the POS presentation types (`POSBookingLifecycleStatus`, `POSBookingPaymentStatus`, `POSBookingAttendanceDisplay`) to derive display text and colors.
-
-### Booking Orders
-- Admin-created bookings: `created_via: "bookings"`
-- Customer-created bookings: `created_via: "checkout"` (classic checkout) or `"store-api"` (block-based checkout) — **needs clarification:** it's unclear whether we need to include these in the POS order list, and which values to filter on. The `"checkout"` and `"store-api"` values are shared by all WooCommerce orders, not just bookings.
-- POS orders: `created_via: "pos-rest-api"`
 
 ---
 
@@ -808,47 +793,13 @@ Present via `.posFullScreenCover(isPresented: $showOrderDetail)`:
 }
 ```
 
-**Advantages over the order list approach:**
-- No dependency on M3-B1 (no need to add booking orders to POS order list)
-- No need to modify `POSOrdersView` with `preselectedOrderID`
-- Faster UX — merchant goes straight to the order they care about
-- Simpler implementation — single API call, no list loading/searching
-- Refund flow works out of the box (`POSOrderDetailsView` handles it internally via `orderListModel`)
-
 **Required change:** Add `loadOrder(orderID:)` to `POSOrderListControllerProtocol` and implement in `POSOrderListController` (delegates to `fetchStrategy.loadOrder(orderID:)`). The fetch strategy is currently private, so the controller must expose this method.
 
-**Considerations:**
-- Receipt sending via `orderListModel.sendReceipt(order:email:)` works because it only needs the `POSOrder` object, not list membership.
-- The "back" action simply dismisses the cover — no list state to restore.
-
-### Stream B: Order List Integration
-
-#### M3-B1. Show booking orders in POS order list
-**Modify:** `Modules/Sources/NetworkingCore/Remote/OrdersRemote.swift`
-
-Current filter is hardcoded:
-```swift
-ParameterValues.posFilter = "pos-rest-api"
-```
-
-When `.pointOfSaleBookings` is enabled, include booking orders:
-- Change `created_via` parameter to array: `["pos-rest-api", "bookings"]`
-- WC REST API `created_via` is `type: array` with `compare: IN` — supports this natively
-- Apply to both `loadPOSOrders()` and `searchPOSOrders()`
-
-**Note:** Customer-checkout bookings use `created_via: "checkout"` (classic) or `"store-api"` (block checkout) — these are shared by all WooCommerce orders, not just bookings. Only admin/API-created booking orders (`"bookings"`) should appear. **Needs clarification:** whether customer-created booking orders should also be included and how to identify them.
-
-#### M3-B2. POSOrder model — add createdVia field
-**Modify:** `Modules/Sources/Yosemite/PointOfSale/OrderList/POSOrder.swift`
-
-- Add `createdVia: String` field
-- `POSOrderMapper` already maps from `Order` → `POSOrder` — add this field
-
-#### M3-B3. POSOrderRowView — identify booking orders
-**Modify:** `PointOfSale/Presentation/Orders/POSOrderRowView.swift`
-
-- Add visual "Booking" indicator for orders where `createdVia == "bookings"`
-- Small label or icon next to the order number
+**Notes:**
+- `POSOrderListModel` is already in the environment (injected at `PointOfSaleEntryPointView`), so all environment dependencies are satisfied.
+- Refund flow works out of the box — `POSOrderDetailsView` handles it internally via `orderListModel`.
+- Receipt sending works because it only needs the `POSOrder` object, not list membership.
+- No changes to `POSOrdersView`, `OrdersRemote`, or `POSOrder` model needed.
 
 ---
 
@@ -859,7 +810,7 @@ When `.pointOfSaleBookings` is enabled, include booking orders:
 Full regression across all milestones:
 - M1: list → select → pay (card + cash) → receipt → done
 - M2: badges → mark attended → cancel
-- M3: filter → sort → view order → refund (via order view) → order list integration
+- M3: filter → sort → view order → refund (via order detail)
 
 #### M3-C2. Bug fixes and polish
 
@@ -877,20 +828,17 @@ Address issues found in testing. Focus areas:
 ```
 M3-F1 (Filter state) ── M3-F3 (Filter strategy) ── M3-A1 (Filter UI) ── M3-A2 (List update)
 M3-F3 ── M3-A3 (Controller update)
-
-M3-B1 (Order list filter) ── M3-B2 (POSOrder field) ── M3-B3 (Row indicator)
-M3-B1 ── M3-A4 (View order — needs booking orders visible)
+M3-A4 (View order) ── no deps, can start immediately
 
 M3-C1/C2 ── after all above
 ```
 
 ### M3 Suggested Work Split
 
-| Person A (Filter UI-focused)                   | Person B (Integration-focused)                |
+| Person A (Filter UI-focused)                   | Person B (View Order + Polish)                |
 | ---------------------------------------------- | --------------------------------------------- |
 | M3-F1 (filter state)                           | M3-F3 (filter strategy)                       |
-| M3-A1 (filter UI), M3-A2/A3 (list+controller)  | M3-B1 (order list), M3-B2/B3 (order model/row) |
-| M3-A4 (view order wiring)                       |                                               |
+| M3-A1 (filter UI), M3-A2/A3 (list+controller)  | M3-A4 (view order)                            |
 | M3-C1 + M3-C2 (testing + polish)               | M3-C1 + M3-C2 (testing + polish)             |
 
 ---
@@ -950,9 +898,9 @@ M3-C1/C2 ── after all above
 ### M3: View Order
 | Scenario | Expected |
 |----------|----------|
-| Booking has linked order visible in list | "View Order" button shown, opens orders view |
-| Booking order not in list (flag off) | "View Order" button hidden or disabled |
-| Order not found after navigation | Graceful handling, fallback to first order |
+| Booking has linked order | "View Order" button shown, loads order and opens detail |
+| Booking has no linked order | "View Order" button hidden |
+| Order fetch fails | Error notice with retry |
 
 ### M3: Sort & Filter
 | Scenario | Expected |
@@ -961,13 +909,6 @@ M3-C1/C2 ── after all above
 | Apply filter then search | Search within filtered results |
 | Close and reopen bookings | Filters reset to default (today) |
 | Filter by resource when no resources | Resource filter hidden or empty |
-
-### M3: Order List Integration
-| Scenario | Expected |
-|----------|----------|
-| Booking order appears in POS order list | Shows with "Booking" indicator |
-| Tap booking order in order list | Shows standard order detail (not booking detail) |
-| Feature flag off | Only "pos-rest-api" orders shown (no change) |
 
 ---
 
@@ -1017,14 +958,10 @@ M3-C1/C2 ── after all above
 - `PointOfSale/Presentation/Bookings/POSBookingFilterView.swift`
 
 ### M3 — Modify
-- `NetworkingCore/Remote/OrdersRemote.swift` — array created_via for booking orders
-- `Yosemite/PointOfSale/OrderList/POSOrder.swift` — add createdVia field
-- `Yosemite/PointOfSale/OrderList/POSOrderMapper.swift` — map createdVia
 - `PointOfSale/Presentation/Bookings/POSBookingListView.swift` — filter button
 - `PointOfSale/Controllers/POSBookingListController.swift` — filter strategy support
 - `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift` — "View Order" button
-- `PointOfSale/Presentation/Orders/POSOrdersView.swift` — preselectedOrderID parameter
-- `PointOfSale/Presentation/Orders/POSOrderRowView.swift` — booking order indicator
+- `PointOfSale/Controllers/POSOrderListController.swift` — expose `loadOrder(orderID:)` on protocol
 
 ---
 
@@ -1071,6 +1008,3 @@ These map to `BookingAttendanceStatus` enum (current values differ from API — 
 - Payment status: Paid / Unpaid
 - Attendance: Attended / Unattended
 
-### Orders API: created_via
-`created_via` parameter: `type: array`, `sanitize_callback: wp_parse_list`, `compare: IN`
-Supports: `["pos-rest-api", "bookings"]` for combined POS + booking orders.

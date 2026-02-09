@@ -1,6 +1,5 @@
 import SwiftUI
 import struct Yosemite.POSBooking
-import enum Yosemite.BookingStatus
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
@@ -10,6 +9,18 @@ struct POSBookingDetailView: View {
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
+    }
+
+    private var lifecycleStatus: POSBookingLifecycleStatus {
+        POSBookingLifecycleStatus(bookingStatus: booking.status)
+    }
+
+    private var paymentStatus: POSBookingPaymentStatus {
+        POSBookingPaymentStatus(bookingStatus: booking.status)
+    }
+
+    private var attendanceDisplay: POSBookingAttendanceDisplay {
+        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
     }
 
     var body: some View {
@@ -56,7 +67,7 @@ struct POSBookingDetailView: View {
             Divider()
                 .overlay(Color.posOutlineVariant.opacity(0.5))
 
-            statusRow
+            statusRows
         }
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
@@ -79,17 +90,34 @@ struct POSBookingDetailView: View {
     }
 
     @ViewBuilder
-    private var statusRow: some View {
+    private var statusRows: some View {
+        if lifecycleStatus.shouldShowBadge {
+            statusRow(label: Localization.statusLabel,
+                      value: lifecycleStatus.localizedTitle,
+                      color: lifecycleStatus.badgeColor)
+        }
+
+        statusRow(label: Localization.paymentLabel,
+                  value: paymentStatus.localizedTitle,
+                  color: paymentStatus.color)
+
+        statusRow(label: Localization.attendanceLabel,
+                  value: attendanceDisplay.localizedTitle,
+                  color: .posOnSurfaceVariantHighest)
+    }
+
+    @ViewBuilder
+    private func statusRow(label: String, value: String, color: Color) -> some View {
         HStack {
-            Text(Localization.statusLabel)
+            Text(label)
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
             Spacer()
 
-            Text(booking.status.displayName)
+            Text(value)
                 .font(.posBodySmallBold())
-                .foregroundStyle(statusColor)
+                .foregroundStyle(color)
         }
     }
 
@@ -102,19 +130,6 @@ struct POSBookingDetailView: View {
         let start = formatter.string(from: booking.startDate)
         let end = formatter.string(from: booking.endDate)
         return "\(start) – \(end)"
-    }
-
-    private var statusColor: Color {
-        switch booking.status {
-        case .confirmed, .paid, .complete:
-            return .posSuccess
-        case .cancelled:
-            return .posError
-        case .unpaid, .pendingConfirmation:
-            return .posAlert
-        case .unknown:
-            return .posOnSurfaceVariantHighest
-        }
     }
 }
 
@@ -180,6 +195,18 @@ private enum Localization {
     static let statusLabel = NSLocalizedString(
         "pos.bookingDetailView.statusLabel",
         value: "Status",
-        comment: "Label for the booking status in booking details."
+        comment: "Label for the booking lifecycle status in booking details."
+    )
+
+    static let paymentLabel = NSLocalizedString(
+        "pos.bookingDetailView.paymentLabel",
+        value: "Payment",
+        comment: "Label for the booking payment status in booking details."
+    )
+
+    static let attendanceLabel = NSLocalizedString(
+        "pos.bookingDetailView.attendanceLabel",
+        value: "Attendance",
+        comment: "Label for the booking attendance status in booking details."
     )
 }

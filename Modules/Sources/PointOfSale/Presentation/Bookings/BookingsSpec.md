@@ -216,6 +216,34 @@ These drive UI identically to TotalsView (background colors, full-screen states,
 - Left: booking list, Right: booking detail / payment
 - "View Order" (M3): presents `POSOrdersView` as `.posFullScreenCover` on top of bookings
 
+### Status Presentation Model
+
+The backend API uses a single `status` field that mixes booking lifecycle and payment semantics (e.g. `paid`, `unpaid`, `confirmed`, `cancelled`, `complete`). The `attendance_status` field is separate. For POS display, the **presentation layer** interprets these API values into three independent dimensions. No Networking or Yosemite enums are changed — the mapping is purely in `PointOfSale/Presentation/Bookings/POSBookingStatusPresentation.swift`.
+
+**Booking lifecycle** (derived from `BookingStatus`):
+
+| API `status` value | `BookingStatus` enum | POS lifecycle | Badge? |
+|---|---|---|---|
+| `paid`, `unpaid`, `confirmed`, `pending-confirmation` | `.paid`, `.unpaid`, `.confirmed`, `.pendingConfirmation` | Booked | No |
+| `complete` | `.complete` | Completed | No |
+| `cancelled` | `.cancelled` | Cancelled | Yes (error color) |
+
+**Payment status** (derived from `BookingStatus`):
+
+| API `status` value | `BookingStatus` enum | POS payment status |
+|---|---|---|
+| `paid`, `complete` | `.paid`, `.complete` | Paid |
+| `unpaid`, `confirmed`, `pending-confirmation` | `.unpaid`, `.confirmed`, `.pendingConfirmation` | Unpaid |
+
+**Attendance** (derived from `BookingAttendanceStatus`):
+
+| API `attendance_status` value | `BookingAttendanceStatus` enum | POS attendance |
+|---|---|---|
+| `checked-in` | `.checkedIn` | Attended |
+| `booked`, `no-show`, `cancelled` | `.booked`, `.noShow`, `.cancelled` | Unattended |
+
+The `POSBooking` model stores the raw `BookingStatus` and `BookingAttendanceStatus` values. Views use the POS presentation types (`POSBookingLifecycleStatus`, `POSBookingPaymentStatus`, `POSBookingAttendanceDisplay`) to derive display text and colors.
+
 ### Booking Orders
 - Admin-created bookings: `created_via: "bookings"`
 - Customer-created bookings: `created_via: "checkout"` (classic checkout) or `"store-api"` (block-based checkout) — **needs clarification:** it's unclear whether we need to include these in the POS order list, and which values to filter on. The `"checkout"` and `"store-api"` values are shared by all WooCommerce orders, not just bookings.
@@ -278,7 +306,7 @@ enum POSBookingListState: Equatable {
 #### F4. Create POSBooking model
 **New file:** `Modules/Sources/PointOfSale/Models/POSBooking.swift`
 
-Simple struct for booking display. Properties: id, customerName, serviceName, startDate, endDate, amount (formatted), bookingStatus, attendanceStatus, paymentStatus, orderID, resourceName. No cart-related properties. Reuses `PointOfSalePaymentState` for payment — no separate `POSBookingPaymentState`.
+Simple struct for booking display. Properties: id, customerName, serviceName, startDate, endDate, amount (formatted), status (`BookingStatus`), attendanceStatus (`BookingAttendanceStatus`), orderID, resourceName. No cart-related properties. Uses the raw API enum values — the POS presentation layer interprets them into three display dimensions (see Status Presentation Model). Reuses `PointOfSalePaymentState` for payment — no separate `POSBookingPaymentState`.
 
 ---
 
@@ -500,7 +528,7 @@ func cancelBooking(siteID: Int64, bookingID: Int64) async throws
 #### M2-F2. POSBookingPaymentBadgeView — payment status
 **New file:** `PointOfSale/Presentation/Bookings/POSBookingPaymentBadgeView.swift`
 
-Color-coded badge for `BookingPaymentStatus`:
+Color-coded badge for `POSBookingPaymentStatus` (POS presentation type derived from `BookingStatus`):
 - `unpaid` → `.posWarningLowest` bg, `.posOnWarningLowest` text
 - `paid` → `.posInfoLowest` bg, `.posOnInfoLowest` text
 - `refunded` → muted/grey
@@ -518,10 +546,16 @@ Booking statuses `booked` and `completed` are automatic and never displayed as b
 - `unattended` → `.posDefault` bg, `.posOnDefault` text
 - `attended` → `.posSuccessLowest` bg, `.posOnSuccessLowest` text
 
-**Existing enums:**
-- `BookingAttendanceStatus` at `Networking/Model/Bookings/Booking.swift` — unattended, attended, unknown
-- `BookingStatus` at same file — booked, completed, cancelled, unknown
-- `BookingPaymentStatus` at same file — paid, unpaid, refunded, unknown
+**API enums (Networking layer — DO NOT MODIFY):**
+- `BookingStatus` at `Networking/Model/Bookings/Booking.swift` — complete, paid, unpaid, cancelled, pendingConfirmation, confirmed, unknown
+- `BookingAttendanceStatus` at same file — booked, checkedIn, cancelled, noShow, unknown
+
+**POS presentation types (PointOfSale layer — `POSBookingStatusPresentation.swift`):**
+- `POSBookingLifecycleStatus` — booked, completed, cancelled (derived from `BookingStatus`)
+- `POSBookingPaymentStatus` — paid, unpaid (derived from `BookingStatus`)
+- `POSBookingAttendanceDisplay` — attended, unattended (derived from `BookingAttendanceStatus`)
+
+See "Status Presentation Model" in Architecture Decisions for the full mapping.
 
 ---
 
@@ -539,10 +573,10 @@ Add properties:
 - `customerEmail: String?`
 - `customerPhone: String?`
 
-Add computed properties:
-- `canMarkAttended: Bool` — true when attendance is `unattended`
-- `canCancel: Bool` — true when booking status is NOT `cancelled`/`completed`
-- `canCollectPayment: Bool` — true when payment status is `unpaid` AND has orderID
+Add computed properties (use POS presentation types to derive from raw API enums):
+- `canMarkAttended: Bool` — true when `POSBookingAttendanceDisplay(attendanceStatus:)` is `.unattended`
+- `canCancel: Bool` — true when `POSBookingLifecycleStatus(bookingStatus:)` is NOT `.cancelled`/`.completed`
+- `canCollectPayment: Bool` — true when `POSBookingPaymentStatus(bookingStatus:)` is `.unpaid` AND has orderID
 
 All new data comes from existing enrichment (order billing address for email/phone, booking fields for dates/notes). No additional API calls.
 
@@ -910,6 +944,7 @@ M3-C1/C2 ── after all above
 - `PointOfSale/Presentation/Bookings/POSBookingCashPaymentView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingDetailsEmptyView.swift`
 - `PointOfSale/Presentation/Bookings/POSBookingDetailsLoadingView.swift`
+- `PointOfSale/Presentation/Bookings/POSBookingStatusPresentation.swift`
 
 ### M1 — Modify (existing files on `trunk`)
 - `Networking/Remote/BookingsRemote.swift` — ensure v2 endpoints are used
@@ -969,16 +1004,24 @@ Note: No customer name, product name, or resource name — these require separat
 - `order`: `ASC` or `DESC`
 - `search`: customer name search
 
-### Booking Statuses
-`booked` · `completed` · `cancelled`
+### API Status Values
 
-Booked and completed are automatic transitions — never shown as badges to the merchant. Only cancelled is displayed.
+The API `status` field combines booking lifecycle and payment semantics into a single field:
+`unpaid` · `pending-confirmation` · `confirmed` · `paid` · `cancelled` · `complete` · `in-cart`
 
-### Attendance Statuses
-`unattended` · `attended`
+These map to `BookingStatus` enum in `Networking/Model/Bookings/Booking.swift`:
+`complete` · `paid` · `unpaid` · `cancelled` · `pendingConfirmation` · `confirmed` · `unknown`
 
-### Payment Statuses
-`paid` · `unpaid` · `refunded`
+The API `attendance_status` field has two values:
+`attended` · `unattended`
+
+These map to `BookingAttendanceStatus` enum (current values differ from API — existing app code):
+`booked` · `checkedIn` · `cancelled` · `noShow` · `unknown`
+
+**POS presentation** interprets these into three display dimensions (see Architecture Decisions > Status Presentation Model):
+- Booking lifecycle: Booked / Completed / Cancelled
+- Payment status: Paid / Unpaid
+- Attendance: Attended / Unattended
 
 ### Orders API: created_via
 `created_via` parameter: `type: array`, `sanitize_callback: wp_parse_list`, `compare: IN`

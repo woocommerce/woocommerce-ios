@@ -6,6 +6,7 @@ import Yosemite
 struct POSBookingsContainerView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posExternalNavigation) private var externalNavigation
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Binding var isPresented: Bool
@@ -55,7 +56,10 @@ struct POSBookingsContainerView: View {
                 onBack: { bookingListController.selectBooking(nil) },
                 onPayByCard: { startCardPayment(for: booking) },
                 onPayByCash: { startCashPayment(for: booking) },
-                onIssueRefund: booking.status == .paid ? { startRefundFlow(for: booking) } : nil
+                onIssueRefund: booking.status == .paid ? { startRefundFlow(for: booking) } : nil,
+                onViewOrder: booking.orderID != nil ? {
+                    externalNavigation.navigateToOrderDetails(orderID: booking.orderID!, siteID: bookingsModel.siteID)
+                } : nil
             )
             .id(booking.bookingID)
         } detailPlaceholderView: {

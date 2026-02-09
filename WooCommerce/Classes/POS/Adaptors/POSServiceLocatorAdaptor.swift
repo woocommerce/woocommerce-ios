@@ -84,6 +84,10 @@ private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
     func navigateToCreateOrder() {
         AppDelegate.shared.tabBarController?.navigate(to: OrdersDestination.createOrder)
     }
+
+    func navigateToOrderDetails(orderID: Int64, siteID: Int64) {
+        MainTabBarController.navigateToOrderDetails(with: orderID, siteID: siteID)
+    }
 }
 
 private struct POSExternalViewAdaptor: POSExternalViewProviding {

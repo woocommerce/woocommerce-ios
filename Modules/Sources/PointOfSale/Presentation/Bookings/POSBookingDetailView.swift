@@ -8,19 +8,22 @@ struct POSBookingDetailView: View {
     let onPayByCard: () -> Void
     let onPayByCash: () -> Void
     let onIssueRefund: (() -> Void)?
+    let onViewOrder: (() -> Void)?
 
     init(booking: POSBooking,
          isRefreshing: Bool = false,
          onBack: @escaping () -> Void,
          onPayByCard: @escaping () -> Void,
          onPayByCash: @escaping () -> Void,
-         onIssueRefund: (() -> Void)? = nil) {
+         onIssueRefund: (() -> Void)? = nil,
+         onViewOrder: (() -> Void)? = nil) {
         self.booking = booking
         self.isRefreshing = isRefreshing
         self.onBack = onBack
         self.onPayByCard = onPayByCard
         self.onPayByCash = onPayByCash
         self.onIssueRefund = onIssueRefund
+        self.onViewOrder = onViewOrder
     }
 
     @Environment(\.siteTimezone) private var siteTimezone
@@ -268,9 +271,9 @@ struct POSBookingDetailView: View {
                 .frame(height: 52)
                 .shimmering()
         } else {
-            switch booking.status {
-            case .unpaid:
-                VStack(spacing: POSSpacing.medium) {
+            VStack(spacing: POSSpacing.medium) {
+                switch booking.status {
+                case .unpaid:
                     Button(Localization.payByCard) {
                         onPayByCard()
                     }
@@ -280,10 +283,8 @@ struct POSBookingDetailView: View {
                         onPayByCash()
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                }
 
-            case .paid:
-                VStack(spacing: POSSpacing.medium) {
+                case .paid:
                     statusMessage(
                         icon: "checkmark.circle.fill",
                         text: Localization.paymentComplete,
@@ -296,21 +297,28 @@ struct POSBookingDetailView: View {
                         }
                         .buttonStyle(POSFilledButtonStyle(size: .normal))
                     }
+
+                case .cancelled:
+                    statusMessage(
+                        icon: "xmark.circle.fill",
+                        text: Localization.bookingCancelled,
+                        color: .posOnSurfaceVariantHighest
+                    )
+
+                case .noLinkedOrder:
+                    statusMessage(
+                        icon: "exclamationmark.triangle.fill",
+                        text: Localization.noLinkedOrder,
+                        color: .posError
+                    )
                 }
 
-            case .cancelled:
-                statusMessage(
-                    icon: "xmark.circle.fill",
-                    text: Localization.bookingCancelled,
-                    color: .posOnSurfaceVariantHighest
-                )
-
-            case .noLinkedOrder:
-                statusMessage(
-                    icon: "exclamationmark.triangle.fill",
-                    text: Localization.noLinkedOrder,
-                    color: .posError
-                )
+                if let onViewOrder {
+                    Button(Localization.viewOrder) {
+                        onViewOrder()
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                }
             }
         }
     }
@@ -377,6 +385,11 @@ struct POSBookingDetailView: View {
             "posBookingDetail.issueRefund",
             value: "Issue Refund",
             comment: "Button to start the refund flow for a paid booking"
+        )
+        static let viewOrder = NSLocalizedString(
+            "posBookingDetail.viewOrder",
+            value: "View Order",
+            comment: "Button to navigate to the order details in the main app"
         )
         static let bookingCancelled = NSLocalizedString(
             "posBookingDetail.bookingCancelled",

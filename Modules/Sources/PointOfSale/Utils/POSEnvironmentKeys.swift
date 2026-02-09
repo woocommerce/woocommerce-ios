@@ -102,6 +102,7 @@ extension View {
 
 struct EmptyPOSExternalNavigation: POSExternalNavigationProviding {
     func navigateToCreateOrder() {}
+    func navigateToOrderDetails(orderID: Int64, siteID: Int64) {}
     init() {}
 }
 

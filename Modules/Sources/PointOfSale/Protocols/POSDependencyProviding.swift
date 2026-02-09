@@ -40,6 +40,7 @@ public protocol POSConnectivityProviding {
 /// Protocol that provides main app navigation capabilities for POS
 public protocol POSExternalNavigationProviding {
     func navigateToCreateOrder()
+    func navigateToOrderDetails(orderID: Int64, siteID: Int64)
 }
 
 /// Protocol that provides access to complex Woo application views that depend on a lot of Woo app target dependencies

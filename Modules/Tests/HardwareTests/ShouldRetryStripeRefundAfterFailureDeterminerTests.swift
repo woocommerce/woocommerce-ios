@@ -1,9 +1,8 @@
 import Testing
 @testable import Hardware
 
-@Suite("Should Retry Stripe Refund After Failure Determiner Tests")
-struct ShouldRetryStripeRefundAfterFailureDeterminerTests {
-    @Test func test_shouldRetryRefund_when_failure_reasons_are_not_retryable_returns_false() {
+struct `Should Retry Stripe Refund After Failure Determiner Tests` {
+    @Test func `shouldRetryRefund when failure reasons are not retryable returns false`() {
         let sut = ShouldRetryStripeRefundAfterFailureDeterminer()
         let nonRetryableFailureReasons = [
             "call_issuer",
@@ -33,7 +32,7 @@ struct ShouldRetryStripeRefundAfterFailureDeterminerTests {
         }
     }
 
-    @Test func test_shouldRetryRefund_when_failure_reasons_are_retryable_returns_true() {
+    @Test func `shouldRetryRefund when failure reasons are retryable returns true`() {
         let sut = ShouldRetryStripeRefundAfterFailureDeterminer()
         let retryableFailureReasons = [
             "approve_with_id",
@@ -63,11 +62,11 @@ struct ShouldRetryStripeRefundAfterFailureDeterminerTests {
         }
     }
 
-    @Test func test_shouldRetryRefund_when_failure_reason_is_nil_returns_false() {
+    @Test func `shouldRetryRefund when failure reason is nil returns false`() {
         #expect(!ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: nil))
     }
 
-    @Test func test_shouldRetryRefund_when_failure_reason_is_unknown_returns_true() {
+    @Test func `shouldRetryRefund when failure reason is unknown returns true`() {
         #expect(ShouldRetryStripeRefundAfterFailureDeterminer().shouldRetryRefund(after: "not-a-stripe-error-for-sure"))
     }
 }

@@ -2,65 +2,64 @@ import Testing
 @testable import Hardware
 
 /// Tests the mapping between CardReader and SCPReader
-@Suite("Card Reader Tests")
-struct CardReaderTests {
-    @Test func test_card_reader_maps_serial_number() {
+struct `Card Reader Tests` {
+    @Test func `card reader maps serial number`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.serial == mockReader.serialNumber)
     }
 
-    @Test func test_card_reader_maps_stripe_id() {
+    @Test func `card reader maps stripe id`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.vendorIdentifier == mockReader.stripeId)
     }
 
-    @Test func test_card_reader_maps_label() {
+    @Test func `card reader maps label`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.name == mockReader.label)
     }
 
-    @Test func test_card_reader_maps_connected_status() {
+    @Test func `card reader maps connected status`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.status.connected)
     }
 
-    @Test func test_card_reader_maps_sofware_version() {
+    @Test func `card reader maps sofware version`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.softwareVersion == mockReader.deviceSoftwareVersion)
     }
 
-    @Test func test_card_reader_maps_battery_level() {
+    @Test func `card reader maps battery level`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.batteryLevel == mockReader.batteryLevel?.floatValue)
     }
 
-    @Test func test_card_reader_maps_reader_type_for_bbpos() {
+    @Test func `card reader maps reader type for bbpos`() {
         let mockReader = MockStripeCardReader.bbposChipper2XBT()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.readerType == .chipper)
     }
 
-    @Test func test_card_reader_maps_reader_type_for_m2() {
+    @Test func `card reader maps reader type for m2`() {
         let mockReader = MockStripeCardReader.stripeM2()
         let cardReader = CardReader(reader: mockReader)
 
         #expect(cardReader.readerType == .stripeM2)
     }
 
-    @Test func test_card_reader_maps_reader_type_for_wisepad3() {
+    @Test func `card reader maps reader type for wisepad3`() {
         let mockReader = MockStripeCardReader.wisepad3()
         let cardReader = CardReader(reader: mockReader)
 

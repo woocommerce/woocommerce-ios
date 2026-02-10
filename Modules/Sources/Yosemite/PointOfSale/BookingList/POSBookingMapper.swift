@@ -62,6 +62,7 @@ struct POSBookingMapper {
             attendanceStatus: booking.attendanceStatus,
             orderID: orderID,
             resourceName: resource?.name,
+            resourceImageURL: resource?.imageURL,
             customerEmail: billingAddress?.email?.nilIfEmpty,
             customerPhone: billingAddress?.phone?.nilIfEmpty,
             billingAddress: formattedBillingAddress,

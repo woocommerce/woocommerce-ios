@@ -13,6 +13,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let attendanceStatus: BookingAttendanceStatus
     public let orderID: Int64?
     public let resourceName: String?
+    public let resourceImageURL: String?
     public let customerEmail: String?
     public let customerPhone: String?
     public let billingAddress: String?
@@ -33,6 +34,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
                 attendanceStatus: BookingAttendanceStatus,
                 orderID: Int64?,
                 resourceName: String?,
+                resourceImageURL: String? = nil,
                 customerEmail: String? = nil,
                 customerPhone: String? = nil,
                 billingAddress: String? = nil,
@@ -52,6 +54,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         self.attendanceStatus = attendanceStatus
         self.orderID = orderID
         self.resourceName = resourceName
+        self.resourceImageURL = resourceImageURL
         self.customerEmail = customerEmail
         self.customerPhone = customerPhone
         self.billingAddress = billingAddress

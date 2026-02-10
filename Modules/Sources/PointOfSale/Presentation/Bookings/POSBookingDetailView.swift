@@ -52,7 +52,7 @@ struct POSBookingDetailView: View {
     private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: booking.serviceName.isEmpty ? Localization.bookingTitle : booking.serviceName,
+                title: headerTitle.isEmpty ? Localization.bookingTitle : headerTitle,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     viewOrderMenu
@@ -61,14 +61,13 @@ struct POSBookingDetailView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    headerSection
+                    headerBadges
                     bookingDetailsSection
-                    customerSection
-                    customerNoteSection
-                    bookingNoteSection
                     attendanceSection
+                    customerSection
                     paymentBreakdownSection
                     paymentActionSection
+                    bookingNoteSection
                 }
                 .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
@@ -95,37 +94,35 @@ struct POSBookingDetailView: View {
         .menuIndicator(.hidden)
     }
 
-    // MARK: - Section 1: Header
+    // MARK: - Header Badges
 
     @ViewBuilder
-    private var headerSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+    private var headerBadges: some View {
+        HStack(spacing: POSSpacing.small) {
             Text(formattedTimeRange)
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
-            Text(headerTitle)
-                .font(.posBodySmallBold())
-                .foregroundStyle(Color.posOnSurface)
+            POSBookingBadgeView(
+                title: attendanceDisplay.localizedTitle,
+                textColor: attendanceDisplay.textColor,
+                backgroundColor: attendanceDisplay.backgroundColor
+            )
 
-            HStack(spacing: POSSpacing.small) {
-                Text(attendanceDisplay.localizedTitle)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            POSBookingBadgeView(
+                title: paymentStatus.localizedTitle,
+                textColor: paymentStatus.textColor,
+                backgroundColor: paymentStatus.backgroundColor
+            )
 
-                Text(paymentStatus.localizedTitle)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(paymentStatus.color)
-
-                if lifecycleStatus.shouldShowBadge {
-                    Text(lifecycleStatus.localizedTitle)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(lifecycleStatus.badgeColor)
-                }
+            if lifecycleStatus.shouldShowBadge {
+                POSBookingBadgeView(
+                    title: lifecycleStatus.localizedTitle,
+                    textColor: lifecycleStatus.textColor,
+                    backgroundColor: lifecycleStatus.backgroundColor
+                )
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .sectionCard()
     }
 
     private var headerTitle: String {
@@ -180,25 +177,6 @@ struct POSBookingDetailView: View {
                     detailRow(label: Localization.billingAddressLabel, value: address)
                 }
             }
-            .sectionCard()
-        }
-    }
-
-    // MARK: - Section 4: Customer Note
-
-    @ViewBuilder
-    private var customerNoteSection: some View {
-        if let note = booking.customerNote {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(Localization.customerNoteLabel)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posOnSurface)
-
-                Text(note)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
             .sectionCard()
         }
     }

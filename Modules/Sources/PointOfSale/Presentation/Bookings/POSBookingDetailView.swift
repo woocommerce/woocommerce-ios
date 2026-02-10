@@ -37,6 +37,8 @@ struct POSBookingDetailView: View {
             POSOrderDetailsView(order: order, onBack: {
                 loadedOrder = nil
             })
+            // Forces back button to be rendered, otherwise the system assumes that
+            // navigation is handled by the split view's sidebar, not a back button
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                 loadedOrder = nil
             }))

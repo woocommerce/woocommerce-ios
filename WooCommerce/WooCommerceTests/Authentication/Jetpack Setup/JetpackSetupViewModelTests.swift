@@ -264,48 +264,27 @@ final class JetpackSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - API calls
-    func test_startSetup_triggers_connection_step_if_connectionOnly_is_true() throws {
+    func test_startSetup_triggers_connection_step_if_connectionOnly_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials, stores: stores)
-        let testConnectionURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize"))
+        let connectionService = MockJetpackConnectionService()
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials,
+                                              stores: stores, connectionService: connectionService)
 
         var triggeredRetrieveJetpackPluginDetails = false
         var triggeredInstallation = false
         var triggeredActivation = false
         var triggeredConnectionURL = false
-        var triggeredConnection = false
-        var fetchCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails:
                 triggeredRetrieveJetpackPluginDetails = true
-                completion(.success(.fake()))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
+            case .installJetpackPlugin:
                 triggeredInstallation = true
-            case .activateJetpackPlugin(let completion):
-                completion(.success(()))
+            case .activateJetpackPlugin:
                 triggeredActivation = true
-            case .fetchJetpackConnectionURL(_, let completion):
-                completion(.success(testConnectionURL))
+            case .fetchJetpackConnectionURL:
                 triggeredConnectionURL = true
-            case .fetchJetpackConnectionData(let completion):
-                fetchCount += 1
-                triggeredConnection = true
-                if fetchCount == 1 {
-                    completion(.success(.fake().copy(isRegistered: false)))
-                } else {
-                    completion(.success(JetpackConnectionData.fake().copy(
-                        currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@example.com"))
-                    )))
-                }
-            case .registerSite(let completion):
-                completion(.success(456))
-            case .provisionConnection(let completion):
-                completion(.success(JetpackConnectionProvisionResponse(userId: 1, scope: "admin", secret: "secret")))
-            case let .finalizeConnection(_, _, _, _, completion):
-                completion(.success(()))
             default:
                 break
             }
@@ -313,53 +292,36 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // When
         viewModel.startSetup()
-        waitUntil { triggeredConnection }
+        waitUntil { connectionService.evaluateAndConnectCallCount > 0 }
 
         // Then
         XCTAssertFalse(triggeredRetrieveJetpackPluginDetails)
         XCTAssertFalse(triggeredInstallation)
         XCTAssertFalse(triggeredActivation)
         XCTAssertFalse(triggeredConnectionURL)
-        XCTAssertTrue(triggeredConnection)
+        XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
-    func test_startSetup_triggers_installation_steps_if_connectionOnly_is_false() throws {
+    func test_startSetup_triggers_installation_steps_if_connectionOnly_is_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
+        let connectionService = MockJetpackConnectionService()
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                              stores: stores, connectionService: connectionService)
 
         var triggeredRetrieveJetpackPluginDetails = false
         var triggeredInstallation = false
         var triggeredActivation = false
-        var triggeredConnection = false
-        var fetchCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
                 triggeredRetrieveJetpackPluginDetails = true
-                let error = NetworkError.notFound(response: nil)
-                completion(.failure(error))
+                completion(.failure(NetworkError.notFound(response: nil)))
             case .installJetpackPlugin(let completion):
-                completion(.success(()))
                 triggeredInstallation = true
-            case .activateJetpackPlugin(let completion):
                 completion(.success(()))
+            case .activateJetpackPlugin(let completion):
                 triggeredActivation = true
-            case .fetchJetpackConnectionData(let completion):
-                fetchCount += 1
-                triggeredConnection = true
-                if fetchCount == 1 {
-                    completion(.success(.fake().copy(isRegistered: false)))
-                } else {
-                    completion(.success(JetpackConnectionData.fake().copy(
-                        currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@example.com"))
-                    )))
-                }
-            case .registerSite(let completion):
-                completion(.success(456))
-            case .provisionConnection(let completion):
-                completion(.success(JetpackConnectionProvisionResponse(userId: 1, scope: "admin", secret: "secret")))
-            case let .finalizeConnection(_, _, _, _, completion):
                 completion(.success(()))
             default:
                 break
@@ -368,13 +330,13 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // When
         viewModel.startSetup()
-        waitUntil { triggeredConnection }
+        waitUntil { connectionService.evaluateAndConnectCallCount > 0 }
 
         // Then
         XCTAssertTrue(triggeredRetrieveJetpackPluginDetails)
         XCTAssertTrue(triggeredInstallation)
         XCTAssertTrue(triggeredActivation)
-        XCTAssertTrue(triggeredConnection)
+        XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
     func test_startSetup_triggers_jetpack_installation_if_retrieving_details_fails_with_404() {
@@ -444,13 +406,13 @@ final class JetpackSetupViewModelTests: XCTestCase {
     func test_startSetup_triggers_jetpack_connection_if_retrieving_details_returns_active_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
+        let connectionService = MockJetpackConnectionService()
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                              stores: stores, connectionService: connectionService)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
 
         var triggeredInstallation = false
         var triggeredActivation = false
-        var triggeredConnection = false
-        var fetchCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
@@ -459,20 +421,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 triggeredInstallation = true
             case .activateJetpackPlugin:
                 triggeredActivation = true
-            case .fetchJetpackConnectionData(let completion):
-                fetchCount += 1
-                if fetchCount == 1 {
-                    completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
-                } else {
-                    completion(.success(JetpackConnectionData.fake().copy(
-                        currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@example.com"))
-                    )))
-                }
-            case .provisionConnection(let completion):
-                triggeredConnection = true
-                completion(.success(JetpackConnectionProvisionResponse(userId: 1, scope: "admin", secret: "secret")))
-            case let .finalizeConnection(_, _, _, _, completion):
-                completion(.success(()))
             default:
                 break
             }
@@ -487,12 +435,12 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isSetupStepPending(.activation))
         XCTAssertTrue(viewModel.isSetupStepPending(.done))
 
-        waitUntil { triggeredConnection }
+        waitUntil { connectionService.evaluateAndConnectCallCount > 0 }
 
         // Then
         XCTAssertFalse(triggeredInstallation)
         XCTAssertFalse(triggeredActivation)
-        XCTAssertTrue(triggeredConnection)
+        XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
     func test_installation_triggers_activation_when_completing_successfully() {
@@ -529,39 +477,21 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(triggeredConnection)
     }
 
-    func test_activation_success_triggers_all_connection_apis_if_isRegistered_is_false() {
+    func test_activation_success_triggers_connection_service() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
+        let connectionService = MockJetpackConnectionService()
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                              stores: stores, connectionService: connectionService)
 
-        var fetchedConnectionData = false
-        var triggeredConnectionURL = false
-        var triggeredRegisterSite = false
-        var triggeredProvisionConnection = false
-        var triggeredFinalizeConnection = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                let error = NetworkError.notFound(response: nil)
-                completion(.failure(error))
+                completion(.failure(NetworkError.notFound(response: nil)))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
-            case .fetchJetpackConnectionData(let completion):
-                fetchedConnectionData = true
-                completion(.success(.fake().copy(isRegistered: false)))
-            case .registerSite(let completion):
-                triggeredRegisterSite = true
-                completion(.success(124))
-            case .provisionConnection(let completion):
-                triggeredProvisionConnection = true
-                completion(.success(JetpackConnectionProvisionResponse(userId: 131, scope: "test", secret: "secret")))
-            case let .finalizeConnection(_, _, _, _, completion):
-                triggeredFinalizeConnection = true
-                completion(.success(()))
-            case .fetchJetpackConnectionURL:
-                triggeredConnectionURL = true
             default:
                 break
             }
@@ -569,91 +499,29 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // When
         viewModel.startSetup()
-        waitUntil { triggeredFinalizeConnection }
+        waitUntil { connectionService.evaluateAndConnectCallCount > 0 }
 
         // Then
-        XCTAssertTrue(fetchedConnectionData)
-        XCTAssertFalse(triggeredConnectionURL)
-        XCTAssertTrue(triggeredRegisterSite)
-        XCTAssertTrue(triggeredProvisionConnection)
-        XCTAssertTrue(triggeredFinalizeConnection)
-    }
-
-    func test_activation_success_triggers_all_connection_apis_except_register_if_isRegistered_is_true() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
-
-        var fetchedConnectionData = false
-        var triggeredConnectionURL = false
-        var triggeredRegisterSite = false
-        var triggeredProvisionConnection = false
-        var triggeredFinalizeConnection = false
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .retrieveJetpackPluginDetails(let completion):
-                let error = NetworkError.notFound(response: nil)
-                completion(.failure(error))
-            case .installJetpackPlugin(let completion):
-                completion(.success(()))
-            case .activateJetpackPlugin(let completion):
-                completion(.success(()))
-            case .fetchJetpackConnectionData(let completion):
-                fetchedConnectionData = true
-                completion(.success(.fake().copy(isRegistered: true, blogID: 124)))
-            case .registerSite:
-                triggeredRegisterSite = true
-            case .provisionConnection(let completion):
-                triggeredProvisionConnection = true
-                completion(.success(JetpackConnectionProvisionResponse(userId: 131, scope: "test", secret: "secret")))
-            case let .finalizeConnection(_, _, _, _, completion):
-                triggeredFinalizeConnection = true
-                completion(.success(()))
-            case .fetchJetpackConnectionURL:
-                triggeredConnectionURL = true
-            default:
-                break
-            }
-        }
-
-        // When
-        viewModel.startSetup()
-        waitUntil { triggeredFinalizeConnection }
-
-        // Then
-        XCTAssertTrue(fetchedConnectionData)
-        XCTAssertFalse(triggeredConnectionURL)
-        XCTAssertFalse(triggeredRegisterSite)
-        XCTAssertTrue(triggeredProvisionConnection)
-        XCTAssertTrue(triggeredFinalizeConnection)
+        XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
     func test_activation_triggers_fetching_connection_url_when_site_has_outdated_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials, stores: stores)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.evaluateAndConnectResult = .success(.webViewRequired)
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+                                              stores: stores, connectionService: connectionService)
 
-        var fetchedConnectionData = false
         var triggeredConnectionURL = false
-        var retrievePluginCallCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
-                retrievePluginCallCount += 1
-                if retrievePluginCallCount == 1 {
-                    // ViewModel's own call: plugin not found → triggers install
-                    completion(.failure(NetworkError.notFound(response: nil)))
-                } else {
-                    // Service's Branch C check: plugin found → webViewRequired
-                    completion(.success(.fake()))
-                }
+                completion(.failure(NetworkError.notFound(response: nil)))
             case .installJetpackPlugin(let completion):
                 completion(.success(()))
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
-            case .fetchJetpackConnectionData(let completion):
-                fetchedConnectionData = true
-                completion(.success(.fake().copy(isRegistered: nil)))
             case .fetchJetpackConnectionURL:
                 triggeredConnectionURL = true
             default:
@@ -666,7 +534,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         waitUntil { triggeredConnectionURL }
 
         // Then
-        XCTAssertTrue(fetchedConnectionData)
+        XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
         XCTAssertTrue(triggeredConnectionURL)
     }
 
@@ -1242,35 +1110,14 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
     func test_it_tracks_correct_event_when_connection_step_starts() throws {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let connectionService = MockJetpackConnectionService()
         let viewModel = JetpackSetupViewModel(siteURL: testURL,
                                               connectionOnly: true,
                                               wpcomCredentials: credentials,
-                                              stores: stores,
-                                              analytics: analytics)
-
-        var fetchCount = 0
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case .fetchJetpackConnectionData(let completion):
-                fetchCount += 1
-                if fetchCount == 1 {
-                    completion(.success(.fake().copy(isRegistered: true, blogID: 123)))
-                } else {
-                    completion(.success(JetpackConnectionData.fake().copy(
-                        currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: "test@example.com"))
-                    )))
-                }
-            case .provisionConnection(let completion):
-                completion(.success(JetpackConnectionProvisionResponse(userId: 1, scope: "admin", secret: "secret")))
-            case let .finalizeConnection(_, _, _, _, completion):
-                completion(.success(()))
-            default:
-                break
-            }
-        }
+                                              analytics: analytics,
+                                              connectionService: connectionService)
 
         // When
         viewModel.startSetup()

@@ -286,29 +286,57 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
 
-        @Test func sendReceipt_when_invoked_then_calls_controller() async throws {
+        @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {
             // Given
-            let orderController = MockPointOfSaleOrderController()
-            let sut = makePointOfSaleAggregateModel(orderController: orderController)
+            let receiptSender = MockPOSReceiptSender()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                receiptSender: receiptSender)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
 
             // When
-            try await sut.sendReceipt(to: "")
+            try await sut.sendReceipt(to: "test@example.com")
 
             // Then
-            #expect(orderController.sendReceiptWasCalled == true)
+            #expect(receiptSender.sendReceiptWasCalled == true)
+            #expect(receiptSender.sendReceiptCalledWithOrderID == 42)
+            #expect(receiptSender.sendReceiptCalledWithEmail == "test@example.com")
         }
 
         @Test func sendReceipt_when_invoked_with_error_then_returns_error() async throws {
             // Given
-            let orderController = MockPointOfSaleOrderController()
+            let receiptSender = MockPOSReceiptSender()
             let expectedError = NSError(domain: "some error", code: -1)
-            orderController.sendReceiptErrorToThrow = expectedError
+            receiptSender.sendReceiptErrorToThrow = expectedError
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
 
-            let sut = makePointOfSaleAggregateModel(orderController: orderController)
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                receiptSender: receiptSender)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
 
             do {
                 // When
-                try await sut.sendReceipt(to: "")
+                try await sut.sendReceipt(to: "test@example.com")
+                Issue.record("Expected error to be thrown")
             } catch {
                 // Then
                 let nsError = error as NSError
@@ -523,20 +551,21 @@ struct PointOfSaleAggregateModelTests {
         @Test func cardPresentPaymentInlineMessage_when_paymentSuccess_then_total_set() async throws {
             // Given order totals:
             // Note that orderTotal is used, but the Order values are given for test robustness.
-            orderController.orderState = makeLoadedOrderState(
+            orderController.orderStateToReturn = makeLoadedOrderState(
                 orderTotal: "$52.30",
                 orderTotalDecimal: 52.3,
                 order: Order.fake().copy(currency: "$", total: "52.30"))
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
 
-            // When
-            cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+            // Trigger checkout to populate formattedOrderTotalPrice in the payment controller
+            await sut.checkOut()
 
-            // Then
+            // Then — the payment success event is fired by the mock's collectPayment
             guard case .paymentSuccess(let viewModel) = sut.cardPresentPaymentInlineMessage else {
                 Issue.record("Expected cardPresentPaymentInlineMessage to be paymentSuccess")
                 return
@@ -594,6 +623,8 @@ struct PointOfSaleAggregateModelTests {
 
             try #require(sut.orderStage == .finalizing)
             editOrderAction()
+            // Wait for the Task { @MainActor in } to execute
+            try? await Task.sleep(nanoseconds: 50_000_000)
             #expect(sut.orderStage == .building)
         }
 
@@ -1036,6 +1067,7 @@ private func makePointOfSaleAggregateModel(
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService(),
+    receiptSender: POSReceiptSending = MockPOSReceiptSender(),
     soundPlayer: PointOfSaleSoundPlayerProtocol = MockPointOfSaleSoundPlayer(),
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
@@ -1055,6 +1087,7 @@ private func makePointOfSaleAggregateModel(
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,
         barcodeScanService: barcodeScanService,
+        receiptSender: receiptSender,
         soundPlayer: soundPlayer,
         paymentState: paymentState,
         siteID: siteID,

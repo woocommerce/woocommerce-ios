@@ -43,6 +43,7 @@ public struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let receiptSender: POSReceiptSending
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
     private let siteID: Int64
@@ -138,6 +139,7 @@ public struct PointOfSaleEntryPointView: View {
             analyticsProvider: services.analytics
         )
         self.barcodeScanService = barcodeScanService
+        self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
@@ -186,6 +188,7 @@ public struct PointOfSaleEntryPointView: View {
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
+                receiptSender: receiptSender,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible)

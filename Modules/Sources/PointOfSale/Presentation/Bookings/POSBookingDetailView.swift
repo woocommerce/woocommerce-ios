@@ -42,6 +42,8 @@ struct POSBookingDetailView: View {
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                 loadedOrder = nil
             }))
+        } else if isLoadingOrder {
+            POSOrderDetailsLoadingView()
         } else {
             bookingDetailContent
         }

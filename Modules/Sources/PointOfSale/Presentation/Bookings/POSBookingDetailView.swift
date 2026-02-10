@@ -65,6 +65,7 @@ struct POSBookingDetailView: View {
                     bookingDetailsSection
                     customerSection
                     customerNoteSection
+                    bookingNoteSection
                     attendanceSection
                     paymentBreakdownSection
                     paymentActionSection
@@ -202,7 +203,26 @@ struct POSBookingDetailView: View {
         }
     }
 
-    // MARK: - Section 5: Attendance Status
+    // MARK: - Section 5: Booking Note
+
+    @ViewBuilder
+    private var bookingNoteSection: some View {
+        if let note = booking.bookingNote {
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Text(Localization.bookingNoteLabel)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posOnSurface)
+
+                Text(note)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .sectionCard()
+        }
+    }
+
+    // MARK: - Section 6: Attendance Status
 
     @ViewBuilder
     private var attendanceSection: some View {
@@ -220,7 +240,7 @@ struct POSBookingDetailView: View {
         .sectionCard()
     }
 
-    // MARK: - Section 6: Payment Breakdown
+    // MARK: - Section 7: Payment Breakdown
 
     @ViewBuilder
     private var paymentBreakdownSection: some View {
@@ -230,7 +250,7 @@ struct POSBookingDetailView: View {
             }
 
             detailRow(label: Localization.taxesLabel, value: booking.formattedTax ?? Localization.taxesZero)
-            detailRow(label: Localization.discountLabel, value: Localization.discountNone)
+            detailRow(label: Localization.discountLabel, value: booking.order.formattedDiscountTotal ?? Localization.discountNone)
 
             Divider()
                 .overlay(Color.posOutlineVariant.opacity(0.5))
@@ -240,7 +260,7 @@ struct POSBookingDetailView: View {
         .sectionCard()
     }
 
-    // MARK: - Section 7: Payment Action / Status
+    // MARK: - Section 8: Payment Action / Status
 
     @ViewBuilder
     private var paymentActionSection: some View {
@@ -408,6 +428,12 @@ private enum Localization {
         comment: "Label for the customer note section in booking details."
     )
 
+    static let bookingNoteLabel = NSLocalizedString(
+        "pos.bookingDetailView.bookingNoteLabel",
+        value: "Booking note",
+        comment: "Label for the private booking note section in booking details."
+    )
+
     static let attendanceLabel = NSLocalizedString(
         "pos.bookingDetailView.attendanceLabel",
         value: "Attendance",
@@ -462,3 +488,21 @@ private enum Localization {
         comment: "Menu action to view the linked order from a booking detail."
     )
 }
+
+// MARK: - Previews
+
+#if DEBUG
+#Preview("Paid Booking") {
+    POSBookingDetailView(
+        booking: POSPreviewHelpers.makePreviewPaidBooking(),
+        onBack: {}
+    )
+}
+
+#Preview("Unpaid Booking") {
+    POSBookingDetailView(
+        booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        onBack: {}
+    )
+}
+#endif

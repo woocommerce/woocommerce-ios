@@ -3,15 +3,19 @@ import Yosemite
 @testable import WooCommerce
 
 final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
-    var connectResult: Result<Void, Error> = .success(())
-    private(set) var connectCallCount = 0
-    private(set) var lastConnectionData: JetpackConnectionData?
+    var evaluateAndConnectResult: Result<JetpackConnectionOutcome, Error> = .success(.connected(email: "test@example.com"))
+    private(set) var evaluateAndConnectCallCount = 0
 
-    func connect(with connectionData: JetpackConnectionData,
-                 siteURL: String,
-                 credentials: Credentials) async throws {
-        connectCallCount += 1
-        lastConnectionData = connectionData
-        try connectResult.get()
+    var verifyConnectionResult: Result<String, Error> = .success("test@example.com")
+    private(set) var verifyConnectionCallCount = 0
+
+    func evaluateAndConnect(siteURL: String, credentials: Credentials) async throws -> JetpackConnectionOutcome {
+        evaluateAndConnectCallCount += 1
+        return try evaluateAndConnectResult.get()
+    }
+
+    func verifyConnection() async throws -> String {
+        verifyConnectionCallCount += 1
+        return try verifyConnectionResult.get()
     }
 }

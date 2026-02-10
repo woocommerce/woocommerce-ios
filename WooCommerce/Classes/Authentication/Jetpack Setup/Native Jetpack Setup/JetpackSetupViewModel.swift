@@ -15,7 +15,6 @@ final class JetpackSetupViewModel: ObservableObject {
     private let stores: StoresManager
     private let storeNavigationHandler: (_ connectedEmail: String?) -> Void
     private let wpcomCredentials: Credentials
-    private var isPluginActivated = false
     private var connectionType = WooAnalyticsEvent.JetpackSetup.ConnectionType.native
 
     @Published private(set) var setupSteps: [JetpackInstallStep]
@@ -90,7 +89,6 @@ final class JetpackSetupViewModel: ObservableObject {
     }()
 
     private let analytics: Analytics
-    private let delayBeforeRetry: Double
     private let connectionService: JetpackConnectionServiceProtocol
 
     init(siteURL: String,
@@ -98,8 +96,7 @@ final class JetpackSetupViewModel: ObservableObject {
          wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         connectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
-         delayBeforeRetry: Double = Constants.delayBeforeRetry,
+         connectionService: JetpackConnectionServiceProtocol? = nil,
          onStoreNavigation: @escaping (String?) -> Void = { _ in}) {
         self.siteURL = siteURL
         self.connectionOnly = connectionOnly
@@ -109,8 +106,7 @@ final class JetpackSetupViewModel: ObservableObject {
         self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
         self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL))
-        self.delayBeforeRetry = delayBeforeRetry
-        self.connectionService = connectionService
+        self.connectionService = connectionService ?? JetpackConnectionService(stores: stores)
     }
 
     func isSetupStepFailed(_ step: JetpackInstallStep) -> Bool {
@@ -247,7 +243,6 @@ private extension JetpackSetupViewModel {
             guard let self else { return }
             switch result {
             case .success:
-                isPluginActivated = true
                 self.checkJetpackConnection(afterConnection: false)
             case .failure(let error):
                 self.trackSetup(failure: error)
@@ -318,98 +313,33 @@ private extension JetpackSetupViewModel {
 // MARK: Handle connection steps
 // Ref: pe5sF9-401-p2
 private extension JetpackSetupViewModel {
-    func checkJetpackConnection(afterConnection: Bool, retryCount: Int = 0) {
-        if afterConnection {
-            currentConnectionStep = .inProgress
-        }
-        let action = JetpackConnectionAction.fetchJetpackConnectionData { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let connectionData):
-                if afterConnection {
-                    checkConnectedUser(data: connectionData, retryCount: retryCount)
-                } else {
-                    handleJetpackConnectionData(connectionData)
-                }
-            case .failure(let error):
-                DDLogError("⛔️ Error checking Jetpack connection: \(error)")
-                if retryCount == Constants.maxRetryCount {
-                    return didFailJetpackConnection(with: error)
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
-                    self?.checkJetpackConnection(afterConnection: afterConnection, retryCount: retryCount + 1)
-                }
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    func checkConnectedUser(data: JetpackConnectionData, retryCount: Int = 0) {
-        let connectedEmail = data.currentUser.wpcomUser?.email
-        if let connectedEmail {
-            return didCompleteJetpackConnection(connectedEmail: connectedEmail)
-        }
-
-        DDLogWarn("⚠️ Cannot find connected WPcom user")
-        let missingWpcomUserError = NSError(domain: Constants.errorDomain,
-                                            code: Constants.errorCodeNoWPComUser,
-                                            userInfo: [Constants.errorUserInfoReason: Constants.errorUserInfoNoWPComUser])
-        if retryCount == Constants.maxRetryCount {
-            return didFailJetpackConnection(with: missingWpcomUserError)
-        }
-        // Retry fetching user in case Jetpack sync takes some time.
-        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeRetry) { [weak self] in
-            self?.checkJetpackConnection(afterConnection: true, retryCount: retryCount + 1)
-        }
-    }
-
-    func handleJetpackConnectionData(_ data: JetpackConnectionData) {
-        if let connectedEmail = data.currentUser.wpcomUser?.email {
-            return didCompleteJetpackConnection(connectedEmail: connectedEmail)
-        }
-
-        if data.isRegistered != nil {
-            return startNativeConnection(with: data)
-        }
-
-        if isPluginActivated {
-            /// Skips plugin check if plugin has just got activated.
-            /// `isRegistered` is unavailable due to outdated Jetpack. Proceed with web flow.
-            startConnectionWithWebView()
-        } else {
-            /// Fetch plugin details to check
-            stores.dispatch(JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success:
-                    /// Plugin is available but`isRegistered` is unavailable due to outdated version.
-                    /// Proceed with web flow.
-                    startConnectionWithWebView()
-                case .failure(let error):
-                    if error.errorCode == 404 {
-                        /// For Jetpack-connected sites, if `isRegistered` is not returned,
-                        /// check for `connectionOwner` instead.
-                        startNativeConnection(with: data.copy(isRegistered: data.connectionOwner != nil))
-                    } else {
-                        didFailJetpackConnection(with: error)
-                    }
-                }
-            })
-        }
-    }
-
-    func startNativeConnection(with data: JetpackConnectionData) {
+    func checkJetpackConnection(afterConnection: Bool) {
+        dispatchPrecondition(condition: .onQueue(.main))
+        if afterConnection { currentConnectionStep = .inProgress }
+        // Set synchronously so the UI immediately reflects the connection step.
+        // For .alreadyConnected, this transitions to .done in the next run-loop tick.
         currentSetupStep = .connection
-        trackSetup()
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
-                try await self.connectionService.connect(
-                    with: data,
-                    siteURL: self.siteURL,
-                    credentials: self.wpcomCredentials
-                )
-                self.checkJetpackConnection(afterConnection: true)
+                if afterConnection {
+                    let email = try await self.connectionService.verifyConnection()
+                    self.didCompleteJetpackConnection(connectedEmail: email)
+                } else {
+                    let outcome = try await self.connectionService.evaluateAndConnect(
+                        siteURL: self.siteURL,
+                        credentials: self.wpcomCredentials
+                    )
+                    switch outcome {
+                    case .alreadyConnected(let email):
+                        self.didCompleteJetpackConnection(connectedEmail: email)
+                    case .connected(let email):
+                        self.trackSetup()
+                        self.didCompleteJetpackConnection(connectedEmail: email)
+                    case .webViewRequired:
+                        self.startConnectionWithWebView()
+                    }
+                }
             } catch {
                 self.didFailJetpackConnection(with: error)
             }
@@ -518,12 +448,6 @@ extension JetpackSetupViewModel {
     }
 
     private enum Constants {
-        static let maxRetryCount: Int = 2
-        static let delayBeforeRetry: Double = 0.5
-        static let errorDomain = "LoginJetpackSetup"
-        static let errorCodeNoWPComUser = 99
-        static let errorUserInfoReason = "reason"
-        static let errorUserInfoNoWPComUser = "No connected WP.com user found"
         static let jetpackInstallString = "%@/wp-admin/admin.php?page=jetpack"
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
     }

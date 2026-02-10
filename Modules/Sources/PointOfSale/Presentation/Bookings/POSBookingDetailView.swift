@@ -104,7 +104,10 @@ struct POSBookingDetailView: View {
 
     @MainActor
     private func viewLinkedOrder() async {
-        guard let orderID = booking.orderID else { return }
+        guard let orderID = booking.orderID else {
+            assertionFailure("Booking \(booking.id) has no associated orderID. Every booking must have an order.")
+            return
+        }
         isLoadingOrder = true
         defer { isLoadingOrder = false }
         do {

@@ -74,19 +74,14 @@ struct POSBookingRowView: View {
                 POSBookingBadgeView(title: lifecycleStatus.localizedTitle,
                                     textColor: lifecycleStatus.textColor,
                                     backgroundColor: lifecycleStatus.backgroundColor)
-
-                POSBookingBadgeView(title: paymentStatus.localizedTitle,
-                                    textColor: paymentStatus.textColor,
-                                    backgroundColor: paymentStatus.backgroundColor)
             } else {
                 POSBookingBadgeView(title: attendanceDisplay.localizedTitle,
                                     textColor: attendanceDisplay.textColor,
                                     backgroundColor: attendanceDisplay.backgroundColor)
-
-                POSBookingBadgeView(title: paymentStatus.localizedTitle,
-                                    textColor: paymentStatus.textColor,
-                                    backgroundColor: paymentStatus.backgroundColor)
             }
+            POSBookingBadgeView(title: paymentStatus.localizedTitle,
+                                textColor: paymentStatus.textColor,
+                                backgroundColor: paymentStatus.backgroundColor)
         }
     }
 

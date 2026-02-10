@@ -26,7 +26,7 @@ public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
     }
 }
 
-public enum RemoteFeatureFlag: Decodable {
+public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
     case storeCreationCompleteNotification
     case pointOfSale
     case appPasswordsForJetpackSites

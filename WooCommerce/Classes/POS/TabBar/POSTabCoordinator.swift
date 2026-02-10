@@ -276,7 +276,8 @@ private extension POSTabCoordinator {
                         credentials: credentials,
                         selectedSite: defaultSitePublisher,
                         appPasswordSupportState: isAppPasswordSupported,
-                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
+                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                        siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
                     ) : nil
 
                 let posView = PointOfSaleEntryPointView(

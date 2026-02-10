@@ -4,7 +4,7 @@ import enum Networking.BookingAttendanceStatus
 
 public struct POSBooking: Equatable, Hashable, Identifiable {
     public let id: Int64
-    public let customerName: String
+    public let customerName: String?
     public let serviceName: String
     public let startDate: Date
     public let endDate: Date
@@ -25,7 +25,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let order: POSOrder
 
     public init(id: Int64,
-                customerName: String,
+                customerName: String?,
                 serviceName: String,
                 startDate: Date,
                 endDate: Date,

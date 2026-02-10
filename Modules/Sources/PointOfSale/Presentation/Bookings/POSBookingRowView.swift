@@ -96,9 +96,7 @@ struct POSBookingRowView: View {
     }
 
     private var detailsText: String {
-        let customerDisplayName = booking.customerName.isEmpty
-            ? booking.customerEmail
-            : booking.customerName
+        let customerDisplayName = booking.customerName ?? booking.customerEmail
         let parts = [booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: " \u{00B7} ")
     }

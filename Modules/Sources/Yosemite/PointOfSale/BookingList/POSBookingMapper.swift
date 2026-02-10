@@ -17,14 +17,12 @@ struct POSBookingMapper {
              order: POSOrder) -> POSBooking {
         let billingAddress = orderInfo?.customerInfo?.billingAddress
 
-        let customerName: String = {
-            if let billingAddress {
-                let fullName = [billingAddress.firstName, billingAddress.lastName]
-                    .filter { !$0.isEmpty }
-                    .joined(separator: " ")
-                return fullName.isEmpty ? Localization.guest : fullName
-            }
-            return Localization.guest
+        let customerName: String? = {
+            guard let billingAddress else { return nil }
+            let fullName = [billingAddress.firstName, billingAddress.lastName]
+                .filter { !$0.isEmpty }
+                .joined(separator: " ")
+            return fullName.isEmpty ? nil : fullName
         }()
 
         let serviceName = orderInfo?.productInfo?.name ?? ""
@@ -98,12 +96,6 @@ private extension String {
 }
 
 private enum Localization {
-    static let guest = NSLocalizedString(
-        "pos.booking.guestCustomerName",
-        value: "Guest",
-        comment: "Displayed as the customer name when a booking has no linked customer."
-    )
-
     static let durationMinutes = NSLocalizedString(
         "pos.booking.durationMinutes",
         value: "%d min",

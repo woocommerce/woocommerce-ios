@@ -1134,36 +1134,6 @@ final class POSOrderListControllerTests {
         #expect(orderListService.lastLoadOrderID == order.id)
     }
 
-    @MainActor
-    @Test func test_loadOrder_when_order_exists_then_returns_order() async throws {
-        // Given
-        let expectedOrder = makeOrder(id: 42)
-        orderListService.loadOrderResult = expectedOrder
-
-        // When
-        let result = try await sut.loadOrder(orderID: 42)
-
-        // Then
-        #expect(result == expectedOrder)
-        #expect(orderListService.loadOrderWasCalled == true)
-        #expect(orderListService.lastLoadOrderID == 42)
-    }
-
-    @MainActor
-    @Test func test_loadOrder_when_service_throws_then_propagates_error() async throws {
-        // Given
-        orderListService.shouldThrowError = true
-
-        // When / Then
-        var thrownError: Error?
-        do {
-            _ = try await sut.loadOrder(orderID: 999)
-        } catch {
-            thrownError = error
-        }
-
-        #expect(thrownError != nil)
-    }
 }
 
 private extension POSOrderListControllerTests {

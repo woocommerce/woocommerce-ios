@@ -35,20 +35,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         }
     }
 
-    var loadOrderResult: POSOrder?
-    var spyLoadOrderID: Int64?
-
-    func loadOrder(orderID: Int64) async throws -> POSOrder {
-        spyLoadOrderID = orderID
-        if shouldThrowError {
-            throw TestError.loadOrderFailed
-        }
-        guard let order = loadOrderResult else {
-            throw TestError.loadOrderFailed
-        }
-        return order
-    }
-
     func searchOrders(searchTerm: String) async {}
 
     func clearSearchOrders() {}

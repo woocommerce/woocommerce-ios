@@ -32,7 +32,6 @@ protocol POSOrderListControllerProtocol {
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
-    func loadOrder(orderID: Int64) async throws -> POSOrder
     func startRefundFlow() async -> StartRefundFlowResult
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
@@ -260,11 +259,6 @@ enum RefundActionAvailability {
         if selectedOrder?.id == orderID {
             selectedOrder = updatedOrder
         }
-    }
-
-    @MainActor
-    func loadOrder(orderID: Int64) async throws -> POSOrder {
-        try await fetchStrategy.loadOrder(orderID: orderID)
     }
 
     // MARK: - Refund Item Selection

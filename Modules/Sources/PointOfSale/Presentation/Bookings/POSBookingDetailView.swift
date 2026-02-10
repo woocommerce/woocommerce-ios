@@ -1,17 +1,13 @@
 import SwiftUI
 import struct Yosemite.POSBooking
-import struct Yosemite.POSOrder
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(POSOrderListModel.self) private var orderListModel
 
-    @State private var loadedOrder: POSOrder?
-    @State private var isLoadingOrder: Bool = false
-    @State private var orderLoadError: PointOfSaleErrorState?
+    @State private var showingOrder = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -34,23 +30,15 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
-        if let order = loadedOrder {
-            POSOrderDetailsView(order: order, onBack: {
-                loadedOrder = nil
+        if showingOrder {
+            POSOrderDetailsView(order: booking.order, onBack: {
+                showingOrder = false
             })
             // Forces back button to be rendered, otherwise the system assumes that
             // navigation is handled by the split view's sidebar, not a back button
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                loadedOrder = nil
+                showingOrder = false
             }))
-        } else if let error = orderLoadError {
-            POSListErrorView(error: error, onAction: {
-                Task {
-                    await viewLinkedOrder()
-                }
-            })
-        } else if isLoadingOrder {
-            POSOrderDetailsLoadingView()
         } else {
             bookingDetailContent
         }
@@ -90,39 +78,16 @@ struct POSBookingDetailView: View {
     private var viewOrderMenu: some View {
         Menu {
             Button(Localization.viewOrderAction) {
-                Task {
-                    await viewLinkedOrder()
-                }
+                showingOrder = true
             }
         } label: {
-            if isLoadingOrder {
-                ProgressView()
-                    .progressViewStyle(.circular)
-            } else {
-                Image(systemName: "ellipsis")
-                    .font(.posBodyLargeBold)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-                    .padding(POSPadding.small)
-            }
+            Image(systemName: "ellipsis")
+                .font(.posBodyLargeBold)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .foregroundColor(.posOnSurface)
+                .padding(POSPadding.small)
         }
         .menuIndicator(.hidden)
-    }
-
-    @MainActor
-    private func viewLinkedOrder() async {
-        guard let orderID = booking.orderID else {
-            assertionFailure("Booking \(booking.id) has no associated orderID. Every booking must have an order.")
-            return
-        }
-        orderLoadError = nil
-        isLoadingOrder = true
-        do {
-            loadedOrder = try await orderListModel.loadOrder(orderID: orderID)
-        } catch {
-            orderLoadError = .errorOnLoadingOrders(error: error)
-        }
-        isLoadingOrder = false
     }
 
     // MARK: - Section 1: Header

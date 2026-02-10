@@ -496,12 +496,15 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
         let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker(isEligible: true)
+        let posEligibilityService = MockPOSEligibilityService()
+        posEligibilityService.cachedTabVisibility[sampleSiteID] = true
 
         // When
         let viewModel = HubMenuViewModel(
             siteID: sampleSiteID,
             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
             stores: stores,
+            posEligibilityService: posEligibilityService,
             bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker },
             isPad: true
         )

@@ -3,6 +3,7 @@ import class WooFoundation.CurrencyFormatter
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
 import protocol Yosemite.POSReceiptServiceProtocol
@@ -26,6 +27,7 @@ public struct PointOfSaleEntryPointView: View {
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
     @State private var orderListModel: POSOrderListModel
+    @State private var bookingsModel: POSBookingsModel?
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -46,6 +48,7 @@ public struct PointOfSaleEntryPointView: View {
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let isLocalCatalogEligible: Bool
+    private let isBookingsEligible: Bool
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -54,6 +57,8 @@ public struct PointOfSaleEntryPointView: View {
          couponProvider: PointOfSaleCouponServiceProtocol,
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
+         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol?,
+         isBookingsEligible: Bool,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
          onPointOfSaleModeActiveStateChange: @escaping ((Bool) -> Void),
@@ -140,11 +145,18 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencySettingsProvider: services.currency,
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
+        if let bookingListFetchStrategyFactory {
+            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
+            self.bookingsModel = POSBookingsModel(bookingsController: bookingsController)
+        } else {
+            self.bookingsModel = nil
+        }
         self.siteTimezone = siteTimezone
         self.services = services
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
+        self.isBookingsEligible = isBookingsEligible
     }
 
     public var body: some View {
@@ -184,10 +196,14 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
+        .environment(\.posBookingsEligible, isBookingsEligible)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)
         .environment(orderListModel)
+        .if(bookingsModel != nil) { view in
+            view.environment(bookingsModel!)
+        }
         .environment(\.siteTimezone, siteTimezone)
         .injectKeyboardObserver()
         .onAppear {
@@ -210,6 +226,8 @@ public struct PointOfSaleEntryPointView: View {
         couponProvider: PointOfSaleCouponServicePreview(),
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
+        bookingListFetchStrategyFactory: nil,
+        isBookingsEligible: true,
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),
         onPointOfSaleModeActiveStateChange: { _ in },

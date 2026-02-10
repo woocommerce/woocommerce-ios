@@ -544,7 +544,8 @@ extension POSPreviewHelpers {
                 location: "238 Willow Creek Drive, Montgomery",
                 duration: "60 min",
                 formattedSubtotal: "$55.00",
-                formattedTax: "$0.00"
+                formattedTax: "$0.00",
+                order: makePreviewOrder()
             ),
             POSBooking(
                 id: 2,
@@ -564,7 +565,8 @@ extension POSPreviewHelpers {
                 location: nil,
                 duration: "60 min",
                 formattedSubtotal: "$90.00",
-                formattedTax: "$0.00"
+                formattedTax: "$0.00",
+                order: makePreviewOrder()
             ),
             POSBooking(
                 id: 3,
@@ -577,7 +579,8 @@ extension POSPreviewHelpers {
                 attendanceStatus: .booked,
                 orderID: nil,
                 resourceName: nil,
-                duration: "60 min"
+                duration: "60 min",
+                order: makePreviewOrder()
             )
         ]
     }

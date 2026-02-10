@@ -21,6 +21,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let duration: String
     public let formattedSubtotal: String?
     public let formattedTax: String?
+    public let order: POSOrder
 
     public init(id: Int64,
                 customerName: String,
@@ -39,7 +40,8 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
                 location: String? = nil,
                 duration: String = "",
                 formattedSubtotal: String? = nil,
-                formattedTax: String? = nil) {
+                formattedTax: String? = nil,
+                order: POSOrder) {
         self.id = id
         self.customerName = customerName
         self.serviceName = serviceName
@@ -58,5 +60,6 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         self.duration = duration
         self.formattedSubtotal = formattedSubtotal
         self.formattedTax = formattedTax
+        self.order = order
     }
 }

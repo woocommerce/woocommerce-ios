@@ -14,6 +14,7 @@ public final class POSBookingService: POSBookingServiceProtocol {
     private let bookingsRemote: BookingsRemoteProtocol
     private let ordersRemote: POSOrdersRemoteProtocol
     private let mapper: POSBookingMapper
+    private let orderMapper: POSOrderMapper
 
     public init(siteID: Int64,
                 bookingsRemote: BookingsRemoteProtocol,
@@ -23,6 +24,7 @@ public final class POSBookingService: POSBookingServiceProtocol {
         self.bookingsRemote = bookingsRemote
         self.ordersRemote = ordersRemote
         self.mapper = POSBookingMapper(currencyFormatter: currencyFormatter)
+        self.orderMapper = POSOrderMapper(currencyFormatter: currencyFormatter)
     }
 
     public func fetchBookings(siteID: Int64,
@@ -49,11 +51,14 @@ public final class POSBookingService: POSBookingServiceProtocol {
             let resourceIDs = Set(bookings.compactMap { $0.resourceID != 0 ? $0.resourceID : nil })
             let resources = await fetchResources(resourceIDs: Array(resourceIDs))
 
-            let posBookings = bookings.map { booking -> POSBooking in
+            let posBookings = bookings.compactMap { booking -> POSBooking? in
                 let order = orders[booking.orderID]
                 let orderInfo: BookingOrderInfo? = order.map { BookingOrderInfo(booking: booking, order: $0) }
                 let resource = resources[booking.resourceID]
-                return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource)
+                guard let posOrder = order.flatMap({ try? orderMapper.map(order: $0) }) else {
+                    return nil
+                }
+                return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
             }
 
             let hasMorePages = bookings.count == pageSize

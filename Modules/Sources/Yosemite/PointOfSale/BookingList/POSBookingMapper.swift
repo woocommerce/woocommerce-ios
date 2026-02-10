@@ -13,7 +13,8 @@ struct POSBookingMapper {
 
     func map(booking: Booking,
              orderInfo: BookingOrderInfo?,
-             resource: BookingResource?) -> POSBooking {
+             resource: BookingResource?,
+             order: POSOrder) -> POSBooking {
         let billingAddress = orderInfo?.customerInfo?.billingAddress
 
         let customerName: String = {
@@ -68,7 +69,8 @@ struct POSBookingMapper {
             location: location,
             duration: duration,
             formattedSubtotal: formattedSubtotal,
-            formattedTax: formattedTax
+            formattedTax: formattedTax,
+            order: order
         )
     }
 

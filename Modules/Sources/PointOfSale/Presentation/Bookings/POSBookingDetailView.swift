@@ -446,6 +446,6 @@ private enum Localization {
     static let viewOrderAction = NSLocalizedString(
         "pos.bookingDetailView.viewOrderAction",
         value: "View Order",
-        comment: "Menu action to view the linked WooCommerce order from a booking detail."
+        comment: "Menu action to view the linked order from a booking detail."
     )
 }

@@ -13,7 +13,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     enum TestError: Error {
         case updateOrderFailed
-        case loadOrderFailed
     }
 
     func loadOrders() async {}

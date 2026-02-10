@@ -1133,7 +1133,6 @@ final class POSOrderListControllerTests {
         #expect(orderListService.loadOrderWasCalled == true)
         #expect(orderListService.lastLoadOrderID == order.id)
     }
-
 }
 
 private extension POSOrderListControllerTests {

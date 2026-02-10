@@ -11,6 +11,7 @@ struct POSBookingDetailView: View {
 
     @State private var loadedOrder: POSOrder?
     @State private var isLoadingOrder: Bool = false
+    @State private var orderLoadError: PointOfSaleErrorState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -42,6 +43,12 @@ struct POSBookingDetailView: View {
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                 loadedOrder = nil
             }))
+        } else if let error = orderLoadError {
+            POSListErrorView(error: error, onAction: {
+                Task {
+                    await viewLinkedOrder()
+                }
+            })
         } else if isLoadingOrder {
             POSOrderDetailsLoadingView()
         } else {
@@ -108,13 +115,13 @@ struct POSBookingDetailView: View {
             assertionFailure("Booking \(booking.id) has no associated orderID. Every booking must have an order.")
             return
         }
+        orderLoadError = nil
         isLoadingOrder = true
         defer { isLoadingOrder = false }
         do {
             loadedOrder = try await orderListModel.loadOrder(orderID: orderID)
         } catch {
-            // TODO: Error handling
-            debugPrint("Failed to load order \(orderID): \(error)")
+            orderLoadError = .errorOnLoadingOrders(error: error)
         }
     }
 

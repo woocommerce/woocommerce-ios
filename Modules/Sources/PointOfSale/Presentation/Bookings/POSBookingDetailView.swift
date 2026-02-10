@@ -7,6 +7,8 @@ struct POSBookingDetailView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
+    @State private var navigationPath: [NavigationDestination] = []
+
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
     }
@@ -28,10 +30,33 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
+        NavigationStack(path: $navigationPath) {
+            bookingDetailContent
+                .navigationDestination(for: NavigationDestination.self) { destination in
+                    switch destination {
+                    case .orderDetail:
+                        POSOrderDetailsView(order: booking.order, onBack: {
+                            navigationPath.removeLast()
+                        })
+                        // Forces back button to be rendered, otherwise the system assumes that
+                        // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    }
+                }
+        }
+    }
+
+    @ViewBuilder
+    private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: booking.serviceName.isEmpty ? Localization.bookingTitle : booking.serviceName,
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
+                trailingContent: {
+                    viewOrderMenu
+                }
             )
 
             ScrollView {
@@ -51,6 +76,22 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+    }
+
+    @ViewBuilder
+    private var viewOrderMenu: some View {
+        Menu {
+            Button(Localization.viewOrderAction) {
+                navigationPath.append(.orderDetail)
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.posBodyLargeBold)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .foregroundColor(.posOnSurface)
+                .padding(POSPadding.small)
+        }
+        .menuIndicator(.hidden)
     }
 
     // MARK: - Section 1: Header
@@ -289,6 +330,12 @@ private extension DateFormatter {
     }()
 }
 
+// MARK: - Navigation
+
+private enum NavigationDestination: Hashable {
+    case orderDetail
+}
+
 // MARK: - Localization
 
 private enum Localization {
@@ -404,5 +451,11 @@ private enum Localization {
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect Payment",
         comment: "Button to initiate payment collection for a booking."
+    )
+
+    static let viewOrderAction = NSLocalizedString(
+        "pos.bookingDetailView.viewOrderAction",
+        value: "View Order",
+        comment: "Menu action to view the linked order from a booking detail."
     )
 }

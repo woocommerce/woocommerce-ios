@@ -219,22 +219,38 @@ struct POSBookingDetailView: View {
         }
     }
 
-    // MARK: - Section 5: Booking Note
+    // MARK: - Booking Note
 
     @ViewBuilder
     private var bookingNoteSection: some View {
-        if let note = booking.bookingNote {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(Localization.bookingNoteLabel)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posOnSurface)
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
+            VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                HStack {
+                    Text(Localization.bookingNoteLabel)
+                        .font(.posBodySmallBold())
+                        .foregroundStyle(Color.posOnSurface)
 
-                Text(note)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    Spacer()
+
+                    Button(Localization.addNoteButton) {
+                        // Add note action — wired in a later milestone
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+                }
+
+                if let note = booking.bookingNote {
+                    Text(note)
+                        .font(.posBodySmallRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .sectionCard()
+
+            Text(Localization.bookingNoteSubtitle)
+                .font(.posCaptionRegular)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .padding(.horizontal, POSPadding.xSmall)
         }
     }
 
@@ -310,23 +326,11 @@ struct POSBookingDetailView: View {
         .sectionCard()
     }
 
-    // MARK: - Section 8: Payment Action / Status
+    // MARK: - Payment Action
 
     @ViewBuilder
     private var paymentActionSection: some View {
-        if isPaid {
-            HStack {
-                Text(Localization.paidStatusLabel)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posSuccess)
-
-                Spacer()
-
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.posSuccess)
-            }
-            .sectionCard()
-        } else if lifecycleStatus != .cancelled {
+        if !isPaid && lifecycleStatus != .cancelled {
             Button(action: {
                 // Payment action — wired in a later milestone
             }) {
@@ -361,10 +365,6 @@ struct POSBookingDetailView: View {
 
     // MARK: - Formatting
 
-    private var formattedDate: String {
-        DateFormatter.dateOnlyFormatter.string(from: booking.startDate)
-    }
-
     private var formattedTimeRange: String {
         let formatter = DateFormatter.timeOnlyFormatter
         let start = formatter.string(from: booking.startDate)
@@ -393,13 +393,6 @@ private extension View {
 // MARK: - Date Formatters
 
 private extension DateFormatter {
-    static let dateOnlyFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }()
-
     static let timeOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
@@ -465,16 +458,22 @@ private enum Localization {
         comment: "Label for the billing address in booking details."
     )
 
-    static let customerNoteLabel = NSLocalizedString(
-        "pos.bookingDetailView.customerNoteLabel",
-        value: "Customer note",
-        comment: "Label for the customer note section in booking details."
-    )
-
     static let bookingNoteLabel = NSLocalizedString(
         "pos.bookingDetailView.bookingNoteLabel",
         value: "Booking note",
         comment: "Label for the private booking note section in booking details."
+    )
+
+    static let addNoteButton = NSLocalizedString(
+        "pos.bookingDetailView.addNoteButton",
+        value: "Add note",
+        comment: "Button to add a private note to a booking."
+    )
+
+    static let bookingNoteSubtitle = NSLocalizedString(
+        "pos.bookingDetailView.bookingNoteSubtitle",
+        value: "This is a private note. It'll not be shared with the customer.",
+        comment: "Subtitle text below the booking note section explaining the note is private."
     )
 
     static let attendanceStatusTitle = NSLocalizedString(
@@ -541,12 +540,6 @@ private enum Localization {
         "pos.bookingDetailView.totalLabel",
         value: "Total",
         comment: "Label for the total amount in booking payment breakdown."
-    )
-
-    static let paidStatusLabel = NSLocalizedString(
-        "pos.bookingDetailView.paidStatusLabel",
-        value: "Paid",
-        comment: "Status label shown when a booking has been paid."
     )
 
     static let collectPaymentButton = NSLocalizedString(

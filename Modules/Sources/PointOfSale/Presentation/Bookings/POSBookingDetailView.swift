@@ -1,11 +1,16 @@
 import SwiftUI
 import struct Yosemite.POSBooking
+import struct Yosemite.POSOrder
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(POSOrderListModel.self) private var orderListModel
+
+    @State private var loadedOrder: POSOrder?
+    @State private var isLoadingOrder: Bool = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -28,10 +33,27 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
+        if let order = loadedOrder {
+            POSOrderDetailsView(order: order, onBack: {
+                loadedOrder = nil
+            })
+            .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                loadedOrder = nil
+            }))
+        } else {
+            bookingDetailContent
+        }
+    }
+
+    @ViewBuilder
+    private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: booking.serviceName.isEmpty ? Localization.bookingTitle : booking.serviceName,
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
+                trailingContent: {
+                    viewOrderMenu
+                }
             )
 
             ScrollView {
@@ -51,6 +73,42 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+    }
+
+    @ViewBuilder
+    private var viewOrderMenu: some View {
+        Menu {
+            Button(Localization.viewOrderAction) {
+                Task {
+                    await viewLinkedOrder()
+                }
+            }
+        } label: {
+            if isLoadingOrder {
+                ProgressView()
+                    .progressViewStyle(.circular)
+            } else {
+                Image(systemName: "ellipsis")
+                    .font(.posBodyLargeBold)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                    .foregroundColor(.posOnSurface)
+                    .padding(POSPadding.small)
+            }
+        }
+        .menuIndicator(.hidden)
+    }
+
+    @MainActor
+    private func viewLinkedOrder() async {
+        guard let orderID = booking.orderID else { return }
+        isLoadingOrder = true
+        defer { isLoadingOrder = false }
+        do {
+            loadedOrder = try await orderListModel.loadOrder(orderID: orderID)
+        } catch {
+            // TODO: Error handling
+            debugPrint("Failed to load order \(orderID): \(error)")
+        }
     }
 
     // MARK: - Section 1: Header
@@ -404,5 +462,11 @@ private enum Localization {
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect Payment",
         comment: "Button to initiate payment collection for a booking."
+    )
+
+    static let viewOrderAction = NSLocalizedString(
+        "pos.bookingDetailView.viewOrderAction",
+        value: "View Order",
+        comment: "Menu action to view the linked WooCommerce order from a booking detail."
     )
 }

@@ -128,7 +128,6 @@ struct POSBookingDetailView: View {
                 )
             }
         }
-        .padding(.leading, POSPadding.medium)
         .padding(.top, POSPadding.xSmall)
     }
 
@@ -147,6 +146,7 @@ struct POSBookingDetailView: View {
                 .foregroundStyle(Color.posOnSurface)
 
             if let resourceName = booking.resourceName {
+                sectionDivider
                 detailRow(label: Localization.teamMemberLabel, value: resourceName)
             }
 
@@ -176,6 +176,7 @@ struct POSBookingDetailView: View {
                     .foregroundStyle(Color.posOnSurface)
 
                 if let email = booking.customerEmail {
+                    sectionDivider
                     HStack {
                         Text(email)
                             .font(.posBodySmallRegular())
@@ -320,6 +321,8 @@ struct POSBookingDetailView: View {
                 .font(.posBodyMediumBold)
                 .foregroundStyle(Color.posOnSurface)
 
+            sectionDivider
+
             if !booking.serviceName.isEmpty {
                 detailRow(label: Localization.serviceLabel, value: booking.formattedSubtotal ?? booking.formattedAmount)
             }
@@ -346,11 +349,20 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var paymentActionSection: some View {
-        if !isPaid && lifecycleStatus != .cancelled {
+        if lifecycleStatus == .cancelled {
+            EmptyView()
+        } else if isPaid {
+            Button(action: {}) {
+                Text(Localization.paymentCompletedLabel)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .disabled(true)
+        } else {
             Button(action: {
                 // Payment action — wired in a later milestone
             }) {
-                Text(Localization.collectPaymentButton)
+                Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -426,12 +438,6 @@ private enum NavigationDestination: Hashable {
 // MARK: - Localization
 
 private enum Localization {
-    static let bookingTitle = NSLocalizedString(
-        "pos.bookingDetailView.bookingTitle",
-        value: "Booking",
-        comment: "Default title for the booking detail view when no service name is available."
-    )
-
     static let bookingIdTitle = NSLocalizedString(
         "pos.bookingDetailView.bookingIdTitle",
         value: "Booking #%lld",
@@ -561,7 +567,13 @@ private enum Localization {
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
-        comment: "Button to initiate payment collection for a booking."
+        comment: "Button to initiate payment collection for a booking. The amount is appended after a separator."
+    )
+
+    static let paymentCompletedLabel = NSLocalizedString(
+        "pos.bookingDetailView.paymentCompletedLabel",
+        value: "Payment Completed",
+        comment: "Label shown when payment has been completed for a booking."
     )
 
     static let viewOrderAction = NSLocalizedString(

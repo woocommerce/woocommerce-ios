@@ -1,1 +1,1 @@
-Woocommerce, woocommerce app, woocommerce mobil, woo app, sipariş uyarısı, wordpress, e-ticaret
+woo,sipariş,e-ticaret,pos,satış noktası,wordpress,mağaza,ödemeler,kredi,kart,gönderim,stok,envanter

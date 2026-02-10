@@ -7,7 +7,10 @@ Skapa beställningar när du är på språng
 När du väl har skapat några produkter är det enkelt. Välj artiklar från din katalog, lägg till leverans och fyll i kunduppgifter för att snabbt skapa en beställning som synkroniseras mot ditt lager.
 
 Ta emot fysiska betalningar
-Ta emot fysiska betalningar med WooCommerce In-Person Payments och en kortläsare (tillgängligt i USA och Kanada). Starta en ny beställning – eller hitta en befintlig som väntar på betalning – och ta betalt med kortläsren eller en digital plånbok som Apple Pay.
+Ta emot fysiska betalningar med WooCommerce In-Person Payments och en kortläsare (tillgängligt i USA, Storbritannien och Kanada), Tryck för att betala på iPhone eller en digital plånbok, som Apple Pay. Starta en ny beställning, eller hitta en befintlig som väntar på betalning, och acceptera sedan betalningar på ett smidigt sätt.
+
+Gå från klick till tegelstenar
+Förvandla valfri surfplatta till ett kraftfullt försäljningsställe med WooCommerce POS. Sök produkter, skanna streckkoder, tillämpa rabattkoder och skicka e-postkvitton, med all din onlineförsäljning och fysiska försäljning synkroniserad i realtid. Tillgängligt i USA och Storbritannien.
 
 Bli meddelad om varje försäljning
 Nu när du säljer aktivt behöver du aldrig missa en beställning eller recension. Håll dig uppdaterad genom att aktivera notiser i realtid – du kommer höra det där beroendeframkallande "ka-ching"-ljudet vid varje ny försäljning!

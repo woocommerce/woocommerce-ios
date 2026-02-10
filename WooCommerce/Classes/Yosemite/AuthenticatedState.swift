@@ -86,13 +86,6 @@ class AuthenticatedState: StoresManagerState {
                 dispatcher: dispatcher,
                 storageManager: storageManager,
                 network: network,
-                crashLogger: ServiceLocator.crashLogging,
-                isCIABEnvironmentSupported: {
-                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciab)
-                },
-                currentSite: {
-                    sessionManager.defaultSite
-                }
             ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

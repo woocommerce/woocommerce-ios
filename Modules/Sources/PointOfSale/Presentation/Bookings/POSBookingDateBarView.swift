@@ -3,7 +3,7 @@ import SwiftUI
 struct POSBookingDateBarView: View {
     private var formattedDate: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd MMM, EEE"
+        formatter.setLocalizedDateFormatFromTemplate("dMMMEEE")
         return formatter.string(from: Date())
     }
 

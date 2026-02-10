@@ -41,12 +41,23 @@ enum POSBookingPaymentStatus: Equatable {
         }
     }
 
-    var color: Color {
+    var color: Color { textColor }
+
+    var textColor: Color {
         switch self {
         case .paid:
-            return .posSuccess
+            return .posOnDefault
         case .unpaid:
-            return .posAlert
+            return .posOnErrorLowest
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .paid:
+            return .posDefault
+        case .unpaid:
+            return .posErrorLowest
         }
     }
 }
@@ -73,6 +84,14 @@ enum POSBookingAttendanceDisplay: Equatable {
         case .unattended:
             return Localization.unattended
         }
+    }
+
+    var textColor: Color {
+        .posOnDefault
+    }
+
+    var backgroundColor: Color {
+        .posDefault
     }
 }
 
@@ -111,10 +130,21 @@ enum POSBookingLifecycleStatus: Equatable {
         }
     }
 
-    var badgeColor: Color {
+    var badgeColor: Color { textColor }
+
+    var textColor: Color {
         switch self {
         case .cancelled:
-            return .posError
+            return .posOnErrorLowest
+        case .booked, .completed:
+            return .clear
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .cancelled:
+            return .posErrorLowest
         case .booked, .completed:
             return .clear
         }

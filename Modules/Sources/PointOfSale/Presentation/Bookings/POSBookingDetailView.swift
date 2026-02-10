@@ -128,7 +128,7 @@ struct POSBookingDetailView: View {
     }
 
     private var headerTitle: String {
-        let parts = [booking.serviceName, booking.customerName].filter { !$0.isEmpty }
+        let parts = [booking.serviceName, booking.customerName].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: " \u{00B7} ")
     }
 
@@ -159,10 +159,13 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var customerSection: some View {
-        let hasCustomerDetails = booking.customerEmail != nil || booking.customerPhone != nil || booking.billingAddress != nil
-        if !booking.customerName.isEmpty || hasCustomerDetails {
+        let hasCustomerDetails = booking.customerName != nil || booking.customerEmail != nil
+            || booking.customerPhone != nil || booking.billingAddress != nil
+        if hasCustomerDetails {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                detailRow(label: Localization.customerLabel, value: booking.customerName)
+                if let customerName = booking.customerName {
+                    detailRow(label: Localization.customerLabel, value: customerName)
+                }
 
                 if let email = booking.customerEmail {
                     detailRow(label: Localization.emailLabel, value: email)

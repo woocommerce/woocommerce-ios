@@ -2,6 +2,8 @@ import Testing
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSBooking
+import struct Yosemite.POSOrder
+import enum NetworkingCore.OrderStatusEnum
 import struct Yosemite.PagedItems
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
@@ -186,7 +188,24 @@ private extension POSBookingListControllerTests {
             status: .confirmed,
             attendanceStatus: .booked,
             orderID: id * 10,
-            resourceName: nil
+            resourceName: nil,
+            order: makeOrder(id: id * 10)
+        )
+    }
+
+    func makeOrder(id: Int64) -> POSOrder {
+        POSOrder(
+            id: id,
+            number: "\(id)",
+            dateCreated: Date(),
+            status: .completed,
+            formattedTotal: "$50.00",
+            formattedSubtotal: "$50.00",
+            paymentMethodID: "cod",
+            paymentMethodTitle: "Cash",
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$50.00"
         )
     }
 }

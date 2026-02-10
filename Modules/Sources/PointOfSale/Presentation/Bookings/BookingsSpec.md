@@ -127,21 +127,14 @@ Implementation options to explore:
 - **POC approach ([PR #16638](https://github.com/woocommerce/woocommerce-ios/pull/16638)):** Booking-specific `POSBookingRefundController` that reuses existing refund infrastructure (`POSRefundsServiceProtocol`, `POSRefundReviewData`, all 5 refund modal screens). The POC duplicated `POSRefundItemsSelectionView` because it's coupled to `POSOrderListModel` — decoupling that view would eliminate the duplication.
 - **Deep linking:** Navigate from booking detail directly into the order detail's refund flow (e.g. open `POSOrderDetailsView` with the refund modal pre-triggered), avoiding new refund controller code entirely.
 
-**Sort & Filter**
-- Full filter parity with the main app Bookings tab (5 filter types):
-  1. Team Member (resource) — picker that fetches available resources
-  2. Service / Event (product) — picker that fetches bookable products
-  3. Attendance Status — multi-select from unattended/attended
-  4. Customer — picker that fetches/searches customers
-  5. Date & Time — custom date range with from/to pickers
-- Sort by date only: "Newest to Oldest" / "Oldest to Newest" (matching main app Bookings tab — `BookingListViewModel.SortBy` only supports date sorting by `startDate`)
-- SwiftUI POS-styled rebuild (existing Bookings tab uses UIKit `FilterListViewController`)
-- The API contract is `BookingFilters` (Networking) — POS filter UI types are an implementation detail decided at build time
-- Sort handled via `BookingsRemote.Order` enum (`.ascending`/`.descending`) — no changes to `BookingFilters` needed
-- Filter button in list header with active filter count badge
-- "Apply" + "Reset" buttons
-- Empty state: "No bookings match filters" with clear button
-- Filters reset to default (today) when bookings is closed and reopened
+**Date Picker & Sort**
+- Single date picker to show bookings for a specific day (defaults to today)
+- Native SwiftUI `DatePicker` for day selection
+- Sort by date: "Newest to Oldest" / "Oldest to Newest"
+- Sort handled via `BookingsRemote.Order` enum (`.ascending`/`.descending`)
+- Date filter uses `startDateBefore` / `startDateAfter` on `BookingFilters` (start/end of selected day)
+- Empty state: "No bookings for this date" with reset-to-today option
+- Date resets to today when bookings is closed and reopened
 
 **Testing & Stabilization**
 - Full regression across all milestones
@@ -689,30 +682,26 @@ M2-A1 ── M2-A3 (Row enrichment)
 
 ### Phase 1: Foundation
 
-#### M3-F1. POSBookingFilterState
-**New file:** `PointOfSale/Models/POSBookingFilterState.swift`
+#### M3-F1. POSBookingDateFilterState
+**New file:** `PointOfSale/Models/POSBookingDateFilterState.swift`
 
-Filter state model that captures the user's filter selections. Must produce a `BookingFilters` (Networking) for the API call. The specific filter value types used in the POS UI are an implementation detail — they may reuse existing types from the main app (`BookingTeamMemberFilter`, `BookingProductFilter`, etc.) or use POS-specific types, depending on what the filter UI needs at build time.
+Simple state model capturing the selected date and sort order. Defaults to today.
 
-**API contract:** The filtered strategy must produce a `BookingFilters` object with:
-- `resourceIDs: [Int64]` (team member filter)
-- `productIDs: [Int64]` (product filter)
-- `customerIDs: [Int64]` (customer filter)
-- `attendanceStatuses: [String]` (attendance filter)
-- `startDateBefore` / `startDateAfter` (date range filter)
+```swift
+struct POSBookingDateFilterState {
+    var selectedDate: Date  // defaults to today
+    var sortOrder: BookingsRemote.Order  // .ascending (default) or .descending
+}
+```
 
-Sort is always by `startDate` via `BookingsRemote.Order` (`.ascending`/`.descending`).
+Produces a `BookingFilters` with `startDateAfter` (start of selected day) and `startDateBefore` (end of selected day). Sort via `BookingsRemote.Order`.
 
-#### M3-F2. ~~Add `orderby` to BookingFilters~~ (No longer needed)
+#### M3-F2. POSDateFilteredBookingListFetchStrategy
+**New file:** `Yosemite/PointOfSale/BookingList/POSDateFilteredBookingListFetchStrategy.swift`
 
-Sort is handled by the existing `BookingsRemote.Order` enum (`.ascending`/`.descending`) which `loadAllBookings()` already accepts as its `order:` parameter. Sort is always by `startDate`, matching the main app. No changes to `BookingFilters` or `BookingsRemote` are needed.
+Strategy that converts `POSBookingDateFilterState` into `BookingFilters` (date bounds) and passes the sort order to the service.
 
-#### M3-F3. POSFilteredBookingListFetchStrategy
-**New file:** `Yosemite/PointOfSale/BookingList/POSFilteredBookingListFetchStrategy.swift`
-
-New strategy that converts `POSBookingFilterState` into a `BookingFilters` object and passes it to the service. The mapping from filter state to `BookingFilters` fields (`resourceIDs`, `productIDs`, `customerIDs`, `attendanceStatuses`, dates) is straightforward regardless of the POS-side filter types chosen.
-
-Update `POSBookingListFetchStrategyFactory` to produce filtered strategy.
+Update `POSBookingListFetchStrategyFactory` to produce date-filtered strategy.
 
 ---
 
@@ -720,42 +709,27 @@ Update `POSBookingListFetchStrategyFactory` to produce filtered strategy.
 
 ### Stream A: Filter UI + View Order
 
-#### M3-A1. POSBookingFilterView
-**New file:** `PointOfSale/Presentation/Bookings/POSBookingFilterView.swift`
+#### M3-A1. POSBookingDatePickerView
+**New file:** `PointOfSale/Presentation/Bookings/POSBookingDatePickerView.swift`
 
-Sheet or inline panel with all 5 filter types (matching Bookings tab):
-1. **Team Member** — picker fetches available resources
-2. **Service / Event** — picker fetches bookable products
-3. **Attendance Status** — multi-select from unattended/attended
-4. **Customer** — picker fetches/searches customers
-5. **Date & Time** — date range picker (can adapt existing `BookingDateTimeFilterView` which is SwiftUI)
+Inline controls in the booking list header:
+- **Date picker** — native SwiftUI `DatePicker` (`.datePickerStyle(.compact)`) for selecting a day. Defaults to today.
+- **Sort toggle** — "Oldest first" (default, `.ascending`) / "Newest first" (`.descending`)
 
-Plus sort controls:
-- Sort by date: "Newest to Oldest" (default) / "Oldest to Newest"
-- Maps to `BookingsRemote.Order` (`.descending`/`.ascending`)
+Changing either control immediately reloads bookings for the selected date with the chosen sort order.
 
-"Apply" + "Reset" buttons. Active filter count shown on filter button in list header.
-
-**References:**
-- Main app filter UI uses UIKit `FilterListViewController` — POS needs a SwiftUI rebuild
-- `BookingDateTimeFilterView` is already SwiftUI and may be adaptable to POS styling
-- The main app's `BookingFiltersViewModel` and filter models are reference implementations, not necessarily the types POS will use
-
-#### M3-A2. POSBookingListView — add filter button
+#### M3-A2. POSBookingListView — add date picker and sort
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingListView.swift`
 
-- Add filter icon button next to search icon in header
-- Show active filter count badge
-- Present `POSBookingFilterView` as sheet
-- On apply: switch strategy to `POSFilteredBookingListFetchStrategy`, reload
+- Add `POSBookingDatePickerView` in list header (date picker + sort toggle)
+- On date/sort change: switch strategy to `POSDateFilteredBookingListFetchStrategy`, reload
 
-#### M3-A3. POSBookingListController — filter strategy support
+#### M3-A3. POSBookingListController — date filter support
 **Modify:** `PointOfSale/Controllers/POSBookingListController.swift`
 
-- Add `applyFilters(state: POSBookingFilterState)` method
+- Add `applyDateFilter(state: POSBookingDateFilterState)` method
 - Switches fetch strategy via factory
-- Caches current results before filter (like search does)
-- `clearFilters()` restores default strategy
+- `resetDateFilter()` restores default strategy (today, ascending)
 
 #### M3-A4. View related order — push POSOrderDetailsView directly
 
@@ -933,13 +907,13 @@ M3-C1/C2 ── after all above
 | Already fully refunded order | Refund flow detects and prevents double refund |
 | Refund succeeds | Booking list refreshes to reflect updated status |
 
-### M3: Sort & Filter
+### M3: Date Picker & Sort
 | Scenario | Expected |
 |----------|----------|
-| Filter returns no results | Empty state with "No bookings match filters" + clear button |
-| Apply filter then search | Search within filtered results |
-| Close and reopen bookings | Filters reset to default (today) |
-| Filter by resource when no resources | Resource filter hidden or empty |
+| Select date with no bookings | Empty state with "No bookings for this date" |
+| Change date then search | Search within selected date's bookings |
+| Close and reopen bookings | Date resets to today, sort resets to ascending |
+| Toggle sort order | Bookings reload with new sort order for the selected date |
 
 ---
 
@@ -983,13 +957,13 @@ M3-C1/C2 ── after all above
 - `PointOfSale/Presentation/Bookings/POSBookingRowView.swift` — enriched display
 
 ### M3 — New
-- `PointOfSale/Models/POSBookingFilterState.swift`
-- `Yosemite/PointOfSale/BookingList/POSFilteredBookingListFetchStrategy.swift`
-- `PointOfSale/Presentation/Bookings/POSBookingFilterView.swift`
+- `PointOfSale/Models/POSBookingDateFilterState.swift`
+- `Yosemite/PointOfSale/BookingList/POSDateFilteredBookingListFetchStrategy.swift`
+- `PointOfSale/Presentation/Bookings/POSBookingDatePickerView.swift`
 
 ### M3 — Modify
-- `PointOfSale/Presentation/Bookings/POSBookingListView.swift` — filter button
-- `PointOfSale/Controllers/POSBookingListController.swift` — filter strategy support
+- `PointOfSale/Presentation/Bookings/POSBookingListView.swift` — date picker and sort controls
+- `PointOfSale/Controllers/POSBookingListController.swift` — date filter support
 - `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift` — "View Order" button + "Issue Refund" button
 - `PointOfSale/Controllers/POSOrderListController.swift` — expose `loadOrder(orderID:)` on protocol
 - `PointOfSale/Presentation/Orders/Refund/POSRefundItemsSelectionView.swift` — decouple from `POSOrderListModel` (if POC approach chosen)

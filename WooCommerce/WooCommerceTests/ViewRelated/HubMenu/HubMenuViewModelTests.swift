@@ -167,64 +167,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_generalElements_does_not_include_blaze_when_site_is_CIAB_site() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        // Setting site ID is required before setting `Site`.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
-
-        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
-        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
-        )
-
-        // When
-        let viewModel = HubMenuViewModel(
-            siteID: sampleSiteID,
-            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-            stores: stores,
-            blazeEligibilityChecker: blazeEligibilityChecker,
-            siteCIABEligibilityChecker: mockCIABEligibilityChecker
-        )
-
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Blaze.id }))
-    }
-
-    @MainActor
-    func test_generalElements_does_not_include_payments_when_site_is_CIAB_site() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        // Setting site ID is required before setting `Site`.
-        stores.updateDefaultStore(storeID: sampleSiteID)
-        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
-
-        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: false)
-        let mockCIABEligibilityChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [stores.sessionManager.defaultSite ?? .fake()]
-        )
-
-        // When
-        let viewModel = HubMenuViewModel(
-            siteID: sampleSiteID,
-            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-            stores: stores,
-            blazeEligibilityChecker: blazeEligibilityChecker,
-            siteCIABEligibilityChecker: mockCIABEligibilityChecker
-        )
-
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
-    }
-
-    @MainActor
     func test_generalElements_does_not_include_blaze_when_default_site_is_not_set() {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,

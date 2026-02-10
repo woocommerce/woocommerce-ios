@@ -83,14 +83,12 @@ final class HubMenuViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
     @Published private(set) var shouldShowNewFeatureBadgeOnPayments: Bool = false
 
-    @Published private var isSiteEligibleForPayments = false
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
@@ -130,7 +128,6 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
@@ -142,7 +139,6 @@ final class HubMenuViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.analytics = analytics
         observeSiteForUIUpdates()
@@ -240,10 +236,7 @@ private extension HubMenuViewModel {
     }
 
     func setupGeneralElements() {
-        Publishers.CombineLatest(
-            $shouldShowNewFeatureBadgeOnPayments,
-            $isSiteEligibleForPayments
-        )
+        $shouldShowNewFeatureBadgeOnPayments
         .combineLatest(
             Publishers.CombineLatest3(
                 $isSiteEligibleForInbox,
@@ -254,14 +247,10 @@ private extension HubMenuViewModel {
         .map { [weak self] combinedResults -> [HubMenuItem] in
             guard let self else { return [] }
 
-            let ((shouldShowBadgeOnPayments, eligibleForPayments), (eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
-
-            let paymentsEligibility: PaymentsFeatureEligibility = eligibleForPayments ?
-                .eligible(shouldShowBadgeOnPayments: shouldShowBadgeOnPayments) :
-                .ineligible
+            let (shouldShowBadgeOnPayments, (eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
 
             return createGeneralElements(
-                paymentsEligibility: paymentsEligibility,
+                shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
                 eligibleForGoogleAds: eligibleForGoogleAds,
                 eligibleForBlaze: eligibleForBlaze,
                 eligibleForInbox: eligibleForInbox
@@ -275,20 +264,11 @@ private extension HubMenuViewModel {
         case eligible(shouldShowBadgeOnPayments: Bool)
     }
 
-    func createGeneralElements(paymentsEligibility: PaymentsFeatureEligibility,
+    func createGeneralElements(shouldShowBadgeOnPayments: Bool,
                                eligibleForGoogleAds: Bool,
                                eligibleForBlaze: Bool,
                                eligibleForInbox: Bool) -> [HubMenuItem] {
-        var items: [HubMenuItem] = []
-
-        switch paymentsEligibility {
-            case .ineligible:
-                break
-            case .eligible(let shouldShowBadgeOnPayments):
-                items.append(
-                    Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
-                )
-        }
+        var items: [HubMenuItem] = [Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)]
 
         if eligibleForGoogleAds {
             items.append(GoogleAds())
@@ -364,7 +344,6 @@ private extension HubMenuViewModel {
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
-        isSiteEligibleForPayments = siteCIABEligibilityChecker.isFeatureSupported(.payments, for: site)
         isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
 
         Task { @MainActor in

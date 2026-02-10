@@ -38,7 +38,7 @@ final class ClientSideBannerProviderTests: XCTestCase {
         // Default: remote feature flag disabled
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, onCompletion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
             }
         }
@@ -233,7 +233,7 @@ final class ClientSideBannerProviderTests: XCTestCase {
     private func enableRemoteFeatureFlag() {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(flag, _, onCompletion):
+            case let .isRemoteFeatureFlagEnabled(flag, _, _, onCompletion):
                 if flag == .wooPosTabletPromoBanner {
                     onCompletion(true)
                 } else {

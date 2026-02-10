@@ -12,11 +12,7 @@ echo "--- 📦 Downloading Build Artifacts"
 download_artifact build-products.tar
 tar -xf build-products.tar
 
-echo "--- :rubygems: Setting up Gems"
-install_gems
-
-echo "--- :swift: Setting up Swift Packages"
-install_swiftpm_dependencies
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- 🧪 Testing"
 set +e

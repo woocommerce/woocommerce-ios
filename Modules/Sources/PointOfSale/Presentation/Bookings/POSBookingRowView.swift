@@ -40,6 +40,8 @@ struct POSBookingRowView: View {
             }
         }
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(Localization.bookingRowAccessibilityHint)
     }
 
     @ViewBuilder
@@ -88,6 +90,30 @@ struct POSBookingRowView: View {
         }
     }
 
+    private var accessibilityLabel: String {
+        var parts = [formattedTimeRange]
+
+        if !booking.serviceName.isEmpty {
+            parts.append(Localization.serviceAccessibilityLabel(booking.serviceName))
+        }
+
+        if let customerName = booking.customerName {
+            parts.append(Localization.customerAccessibilityLabel(customerName))
+        } else if let email = booking.customerEmail {
+            parts.append(Localization.customerAccessibilityLabel(email))
+        }
+
+        if lifecycleStatus == .cancelled {
+            parts.append(Localization.bookingStatusAccessibilityLabel(lifecycleStatus.localizedTitle))
+        } else {
+            parts.append(Localization.attendanceAccessibilityLabel(attendanceDisplay.localizedTitle))
+        }
+
+        parts.append(Localization.paymentAccessibilityLabel(paymentStatus.localizedTitle))
+
+        return parts.joined(separator: ", ")
+    }
+
     private var formattedTimeRange: String {
         let formatter = DateFormatter.timeFormatter
         let start = formatter.string(from: booking.startDate)
@@ -99,6 +125,59 @@ struct POSBookingRowView: View {
         let customerDisplayName = booking.customerName ?? booking.customerEmail
         let parts = [booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: " \u{00B7} ")
+    }
+}
+
+private enum Localization {
+    static let bookingRowAccessibilityHint = NSLocalizedString(
+        "pos.bookingListView.bookingRow.accessibilityHint",
+        value: "Tap to view booking details",
+        comment: "Accessibility hint for booking row indicating the action when tapped."
+    )
+
+    static func serviceAccessibilityLabel(_ service: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingListView.bookingRow.accessibilityLabel.service",
+            value: "Service: %1$@",
+            comment: "Service portion of booking row accessibility label. %1$@ is the service name."
+        )
+        return String(format: format, service)
+    }
+
+    static func customerAccessibilityLabel(_ customer: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingListView.bookingRow.accessibilityLabel.customer",
+            value: "Customer: %1$@",
+            comment: "Customer portion of booking row accessibility label. %1$@ is the customer name or email."
+        )
+        return String(format: format, customer)
+    }
+
+    static func attendanceAccessibilityLabel(_ status: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingListView.bookingRow.accessibilityLabel.attendance",
+            value: "Attendance: %1$@",
+            comment: "Attendance portion of booking row accessibility label. %1$@ is the attendance status."
+        )
+        return String(format: format, status)
+    }
+
+    static func paymentAccessibilityLabel(_ status: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingListView.bookingRow.accessibilityLabel.payment",
+            value: "Payment: %1$@",
+            comment: "Payment portion of booking row accessibility label. %1$@ is the payment status."
+        )
+        return String(format: format, status)
+    }
+
+    static func bookingStatusAccessibilityLabel(_ status: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingListView.bookingRow.accessibilityLabel.bookingStatus",
+            value: "Status: %1$@",
+            comment: "Status portion of booking row accessibility label. %1$@ is the booking lifecycle status (e.g. Cancelled)."
+        )
+        return String(format: format, status)
     }
 }
 

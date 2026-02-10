@@ -26,6 +26,7 @@ enum HubMenuNavigationDestination: Hashable {
     case reviews
     case coupons
     case customers
+    case bookings
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
@@ -83,6 +84,11 @@ final class HubMenuViewModel: ObservableObject {
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
+
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
+    private let isPad: Bool
+
     private let appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
@@ -92,6 +98,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
+    @Published private var isSiteEligibleForBookings = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -128,6 +135,12 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         bookingsEligibilityCheckerFactory: @escaping (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
+             BookingsTabEligibilityChecker(site: site)
+         },
+         // Injected for mocking in tests.
+         isPad: Bool = UIDevice.isPad(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
@@ -139,6 +152,9 @@ final class HubMenuViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory
+        self.isPad = isPad
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
         self.analytics = analytics
         observeSiteForUIUpdates()
@@ -236,7 +252,10 @@ private extension HubMenuViewModel {
     }
 
     func setupGeneralElements() {
-        $shouldShowNewFeatureBadgeOnPayments
+        Publishers.CombineLatest(
+            $shouldShowNewFeatureBadgeOnPayments,
+            $isSiteEligibleForBookings
+        )
         .combineLatest(
             Publishers.CombineLatest3(
                 $isSiteEligibleForInbox,
@@ -247,13 +266,14 @@ private extension HubMenuViewModel {
         .map { [weak self] combinedResults -> [HubMenuItem] in
             guard let self else { return [] }
 
-            let (shouldShowBadgeOnPayments, (eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
+            let ((shouldShowBadgeOnPayments, eligibleForBookings), (eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
 
             return createGeneralElements(
                 shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
                 eligibleForGoogleAds: eligibleForGoogleAds,
                 eligibleForBlaze: eligibleForBlaze,
-                eligibleForInbox: eligibleForInbox
+                eligibleForInbox: eligibleForInbox,
+                eligibleForBookings: eligibleForBookings
             )
         }
         .assign(to: &$generalElements)
@@ -267,8 +287,13 @@ private extension HubMenuViewModel {
     func createGeneralElements(shouldShowBadgeOnPayments: Bool,
                                eligibleForGoogleAds: Bool,
                                eligibleForBlaze: Bool,
-                               eligibleForInbox: Bool) -> [HubMenuItem] {
+                               eligibleForInbox: Bool,
+                               eligibleForBookings: Bool) -> [HubMenuItem] {
         var items: [HubMenuItem] = [Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)]
+
+        if shouldShowBookingsInMenu, eligibleForBookings {
+            items.append(Bookings())
+        }
 
         if eligibleForGoogleAds {
             items.append(GoogleAds())
@@ -346,6 +371,15 @@ private extension HubMenuViewModel {
     func updateMenuItemEligibility(with site: Yosemite.Site) {
         isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
 
+        if shouldShowBookingsInMenu {
+            let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
+            Task { @MainActor in
+                isSiteEligibleForBookings = await bookingsEligibilityChecker.checkVisibility()
+            }
+        } else {
+            isSiteEligibleForBookings = false
+        }
+
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
             hasGoogleAdsCampaigns = await checkIfSiteHasGoogleAdsCampaigns()
@@ -407,6 +441,10 @@ private extension HubMenuViewModel {
                 continuation.resume(with: result)
             })
         }
+    }
+
+    var shouldShowBookingsInMenu: Bool {
+        isPad
     }
 }
 
@@ -588,6 +626,20 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .customers
     }
 
+    struct Bookings: HubMenuItem {
+        static var id = "bookings"
+
+        let title: String = Localization.bookings
+        let description: String = Localization.bookingsDescription
+        let icon: UIImage = (UIImage(systemName: "calendar") ?? .productImage)
+            .withRenderingMode(.alwaysTemplate)
+        let iconColor: UIColor = .accent
+        let accessibilityIdentifier: String = "menu-bookings"
+        let trackingOption: String = "bookings"
+        let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .bookings
+    }
+
     enum Localization {
         static let settings = NSLocalizedString(
             "Settings",
@@ -678,6 +730,18 @@ extension HubMenuViewModel {
             "hubMenu.customersDescription",
             value: "Get customer insights",
             comment: "Description of one of the hub menu options")
+
+        static let bookings = NSLocalizedString(
+            "hubMenu.bookings",
+            value: "Bookings",
+            comment: "Title of the Bookings menu in the hub menu"
+        )
+
+        static let bookingsDescription = NSLocalizedString(
+            "hubMenu.bookingsDescription",
+            value: "Manage your client appointments",
+            comment: "Description of the Bookings menu in the hub menu"
+        )
     }
 
     enum AnalyticsKeys {

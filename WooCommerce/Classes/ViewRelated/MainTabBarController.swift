@@ -148,6 +148,7 @@ final class MainTabBarController: UITabBarController {
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: ((_ site: Site) -> BookingsTabEligibilityCheckerProtocol)
     private let userDefaults: UserDefaults
+    private let isPad: Bool
 
     private var productImageUploadErrorsSubscription: AnyCancellable?
 
@@ -173,7 +174,9 @@ final class MainTabBarController: UITabBarController {
           posTabVisibilityCheckerFactory: ((Site) -> POSTabVisibilityCheckerProtocol)? = nil,
           posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
           bookingsEligibilityCheckerFactory: ((Site) -> BookingsTabEligibilityCheckerProtocol)? = nil,
-          userDefaults: UserDefaults = .standard) {
+          userDefaults: UserDefaults = .standard,
+          // Injected for mocking in tests.
+          isPad: Bool = UIDevice.isPad()) {
         self.featureFlagService = featureFlagService
         self.noticePresenter = noticePresenter
         self.productImageUploader = productImageUploader
@@ -187,6 +190,7 @@ final class MainTabBarController: UITabBarController {
             BookingsTabEligibilityChecker(site: site)
         }
         self.userDefaults = userDefaults
+        self.isPad = isPad
         super.init(coder: coder)
     }
 
@@ -205,6 +209,7 @@ final class MainTabBarController: UITabBarController {
             BookingsTabEligibilityChecker(site: site)
         }
         self.userDefaults = .standard
+        self.isPad = UIDevice.isPad()
         super.init(coder: coder)
     }
 
@@ -353,10 +358,11 @@ final class MainTabBarController: UITabBarController {
             for: siteID,
             eligibilityService: posEligibilityService
         )
-        let isBookingsTabVisible = BookingsTabEligibilityChecker.checkInitialVisibility(
+        let isBookingsFeatureAvailable = BookingsTabEligibilityChecker.checkInitialVisibility(
             for: siteID,
             in: userDefaults
         )
+        let isBookingsTabVisible = shouldShowBookingsTab && isBookingsFeatureAvailable
 
         updateTabViewControllers(
             isPOSTabVisible: isPOSTabVisible,
@@ -907,7 +913,8 @@ private extension MainTabBarController {
 
         // Sets Bookings tab initial visibility based on cached value if available.
         let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
-        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialVisibility)
+        let initialBookingsTabVisibility = shouldShowBookingsTab && initialVisibility
+        updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialBookingsTabVisibility)
 
         // Cancels any existing task.
         bookingsEligibilityCheckTask?.cancel()
@@ -915,10 +922,17 @@ private extension MainTabBarController {
         // Starts observing the Bookings eligibility state.
         bookingsEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            let isBookingsTabVisible = await bookingsEligibilityChecker.checkVisibility()
+            let isBookingsFeatureAvailable = await bookingsEligibilityChecker.checkVisibility()
             // TODO: Add analytics tracking for bookings tab visibility
+            let isBookingsTabVisible = shouldShowBookingsTab && isBookingsFeatureAvailable
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         }
+    }
+}
+
+private extension MainTabBarController {
+    var shouldShowBookingsTab: Bool {
+        !isPad
     }
 }
 

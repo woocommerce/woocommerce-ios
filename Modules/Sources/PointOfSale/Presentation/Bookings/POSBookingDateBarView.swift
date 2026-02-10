@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct POSBookingDateBarView: View {
+    @ScaledMetric private var chevronSize: CGFloat = Constants.chevronSize
+
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("dMMMEEE")
@@ -16,7 +18,7 @@ struct POSBookingDateBarView: View {
                         .foregroundStyle(Color.posPrimaryContainer)
 
                     Image(systemName: "chevron.down")
-                        .font(.system(size: Constants.chevronSize, weight: .medium))
+                        .font(.system(size: chevronSize, weight: .medium))
                         .foregroundStyle(Color.posPrimaryContainer)
                 }
             }

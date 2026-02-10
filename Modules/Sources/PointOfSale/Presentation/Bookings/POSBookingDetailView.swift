@@ -130,23 +130,26 @@ struct POSBookingDetailView: View {
         return parts.joined(separator: " \u{00B7} ")
     }
 
-    // MARK: - Section 2: Booking Details
+    // MARK: - Booking Details
 
     @ViewBuilder
     private var bookingDetailsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            detailRow(label: Localization.dateLabel, value: formattedDate)
-            detailRow(label: Localization.timeLabel, value: formattedTimeRange)
+            Text(String(format: Localization.bookingIdTitle, booking.id))
+                .font(.posBodySmallBold())
+                .foregroundStyle(Color.posOnSurface)
 
             if let resourceName = booking.resourceName {
                 detailRow(label: Localization.teamMemberLabel, value: resourceName)
             }
 
             if let location = booking.location {
+                sectionDivider
                 detailRow(label: Localization.locationLabel, value: location)
             }
 
             if !booking.duration.isEmpty {
+                sectionDivider
                 detailRow(label: Localization.durationLabel, value: booking.duration)
             }
         }
@@ -230,8 +233,7 @@ struct POSBookingDetailView: View {
             detailRow(label: Localization.taxesLabel, value: booking.formattedTax ?? Localization.taxesZero)
             detailRow(label: Localization.discountLabel, value: booking.order.formattedDiscountTotal ?? Localization.discountNone)
 
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
+            sectionDivider
 
             detailRow(label: Localization.totalLabel, value: booking.formattedAmount)
         }
@@ -266,6 +268,11 @@ struct POSBookingDetailView: View {
     }
 
     // MARK: - Shared Components
+
+    private var sectionDivider: some View {
+        Divider()
+            .overlay(Color.posOutlineVariant.opacity(0.5))
+    }
 
     @ViewBuilder
     private func detailRow(label: String, value: String) -> some View {
@@ -346,16 +353,10 @@ private enum Localization {
         comment: "Default title for the booking detail view when no service name is available."
     )
 
-    static let dateLabel = NSLocalizedString(
-        "pos.bookingDetailView.dateLabel",
-        value: "Date",
-        comment: "Label for the date in booking details."
-    )
-
-    static let timeLabel = NSLocalizedString(
-        "pos.bookingDetailView.timeLabel",
-        value: "Time",
-        comment: "Label for the time range in booking details."
+    static let bookingIdTitle = NSLocalizedString(
+        "pos.bookingDetailView.bookingIdTitle",
+        value: "Booking #%lld",
+        comment: "Section title for booking details showing the booking ID number. %lld is the booking ID."
     )
 
     static let teamMemberLabel = NSLocalizedString(

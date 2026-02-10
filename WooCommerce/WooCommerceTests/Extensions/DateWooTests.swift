@@ -6,6 +6,11 @@ import XCTest
 ///
 final class DateWooTests: XCTestCase {
 
+    override func tearDown() {
+        ServiceLocator.stores.removeDefaultStore()
+        super.tearDown()
+    }
+
     func testIsSameYearReturnsTrueIfTheDatesAreFromTheSameYear() {
         let calendar = Calendar.current
         let thisDate: Date = {

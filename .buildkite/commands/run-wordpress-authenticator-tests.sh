@@ -4,11 +4,7 @@ if .buildkite/commands/should-skip-job.sh --job-type validation; then
   exit 0
 fi
 
-echo "--- :rubygems: Setting up Gems"
-install_gems
-
-echo "--- :swift: Setting up Swift Packages"
-install_swiftpm_dependencies
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- 🧪 Testing"
 bundle exec fastlane run scan \

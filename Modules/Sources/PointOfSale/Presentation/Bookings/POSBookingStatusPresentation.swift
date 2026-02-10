@@ -1,0 +1,168 @@
+import SwiftUI
+import enum Yosemite.BookingStatus
+import enum Yosemite.BookingAttendanceStatus
+
+/// POS presentation-only interpretation of booking statuses.
+///
+/// The backend API uses a single `status` field that combines booking lifecycle and payment
+/// semantics (e.g. `paid`, `unpaid`, `confirmed`, `cancelled`, `complete`).
+/// For POS display, we interpret this into three independent dimensions:
+///
+/// 1. **Booking lifecycle**: Booked / Completed / Cancelled
+///    - Only "Cancelled" is shown as a badge. Booked/Completed are automatic transitions.
+/// 2. **Payment status**: Paid / Unpaid
+///    - Derived from the API `status` field values.
+/// 3. **Attendance status**: Unattended / Attended
+///    - Comes from the API `attendance_status` field.
+
+// MARK: - Payment Status (derived from BookingStatus)
+
+enum POSBookingPaymentStatus: Equatable {
+    case paid
+    case unpaid
+
+    init(bookingStatus: BookingStatus) {
+        switch bookingStatus {
+        case .paid, .complete:
+            self = .paid
+        case .unpaid, .pendingConfirmation, .confirmed:
+            self = .unpaid
+        case .cancelled, .unknown:
+            self = .unpaid
+        }
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .paid:
+            return Localization.paid
+        case .unpaid:
+            return Localization.unpaid
+        }
+    }
+
+    var color: Color {
+        switch self {
+        case .paid:
+            return .posSuccess
+        case .unpaid:
+            return .posAlert
+        }
+    }
+}
+
+// MARK: - Attendance Display (derived from BookingAttendanceStatus)
+
+enum POSBookingAttendanceDisplay: Equatable {
+    case attended
+    case unattended
+
+    init(attendanceStatus: BookingAttendanceStatus) {
+        switch attendanceStatus {
+        case .checkedIn:
+            self = .attended
+        case .booked, .noShow, .cancelled, .unknown:
+            self = .unattended
+        }
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .attended:
+            return Localization.attended
+        case .unattended:
+            return Localization.unattended
+        }
+    }
+}
+
+// MARK: - Booking Lifecycle (derived from BookingStatus)
+
+enum POSBookingLifecycleStatus: Equatable {
+    case booked
+    case completed
+    case cancelled
+
+    init(bookingStatus: BookingStatus) {
+        switch bookingStatus {
+        case .cancelled:
+            self = .cancelled
+        case .complete:
+            self = .completed
+        case .paid, .unpaid, .confirmed, .pendingConfirmation, .unknown:
+            self = .booked
+        }
+    }
+
+    /// Whether the status should be displayed as a badge.
+    /// Only `cancelled` is shown — `booked` and `completed` are automatic transitions.
+    var shouldShowBadge: Bool {
+        self == .cancelled
+    }
+
+    var localizedTitle: String {
+        switch self {
+        case .booked:
+            return Localization.booked
+        case .completed:
+            return Localization.completed
+        case .cancelled:
+            return Localization.cancelled
+        }
+    }
+
+    var badgeColor: Color {
+        switch self {
+        case .cancelled:
+            return .posError
+        case .booked, .completed:
+            return .clear
+        }
+    }
+}
+
+// MARK: - Localization
+
+private enum Localization {
+    static let paid = NSLocalizedString(
+        "pos.bookingPaymentStatus.paid",
+        value: "Paid",
+        comment: "POS booking payment status label when the booking is paid."
+    )
+
+    static let unpaid = NSLocalizedString(
+        "pos.bookingPaymentStatus.unpaid",
+        value: "Unpaid",
+        comment: "POS booking payment status label when the booking is unpaid."
+    )
+
+    static let attended = NSLocalizedString(
+        "pos.bookingAttendanceDisplay.attended",
+        value: "Attended",
+        comment: "POS booking attendance status label when the customer attended."
+    )
+
+    static let unattended = NSLocalizedString(
+        "pos.bookingAttendanceDisplay.unattended",
+        value: "Unattended",
+        comment: "POS booking attendance status label when the customer has not attended."
+    )
+
+    static let booked = NSLocalizedString(
+        "pos.bookingLifecycleStatus.booked",
+        value: "Booked",
+        comment: "POS booking lifecycle status label for active bookings."
+    )
+
+    static let completed = NSLocalizedString(
+        "pos.bookingLifecycleStatus.completed",
+        value: "Completed",
+        comment: "POS booking lifecycle status label for completed bookings."
+    )
+
+    static let cancelled = NSLocalizedString(
+        "pos.bookingLifecycleStatus.cancelled",
+        value: "Cancelled",
+        comment: "POS booking lifecycle status label for cancelled bookings."
+    )
+}

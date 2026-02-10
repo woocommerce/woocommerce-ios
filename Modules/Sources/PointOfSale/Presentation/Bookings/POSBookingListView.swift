@@ -28,7 +28,7 @@ struct POSBookingListView: View {
                         return false
                     }()
                 )],
-                backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
+                backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose),
                 trailingContent: {
                     if !isSearching && !bookingsViewState.bookings.isEmpty {
                         POSPageHeaderActionButton(
@@ -70,6 +70,10 @@ struct POSBookingListView: View {
                 }
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
+
+            if !isSearching {
+                POSBookingDateBarView()
+            }
 
             switch (bookingsViewState, isSearching) {
             case (.empty, true):

@@ -117,12 +117,12 @@ struct POSBookingDetailView: View {
         }
         orderLoadError = nil
         isLoadingOrder = true
-        defer { isLoadingOrder = false }
         do {
             loadedOrder = try await orderListModel.loadOrder(orderID: orderID)
         } catch {
             orderLoadError = .errorOnLoadingOrders(error: error)
         }
+        isLoadingOrder = false
     }
 
     // MARK: - Section 1: Header

@@ -52,16 +52,18 @@ struct POSBookingDetailView: View {
     private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: headerTitle.isEmpty ? Localization.bookingTitle : headerTitle,
+                title: formattedTimeRange,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     viewOrderMenu
+                },
+                bottomContent: {
+                    headerSubtitleWithBadges
                 }
             )
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    headerBadges
                     bookingDetailsSection
                     attendanceSection
                     customerSection
@@ -94,14 +96,17 @@ struct POSBookingDetailView: View {
         .menuIndicator(.hidden)
     }
 
-    // MARK: - Header Badges
+    // MARK: - Header Subtitle with Badges
 
     @ViewBuilder
-    private var headerBadges: some View {
+    private var headerSubtitleWithBadges: some View {
         HStack(spacing: POSSpacing.small) {
-            Text(formattedTimeRange)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            if !headerTitle.isEmpty {
+                Text(headerTitle)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .lineLimit(1)
+            }
 
             POSBookingBadgeView(
                 title: attendanceDisplay.localizedTitle,
@@ -123,6 +128,8 @@ struct POSBookingDetailView: View {
                 )
             }
         }
+        .padding(.leading, POSPadding.medium)
+        .padding(.top, POSPadding.xSmall)
     }
 
     private var headerTitle: String {
@@ -136,7 +143,7 @@ struct POSBookingDetailView: View {
     private var bookingDetailsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(String(format: Localization.bookingIdTitle, booking.id))
-                .font(.posBodySmallBold())
+                .font(.posBodyMediumBold)
                 .foregroundStyle(Color.posOnSurface)
 
             if let resourceName = booking.resourceName {
@@ -165,7 +172,7 @@ struct POSBookingDetailView: View {
         if hasCustomerDetails {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 Text(Localization.customerTitle)
-                    .font(.posBodySmallBold())
+                    .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
 
                 if let email = booking.customerEmail {
@@ -227,7 +234,7 @@ struct POSBookingDetailView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 HStack {
                     Text(Localization.bookingNoteLabel)
-                        .font(.posBodySmallBold())
+                        .font(.posBodyMediumBold)
                         .foregroundStyle(Color.posOnSurface)
 
                     Spacer()
@@ -261,8 +268,9 @@ struct POSBookingDetailView: View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             HStack {
                 Text(Localization.attendanceStatusTitle)
-                    .font(.posBodySmallBold())
+                    .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
+                    .lineLimit(1)
 
                 Spacer()
 
@@ -309,7 +317,7 @@ struct POSBookingDetailView: View {
     private var paymentBreakdownSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.paymentTitle)
-                .font(.posBodySmallBold())
+                .font(.posBodyMediumBold)
                 .foregroundStyle(Color.posOnSurface)
 
             if !booking.serviceName.isEmpty {
@@ -321,7 +329,15 @@ struct POSBookingDetailView: View {
 
             sectionDivider
 
-            detailRow(label: Localization.totalLabel, value: booking.formattedAmount)
+            HStack {
+                Text(Localization.totalLabel)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posOnSurface)
+                Spacer()
+                Text(booking.formattedAmount)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posOnSurface)
+            }
         }
         .sectionCard()
     }
@@ -544,7 +560,7 @@ private enum Localization {
 
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
-        value: "Collect Payment",
+        value: "Collect payment",
         comment: "Button to initiate payment collection for a booking."
     )
 

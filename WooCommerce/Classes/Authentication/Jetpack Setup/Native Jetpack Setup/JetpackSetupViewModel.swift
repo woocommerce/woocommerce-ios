@@ -401,7 +401,7 @@ private extension JetpackSetupViewModel {
     func startNativeConnection(with data: JetpackConnectionData) {
         currentSetupStep = .connection
         trackSetup()
-        Task { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             do {
                 try await self.connectionService.connect(

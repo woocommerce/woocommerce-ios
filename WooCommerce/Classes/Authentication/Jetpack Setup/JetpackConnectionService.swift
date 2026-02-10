@@ -5,7 +5,6 @@ import class Networking.AlamofireNetwork
 /// Performs the native Jetpack/WPCom connection sequence:
 /// register (if needed) → provision → finalize.
 protocol JetpackConnectionServiceProtocol {
-    @MainActor
     func connect(with connectionData: JetpackConnectionData,
                  siteURL: String,
                  credentials: Credentials) async throws
@@ -45,10 +44,14 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
 
 private extension JetpackConnectionService {
     func dispatch<T>(_ actionBuilder: @escaping (@escaping (Result<T, Error>) -> Void) -> Action) async throws -> T {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(actionBuilder { result in
+        let stores = self.stores
+        return try await withCheckedThrowingContinuation { continuation in
+            let action = actionBuilder { result in
                 continuation.resume(with: result)
-            })
+            }
+            Task { @MainActor in
+                stores.dispatch(action)
+            }
         }
     }
 }

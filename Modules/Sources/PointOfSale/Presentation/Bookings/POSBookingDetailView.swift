@@ -287,13 +287,17 @@ struct POSBookingDetailView: View {
             )
     }
 
-    // MARK: - Section 7: Payment Breakdown
+    // MARK: - Payment Breakdown
 
     @ViewBuilder
     private var paymentBreakdownSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.paymentTitle)
+                .font(.posBodySmallBold())
+                .foregroundStyle(Color.posOnSurface)
+
             if !booking.serviceName.isEmpty {
-                detailRow(label: booking.serviceName, value: booking.formattedSubtotal ?? booking.formattedAmount)
+                detailRow(label: Localization.serviceLabel, value: booking.formattedSubtotal ?? booking.formattedAmount)
             }
 
             detailRow(label: Localization.taxesLabel, value: booking.formattedTax ?? Localization.taxesZero)
@@ -495,6 +499,18 @@ private enum Localization {
         "pos.bookingDetailView.attendanceSubtitle",
         value: "Mark attendance to keep your reports accurate and spot booking trends.",
         comment: "Subtitle text below the attendance section explaining why marking attendance matters."
+    )
+
+    static let paymentTitle = NSLocalizedString(
+        "pos.bookingDetailView.paymentTitle",
+        value: "Payment",
+        comment: "Section title for the payment breakdown in booking details."
+    )
+
+    static let serviceLabel = NSLocalizedString(
+        "pos.bookingDetailView.serviceLabel",
+        value: "Service",
+        comment: "Label for the service cost in booking payment breakdown."
     )
 
     static let taxesLabel = NSLocalizedString(

@@ -28,7 +28,7 @@ struct POSBookingListView: View {
                         return false
                     }()
                 )],
-                backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose),
+                backButtonConfiguration: isSearching ? nil : .init(state: .enabled, action: onClose, buttonIcon: "xmark"),
                 trailingContent: {
                     if !isSearching && !bookingsViewState.bookings.isEmpty {
                         POSPageHeaderActionButton(

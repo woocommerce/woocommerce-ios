@@ -539,9 +539,10 @@ extension POSPreviewHelpers {
                 resourceName: "Marianne Renoir",
                 customerEmail: "margarita.n@gmail.com",
                 customerPhone: "+1 742582943798",
-                billingAddress: "238 Willow Creek Drive, Montgomery, AL 36109",
+                billingAddress: "742 Evergreen Terrace, Springfield, IL, 62704",
                 customerNote: "Prefers eco-friendly products, shorter length cuts",
-                location: "238 Willow Creek Drive, Montgomery",
+                bookingNote: "Client prefers morning appointments",
+                location: "238 Willow Creek Drive, Montgomery, AL, 36109",
                 duration: "60 min",
                 formattedSubtotal: "$55.00",
                 formattedTax: "$0.00",
@@ -583,6 +584,94 @@ extension POSPreviewHelpers {
                 order: makePreviewOrder()
             )
         ]
+    }
+
+    static func makePreviewPaidBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 333,
+            number: "333",
+            dateCreated: now,
+            status: .completed,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: "margarita.n@gmail.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$55.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 333,
+            customerName: "Margarita Nikolaevna",
+            serviceName: "Women's Haircut",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .paid,
+            attendanceStatus: .booked,
+            orderID: 333,
+            resourceName: "Marianne Renoir",
+            customerEmail: "margarita.n@gmail.com",
+            customerPhone: "+1 742582943798",
+            billingAddress: "742 Evergreen Terrace, Springfield, IL, 62704",
+            customerNote: "Prefers eco-friendly products, shorter length cuts",
+            bookingNote: "Client prefers morning appointments",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
+
+    static func makePreviewUnpaidBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 334,
+            number: "334",
+            dateCreated: now,
+            status: .pending,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: "margarita.n@gmail.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$55.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 334,
+            customerName: "Margarita Nikolaevna",
+            serviceName: "Women's Haircut",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .confirmed,
+            attendanceStatus: .booked,
+            orderID: 334,
+            resourceName: "Marianne Renoir",
+            customerEmail: "margarita.n@gmail.com",
+            customerPhone: "+1 742582943798",
+            billingAddress: "742 Evergreen Terrace, Springfield, IL, 62704",
+            customerNote: "Prefers eco-friendly products, shorter length cuts",
+            bookingNote: "Return customer, use usual setup",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
     }
 }
 

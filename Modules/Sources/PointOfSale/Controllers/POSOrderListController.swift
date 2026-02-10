@@ -368,7 +368,8 @@ enum RefundActionAvailability {
     }
 
     private func createPaymentMethodDescription(for order: POSOrder) -> String {
-        String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle)
+        let methodTitle = order.paymentMethodTitle.isEmpty ? Localization.unknownPaymentMethod : order.paymentMethodTitle
+        return String(format: Localization.viaPaymentMethodFormat, methodTitle)
     }
 
     // MARK: - Refund Processing
@@ -420,6 +421,12 @@ private extension POSOrderListController {
             "pos.orderListController.refund.viaPaymentMethodFormat",
             value: "Via %@",
             comment: "Description for refund via a specific payment method. %@ is the payment method name"
+        )
+
+        static let unknownPaymentMethod = NSLocalizedString(
+            "pos.orderListController.refund.unknownPaymentMethod",
+            value: "unknown payment method",
+            comment: "Fallback text when the payment method name is not available for a refund"
         )
     }
 }

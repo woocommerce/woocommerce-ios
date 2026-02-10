@@ -7,7 +7,7 @@ struct POSBookingDetailView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State private var showingOrder = false
+    @State private var navigationPath: [NavigationDestination] = []
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -30,17 +30,21 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
-        if showingOrder {
-            POSOrderDetailsView(order: booking.order, onBack: {
-                showingOrder = false
-            })
-            // Forces back button to be rendered, otherwise the system assumes that
-            // navigation is handled by the split view's sidebar, not a back button
-            .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                showingOrder = false
-            }))
-        } else {
+        NavigationStack(path: $navigationPath) {
             bookingDetailContent
+                .navigationDestination(for: NavigationDestination.self) { destination in
+                    switch destination {
+                    case .orderDetail:
+                        POSOrderDetailsView(order: booking.order, onBack: {
+                            navigationPath.removeLast()
+                        })
+                        // Forces back button to be rendered, otherwise the system assumes that
+                        // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    }
+                }
         }
     }
 
@@ -78,7 +82,7 @@ struct POSBookingDetailView: View {
     private var viewOrderMenu: some View {
         Menu {
             Button(Localization.viewOrderAction) {
-                showingOrder = true
+                navigationPath.append(.orderDetail)
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -324,6 +328,12 @@ private extension DateFormatter {
         formatter.timeStyle = .short
         return formatter
     }()
+}
+
+// MARK: - Navigation
+
+private enum NavigationDestination: Hashable {
+    case orderDetail
 }
 
 // MARK: - Localization

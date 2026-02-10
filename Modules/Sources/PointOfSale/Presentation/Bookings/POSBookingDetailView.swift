@@ -203,22 +203,53 @@ struct POSBookingDetailView: View {
         }
     }
 
-    // MARK: - Section 6: Attendance Status
+    // MARK: - Attendance Status
 
     @ViewBuilder
     private var attendanceSection: some View {
-        HStack {
-            Text(Localization.attendanceLabel)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
+            HStack {
+                Text(Localization.attendanceStatusTitle)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posOnSurface)
 
-            Spacer()
+                Spacer()
 
-            Text(attendanceDisplay.localizedTitle)
-                .font(.posBodySmallBold())
+                HStack(spacing: POSSpacing.small) {
+                    attendancePill(
+                        title: Localization.attendedPill,
+                        isSelected: attendanceDisplay == .attended
+                    )
+                    attendancePill(
+                        title: Localization.unattendedPill,
+                        isSelected: attendanceDisplay == .unattended
+                    )
+                }
+            }
+            .sectionCard()
+
+            Text(Localization.attendanceSubtitle)
+                .font(.posCaptionRegular)
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .padding(.horizontal, POSPadding.xSmall)
         }
-        .sectionCard()
+    }
+
+    @ViewBuilder
+    private func attendancePill(title: String, isSelected: Bool) -> some View {
+        Text(title)
+            .font(.posBodySmallBold())
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .foregroundStyle(isSelected ? Color.posOnDefault : Color.posOnSurfaceVariantHighest)
+            .padding(.horizontal, POSPadding.small)
+            .padding(.vertical, POSPadding.xSmall)
+            .background(isSelected ? Color.posDefault : Color.clear)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .overlay(
+                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
+                    .strokeBorder(isSelected ? Color.clear : Color.posOutlineVariant, lineWidth: 1)
+            )
     }
 
     // MARK: - Section 7: Payment Breakdown
@@ -413,10 +444,28 @@ private enum Localization {
         comment: "Label for the private booking note section in booking details."
     )
 
-    static let attendanceLabel = NSLocalizedString(
-        "pos.bookingDetailView.attendanceLabel",
-        value: "Attendance",
-        comment: "Label for the booking attendance status in booking details."
+    static let attendanceStatusTitle = NSLocalizedString(
+        "pos.bookingDetailView.attendanceStatusTitle",
+        value: "Attendance status",
+        comment: "Section title for the attendance status in booking details."
+    )
+
+    static let attendedPill = NSLocalizedString(
+        "pos.bookingDetailView.attendedPill",
+        value: "Attended",
+        comment: "Label for the attended pill button in booking attendance section."
+    )
+
+    static let unattendedPill = NSLocalizedString(
+        "pos.bookingDetailView.unattendedPill",
+        value: "Unattended",
+        comment: "Label for the unattended pill button in booking attendance section."
+    )
+
+    static let attendanceSubtitle = NSLocalizedString(
+        "pos.bookingDetailView.attendanceSubtitle",
+        value: "Mark attendance to keep your reports accurate and spot booking trends.",
+        comment: "Subtitle text below the attendance section explaining why marking attendance matters."
     )
 
     static let taxesLabel = NSLocalizedString(

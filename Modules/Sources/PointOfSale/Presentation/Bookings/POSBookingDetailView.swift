@@ -156,31 +156,66 @@ struct POSBookingDetailView: View {
         .sectionCard()
     }
 
-    // MARK: - Section 3: Customer
+    // MARK: - Customer
 
     @ViewBuilder
     private var customerSection: some View {
-        let hasCustomerDetails = booking.customerName != nil || booking.customerEmail != nil
-            || booking.customerPhone != nil || booking.billingAddress != nil
+        let hasCustomerDetails = booking.customerEmail != nil || booking.customerPhone != nil
+            || booking.billingAddress != nil || booking.customerNote != nil
         if hasCustomerDetails {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                if let customerName = booking.customerName {
-                    detailRow(label: Localization.customerLabel, value: customerName)
-                }
+                Text(Localization.customerTitle)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posOnSurface)
 
                 if let email = booking.customerEmail {
-                    detailRow(label: Localization.emailLabel, value: email)
+                    HStack {
+                        Text(email)
+                            .font(.posBodySmallRegular())
+                            .foregroundStyle(Color.posOnSurface)
+                        Spacer()
+                        Image(systemName: "doc.on.doc")
+                            .font(.posBodySmallRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
                 }
 
                 if let phone = booking.customerPhone {
-                    detailRow(label: Localization.phoneLabel, value: phone)
+                    sectionDivider
+                    HStack {
+                        Text(phone)
+                            .font(.posBodySmallRegular())
+                            .foregroundStyle(Color.posOnSurface)
+                        Spacer()
+                        Image(systemName: "ellipsis")
+                            .font(.posBodySmallRegular())
+                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    }
                 }
 
                 if let address = booking.billingAddress {
-                    detailRow(label: Localization.billingAddressLabel, value: address)
+                    sectionDivider
+                    stackedField(label: Localization.billingAddressLabel, value: address)
+                }
+
+                if let note = booking.customerNote {
+                    sectionDivider
+                    stackedField(label: Localization.noteLabel, value: note)
                 }
             }
             .sectionCard()
+        }
+    }
+
+    @ViewBuilder
+    private func stackedField(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Text(label)
+                .font(.posCaptionRegular)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            Text(value)
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurface)
         }
     }
 
@@ -408,22 +443,16 @@ private enum Localization {
         comment: "Label for the duration in booking details."
     )
 
-    static let customerLabel = NSLocalizedString(
-        "pos.bookingDetailView.customerLabel",
+    static let customerTitle = NSLocalizedString(
+        "pos.bookingDetailView.customerTitle",
         value: "Customer",
-        comment: "Label for the customer name in booking details."
+        comment: "Section title for the customer details in booking details."
     )
 
-    static let emailLabel = NSLocalizedString(
-        "pos.bookingDetailView.emailLabel",
-        value: "Email",
-        comment: "Label for the customer email in booking details."
-    )
-
-    static let phoneLabel = NSLocalizedString(
-        "pos.bookingDetailView.phoneLabel",
-        value: "Phone",
-        comment: "Label for the customer phone number in booking details."
+    static let noteLabel = NSLocalizedString(
+        "pos.bookingDetailView.noteLabel",
+        value: "Note",
+        comment: "Label for the customer note in booking details."
     )
 
     static let billingAddressLabel = NSLocalizedString(

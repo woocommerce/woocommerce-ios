@@ -13,6 +13,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     enum TestError: Error {
         case updateOrderFailed
+        case loadOrderFailed
     }
 
     func loadOrders() async {}
@@ -32,6 +33,20 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         if shouldThrowError {
             throw TestError.updateOrderFailed
         }
+    }
+
+    var loadOrderResult: POSOrder?
+    var spyLoadOrderID: Int64?
+
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        spyLoadOrderID = orderID
+        if shouldThrowError {
+            throw TestError.loadOrderFailed
+        }
+        guard let order = loadOrderResult else {
+            throw TestError.loadOrderFailed
+        }
+        return order
     }
 
     func searchOrders(searchTerm: String) async {}

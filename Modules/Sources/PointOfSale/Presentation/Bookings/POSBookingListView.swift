@@ -133,6 +133,7 @@ struct POSBookingListView: View {
                                                   isSelected: bookingsModel.bookingsController.selectedBooking?.id == booking.id)
                             }
                             .buttonStyle(PlainButtonStyle())
+                            .accessibilityRemoveTraits(.isButton)
                         }
                         .animation(.default, value: bookings.first?.id)
 

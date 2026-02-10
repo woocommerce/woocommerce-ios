@@ -41,7 +41,7 @@ struct POSBookingRowView: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint(Localization.bookingRowAccessibilityHint)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     @ViewBuilder
@@ -91,25 +91,21 @@ struct POSBookingRowView: View {
     }
 
     private var accessibilityLabel: String {
-        var parts = [formattedTimeRange]
+        let timeRange = Localization.timeRangeAccessibilityLabel(
+            start: DateFormatter.timeFormatter.string(from: booking.startDate),
+            end: DateFormatter.timeFormatter.string(from: booking.endDate)
+        )
 
-        if !booking.serviceName.isEmpty {
-            parts.append(Localization.serviceAccessibilityLabel(booking.serviceName))
-        }
+        let customerDisplayName = booking.customerName ?? booking.customerEmail
 
-        if let customerName = booking.customerName {
-            parts.append(Localization.customerAccessibilityLabel(customerName))
-        } else if let email = booking.customerEmail {
-            parts.append(Localization.customerAccessibilityLabel(email))
-        }
+        var parts = [timeRange, booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
 
         if lifecycleStatus == .cancelled {
-            parts.append(Localization.bookingStatusAccessibilityLabel(lifecycleStatus.localizedTitle))
+            parts.append(lifecycleStatus.localizedTitle)
         } else {
-            parts.append(Localization.attendanceAccessibilityLabel(attendanceDisplay.localizedTitle))
+            parts.append(attendanceDisplay.localizedTitle)
         }
-
-        parts.append(Localization.paymentAccessibilityLabel(paymentStatus.localizedTitle))
+        parts.append(paymentStatus.localizedTitle)
 
         return parts.joined(separator: ", ")
     }
@@ -129,55 +125,13 @@ struct POSBookingRowView: View {
 }
 
 private enum Localization {
-    static let bookingRowAccessibilityHint = NSLocalizedString(
-        "pos.bookingListView.bookingRow.accessibilityHint",
-        value: "Tap to view booking details",
-        comment: "Accessibility hint for booking row indicating the action when tapped."
-    )
-
-    static func serviceAccessibilityLabel(_ service: String) -> String {
+    static func timeRangeAccessibilityLabel(start: String, end: String) -> String {
         let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.service",
-            value: "Service: %1$@",
-            comment: "Service portion of booking row accessibility label. %1$@ is the service name."
+            "pos.bookingListView.bookingRow.accessibilityLabel.timeRange",
+            value: "%1$@ to %2$@",
+            comment: "Time range for booking row accessibility. %1$@ is start time, %2$@ is end time."
         )
-        return String(format: format, service)
-    }
-
-    static func customerAccessibilityLabel(_ customer: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.customer",
-            value: "Customer: %1$@",
-            comment: "Customer portion of booking row accessibility label. %1$@ is the customer name or email."
-        )
-        return String(format: format, customer)
-    }
-
-    static func attendanceAccessibilityLabel(_ status: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.attendance",
-            value: "Attendance: %1$@",
-            comment: "Attendance portion of booking row accessibility label. %1$@ is the attendance status."
-        )
-        return String(format: format, status)
-    }
-
-    static func paymentAccessibilityLabel(_ status: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.payment",
-            value: "Payment: %1$@",
-            comment: "Payment portion of booking row accessibility label. %1$@ is the payment status."
-        )
-        return String(format: format, status)
-    }
-
-    static func bookingStatusAccessibilityLabel(_ status: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.bookingStatus",
-            value: "Status: %1$@",
-            comment: "Status portion of booking row accessibility label. %1$@ is the booking lifecycle status (e.g. Cancelled)."
-        )
-        return String(format: format, status)
+        return String(format: format, start, end)
     }
 }
 

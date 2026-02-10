@@ -13,6 +13,5 @@ struct POSBookingBadgeView: View {
             .padding(.vertical, POSPadding.xSmall)
             .background(backgroundColor)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .accessibilityLabel(title)
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
+    @Environment(POSPaymentModel.self) private var paymentModel
 
     init(messageType: PointOfSaleCardPresentPaymentMessageType) {
         self.messageType = messageType
@@ -24,7 +25,10 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel, animation: animation)
         case .paymentSuccess(let viewModel):
-            PointOfSalePaymentSuccessView(viewModel: viewModel)
+            PointOfSalePaymentSuccessView(
+                viewModel: viewModel,
+                onSendReceipt: { email in try await paymentModel.sendReceipt(to: email) },
+                successAction: paymentModel.configuration.successAction)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentErrorNonRetryable(let viewModel):
@@ -48,8 +52,10 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
 }
 
 #Preview {
+    let model = POSPreviewHelpers.makePreviewAggregateModel()
     PointOfSaleCardPresentPaymentInLineMessage(messageType: .processing(
         viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
+    .environment(model.paymentModel)
 }
 
 struct POSCardPresentPaymentInLineMessageAnimation {

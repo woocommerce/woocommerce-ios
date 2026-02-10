@@ -1,7 +1,52 @@
 import Foundation
+import SwiftUI
 import WooFoundation
 
 struct TotalsViewHelper {
+    /// Shared background color for payment views (cart and bookings).
+    func paymentBackgroundColor(for paymentState: PointOfSalePaymentState) -> Color {
+        switch paymentState.activePaymentMethod {
+        case .cash:
+            switch paymentState.cash {
+            case .collectingCash, .paymentSuccess:
+                return .posSurfaceBright
+            default:
+                return .clear
+            }
+        case .card:
+            switch paymentState.card {
+            case .processingPayment:
+                return .posPrimary
+            case .cardPaymentSuccessful:
+                return .posSurfaceBright
+            default:
+                return .clear
+            }
+        }
+    }
+
+    /// Base cash payment button visibility (without order state checks).
+    /// Used by bookings flow. Cart flow uses `shouldShowCollectCashPaymentButton` which adds order state guards.
+    func shouldShowCashPaymentButton(paymentState: PointOfSalePaymentState,
+                                     cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
+        switch paymentState.activePaymentMethod {
+        case .cash:
+            return false
+        case .card:
+            if case .disconnected = cardReaderConnectionStatus,
+               case .idle = paymentState.card {
+                return true
+            }
+            switch paymentState.card {
+            case .validatingOrderError,
+                    .paymentIntentCreationError,
+                    .acceptingCard:
+                return true
+            default:
+                return false
+            }
+        }
+    }
     func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
         switch paymentState.activePaymentMethod {
         case .cash:
@@ -51,6 +96,7 @@ struct TotalsViewHelper {
         }
     }
 
+    /// Cash payment button visibility for the cart flow (adds order state guards on top of the base check).
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,
                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
@@ -58,34 +104,15 @@ struct TotalsViewHelper {
             return false
         }
 
-        switch paymentState.activePaymentMethod {
-        case .cash:
-            return false
-        case .card:
-            if case .disconnected = cardReaderConnectionStatus,
-                case .idle = paymentState.card {
-                return true
-            }
-
-            if case let .loaded(totals) = orderState, totals.orderTotalDecimal.isZero {
-                return true
-            }
-
-            switch paymentState.card {
-            case .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .acceptingCard:
-                return true
-            case .idle,
-                    .cardInserted,
-                    .validatingOrder,
-                    .preparingReader,
-                    .processingPayment,
-                    .paymentError,
-                    .cardPaymentSuccessful:
-                return false
-            }
+        // Cart-specific: show button for zero-total orders (only when card method is active)
+        if case .card = paymentState.activePaymentMethod,
+           case let .loaded(totals) = orderState,
+           totals.orderTotalDecimal.isZero {
+            return true
         }
+
+        return shouldShowCashPaymentButton(paymentState: paymentState,
+                                           cardReaderConnectionStatus: cardReaderConnectionStatus)
     }
 
     func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {

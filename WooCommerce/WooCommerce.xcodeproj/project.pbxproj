@@ -410,6 +410,7 @@
 		31FE28C225E6D338003519F2 /* LearnMoreTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31FE28C125E6D338003519F2 /* LearnMoreTableViewCell.swift */; };
 		31FE28C825E6D384003519F2 /* LearnMoreTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 31FE28C725E6D384003519F2 /* LearnMoreTableViewCell.xib */; };
 		3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */; };
+		71E7782632CC7D5213733333 /* MockJetpackConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */; };
 		3F0904092D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904142D26A40800D8ACCE /* WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; };
 		3F0904152D26A40800D8ACCE /* WordPressAuthenticator.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3F0904012D26A40700D8ACCE /* WordPressAuthenticator.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -2308,6 +2309,7 @@
 		EEEA41F12869A5F400AEFC4B /* MockProductImagesProductIDUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductImagesProductIDUpdater.swift; sourceTree = "<group>"; };
 		EEF5C14F2BBAFA5900535C86 /* StoreOnboardingTaskViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoreOnboardingTaskViewModelTests.swift; sourceTree = "<group>"; };
 		F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MockWPComConnectionSetupHandler.swift; sourceTree = "<group>"; };
+		5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockJetpackConnectionService.swift; sourceTree = "<group>"; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE28F6F3268477C1004465C7 /* RoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleEligibilityUseCase.swift; sourceTree = "<group>"; };
 		FE3E427626A8545B00C596CE /* MockRoleEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoleEligibilityUseCase.swift; sourceTree = "<group>"; };
@@ -3990,6 +3992,7 @@
 				EE4C75DE2C86D2F500F9D860 /* BlazeLocalNotificationSchedulerSpy.swift */,
 				CEC3CC792C93537B00B93FBE /* MockShippingSettingsService.swift */,
 				F1FEE9D30367FFF0ADEE1F5B /* MockWPComConnectionSetupHandler.swift */,
+				5E1A903713867FCD550D32AD /* MockJetpackConnectionService.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -7130,6 +7133,7 @@
 				57F42E40253768D600EA87F7 /* TitleAndEditableValueTableViewCellViewModelTests.swift in Sources */,
 				DE0BE0C12F333BC0009CE891 /* NotificationServiceSuppressionTests.swift in Sources */,
 				3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */,
+				71E7782632CC7D5213733333 /* MockJetpackConnectionService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,25 +8,11 @@ struct POSBookingRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    private var lifecycleStatus: POSBookingLifecycleStatus {
-        POSBookingLifecycleStatus(bookingStatus: booking.status)
-    }
-
-    private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
-    }
-
-    private var attendanceDisplay: POSBookingAttendanceDisplay {
-        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
             bookingHeaderRow
                 .padding(.bottom, POSSpacing.xSmall)
-            bookingDetailsRow
-                .padding(.bottom, POSSpacing.small)
-            statusBadges
+            POSBookingSummaryView(booking: booking)
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
@@ -47,7 +33,7 @@ struct POSBookingRowView: View {
     @ViewBuilder
     private var bookingHeaderRow: some View {
         HStack(alignment: .center) {
-            Text(formattedTimeRange)
+            Text(POSBookingSummaryView.formattedTimeRange(for: booking))
                 .font(.posBodySmallBold())
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
@@ -58,39 +44,15 @@ struct POSBookingRowView: View {
         }
     }
 
-    @ViewBuilder
-    private var bookingDetailsRow: some View {
-        Text(detailsText)
-            .font(.posBodySmallRegular())
-            .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder
-    private var statusBadges: some View {
-        HStack(spacing: POSSpacing.small) {
-            if lifecycleStatus == .cancelled {
-                POSBookingBadgeView(title: lifecycleStatus.localizedTitle,
-                                    textColor: lifecycleStatus.textColor,
-                                    backgroundColor: lifecycleStatus.backgroundColor)
-            } else {
-                POSBookingBadgeView(title: attendanceDisplay.localizedTitle,
-                                    textColor: attendanceDisplay.textColor,
-                                    backgroundColor: attendanceDisplay.backgroundColor)
-            }
-            POSBookingBadgeView(title: paymentStatus.localizedTitle,
-                                textColor: paymentStatus.textColor,
-                                backgroundColor: paymentStatus.backgroundColor)
-        }
-    }
-
     private var accessibilityLabel: String {
         let timeRange = Localization.timeRangeAccessibilityLabel(
-            start: DateFormatter.timeFormatter.string(from: booking.startDate),
-            end: DateFormatter.timeFormatter.string(from: booking.endDate)
+            start: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.startDate),
+            end: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.endDate)
         )
 
+        let lifecycleStatus = POSBookingLifecycleStatus(bookingStatus: booking.status)
+        let paymentStatus = POSBookingPaymentStatus(bookingStatus: booking.status)
+        let attendanceDisplay = POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
         let customerDisplayName = booking.customerName ?? booking.customerEmail
 
         var parts = [timeRange, booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
@@ -103,20 +65,6 @@ struct POSBookingRowView: View {
         parts.append(paymentStatus.localizedTitle)
 
         return parts.joined(separator: ", ")
-    }
-
-    private var formattedTimeRange: String {
-        let dateString = DateFormatter.shortDateFormatter.string(from: booking.startDate)
-        let timeFormatter = DateFormatter.timeFormatter
-        let startTime = timeFormatter.string(from: booking.startDate)
-        let endTime = timeFormatter.string(from: booking.endDate)
-        return "\(dateString), \(startTime)-\(endTime)"
-    }
-
-    private var detailsText: String {
-        let customerDisplayName = booking.customerName ?? booking.customerEmail
-        let parts = [booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
-        return parts.joined(separator: " \u{00B7} ")
     }
 }
 
@@ -132,16 +80,10 @@ private enum Localization {
 }
 
 private extension DateFormatter {
-    static let timeFormatter: DateFormatter = {
+    static let posAccessibilityTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
-        return formatter
-    }()
-
-    static let shortDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
         return formatter
     }()
 }

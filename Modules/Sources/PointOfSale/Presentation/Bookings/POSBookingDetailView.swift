@@ -53,13 +53,14 @@ struct POSBookingDetailView: View {
     private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: formattedTimeRange,
+                title: POSBookingSummaryView.formattedTimeRange(for: booking),
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     viewOrderMenu
                 },
                 bottomContent: {
-                    headerSubtitleWithBadges
+                    POSBookingSummaryView(booking: booking)
+                        .padding(.top, POSPadding.xSmall)
                 }
             )
 
@@ -95,46 +96,6 @@ struct POSBookingDetailView: View {
                 .padding(POSPadding.small)
         }
         .menuIndicator(.hidden)
-    }
-
-    // MARK: - Header Subtitle with Badges
-
-    @ViewBuilder
-    private var headerSubtitleWithBadges: some View {
-        HStack(spacing: POSSpacing.small) {
-            if !headerTitle.isEmpty {
-                Text(headerTitle)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .lineLimit(1)
-            }
-
-            POSBookingBadgeView(
-                title: attendanceDisplay.localizedTitle,
-                textColor: attendanceDisplay.textColor,
-                backgroundColor: attendanceDisplay.backgroundColor
-            )
-
-            POSBookingBadgeView(
-                title: paymentStatus.localizedTitle,
-                textColor: paymentStatus.textColor,
-                backgroundColor: paymentStatus.backgroundColor
-            )
-
-            if lifecycleStatus.shouldShowBadge {
-                POSBookingBadgeView(
-                    title: lifecycleStatus.localizedTitle,
-                    textColor: lifecycleStatus.textColor,
-                    backgroundColor: lifecycleStatus.backgroundColor
-                )
-            }
-        }
-        .padding(.top, POSPadding.xSmall)
-    }
-
-    private var headerTitle: String {
-        let parts = [booking.serviceName, booking.customerName].compactMap { $0 }.filter { !$0.isEmpty }
-        return parts.joined(separator: " \u{00B7} ")
     }
 
     // MARK: - Booking Details
@@ -412,15 +373,6 @@ struct POSBookingDetailView: View {
         }
     }
 
-    // MARK: - Formatting
-
-    private var formattedTimeRange: String {
-        let dateString = DateFormatter.shortDateFormatter.string(from: booking.startDate)
-        let timeFormatter = DateFormatter.timeOnlyFormatter
-        let startTime = timeFormatter.string(from: booking.startDate)
-        let endTime = timeFormatter.string(from: booking.endDate)
-        return "\(dateString), \(startTime)-\(endTime)"
-    }
 }
 
 // MARK: - Section Card Modifier
@@ -438,23 +390,6 @@ private extension View {
     func sectionCard() -> some View {
         modifier(SectionCardModifier())
     }
-}
-
-// MARK: - Date Formatters
-
-private extension DateFormatter {
-    static let timeOnlyFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
-
-    static let shortDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
-        return formatter
-    }()
 }
 
 // MARK: - Navigation

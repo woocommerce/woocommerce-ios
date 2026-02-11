@@ -67,7 +67,7 @@ struct POSPaymentFlowConfigurationTests {
     @Test("bookings config has 'Back to Booking' capture error exit title")
     func bookings_config_has_back_to_booking_capture_error_exit_title() {
         let config = POSPaymentFlowConfiguration.bookings(onDismiss: {})
-        #expect(config.captureErrorExitAction.title == "Back to Booking")
+        #expect(config.captureErrorExitAction.title == "Back to booking")
     }
 
     @Test("bookings config has 'Back to Booking' intent creation error exit title")

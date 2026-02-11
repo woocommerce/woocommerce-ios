@@ -32,6 +32,20 @@ enum POSBookingPaymentStatus: Equatable {
         }
     }
 
+    /// Initializer that considers whether the linked order has been paid.
+    /// When a booking is cancelled, the booking status alone doesn't tell us
+    /// whether it was previously paid. The order's payment state is the source of truth.
+    init(bookingStatus: BookingStatus, isBookingPaid: Bool) {
+        switch bookingStatus {
+        case .paid, .complete:
+            self = .paid
+        case .cancelled:
+            self = isBookingPaid ? .paid : .unpaid
+        case .unpaid, .pendingConfirmation, .confirmed, .unknown:
+            self = .unpaid
+        }
+    }
+
     var localizedTitle: String {
         switch self {
         case .paid:

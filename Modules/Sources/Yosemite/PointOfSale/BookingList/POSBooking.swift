@@ -3,6 +3,20 @@ import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
 
 public struct POSBooking: Equatable, Hashable, Identifiable {
+    /// Whether the linked order indicates payment was collected.
+    /// Used to preserve payment status when a booking is cancelled,
+    public var isBookingPaid: Bool {
+        switch order.status {
+        case .completed, .processing:
+            return true
+        case .refunded:
+            // TODO: Edge case? A refunded order was paid at some point, but is not currently paid
+            return true
+        default:
+            return false
+        }
+    }
+
     public let id: Int64
     public let customerName: String?
     public let serviceName: String

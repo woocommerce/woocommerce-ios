@@ -489,6 +489,37 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_menuElements_include_bookings_on_ipad_when_eligible() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker(isEligible: true)
+
+        // When
+        let viewModel = HubMenuViewModel(
+            siteID: sampleSiteID,
+            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+            stores: stores,
+            bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker },
+            isPad: true
+        )
+        viewModel.setupMenuElements()
+
+        waitUntil {
+            viewModel.generalElements.contains(where: { item in
+                item.id == HubMenuViewModel.Bookings.id
+            })
+        }
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Bookings.id
+        }))
+    }
+
+    @MainActor
     func test_showPayments_replaces_navigationPath_with_payments() {
         // Given
         var navigationPath = NavigationPath(["testPath1", "testPath2"])
@@ -685,7 +716,8 @@ final class HubMenuViewModelTests: XCTestCase {
             HubMenuViewModel.Coupons(),
             HubMenuViewModel.Reviews(),
             HubMenuViewModel.Inbox(),
-            HubMenuViewModel.Customers()
+            HubMenuViewModel.Customers(),
+            HubMenuViewModel.Bookings()
         ]
 
         otherMenuItems.forEach { menuItem in
@@ -718,5 +750,21 @@ private extension HubMenuViewModelTests {
                 break
             }
         }
+    }
+}
+
+private final class MockBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
+    private let isEligible: Bool
+
+    init(isEligible: Bool) {
+        self.isEligible = isEligible
+    }
+
+    func checkInitialVisibility() -> Bool {
+        isEligible
+    }
+
+    func checkVisibility() async -> Bool {
+        isEligible
     }
 }

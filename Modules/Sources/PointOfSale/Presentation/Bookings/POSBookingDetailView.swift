@@ -8,7 +8,7 @@ struct POSBookingDetailView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(POSOrderListModel.self) private var orderListModel
 
-    @State private var showingOrder = false
+    @State private var navigationPath: [NavigationDestination] = []
     @State private var refundModalState: RefundModalState?
     @State private var isShowingEmailReceiptView: Bool = false
 
@@ -33,17 +33,21 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
-        if showingOrder {
-            POSOrderDetailsView(order: booking.order, onBack: {
-                showingOrder = false
-            })
-            // Forces back button to be rendered, otherwise the system assumes that
-            // navigation is handled by the split view's sidebar, not a back button
-            .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                showingOrder = false
-            }))
-        } else {
+        NavigationStack(path: $navigationPath) {
             bookingDetailContent
+                .navigationDestination(for: NavigationDestination.self) { destination in
+                    switch destination {
+                    case .orderDetail:
+                        POSOrderDetailsView(order: booking.order, onBack: {
+                            navigationPath.removeLast()
+                        })
+                        // Forces back button to be rendered, otherwise the system assumes that
+                        // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    }
+                }
         }
     }
 
@@ -92,7 +96,7 @@ struct POSBookingDetailView: View {
     private var viewOrderMenu: some View {
         Menu {
             Button(Localization.viewOrderAction) {
-                showingOrder = true
+                navigationPath.append(.orderDetail)
             }
             if isPaid && lifecycleStatus != .cancelled {
                 Button(Localization.issueRefundAction) {
@@ -143,7 +147,7 @@ struct POSBookingDetailView: View {
     }
 
     private var headerTitle: String {
-        let parts = [booking.serviceName, booking.customerName].filter { !$0.isEmpty }
+        let parts = [booking.serviceName, booking.customerName].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: " \u{00B7} ")
     }
 
@@ -174,10 +178,13 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var customerSection: some View {
-        let hasCustomerDetails = booking.customerEmail != nil || booking.customerPhone != nil || booking.billingAddress != nil
-        if !booking.customerName.isEmpty || hasCustomerDetails {
+        let hasCustomerDetails = booking.customerName != nil || booking.customerEmail != nil
+            || booking.customerPhone != nil || booking.billingAddress != nil
+        if hasCustomerDetails {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                detailRow(label: Localization.customerLabel, value: booking.customerName)
+                if let customerName = booking.customerName {
+                    detailRow(label: Localization.customerLabel, value: customerName)
+                }
 
                 if let email = booking.customerEmail {
                     detailRow(label: Localization.emailLabel, value: email)
@@ -479,6 +486,12 @@ private extension DateFormatter {
         formatter.timeStyle = .short
         return formatter
     }()
+}
+
+// MARK: - Navigation
+
+private enum NavigationDestination: Hashable {
+    case orderDetail
 }
 
 // MARK: - Localization

@@ -3406,6 +3406,13 @@
 			path = Addons;
 			sourceTree = "<group>";
 		};
+		2D4929792F3B4BCF00F7445A /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		31F21B07263C8E1F0035B50A /* CardReaderSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -4283,6 +4290,7 @@
 				8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */,
 				B559EBAD20A0BF8E00836CD4 /* README.md */,
 				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
+				2D4929792F3B4BCF00F7445A /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};

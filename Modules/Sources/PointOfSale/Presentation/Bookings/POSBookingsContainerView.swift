@@ -93,7 +93,6 @@ struct POSBookingsContainerView: View {
                     backButtonConfiguration: .init(state: .enabled, action: {
                         isPresented = false
                     }))
-                .posHeaderBackButtonIcon(systemName: "xmark")
                 Spacer()
             }
         }
@@ -116,7 +115,6 @@ struct POSBookingsContainerView: View {
                     backButtonConfiguration: .init(state: .enabled, action: {
                         isPresented = false
                     }))
-                .posHeaderBackButtonIcon(systemName: "xmark")
                 Spacer()
             }
         }

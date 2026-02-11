@@ -320,7 +320,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "$0.00",
             formattedTotalTax: "$3.76",
             formattedPaymentTotal: "$45.75",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date()
         )
     }
 
@@ -374,7 +375,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "-$15.00",
             formattedTotalTax: "$8.95",
             formattedPaymentTotal: "$89.50",
-            formattedNetAmount: "$69.51"
+            formattedNetAmount: "$69.51",
+            datePaid: Date().addingTimeInterval(-7200)
         )
     }
 
@@ -442,7 +444,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "$0.00",
             formattedTotalTax: "$2.00",
             formattedPaymentTotal: "$24.99",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date().addingTimeInterval(-10800)
         )
     }
 
@@ -492,7 +495,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "-$10.00",
             formattedTotalTax: "$11.47",
             formattedPaymentTotal: "$156.47",
-            formattedNetAmount: "$153.50"
+            formattedNetAmount: "$153.50",
+            datePaid: Date().addingTimeInterval(-14400)
         )
     }
 }

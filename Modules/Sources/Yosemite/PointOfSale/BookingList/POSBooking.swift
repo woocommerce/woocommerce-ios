@@ -4,14 +4,11 @@ import enum Networking.BookingAttendanceStatus
 
 public struct POSBooking: Equatable, Hashable, Identifiable {
     /// Whether the linked order indicates payment was collected.
-    /// Used to preserve payment status when a booking is cancelled,
+    /// Uses `datePaid` rather than order status because the Bookings API
+    /// may change the order status when a booking is cancelled,
+    /// but `datePaid` persists regardless of status changes.
     public var isBookingPaid: Bool {
-        switch order.status {
-        case .completed, .processing:
-            return true
-        default:
-            return false
-        }
+        order.datePaid != nil
     }
 
     public let id: Int64

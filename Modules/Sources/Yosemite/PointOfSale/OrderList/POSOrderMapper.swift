@@ -61,6 +61,7 @@ struct POSOrderMapper {
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
             formattedNetAmount: formattedNetAmount,
+            datePaid: order.datePaid,
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }

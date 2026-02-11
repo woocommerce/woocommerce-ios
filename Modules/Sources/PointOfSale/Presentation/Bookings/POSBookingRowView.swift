@@ -106,10 +106,11 @@ struct POSBookingRowView: View {
     }
 
     private var formattedTimeRange: String {
-        let formatter = DateFormatter.timeFormatter
-        let start = formatter.string(from: booking.startDate)
-        let end = formatter.string(from: booking.endDate)
-        return "\(start)-\(end)"
+        let dateString = DateFormatter.shortDateFormatter.string(from: booking.startDate)
+        let timeFormatter = DateFormatter.timeFormatter
+        let startTime = timeFormatter.string(from: booking.startDate)
+        let endTime = timeFormatter.string(from: booking.endDate)
+        return "\(dateString), \(startTime)-\(endTime)"
     }
 
     private var detailsText: String {
@@ -135,6 +136,12 @@ private extension DateFormatter {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
+        return formatter
+    }()
+
+    static let shortDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
         return formatter
     }()
 }

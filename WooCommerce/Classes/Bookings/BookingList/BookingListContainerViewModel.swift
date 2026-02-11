@@ -127,10 +127,13 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func updateFilters(_ filters: BookingFiltersViewModel.Filters, shouldPersist: Bool = true) {
-        guard selectedTab == .all else { return }
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
+        todayListViewModel.updateFilters(filters)
+        upcomingListViewModel.updateFilters(filters)
         allListViewModel.updateFilters(filters)
+        todaySearchViewModel.updateFilters(filters)
+        upcomingSearchViewModel.updateFilters(filters)
         allSearchViewModel.updateFilters(filters)
         if shouldPersist {
             saveFilters(filters)
@@ -138,7 +141,6 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func clearFilters() {
-        guard selectedTab == .all else { return }
         let filters = BookingFiltersViewModel.Filters()
         updateFilters(filters)
     }

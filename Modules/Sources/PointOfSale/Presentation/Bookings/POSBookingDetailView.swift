@@ -98,7 +98,7 @@ struct POSBookingDetailView: View {
             Button(Localization.viewOrderAction) {
                 navigationPath.append(.orderDetail)
             }
-            if isPaid && lifecycleStatus != .cancelled {
+            if isPaid {
                 Button(Localization.issueRefundAction) {
                     initiateBookingRefundFlow()
                 }

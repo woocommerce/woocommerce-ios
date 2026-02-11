@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 struct POSBookingDateBarView: View {
@@ -11,7 +12,9 @@ struct POSBookingDateBarView: View {
 
     var body: some View {
         HStack {
-            Button(action: {}) {
+            Button {
+                DDLogInfo("⚠️ [Bookings] Date selector tapped — to be implemented in a future task")
+            } label: {
                 HStack(spacing: POSSpacing.small) {
                     Text(formattedDate)
                         .font(.posBodyMediumRegular())
@@ -22,7 +25,7 @@ struct POSBookingDateBarView: View {
                         .foregroundStyle(Color.posPrimaryContainer)
                 }
             }
-            .disabled(true)
+            .buttonStyle(.plain)
 
             Spacer()
         }

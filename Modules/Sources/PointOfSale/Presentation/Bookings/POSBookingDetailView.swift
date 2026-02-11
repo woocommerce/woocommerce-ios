@@ -19,7 +19,7 @@ struct POSBookingDetailView: View {
     }
 
     private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
+        POSBookingPaymentStatus(bookingStatus: booking.status, orderStatus: booking.order.status)
     }
 
     private var attendanceDisplay: POSBookingAttendanceDisplay {
@@ -63,6 +63,8 @@ struct POSBookingDetailView: View {
                         .padding(.top, POSPadding.xSmall)
                 }
             )
+            .fixedSize(horizontal: false, vertical: true)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.large) {
@@ -70,12 +72,17 @@ struct POSBookingDetailView: View {
                     attendanceSection
                     customerSection
                     paymentBreakdownSection
-                    paymentActionSection
+                    paidPaymentActionSection
                     bookingNoteSection
                 }
                 .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
                 .padding(.bottom, POSPadding.medium)
+            }
+            .safeAreaInset(edge: .bottom) {
+                if shouldShowStickyPayment {
+                    stickyCollectPaymentContainer
+                }
             }
         }
         .background(Color.posSurface)
@@ -94,6 +101,7 @@ struct POSBookingDetailView: View {
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .foregroundColor(.posOnDisabledContainer)
                 .padding(POSPadding.small)
+                .accessibilityLabel(Localization.moreActionsAccessibilityLabel)
         }
         .menuIndicator(.hidden)
     }
@@ -106,6 +114,7 @@ struct POSBookingDetailView: View {
             Text(String(format: Localization.bookingIdTitle, booking.id))
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
 
             if let resourceName = booking.resourceName {
                 detailRow(label: Localization.teamMemberLabel, value: resourceName)
@@ -133,6 +142,7 @@ struct POSBookingDetailView: View {
                 Text(Localization.customerTitle)
                     .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
 
                 if let email = booking.customerEmail {
                     HStack {
@@ -148,7 +158,10 @@ struct POSBookingDetailView: View {
                                 .foregroundStyle(Color.posPrimaryContainer)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Localization.emailAccessibilityLabel(email))
                 }
 
                 if let phone = booking.customerPhone {
@@ -166,7 +179,10 @@ struct POSBookingDetailView: View {
                                 .foregroundStyle(Color.posPrimaryContainer)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(Localization.phoneActionAccessibilityLabel)
                     }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
                 }
 
                 if let address = booking.billingAddress {
@@ -193,6 +209,7 @@ struct POSBookingDetailView: View {
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
+        .accessibilityElement(children: .combine)
     }
 
     // MARK: - Booking Note
@@ -201,13 +218,7 @@ struct POSBookingDetailView: View {
     private var bookingNoteSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                HStack {
-                    Text(Localization.bookingNoteLabel)
-                        .font(.posBodyXLargeBold)
-                        .foregroundStyle(Color.posOnSurface)
-
-                    Spacer()
-
+                sectionTitleWithAction(title: Localization.bookingNoteLabel) {
                     Button(Localization.addNoteButton) {
                         DDLogInfo("⚠️ [Bookings] Add note tapped — to be implemented in a future task")
                     }
@@ -235,23 +246,16 @@ struct POSBookingDetailView: View {
     @ViewBuilder
     private var attendanceSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
-            HStack {
-                Text(Localization.attendanceStatusTitle)
-                    .font(.posBodyXLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .lineLimit(1)
-
-                Spacer()
-
+            sectionTitleWithAction(title: Localization.attendanceStatusTitle) {
                 HStack(spacing: POSSpacing.small) {
-                    Button(Localization.attendedPill) {
+                    attendanceButton(Localization.attendedPill,
+                                     isSelected: attendanceDisplay == .attended) {
                         DDLogInfo("⚠️ [Bookings] Attended button tapped — to be implemented in a future task")
                     }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .compact))
-                    Button(Localization.unattendedPill) {
+                    attendanceButton(Localization.unattendedPill,
+                                     isSelected: attendanceDisplay == .unattended) {
                         DDLogInfo("⚠️ [Bookings] Unattended button tapped — to be implemented in a future task")
                     }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .compact))
                 }
             }
             .sectionCard()
@@ -271,6 +275,7 @@ struct POSBookingDetailView: View {
             Text(Localization.paymentTitle)
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
 
             if !booking.serviceName.isEmpty {
                 detailRow(label: Localization.serviceLabel, value: booking.formattedSubtotal ?? booking.formattedAmount)
@@ -290,39 +295,86 @@ struct POSBookingDetailView: View {
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurface)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Localization.totalAccessibilityLabel(booking.formattedAmount))
         }
         .sectionCard()
     }
 
     // MARK: - Payment Action
 
+    private var shouldShowStickyPayment: Bool {
+        !isPaid && lifecycleStatus != .cancelled
+    }
+
     @ViewBuilder
-    private var paymentActionSection: some View {
-        if lifecycleStatus == .cancelled {
-            EmptyView()
-        } else if isPaid {
+    private var paidPaymentActionSection: some View {
+        if isPaid {
             Button(action: {}) {
                 Text(Localization.paymentCompletedLabel)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .disabled(true)
-        } else {
-            Button(action: {
-                DDLogInfo("⚠️ [Bookings] Collect payment tapped — to be implemented in a future task")
-            }) {
-                Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
+    }
+
+    private var stickyCollectPaymentContainer: some View {
+        Button(action: {
+            DDLogInfo("⚠️ [Bookings] Collect payment tapped — to be implemented in a future task")
+        }) {
+            Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .overlay(alignment: .top) {
+            Divider()
+                .overlay(Color.posOutlineVariant)
+        }
+        .shadow(color: .black.opacity(0.08), radius: 15, x: 0, y: -5)
+        .shadow(color: .black.opacity(0.04), radius: 18, x: 0, y: -15)
     }
 
     // MARK: - Shared Components
 
+    private func sectionTitleWithAction<Action: View>(title: String, @ViewBuilder action: () -> Action) -> some View {
+        ViewThatFits(in: .horizontal) {
+            HStack {
+                Text(title)
+                    .font(.posBodyXLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                action()
+            }
+            VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                Text(title)
+                    .font(.posBodyXLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+                action()
+            }
+        }
+    }
+
     private var sectionDivider: some View {
         Divider()
             .overlay(Color.posOutlineVariant.opacity(0.5))
+    }
+
+    @ViewBuilder
+    private func attendanceButton(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        if isSelected {
+            Button(title, action: action)
+                .buttonStyle(POSFilledAttendanceButtonStyle())
+                .accessibilityAddTraits(.isSelected)
+        } else {
+            Button(title, action: action)
+                .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+                .accessibilityRemoveTraits(.isSelected)
+        }
     }
 
     @ViewBuilder
@@ -338,13 +390,15 @@ struct POSBookingDetailView: View {
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label) \(value)")
     }
 
 }
 
 // MARK: - Section Card Modifier
 
-private struct SectionCardModifier: ViewModifier {
+struct POSBookingSectionCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(POSPadding.medium)
@@ -353,9 +407,25 @@ private struct SectionCardModifier: ViewModifier {
     }
 }
 
-private extension View {
+extension View {
     func sectionCard() -> some View {
-        modifier(SectionCardModifier())
+        modifier(POSBookingSectionCardModifier())
+    }
+}
+
+// MARK: - Attendance Button Style
+
+private struct POSFilledAttendanceButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.posBodySmallBold())
+            .padding(.vertical, POSPadding.small)
+            .padding(.horizontal, POSPadding.medium)
+            .foregroundStyle(Color.posOnInverseSurface)
+            .background(Color.posInverseSurface)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .opacity(configuration.isPressed ? 0.7 : 1.0)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 
@@ -510,6 +580,53 @@ private enum Localization {
         "pos.bookingDetailView.viewOrderAction",
         value: "View Order",
         comment: "Menu action to view the linked order from a booking detail."
+    )
+
+    // MARK: - Accessibility
+
+    static func emailAccessibilityLabel(_ email: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingDetailView.email.accessibilityLabel",
+            value: "Email: %1$@",
+            comment: "Accessibility label for customer email row in booking details. %1$@ is the email address."
+        )
+        return String(format: format, email)
+    }
+
+    static func phoneAccessibilityLabel(_ phone: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingDetailView.phone.accessibilityLabel",
+            value: "Phone: %1$@",
+            comment: "Accessibility label for customer phone row in booking details. %1$@ is the phone number."
+        )
+        return String(format: format, phone)
+    }
+
+    static func totalAccessibilityLabel(_ amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingDetailView.total.accessibilityLabel",
+            value: "Booking total: %1$@",
+            comment: "Accessibility label for booking total. %1$@ is the total amount."
+        )
+        return String(format: format, amount)
+    }
+
+    static let copyEmailAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.copyEmail.accessibilityLabel",
+        value: "Copy email address",
+        comment: "Accessibility label for the copy email button in booking details."
+    )
+
+    static let phoneActionAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.phoneAction.accessibilityLabel",
+        value: "Phone options",
+        comment: "Accessibility label for the phone action button in booking details."
+    )
+
+    static let moreActionsAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.moreActions.accessibilityLabel",
+        value: "More actions",
+        comment: "Accessibility label for the overflow actions menu button in booking details."
     )
 }
 

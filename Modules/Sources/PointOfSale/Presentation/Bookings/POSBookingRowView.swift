@@ -51,7 +51,7 @@ struct POSBookingRowView: View {
         )
 
         let lifecycleStatus = POSBookingLifecycleStatus(bookingStatus: booking.status)
-        let paymentStatus = POSBookingPaymentStatus(bookingStatus: booking.status)
+        let paymentStatus = POSBookingPaymentStatus(bookingStatus: booking.status, orderStatus: booking.order.status)
         let attendanceDisplay = POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
         let customerDisplayName = booking.customerName ?? booking.customerEmail
 

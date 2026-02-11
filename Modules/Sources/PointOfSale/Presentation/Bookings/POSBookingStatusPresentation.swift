@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.OrderStatusEnum
 
 /// POS presentation-only interpretation of booking statuses.
 ///
@@ -20,8 +21,13 @@ import enum Yosemite.BookingAttendanceStatus
 enum POSBookingPaymentStatus: Equatable {
     case paid
     case unpaid
+    case refunded
 
-    init(bookingStatus: BookingStatus) {
+    init(bookingStatus: BookingStatus, orderStatus: OrderStatusEnum) {
+        if orderStatus == .refunded {
+            self = .refunded
+            return
+        }
         switch bookingStatus {
         case .paid, .complete:
             self = .paid
@@ -38,6 +44,8 @@ enum POSBookingPaymentStatus: Equatable {
             return Localization.paid
         case .unpaid:
             return Localization.unpaid
+        case .refunded:
+            return Localization.refunded
         }
     }
 
@@ -49,6 +57,8 @@ enum POSBookingPaymentStatus: Equatable {
             return .posOnDefault
         case .unpaid:
             return .posOnErrorLowest
+        case .refunded:
+            return .posOnErrorLowest
         }
     }
 
@@ -57,6 +67,8 @@ enum POSBookingPaymentStatus: Equatable {
         case .paid:
             return .posDefault
         case .unpaid:
+            return .posErrorLowest
+        case .refunded:
             return .posErrorLowest
         }
     }
@@ -164,6 +176,12 @@ private enum Localization {
         "pos.bookingPaymentStatus.unpaid",
         value: "Unpaid",
         comment: "POS booking payment status label when the booking is unpaid."
+    )
+
+    static let refunded = NSLocalizedString(
+        "pos.bookingPaymentStatus.refunded",
+        value: "Refunded",
+        comment: "POS booking payment status label when the booking order has been refunded."
     )
 
     static let attended = NSLocalizedString(

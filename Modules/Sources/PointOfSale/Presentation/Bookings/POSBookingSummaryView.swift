@@ -9,7 +9,7 @@ struct POSBookingSummaryView: View {
     }
 
     private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
+        POSBookingPaymentStatus(bookingStatus: booking.status, orderStatus: booking.order.status)
     }
 
     private var attendanceDisplay: POSBookingAttendanceDisplay {
@@ -21,6 +21,8 @@ struct POSBookingSummaryView: View {
             subtitleText
             statusBadges
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
     }
 
     @ViewBuilder
@@ -30,7 +32,7 @@ struct POSBookingSummaryView: View {
             Text(text)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .lineLimit(1)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -56,6 +58,16 @@ struct POSBookingSummaryView: View {
         let customerDisplayName = booking.customerName ?? booking.customerEmail
         let parts = [booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: " \u{00B7} ")
+    }
+
+    private var accessibilityLabel: String {
+        let parts = [
+            booking.serviceName,
+            booking.customerName ?? booking.customerEmail,
+            lifecycleStatus == .cancelled ? lifecycleStatus.localizedTitle : attendanceDisplay.localizedTitle,
+            paymentStatus.localizedTitle
+        ].compactMap { $0 }.filter { !$0.isEmpty }
+        return parts.joined(separator: ", ")
     }
 }
 

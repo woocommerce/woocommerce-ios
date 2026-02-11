@@ -3,6 +3,11 @@ import SwiftUI
 
 struct POSBookingDateBarView: View {
     @ScaledMetric private var chevronSize: CGFloat = Constants.chevronSize
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var tintColor: Color {
+        colorScheme == .dark ? .posSecondary : .posPrimaryContainer
+    }
 
     private var formattedDate: String {
         let formatter = DateFormatter()
@@ -18,11 +23,11 @@ struct POSBookingDateBarView: View {
                 HStack(spacing: POSSpacing.small) {
                     Text(formattedDate)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posPrimaryContainer)
+                        .foregroundStyle(tintColor)
 
                     Image(systemName: "chevron.down")
                         .font(.system(size: chevronSize, weight: .medium))
-                        .foregroundStyle(Color.posPrimaryContainer)
+                        .foregroundStyle(tintColor)
                 }
             }
             .buttonStyle(.plain)

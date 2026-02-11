@@ -7,8 +7,13 @@ struct POSBookingDetailView: View {
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.colorScheme) private var colorScheme
 
     @State private var navigationPath: [NavigationDestination] = []
+
+    private var actionTintColor: Color {
+        colorScheme == .dark ? .posSecondary : .posPrimaryContainer
+    }
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -154,7 +159,7 @@ struct POSBookingDetailView: View {
                         } label: {
                             Image(systemName: "doc.on.doc")
                                 .font(.posBodyMediumRegular())
-                                .foregroundStyle(Color.posPrimaryContainer)
+                                .foregroundStyle(actionTintColor)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
@@ -175,7 +180,7 @@ struct POSBookingDetailView: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .font(.posBodyMediumRegular())
-                                .foregroundStyle(Color.posPrimaryContainer)
+                                .foregroundStyle(actionTintColor)
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Localization.phoneActionAccessibilityLabel)

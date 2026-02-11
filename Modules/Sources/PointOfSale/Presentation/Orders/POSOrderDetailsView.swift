@@ -499,10 +499,6 @@ private extension POSOrderDetailsView {
         }
     }
 
-    func emailReceiptAction() {
-        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-        isShowingEmailReceiptView = true
-    }
 }
 
 private extension POSOrderDetailsView {

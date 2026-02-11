@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import struct Yosemite.POSBooking
 
@@ -182,9 +183,14 @@ struct POSBookingDetailView: View {
                             .font(.posBodySmallRegular())
                             .foregroundStyle(Color.posOnSurface)
                         Spacer()
-                        Image(systemName: "doc.on.doc")
-                            .font(.posBodySmallRegular())
-                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        Button {
+                            DDLogInfo("⚠️ [Bookings] Copy email tapped — to be implemented in a future task")
+                        } label: {
+                            Image(systemName: "doc.on.doc")
+                                .font(.posBodySmallRegular())
+                                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
@@ -195,9 +201,14 @@ struct POSBookingDetailView: View {
                             .font(.posBodySmallRegular())
                             .foregroundStyle(Color.posOnSurface)
                         Spacer()
-                        Image(systemName: "ellipsis")
-                            .font(.posBodySmallRegular())
-                            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        Button {
+                            DDLogInfo("⚠️ [Bookings] Phone action tapped — to be implemented in a future task")
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .font(.posBodySmallRegular())
+                                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
 
@@ -241,7 +252,7 @@ struct POSBookingDetailView: View {
                     Spacer()
 
                     Button(Localization.addNoteButton) {
-                        // Add note action — wired in a later milestone
+                        DDLogInfo("⚠️ [Bookings] Add note tapped — to be implemented in a future task")
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))
                 }
@@ -276,14 +287,24 @@ struct POSBookingDetailView: View {
                 Spacer()
 
                 HStack(spacing: POSSpacing.small) {
-                    attendancePill(
-                        title: Localization.attendedPill,
-                        isSelected: attendanceDisplay == .attended
-                    )
-                    attendancePill(
-                        title: Localization.unattendedPill,
-                        isSelected: attendanceDisplay == .unattended
-                    )
+                    Button {
+                        DDLogInfo("⚠️ [Bookings] Attended button tapped — to be implemented in a future task")
+                    } label: {
+                        attendancePill(
+                            title: Localization.attendedPill,
+                            isSelected: attendanceDisplay == .attended
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    Button {
+                        DDLogInfo("⚠️ [Bookings] Unattended button tapped — to be implemented in a future task")
+                    } label: {
+                        attendancePill(
+                            title: Localization.unattendedPill,
+                            isSelected: attendanceDisplay == .unattended
+                        )
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .sectionCard()
@@ -360,7 +381,7 @@ struct POSBookingDetailView: View {
             .disabled(true)
         } else {
             Button(action: {
-                // Payment action — wired in a later milestone
+                DDLogInfo("⚠️ [Bookings] Collect payment tapped — to be implemented in a future task")
             }) {
                 Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
                     .frame(maxWidth: .infinity)

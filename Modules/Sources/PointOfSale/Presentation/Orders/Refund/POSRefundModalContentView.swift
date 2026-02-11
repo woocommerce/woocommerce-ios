@@ -1,4 +1,3 @@
-import CocoaLumberjackSwift
 import SwiftUI
 
 // MARK: - Refund Modal State
@@ -194,7 +193,6 @@ struct POSRefundModalContentView: View {
             modalState = .success(reviewData)
             onRefundSuccess?()
         } catch {
-            DDLogError("⛔️ Failed to process refund: \(error)")
             modalState = .error(reviewData)
         }
     }

@@ -310,24 +310,15 @@ struct POSBookingDetailView: View {
     // MARK: - Shared Components
 
     private func sectionTitleWithAction<Action: View>(title: String, @ViewBuilder action: () -> Action) -> some View {
-        ViewThatFits(in: .horizontal) {
-            HStack {
-                Text(title)
-                    .font(.posBodyXLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer()
-                action()
-            }
-            VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                Text(title)
-                    .font(.posBodyXLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityAddTraits(.isHeader)
-                action()
-            }
+        HStack(alignment: .top) {
+            Text(title)
+                .font(.posBodyXLargeBold)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+            Spacer()
+            action()
+                .fixedSize(horizontal: true, vertical: false)
         }
-        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var sectionDivider: some View {

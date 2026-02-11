@@ -31,10 +31,15 @@ enum POSBookingPaymentStatus: Equatable {
         switch bookingStatus {
         case .paid, .complete:
             self = .paid
-        case .unpaid, .pendingConfirmation, .confirmed:
+        case .unpaid, .pendingConfirmation, .confirmed, .unknown:
             self = .unpaid
-        case .cancelled, .unknown:
-            self = .unpaid
+        case .cancelled:
+            switch orderStatus {
+            case .completed, .processing:
+                self = .paid
+            default:
+                self = .unpaid
+            }
         }
     }
 

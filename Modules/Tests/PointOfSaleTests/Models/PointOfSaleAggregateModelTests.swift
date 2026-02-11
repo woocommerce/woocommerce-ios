@@ -430,6 +430,8 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
 
+            // Activate session subscriptions via checkout
+            await sut.checkOut()
             cardPresentPaymentService.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
             try #require(sut.cardPresentPaymentInlineMessage != nil)
 
@@ -464,6 +466,8 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
 
+            // Activate session subscriptions via checkout
+            await sut.checkOut()
             cardPresentPaymentService.paymentEvent = .show(
                 eventDetails: .tapSwipeOrInsertCard(
                     inputMethods: [.tap, .swipe, .insert],
@@ -581,6 +585,9 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
             struct TestError: Error {}
+
+            // Activate session subscriptions via checkout
+            await sut.checkOut()
 
             // When paymentIntentCreationError event is received
             cardPresentPaymentService.paymentEvent = .show(

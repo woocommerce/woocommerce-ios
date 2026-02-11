@@ -66,6 +66,15 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showBookings) {
             POSBookingsContainerView(isPresented: $showBookings)
         }
+        .onChange(of: showBookings) { _, isShowing in
+            if isShowing {
+                posModel.paymentModel.deactivate()
+            } else if posModel.orderStage == .finalizing {
+                Task { @MainActor in
+                    await posModel.paymentModel.activate()
+                }
+            }
+        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)

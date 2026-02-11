@@ -44,6 +44,7 @@ final class POSPaymentModel {
     private var cardReaderDisconnection: AnyCancellable?
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
+    private var paymentSessionCancellables: Set<AnyCancellable> = []
     private var currentOrder: Order?
     private var formattedOrderTotalPrice: String?
 
@@ -70,7 +71,7 @@ final class POSPaymentModel {
 
         publishCardReaderConnectionStatus()
         publishCardReaderUpdateState()
-        publishPaymentMessages()
+        subscribeToAlwaysOnPaymentEvents()
     }
 }
 
@@ -79,6 +80,7 @@ extension POSPaymentModel {
     /// Cancels any existing payment on the shared reader, then starts a new payment.
     /// Collects immediately if a reader is connected; otherwise waits for connection.
     func startPayment() async {
+        subscribeToPaymentSessionEvents()
         try? await cardPresentPaymentService.cancelPayment()
         guard case .connected = cardReaderConnectionStatus else {
             return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
@@ -209,9 +211,38 @@ extension POSPaymentModel {
     }
 }
 
+// MARK: - Session Management
+extension POSPaymentModel {
+    /// Whether this payment model is currently active (session subscriptions are listening).
+    var isActive: Bool {
+        !paymentSessionCancellables.isEmpty
+    }
+
+    /// Deactivates this payment model when another flow takes the foreground.
+    /// Cancels any in-progress card payment, removes subscriptions, but preserves
+    /// payment state and order data so `activate()` can resume where we left off.
+    func deactivate() {
+        paymentSessionCancellables.removeAll()
+        cancelReaderPreparation()
+    }
+
+    /// Reactivates this payment model when it returns to the foreground.
+    /// For card payments, restarts the full payment flow (cancel + collect).
+    /// For cash payments, restores session event subscriptions without activating the reader.
+    func activate() async {
+        guard !isActive else { return }
+        if paymentState.activePaymentMethod == .card {
+            await startPayment()
+        } else {
+            subscribeToPaymentSessionEvents()
+        }
+    }
+}
+
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
+        paymentSessionCancellables.removeAll()
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
@@ -267,8 +298,10 @@ private extension POSPaymentModel {
             .store(in: &cancellables)
     }
 
-    func publishPaymentMessages() {
-        // Chain 1: Payment events -> alert view model (modal alerts for reader connection)
+    /// Always-on subscriptions for reader connection alerts and onboarding.
+    /// These are needed regardless of whether a payment session is active.
+    func subscribeToAlwaysOnPaymentEvents() {
+        // Payment events -> alert view model (modal alerts for reader connection)
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
                 guard let self else { return nil }
@@ -291,7 +324,29 @@ private extension POSPaymentModel {
             })
             .store(in: &cancellables)
 
-        // Chain 2: Payment events -> inline message (payment status in the totals view)
+        // Payment events -> onboarding view (card reader setup)
+        cardPresentPaymentService.paymentEventPublisher
+            .map { [weak self] event -> CardPresentPaymentOnboardingViewContainer? in
+                guard let self else { return nil }
+                guard case let .showOnboarding(factory, onCancel) = event else {
+                    return nil
+                }
+                onOnboardingCancellation = onCancel
+                return factory
+            }
+            .sink(receiveValue: { [weak self] factory in
+                self?.cardPresentPaymentOnboardingViewContainer = factory
+            })
+            .store(in: &cancellables)
+    }
+
+    /// Session-scoped subscriptions for payment state and inline messages.
+    /// Only active during a payment session (between startPayment() and reset()/tearDown()).
+    /// This prevents payment events from one flow (e.g. bookings) corrupting another (e.g. cart).
+    func subscribeToPaymentSessionEvents() {
+        guard paymentSessionCancellables.isEmpty else { return }
+
+        // Payment events -> inline message (payment status in the totals view)
         cardPresentPaymentService.paymentEventPublisher
             .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
                 self?.mapCardPresentPaymentEventToMessageType(event)
@@ -299,9 +354,9 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] message in
                 self?.cardPresentPaymentInlineMessage = message
             })
-            .store(in: &cancellables)
+            .store(in: &paymentSessionCancellables)
 
-        // Chain 3: Payment events -> card payment state
+        // Payment events -> card payment state
         cardPresentPaymentService.paymentEventPublisher
             .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
                 guard let self else { return nil }
@@ -322,22 +377,7 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] cardPaymentState in
                 self?.paymentState.card = cardPaymentState
             })
-            .store(in: &cancellables)
-
-        // Chain 4: Payment events -> onboarding view (card reader setup)
-        cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> CardPresentPaymentOnboardingViewContainer? in
-                guard let self else { return nil }
-                guard case let .showOnboarding(factory, onCancel) = event else {
-                    return nil
-                }
-                onOnboardingCancellation = onCancel
-                return factory
-            }
-            .sink(receiveValue: { [weak self] factory in
-                self?.cardPresentPaymentOnboardingViewContainer = factory
-            })
-            .store(in: &cancellables)
+            .store(in: &paymentSessionCancellables)
     }
 
     func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
@@ -386,6 +426,7 @@ extension POSPaymentModel {
     func tearDown() {
         cardPresentPaymentService.cancelPayment()
         resetCardReaderObservation()
+        paymentSessionCancellables.removeAll()
         cancellables.forEach { $0.cancel() }
     }
 }

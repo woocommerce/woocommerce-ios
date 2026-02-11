@@ -172,9 +172,18 @@ struct POSPaymentModelTests {
     @MainActor
     func reset_clearsAllState() async {
         let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
+
         let sut = makePaymentController(
             cardPresentPaymentService: service,
+            orderProvider: orderProvider,
             paymentState: PointOfSalePaymentState(card: .cardPaymentSuccessful, cash: .idle))
+
+        // Start a payment session to activate inline message subscriptions
+        await sut.startPayment()
 
         // Set up some inline message
         service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
@@ -187,22 +196,42 @@ struct POSPaymentModelTests {
 
     // MARK: - Combine Chains
 
-    @Test("payment event publisher updates card payment state")
+    @Test("payment event publisher updates card payment state during active session")
     @MainActor
-    func paymentEventPublisher_updatesCardPaymentState() {
+    func paymentEventPublisher_updatesCardPaymentState() async {
         let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service)
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        // Start a payment session to activate subscriptions
+        await sut.startPayment()
 
         service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
 
         #expect(sut.paymentState.card == .cardPaymentSuccessful)
     }
 
-    @Test("payment event publisher updates inline message")
+    @Test("payment event publisher updates inline message during active session")
     @MainActor
-    func paymentEventPublisher_updatesInlineMessage() {
+    func paymentEventPublisher_updatesInlineMessage() async {
         let service = MockCardPresentPaymentService()
-        let sut = makePaymentController(cardPresentPaymentService: service)
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        // Start a payment session to activate subscriptions
+        await sut.startPayment()
 
         service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
 
@@ -232,6 +261,10 @@ struct POSPaymentModelTests {
     func captureErrorExitAction_usesConfiguration() async {
         var exitActionCalled = false
         let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
 
         let config = POSPaymentFlowConfiguration.cart(
             onNewOrder: { exitActionCalled = true },
@@ -239,7 +272,11 @@ struct POSPaymentModelTests {
 
         let sut = makePaymentController(
             cardPresentPaymentService: service,
+            orderProvider: orderProvider,
             configuration: config)
+
+        // Start a payment session to activate inline message subscriptions
+        await sut.startPayment()
 
         // Trigger a capture error event
         service.paymentEvent = .show(eventDetails: .paymentCaptureError(cancelPayment: {}))
@@ -251,6 +288,118 @@ struct POSPaymentModelTests {
         }
         viewModel.newOrderButtonViewModel.actionHandler()
         #expect(exitActionCalled == true)
+    }
+
+    @Test("payment events do not update card state before startPayment is called")
+    @MainActor
+    func paymentEvents_doNotUpdateCardState_beforeStartPayment() {
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+        #expect(sut.paymentState.card == .idle)
+    }
+
+    @Test("payment events do not update inline message before startPayment is called")
+    @MainActor
+    func paymentEvents_doNotUpdateInlineMessage_beforeStartPayment() {
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+        #expect(sut.cardPresentPaymentInlineMessage == nil)
+    }
+
+    @Test("payment events do not update card state after reset")
+    @MainActor
+    func paymentEvents_doNotUpdateCardState_afterReset() async {
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+        sut.reset()
+
+        // Events after reset should not update card state
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+        #expect(sut.paymentState.card == .idle)
+    }
+
+    @Test("deactivate clears subscriptions without resetting state")
+    @MainActor
+    func deactivate_clearsSubscriptionsPreservesState() async {
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+        #expect(sut.isActive == true)
+        // Mock's collectPayment emits paymentSuccess, so state is already updated
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+
+        sut.deactivate()
+        #expect(sut.isActive == false)
+
+        // New events after suspend should not change the state
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+        // State should still reflect the pre-suspend value, not the new event
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+    }
+
+    @Test("activate reactivates session after deactivate")
+    @MainActor
+    func activate_reactivatesSessionAfterDeactivate() async {
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10.00
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+        sut.deactivate()
+        #expect(sut.isActive == false)
+
+        // Reactivate the session
+        await sut.activate()
+        #expect(sut.isActive == true)
+
+        // Events should now be processed again
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+    }
+
+    @Test("alerts are delivered without an active payment session")
+    @MainActor
+    func alerts_deliveredWithoutActiveSession() {
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // Emit a connection success event without calling startPayment
+        service.paymentEvent = .show(eventDetails: .connectionSuccess(done: {}))
+
+        // Alerts are always-on, so this should still be delivered
+        #expect(sut.cardPresentPaymentAlertViewModel != nil)
     }
 
     @Test("connection success alert is filtered when waiting to start payment on connect")

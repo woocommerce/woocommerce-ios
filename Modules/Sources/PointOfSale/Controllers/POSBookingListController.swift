@@ -13,6 +13,7 @@ protocol POSBookingListControllerProtocol {
     func refreshBookings() async
     func loadNextBookings() async
     func selectBooking(_ booking: POSBooking?)
+    func cancelBooking(bookingID: Int64) async throws
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -78,6 +79,12 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func selectBooking(_ booking: POSBooking?) {
         selectedBooking = booking
+    }
+
+    @MainActor
+    func cancelBooking(bookingID: Int64) async throws {
+        try await bookingListFetchStrategyFactory.bookingService.cancelBooking(bookingID: bookingID)
+        await refreshBookings()
     }
 
     @MainActor

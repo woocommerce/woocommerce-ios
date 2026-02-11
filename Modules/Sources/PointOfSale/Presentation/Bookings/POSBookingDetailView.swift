@@ -11,6 +11,7 @@ struct POSBookingDetailView: View {
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var refundModalState: RefundModalState?
+    @State private var cancelModalState: CancelBookingModalState?
     @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
@@ -31,6 +32,10 @@ struct POSBookingDetailView: View {
 
     private var isPaid: Bool {
         paymentStatus == .paid
+    }
+
+    private var isBookingCancellable: Bool {
+        lifecycleStatus != .cancelled && lifecycleStatus != .completed
     }
 
     var body: some View {
@@ -113,6 +118,9 @@ struct POSBookingDetailView: View {
                 )
             )
         }
+        .posModal(item: $cancelModalState) { state in
+            cancelBookingModalContent(for: state)
+        }
     }
 
     @ViewBuilder
@@ -124,6 +132,11 @@ struct POSBookingDetailView: View {
             if isPaid {
                 Button(Localization.issueRefundAction) {
                     initiateBookingRefundFlow()
+                }
+            }
+            if isBookingCancellable {
+                Button(Localization.cancelBookingAction, role: .destructive) {
+                    cancelModalState = .confirmation
                 }
             }
         } label: {
@@ -365,6 +378,63 @@ private extension POSBookingDetailView {
     }
 }
 
+// MARK: - Cancel Booking Flow
+
+private extension POSBookingDetailView {
+    @ViewBuilder
+    func cancelBookingModalContent(for state: CancelBookingModalState) -> some View {
+        switch state {
+        case .confirmation:
+            POSCancelBookingConfirmationView(
+                isProcessing: false,
+                onClose: { cancelModalState = nil },
+                onConfirm: {
+                    cancelModalState = .processing
+                    Task { @MainActor in
+                        await performCancelBooking()
+                    }
+                },
+                onBack: { cancelModalState = nil }
+            )
+        case .processing:
+            POSCancelBookingConfirmationView(
+                isProcessing: true,
+                onClose: {},
+                onConfirm: {},
+                onBack: {}
+            )
+        case .success:
+            POSCancelBookingSuccessView(
+                onDone: { cancelModalState = nil },
+                onClose: { cancelModalState = nil }
+            )
+        case .error:
+            POSRefundErrorView(
+                title: Localization.cancelBookingErrorTitle,
+                subtitle: Localization.cancelBookingErrorSubtitle,
+                onRetry: {
+                    cancelModalState = .processing
+                    Task { @MainActor in
+                        await performCancelBooking()
+                    }
+                },
+                onCancel: { cancelModalState = nil },
+                onClose: { cancelModalState = nil }
+            )
+        }
+    }
+
+    @MainActor
+    func performCancelBooking() async {
+        do {
+            try await bookingsModel.bookingsController.cancelBooking(bookingID: booking.id)
+            cancelModalState = .success
+        } catch {
+            cancelModalState = .error
+        }
+    }
+}
+
 // MARK: - Section Card Modifier
 
 private struct SectionCardModifier: ViewModifier {
@@ -533,6 +603,24 @@ private enum Localization {
         "pos.bookingDetailView.issueRefundAction",
         value: "Issue Refund",
         comment: "Menu action to issue a full refund for a booking."
+    )
+
+    static let cancelBookingAction = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingAction",
+        value: "Cancel Booking",
+        comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let cancelBookingErrorTitle = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingError.title",
+        value: "Failed to cancel booking",
+        comment: "Title shown when cancelling a booking from POS has failed."
+    )
+
+    static let cancelBookingErrorSubtitle = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingError.subtitle",
+        value: "Please try again.",
+        comment: "Subtitle shown when cancelling a booking from POS has failed."
     )
 
     static let loadRefundErrorTitle = NSLocalizedString(

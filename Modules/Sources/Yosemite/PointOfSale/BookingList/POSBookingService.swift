@@ -78,6 +78,19 @@ public final class POSBookingService: POSBookingServiceProtocol {
             throw POSBookingServiceError.requestFailed
         }
     }
+
+    public func cancelBooking(bookingID: Int64) async throws {
+        let result = try await bookingsRemote.updateBooking(
+            from: siteID,
+            bookingID: bookingID,
+            attendanceStatus: nil,
+            bookingStatus: .cancelled,
+            note: nil
+        )
+        guard result != nil else {
+            throw POSBookingServiceError.requestFailed
+        }
+    }
 }
 
 private extension POSBookingService {

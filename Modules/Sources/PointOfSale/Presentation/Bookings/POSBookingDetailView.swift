@@ -269,36 +269,19 @@ struct POSBookingDetailView: View {
 
     // MARK: - Payment Breakdown
 
-    @ViewBuilder
     private var paymentBreakdownSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.paymentTitle)
-                .font(.posBodyXLargeBold)
-                .foregroundStyle(Color.posOnSurface)
-                .accessibilityAddTraits(.isHeader)
-
-            if !booking.serviceName.isEmpty {
-                detailRow(label: Localization.serviceLabel, value: booking.formattedSubtotal ?? booking.formattedAmount)
-            }
-
-            detailRow(label: Localization.taxesLabel, value: booking.formattedTax ?? Localization.taxesZero)
-            detailRow(label: Localization.discountLabel, value: booking.order.formattedDiscountTotal ?? Localization.discountNone)
-
-            sectionDivider
-
-            HStack {
-                Text(Localization.totalLabel)
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                Spacer()
-                Text(booking.formattedAmount)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurface)
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(Localization.totalAccessibilityLabel(booking.formattedAmount))
-        }
-        .sectionCard()
+        POSTotalsSectionView(
+            sectionTitle: Localization.paymentTitle,
+            subtotalLabel: Localization.serviceLabel,
+            subtotalAmount: booking.formattedSubtotal ?? booking.order.formattedSubtotal,
+            discountAmount: booking.order.formattedDiscountTotal,
+            taxAmount: booking.order.formattedTotalTax,
+            totalAmount: booking.order.formattedTotal,
+            paidAmount: booking.order.formattedPaymentTotal,
+            paymentMethodTitle: booking.order.paymentMethodTitle,
+            refunds: booking.order.refunds,
+            netAmount: booking.order.formattedNetAmount
+        )
     }
 
     // MARK: - Payment Action
@@ -534,36 +517,6 @@ private enum Localization {
         comment: "Label for the service cost in booking payment breakdown."
     )
 
-    static let taxesLabel = NSLocalizedString(
-        "pos.bookingDetailView.taxesLabel",
-        value: "Taxes",
-        comment: "Label for taxes in booking payment breakdown."
-    )
-
-    static let taxesZero = NSLocalizedString(
-        "pos.bookingDetailView.taxesZero",
-        value: "$0.00",
-        comment: "Placeholder for zero taxes in booking payment breakdown."
-    )
-
-    static let discountLabel = NSLocalizedString(
-        "pos.bookingDetailView.discountLabel",
-        value: "Discount",
-        comment: "Label for discount in booking payment breakdown."
-    )
-
-    static let discountNone = NSLocalizedString(
-        "pos.bookingDetailView.discountNone",
-        value: "–",
-        comment: "Displayed when there is no discount on a booking."
-    )
-
-    static let totalLabel = NSLocalizedString(
-        "pos.bookingDetailView.totalLabel",
-        value: "Total",
-        comment: "Label for the total amount in booking payment breakdown."
-    )
-
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
@@ -600,15 +553,6 @@ private enum Localization {
             comment: "Accessibility label for customer phone row in booking details. %1$@ is the phone number."
         )
         return String(format: format, phone)
-    }
-
-    static func totalAccessibilityLabel(_ amount: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingDetailView.total.accessibilityLabel",
-            value: "Booking total: %1$@",
-            comment: "Accessibility label for booking total. %1$@ is the total amount."
-        )
-        return String(format: format, amount)
     }
 
     static let copyEmailAccessibilityLabel = NSLocalizedString(

@@ -7,7 +7,7 @@ struct PointOfSaleCollectCashView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(POSPaymentModel.self) private var paymentModel
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
@@ -47,7 +47,7 @@ struct PointOfSaleCollectCashView: View {
                                       backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                                      action: {
                         Task { @MainActor in
-                            await posModel.cancelCashPayment()
+                            await paymentModel.cancelCashPayment()
                             isTextFieldFocused = false
                         }
                     }))
@@ -129,7 +129,7 @@ struct PointOfSaleCollectCashView: View {
     private func markComplete() async throws {
         let changeDueAmount = viewHelper.formattedChangeDueAmount(orderTotal: orderTotal,
                                                                   textFieldAmountInput: textFieldAmountInput)
-        try await posModel.collectCashPayment(changeDueAmount: changeDueAmount)
+        try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 }
 
@@ -194,7 +194,8 @@ private extension PointOfSaleCollectCashView {
 
 #if DEBUG
 #Preview {
+    let model = POSPreviewHelpers.makePreviewAggregateModel()
     PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings())
-        .environment(POSPreviewHelpers.makePreviewAggregateModel())
+        .environment(model.paymentModel)
 }
 #endif

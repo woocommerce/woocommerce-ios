@@ -15,6 +15,11 @@ struct POSPaymentFlowConfiguration {
 
     /// Whether to show a close (x) button on the initial payment screen.
     let showInitialCloseButton: Bool
+
+    /// Optional barcode scan handler for the success screen.
+    /// When provided, barcode scanning is enabled after a successful payment
+    /// (automatically disabled during receipt email entry).
+    let onBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
 }
 
 /// A labeled action used by the payment flow configuration.
@@ -27,7 +32,8 @@ struct PaymentFlowAction {
 
 extension POSPaymentFlowConfiguration {
     static func cart(onNewOrder: @escaping () -> Void,
-                     onEditOrder: @escaping () -> Void) -> Self {
+                     onEditOrder: @escaping () -> Void,
+                     onBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)? = nil) -> Self {
         POSPaymentFlowConfiguration(
             successAction: PaymentFlowAction(
                 title: Localization.Cart.newOrder,
@@ -38,7 +44,8 @@ extension POSPaymentFlowConfiguration {
             intentCreationErrorExitAction: PaymentFlowAction(
                 title: Localization.Cart.editOrder,
                 action: onEditOrder),
-            showInitialCloseButton: false
+            showInitialCloseButton: false,
+            onBarcodeScanned: onBarcodeScanned
         )
     }
 }
@@ -57,7 +64,8 @@ extension POSPaymentFlowConfiguration {
             intentCreationErrorExitAction: PaymentFlowAction(
                 title: Localization.Bookings.backToBooking,
                 action: onDismiss),
-            showInitialCloseButton: true
+            showInitialCloseButton: true,
+            onBarcodeScanned: nil
         )
     }
 }

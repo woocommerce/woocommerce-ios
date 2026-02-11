@@ -88,7 +88,7 @@ private extension BookingListContainerView {
                         .font(.body)
                         .foregroundStyle(Color.accentColor)
                 }
-                .renderedIf(viewModel.selectedTab == .all)
+
             }
             .padding()
             .background(Color(.listForeground(modal: false)))

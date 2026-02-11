@@ -33,6 +33,12 @@ final class BookingListContainerViewModel: ObservableObject {
         allListViewModel
     ]
 
+    private lazy var allSearchViewModels: [BookingSearchViewModel] = [
+        todaySearchViewModel,
+        upcomingSearchViewModel,
+        allSearchViewModel
+    ]
+
     private var filters = BookingFiltersViewModel.Filters()
 
     var filterText: String {
@@ -127,18 +133,16 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func updateFilters(_ filters: BookingFiltersViewModel.Filters, shouldPersist: Bool = true) {
-        guard selectedTab == .all else { return }
         self.filters = filters
         self.numberOfActiveFilters = filters.numberOfActiveFilters
-        allListViewModel.updateFilters(filters)
-        allSearchViewModel.updateFilters(filters)
+        allTabViewModels.forEach { $0.updateFilters(filters) }
+        allSearchViewModels.forEach { $0.updateFilters(filters) }
         if shouldPersist {
             saveFilters(filters)
         }
     }
 
     func clearFilters() {
-        guard selectedTab == .all else { return }
         let filters = BookingFiltersViewModel.Filters()
         updateFilters(filters)
     }

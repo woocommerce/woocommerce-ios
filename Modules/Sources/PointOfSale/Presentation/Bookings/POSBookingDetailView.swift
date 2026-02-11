@@ -6,8 +6,12 @@ struct POSBookingDetailView: View {
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
 
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var showPaymentView = false
+    @State private var paymentModel: POSPaymentModel?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -29,6 +33,14 @@ struct POSBookingDetailView: View {
         paymentStatus == .paid
     }
 
+    private func dismissPayment() {
+        showPaymentView = false
+        paymentModel = nil
+        Task { @MainActor in
+            await bookingsModel.bookingsController.refreshBookings()
+        }
+    }
+
     var body: some View {
         NavigationStack(path: $navigationPath) {
             bookingDetailContent
@@ -45,6 +57,11 @@ struct POSBookingDetailView: View {
                         }))
                     }
                 }
+        }
+        .posFullScreenCover(isPresented: $showPaymentView) {
+            if let paymentModel {
+                POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
+            }
         }
     }
 
@@ -255,7 +272,10 @@ struct POSBookingDetailView: View {
             .sectionCard()
         } else if lifecycleStatus != .cancelled {
             Button(action: {
-                // Payment action — wired in a later milestone
+                guard booking.orderID != nil else { return }
+                paymentModel = bookingsModel.makePaymentModel(
+                    for: booking, onDismiss: dismissPayment, analytics: analytics)
+                showPaymentView = true
             }) {
                 Text(Localization.collectPaymentButton)
                     .frame(maxWidth: .infinity)

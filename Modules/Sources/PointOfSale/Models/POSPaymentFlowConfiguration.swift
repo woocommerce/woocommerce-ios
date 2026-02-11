@@ -92,7 +92,7 @@ private extension POSPaymentFlowConfiguration {
 
             static let backToBooking = NSLocalizedString(
                 "pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title",
-                value: "Back to Booking",
+                value: "Back to booking",
                 comment: "Button title on payment error screens " +
                 "in the Point of Sale bookings payment flow to dismiss and return to booking details"
             )

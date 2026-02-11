@@ -23,7 +23,7 @@ enum POSBookingPaymentStatus: Equatable {
     case unpaid
     case refunded
 
-    init(bookingStatus: BookingStatus, orderStatus: OrderStatusEnum) {
+    init(bookingStatus: BookingStatus, orderStatus: OrderStatusEnum, paymentMethodID: String = "") {
         if orderStatus == .refunded {
             self = .refunded
             return
@@ -34,12 +34,7 @@ enum POSBookingPaymentStatus: Equatable {
         case .unpaid, .pendingConfirmation, .confirmed, .unknown:
             self = .unpaid
         case .cancelled:
-            switch orderStatus {
-            case .completed, .processing:
-                self = .paid
-            default:
-                self = .unpaid
-            }
+            self = paymentMethodID.isEmpty ? .unpaid : .paid
         }
     }
 

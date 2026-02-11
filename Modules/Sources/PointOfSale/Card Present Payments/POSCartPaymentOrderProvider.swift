@@ -4,10 +4,12 @@ import struct Yosemite.Order
 struct POSCartPaymentOrderProvider: POSPaymentOrderProviding {
     let orderController: PointOfSaleOrderControllerProtocol
 
-    func provideOrder() async throws -> Order {
-        guard case let .loaded(_, order) = orderController.orderState else {
+    func provideOrder() async throws -> POSPaymentOrder {
+        guard case let .loaded(totals, order) = orderController.orderState else {
             throw POSPaymentError.noOrder
         }
-        return order
+        return POSPaymentOrder(order: order,
+                               formattedTotal: totals.orderTotal,
+                               totalDecimal: totals.orderTotalDecimal)
     }
 }

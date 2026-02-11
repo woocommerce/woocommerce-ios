@@ -4,6 +4,8 @@ import Combine
 import Observation
 
 import protocol Yosemite.POSOrderableItem
+import protocol Yosemite.PaymentCaptureCelebrationProtocol
+import class Yosemite.PaymentCaptureCelebration
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
@@ -30,25 +32,27 @@ protocol PointOfSaleAggregateModelProtocol {
 @Observable final class PointOfSaleAggregateModel: PointOfSaleAggregateModelProtocol {
     private(set) var orderStage: PointOfSaleOrderStage = .building
 
-    private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
-    private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
-    private(set) var paymentState: PointOfSalePaymentState
-    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
-    private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
-    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
-    private var onOnboardingCancellation: (() -> Void)?
+    let paymentModel: POSPaymentModel
 
-    var isCardReaderUpdateAvailable: Bool {
-        if case .available = cardReaderUpdateState {
-            return true
-        }
-        return false
+    // Temporary forwarding properties for backward compatibility while views are migrated
+    // to read directly from paymentModel via the environment. Remove once migration is complete.
+    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { paymentModel.cardReaderConnectionStatus }
+    var paymentState: PointOfSalePaymentState { paymentModel.paymentState }
+    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? {
+        get { paymentModel.cardPresentPaymentAlertViewModel }
+        set { paymentModel.cardPresentPaymentAlertViewModel = newValue }
     }
+    var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { paymentModel.cardPresentPaymentInlineMessage }
+    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? {
+        get { paymentModel.cardPresentPaymentOnboardingViewContainer }
+        set { paymentModel.cardPresentPaymentOnboardingViewContainer = newValue }
+    }
+
+    var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
 
     private(set) var cart: Cart = .init()
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
-    private var internalOrderState: PointOfSaleInternalOrderState { orderController.orderState }
 
     let entryPointController: POSEntryPointController
     let purchasableItemsController: PointOfSaleItemsControllerProtocol
@@ -66,9 +70,6 @@ protocol PointOfSaleAggregateModelProtocol {
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
-
-    private var startPaymentOnCardReaderConnection: AnyCancellable?
-    private var cardReaderDisconnection: AnyCancellable?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
 
@@ -115,7 +116,9 @@ protocol PointOfSaleAggregateModelProtocol {
          searchHistoryService: POSSearchHistoryProviding,
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
+         receiptSender: POSReceiptSending,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
+         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
@@ -131,7 +134,6 @@ protocol PointOfSaleAggregateModelProtocol {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
-        self.paymentState = paymentState
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
         self.soundPlayer = soundPlayer
@@ -139,9 +141,23 @@ protocol PointOfSaleAggregateModelProtocol {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
-        publishCardReaderConnectionStatus()
-        publishCardReaderUpdateState()
-        publishPaymentMessages()
+        // Payment controller is created with cart-specific dependencies.
+        // The weak self captures below are safe because paymentModel is owned by self.
+        weak var weakSelf: PointOfSaleAggregateModel?
+        self.paymentModel = POSPaymentModel(
+            cardPresentPaymentService: cardPresentPaymentService,
+            orderProvider: POSCartPaymentOrderProvider(orderController: orderController),
+            cashPaymentHandler: POSCartCashPaymentHandler(orderController: orderController),
+            receiptSender: receiptSender,
+            configuration: .cart(
+                onNewOrder: { weakSelf?.startNewCart() },
+                onEditOrder: { weakSelf?.addMoreToCart() }),
+            analytics: analytics,
+            collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            celebration: celebration,
+            paymentState: paymentState)
+        weakSelf = self
+
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
         performInitialSyncIfNeeded()
@@ -192,8 +208,7 @@ extension PointOfSaleAggregateModel {
 
     private func setStateForEditing() {
         orderStage = .building
-        paymentState = .idle
-        cardPresentPaymentInlineMessage = nil
+        paymentModel.reset()
     }
 
     /// Removes missing products from the cart only (catalog is auto-cleaned when errors are detected)
@@ -349,134 +364,50 @@ private extension PointOfSaleAggregateModel {
     }
 }
 
-// MARK: - Card payments
+// MARK: - Payment (delegated to POSPaymentModel)
 extension PointOfSaleAggregateModel {
-    private func publishCardReaderConnectionStatus() {
-        cardPresentPaymentService.readerConnectionStatusPublisher
-            .sink(receiveValue: { [weak self] connectionStatus in
-                self?.cardReaderConnectionStatus = connectionStatus
-            })
-            .store(in: &cancellables)
-    }
-
-    private func publishCardReaderUpdateState() {
-        cardPresentPaymentService.cardReaderUpdateStatePublisher
-            .sink(receiveValue: { [weak self] updateState in
-                self?.cardReaderUpdateState = updateState
-            })
-            .store(in: &cancellables)
-    }
-
     func connectCardReader() {
-        analytics.track(.pointOfSaleCardReaderConnectionTapped)
-        Task { @MainActor [weak self] in
-            _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
-        }
+        paymentModel.connectCardReader()
     }
 
     func disconnectCardReader() {
-        analytics.track(.cardReaderDisconnectTapped)
-        Task { @MainActor [weak self] in
-            await self?.cardPresentPaymentService.disconnectReader()
-        }
+        paymentModel.disconnectCardReader()
     }
 
     func updateCardReaderSoftware() {
-        //TODO: analytics.track(.cardReaderUpdateTapped)
-        Task { @MainActor [weak self] in
-            try? await self?.cardPresentPaymentService.updateCardReaderSoftware()
-        }
+        paymentModel.updateCardReaderSoftware()
     }
 
-    /// Starts a payment immediately if a reader is connected.
-    /// Otherwise, schedules a payment to start the next time a reader connects.
-    /// Note that any scheduled payments are cancelled by `cancelReaderPreparation`
-    /// e.g. when the TotalsView goes offscreen.
-    private func startPaymentWhenCardReaderConnected() async {
-        guard case .connected = cardReaderConnectionStatus else {
-            return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
-                .filter { status in
-                    switch status {
-                    case .connected:
-                        return true
-                    case .disconnected, .disconnecting, .cancellingConnection:
-                        return false
-                    }
-                }
-                .removeDuplicates()
-                .sink { [weak self] _ in
-                    Task { @MainActor [weak self] in
-                        await self?.collectCardPayment()
-                    }
-                }
-        }
-        await collectCardPayment()
-    }
-
-    @MainActor
-    private func collectCardPayment() async {
-        guard case let .loaded(totals, order) = internalOrderState,
-              totals.orderTotalDecimal > 0.0
-        else {
-            return
-            // Should this throw?
-        }
-        do {
-            try await collectPayment(for: order)
-        } catch {
-            DDLogError("Error taking payment: \(error)")
-        }
-    }
-
-    // Prevents card payments from the moment the merchant decides we start collecting cash
-    // Once we get the callback from the card service, we switch to cash collection state
-    @MainActor
     func startCashPayment() async {
-        analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
-        try? await cardPresentPaymentService.cancelPayment()
-        paymentState.cash = .collectingCash
+        await paymentModel.startCashPayment()
     }
 
-    @MainActor
     func cancelCashPayment() async {
-        analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
-        paymentState.cash = .idle
-        if case .connected = cardReaderConnectionStatus {
-            await collectCardPayment()
-        }
+        await paymentModel.cancelCashPayment()
     }
 
-    private func cashPaymentSuccess() {
-        paymentState.cash = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
-    }
-
-    @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
-        try await orderController.collectCashPayment(changeDueAmount: changeDueAmount)
-        cashPaymentSuccess()
+        try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 
-    @MainActor
     func sendReceipt(to emailAddress: String) async throws {
-        try await orderController.sendReceipt(recipientEmail: emailAddress)
-    }
-
-    @MainActor
-    private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+        try await paymentModel.sendReceipt(to: emailAddress)
     }
 
     func cancelThenCollectPayment() {
-        Task { [weak self] in
-            guard let self else { return }
-            await cancelThenCollectPayment()
-        }
+        paymentModel.cancelThenCollectPayment()
     }
 
     func cancelThenCollectPayment() async {
-        try? await cardPresentPaymentService.cancelPayment()
-        await collectCardPayment()
+        await paymentModel.cancelThenCollectPayment()
+    }
+
+    func cancelCardPaymentsOnboarding() {
+        paymentModel.cancelCardPaymentsOnboarding()
+    }
+
+    func trackCardPaymentsOnboardingShown() {
+        paymentModel.trackCardPaymentsOnboardingShown()
     }
 
     @Sendable private func setupReaderReconnectionObservation() {
@@ -484,172 +415,14 @@ extension PointOfSaleAggregateModel {
             guard let self else { return }
             switch orderStage {
                 case .building:
-                    cancelCardReaderPreparation()
+                    paymentModel.cancelReaderReconnectionObservation()
                 case .finalizing:
-                    observeReaderReconnection()
+                    paymentModel.observeReaderReconnection()
             }
         } onChange: { [weak self] in
             guard let self else { return }
             DispatchQueue.main.async(execute: setupReaderReconnectionObservation)
         }
-    }
-
-    private func cancelCardReaderPreparation() {
-        cardPresentPaymentService.cancelPayment()
-        resetCardReaderObservation()
-    }
-
-    private func resetCardReaderObservation() {
-        // We set these to nil, so that we can check them when showing `Reader connected` on the Totals screen.
-        startPaymentOnCardReaderConnection?.cancel()
-        startPaymentOnCardReaderConnection = nil
-        cardReaderDisconnection?.cancel()
-        cardReaderDisconnection = nil
-    }
-
-    private func observeReaderReconnection() {
-        cardReaderDisconnection = cardPresentPaymentService.readerConnectionStatusPublisher
-            .filter({ $0 == .disconnected })
-            .sink { [weak self] _ in
-                Task { @MainActor [weak self] in
-                    await self?.startPaymentWhenCardReaderConnected()
-                }
-            }
-    }
-
-    /// Called when the onboarding UI is dismissed.
-    /// For external dismissal (tapping CTA to dismiss), this method is called twice - the first time to dismiss the onboarding UI
-    /// by setting `cardPresentPaymentOnboardingViewContainer` to nil, the second time triggered by internal dismissal.
-    /// For internal dismissal (tapping outside the modal), this method is called once.
-    /// This method is used to reset the internal state of the onboarding UI and track the dismissal event.
-    func cancelCardPaymentsOnboarding() {
-        guard let onboardingViewContainer = cardPresentPaymentOnboardingViewContainer else {
-            return
-        }
-        analytics.track(event: .PointOfSale.paymentsOnboardingDismissed(onboardingState: onboardingViewContainer.configuration.state))
-        cardPresentPaymentOnboardingViewContainer = nil
-        onOnboardingCancellation?()
-    }
-
-    /// Tracks when the onboarding UI is shown.
-    func trackCardPaymentsOnboardingShown() {
-        analytics.track(event: .PointOfSale.paymentsOnboardingShown())
-    }
-}
-
-private extension PointOfSaleAggregateModel {
-    func publishPaymentMessages() {
-        cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> PointOfSaleCardPresentPaymentAlertType? in
-                guard let self else { return nil }
-                guard case let .show(eventDetails) = event,
-                      case let .alert(alertType) = presentationStyle(for: eventDetails)
-                else {
-                    return nil
-                }
-
-                // Filter connection success alerts when we're immediately starting a payment
-                if case .connectionSuccess = eventDetails,
-                   startPaymentOnCardReaderConnection != nil {
-                    return nil
-                }
-
-                return alertType
-            }
-            .sink(receiveValue: { [weak self] alertType in
-                self?.cardPresentPaymentAlertViewModel = alertType
-            })
-            .store(in: &cancellables)
-
-        cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> PointOfSaleCardPresentPaymentMessageType? in
-                self?.mapCardPresentPaymentEventToMessageType(event)
-            }
-            .sink(receiveValue: { [weak self] message in
-                self?.cardPresentPaymentInlineMessage = message
-            })
-            .store(in: &cancellables)
-
-        cardPresentPaymentService.paymentEventPublisher
-            .compactMap { [weak self] paymentEvent -> PointOfSaleCardPaymentState? in
-                guard let self else { return nil }
-
-                let newCardPaymentState = PointOfSaleCardPaymentState(from: paymentEvent,
-                                                                      using: presentationStyleDeterminerDependencies)
-
-                if case .acceptingCard = newCardPaymentState {
-                    collectOrderPaymentAnalyticsTracker.trackCardReaderReady()
-                }
-
-                if case .processingPayment = newCardPaymentState {
-                    collectOrderPaymentAnalyticsTracker.trackCardReaderTapped()
-                }
-
-                return newCardPaymentState
-            }
-            .sink(receiveValue: { [weak self] cardPaymentState in
-                self?.paymentState.card = cardPaymentState
-            })
-            .store(in: &cancellables)
-
-        cardPresentPaymentService.paymentEventPublisher
-            .map { [weak self] event -> CardPresentPaymentOnboardingViewContainer? in
-                guard let self else { return nil }
-                guard case let .showOnboarding(factory, onCancel) = event else {
-                    return nil
-                }
-                onOnboardingCancellation = onCancel
-                return factory
-            }
-            .sink(receiveValue: { [weak self] factory in
-                self?.cardPresentPaymentOnboardingViewContainer = factory
-            })
-            .store(in: &cancellables)
-    }
-
-    /// Maps PaymentEvent to POSMessageType and annonates additional information if necessary
-    /// - Parameter event: CardPresentPaymentEvent
-    /// - Returns: PointOfSaleCardPresentPaymentMessageType
-    func mapCardPresentPaymentEventToMessageType(_ event: CardPresentPaymentEvent) -> PointOfSaleCardPresentPaymentMessageType? {
-        guard case let .show(eventDetails) = event,
-              case let .message(messageType) = presentationStyle(for: eventDetails) else {
-            return nil
-        }
-
-        return messageType
-    }
-
-    func presentationStyle(for eventDetails: CardPresentPaymentEventDetails) -> PointOfSaleCardPresentPaymentEventPresentationStyle? {
-        PointOfSaleCardPresentPaymentEventPresentationStyle(
-            for: eventDetails,
-            dependencies: presentationStyleDeterminerDependencies)
-    }
-
-    var presentationStyleDeterminerDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies {
-        let cancelThenCollectPaymentWithWeakSelf: () -> Void = { [weak self] in
-            self?.cancelThenCollectPayment()
-        }
-
-        var orderTotal: String?
-        if case .loaded(let totals) = orderState {
-            orderTotal = totals.orderTotal
-        }
-
-        return PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies(
-            tryPaymentAgainBackToCheckoutAction: cancelThenCollectPaymentWithWeakSelf,
-            nonRetryableErrorExitAction: cancelThenCollectPaymentWithWeakSelf,
-            formattedOrderTotalPrice: orderTotal,
-            paymentCaptureErrorTryAgainAction: cancelThenCollectPaymentWithWeakSelf,
-            paymentCaptureErrorNewOrderAction: { [weak self] in
-                self?.startNewCart()
-            },
-            paymentIntentCreationErrorEditOrderAction: { [weak self] in
-                self?.addMoreToCart()
-            },
-            dismissReaderConnectionModal: { [weak self] in
-                self?.cardPresentPaymentAlertViewModel = nil
-            }
-        )
     }
 }
 
@@ -664,7 +437,7 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await removeMissingProductsFromCatalogAfterSync()
-        await startPaymentWhenCardReaderConnected()
+        await paymentModel.startPayment()
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync
@@ -680,20 +453,13 @@ extension PointOfSaleAggregateModel {
 // MARK: - Lifecycle
 extension PointOfSaleAggregateModel {
     func pointOfSaleClosed() {
-        // We cancel any payment to prevent the reader from remaining live and awaiting a card tap. Otherwise, it would
-        // wait until the timeout, which is 30-45 minutes. In that time, it uses more battery, and may result
-        // in a shopper paying for the wrong order.
-        Task { [cardPresentPaymentService] in
-            try await cardPresentPaymentService.cancelPayment()
-        }
-
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
         orderController.clearOrder()
 
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
-        resetCardReaderObservation()
+        paymentModel.tearDown()
         cancellables.forEach { $0.cancel() }
     }
 }
@@ -769,8 +535,7 @@ private enum Constants {
 #if DEBUG
 extension PointOfSaleAggregateModel {
     func setPreviewState(paymentState: PointOfSalePaymentState, inlineMessage: PointOfSaleCardPresentPaymentMessageType?) {
-        self.paymentState = paymentState
-        self.cardPresentPaymentInlineMessage = inlineMessage
+        paymentModel.setPreviewState(paymentState: paymentState, inlineMessage: inlineMessage)
     }
 }
 #endif

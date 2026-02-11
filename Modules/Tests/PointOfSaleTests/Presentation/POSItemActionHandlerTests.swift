@@ -127,6 +127,7 @@ private func makePointOfSaleAggregateModel(
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,
         barcodeScanService: barcodeScanService,
+        receiptSender: MockPOSReceiptSender(),
         siteID: 0
     )
 }

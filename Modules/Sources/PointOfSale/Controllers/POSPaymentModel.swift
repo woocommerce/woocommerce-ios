@@ -102,10 +102,11 @@ extension POSPaymentModel {
 
     private func collectCardPayment() async {
         do {
-            let order = try await orderProvider.provideOrder()
-            currentOrder = order
-            guard let total = Decimal(string: order.total), total > 0 else { return }
-            try await collectPayment(for: order)
+            let paymentOrder = try await orderProvider.provideOrder()
+            currentOrder = paymentOrder.order
+            formattedOrderTotalPrice = paymentOrder.formattedTotal
+            guard paymentOrder.totalDecimal > 0 else { return }
+            try await collectPayment(for: paymentOrder.order)
         } catch {
             DDLogError("Error taking payment: \(error)")
         }
@@ -182,7 +183,8 @@ extension POSPaymentModel {
         if let currentOrder {
             order = currentOrder
         } else {
-            order = try await orderProvider.provideOrder()
+            let paymentOrder = try await orderProvider.provideOrder()
+            order = paymentOrder.order
             currentOrder = order
         }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)

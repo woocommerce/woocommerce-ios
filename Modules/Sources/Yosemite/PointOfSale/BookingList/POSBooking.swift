@@ -9,9 +9,6 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         switch order.status {
         case .completed, .processing:
             return true
-        case .refunded:
-            // TODO: Edge case? A refunded order was paid at some point, but is not currently paid
-            return true
         default:
             return false
         }

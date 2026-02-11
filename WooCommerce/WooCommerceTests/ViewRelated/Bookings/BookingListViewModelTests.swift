@@ -561,6 +561,210 @@ class BookingListViewModelTests {
         #expect(viewModel.bookings.first?.siteID == sampleSiteID, "Booking should have the correct site ID")
     }
 
+    // MARK: - Filter merging
+
+    @Test func today_tab_merges_user_date_filters_with_tab_constraints() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .today, stores: stores, storage: storageManager, currentDate: testDate)
+
+        // User filter with a date range that overlaps today
+        // User wants: after 2020-12-31T12:00:00Z, before 2021-01-01T18:00:00Z
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: BookingDateRangeFilter(
+                startDate: Date(timeIntervalSince1970: 1609416000), // 2020-12-31T12:00:00Z
+                endDate: Date(timeIntervalSince1970: 1609524000)    // 2021-01-01T18:00:00Z
+            ),
+            numberOfActiveFilters: 1
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        viewModel.loadBookings()
+
+        // Then - startDateAfter should be max(tab, user) = tab's value (later)
+        // Tab startDateAfter = "2020-12-31T23:59:59Z", user startDateAfter = "2020-12-31T12:00:00Z"
+        // max = "2020-12-31T23:59:59Z"
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z",
+                "Should use tab's startDateAfter since it's later (more restrictive)")
+
+        // startDateBefore should be min(tab, user) = user's value (earlier)
+        // Tab startDateBefore = "2021-01-02T00:00:00Z", user startDateBefore = "2021-01-01T18:00:00Z"
+        // min = "2021-01-01T18:00:00Z"
+        #expect(capturedFilters?.startDateBefore == "2021-01-01T18:00:00Z",
+                "Should use user's startDateBefore since it's earlier (more restrictive)")
+    }
+
+    @Test func upcoming_tab_merges_user_date_filters_with_tab_constraints() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .upcoming, stores: stores, storage: storageManager, currentDate: testDate)
+
+        // User filter with date range
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: BookingDateRangeFilter(
+                startDate: Date(timeIntervalSince1970: 1609632000), // 2021-01-03T00:00:00Z
+                endDate: Date(timeIntervalSince1970: 1609804800)    // 2021-01-05T00:00:00Z
+            ),
+            numberOfActiveFilters: 1
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        viewModel.loadBookings()
+
+        // Then - startDateAfter = max(tab, user)
+        // Tab startDateAfter = "2021-01-01T23:59:59Z", user startDateAfter = "2021-01-03T00:00:00Z"
+        // max = "2021-01-03T00:00:00Z"
+        #expect(capturedFilters?.startDateAfter == "2021-01-03T00:00:00Z",
+                "Should use user's startDateAfter since it's later (more restrictive)")
+
+        // startDateBefore = min(tab=nil, user) = user's value
+        #expect(capturedFilters?.startDateBefore == "2021-01-05T00:00:00Z",
+                "Should use user's startDateBefore since tab has no upper bound")
+    }
+
+    @Test func all_tab_passes_user_date_filters_through_unchanged() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .all, stores: stores, storage: storageManager, currentDate: testDate)
+
+        let userStartDate = Date(timeIntervalSince1970: 1609632000) // 2021-01-03T00:00:00Z
+        let userEndDate = Date(timeIntervalSince1970: 1609804800)   // 2021-01-05T00:00:00Z
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: BookingDateRangeFilter(startDate: userStartDate, endDate: userEndDate),
+            numberOfActiveFilters: 1
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        viewModel.loadBookings()
+
+        // Then - All tab has no tab constraints, so user dates pass through
+        #expect(capturedFilters?.startDateAfter == userStartDate.ISO8601Format())
+        #expect(capturedFilters?.startDateBefore == userEndDate.ISO8601Format())
+    }
+
+    @Test func non_date_filters_pass_through_on_today_tab() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .today, stores: stores, storage: storageManager, currentDate: testDate)
+
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
+            products: [BookingProductFilter(productID: 100, name: "Massage")],
+            attendanceStatuses: [.booked],
+            customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
+            dateRange: nil,
+            numberOfActiveFilters: 4
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        viewModel.loadBookings()
+
+        // Then - non-date filters should pass through
+        #expect(capturedFilters?.resourceIDs == [42])
+        #expect(capturedFilters?.productIDs == [100])
+        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.booked.rawValue])
+        #expect(capturedFilters?.customerIDs == [7])
+        // Tab date constraints should still be applied
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
+        #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")
+    }
+
+    @Test func clearing_filters_on_today_tab_resets_to_tab_date_constraints() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .synchronizeBookings(_, _, _, filters, _, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID, type: .today, stores: stores, storage: storageManager, currentDate: testDate)
+
+        // Apply filters first
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.updateFilters(userFilters)
+
+        // When - clear filters
+        let emptyFilters = BookingFiltersViewModel.Filters()
+        viewModel.updateFilters(emptyFilters)
+        viewModel.loadBookings()
+
+        // Then - should be back to tab-only constraints
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
+        #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")
+        #expect(capturedFilters?.resourceIDs == [])
+        #expect(capturedFilters?.productIDs == [])
+        #expect(capturedFilters?.attendanceStatuses == [])
+        #expect(capturedFilters?.customerIDs == [])
+    }
+
     // MARK: - Sort order
 
     @Test func update_sort_order_sorts_bookings_from_oldest_to_newest() {

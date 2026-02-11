@@ -84,7 +84,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             return gateway.features.contains(.refunds)
         }
         // Fallback: if gateway not found, use simple check
-        return !paymentMethodID.isEmpty && paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+        return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
     }
 
     public func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts {

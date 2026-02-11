@@ -180,7 +180,7 @@ private extension POSBookingListStateTests {
             endDate: Date().addingTimeInterval(3600),
             formattedAmount: "$50.00",
             status: .confirmed,
-            attendanceStatus: .booked,
+            attendanceStatus: .unattended,
             orderID: id * 10,
             resourceName: nil,
             order: makeOrder(id: id * 10)

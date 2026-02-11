@@ -122,7 +122,7 @@ class BookingListContainerViewModelTests {
         let filters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "")],
             products: [BookingProductFilter(productID: 0, name: "")],
-            attendanceStatuses: [BookingAttendanceStatus.booked],
+            attendanceStatuses: [BookingAttendanceStatus.attended],
             customers: [BookingCustomerFilter(customerID: 0, name: "")],
             dateRange: BookingDateRangeFilter(startDate: Date(), endDate: Date()),
             numberOfActiveFilters: 5

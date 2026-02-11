@@ -20,14 +20,14 @@ struct POSPaymentFlowConfiguration {
 /// A labeled action used by the payment flow configuration.
 struct PaymentFlowAction {
     let title: String
-    let action: @MainActor () -> Void
+    let action: () -> Void
 }
 
 // MARK: - Cart
 
 extension POSPaymentFlowConfiguration {
-    static func cart(onNewOrder: @escaping @MainActor () -> Void,
-                     onEditOrder: @escaping @MainActor () -> Void) -> Self {
+    static func cart(onNewOrder: @escaping () -> Void,
+                     onEditOrder: @escaping () -> Void) -> Self {
         POSPaymentFlowConfiguration(
             successAction: PaymentFlowAction(
                 title: Localization.Cart.newOrder,
@@ -46,7 +46,7 @@ extension POSPaymentFlowConfiguration {
 // MARK: - Bookings
 
 extension POSPaymentFlowConfiguration {
-    static func bookings(onDismiss: @escaping @MainActor () -> Void) -> Self {
+    static func bookings(onDismiss: @escaping () -> Void) -> Self {
         POSPaymentFlowConfiguration(
             successAction: PaymentFlowAction(
                 title: Localization.Bookings.done,

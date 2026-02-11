@@ -705,7 +705,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [BookingProductFilter(productID: 100, name: "Massage")],
-            attendanceStatuses: [.booked],
+            attendanceStatuses: [.attended],
             customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
             dateRange: nil,
             numberOfActiveFilters: 4
@@ -718,7 +718,7 @@ class BookingListViewModelTests {
         // Then - non-date filters should pass through
         #expect(capturedFilters?.resourceIDs == [42])
         #expect(capturedFilters?.productIDs == [100])
-        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.booked.rawValue])
+        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.attended.rawValue])
         #expect(capturedFilters?.customerIDs == [7])
         // Tab date constraints should still be applied
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")

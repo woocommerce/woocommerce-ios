@@ -7,6 +7,7 @@ struct POSBookingDetailView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(POSBookingsModel.self) private var bookingsModel
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var refundModalState: RefundModalState?
@@ -88,7 +89,29 @@ struct POSBookingDetailView: View {
         .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
         }) { state in
-            bookingRefundModalContent(for: state)
+            POSRefundModalContentView(
+                state: state,
+                modalState: $refundModalState,
+                isShowingEmailReceiptView: $isShowingEmailReceiptView,
+                orderListModel: orderListModel,
+                onRetryLoading: { initiateBookingRefundFlow() },
+                onRetryPreparation: { initiateBookingRefundFlow() },
+                onEditRefund: nil,
+                showsItemSelection: false,
+                onRefundSuccess: {
+                    Task {
+                        await bookingsModel.bookingsController.refreshBookings()
+                    }
+                },
+                errorStrings: .init(
+                    loadTitle: Localization.loadRefundErrorTitle,
+                    loadSubtitle: Localization.loadRefundErrorSubtitle,
+                    prepareTitle: Localization.prepareRefundErrorTitle,
+                    prepareSubtitle: Localization.prepareRefundErrorSubtitle,
+                    createTitle: Localization.createRefundErrorTitle,
+                    createSubtitle: Localization.createRefundErrorSubtitle
+                )
+            )
         }
     }
 
@@ -327,128 +350,17 @@ private extension POSBookingDetailView {
             let result = await orderListModel.ordersController.startRefundFlow()
             switch result {
             case .hasItemsToRefund:
-                // Skip item selection state. With POS Bookings we only allow full refunds at the moment
-                navigateToRefundReview()
+                // Skip item selection — go directly to review for full refund
+                guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+                    refundModalState = .preparationError
+                    return
+                }
+                refundModalState = .review(reviewData)
             case .nothingToRefund:
                 refundModalState = .nothingToRefund
             case .failed:
                 refundModalState = .loadingError
             }
-        }
-    }
-
-    func navigateToRefundReview() {
-        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-            refundModalState = .preparationError
-            return
-        }
-        refundModalState = .review(reviewData)
-    }
-
-    @MainActor
-    func processRefund(reviewData: POSRefundReviewData) async {
-        do {
-            try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
-            refundModalState = .success(reviewData)
-        } catch {
-            refundModalState = .error(reviewData)
-        }
-    }
-
-    @ViewBuilder
-    func bookingRefundModalContent(for state: RefundModalState) -> some View {
-        switch state {
-        case .loading:
-            POSRefundLoadingView()
-        case .loadingError:
-            POSRefundErrorView(
-                title: Localization.loadRefundErrorTitle,
-                subtitle: Localization.loadRefundErrorSubtitle,
-                onRetry: { initiateBookingRefundFlow() },
-                onCancel: { refundModalState = nil },
-                onClose: { refundModalState = nil }
-            )
-        case .preparationError:
-            POSRefundErrorView(
-                title: Localization.prepareRefundErrorTitle,
-                subtitle: Localization.prepareRefundErrorSubtitle,
-                onRetry: { initiateBookingRefundFlow() },
-                onCancel: { refundModalState = nil },
-                onClose: { refundModalState = nil }
-            )
-        case .nothingToRefund:
-            POSRefundNothingToRefundView(onClose: { refundModalState = nil })
-        case .itemSelection:
-            // Not used for booking refunds — included for exhaustive switch
-            EmptyView()
-        case .review(let reviewData):
-            POSRefundReviewView(
-                onClose: { refundModalState = nil },
-                itemsCount: reviewData.itemsCount,
-                formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
-                formattedTax: reviewData.formattedTax,
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                refundReason: reviewData.refundReason,
-                onAddReason: { refundModalState = .reasonInput(reviewData) },
-                onContinue: { refundModalState = .confirmation(reviewData) },
-                onEditRefund: nil
-            )
-        case .reasonInput(let reviewData):
-            POSRefundReasonView(
-                initialReason: reviewData.refundReason,
-                onSave: { reason in
-                    var updated = reviewData
-                    updated.refundReason = reason
-                    refundModalState = .review(updated)
-                },
-                onBack: { refundModalState = .review(reviewData) },
-                onClose: { refundModalState = nil }
-            )
-        case .confirmation(let reviewData):
-            POSRefundConfirmationView(
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                isProcessing: false,
-                onClose: { refundModalState = nil },
-                onConfirm: {
-                    refundModalState = .processing(reviewData)
-                    Task { @MainActor in
-                        await processRefund(reviewData: reviewData)
-                    }
-                },
-                onBack: { refundModalState = .review(reviewData) }
-            )
-        case .processing(let reviewData):
-            POSRefundConfirmationView(
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                isProcessing: true,
-                onClose: {},
-                onConfirm: {},
-                onBack: {}
-            )
-        case .success(let reviewData):
-            POSRefundSuccessView(
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                onDone: { refundModalState = nil },
-                onEmailReceipt: {
-                    refundModalState = nil
-                    Task { @MainActor in
-                        isShowingEmailReceiptView = true
-                    }
-                },
-                onClose: { refundModalState = nil }
-            )
-        case .error(let reviewData):
-            POSRefundErrorView(
-                title: Localization.createRefundErrorTitle,
-                subtitle: Localization.createRefundErrorSubtitle,
-                onRetry: { refundModalState = .confirmation(reviewData) },
-                onCancel: { refundModalState = nil },
-                onClose: { refundModalState = nil }
-            )
         }
     }
 }

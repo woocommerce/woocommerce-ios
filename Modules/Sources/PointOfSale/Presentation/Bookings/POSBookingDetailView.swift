@@ -65,7 +65,7 @@ struct POSBookingDetailView: View {
             )
 
             ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                VStack(alignment: .leading, spacing: POSSpacing.large) {
                     bookingDetailsSection
                     attendanceSection
                     customerSection
@@ -92,7 +92,7 @@ struct POSBookingDetailView: View {
             Image(systemName: "ellipsis")
                 .font(.posBodyLargeBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .foregroundColor(.posOnSurface)
+                .foregroundColor(.posOnDisabledContainer)
                 .padding(POSPadding.small)
         }
         .menuIndicator(.hidden)
@@ -108,17 +108,14 @@ struct POSBookingDetailView: View {
                 .foregroundStyle(Color.posOnSurface)
 
             if let resourceName = booking.resourceName {
-                sectionDivider
                 detailRow(label: Localization.teamMemberLabel, value: resourceName)
             }
 
             if let location = booking.location {
-                sectionDivider
                 detailRow(label: Localization.locationLabel, value: location)
             }
 
             if !booking.duration.isEmpty {
-                sectionDivider
                 detailRow(label: Localization.durationLabel, value: booking.duration)
             }
         }
@@ -138,7 +135,6 @@ struct POSBookingDetailView: View {
                     .foregroundStyle(Color.posOnSurface)
 
                 if let email = booking.customerEmail {
-                    sectionDivider
                     HStack {
                         Text(email)
                             .font(.posBodyMediumRegular())
@@ -149,7 +145,7 @@ struct POSBookingDetailView: View {
                         } label: {
                             Image(systemName: "doc.on.doc")
                                 .font(.posBodyMediumRegular())
-                                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                                .foregroundStyle(Color.posPrimaryContainer)
                         }
                         .buttonStyle(.plain)
                     }
@@ -167,7 +163,7 @@ struct POSBookingDetailView: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .font(.posBodyMediumRegular())
-                                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                                .foregroundStyle(Color.posPrimaryContainer)
                         }
                         .buttonStyle(.plain)
                     }
@@ -248,24 +244,14 @@ struct POSBookingDetailView: View {
                 Spacer()
 
                 HStack(spacing: POSSpacing.small) {
-                    Button {
+                    Button(Localization.attendedPill) {
                         DDLogInfo("⚠️ [Bookings] Attended button tapped — to be implemented in a future task")
-                    } label: {
-                        attendancePill(
-                            title: Localization.attendedPill,
-                            isSelected: attendanceDisplay == .attended
-                        )
                     }
-                    .buttonStyle(.plain)
-                    Button {
+                    .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+                    Button(Localization.unattendedPill) {
                         DDLogInfo("⚠️ [Bookings] Unattended button tapped — to be implemented in a future task")
-                    } label: {
-                        attendancePill(
-                            title: Localization.unattendedPill,
-                            isSelected: attendanceDisplay == .unattended
-                        )
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(POSOutlinedButtonStyle(size: .compact))
                 }
             }
             .sectionCard()
@@ -277,23 +263,6 @@ struct POSBookingDetailView: View {
         }
     }
 
-    @ViewBuilder
-    private func attendancePill(title: String, isSelected: Bool) -> some View {
-        Text(title)
-            .font(.posBodySmallBold())
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
-            .foregroundStyle(isSelected ? Color.posOnDefault : Color.posOnSurfaceVariantHighest)
-            .padding(.horizontal, POSPadding.small)
-            .padding(.vertical, POSPadding.xSmall)
-            .background(isSelected ? Color.posDefault : Color.clear)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .overlay(
-                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value)
-                    .strokeBorder(isSelected ? Color.clear : Color.posOutlineVariant, lineWidth: 1)
-            )
-    }
-
     // MARK: - Payment Breakdown
 
     @ViewBuilder
@@ -302,8 +271,6 @@ struct POSBookingDetailView: View {
             Text(Localization.paymentTitle)
                 .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
-
-            sectionDivider
 
             if !booking.serviceName.isEmpty {
                 detailRow(label: Localization.serviceLabel, value: booking.formattedSubtotal ?? booking.formattedAmount)

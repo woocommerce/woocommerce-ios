@@ -72,7 +72,6 @@ struct POSBookingDetailView: View {
                     attendanceSection
                     customerSection
                     paymentBreakdownSection
-                    paidPaymentActionSection
                     bookingNoteSection
                 }
                 .padding(.top, POSPadding.xSmall)
@@ -290,18 +289,6 @@ struct POSBookingDetailView: View {
         !isPaid && lifecycleStatus != .cancelled
     }
 
-    @ViewBuilder
-    private var paidPaymentActionSection: some View {
-        if isPaid {
-            Button(action: {}) {
-                Text(Localization.paymentCompletedLabel)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .disabled(true)
-        }
-    }
-
     private var stickyCollectPaymentContainer: some View {
         Button(action: {
             DDLogInfo("⚠️ [Bookings] Collect payment tapped — to be implemented in a future task")
@@ -340,6 +327,7 @@ struct POSBookingDetailView: View {
                 action()
             }
         }
+        .fixedSize(horizontal: false, vertical: true)
     }
 
     private var sectionDivider: some View {
@@ -521,12 +509,6 @@ private enum Localization {
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
         comment: "Button to initiate payment collection for a booking. The amount is appended after a separator."
-    )
-
-    static let paymentCompletedLabel = NSLocalizedString(
-        "pos.bookingDetailView.paymentCompletedLabel",
-        value: "Payment Completed",
-        comment: "Label shown when payment has been completed for a booking."
     )
 
     static let viewOrderAction = NSLocalizedString(

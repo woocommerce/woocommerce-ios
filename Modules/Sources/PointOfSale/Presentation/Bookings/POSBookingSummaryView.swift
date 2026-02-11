@@ -17,7 +17,7 @@ struct POSBookingSummaryView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
             subtitleText
             statusBadges
         }
@@ -28,7 +28,7 @@ struct POSBookingSummaryView: View {
         let text = formattedSubtitle
         if !text.isEmpty {
             Text(text)
-                .font(.posBodySmallRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .lineLimit(1)
         }

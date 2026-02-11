@@ -104,7 +104,7 @@ struct POSBookingDetailView: View {
     private var bookingDetailsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(String(format: Localization.bookingIdTitle, booking.id))
-                .font(.posBodyMediumBold)
+                .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
             if let resourceName = booking.resourceName {
@@ -134,21 +134,21 @@ struct POSBookingDetailView: View {
         if hasCustomerDetails {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 Text(Localization.customerTitle)
-                    .font(.posBodyMediumBold)
+                    .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
 
                 if let email = booking.customerEmail {
                     sectionDivider
                     HStack {
                         Text(email)
-                            .font(.posBodySmallRegular())
+                            .font(.posBodyMediumRegular())
                             .foregroundStyle(Color.posOnSurface)
                         Spacer()
                         Button {
                             DDLogInfo("⚠️ [Bookings] Copy email tapped — to be implemented in a future task")
                         } label: {
                             Image(systemName: "doc.on.doc")
-                                .font(.posBodySmallRegular())
+                                .font(.posBodyMediumRegular())
                                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         }
                         .buttonStyle(.plain)
@@ -159,14 +159,14 @@ struct POSBookingDetailView: View {
                     sectionDivider
                     HStack {
                         Text(phone)
-                            .font(.posBodySmallRegular())
+                            .font(.posBodyMediumRegular())
                             .foregroundStyle(Color.posOnSurface)
                         Spacer()
                         Button {
                             DDLogInfo("⚠️ [Bookings] Phone action tapped — to be implemented in a future task")
                         } label: {
                             Image(systemName: "ellipsis")
-                                .font(.posBodySmallRegular())
+                                .font(.posBodyMediumRegular())
                                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                         }
                         .buttonStyle(.plain)
@@ -194,7 +194,7 @@ struct POSBookingDetailView: View {
                 .font(.posCaptionRegular)
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
             Text(value)
-                .font(.posBodySmallRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
     }
@@ -207,7 +207,7 @@ struct POSBookingDetailView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 HStack {
                     Text(Localization.bookingNoteLabel)
-                        .font(.posBodyMediumBold)
+                        .font(.posBodyXLargeBold)
                         .foregroundStyle(Color.posOnSurface)
 
                     Spacer()
@@ -220,7 +220,7 @@ struct POSBookingDetailView: View {
 
                 if let note = booking.bookingNote {
                     Text(note)
-                        .font(.posBodySmallRegular())
+                        .font(.posBodyMediumRegular())
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 }
             }
@@ -228,7 +228,7 @@ struct POSBookingDetailView: View {
             .sectionCard()
 
             Text(Localization.bookingNoteSubtitle)
-                .font(.posCaptionRegular)
+                .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .padding(.horizontal, POSPadding.xSmall)
         }
@@ -241,7 +241,7 @@ struct POSBookingDetailView: View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             HStack {
                 Text(Localization.attendanceStatusTitle)
-                    .font(.posBodyMediumBold)
+                    .font(.posBodyXLargeBold)
                     .foregroundStyle(Color.posOnSurface)
                     .lineLimit(1)
 
@@ -271,7 +271,7 @@ struct POSBookingDetailView: View {
             .sectionCard()
 
             Text(Localization.attendanceSubtitle)
-                .font(.posCaptionRegular)
+                .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .padding(.horizontal, POSPadding.xSmall)
         }
@@ -300,7 +300,7 @@ struct POSBookingDetailView: View {
     private var paymentBreakdownSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.paymentTitle)
-                .font(.posBodyMediumBold)
+                .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
 
             sectionDivider
@@ -316,11 +316,11 @@ struct POSBookingDetailView: View {
 
             HStack {
                 Text(Localization.totalLabel)
-                    .font(.posBodySmallBold())
+                    .font(.posBodyLargeBold)
                     .foregroundStyle(Color.posOnSurface)
                 Spacer()
                 Text(booking.formattedAmount)
-                    .font(.posBodySmallBold())
+                    .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posOnSurface)
             }
         }
@@ -362,13 +362,13 @@ struct POSBookingDetailView: View {
     private func detailRow(label: String, value: String) -> some View {
         HStack {
             Text(label)
-                .font(.posBodySmallRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
             Spacer()
 
             Text(value)
-                .font(.posBodySmallBold())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
     }

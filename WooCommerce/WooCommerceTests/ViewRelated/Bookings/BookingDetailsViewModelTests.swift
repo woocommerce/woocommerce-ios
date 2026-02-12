@@ -273,7 +273,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let booking = Booking.fake()
         let viewModel = givenViewModel(booking: booking)
-        let newStatus = BookingAttendanceStatus.checkedIn
+        let newStatus = BookingAttendanceStatus.attended
 
         // When
         viewModel.updateAttendanceStatus(to: newStatus)
@@ -295,14 +295,14 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(status, newStatus)
 
         analyticsProvider.assertReceived(event: "booking_detail_attendance_status_updated",
-                                         with: ["booking_status": "checked-in"])
+                                         with: ["booking_status": "attended"])
     }
 
     func test_error_notice_displayed_when_attendance_staus_update_fails() {
         // Given
         let booking = Booking.fake()
         let viewModel = givenViewModel(booking: booking)
-        let newStatus = BookingAttendanceStatus.checkedIn
+        let newStatus = BookingAttendanceStatus.attended
         enum TestError: Error { case generic }
 
         // When
@@ -338,7 +338,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let booking = Booking.fake().copy(
             statusKey: "paid",
-            attendanceStatusKey: "checked-in"
+            attendanceStatusKey: "attended"
         )
 
         // When
@@ -357,14 +357,13 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Header section not found")
             return
         }
-        let badgeStatus = headerContent.statusBadge as? BookingAttendanceStatus
-        XCTAssertEqual(badgeStatus?.localizedTitle, "Checked-in")
+        XCTAssertEqual(headerContent.statusBadge.text, "Attended")
     }
 
     func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {
         // Given
         let booking = Booking.fake().copy(
-            attendanceStatusKey: "no-show"
+            attendanceStatusKey: "unattended"
         )
 
         // When
@@ -384,14 +383,14 @@ final class BookingDetailsViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(attendanceContent.value, "No-show")
+        XCTAssertEqual(attendanceContent.value, "Unattended")
     }
 
     func test_attendance_section_is_hidden_when_booking_is_cancelled() {
         // Given
         let booking = Booking.fake().copy(
             statusKey: "cancelled",
-            attendanceStatusKey: "cancelled"
+            attendanceStatusKey: "unattended"
         )
 
         // When

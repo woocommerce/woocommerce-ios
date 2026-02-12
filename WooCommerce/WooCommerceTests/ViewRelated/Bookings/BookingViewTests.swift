@@ -17,11 +17,11 @@ final class BookingViewTests: XCTestCase {
     func test_bookingItemHeaderStatusBadge_returnsAttendanceStatusWhenNotCancelled() {
         let booking = Booking.fake().copy(
             statusKey: "paid",
-            attendanceStatusKey: "no-show"
+            attendanceStatusKey: "unattended"
         )
 
         let badge = booking.bookingItemHeaderStatusBadge
 
-        XCTAssertEqual(badge as? BookingAttendanceStatus, .noShow)
+        XCTAssertEqual(badge as? BookingAttendanceStatus, .unattended)
     }
 }

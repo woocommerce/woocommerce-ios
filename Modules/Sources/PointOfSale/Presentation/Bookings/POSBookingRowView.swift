@@ -13,7 +13,7 @@ struct POSBookingRowView: View {
     }
 
     private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
+        POSBookingPaymentStatus(bookingStatus: booking.status, isBookingPaid: booking.isBookingPaid)
     }
 
     private var attendanceDisplay: POSBookingAttendanceDisplay {

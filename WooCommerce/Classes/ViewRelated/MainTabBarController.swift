@@ -161,6 +161,7 @@ final class MainTabBarController: UITabBarController {
 
     private var isPOSTabVisible: Bool = false
     private var isBookingsTabVisible: Bool = false
+    private var isBookingsFeatureAvailable: Bool = false
 
     private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
@@ -362,7 +363,13 @@ final class MainTabBarController: UITabBarController {
             for: siteID,
             in: userDefaults
         )
-        let isBookingsTabVisible = shouldShowBookingsTab && isBookingsFeatureAvailable
+
+        self.isBookingsFeatureAvailable = isBookingsFeatureAvailable
+
+        let isBookingsTabVisible = shouldShowBookingsTab(
+            isPOSTabVisible: isPOSTabVisible,
+            bookingsFeatureAvailable: isBookingsFeatureAvailable
+        )
 
         updateTabViewControllers(
             isPOSTabVisible: isPOSTabVisible,
@@ -753,6 +760,8 @@ private extension MainTabBarController {
 
         // Sets POS tab initial visibility based on cached value if available.
         let initialVisibility = posTabVisibilityChecker.checkInitialVisibility()
+        let isBookingsTabVisible = shouldShowBookingsTab(isPOSTabVisible: initialVisibility,
+                                                         bookingsFeatureAvailable: isBookingsFeatureAvailable)
         updateTabViewControllers(isPOSTabVisible: initialVisibility, isBookingsTabVisible: isBookingsTabVisible)
 
         // Cancels any existing task.
@@ -764,6 +773,8 @@ private extension MainTabBarController {
             let isPOSTabVisible = await posTabVisibilityChecker.checkVisibility()
             analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
+            let isBookingsTabVisible = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
+                                                             bookingsFeatureAvailable: isBookingsFeatureAvailable)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
             viewModel.loadHubMenuTabBadge()
 
@@ -913,7 +924,9 @@ private extension MainTabBarController {
 
         // Sets Bookings tab initial visibility based on cached value if available.
         let initialVisibility = bookingsEligibilityChecker.checkInitialVisibility()
-        let initialBookingsTabVisibility = shouldShowBookingsTab && initialVisibility
+        isBookingsFeatureAvailable = initialVisibility
+        let initialBookingsTabVisibility = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
+                                                                 bookingsFeatureAvailable: initialVisibility)
         updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: initialBookingsTabVisibility)
 
         // Cancels any existing task.
@@ -924,15 +937,20 @@ private extension MainTabBarController {
             guard let self else { return }
             let isBookingsFeatureAvailable = await bookingsEligibilityChecker.checkVisibility()
             // TODO: Add analytics tracking for bookings tab visibility
-            let isBookingsTabVisible = shouldShowBookingsTab && isBookingsFeatureAvailable
+            self.isBookingsFeatureAvailable = isBookingsFeatureAvailable
+            let isBookingsTabVisible = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
+                                                             bookingsFeatureAvailable: isBookingsFeatureAvailable)
             updateTabViewControllers(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
         }
     }
 }
 
 private extension MainTabBarController {
-    var shouldShowBookingsTab: Bool {
-        !isPad
+    func shouldShowBookingsTab(isPOSTabVisible: Bool, bookingsFeatureAvailable: Bool) -> Bool {
+        guard bookingsFeatureAvailable else {
+            return false
+        }
+        return isPad ? !isPOSTabVisible : true
     }
 }
 

@@ -14,6 +14,7 @@ import enum Yosemite.BookingAttendanceStatus
 ///    - Derived from the API `status` field values.
 /// 3. **Attendance status**: Unattended / Attended
 ///    - Comes from the API `attendance_status` field.
+// TODO: WOOMOB-2143 - Revisit status matching once status-matching changes land.
 
 // MARK: - Payment Status (derived from BookingStatus)
 
@@ -28,6 +29,20 @@ enum POSBookingPaymentStatus: Equatable {
         case .unpaid, .pendingConfirmation, .confirmed:
             self = .unpaid
         case .cancelled, .unknown:
+            self = .unpaid
+        }
+    }
+
+    /// Initializer that considers whether the linked order has been paid.
+    /// When a booking is cancelled, the booking status alone doesn't tell us
+    /// whether it was previously paid. The order's payment state is the source of truth.
+    init(bookingStatus: BookingStatus, isBookingPaid: Bool) {
+        switch bookingStatus {
+        case .paid, .complete:
+            self = .paid
+        case .cancelled:
+            self = isBookingPaid ? .paid : .unpaid
+        case .unpaid, .pendingConfirmation, .confirmed, .unknown:
             self = .unpaid
         }
     }
@@ -70,9 +85,9 @@ enum POSBookingAttendanceDisplay: Equatable {
 
     init(attendanceStatus: BookingAttendanceStatus) {
         switch attendanceStatus {
-        case .checkedIn:
+        case .attended:
             self = .attended
-        case .booked, .noShow, .cancelled, .unknown:
+        case .unattended, .unknown:
             self = .unattended
         }
     }

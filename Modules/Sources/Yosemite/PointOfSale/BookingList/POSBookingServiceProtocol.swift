@@ -11,4 +11,6 @@ public protocol POSBookingServiceProtocol: Sendable {
                        pageNumber: Int,
                        pageSize: Int,
                        searchQuery: String?) async throws -> PagedItems<POSBooking>
+
+    func cancelBooking(bookingID: Int64) async throws
 }

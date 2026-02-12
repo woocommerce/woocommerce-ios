@@ -23,6 +23,7 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
     public let formattedTotalTax: String
     public let formattedPaymentTotal: String
     public let formattedNetAmount: String?
+    public let datePaid: Date?
 
     /// Aggregated quantities per product/variation ID for refund comparison.
     /// Key is productID for simple products, or variationID for variations.
@@ -44,6 +45,7 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
                 formattedTotalTax: String,
                 formattedPaymentTotal: String,
                 formattedNetAmount: String? = nil,
+                datePaid: Date? = nil,
                 lineItemQuantitiesByProductOrVariationID: [Int64: Decimal] = [:]) {
         self.id = id
         self.number = number
@@ -60,6 +62,7 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
         self.formattedTotalTax = formattedTotalTax
         self.formattedPaymentTotal = formattedPaymentTotal
         self.formattedNetAmount = formattedNetAmount
+        self.datePaid = datePaid
         self.lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID
     }
 }

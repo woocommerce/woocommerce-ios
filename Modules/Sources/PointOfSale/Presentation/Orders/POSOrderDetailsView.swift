@@ -1,4 +1,3 @@
-import CocoaLumberjackSwift
 import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
@@ -10,6 +9,8 @@ import typealias Yosemite.OrderItemAttribute
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    var autoStartRefund: Bool = false
+    var onRefundSuccess: (() -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
@@ -69,9 +70,35 @@ struct POSOrderDetailsView: View {
         .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
         }) { state in
-            refundModalContent(for: state)
+            POSRefundModalContentView(
+                state: state,
+                modalState: $refundModalState,
+                onEmailReceipt: { isShowingEmailReceiptView = true },
+                onRetryLoading: { initiateRefundFlow() },
+                onRetryPreparation: {
+                    if autoStartRefund {
+                        initiateRefundFlow()
+                    } else {
+                        refundModalState = .itemSelection
+                    }
+                },
+                onEditRefund: autoStartRefund ? nil : { refundModalState = .itemSelection },
+                showsItemSelection: !autoStartRefund,
+                onRefundSuccess: onRefundSuccess,
+                errorStrings: .init(
+                    loadTitle: Localization.loadRefundErrorTitle,
+                    loadSubtitle: Localization.loadRefundErrorSubtitle,
+                    prepareTitle: Localization.prepareRefundErrorTitle,
+                    prepareSubtitle: Localization.prepareRefundErrorSubtitle,
+                    createTitle: Localization.createRefundErrorTitle,
+                    createSubtitle: Localization.createRefundErrorSubtitle
+                )
+            )
         }
         .onAppear {
+            if autoStartRefund {
+                initiateRefundFlow()
+            }
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
                 orderID: order.id,
                 orderStatus: order.status.rawValue,
@@ -436,6 +463,9 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
+            if autoStartRefund {
+                return .init(primary: .issueRefund, secondary: [email])
+            }
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
                 return .init(primary: email, secondary: [])
             }
@@ -482,10 +512,6 @@ private extension POSOrderDetailsView {
         }
     }
 
-    func emailReceiptAction() {
-        analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsEmailReceiptTapped())
-        isShowingEmailReceiptView = true
-    }
 }
 
 private extension POSOrderDetailsView {
@@ -506,173 +532,16 @@ private extension POSOrderDetailsView {
             let result = await orderListModel.ordersController.startRefundFlow()
             switch result {
             case .hasItemsToRefund:
-                refundModalState = .itemSelection
+                if autoStartRefund {
+                    navigateToRefundReview()
+                } else {
+                    refundModalState = .itemSelection
+                }
             case .nothingToRefund:
                 refundModalState = .nothingToRefund
             case .failed:
                 refundModalState = .loadingError
             }
-        }
-    }
-}
-
-// MARK: - Refund Modal State
-
-enum RefundModalState: Identifiable, Equatable {
-    case loading
-    case loadingError
-    case preparationError
-    case nothingToRefund
-    case itemSelection
-    case review(POSRefundReviewData)
-    case reasonInput(POSRefundReviewData)
-    case confirmation(POSRefundReviewData)
-    case processing(POSRefundReviewData)
-    case success(POSRefundReviewData)
-    case error(POSRefundReviewData)
-
-    var id: String {
-        switch self {
-        case .loading: return "loading"
-        case .loadingError: return "loadingError"
-        case .preparationError: return "preparationError"
-        case .nothingToRefund: return "nothingToRefund"
-        case .itemSelection: return "itemSelection"
-        case .review: return "review"
-        case .reasonInput: return "reasonInput"
-        case .confirmation: return "confirmation"
-        case .processing: return "processing"
-        case .success: return "success"
-        case .error: return "error"
-        }
-    }
-}
-
-// MARK: - Refund Modal Content
-
-private extension POSOrderDetailsView {
-    @ViewBuilder
-    func refundModalContent(for state: RefundModalState) -> some View {
-        switch state {
-        case .loading:
-            POSRefundLoadingView()
-        case .loadingError:
-            POSRefundErrorView(
-                title: Localization.loadRefundErrorTitle,
-                subtitle: Localization.loadRefundErrorSubtitle,
-                onRetry: { initiateRefundFlow() },
-                onCancel: { refundModalState = nil },
-                onClose: { refundModalState = nil }
-            )
-        case .preparationError:
-            POSRefundErrorView(
-                title: Localization.prepareRefundErrorTitle,
-                subtitle: Localization.prepareRefundErrorSubtitle,
-                onRetry: { refundModalState = .itemSelection },
-                onCancel: { refundModalState = nil },
-                onClose: { refundModalState = nil }
-            )
-        case .nothingToRefund:
-            POSRefundNothingToRefundView(
-                onClose: { refundModalState = nil }
-            )
-        case .itemSelection:
-            POSRefundItemsSelectionView(
-                onClose: { refundModalState = nil },
-                onContinue: { navigateToRefundReview() }
-            )
-        case .review(let reviewData):
-            POSRefundReviewView(
-                onClose: { refundModalState = nil },
-                itemsCount: reviewData.itemsCount,
-                formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
-                formattedTax: reviewData.formattedTax,
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                refundReason: reviewData.refundReason,
-                onAddReason: {
-                    refundModalState = .reasonInput(reviewData)
-                },
-                onContinue: {
-                    refundModalState = .confirmation(reviewData)
-                },
-                onEditRefund: {
-                    refundModalState = .itemSelection
-                }
-            )
-        case .reasonInput(let reviewData):
-            POSRefundReasonView(
-                initialReason: reviewData.refundReason,
-                onSave: { reason in
-                    var updatedReviewData = reviewData
-                    updatedReviewData.refundReason = reason
-                    refundModalState = .review(updatedReviewData)
-                },
-                onBack: {
-                    refundModalState = .review(reviewData)
-                },
-                onClose: {
-                    refundModalState = nil
-                }
-            )
-        case .confirmation(let reviewData):
-            POSRefundConfirmationView(
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                isProcessing: false,
-                onClose: {
-                    refundModalState = nil
-                },
-                onConfirm: {
-                    refundModalState = .processing(reviewData)
-                    Task { @MainActor in
-                        await processRefund(reviewData: reviewData)
-                    }
-                },
-                onBack: {
-                    refundModalState = .review(reviewData)
-                }
-            )
-        case .processing(let reviewData):
-            POSRefundConfirmationView(
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                isProcessing: true,
-                onClose: {},
-                onConfirm: {},
-                onBack: {}
-            )
-        case .success(let reviewData):
-            POSRefundSuccessView(
-                formattedRefundTotal: reviewData.formattedRefundTotal,
-                paymentMethodDescription: reviewData.paymentMethodDescription,
-                onDone: {
-                    refundModalState = nil
-                },
-                onEmailReceipt: {
-                    refundModalState = nil
-                    Task { @MainActor in
-                        isShowingEmailReceiptView = true
-                    }
-                },
-                onClose: {
-                    refundModalState = nil
-                }
-            )
-        case .error(let reviewData):
-            POSRefundErrorView(
-                title: Localization.createRefundErrorTitle,
-                subtitle: Localization.createRefundErrorSubtitle,
-                onRetry: {
-                    refundModalState = .confirmation(reviewData)
-                },
-                onCancel: {
-                    refundModalState = nil
-                },
-                onClose: {
-                    refundModalState = nil
-                }
-            )
         }
     }
 
@@ -683,18 +552,8 @@ private extension POSOrderDetailsView {
         }
         refundModalState = .review(reviewData)
     }
-
-    @MainActor
-    func processRefund(reviewData: POSRefundReviewData) async {
-        do {
-            try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
-            refundModalState = .success(reviewData)
-        } catch {
-            DDLogError("⛔️ Failed to process refund: \(error)")
-            refundModalState = .error(reviewData)
-        }
-    }
 }
+
 
 // MARK: - Localization
 

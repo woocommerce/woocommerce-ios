@@ -54,6 +54,7 @@ MAIN_BUNDLE_IDENTIFIERS = [
   APP_STORE_VERSION_BUNDLE_IDENTIFIER,
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets",
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension",
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.NotificationServiceExtension",
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp",
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp.widgets"
 ].freeze
@@ -1282,9 +1283,12 @@ platform :ios do
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',
-        'Storage/Storage/',
-        'Networking/Networking/',
-        'Hardware/Hardware/'
+        'Modules/Sources/Storage/',
+        'Modules/Sources/Networking/',
+        'Modules/Sources/NetworkingCore/',
+        'Modules/Sources/Yosemite/',
+        'Modules/Sources/WooFoundation/',
+        'Modules/Sources/Hardware/'
       ],
       exclude: [
         '*Vendor*',

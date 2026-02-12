@@ -35,6 +35,7 @@ final class BookingListViewModel: ObservableObject {
     private let storage: StorageManagerType
     private var currentOrder: SortBy = .newestToOldest
 
+    private let tabDateFilters: BookingFilters
     private var filters: BookingFilters
 
     private static let refreshCacheReason = "refresh-cache"
@@ -79,17 +80,11 @@ final class BookingListViewModel: ObservableObject {
         self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
-        self.filters = {
-            switch type {
-            case .all:
-                BookingFilters()
-            case .today, .upcoming:
-                BookingFilters(
-                    startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-                    startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-                )
-            }
-        }()
+        self.tabDateFilters = BookingFilters(
+            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+        )
+        self.filters = tabDateFilters
 
         configureResultsController()
         configurePaginationTracker()
@@ -131,10 +126,8 @@ final class BookingListViewModel: ObservableObject {
     }
 
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
-        /// Only support filters for All tab
-        guard type == .all else { return }
         hasFilters = filters.numberOfActiveFilters > 0
-        self.filters = filters.bookingFilters
+        self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
         resultsController.updatePredicate(siteID: siteID, filters: self.filters)
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }

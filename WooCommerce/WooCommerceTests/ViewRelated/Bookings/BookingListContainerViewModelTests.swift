@@ -122,7 +122,7 @@ class BookingListContainerViewModelTests {
         let filters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "")],
             products: [BookingProductFilter(productID: 0, name: "")],
-            attendanceStatuses: [BookingAttendanceStatus.booked],
+            attendanceStatuses: [BookingAttendanceStatus.attended],
             customers: [BookingCustomerFilter(customerID: 0, name: "")],
             dateRange: BookingDateRangeFilter(startDate: Date(), endDate: Date()),
             numberOfActiveFilters: 5
@@ -157,6 +157,56 @@ class BookingListContainerViewModelTests {
 
         // Then
         #expect(analyticsProvider.received(event: "booking_list_sort_by_tapped"))
+    }
+
+    // MARK: - Filter propagation
+
+    @Test func updateFilters_propagates_to_all_tabs() {
+        // Given
+        let viewModel = givenViewModel()
+        let filters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 1, name: "Alice")],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+
+        // When - on Today tab
+        viewModel.setSelectedTab(to: .today)
+        viewModel.updateFilters(filters)
+
+        // Then - should propagate (no guard blocking non-All tabs)
+        #expect(viewModel.numberOfActiveFilters == 1)
+        #expect(viewModel.listViewModel(for: .today).hasFilters == true)
+        #expect(viewModel.listViewModel(for: .upcoming).hasFilters == true)
+        #expect(viewModel.listViewModel(for: .all).hasFilters == true)
+    }
+
+    @Test func clearFilters_works_on_non_all_tabs() {
+        // Given
+        let viewModel = givenViewModel()
+        let filters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 1, name: "Alice")],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+
+        // Apply filters on Today tab
+        viewModel.setSelectedTab(to: .today)
+        viewModel.updateFilters(filters)
+        #expect(viewModel.numberOfActiveFilters == 1)
+
+        // When - clear filters on Today tab
+        viewModel.clearFilters()
+
+        // Then
+        #expect(viewModel.numberOfActiveFilters == 0)
+        #expect(viewModel.listViewModel(for: .today).hasFilters == false)
     }
 
     @Test func event_fire_when_sortByOptionSelected() {

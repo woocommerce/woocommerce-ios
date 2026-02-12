@@ -49,7 +49,7 @@ final class BookingsTabEligibilityChecker: BookingsTabEligibilityCheckerProtocol
             return false
         }
 
-        // Check if current site is NOT CIAB (bookings only for non-CIAB sites)
+        // Check if current site is CIAB (bookings only for CIAB sites)
         guard ciabEligibilityChecker.isSiteCIAB(site) else {
             return false
         }

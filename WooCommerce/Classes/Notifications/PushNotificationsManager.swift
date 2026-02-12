@@ -113,7 +113,9 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
-    private let selfDrivenPushNotificationEnabled: Bool
+    private let selfDriventPNEligiblityChecker: WooPushNotificationEligibilityCheck
+    private var selfDrivenPushNotificationEnabled: Bool?
+    private var pendingTokenData: Data?
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -124,16 +126,14 @@ final class PushNotificationsManager: PushNotesManager {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
-        self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults)
+        self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults, log: { DDLogInfo($0) })
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
-        self.selfDrivenPushNotificationEnabled = {
-            if configuration.storesManager.isAuthenticatedWithoutWPCom {
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
-            } else {
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom)
-            }
-        }()
+        self.selfDriventPNEligiblityChecker = WooPushNotificationEligibilityCheck(
+            featureFlagService: featureFlagService,
+            stores: configuration.storesManager
+        )
+        checkSelfDrivenPushNotificationsEligibility()
     }
 }
 
@@ -185,7 +185,7 @@ extension PushNotificationsManager {
 
         let group = DispatchGroup()
 
-        if selfDrivenPushNotificationEnabled {
+        if selfDrivenPushNotificationEnabled == true {
             group.enter()
             unregisterFromWooPushNotificationsIfPossible { result in
                 switch result {
@@ -252,6 +252,10 @@ extension PushNotificationsManager {
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
     func registerDeviceToken(with tokenData: Data) {
+        guard let selfDrivenPushNotificationEnabled else {
+            pendingTokenData = tokenData
+            return
+        }
         let newToken = tokenData.hexString
 
         registrationState.applyNewDeviceToken(newToken)
@@ -291,7 +295,7 @@ extension PushNotificationsManager {
                     analytics.track(.wooPushTokenRegisterSuccess)
                 }
             }
-        } else {
+        } else if !stores.isAuthenticatedWithoutWPCom {
             registerForWPComPushNotifications()
         }
     }
@@ -610,6 +614,19 @@ private extension PushNotificationsManager {
 // MARK: - Dotcom Device Registration
 //
 private extension PushNotificationsManager {
+
+    func checkSelfDrivenPushNotificationsEligibility() {
+        Task { @MainActor in
+            let isEnabled = await selfDriventPNEligiblityChecker.checkM1Eligibility()
+            if selfDrivenPushNotificationEnabled != isEnabled {
+                selfDrivenPushNotificationEnabled = isEnabled
+                if let pendingTokenData {
+                    self.pendingTokenData = nil
+                    registerDeviceToken(with: pendingTokenData)
+                }
+            }
+        }
+    }
 
     /// Registers an APNS DeviceToken in the WordPress.com backend.
     ///

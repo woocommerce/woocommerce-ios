@@ -22,6 +22,18 @@ extension WooShippingAddress {
     var formattedPostalAddress: String? {
         return postalAddress.formatted(as: .mailingAddress)?.replacingOccurrences(of: "\n", with: ", ")
     }
+
+    /// Digits-only representation of the phone number.
+    var phoneDigits: String {
+        WooShippingPhoneValidator.digits(from: phone)
+    }
+
+    /// Whether the phone number is valid for label purchase.
+    /// For US addresses, the phone must be 10 digits (or 11 with leading "1").
+    var hasValidPhoneNumberForShipping: Bool {
+        WooShippingPhoneValidator.isValid(phone: phone,
+                                          country: country)
+    }
 }
 
 private extension WooShippingAddress {

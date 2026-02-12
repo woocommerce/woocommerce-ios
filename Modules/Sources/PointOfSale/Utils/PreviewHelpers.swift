@@ -32,6 +32,11 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import struct Yosemite.POSBooking
+import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSBookingListFetchStrategy
+import enum Yosemite.BookingStatus
+import enum Yosemite.BookingAttendanceStatus
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -156,7 +161,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 }
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
-    func handleTap(_ item: Yosemite.POSItem) { }
+    func handleTap(_ item: Yosemite.POSItem, position: Int) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
@@ -491,6 +496,113 @@ struct POSPreviewHelpers {
     }
 }
 
+// MARK: - Preview Bookings
+
+final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
+    func defaultStrategy() -> POSBookingListFetchStrategy {
+        POSBookingListFetchStrategyPreview()
+    }
+
+    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
+        POSBookingListFetchStrategyPreview()
+    }
+}
+
+final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
+    var supportsCaching: Bool = true
+    var showsLoadingWithItems: Bool = false
+    var id: String = "BookingPreview"
+
+    func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+}
+
+extension POSPreviewHelpers {
+    static func makePreviewBookingsModel(state: POSBookingListState = .empty) -> POSBookingsModel {
+        let controller = POSConfigurablePreviewBookingListController(state: state)
+        return POSBookingsModel(bookingsController: controller)
+    }
+
+    static func makePreviewBookings() -> [POSBooking] {
+        [
+            POSBooking(
+                id: 1,
+                customerName: "Margarita Nikolaevna",
+                serviceName: "Women's Haircut",
+                startDate: Date(),
+                endDate: Date().addingTimeInterval(3600),
+                formattedAmount: "$55.00",
+                status: .confirmed,
+                attendanceStatus: .unattended,
+                orderID: 101,
+                resourceName: "Marianne Renoir",
+                customerEmail: "margarita.n@gmail.com",
+                customerPhone: "+1 742582943798",
+                billingAddress: "238 Willow Creek Drive, Montgomery, AL 36109",
+                customerNote: "Prefers eco-friendly products, shorter length cuts",
+                location: "238 Willow Creek Drive, Montgomery",
+                duration: "60 min",
+                formattedSubtotal: "$55.00",
+                formattedTax: "$0.00",
+                order: makePreviewOrder()
+            ),
+            POSBooking(
+                id: 2,
+                customerName: "Jane Doe",
+                serviceName: "Massage",
+                startDate: Date().addingTimeInterval(7200),
+                endDate: Date().addingTimeInterval(10800),
+                formattedAmount: "$90.00",
+                status: .paid,
+                attendanceStatus: .unattended,
+                orderID: 102,
+                resourceName: nil,
+                customerEmail: "jane.doe@email.com",
+                customerPhone: nil,
+                billingAddress: nil,
+                customerNote: nil,
+                location: nil,
+                duration: "60 min",
+                formattedSubtotal: "$90.00",
+                formattedTax: "$0.00",
+                order: makePreviewOrder()
+            ),
+            POSBooking(
+                id: 3,
+                customerName: "Alex Johnson",
+                serviceName: "Consultation",
+                startDate: Date().addingTimeInterval(-3600),
+                endDate: Date(),
+                formattedAmount: "$25.00",
+                status: .cancelled,
+                attendanceStatus: .unattended,
+                orderID: nil,
+                resourceName: nil,
+                duration: "60 min",
+                order: makePreviewOrder()
+            )
+        ]
+    }
+}
+
+final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
+    let bookingsViewState: POSBookingListState
+    var selectedBooking: POSBooking?
+
+    init(state: POSBookingListState) {
+        self.bookingsViewState = state
+        self.selectedBooking = state.bookings.first
+    }
+
+    func loadBookings() async {}
+    func refreshBookings() async {}
+    func loadNextBookings() async {}
+    func selectBooking(_ booking: POSBooking?) { }
+    func searchBookings(searchTerm: String) async {}
+    func clearSearchBookings() {}
+}
+
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
     var refundSelectableItems: [POSRefundSelectableItem]
@@ -514,8 +626,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func loadRefunds(of order: POSOrder) async throws {}
-    func startRefundFlow() {}
+    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
@@ -722,6 +833,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     }
 
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
+
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
 }

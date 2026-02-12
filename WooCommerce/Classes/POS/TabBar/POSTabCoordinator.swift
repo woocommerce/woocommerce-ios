@@ -51,12 +51,15 @@ final class POSTabCoordinator {
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
         let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
+        let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
+                                                   currencySettings: currencySettings,
                                                    isLocalCatalogEnabled: isLocalCatalogEnabled,
+                                                   isFTSSearchEnabled: isFTSSearchEnabled,
                                                    posProductsOnlyEnabled: posProductsOnlyEnabled)
     }
 
@@ -263,6 +266,19 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                let isBookingsEligible = storesManager.sessionManager.defaultSite
+                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+
+                let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory? =
+                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings)
+                    ? POSBookingListFetchStrategyFactory(
+                        siteID: siteID,
+                        credentials: credentials,
+                        selectedSite: defaultSitePublisher,
+                        appPasswordSupportState: isAppPasswordSupported,
+                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings)
+                    ) : nil
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -277,6 +293,8 @@ private extension POSTabCoordinator {
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
+                    bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
+                    isBookingsEligible: isBookingsEligible,
                     orderService: orderService,
                     refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

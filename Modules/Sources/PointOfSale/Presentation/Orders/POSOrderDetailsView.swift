@@ -126,7 +126,7 @@ private extension POSOrderDetailsView {
     func productsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.productsTitle)
-                .font(.posBodyXLargeBold)
+                .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 

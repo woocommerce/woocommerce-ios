@@ -134,7 +134,7 @@ struct POSBookingDetailView: View {
     private var bookingDetailsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(String(format: Localization.bookingIdTitle, booking.id))
-                .font(.posBodyXLargeBold)
+                .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
@@ -171,7 +171,7 @@ struct POSBookingDetailView: View {
         if hasCustomerDetails {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 Text(Localization.customerTitle)
-                    .font(.posBodyXLargeBold)
+                    .font(.posBodyXLargeRegular)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
@@ -331,7 +331,7 @@ struct POSBookingDetailView: View {
     private func sectionTitleWithAction<Action: View>(title: String, @ViewBuilder action: () -> Action) -> some View {
         HStack(alignment: .top) {
             Text(title)
-                .font(.posBodyXLargeBold)
+                .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
             Spacer()

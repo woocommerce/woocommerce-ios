@@ -20,7 +20,7 @@ struct POSTotalsSectionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(sectionTitle)
-                .font(.posBodyXLargeBold)
+                .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 

@@ -496,12 +496,15 @@ final class HubMenuViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
 
         let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker(isEligible: true)
+        let posEligibilityService = MockPOSEligibilityService()
+        posEligibilityService.cachedTabVisibility[sampleSiteID] = true
 
         // When
         let viewModel = HubMenuViewModel(
             siteID: sampleSiteID,
             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
             stores: stores,
+            posEligibilityService: posEligibilityService,
             bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker },
             isPad: true
         )
@@ -515,6 +518,40 @@ final class HubMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Bookings.id
+        }))
+    }
+
+    @MainActor
+    func test_menuElements_exclude_bookings_on_ipad_when_pos_not_available() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker(isEligible: true)
+        let posEligibilityService = MockPOSEligibilityService()
+        posEligibilityService.cachedTabVisibility[sampleSiteID] = false
+
+        // When
+        let viewModel = HubMenuViewModel(
+            siteID: sampleSiteID,
+            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+            stores: stores,
+            posEligibilityService: posEligibilityService,
+            bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker },
+            isPad: true
+        )
+        viewModel.setupMenuElements()
+
+        waitUntil {
+            viewModel.generalElements.firstIndex(where: { item in
+                item.id == HubMenuViewModel.Bookings.id
+            }) == nil
+        }
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Bookings.id
         }))
     }

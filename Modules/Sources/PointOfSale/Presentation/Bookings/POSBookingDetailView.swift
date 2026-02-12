@@ -138,22 +138,28 @@ struct POSBookingDetailView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            if let resourceName = booking.resourceName {
-                sectionDivider
-                detailRow(label: Localization.teamMemberLabel, value: resourceName)
-            }
-
-            if let location = booking.location {
-                sectionDivider
-                detailRow(label: Localization.locationLabel, value: location)
-            }
-
-            if !booking.duration.isEmpty {
-                sectionDivider
-                detailRow(label: Localization.durationLabel, value: booking.duration)
+            ForEach(Array(bookingDetailRows.enumerated()), id: \.offset) { index, row in
+                if index > 0 {
+                    sectionDivider
+                }
+                detailRow(label: row.label, value: row.value)
             }
         }
         .sectionCard()
+    }
+
+    private var bookingDetailRows: [(label: String, value: String)] {
+        var rows: [(label: String, value: String)] = []
+        if let resourceName = booking.resourceName {
+            rows.append((Localization.teamMemberLabel, resourceName))
+        }
+        if let location = booking.location {
+            rows.append((Localization.locationLabel, location))
+        }
+        if !booking.duration.isEmpty {
+            rows.append((Localization.durationLabel, booking.duration))
+        }
+        return rows
     }
 
     // MARK: - Customer

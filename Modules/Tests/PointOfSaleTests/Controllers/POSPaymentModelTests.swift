@@ -24,6 +24,7 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
 
         service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
 
@@ -42,6 +43,7 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
 
         let sut = makePaymentController(
             cardPresentPaymentService: service,
@@ -248,10 +250,7 @@ struct POSPaymentModelTests {
             return
         }
         viewModel.newOrderButtonViewModel.actionHandler()
-        // Yield to let the Task { @MainActor in } enqueued by the action handler execute.
-        await Task.yield()
         #expect(exitActionCalled == true)
-        _ = sut // prevent sut from being released before the yield
     }
 
     @Test("connection success alert is filtered when waiting to start payment on connect")
@@ -283,6 +282,7 @@ struct POSPaymentModelTests {
 
         let orderProvider = MockPOSPaymentOrderProvider()
         orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
 
         let sut = makePaymentController(
             cardPresentPaymentService: service,

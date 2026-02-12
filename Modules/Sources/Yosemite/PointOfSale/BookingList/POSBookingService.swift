@@ -20,11 +20,12 @@ public final class POSBookingService: POSBookingServiceProtocol {
     public init(siteID: Int64,
                 bookingsRemote: BookingsRemoteProtocol,
                 ordersRemote: POSOrdersRemoteProtocol,
-                currencyFormatter: CurrencyFormatter) {
+                currencyFormatter: CurrencyFormatter,
+                siteSettings: [SiteSetting] = []) {
         self.siteID = siteID
         self.bookingsRemote = bookingsRemote
         self.ordersRemote = ordersRemote
-        self.mapper = POSBookingMapper(currencyFormatter: currencyFormatter)
+        self.mapper = POSBookingMapper(currencyFormatter: currencyFormatter, siteSettings: siteSettings)
         self.orderMapper = POSOrderMapper(currencyFormatter: currencyFormatter)
     }
 

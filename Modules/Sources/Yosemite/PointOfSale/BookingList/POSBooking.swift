@@ -26,6 +26,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let customerPhone: String?
     public let billingAddress: String?
     public let customerNote: String?
+    public let bookingNote: String?
     public let location: String?
     public let duration: String
     public let formattedSubtotal: String?
@@ -47,6 +48,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
                 customerPhone: String? = nil,
                 billingAddress: String? = nil,
                 customerNote: String? = nil,
+                bookingNote: String? = nil,
                 location: String? = nil,
                 duration: String = "",
                 formattedSubtotal: String? = nil,
@@ -67,6 +69,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         self.customerPhone = customerPhone
         self.billingAddress = billingAddress
         self.customerNote = customerNote
+        self.bookingNote = bookingNote
         self.location = location
         self.duration = duration
         self.formattedSubtotal = formattedSubtotal

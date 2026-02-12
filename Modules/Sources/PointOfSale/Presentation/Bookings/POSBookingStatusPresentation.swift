@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.POSBooking
 
 /// POS presentation-only interpretation of booking statuses.
 ///
@@ -21,29 +22,21 @@ import enum Yosemite.BookingAttendanceStatus
 enum POSBookingPaymentStatus: Equatable {
     case paid
     case unpaid
+    case refunded
 
-    init(bookingStatus: BookingStatus) {
-        switch bookingStatus {
-        case .paid, .complete:
-            self = .paid
-        case .unpaid, .pendingConfirmation, .confirmed:
-            self = .unpaid
-        case .cancelled, .unknown:
-            self = .unpaid
+    init(booking: POSBooking) {
+        if booking.order.status == .refunded {
+            self = .refunded
+            return
         }
-    }
 
-    /// Initializer that considers whether the linked order has been paid.
-    /// When a booking is cancelled, the booking status alone doesn't tell us
-    /// whether it was previously paid. The order's payment state is the source of truth.
-    init(bookingStatus: BookingStatus, isBookingPaid: Bool) {
-        switch bookingStatus {
+        switch booking.status {
         case .paid, .complete:
             self = .paid
-        case .cancelled:
-            self = isBookingPaid ? .paid : .unpaid
         case .unpaid, .pendingConfirmation, .confirmed, .unknown:
             self = .unpaid
+        case .cancelled:
+            self = booking.order.datePaid == nil ? .unpaid : .paid
         }
     }
 
@@ -53,6 +46,8 @@ enum POSBookingPaymentStatus: Equatable {
             return Localization.paid
         case .unpaid:
             return Localization.unpaid
+        case .refunded:
+            return Localization.refunded
         }
     }
 
@@ -64,6 +59,8 @@ enum POSBookingPaymentStatus: Equatable {
             return .posOnDefault
         case .unpaid:
             return .posOnErrorLowest
+        case .refunded:
+            return .posOnErrorLowest
         }
     }
 
@@ -72,6 +69,8 @@ enum POSBookingPaymentStatus: Equatable {
         case .paid:
             return .posDefault
         case .unpaid:
+            return .posErrorLowest
+        case .refunded:
             return .posErrorLowest
         }
     }
@@ -179,6 +178,12 @@ private enum Localization {
         "pos.bookingPaymentStatus.unpaid",
         value: "Unpaid",
         comment: "POS booking payment status label when the booking is unpaid."
+    )
+
+    static let refunded = NSLocalizedString(
+        "pos.bookingPaymentStatus.refunded",
+        value: "Refunded",
+        comment: "POS booking payment status label when the booking order has been refunded."
     )
 
     static let attended = NSLocalizedString(

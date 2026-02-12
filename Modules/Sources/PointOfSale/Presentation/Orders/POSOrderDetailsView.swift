@@ -2,7 +2,6 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
-import struct Yosemite.POSOrderRefund
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -52,7 +51,18 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
-                    totalsSection(order)
+                    POSTotalsSectionView(
+                        sectionTitle: Localization.totalsTitle,
+                        subtotalLabel: Localization.productsLabel,
+                        subtotalAmount: order.formattedSubtotal,
+                        discountAmount: order.formattedDiscountTotal,
+                        taxAmount: order.formattedTotalTax,
+                        totalAmount: order.formattedTotal,
+                        paidAmount: order.formattedPaymentTotal,
+                        paymentMethodTitle: order.paymentMethodTitle,
+                        refunds: order.refunds,
+                        netAmount: order.formattedNetAmount
+                    )
                 }
                 .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
@@ -116,7 +126,7 @@ private extension POSOrderDetailsView {
     func productsSection(_ order: POSOrder) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.productsTitle)
-                .font(.posBodyXLargeBold)
+                .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
@@ -135,36 +145,8 @@ private extension POSOrderDetailsView {
         .posItemCardBorderStyles()
     }
 
-    @ViewBuilder
-    func totalsSection(_ order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            Text(Localization.totalsTitle)
-                .font(.posBodyXLargeBold)
-                .foregroundStyle(Color.posOnSurface)
-                .accessibilityAddTraits(.isHeader)
-
-            VStack(spacing: POSSpacing.small) {
-                productsSubtotalRow(order)
-                discountTotalRow(order)
-                taxTotalRow(order)
-
-                divider
-                mainTotalRow(order)
-
-                divider
-                paidAmountRow(order)
-
-                if !order.refunds.isEmpty {
-                    divider
-                    refundsSection(order)
-                }
-            }
-        }
-        .padding(POSPadding.medium)
-        .background(Color.posSurfaceContainerLowest)
-        .posItemCardBorderStyles()
-    }
 }
+
 
 // MARK: - Header Components
 
@@ -273,139 +255,6 @@ private extension POSOrderDetailsView {
         Text(item.formattedTotal)
             .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurface)
-    }
-}
-
-// MARK: - Totals Components
-
-private extension POSOrderDetailsView {
-    @ViewBuilder
-    func productsSubtotalRow(_ order: POSOrder) -> some View {
-        totalsRow(
-            title: Localization.productsLabel,
-            amount: order.formattedSubtotal,
-            accessibilityLabel: Localization.subtotalAccessibilityLabel(order.formattedSubtotal)
-        )
-    }
-
-    @ViewBuilder
-    func discountTotalRow(_ order: POSOrder) -> some View {
-        if let formattedDiscountTotal = order.formattedDiscountTotal {
-            totalsRow(
-                title: Localization.discountTotalLabel,
-                amount: formattedDiscountTotal,
-                accessibilityLabel: Localization.discountAccessibilityLabel(formattedDiscountTotal)
-            )
-        }
-    }
-
-    @ViewBuilder
-    func taxTotalRow(_ order: POSOrder) -> some View {
-        totalsRow(
-            title: Localization.taxesLabel,
-            amount: order.formattedTotalTax,
-            accessibilityLabel: Localization.taxAccessibilityLabel(order.formattedTotalTax)
-        )
-    }
-
-    @ViewBuilder
-    func mainTotalRow(_ order: POSOrder) -> some View {
-        totalsRow(
-            title: Localization.totalLabel,
-            amount: order.formattedTotal,
-            titleColor: .posOnSurface,
-            titleFont: .posBodyLargeBold,
-            accessibilityLabel: Localization.totalAccessibilityLabel(order.formattedTotal)
-        )
-    }
-
-    @ViewBuilder
-    func paidAmountRow(_ order: POSOrder) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.none) {
-            totalsRow(
-                title: Localization.paidLabel,
-                amount: order.formattedPaymentTotal,
-                titleColor: .posOnSurface,
-                titleFont: .posBodyLargeBold
-            )
-
-            if order.paymentMethodTitle.isNotEmpty {
-                Text(order.paymentMethodTitle)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(
-            Localization.paidAccessibilityLabel(
-                amount: order.formattedPaymentTotal,
-                method: order.paymentMethodTitle
-            )
-        )
-    }
-
-    @ViewBuilder
-    func refundsSection(_ order: POSOrder) -> some View {
-        ForEach(order.refunds.sorted(by: { $0.refundID < $1.refundID }), id: \.refundID) { refund in
-            refundRow(refund: refund)
-            divider
-        }
-
-        if let netAmount = order.formattedNetAmount {
-            netPaymentRow(netAmount: netAmount)
-        }
-    }
-
-    @ViewBuilder
-    func refundRow(refund: POSOrderRefund) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            totalsRow(
-                title: Localization.refundLabel,
-                amount: refund.formattedTotal,
-                titleColor: .posOnSurface,
-                titleFont: .posBodyLargeBold
-            )
-
-            if let reason = refund.reason, !reason.isEmpty {
-                Text(Localization.reasonLabel(reason))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Localization.refundAccessibilityLabel(amount: refund.formattedTotal, reason: refund.reason))
-    }
-
-    @ViewBuilder
-    func netPaymentRow(netAmount: String) -> some View {
-        totalsRow(
-            title: Localization.netPaymentLabel,
-            amount: netAmount,
-            titleColor: .posOnSurface,
-            titleFont: .posBodyLargeBold,
-            accessibilityLabel: Localization.netPaymentAccessibilityLabel(netAmount)
-        )
-    }
-
-    @ViewBuilder
-    func totalsRow(
-        title: String,
-        amount: String,
-        titleColor: Color = .posOnSurfaceVariantHighest,
-        titleFont: POSFontStyle = .posBodyMediumRegular(),
-        accessibilityLabel: String? = nil
-    ) -> some View {
-        HStack {
-            Text(title)
-                .font(titleFont)
-                .foregroundStyle(titleColor)
-            Spacer()
-            Text(amount)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel ?? "\(title) \(amount)")
     }
 }
 
@@ -585,51 +434,6 @@ private enum Localization {
         comment: "Label for products subtotal in the totals section"
     )
 
-    static let discountTotalLabel = NSLocalizedString(
-        "pos.orderDetailsView.discountTotalLabel",
-        value: "Discount total",
-        comment: "Label for discount total in the totals section"
-    )
-
-    static let taxesLabel = NSLocalizedString(
-        "pos.orderDetailsView.taxesLabel",
-        value: "Taxes",
-        comment: "Label for taxes in the totals section"
-    )
-
-    static let totalLabel = NSLocalizedString(
-        "pos.orderDetailsView.totalLabel",
-        value: "Total",
-        comment: "Label for the order total"
-    )
-
-    static let paidLabel = NSLocalizedString(
-        "pos.orderDetailsView.paidLabel2",
-        value: "Total paid",
-        comment: "Label for the paid amount"
-    )
-
-    static let refundLabel = NSLocalizedString(
-        "pos.orderDetailsView.refundLabel",
-        value: "Refunded",
-        comment: "Label for a refund entry. %1$lld is the refund ID."
-    )
-
-    static func reasonLabel(_ reason: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.reasonLabel",
-            value: "Reason: %1$@",
-            comment: "Label for refund reason. %1$@ is the reason text."
-        )
-        return String(format: format, reason)
-    }
-
-    static let netPaymentLabel = NSLocalizedString(
-        "pos.orderDetailsView.netPaymentLabel",
-        value: "Net Payment",
-        comment: "Label for net payment amount after refunds"
-    )
-
     static let emailReceiptActionTitle = NSLocalizedString(
         "pos.orderDetailsView.emailReceiptAction.title",
         value: "Email receipt",
@@ -692,91 +496,6 @@ private enum Localization {
         )
         label += ", " + String(format: format, quantity, unitPrice, total)
         return label
-    }
-
-    static func subtotalAccessibilityLabel(_ amount: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.subtotal.accessibilityLabel",
-            value: "Products subtotal: %1$@",
-            comment: "Accessibility label for products subtotal. %1$@ is the subtotal amount."
-        )
-        return String(format: format, amount)
-    }
-
-    static func discountAccessibilityLabel(_ amount: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.discount.accessibilityLabel",
-            value: "Discount total: %1$@",
-            comment: "Accessibility label for discount total. %1$@ is the discount amount."
-        )
-        return String(format: format, amount)
-    }
-
-    static func taxAccessibilityLabel(_ amount: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.tax.accessibilityLabel",
-            value: "Taxes: %1$@",
-            comment: "Accessibility label for taxes. %1$@ is the tax amount."
-        )
-        return String(format: format, amount)
-    }
-
-    static func totalAccessibilityLabel(_ amount: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.total.accessibilityLabel",
-            value: "Order total: %1$@",
-            comment: "Accessibility label for order total. %1$@ is the total amount."
-        )
-        return String(format: format, amount)
-    }
-
-    static func paidAccessibilityLabel(amount: String, method: String) -> String {
-        let baseFormat = NSLocalizedString(
-            "pos.orderDetailsView.paid.accessibilityLabel",
-            value: "Total paid: %1$@",
-            comment: "Accessibility label for total paid. %1$@ is the paid amount."
-        )
-        var label = String(format: baseFormat, amount)
-
-        if method.isNotEmpty {
-            let methodFormat = NSLocalizedString(
-                "pos.orderDetailsView.paid.accessibilityLabel.method",
-                value: "Payment method: %1$@",
-                comment: "Payment method portion of paid accessibility label. %1$@ is the payment method."
-            )
-            label += ", " + String(format: methodFormat, method)
-        }
-
-        return label
-    }
-
-    static func refundAccessibilityLabel(amount: String, reason: String?) -> String {
-        let baseFormat = NSLocalizedString(
-            "pos.orderDetailsView.refund.accessibilityLabel",
-            value: "Refunded: %1$@",
-            comment: "Accessibility label for refunded amount. %1$@ is the refund amount."
-        )
-        var label = String(format: baseFormat, amount)
-
-        if let reason = reason, !reason.isEmpty {
-            let reasonFormat = NSLocalizedString(
-                "pos.orderDetailsView.refund.accessibilityLabel.reason",
-                value: "Reason: %1$@",
-                comment: "Reason portion of refund accessibility label. %1$@ is the refund reason."
-            )
-            label += ", " + String(format: reasonFormat, reason)
-        }
-
-        return label
-    }
-
-    static func netPaymentAccessibilityLabel(_ amount: String) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.netPayment.accessibilityLabel",
-            value: "Net payment: %1$@",
-            comment: "Accessibility label for net payment. %1$@ is the net payment amount after refunds."
-        )
-        return String(format: format, amount)
     }
 
     // MARK: - Refund Error Messages

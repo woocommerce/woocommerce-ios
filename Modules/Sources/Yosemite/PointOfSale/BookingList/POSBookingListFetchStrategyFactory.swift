@@ -20,7 +20,8 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
-                currencyFormatter: CurrencyFormatter) {
+                currencyFormatter: CurrencyFormatter,
+                siteSettings: [SiteSetting] = []) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
@@ -31,7 +32,8 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
             siteID: siteID,
             bookingsRemote: bookingsRemote,
             ordersRemote: ordersRemote,
-            currencyFormatter: currencyFormatter
+            currencyFormatter: currencyFormatter,
+            siteSettings: siteSettings
         )
     }
 

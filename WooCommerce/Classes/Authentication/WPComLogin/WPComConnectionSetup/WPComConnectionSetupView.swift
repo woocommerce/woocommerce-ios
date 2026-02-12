@@ -115,7 +115,7 @@ private extension WPComConnectionSetupView {
 #Preview {
     let viewModel = WPComConnectionSetupViewModel(
         storeName: "coffeebeans.com",
-        handler: WPComConnectionSetupHandler(),
+        handler: WPComConnectionSetupHandler(siteID: 123, siteURL: "https://example.com", credentials: nil),
         onDismiss: {},
         onGoToStore: {},
         onUpdatePlugin: {}

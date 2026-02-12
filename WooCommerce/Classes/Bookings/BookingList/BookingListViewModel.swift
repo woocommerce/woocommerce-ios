@@ -128,7 +128,11 @@ final class BookingListViewModel: ObservableObject {
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         hasFilters = filters.numberOfActiveFilters > 0
         self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
-        resultsController.updatePredicate(siteID: siteID, filters: self.filters)
+        var predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: self.filters)
+        if let localPredicate = type.localPredicate {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
+        }
+        resultsController.predicate = predicate
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
 

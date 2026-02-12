@@ -48,9 +48,9 @@ struct POSRefundErrorStrings {
 struct POSRefundModalContentView: View {
     let state: RefundModalState
     @Binding var modalState: RefundModalState?
-    @Binding var isShowingEmailReceiptView: Bool
     @Environment(POSOrderListModel.self) private var orderListModel
 
+    let onEmailReceipt: () -> Void
     let onRetryLoading: () -> Void
     let onRetryPreparation: () -> Void
     let onEditRefund: (() -> Void)?
@@ -149,9 +149,7 @@ struct POSRefundModalContentView: View {
                 onDone: { modalState = nil },
                 onEmailReceipt: {
                     modalState = nil
-                    Task { @MainActor in
-                        isShowingEmailReceiptView = true
-                    }
+                    onEmailReceipt()
                 },
                 onClose: { modalState = nil }
             )

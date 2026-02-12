@@ -58,10 +58,13 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        let combinedPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
+        var predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
+        if let localPredicate = type.localPredicate {
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
+        }
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
-                                                                  matching: combinedPredicate,
+                                                                  matching: predicate,
                                                                   sortedBy: [sortDescriptorByDate])
         return resultsController
     }()
@@ -80,10 +83,7 @@ final class BookingListViewModel: ObservableObject {
         self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
-        self.tabDateFilters = BookingFilters(
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-        )
+        self.tabDateFilters = type.remoteFilters(currentDate: currentDate)
         self.filters = tabDateFilters
 
         configureResultsController()

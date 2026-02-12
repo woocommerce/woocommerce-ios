@@ -3,6 +3,14 @@ import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
 
 public struct POSBooking: Equatable, Hashable, Identifiable {
+    /// Whether the linked order indicates payment was collected.
+    /// Uses `datePaid` rather than order status because the Bookings API
+    /// may change the order status when a booking is cancelled,
+    /// but `datePaid` persists regardless of status changes.
+    public var isBookingPaid: Bool {
+        order.datePaid != nil
+    }
+
     public let id: Int64
     public let customerName: String?
     public let serviceName: String

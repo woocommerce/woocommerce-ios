@@ -32,6 +32,7 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
     case appPasswordsForJetpackSites
     case posLocalCatalogM1
     case wooPosTabletPromoBanner
+    case selfDrivenPushNotificationsM1
 
     init?(rawValue: String) {
         switch rawValue {
@@ -45,6 +46,8 @@ public enum RemoteFeatureFlag: CaseIterable, Hashable, Decodable {
             self = .posLocalCatalogM1
         case "woo_pos_tablet_promo_banner":
             self = .wooPosTabletPromoBanner
+        case "woo_self_driven_push_notifications_m1":
+            self = .selfDrivenPushNotificationsM1
         default:
             return nil
         }

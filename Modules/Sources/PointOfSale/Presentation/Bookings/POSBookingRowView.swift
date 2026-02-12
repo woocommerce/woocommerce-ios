@@ -8,6 +8,18 @@ struct POSBookingRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
+    private var lifecycleStatus: POSBookingLifecycleStatus {
+        POSBookingLifecycleStatus(bookingStatus: booking.status)
+    }
+
+    private var paymentStatus: POSBookingPaymentStatus {
+        POSBookingPaymentStatus(booking: booking)
+    }
+
+    private var attendanceDisplay: POSBookingAttendanceDisplay {
+        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
             bookingHeaderRow
@@ -51,9 +63,7 @@ struct POSBookingRowView: View {
         )
 
         let lifecycleStatus = POSBookingLifecycleStatus(bookingStatus: booking.status)
-        let paymentStatus = POSBookingPaymentStatus(bookingStatus: booking.status,
-                                                          orderStatus: booking.order.status,
-                                                          paymentMethodID: booking.order.paymentMethodID)
+        let paymentStatus = POSBookingPaymentStatus(booking: booking)
         let attendanceDisplay = POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
         let customerDisplayName = booking.customerName ?? booking.customerEmail
 

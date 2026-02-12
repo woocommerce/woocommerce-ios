@@ -1,7 +1,7 @@
 import SwiftUI
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
-import enum Yosemite.OrderStatusEnum
+import struct Yosemite.POSBooking
 
 /// POS presentation-only interpretation of booking statuses.
 ///
@@ -15,6 +15,7 @@ import enum Yosemite.OrderStatusEnum
 ///    - Derived from the API `status` field values.
 /// 3. **Attendance status**: Unattended / Attended
 ///    - Comes from the API `attendance_status` field.
+// TODO: WOOMOB-2143 - Revisit status matching once status-matching changes land.
 
 // MARK: - Payment Status (derived from BookingStatus)
 
@@ -23,18 +24,19 @@ enum POSBookingPaymentStatus: Equatable {
     case unpaid
     case refunded
 
-    init(bookingStatus: BookingStatus, orderStatus: OrderStatusEnum, paymentMethodID: String = "") {
-        if orderStatus == .refunded {
+    init(booking: POSBooking) {
+        if booking.order.status == .refunded {
             self = .refunded
             return
         }
-        switch bookingStatus {
+
+        switch booking.status {
         case .paid, .complete:
             self = .paid
         case .unpaid, .pendingConfirmation, .confirmed, .unknown:
             self = .unpaid
         case .cancelled:
-            self = paymentMethodID.isEmpty ? .unpaid : .paid
+            self = booking.order.datePaid == nil ? .unpaid : .paid
         }
     }
 
@@ -82,9 +84,9 @@ enum POSBookingAttendanceDisplay: Equatable {
 
     init(attendanceStatus: BookingAttendanceStatus) {
         switch attendanceStatus {
-        case .checkedIn:
+        case .attended:
             self = .attended
-        case .booked, .noShow, .cancelled, .unknown:
+        case .unattended, .unknown:
             self = .unattended
         }
     }

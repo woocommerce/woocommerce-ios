@@ -8,8 +8,11 @@ struct POSBookingDetailView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(POSBookingsModel.self) private var bookingsModel
 
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var cancelModalState: CancelBookingModalState?
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -24,7 +27,7 @@ struct POSBookingDetailView: View {
     }
 
     private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status, orderStatus: booking.order.status, paymentMethodID: booking.order.paymentMethodID)
+        POSBookingPaymentStatus(booking: booking)
     }
 
     private var attendanceDisplay: POSBookingAttendanceDisplay {
@@ -33,6 +36,10 @@ struct POSBookingDetailView: View {
 
     private var isPaid: Bool {
         paymentStatus == .paid
+    }
+
+    private var isBookingCancellable: Bool {
+        lifecycleStatus != .cancelled && lifecycleStatus != .completed
     }
 
     var body: some View {
@@ -46,6 +53,20 @@ struct POSBookingDetailView: View {
                         })
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    case .orderDetailRefund:
+                        POSOrderDetailsView(
+                            order: booking.order,
+                            onBack: { navigationPath.removeLast() },
+                            autoStartRefund: true,
+                            onRefundSuccess: {
+                                Task {
+                                    await bookingsModel.bookingsController.refreshBookings()
+                                }
+                            }
+                        )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                             navigationPath.removeLast()
                         }))
@@ -91,6 +112,13 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posModal(item: $cancelModalState) { state in
+            POSCancelBookingModalContent(
+                state: state,
+                booking: booking,
+                cancelModalState: $cancelModalState
+            )
+        }
     }
 
     @ViewBuilder
@@ -98,6 +126,17 @@ struct POSBookingDetailView: View {
         Menu {
             Button(Localization.viewOrderAction) {
                 navigationPath.append(.orderDetail)
+            }
+            if isPaid {
+                Button(Localization.issueRefundAction) {
+                    orderListModel.ordersController.selectOrder(booking.order)
+                    navigationPath.append(.orderDetailRefund)
+                }
+            }
+            if isBookingCancellable {
+                Button(Localization.cancelBookingAction, role: .destructive) {
+                    cancelModalState = .confirmation
+                }
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -360,7 +399,6 @@ struct POSBookingDetailView: View {
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(label) \(value)")
     }
-
 }
 
 // MARK: - Section Card Modifier
@@ -400,6 +438,7 @@ private struct POSFilledAttendanceButtonStyle: ButtonStyle {
 
 private enum NavigationDestination: Hashable {
     case orderDetail
+    case orderDetailRefund
 }
 
 // MARK: - Localization
@@ -549,6 +588,18 @@ private enum Localization {
         "pos.bookingDetailView.moreActions.accessibilityLabel",
         value: "More actions",
         comment: "Accessibility label for the overflow actions menu button in booking details."
+    )
+
+    static let issueRefundAction = NSLocalizedString(
+        "pos.bookingDetailView.issueRefundAction",
+        value: "Issue Refund",
+        comment: "Menu action to issue a full refund for a booking."
+    )
+
+    static let cancelBookingAction = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingAction",
+        value: "Cancel Booking",
+        comment: "Menu action to cancel a booking from the POS booking detail view."
     )
 }
 

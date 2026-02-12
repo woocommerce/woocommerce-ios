@@ -19,6 +19,7 @@ final class BookingSearchViewModel: ObservableObject {
     private var searchQuerySubscription: AnyCancellable?
     private var currentOrder: BookingListViewModel.SortBy = .newestToOldest
 
+    private let tabDateFilters: BookingFilters
     private var filters: BookingFilters
 
     /// Tracks if the infinite scroll indicator should be displayed.
@@ -41,17 +42,11 @@ final class BookingSearchViewModel: ObservableObject {
         self.stores = stores
         self.searchPaginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
-        self.filters = {
-            switch type {
-            case .all:
-                BookingFilters() // TODO: check local storage for persisted filters
-            case .today, .upcoming:
-                BookingFilters(
-                    startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-                    startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-                )
-            }
-        }()
+        self.tabDateFilters = BookingFilters(
+            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
+        )
+        self.filters = tabDateFilters
 
         configureSearchPaginationTracker()
         configureSearchQuerySubscription(searchQueryPublisher: searchQueryPublisher)
@@ -83,9 +78,7 @@ final class BookingSearchViewModel: ObservableObject {
     }
 
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
-        /// Only support filters for All tab
-        guard type == .all else { return }
-        self.filters = filters.bookingFilters
+        self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
         searchPaginationTracker.resync(reason: nil) {}
     }
 

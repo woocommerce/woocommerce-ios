@@ -9,11 +9,12 @@ import struct NetworkingCore.JetpackSite
 public protocol POSBookingListFetchStrategyFactoryProtocol {
     func defaultStrategy() -> POSBookingListFetchStrategy
     func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy
+    var bookingService: POSBookingServiceProtocol { get }
 }
 
 public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol {
     private let siteID: Int64
-    private let bookingService: POSBookingServiceProtocol
+    public let bookingService: POSBookingServiceProtocol
 
     public init(siteID: Int64,
                 credentials: Credentials?,

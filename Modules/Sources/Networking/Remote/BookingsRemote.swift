@@ -59,6 +59,40 @@ public struct BookingFilters {
         self.attendanceStatuses = attendanceStatuses
         self.paymentStatuses = paymentStatuses
     }
+
+    /// Returns a new `BookingFilters` by merging user-applied filters with this instance's date constraints.
+    /// Non-date fields come from `userFilters`; date fields are intersected
+    /// (later `startDateAfter`, earlier `startDateBefore`).
+    public func mergingDates(with userFilters: BookingFilters) -> BookingFilters {
+        BookingFilters(
+            productIDs: userFilters.productIDs,
+            customerIDs: userFilters.customerIDs,
+            resourceIDs: userFilters.resourceIDs,
+            startDateBefore: Self.mostRestrictiveDate(date1: startDateBefore,
+                                                      date2: userFilters.startDateBefore,
+                                                      pickEarlier: true),
+            startDateAfter: Self.mostRestrictiveDate(date1: startDateAfter,
+                                                     date2: userFilters.startDateAfter,
+                                                     pickEarlier: false),
+            attendanceStatuses: userFilters.attendanceStatuses
+        )
+    }
+
+    /// Returns the most restrictive of two ISO 8601 date strings.
+    /// - `pickEarlier = true`  → picks `min` (for upper bounds / `startDateBefore`)
+    /// - `pickEarlier = false` → picks `max` (for lower bounds / `startDateAfter`)
+    private static func mostRestrictiveDate(date1: String?, date2: String?, pickEarlier: Bool) -> String? {
+        switch (date1, date2) {
+        case (nil, nil):
+            return nil
+        case (let d, nil):
+            return d
+        case (nil, let d):
+            return d
+        case (let d1?, let d2?):
+            return pickEarlier ? min(d1, d2) : max(d1, d2)
+        }
+    }
 }
 
 /// Booking: Remote Endpoints

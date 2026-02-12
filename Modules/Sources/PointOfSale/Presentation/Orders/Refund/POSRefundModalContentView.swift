@@ -51,22 +51,10 @@ struct POSRefundModalContentView: View {
     @Binding var isShowingEmailReceiptView: Bool
     let orderListModel: POSOrderListModel
 
-    /// Called when the loading error retry button is tapped.
     let onRetryLoading: () -> Void
-
-    /// Called when the preparation error retry button is tapped.
     let onRetryPreparation: () -> Void
-
-    /// Called when the "Edit refund" button is tapped on the review screen.
-    /// Pass `nil` to hide the button (e.g. for full-refund-only flows like bookings).
     let onEditRefund: (() -> Void)?
-
-    /// Whether to show the item selection view for the `.itemSelection` state.
-    /// Set to `false` for flows that skip item selection (e.g. bookings).
     let showsItemSelection: Bool
-
-    /// Called after a refund is successfully processed.
-    /// Use this to trigger side effects like refreshing a booking list.
     let onRefundSuccess: (() -> Void)?
 
     let errorStrings: POSRefundErrorStrings

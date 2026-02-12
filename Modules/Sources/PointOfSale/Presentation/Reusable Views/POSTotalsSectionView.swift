@@ -136,7 +136,7 @@ struct POSTotalsSectionView: View {
                 .foregroundStyle(Color.posOnSurface)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel ?? "\(title) \(amount)")
+        .accessibilityLabel(accessibilityLabel ?? Localization.rowAccessibilityLabel(title: title, amount: amount))
     }
 
     private var sectionDivider: some View {
@@ -233,6 +233,15 @@ private enum Localization {
         }
 
         return label
+    }
+
+    static func rowAccessibilityLabel(title: String, amount: String) -> String {
+        let format = NSLocalizedString(
+            "pos.totalsSectionView.row.accessibilityLabel",
+            value: "%1$@: %2$@",
+            comment: "Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount."
+        )
+        return String(format: format, title, amount)
     }
 
     static func netPaymentAccessibilityLabel(_ amount: String) -> String {

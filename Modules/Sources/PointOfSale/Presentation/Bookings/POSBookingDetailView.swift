@@ -10,8 +10,6 @@ struct POSBookingDetailView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
 
     @State private var navigationPath: [NavigationDestination] = []
-    @State private var refundModalState: RefundModalState?
-    @State private var isShowingEmailReceiptView: Bool = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -44,6 +42,20 @@ struct POSBookingDetailView: View {
                         })
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    case .orderDetailRefund:
+                        POSOrderDetailsView(
+                            order: booking.order,
+                            onBack: { navigationPath.removeLast() },
+                            autoStartRefund: true,
+                            onRefundSuccess: {
+                                Task {
+                                    await bookingsModel.bookingsController.refreshBookings()
+                                }
+                            }
+                        )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                             navigationPath.removeLast()
                         }))
@@ -80,39 +92,6 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
-            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
-                try await orderListModel.sendReceipt(order: booking.order, email: email)
-            }
-            .posHeaderBackButtonIcon(systemName: "xmark")
-        }
-        .posModal(item: $refundModalState, onDismiss: {
-            orderListModel.ordersController.clearRefundSelection()
-        }) { state in
-            POSRefundModalContentView(
-                state: state,
-                modalState: $refundModalState,
-                isShowingEmailReceiptView: $isShowingEmailReceiptView,
-                orderListModel: orderListModel,
-                onRetryLoading: { initiateBookingRefundFlow() },
-                onRetryPreparation: { initiateBookingRefundFlow() },
-                onEditRefund: nil,
-                showsItemSelection: false,
-                onRefundSuccess: {
-                    Task {
-                        await bookingsModel.bookingsController.refreshBookings()
-                    }
-                },
-                errorStrings: .init(
-                    loadTitle: Localization.loadRefundErrorTitle,
-                    loadSubtitle: Localization.loadRefundErrorSubtitle,
-                    prepareTitle: Localization.prepareRefundErrorTitle,
-                    prepareSubtitle: Localization.prepareRefundErrorSubtitle,
-                    createTitle: Localization.createRefundErrorTitle,
-                    createSubtitle: Localization.createRefundErrorSubtitle
-                )
-            )
-        }
     }
 
     @ViewBuilder
@@ -123,7 +102,8 @@ struct POSBookingDetailView: View {
             }
             if isPaid {
                 Button(Localization.issueRefundAction) {
-                    initiateBookingRefundFlow()
+                    orderListModel.ordersController.selectOrder(booking.order)
+                    navigationPath.append(.orderDetailRefund)
                 }
             }
         } label: {
@@ -340,31 +320,6 @@ struct POSBookingDetailView: View {
     }
 }
 
-// MARK: - Booking Refund Flow
-
-private extension POSBookingDetailView {
-    func initiateBookingRefundFlow() {
-        orderListModel.ordersController.selectOrder(booking.order)
-        refundModalState = .loading
-        Task { @MainActor in
-            let result = await orderListModel.ordersController.startRefundFlow()
-            switch result {
-            case .hasItemsToRefund:
-                // Skip item selection — go directly to review for full refund
-                guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
-                    refundModalState = .preparationError
-                    return
-                }
-                refundModalState = .review(reviewData)
-            case .nothingToRefund:
-                refundModalState = .nothingToRefund
-            case .failed:
-                refundModalState = .loadingError
-            }
-        }
-    }
-}
-
 // MARK: - Section Card Modifier
 
 private struct SectionCardModifier: ViewModifier {
@@ -404,6 +359,7 @@ private extension DateFormatter {
 
 private enum NavigationDestination: Hashable {
     case orderDetail
+    case orderDetailRefund
 }
 
 // MARK: - Localization
@@ -533,41 +489,5 @@ private enum Localization {
         "pos.bookingDetailView.issueRefundAction",
         value: "Issue Refund",
         comment: "Menu action to issue a full refund for a booking."
-    )
-
-    static let loadRefundErrorTitle = NSLocalizedString(
-        "pos.bookingDetailView.loadRefundError.title",
-        value: "Couldn't load refund details",
-        comment: "Title shown when loading refund information for a booking has failed."
-    )
-
-    static let loadRefundErrorSubtitle = NSLocalizedString(
-        "pos.bookingDetailView.loadRefundError.subtitle",
-        value: "Please try again.",
-        comment: "Subtitle shown when loading refund information for a booking has failed."
-    )
-
-    static let prepareRefundErrorTitle = NSLocalizedString(
-        "pos.bookingDetailView.prepareRefundError.title",
-        value: "Couldn't prepare refund",
-        comment: "Title shown when refund data preparation for a booking fails."
-    )
-
-    static let prepareRefundErrorSubtitle = NSLocalizedString(
-        "pos.bookingDetailView.prepareRefundError.subtitle",
-        value: "Please try again.",
-        comment: "Subtitle shown when refund data preparation for a booking fails."
-    )
-
-    static let createRefundErrorTitle = NSLocalizedString(
-        "pos.bookingDetailView.createRefundError.title",
-        value: "Failed to create refund",
-        comment: "Title shown when a booking refund creation has failed."
-    )
-
-    static let createRefundErrorSubtitle = NSLocalizedString(
-        "pos.bookingDetailView.createRefundError.subtitle",
-        value: "Please try again.",
-        comment: "Subtitle shown when a booking refund creation has failed."
     )
 }

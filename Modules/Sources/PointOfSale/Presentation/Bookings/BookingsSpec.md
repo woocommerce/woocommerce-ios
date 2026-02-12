@@ -95,7 +95,8 @@ Note: Duration, location, customer email/phone/billing address, and customer not
 - More visible time range
 
 **Update Attendance Status**
-- "Mark Attended" button — shown when attendance is `unattended`
+- Bidirectional toggle: "Mark Attended" button when attendance is `unattended`, "Mark Unattended" button when attendance is `attended`
+- Button hidden when booking is cancelled
 - Requires `.posModal()` confirmation dialog before executing
 - On success: badge updates, list row refreshes
 - On failure: error alert with retry
@@ -623,11 +624,18 @@ func cancelBooking(booking: POSBooking) async throws
 
 #### M2-B2. Attendance update UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
+**New files:** `PointOfSale/Presentation/Bookings/UpdateAttendance/` (4 files: modal state, confirmation view, success view, modal content)
 
-- Attendance toggle in the detail view (section 5) — switches between "Attended" / "Unattended"
-- Calls `bookingsModel.markAttended(booking:)` or equivalent on toggle
-- On success: badge updates inline, header status badges update, list row updates via `updateBooking()`
-- On failure: error alert with retry, toggle reverts
+- Bidirectional attendance toggle in the detail view (section 5):
+  - "Mark Attended" button when current status is `unattended`
+  - "Mark Unattended" button when current status is `attended`
+  - Button hidden when booking is cancelled
+- Requires `.posModal()` confirmation dialog before executing (mirrors cancel booking modal flow)
+- Calls `bookingsController.updateAttendanceStatus(bookingID:status:)` on confirm
+- Modal states: confirmation → processing → success/error
+- Error state reuses `POSRefundErrorView` with retry
+- On success: badge updates inline, header status badges update, list row refreshes via `refreshBookings()`
+- On failure: error alert with retry
 
 #### M2-B3. Cancel booking UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
@@ -876,11 +884,13 @@ M3-C1/C2 ── after all above
 ### M2: Attendance Updates
 | Scenario | Expected |
 |----------|----------|
-| Mark attended on already attended booking | Button hidden (not applicable) |
-| Mark attended on cancelled booking | Button hidden |
-| Network failure on mark attended | Error alert with retry |
-| Two people mark attended same booking simultaneously | Last write wins, refresh shows latest |
-| Mark attended booking with no linked order | Allowed (attendance is independent of payment) |
+| Unattended booking | "Mark Attended" button shown |
+| Attended booking | "Mark Unattended" button shown |
+| Cancelled booking | Attendance button hidden |
+| Network failure on update | Error alert with retry |
+| Two people update same booking simultaneously | Last write wins, refresh shows latest |
+| Update attendance on booking with no linked order | Allowed (attendance is independent of payment) |
+| Mark attended → then mark unattended | Both directions work, badge toggles |
 
 ### M2: Cancel Booking
 | Scenario | Expected |

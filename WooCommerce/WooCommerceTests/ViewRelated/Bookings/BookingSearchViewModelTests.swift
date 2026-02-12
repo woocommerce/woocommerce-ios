@@ -491,7 +491,7 @@ struct BookingSearchViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [BookingProductFilter(productID: 100, name: "Massage")],
-            attendanceStatuses: [.booked],
+            attendanceStatuses: [.attended],
             customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
             dateRange: nil,
             numberOfActiveFilters: 4
@@ -505,7 +505,7 @@ struct BookingSearchViewModelTests {
         // Then
         #expect(capturedFilters?.resourceIDs == [42])
         #expect(capturedFilters?.productIDs == [100])
-        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.booked.rawValue])
+        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.attended.rawValue])
         #expect(capturedFilters?.customerIDs == [7])
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")

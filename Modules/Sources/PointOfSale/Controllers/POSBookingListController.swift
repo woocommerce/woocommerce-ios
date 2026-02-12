@@ -5,6 +5,7 @@ import protocol Yosemite.POSBookingListFetchStrategy
 import struct Yosemite.POSBooking
 import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.POSBookingServiceError
+import protocol Yosemite.POSBookingServiceProtocol
 
 protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
@@ -28,6 +29,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     private var cachedBookings: [POSBooking] = []
     private(set) var selectedBooking: POSBooking?
     private let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol
+    private let bookingService: POSBookingServiceProtocol
 
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -42,6 +44,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
          initialState: POSBookingListState = .loading([])) {
         self.bookingsViewState = initialState
         self.bookingListFetchStrategyFactory = bookingListFetchStrategyFactory
+        self.bookingService = bookingListFetchStrategyFactory.bookingService
         self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy()
     }
 
@@ -83,7 +86,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func cancelBooking(bookingID: Int64) async throws {
-        try await bookingListFetchStrategyFactory.bookingService.cancelBooking(bookingID: bookingID)
+        try await bookingService.cancelBooking(bookingID: bookingID)
         await refreshBookings()
     }
 

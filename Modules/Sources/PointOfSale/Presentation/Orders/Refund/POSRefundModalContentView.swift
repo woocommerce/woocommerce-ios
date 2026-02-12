@@ -49,7 +49,7 @@ struct POSRefundModalContentView: View {
     let state: RefundModalState
     @Binding var modalState: RefundModalState?
     @Binding var isShowingEmailReceiptView: Bool
-    let orderListModel: POSOrderListModel
+    @Environment(POSOrderListModel.self) private var orderListModel
 
     let onRetryLoading: () -> Void
     let onRetryPreparation: () -> Void

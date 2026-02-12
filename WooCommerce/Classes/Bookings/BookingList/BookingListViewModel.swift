@@ -58,10 +58,9 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        let combinedPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
-                                                                  matching: combinedPredicate,
+                                                                  matching: currentPredicate,
                                                                   sortedBy: [sortDescriptorByDate])
         return resultsController
     }()
@@ -80,10 +79,7 @@ final class BookingListViewModel: ObservableObject {
         self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
-        self.tabDateFilters = BookingFilters(
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-        )
+        self.tabDateFilters = type.remoteFilters(currentDate: currentDate)
         self.filters = tabDateFilters
 
         configureResultsController()
@@ -128,13 +124,17 @@ final class BookingListViewModel: ObservableObject {
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         hasFilters = filters.numberOfActiveFilters > 0
         self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
-        resultsController.updatePredicate(siteID: siteID, filters: self.filters)
+        resultsController.predicate = currentPredicate
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
 
     /// Converts SortBy to BookingsRemote.Order
     private func remoteOrder(from sortBy: SortBy) -> BookingsRemote.Order {
         sortBy == .oldestToNewest ? .ascending : .descending
+    }
+
+    private var currentPredicate: NSPredicate {
+        NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
     }
 }
 

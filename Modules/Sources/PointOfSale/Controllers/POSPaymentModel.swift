@@ -242,7 +242,8 @@ extension POSPaymentModel {
     /// For card payments, restarts the full payment flow (cancel + collect).
     /// For cash payments, restores session event subscriptions without activating the reader.
     func activate() async {
-        DDLogInfo("▶️ [Session] activate called — isActive: \(isActive), activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), cash: \(paymentState.cash)")
+        DDLogInfo("▶️ [Session] activate called — isActive: \(isActive), " +
+                  "activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), cash: \(paymentState.cash)")
         guard !isActive else { return }
         if paymentState.activePaymentMethod == .card {
             await startPayment()
@@ -388,7 +389,8 @@ private extension POSPaymentModel {
                 return newCardPaymentState
             }
             .sink(receiveValue: { [weak self] cardPaymentState in
-                DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), current cash state: \(String(describing: self?.paymentState.cash))")
+                DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
+                          "current cash state: \(String(describing: self?.paymentState.cash))")
                 self?.paymentState.card = cardPaymentState
             })
             .store(in: &paymentSessionCancellables)

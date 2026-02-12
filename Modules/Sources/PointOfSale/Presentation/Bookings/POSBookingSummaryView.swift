@@ -65,7 +65,7 @@ extension POSBookingSummaryView {
     static func formattedTimeRange(for booking: POSBooking) -> String {
         let dateString = DateFormatter.posShortDateFormatter.string(from: booking.startDate)
         let timeRange = DateIntervalFormatter.posTimeRangeFormatter.string(from: booking.startDate, to: booking.endDate)
-        return "\(dateString), \(timeRange)"
+        return String(format: Localization.dateAndTimeRange, dateString, timeRange)
     }
 }
 
@@ -75,6 +75,14 @@ private extension DateFormatter {
         formatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
         return formatter
     }()
+}
+
+private enum Localization {
+    static let dateAndTimeRange = NSLocalizedString(
+        "pos.bookingSummaryView.dateAndTimeRange",
+        value: "%1$@, %2$@",
+        comment: "Date and time range format. %1$@ is the date, %2$@ is the time range (e.g. '9:00 AM – 10:00 AM')."
+    )
 }
 
 private extension DateIntervalFormatter {

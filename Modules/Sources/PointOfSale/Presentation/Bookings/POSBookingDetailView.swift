@@ -139,14 +139,17 @@ struct POSBookingDetailView: View {
                 .accessibilityAddTraits(.isHeader)
 
             if let resourceName = booking.resourceName {
+                sectionDivider
                 detailRow(label: Localization.teamMemberLabel, value: resourceName)
             }
 
             if let location = booking.location {
+                sectionDivider
                 detailRow(label: Localization.locationLabel, value: location)
             }
 
             if !booking.duration.isEmpty {
+                sectionDivider
                 detailRow(label: Localization.durationLabel, value: booking.duration)
             }
         }
@@ -188,23 +191,10 @@ struct POSBookingDetailView: View {
 
                 if let phone = booking.customerPhone {
                     sectionDivider
-                    HStack {
-                        Text(phone)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(Color.posOnSurface)
-                        Spacer()
-                        Button {
-                            // TODO: Implement phone action
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(actionTintColor)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Localization.phoneActionAccessibilityLabel)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
+                    Text(phone)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                        .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
                 }
 
                 if let address = booking.billingAddress {
@@ -555,12 +545,6 @@ private enum Localization {
         "pos.bookingDetailView.copyEmail.accessibilityLabel",
         value: "Copy email address",
         comment: "Accessibility label for the copy email button in booking details."
-    )
-
-    static let phoneActionAccessibilityLabel = NSLocalizedString(
-        "pos.bookingDetailView.phoneAction.accessibilityLabel",
-        value: "Phone options",
-        comment: "Accessibility label for the phone action button in booking details."
     )
 
     static let moreActionsAccessibilityLabel = NSLocalizedString(

@@ -8,6 +8,7 @@ import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import class Yosemite.PaymentCaptureCelebration
 
 /// Shared payment model that owns all payment state and logic.
+@MainActor
 @Observable
 final class POSPaymentModel {
     // MARK: - State (read by views)
@@ -81,9 +82,12 @@ extension POSPaymentModel {
     /// Cancels any existing payment on the shared reader, then starts a new payment.
     /// Collects immediately if a reader is connected; otherwise waits for connection.
     func startPayment() async {
+        DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         subscribeToPaymentSessionEvents()
         try? await cardPresentPaymentService.cancelPayment()
+        DDLogInfo("🃏 [CardPayment] startPayment cancel completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         guard case .connected = cardReaderConnectionStatus else {
+            DDLogInfo("🃏 [CardPayment] reader not connected, waiting for connection")
             return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
                 .filter { status in
                     switch status {
@@ -100,10 +104,12 @@ extension POSPaymentModel {
                     }
                 }
         }
+        DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
         await collectCardPayment()
     }
 
     private func collectCardPayment() async {
+        DDLogInfo("🃏 [CardPayment] collectCardPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         do {
             let paymentOrder = try await orderProvider.provideOrder()
             currentOrder = paymentOrder.order
@@ -168,9 +174,13 @@ extension POSPaymentModel {
 // MARK: - Cash Payment Methods
 extension POSPaymentModel {
     func startCashPayment() async {
+        DDLogInfo("💵 [CashPayment] startCashPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
+        DDLogInfo("💵 [CashPayment] awaiting cancelPayment...")
         try? await cardPresentPaymentService.cancelPayment()
+        DDLogInfo("💵 [CashPayment] cancelPayment completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         paymentState.cash = .collectingCash
+        DDLogInfo("💵 [CashPayment] cash state set to .collectingCash")
     }
 
     func cancelCashPayment() async {
@@ -223,6 +233,7 @@ extension POSPaymentModel {
     /// Cancels any in-progress card payment, removes subscriptions, but preserves
     /// payment state and order data so `activate()` can resume where we left off.
     func deactivate() {
+        DDLogInfo("⏸️ [Session] deactivate called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
         paymentSessionCancellables.removeAll()
         cancelReaderPreparation()
     }
@@ -231,6 +242,7 @@ extension POSPaymentModel {
     /// For card payments, restarts the full payment flow (cancel + collect).
     /// For cash payments, restores session event subscriptions without activating the reader.
     func activate() async {
+        DDLogInfo("▶️ [Session] activate called — isActive: \(isActive), activeMethod: \(paymentState.activePaymentMethod), card: \(paymentState.card), cash: \(paymentState.cash)")
         guard !isActive else { return }
         if paymentState.activePaymentMethod == .card {
             await startPayment()
@@ -376,6 +388,7 @@ private extension POSPaymentModel {
                 return newCardPaymentState
             }
             .sink(receiveValue: { [weak self] cardPaymentState in
+                DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), current cash state: \(String(describing: self?.paymentState.cash))")
                 self?.paymentState.card = cardPaymentState
             })
             .store(in: &paymentSessionCancellables)

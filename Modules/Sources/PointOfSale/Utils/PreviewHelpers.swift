@@ -220,6 +220,7 @@ private var mockVariationItems: [POSItem] {
 }
 
 struct POSPreviewHelpers {
+    @MainActor
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),

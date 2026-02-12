@@ -13,8 +13,9 @@ import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSItemType
 import Combine
 
+@MainActor
 struct PointOfSaleAggregateModelTests {
-    struct OrderStageTests {
+    @MainActor struct OrderStageTests {
         @Test func inits_with_building_order_stage() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel()
@@ -65,7 +66,7 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    struct CartTests {
+    @MainActor struct CartTests {
         private let analytics: MockPOSAnalytics
 
         init() {
@@ -199,7 +200,7 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    struct OrderTests {
+    @MainActor struct OrderTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
 
@@ -364,7 +365,7 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    struct PaymentTests {
+    @MainActor struct PaymentTests {
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
 
@@ -869,7 +870,7 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    struct AnalyticsTests {
+    @MainActor struct AnalyticsTests {
         private let analytics: MockPOSAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()
         private let orderController = MockPointOfSaleOrderController()
@@ -1009,7 +1010,7 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    struct BarcodeTests {
+    @MainActor struct BarcodeTests {
         @Test func barcodeScanned_when_fails_then_plays_sound() async {
             // Given
             let soundPlayer = MockPointOfSaleSoundPlayer()
@@ -1058,6 +1059,7 @@ private func makeLoadedOrderState(cartTotal: String = "",
     )
 }
 
+@MainActor
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),

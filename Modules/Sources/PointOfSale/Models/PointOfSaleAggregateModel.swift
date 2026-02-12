@@ -34,19 +34,19 @@ protocol PointOfSaleAggregateModelProtocol {
 
     // Temporary forwarding properties for backward compatibility while views are migrated
     // to read directly from paymentModel via the environment. Remove once migration is complete.
-    var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { paymentModel.cardReaderConnectionStatus }
-    var paymentState: PointOfSalePaymentState { paymentModel.paymentState }
-    var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? {
+    @MainActor var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus { paymentModel.cardReaderConnectionStatus }
+    @MainActor var paymentState: PointOfSalePaymentState { paymentModel.paymentState }
+    @MainActor var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType? {
         get { paymentModel.cardPresentPaymentAlertViewModel }
         set { paymentModel.cardPresentPaymentAlertViewModel = newValue }
     }
-    var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { paymentModel.cardPresentPaymentInlineMessage }
-    var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? {
+    @MainActor var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType? { paymentModel.cardPresentPaymentInlineMessage }
+    @MainActor var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer? {
         get { paymentModel.cardPresentPaymentOnboardingViewContainer }
         set { paymentModel.cardPresentPaymentOnboardingViewContainer = newValue }
     }
 
-    var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
+    @MainActor var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
 
     private(set) var cart: Cart = .init()
 
@@ -101,6 +101,7 @@ protocol PointOfSaleAggregateModelProtocol {
         return isSyncStale && !isStaleSyncWarningDismissed
     }
 
+    @MainActor
     init(entryPointController: POSEntryPointController,
          itemsController: PointOfSaleItemsControllerProtocol,
          purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol,
@@ -195,17 +196,18 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    func addMoreToCart() {
+    @MainActor func addMoreToCart() {
         setStateForEditing()
     }
 
-    func startNewCart() {
+    @MainActor func startNewCart() {
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
         viewStateCoordinator.reset()
     }
 
+    @MainActor
     private func setStateForEditing() {
         orderStage = .building
         paymentModel.reset()
@@ -366,51 +368,51 @@ private extension PointOfSaleAggregateModel {
 
 // MARK: - Payment (delegated to POSPaymentModel)
 extension PointOfSaleAggregateModel {
-    func connectCardReader() {
+    @MainActor func connectCardReader() {
         paymentModel.connectCardReader()
     }
 
-    func disconnectCardReader() {
+    @MainActor func disconnectCardReader() {
         paymentModel.disconnectCardReader()
     }
 
-    func updateCardReaderSoftware() {
+    @MainActor func updateCardReaderSoftware() {
         paymentModel.updateCardReaderSoftware()
     }
 
-    func startCashPayment() async {
+    @MainActor func startCashPayment() async {
         await paymentModel.startCashPayment()
     }
 
-    func cancelCashPayment() async {
+    @MainActor func cancelCashPayment() async {
         await paymentModel.cancelCashPayment()
     }
 
-    func collectCashPayment(changeDueAmount: String?) async throws {
+    @MainActor func collectCashPayment(changeDueAmount: String?) async throws {
         try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 
-    func sendReceipt(to emailAddress: String) async throws {
+    @MainActor func sendReceipt(to emailAddress: String) async throws {
         try await paymentModel.sendReceipt(to: emailAddress)
     }
 
-    func cancelThenCollectPayment() {
+    @MainActor func cancelThenCollectPayment() {
         paymentModel.cancelThenCollectPayment()
     }
 
-    func cancelThenCollectPayment() async {
+    @MainActor func cancelThenCollectPayment() async {
         await paymentModel.cancelThenCollectPayment()
     }
 
-    func cancelCardPaymentsOnboarding() {
+    @MainActor func cancelCardPaymentsOnboarding() {
         paymentModel.cancelCardPaymentsOnboarding()
     }
 
-    func trackCardPaymentsOnboardingShown() {
+    @MainActor func trackCardPaymentsOnboardingShown() {
         paymentModel.trackCardPaymentsOnboardingShown()
     }
 
-    @Sendable private func setupReaderReconnectionObservation() {
+    @MainActor @Sendable private func setupReaderReconnectionObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }
             switch orderStage {
@@ -452,6 +454,7 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Lifecycle
 extension PointOfSaleAggregateModel {
+    @MainActor
     func pointOfSaleClosed() {
         // Before exiting Point of Sale, we warn the merchant about losing their in-progress order.
         // We need to clear it down as any accidental retention can cause issues especially when reconnecting card readers.
@@ -467,7 +470,7 @@ extension PointOfSaleAggregateModel {
 // MARK: - Incremental catalog sync on payment success
 
 private extension PointOfSaleAggregateModel {
-    @Sendable private func setupPaymentSuccessObservation() {
+    @MainActor @Sendable private func setupPaymentSuccessObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }
             if paymentState.isSuccess {
@@ -534,6 +537,7 @@ private enum Constants {
 
 #if DEBUG
 extension PointOfSaleAggregateModel {
+    @MainActor
     func setPreviewState(paymentState: PointOfSalePaymentState, inlineMessage: PointOfSaleCardPresentPaymentMessageType?) {
         paymentModel.setPreviewState(paymentState: paymentState, inlineMessage: inlineMessage)
     }

@@ -15,7 +15,7 @@ struct POSPaymentContentView: View {
     let onDismiss: (() -> Void)?
 
     @Environment(POSPaymentModel.self) private var paymentModel
-    private let viewHelper = TotalsViewHelper()
+    private let viewHelper = POSPaymentViewHelper()
 
     var body: some View {
         @Bindable var paymentModel = paymentModel
@@ -227,7 +227,7 @@ struct POSCardPaymentContentView: View {
     let connectCardReaderAction: () -> Void
     var showLoadingWhenIdle: Bool = false
 
-    private let viewHelper = TotalsViewHelper()
+    private let viewHelper = POSPaymentViewHelper()
 
     @ViewBuilder
     var body: some View {

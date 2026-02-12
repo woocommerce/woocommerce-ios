@@ -30,7 +30,9 @@ private extension PaymentsActionButtons {
 
     var successButton: some View {
         Button(action: {
-            analytics.track(.pointOfSaleCreateNewOrderTapped)
+            if let event = successAction.analyticsEvent {
+                analytics.track(event)
+            }
             successAction.action()
         }, label: {
             HStack(spacing: Constants.buttonSpacing) {
@@ -60,7 +62,8 @@ private extension PaymentsActionButtons {
     PaymentsActionButtons(
         successAction: PaymentFlowAction(
             title: "New order",
-            action: {}),
+            action: {},
+            analyticsEvent: nil),
         isShowingSendReceiptView: .constant(false))
 }
 #endif

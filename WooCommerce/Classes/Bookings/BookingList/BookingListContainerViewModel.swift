@@ -307,14 +307,32 @@ enum BookingListTab: Int, CaseIterable {
         }
     }
 
-    func startDateBefore(currentDate: Date) -> Date? {
+    /// Filters sent to the remote API (date range boundaries and status exclusions per tab).
+    func remoteFilters(currentDate: Date) -> BookingFilters {
+        BookingFilters(
+            startDateBefore: startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            bookingStatusExclude: bookingStatusExclude
+        )
+    }
+
+    private var bookingStatusExclude: [String] {
+        switch self {
+        case .today, .upcoming:
+            [BookingStatus.cancelled.rawValue]
+        case .all:
+            []
+        }
+    }
+
+    private func startDateBefore(currentDate: Date) -> Date? {
         switch self {
         case .today: currentDate.endOfDay(timezone: Self.utcTimeZone).addingTimeInterval(1)
         case .upcoming, .all: nil
         }
     }
 
-    func startDateAfter(currentDate: Date) -> Date? {
+    private func startDateAfter(currentDate: Date) -> Date? {
         switch self {
         case .today: currentDate.startOfDay(timezone: Self.utcTimeZone).addingTimeInterval(-1)
         case .upcoming: currentDate.endOfDay(timezone: Self.utcTimeZone)

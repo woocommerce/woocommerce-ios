@@ -41,6 +41,7 @@ public struct BookingFilters {
     public let startDateAfter: String?
     public let attendanceStatuses: [String]
     public let paymentStatuses: [String]
+    public let bookingStatusExclude: [String]
 
     public init(
         productIDs: [Int64] = [],
@@ -49,7 +50,8 @@ public struct BookingFilters {
         startDateBefore: String? = nil,
         startDateAfter: String? = nil,
         attendanceStatuses: [String] = [],
-        paymentStatuses: [String] = []
+        paymentStatuses: [String] = [],
+        bookingStatusExclude: [String] = []
     ) {
         self.productIDs = productIDs
         self.customerIDs = customerIDs
@@ -58,6 +60,7 @@ public struct BookingFilters {
         self.startDateAfter = startDateAfter
         self.attendanceStatuses = attendanceStatuses
         self.paymentStatuses = paymentStatuses
+        self.bookingStatusExclude = bookingStatusExclude
     }
 
     /// Returns a new `BookingFilters` by merging user-applied filters with this instance's date constraints.
@@ -74,7 +77,8 @@ public struct BookingFilters {
             startDateAfter: Self.mostRestrictiveDate(date1: startDateAfter,
                                                      date2: userFilters.startDateAfter,
                                                      pickEarlier: false),
-            attendanceStatuses: userFilters.attendanceStatuses
+            attendanceStatuses: userFilters.attendanceStatuses,
+            bookingStatusExclude: bookingStatusExclude
         )
     }
 
@@ -157,6 +161,10 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
             if filters.paymentStatuses.isNotEmpty {
                 parameters[ParameterKey.paymentStatus] = filters.paymentStatuses
+            }
+
+            if filters.bookingStatusExclude.isNotEmpty {
+                parameters[ParameterKey.bookingStatusExclude] = filters.bookingStatusExclude
             }
         }
 
@@ -304,6 +312,7 @@ public extension BookingsRemote {
         static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
+        static let bookingStatusExclude    = "booking_status_exclude"
         static let status: String          = "status"
         static let note: String            = "note"
     }

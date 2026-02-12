@@ -9,9 +9,13 @@ struct POSBookingDetailView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var cancelModalState: CancelBookingModalState?
+    @State private var showPaymentView = false
+    @State private var paymentModel: POSPaymentModel?
+
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -51,6 +55,11 @@ struct POSBookingDetailView: View {
                         }))
                     }
                 }
+        }
+        .posFullScreenCover(isPresented: $showPaymentView) {
+            if let paymentModel {
+                POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
+            }
         }
     }
 
@@ -304,13 +313,24 @@ struct POSBookingDetailView: View {
 
     // MARK: - Payment Action
 
+    private func dismissPayment() {
+        showPaymentView = false
+        paymentModel = nil
+        Task { @MainActor in
+            await bookingsModel.bookingsController.refreshBookings()
+        }
+    }
+
     private var shouldShowStickyPayment: Bool {
         !booking.isPaid && booking.lifecycleStatus != .cancelled
     }
 
     private var stickyCollectPaymentContainer: some View {
         Button(action: {
-            // TODO: Implement collect payment action
+            guard booking.orderID != nil else { return }
+            paymentModel = bookingsModel.makePaymentModel(
+                for: booking, onDismiss: dismissPayment, analytics: analytics)
+            showPaymentView = true
         }) {
             Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
                 .frame(maxWidth: .infinity)

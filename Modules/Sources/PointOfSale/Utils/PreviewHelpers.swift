@@ -221,6 +221,7 @@ private var mockVariationItems: [POSItem] {
 }
 
 struct POSPreviewHelpers {
+    @MainActor
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -233,6 +234,7 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
+        receiptSender: POSReceiptSending = POSReceiptSenderPreview(),
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
@@ -252,6 +254,7 @@ struct POSPreviewHelpers {
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
             barcodeScanService: barcodeScanService,
+            receiptSender: receiptSender,
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible
@@ -536,7 +539,12 @@ final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
 extension POSPreviewHelpers {
     static func makePreviewBookingsModel(state: POSBookingListState = .empty) -> POSBookingsModel {
         let controller = POSConfigurablePreviewBookingListController(state: state)
-        return POSBookingsModel(bookingsController: controller)
+        return POSBookingsModel(
+            bookingsController: controller,
+            cardPresentPaymentService: CardPresentPaymentPreviewService(),
+            orderService: POSOrderServicePreview(),
+            receiptSender: POSReceiptSenderPreview(),
+            collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics())
     }
 
     static func makePreviewBookings() -> [POSBooking] {
@@ -771,6 +779,10 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+        .empty
+    }
+
+    func loadOrder(orderID: Int64) async throws -> Order {
         .empty
     }
 

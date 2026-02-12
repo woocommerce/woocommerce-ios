@@ -43,6 +43,7 @@ public struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let receiptSender: POSReceiptSending
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
     private let siteID: Int64
@@ -138,6 +139,7 @@ public struct PointOfSaleEntryPointView: View {
             analyticsProvider: services.analytics
         )
         self.barcodeScanService = barcodeScanService
+        self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
@@ -147,7 +149,12 @@ public struct PointOfSaleEntryPointView: View {
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         if let bookingListFetchStrategyFactory {
             let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
-            self.bookingsModel = POSBookingsModel(bookingsController: bookingsController)
+            self.bookingsModel = POSBookingsModel(
+                bookingsController: bookingsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                receiptSender: receiptSender,
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         } else {
             self.bookingsModel = nil
         }
@@ -164,6 +171,7 @@ public struct PointOfSaleEntryPointView: View {
             if let posModel {
                 PointOfSaleDashboardView()
                     .environment(posModel)
+                    .environment(posModel.paymentModel)
             } else {
                 PointOfSaleLoadingView()
             }
@@ -186,6 +194,7 @@ public struct PointOfSaleEntryPointView: View {
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
+                receiptSender: receiptSender,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible)

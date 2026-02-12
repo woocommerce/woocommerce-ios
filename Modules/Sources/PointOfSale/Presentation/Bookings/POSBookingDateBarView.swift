@@ -1,4 +1,3 @@
-import CocoaLumberjackSwift
 import SwiftUI
 
 struct POSBookingDateBarView: View {
@@ -18,7 +17,7 @@ struct POSBookingDateBarView: View {
     var body: some View {
         HStack {
             Button {
-                DDLogInfo("⚠️ [Bookings] Date selector tapped — to be implemented in a future task")
+                // TODO: Date selector tapped — to be implemented in a future task
             } label: {
                 HStack(spacing: POSSpacing.small) {
                     Text(formattedDate)

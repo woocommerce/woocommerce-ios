@@ -42,10 +42,7 @@ final class BookingSearchViewModel: ObservableObject {
         self.stores = stores
         self.searchPaginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
-        self.tabDateFilters = BookingFilters(
-            startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-            startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-        )
+        self.tabDateFilters = type.remoteFilters(currentDate: currentDate)
         self.filters = tabDateFilters
 
         configureSearchPaginationTracker()

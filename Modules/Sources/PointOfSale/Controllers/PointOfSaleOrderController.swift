@@ -5,8 +5,6 @@ import protocol Yosemite.POSOrderServiceProtocol
 import class Yosemite.POSOrderService
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
-import protocol Yosemite.PaymentCaptureCelebrationProtocol
-import class Yosemite.PaymentCaptureCelebration
 import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
@@ -48,19 +46,16 @@ protocol PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptSender: POSReceiptSending,
          currencySettingsProvider: POSCurrencySettingsProviding,
-         analytics: POSAnalyticsProviding,
-         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
+         analytics: POSAnalyticsProviding) {
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.currencySettingsProvider = currencySettingsProvider
         self.analytics = analytics
-        self.celebration = celebration
     }
 
     private let orderService: POSOrderServiceProtocol
     private let receiptSender: POSReceiptSending
     private let currencySettingsProvider: POSCurrencySettingsProviding
-    private let celebration: PaymentCaptureCelebrationProtocol
     private let analytics: POSAnalyticsProviding
 
     private(set) var orderState: PointOfSaleInternalOrderState = .idle
@@ -123,10 +118,6 @@ protocol PointOfSaleOrderControllerProtocol {
         orderState = .idle
     }
 
-    private func celebrate() {
-        celebration.celebrate()
-    }
-
     @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
         guard let order = order else {
@@ -135,7 +126,6 @@ protocol PointOfSaleOrderControllerProtocol {
 
         do {
             try await orderService.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: changeDueAmount)
-            celebrate()
         } catch {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error

@@ -1,6 +1,10 @@
 import SwiftUI
 
 struct POSCancelBookingConfirmationView: View {
+    let bookingNumber: Int64
+    let serviceName: String
+    let formattedDateTime: String
+    let customerName: String?
     let isProcessing: Bool
     let onClose: () -> Void
     let onConfirm: () -> Void
@@ -49,11 +53,34 @@ private extension POSCancelBookingConfirmationView {
     }
 
     var messageView: some View {
-        Text(isProcessing ? Localization.processingMessage : Localization.confirmationMessage)
-            .font(.posBodyLargeRegular())
-            .foregroundColor(Color.posOnSurface)
-            .multilineTextAlignment(.leading)
-            .padding(.horizontal, POSPadding.xLarge)
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
+            if isProcessing {
+                Text(Localization.processingMessage)
+            } else {
+                Text(bookingDescription)
+                Text(Localization.customerNotificationMessage)
+            }
+        }
+        .font(.posBodyLargeRegular())
+        .foregroundColor(Color.posOnSurface)
+        .multilineTextAlignment(.leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, POSPadding.xLarge)
+    }
+
+    private var bookingDescription: String {
+        if let customerName {
+            return String(format: Localization.confirmationMessageWithCustomer,
+                          String(bookingNumber),
+                          serviceName,
+                          formattedDateTime,
+                          customerName)
+        } else {
+            return String(format: Localization.confirmationMessage,
+                          String(bookingNumber),
+                          serviceName,
+                          formattedDateTime)
+        }
     }
 
     var loadingSection: some View {
@@ -70,7 +97,7 @@ private extension POSCancelBookingConfirmationView {
             Button(Localization.confirmButton, action: onConfirm)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-            Button(Localization.backButton, action: onBack)
+            Button(Localization.keepButton, action: onBack)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         }
         .padding(POSPadding.xLarge)
@@ -83,7 +110,7 @@ private extension POSCancelBookingConfirmationView {
     enum Localization {
         static let title = NSLocalizedString(
             "pos.cancelBookingConfirmation.title",
-            value: "Cancel Booking",
+            value: "Cancel this booking?",
             comment: "Title for the cancel booking confirmation modal in POS."
         )
 
@@ -99,10 +126,24 @@ private extension POSCancelBookingConfirmationView {
             comment: "Accessibility label for close button on cancel booking confirmation modal."
         )
 
+        static let confirmationMessageWithCustomer = NSLocalizedString(
+            "pos.cancelBookingConfirmation.confirmationMessageWithCustomer",
+            value: "Booking #%1$@ for %2$@ on %3$@ for %4$@ will be cancelled.",
+            comment: "Confirmation message with customer name shown before cancelling a booking in POS. "
+            + "%1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name."
+        )
+
         static let confirmationMessage = NSLocalizedString(
             "pos.cancelBookingConfirmation.confirmationMessage",
-            value: "Are you sure you want to cancel this booking? This action cannot be undone.",
-            comment: "Confirmation message shown before cancelling a booking in POS."
+            value: "Booking #%1$@ for %2$@ on %3$@ will be cancelled.",
+            comment: "Confirmation message shown before cancelling a booking in POS. "
+            + "%1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time."
+        )
+
+        static let customerNotificationMessage = NSLocalizedString(
+            "pos.cancelBookingConfirmation.customerNotificationMessage",
+            value: "The customer will be notified via email.",
+            comment: "Secondary message informing that the customer will receive an email notification about the cancellation."
         )
 
         static let processingMessage = NSLocalizedString(
@@ -113,14 +154,14 @@ private extension POSCancelBookingConfirmationView {
 
         static let confirmButton = NSLocalizedString(
             "pos.cancelBookingConfirmation.confirmButton",
-            value: "Yes, proceed",
+            value: "Yes, cancel booking",
             comment: "Button to confirm and proceed with booking cancellation."
         )
 
-        static let backButton = NSLocalizedString(
-            "pos.cancelBookingConfirmation.backButton",
-            value: "Back",
-            comment: "Button to go back from the cancel booking confirmation modal."
+        static let keepButton = NSLocalizedString(
+            "pos.cancelBookingConfirmation.keepButton",
+            value: "No, keep it",
+            comment: "Button to dismiss the cancel booking confirmation and keep the booking."
         )
     }
 }
@@ -128,6 +169,24 @@ private extension POSCancelBookingConfirmationView {
 #if DEBUG
 #Preview("POSCancelBookingConfirmationView") {
     POSCancelBookingConfirmationView(
+        bookingNumber: 123,
+        serviceName: "Haircut",
+        formattedDateTime: "Jan 15, 2026 at 2:00 PM",
+        customerName: "John Smith",
+        isProcessing: false,
+        onClose: {},
+        onConfirm: {},
+        onBack: {}
+    )
+    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+}
+
+#Preview("POSCancelBookingConfirmationView - No Customer") {
+    POSCancelBookingConfirmationView(
+        bookingNumber: 456,
+        serviceName: "Massage",
+        formattedDateTime: "Feb 10, 2026 at 10:00 AM",
+        customerName: nil,
         isProcessing: false,
         onClose: {},
         onConfirm: {},
@@ -138,6 +197,10 @@ private extension POSCancelBookingConfirmationView {
 
 #Preview("POSCancelBookingConfirmationView - Processing") {
     POSCancelBookingConfirmationView(
+        bookingNumber: 123,
+        serviceName: "Haircut",
+        formattedDateTime: "Jan 15, 2026 at 2:00 PM",
+        customerName: "John Smith",
         isProcessing: true,
         onClose: {},
         onConfirm: {},

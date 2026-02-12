@@ -331,6 +331,10 @@ struct POSBookingDetailView: View {
         let end = formatter.string(from: booking.endDate)
         return "\(start) – \(end)"
     }
+
+    private var formattedCancelDateTime: String {
+        DateFormatter.dateTimeFormatter.string(from: booking.startDate)
+    }
 }
 
 // MARK: - Cancel Booking Flow
@@ -341,6 +345,10 @@ private extension POSBookingDetailView {
         switch state {
         case .confirmation:
             POSCancelBookingConfirmationView(
+                bookingNumber: booking.id,
+                serviceName: booking.serviceName,
+                formattedDateTime: formattedCancelDateTime,
+                customerName: booking.customerName,
                 isProcessing: false,
                 onClose: { cancelModalState = nil },
                 onConfirm: {
@@ -353,6 +361,10 @@ private extension POSBookingDetailView {
             )
         case .processing:
             POSCancelBookingConfirmationView(
+                bookingNumber: booking.id,
+                serviceName: booking.serviceName,
+                formattedDateTime: formattedCancelDateTime,
+                customerName: booking.customerName,
                 isProcessing: true,
                 onClose: {},
                 onConfirm: {},
@@ -420,6 +432,13 @@ private extension DateFormatter {
     static let timeOnlyFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
+    static let dateTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter
     }()

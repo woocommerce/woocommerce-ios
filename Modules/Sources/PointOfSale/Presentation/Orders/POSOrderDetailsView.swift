@@ -9,6 +9,8 @@ import typealias Yosemite.OrderItemAttribute
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    var autoStartRefund: Bool = false
+    var onRefundSuccess: (() -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
@@ -71,13 +73,18 @@ struct POSOrderDetailsView: View {
             POSRefundModalContentView(
                 state: state,
                 modalState: $refundModalState,
-                isShowingEmailReceiptView: $isShowingEmailReceiptView,
-                orderListModel: orderListModel,
+                onEmailReceipt: { isShowingEmailReceiptView = true },
                 onRetryLoading: { initiateRefundFlow() },
-                onRetryPreparation: { refundModalState = .itemSelection },
-                onEditRefund: { refundModalState = .itemSelection },
-                showsItemSelection: true,
-                onRefundSuccess: nil,
+                onRetryPreparation: {
+                    if autoStartRefund {
+                        initiateRefundFlow()
+                    } else {
+                        refundModalState = .itemSelection
+                    }
+                },
+                onEditRefund: autoStartRefund ? nil : { refundModalState = .itemSelection },
+                showsItemSelection: !autoStartRefund,
+                onRefundSuccess: onRefundSuccess,
                 errorStrings: .init(
                     loadTitle: Localization.loadRefundErrorTitle,
                     loadSubtitle: Localization.loadRefundErrorSubtitle,
@@ -89,6 +96,9 @@ struct POSOrderDetailsView: View {
             )
         }
         .onAppear {
+            if autoStartRefund {
+                initiateRefundFlow()
+            }
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
                 orderID: order.id,
                 orderStatus: order.status.rawValue,
@@ -453,6 +463,9 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
+            if autoStartRefund {
+                return .init(primary: .issueRefund, secondary: [email])
+            }
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
                 return .init(primary: email, secondary: [])
             }
@@ -519,13 +532,25 @@ private extension POSOrderDetailsView {
             let result = await orderListModel.ordersController.startRefundFlow()
             switch result {
             case .hasItemsToRefund:
-                refundModalState = .itemSelection
+                if autoStartRefund {
+                    navigateToRefundReview()
+                } else {
+                    refundModalState = .itemSelection
+                }
             case .nothingToRefund:
                 refundModalState = .nothingToRefund
             case .failed:
                 refundModalState = .loadingError
             }
         }
+    }
+
+    func navigateToRefundReview() {
+        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+            refundModalState = .preparationError
+            return
+        }
+        refundModalState = .review(reviewData)
     }
 }
 

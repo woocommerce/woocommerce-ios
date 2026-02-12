@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 
 // MARK: - Refund Modal State
@@ -48,25 +49,13 @@ struct POSRefundErrorStrings {
 struct POSRefundModalContentView: View {
     let state: RefundModalState
     @Binding var modalState: RefundModalState?
-    @Binding var isShowingEmailReceiptView: Bool
-    let orderListModel: POSOrderListModel
+    @Environment(POSOrderListModel.self) private var orderListModel
 
-    /// Called when the loading error retry button is tapped.
+    let onEmailReceipt: () -> Void
     let onRetryLoading: () -> Void
-
-    /// Called when the preparation error retry button is tapped.
     let onRetryPreparation: () -> Void
-
-    /// Called when the "Edit refund" button is tapped on the review screen.
-    /// Pass `nil` to hide the button (e.g. for full-refund-only flows like bookings).
     let onEditRefund: (() -> Void)?
-
-    /// Whether to show the item selection view for the `.itemSelection` state.
-    /// Set to `false` for flows that skip item selection (e.g. bookings).
     let showsItemSelection: Bool
-
-    /// Called after a refund is successfully processed.
-    /// Use this to trigger side effects like refreshing a booking list.
     let onRefundSuccess: (() -> Void)?
 
     let errorStrings: POSRefundErrorStrings
@@ -161,9 +150,7 @@ struct POSRefundModalContentView: View {
                 onDone: { modalState = nil },
                 onEmailReceipt: {
                     modalState = nil
-                    Task { @MainActor in
-                        isShowingEmailReceiptView = true
-                    }
+                    onEmailReceipt()
                 },
                 onClose: { modalState = nil }
             )
@@ -193,6 +180,7 @@ struct POSRefundModalContentView: View {
             modalState = .success(reviewData)
             onRefundSuccess?()
         } catch {
+            DDLogError("⛔️ Failed to process POS refund: \(error)")
             modalState = .error(reviewData)
         }
     }

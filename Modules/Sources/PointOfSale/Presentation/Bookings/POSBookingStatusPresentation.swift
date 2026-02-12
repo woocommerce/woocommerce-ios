@@ -84,9 +84,9 @@ enum POSBookingAttendanceDisplay: Equatable {
 
     init(attendanceStatus: BookingAttendanceStatus) {
         switch attendanceStatus {
-        case .checkedIn:
+        case .attended:
             self = .attended
-        case .booked, .noShow, .cancelled, .unknown:
+        case .unattended, .unknown:
             self = .unattended
         }
     }

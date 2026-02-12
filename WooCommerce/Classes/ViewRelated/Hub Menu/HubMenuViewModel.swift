@@ -86,6 +86,7 @@ final class HubMenuViewModel: ObservableObject {
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
 
@@ -99,6 +100,7 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
     @Published private var isSiteEligibleForBookings = false
+    @Published private var isPOSTabCachedVisible = false
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -136,6 +138,7 @@ final class HubMenuViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          bookingsEligibilityCheckerFactory: @escaping (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
              BookingsTabEligibilityChecker(site: site)
          },
@@ -153,6 +156,7 @@ final class HubMenuViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.posEligibilityService = posEligibilityService
         self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory
         self.isPad = isPad
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
@@ -370,6 +374,7 @@ private extension HubMenuViewModel {
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
         isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+        isPOSTabCachedVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
 
         if shouldShowBookingsInMenu {
             let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
@@ -444,7 +449,7 @@ private extension HubMenuViewModel {
     }
 
     var shouldShowBookingsInMenu: Bool {
-        isPad
+        isPad && isPOSTabCachedVisible
     }
 }
 

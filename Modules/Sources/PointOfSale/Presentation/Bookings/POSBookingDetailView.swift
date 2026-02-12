@@ -10,6 +10,7 @@ struct POSBookingDetailView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
 
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var cancelModalState: CancelBookingModalState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -96,6 +97,9 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posModal(item: $cancelModalState) { state in
+            cancelBookingModalContent(for: state)
+        }
     }
 
     @ViewBuilder
@@ -555,5 +559,23 @@ private enum Localization {
         "pos.bookingDetailView.issueRefundAction",
         value: "Issue Refund",
         comment: "Menu action to issue a full refund for a booking."
+    )
+
+    static let cancelBookingAction = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingAction",
+        value: "Cancel Booking",
+        comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let cancelBookingErrorTitle = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingError.title",
+        value: "Failed to cancel booking",
+        comment: "Title shown when cancelling a booking from POS has failed."
+    )
+
+    static let cancelBookingErrorSubtitle = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingError.subtitle",
+        value: "Please try again.",
+        comment: "Subtitle shown when cancelling a booking from POS has failed."
     )
 }

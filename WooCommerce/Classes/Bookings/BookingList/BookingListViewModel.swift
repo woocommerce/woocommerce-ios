@@ -134,9 +134,7 @@ final class BookingListViewModel: ObservableObject {
     }
 
     private var currentPredicate: NSPredicate {
-        let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
-        guard let localPredicate = type.localPredicate else { return predicate }
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
+        NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
     }
 }
 

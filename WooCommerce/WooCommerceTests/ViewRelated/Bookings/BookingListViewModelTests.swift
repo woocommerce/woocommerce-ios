@@ -336,6 +336,8 @@ class BookingListViewModelTests {
         // Then
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
+        #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue],
+                "Today tab should exclude cancelled bookings via API")
     }
 
     @Test func upcoming_tab_passes_correct_date_filters_to_booking_action() {
@@ -362,6 +364,8 @@ class BookingListViewModelTests {
         // Then
         #expect(capturedFilters?.startDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
         #expect(capturedFilters?.startDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
+        #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue],
+                "Upcoming tab should exclude cancelled bookings via API")
     }
 
     @Test func all_tab_passes_no_date_filters_to_booking_action() {
@@ -385,6 +389,7 @@ class BookingListViewModelTests {
         // Then
         #expect(capturedFilters?.startDateBefore == nil, "All tab should not have startDateBefore filter")
         #expect(capturedFilters?.startDateAfter == nil, "All tab should not have startDateAfter filter")
+        #expect(capturedFilters?.bookingStatusExclude == [], "All tab should not exclude any booking statuses")
     }
 
     // MARK: - Cache clearing logic
@@ -818,6 +823,8 @@ class BookingListViewModelTests {
         // Tab date constraints should still be applied
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")
+        // Tab status exclusion should be preserved after merging user filters
+        #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue])
     }
 
     @Test func clearing_filters_on_today_tab_resets_to_tab_date_constraints() {
@@ -858,6 +865,7 @@ class BookingListViewModelTests {
         #expect(capturedFilters?.productIDs == [])
         #expect(capturedFilters?.attendanceStatuses == [])
         #expect(capturedFilters?.customerIDs == [])
+        #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue])
     }
 
     // MARK: - Sort order

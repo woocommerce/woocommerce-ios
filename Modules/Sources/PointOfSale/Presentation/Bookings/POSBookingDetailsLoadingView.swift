@@ -34,7 +34,7 @@ struct POSBookingDetailsLoadingView: View {
 
     private var ghostHeaderTitle: some View {
         HStack {
-            ghostLine(width: 260, height: Constants.titleHeight * scale)
+            ghostLine(width: Constants.extraLargeWidth, height: Constants.titleHeight * scale)
             Spacer()
         }
         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
@@ -42,10 +42,10 @@ struct POSBookingDetailsLoadingView: View {
 
     private var ghostHeaderSubtitle: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
-            ghostLine(width: 180, height: Constants.subtitleHeight * scale)
+            ghostLine(width: Constants.largeWidth, height: Constants.subtitleHeight * scale)
             HStack(spacing: POSSpacing.small) {
-                ghostLine(width: 80, height: Constants.badgeHeight * scale)
-                ghostLine(width: 60, height: Constants.badgeHeight * scale)
+                ghostLine(width: Constants.smallWidth, height: Constants.badgeHeight * scale)
+                ghostLine(width: Constants.extraSmallWidth, height: Constants.badgeHeight * scale)
             }
         }
         .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
@@ -56,10 +56,10 @@ struct POSBookingDetailsLoadingView: View {
 
     private var ghostBookingDetailsCard: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            ghostLine(width: 140, height: Constants.sectionTitleHeight * scale)
-            ghostDetailRow(labelWidth: 100, valueWidth: 120)
-            ghostDetailRow(labelWidth: 80, valueWidth: 180)
-            ghostDetailRow(labelWidth: 70, valueWidth: 60)
+            ghostLine(width: Constants.mediumWidth, height: Constants.sectionTitleHeight * scale)
+            ghostDetailRow(labelWidth: Constants.smallWidth, valueWidth: Constants.mediumWidth)
+            ghostDetailRow(labelWidth: Constants.smallWidth, valueWidth: Constants.largeWidth)
+            ghostDetailRow(labelWidth: Constants.extraSmallWidth, valueWidth: Constants.extraSmallWidth)
         }
         .sectionCard()
     }
@@ -67,18 +67,18 @@ struct POSBookingDetailsLoadingView: View {
     private var ghostAttendanceCard: some View {
         ViewThatFits(in: .horizontal) {
             HStack {
-                ghostLine(width: 130, height: Constants.rowHeight * scale)
+                ghostLine(width: Constants.mediumWidth, height: Constants.rowHeight * scale)
                 Spacer()
                 HStack(spacing: POSSpacing.small) {
-                    ghostLine(width: 90, height: Constants.buttonHeight * scale)
-                    ghostLine(width: 90, height: Constants.buttonHeight * scale)
+                    ghostLine(width: Constants.smallWidth, height: Constants.buttonHeight * scale)
+                    ghostLine(width: Constants.smallWidth, height: Constants.buttonHeight * scale)
                 }
             }
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                ghostLine(width: 130, height: Constants.rowHeight * scale)
+                ghostLine(width: Constants.mediumWidth, height: Constants.rowHeight * scale)
                 HStack(spacing: POSSpacing.small) {
-                    ghostLine(width: 90, height: Constants.buttonHeight * scale)
-                    ghostLine(width: 90, height: Constants.buttonHeight * scale)
+                    ghostLine(width: Constants.smallWidth, height: Constants.buttonHeight * scale)
+                    ghostLine(width: Constants.smallWidth, height: Constants.buttonHeight * scale)
                 }
             }
         }
@@ -87,12 +87,12 @@ struct POSBookingDetailsLoadingView: View {
 
     private var ghostCustomerCard: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            ghostLine(width: 100, height: Constants.sectionTitleHeight * scale)
-            ghostDetailRow(labelWidth: 180, valueWidth: 20)
-            ghostDetailRow(labelWidth: 150, valueWidth: 20)
+            ghostLine(width: Constants.smallWidth, height: Constants.sectionTitleHeight * scale)
+            ghostDetailRow(labelWidth: Constants.largeWidth, valueWidth: Constants.tinyWidth)
+            ghostDetailRow(labelWidth: Constants.mediumWidth, valueWidth: Constants.tinyWidth)
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                ghostLine(width: 100, height: Constants.captionHeight * scale)
-                ghostLine(width: 220, height: Constants.rowHeight * scale)
+                ghostLine(width: Constants.smallWidth, height: Constants.captionHeight * scale)
+                ghostLine(width: Constants.largeWidth, height: Constants.rowHeight * scale)
             }
         }
         .sectionCard()
@@ -100,22 +100,22 @@ struct POSBookingDetailsLoadingView: View {
 
     private var ghostPaymentCard: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            ghostLine(width: 90, height: Constants.sectionTitleHeight * scale)
-            ghostDetailRow(labelWidth: 60, valueWidth: 60)
-            ghostDetailRow(labelWidth: 50, valueWidth: 50)
-            ghostDetailRow(labelWidth: 70, valueWidth: 30)
+            ghostLine(width: Constants.smallWidth, height: Constants.sectionTitleHeight * scale)
+            ghostDetailRow(labelWidth: Constants.extraSmallWidth, valueWidth: Constants.extraSmallWidth)
+            ghostDetailRow(labelWidth: Constants.extraSmallWidth, valueWidth: Constants.extraSmallWidth)
+            ghostDetailRow(labelWidth: Constants.extraSmallWidth, valueWidth: Constants.extraSmallWidth)
             Divider()
                 .overlay(Color.posOutlineVariant.opacity(0.5))
-            ghostDetailRow(labelWidth: 50, valueWidth: 60)
+            ghostDetailRow(labelWidth: Constants.extraSmallWidth, valueWidth: Constants.extraSmallWidth)
         }
         .sectionCard()
     }
 
     private var ghostBookingNoteCard: some View {
         HStack {
-            ghostLine(width: 130, height: Constants.sectionTitleHeight * scale)
+            ghostLine(width: Constants.mediumWidth, height: Constants.sectionTitleHeight * scale)
             Spacer()
-            ghostLine(width: 80, height: Constants.buttonHeight * scale)
+            ghostLine(width: Constants.smallWidth, height: Constants.buttonHeight * scale)
         }
         .sectionCard()
     }
@@ -140,6 +140,7 @@ struct POSBookingDetailsLoadingView: View {
 }
 
 private enum Constants {
+    // Heights
     static let titleHeight: CGFloat = 36
     static let subtitleHeight: CGFloat = 20
     static let sectionTitleHeight: CGFloat = 28
@@ -147,6 +148,14 @@ private enum Constants {
     static let captionHeight: CGFloat = 14
     static let badgeHeight: CGFloat = 24
     static let buttonHeight: CGFloat = 36
+
+    // Widths
+    static let extraLargeWidth: CGFloat = 260
+    static let largeWidth: CGFloat = 180
+    static let mediumWidth: CGFloat = 120
+    static let smallWidth: CGFloat = 80
+    static let extraSmallWidth: CGFloat = 60
+    static let tinyWidth: CGFloat = 20
 }
 
 #if DEBUG

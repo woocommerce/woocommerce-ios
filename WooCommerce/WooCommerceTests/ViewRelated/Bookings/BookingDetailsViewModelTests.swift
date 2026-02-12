@@ -357,7 +357,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Header section not found")
             return
         }
-        XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Checked-in")
+        let badgeStatus = headerContent.statusBadge as? BookingAttendanceStatus
+        XCTAssertEqual(badgeStatus?.localizedTitle, "Checked-in")
     }
 
     func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {

@@ -149,7 +149,7 @@ protocol PointOfSaleAggregateModelProtocol {
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },
-                onBarcodeScanned: { barcode in
+                onSuccessScreenBarcodeScanned: { barcode in
                     weakSelf?.startNewCart()
                     weakSelf?.barcodeScanned(barcode)
                 }),

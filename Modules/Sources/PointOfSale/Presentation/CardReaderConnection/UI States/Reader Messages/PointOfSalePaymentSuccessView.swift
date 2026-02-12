@@ -4,7 +4,7 @@ struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     let onSendReceipt: (String) async throws -> Void
     let successAction: PaymentFlowAction
-    let onBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
+    let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var isShowingSendReceiptView: Bool = false
@@ -29,8 +29,8 @@ struct PointOfSalePaymentSuccessView: View {
                 .background(Color.posSurfaceBright)
             }
         }
-        .barcodeScanning(enabled: .constant(onBarcodeScanned != nil && !isShowingSendReceiptView)) { barcode in
-            onBarcodeScanned?(barcode)
+        .barcodeScanning(enabled: .constant(onSuccessScreenBarcodeScanned != nil && !isShowingSendReceiptView)) { barcode in
+            onSuccessScreenBarcodeScanned?(barcode)
         }
         .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
@@ -101,8 +101,8 @@ private extension PointOfSalePaymentSuccessView {
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card),
         onSendReceipt: { _ in },
-        successAction: PaymentFlowAction(title: "New order", action: {}),
-        onBarcodeScanned: nil
+        successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
+        onSuccessScreenBarcodeScanned: nil
     )
 }
 #endif

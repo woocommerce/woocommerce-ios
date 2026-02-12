@@ -29,7 +29,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
                 viewModel: viewModel,
                 onSendReceipt: { email in try await paymentModel.sendReceipt(to: email) },
                 successAction: paymentModel.configuration.successAction,
-                onBarcodeScanned: paymentModel.configuration.onBarcodeScanned)
+                onSuccessScreenBarcodeScanned: paymentModel.configuration.onSuccessScreenBarcodeScanned)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentErrorNonRetryable(let viewModel):

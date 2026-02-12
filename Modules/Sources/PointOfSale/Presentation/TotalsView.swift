@@ -4,7 +4,7 @@ import WooFoundation
 struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(POSPaymentModel.self) private var paymentModel
-    private let viewHelper = TotalsViewHelper()
+    private let viewHelper = POSPaymentViewHelper()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -183,7 +183,7 @@ private extension TotalsView {
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:
-                if TotalsViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                if POSPaymentViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                                     paymentState: paymentModel.paymentState) {
                     return .outlined
                 }
@@ -274,6 +274,7 @@ private struct TotalsFieldsContent: View {
     let paymentState: PointOfSalePaymentState
     let cart: Cart
     let totalsFieldAnimation: Namespace.ID
+    private let paymentViewHelper = POSPaymentViewHelper()
     private let viewHelper = TotalsViewHelper()
 
     /// Used for synchronizing animations of shimmeringLine and textField
@@ -292,7 +293,7 @@ private struct TotalsFieldsContent: View {
         }
         .transition(.opacity)
         .animation(.default, value: orderState.isSyncing)
-        .opacity(viewHelper.shouldShowTotalsFields(for: paymentState) ? 1 : 0)
+        .opacity(paymentViewHelper.shouldShowTotalsFields(for: paymentState) ? 1 : 0)
         .layoutPriority(1)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
@@ -427,7 +428,7 @@ private struct PaymentViewContent: View {
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
 
-    private let viewHelper = TotalsViewHelper()
+    private let viewHelper = POSPaymentViewHelper()
 
     var body: some View {
         paymentView

@@ -561,6 +561,101 @@ class BookingListViewModelTests {
         #expect(viewModel.bookings.first?.siteID == sampleSiteID, "Booking should have the correct site ID")
     }
 
+    // MARK: - Cancelled booking filtering
+
+    @Test func today_tab_excludes_cancelled_bookings() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let confirmedBooking = createBooking(id: 1, startDate: testDate, status: .confirmed)
+        let cancelledBooking = createBooking(id: 2, startDate: testDate, status: .cancelled)
+        let paidBooking = createBooking(id: 3, startDate: testDate, status: .paid)
+
+        insertBookings([confirmedBooking, cancelledBooking, paidBooking])
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .today,
+                                             stores: MockStoresManager(sessionManager: .testingInstance),
+                                             storage: storageManager,
+                                             currentDate: testDate)
+
+        // Then
+        let bookingIDs = Set(viewModel.bookings.map { $0.bookingID })
+        #expect(bookingIDs.contains(confirmedBooking.bookingID))
+        #expect(!bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should be excluded from Today tab")
+        #expect(bookingIDs.contains(paidBooking.bookingID))
+    }
+
+    @Test func upcoming_tab_excludes_cancelled_bookings() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let futureDate = testDate.addingTimeInterval(86400 * 2) // 2 days later
+        let confirmedBooking = createBooking(id: 1, startDate: futureDate, status: .confirmed)
+        let cancelledBooking = createBooking(id: 2, startDate: futureDate, status: .cancelled)
+
+        insertBookings([confirmedBooking, cancelledBooking])
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .upcoming,
+                                             stores: MockStoresManager(sessionManager: .testingInstance),
+                                             storage: storageManager,
+                                             currentDate: testDate)
+
+        // Then
+        let bookingIDs = Set(viewModel.bookings.map { $0.bookingID })
+        #expect(bookingIDs.contains(confirmedBooking.bookingID))
+        #expect(!bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should be excluded from Upcoming tab")
+    }
+
+    @Test func all_tab_includes_cancelled_bookings() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let confirmedBooking = createBooking(id: 1, startDate: testDate, status: .confirmed)
+        let cancelledBooking = createBooking(id: 2, startDate: testDate, status: .cancelled)
+
+        insertBookings([confirmedBooking, cancelledBooking])
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: MockStoresManager(sessionManager: .testingInstance),
+                                             storage: storageManager,
+                                             currentDate: testDate)
+
+        // Then
+        let bookingIDs = Set(viewModel.bookings.map { $0.bookingID })
+        #expect(bookingIDs.contains(confirmedBooking.bookingID))
+        #expect(bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should be included in All tab")
+    }
+
+    @Test func today_tab_excludes_cancelled_bookings_after_applying_filters() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let confirmedBooking = createBooking(id: 1, startDate: testDate, status: .confirmed)
+        let cancelledBooking = createBooking(id: 2, startDate: testDate, status: .cancelled)
+
+        insertBookings([confirmedBooking, cancelledBooking])
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .today,
+                                             stores: MockStoresManager(sessionManager: .testingInstance),
+                                             storage: storageManager,
+                                             currentDate: testDate)
+
+        // When — apply a filter (e.g. team member)
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "Any")],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.updateFilters(userFilters)
+
+        // Then — cancelled bookings should still be excluded
+        let bookingIDs = Set(viewModel.bookings.map { $0.bookingID })
+        #expect(!bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should remain excluded after applying filters")
+    }
+
     // MARK: - Filter merging
 
     @Test func today_tab_merges_user_date_filters_with_tab_constraints() {
@@ -901,8 +996,8 @@ private extension BookingListViewModelTests {
         }, completion: {}, on: .main)
     }
 
-    func createBooking(id: Int64, startDate: Date, siteID: Int64? = nil) -> Booking {
-        return Booking.fake().copy(siteID: siteID ?? self.sampleSiteID, bookingID: id, startDate: startDate)
+    func createBooking(id: Int64, startDate: Date, siteID: Int64? = nil, status: BookingStatus = .confirmed) -> Booking {
+        return Booking.fake().copy(siteID: siteID ?? self.sampleSiteID, bookingID: id, startDate: startDate, statusKey: status.rawValue)
     }
 }
 

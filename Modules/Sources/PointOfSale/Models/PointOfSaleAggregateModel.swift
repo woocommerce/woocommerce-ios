@@ -4,8 +4,6 @@ import Combine
 import Observation
 
 import protocol Yosemite.POSOrderableItem
-import protocol Yosemite.PaymentCaptureCelebrationProtocol
-import class Yosemite.PaymentCaptureCelebration
 import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
@@ -118,7 +116,6 @@ protocol PointOfSaleAggregateModelProtocol {
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          receiptSender: POSReceiptSending,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
-         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
@@ -158,7 +155,6 @@ protocol PointOfSaleAggregateModelProtocol {
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
-            celebration: celebration,
             paymentState: paymentState)
         weakSelf = self
 

@@ -24,6 +24,7 @@ import class Yosemite.PaymentCaptureCelebration
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
     }
 
+    @MainActor
     func makePaymentModel(for booking: POSBooking,
                            onDismiss: @escaping () -> Void,
                            analytics: POSAnalyticsProviding) -> POSPaymentModel {

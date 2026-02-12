@@ -14,6 +14,7 @@ import enum Yosemite.BookingAttendanceStatus
 ///    - Derived from the API `status` field values.
 /// 3. **Attendance status**: Unattended / Attended
 ///    - Comes from the API `attendance_status` field.
+// TODO: WOOMOB-2143 - Revisit status matching once status-matching changes land.
 
 // MARK: - Payment Status (derived from BookingStatus)
 

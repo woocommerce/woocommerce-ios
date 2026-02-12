@@ -1,4 +1,3 @@
-import CocoaLumberjackSwift
 import SwiftUI
 import struct Yosemite.POSBooking
 
@@ -174,7 +173,7 @@ struct POSBookingDetailView: View {
                             .foregroundStyle(Color.posOnSurface)
                         Spacer()
                         Button {
-                            DDLogInfo("⚠️ [Bookings] Copy email tapped — to be implemented in a future task")
+                            // TODO: Implement copy email action
                         } label: {
                             Image(systemName: "doc.on.doc")
                                 .font(.posBodyMediumRegular())
@@ -195,7 +194,7 @@ struct POSBookingDetailView: View {
                             .foregroundStyle(Color.posOnSurface)
                         Spacer()
                         Button {
-                            DDLogInfo("⚠️ [Bookings] Phone action tapped — to be implemented in a future task")
+                            // TODO: Implement phone action
                         } label: {
                             Image(systemName: "ellipsis")
                                 .font(.posBodyMediumRegular())
@@ -243,7 +242,7 @@ struct POSBookingDetailView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 sectionTitleWithAction(title: Localization.bookingNoteLabel) {
                     Button(Localization.addNoteButton) {
-                        DDLogInfo("⚠️ [Bookings] Add note tapped — to be implemented in a future task")
+                        // TODO: Implement add note action
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))
                 }
@@ -273,11 +272,11 @@ struct POSBookingDetailView: View {
                 HStack(spacing: POSSpacing.small) {
                     attendanceButton(Localization.attendedPill,
                                      isSelected: booking.attendanceDisplay == .attended) {
-                        DDLogInfo("⚠️ [Bookings] Attended button tapped — to be implemented in a future task")
+                        // TODO: Implement mark attended action
                     }
                     attendanceButton(Localization.unattendedPill,
                                      isSelected: booking.attendanceDisplay == .unattended) {
-                        DDLogInfo("⚠️ [Bookings] Unattended button tapped — to be implemented in a future task")
+                        // TODO: Implement mark unattended action
                     }
                 }
             }
@@ -315,7 +314,7 @@ struct POSBookingDetailView: View {
 
     private var stickyCollectPaymentContainer: some View {
         Button(action: {
-            DDLogInfo("⚠️ [Bookings] Collect payment tapped — to be implemented in a future task")
+            // TODO: Implement collect payment action
         }) {
             Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
                 .frame(maxWidth: .infinity)

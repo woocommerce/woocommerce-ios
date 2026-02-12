@@ -5,6 +5,11 @@ import SwiftUI
 @MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
 
+    struct WebViewPresentation: Equatable {
+        let url: URL
+        let siteURL: String
+    }
+
     enum CheckPluginError: Equatable {
         case outdated
         case other
@@ -18,6 +23,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
     @Published private var setupState: SetupState = .inProgress
+    @Published var webViewPresentation: WebViewPresentation?
 
     let subtitleAttributedString: AttributedString
 
@@ -124,6 +130,21 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         onDismiss()
     }
 
+    func didAuthorizeWebViewConnection() {
+        webViewPresentation = nil
+        handler.didAuthorizeWebViewConnection()
+    }
+
+    func didEncounterWebViewError(code: Int?) {
+        webViewPresentation = nil
+        handler.didEncounterWebViewError(code: code)
+    }
+
+    func didCancelWebView() {
+        webViewPresentation = nil
+        handler.didCancelWebView()
+    }
+
     private func retrySetup() {
         setupState = .inProgress
         handler.retry()
@@ -164,6 +185,10 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
 
     func setupDidComplete() {
         setupState = .completed
+    }
+
+    func setupDidRequireWebView(url: URL, siteURL: String) {
+        webViewPresentation = WebViewPresentation(url: url, siteURL: siteURL)
     }
 }
 

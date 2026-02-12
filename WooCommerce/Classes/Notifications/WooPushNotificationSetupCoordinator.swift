@@ -97,7 +97,7 @@ private extension WooPushNotificationSetupCoordinator {
                 // TODO: Implement plugin update flow in follow-up PR
             }
         )
-        let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
+        let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel, credentials: credentials)
         navigationController.viewControllers = [connectionSetupController]
 
         // Dismiss current modal (login or benefits) and present connection setup

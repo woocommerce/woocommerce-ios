@@ -10,6 +10,8 @@ import typealias Yosemite.OrderItemAttribute
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    var autoStartRefund: Bool = false
+    var onRefundSuccess: (() -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
@@ -72,6 +74,9 @@ struct POSOrderDetailsView: View {
             refundModalContent(for: state)
         }
         .onAppear {
+            if autoStartRefund {
+                initiateRefundFlow()
+            }
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
                 orderID: order.id,
                 orderStatus: order.status.rawValue,
@@ -436,6 +441,9 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
+            if autoStartRefund {
+                return .init(primary: .issueRefund, secondary: [email])
+            }
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
                 return .init(primary: email, secondary: [])
             }
@@ -506,7 +514,11 @@ private extension POSOrderDetailsView {
             let result = await orderListModel.ordersController.startRefundFlow()
             switch result {
             case .hasItemsToRefund:
-                refundModalState = .itemSelection
+                if autoStartRefund {
+                    navigateToRefundReview()
+                } else {
+                    refundModalState = .itemSelection
+                }
             case .nothingToRefund:
                 refundModalState = .nothingToRefund
             case .failed:
@@ -568,7 +580,13 @@ private extension POSOrderDetailsView {
             POSRefundErrorView(
                 title: Localization.prepareRefundErrorTitle,
                 subtitle: Localization.prepareRefundErrorSubtitle,
-                onRetry: { refundModalState = .itemSelection },
+                onRetry: {
+                    if autoStartRefund {
+                        initiateRefundFlow()
+                    } else {
+                        refundModalState = .itemSelection
+                    }
+                },
                 onCancel: { refundModalState = nil },
                 onClose: { refundModalState = nil }
             )
@@ -596,7 +614,7 @@ private extension POSOrderDetailsView {
                 onContinue: {
                     refundModalState = .confirmation(reviewData)
                 },
-                onEditRefund: {
+                onEditRefund: autoStartRefund ? nil : {
                     refundModalState = .itemSelection
                 }
             )
@@ -689,6 +707,7 @@ private extension POSOrderDetailsView {
         do {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
             refundModalState = .success(reviewData)
+            onRefundSuccess?()
         } catch {
             DDLogError("⛔️ Failed to process refund: \(error)")
             refundModalState = .error(reviewData)

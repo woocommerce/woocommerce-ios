@@ -148,7 +148,11 @@ protocol PointOfSaleAggregateModelProtocol {
             receiptSender: receiptSender,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
-                onEditOrder: { weakSelf?.addMoreToCart() }),
+                onEditOrder: { weakSelf?.addMoreToCart() },
+                onSuccessScreenBarcodeScanned: { barcode in
+                    weakSelf?.startNewCart()
+                    weakSelf?.barcodeScanned(barcode)
+                }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             paymentState: paymentState)

@@ -1,4 +1,5 @@
 import Foundation
+import enum WooFoundationCore.WooAnalyticsStat
 
 /// Configures the view-level differences between payment flow callers.
 struct POSPaymentFlowConfiguration {
@@ -15,30 +16,41 @@ struct POSPaymentFlowConfiguration {
 
     /// Whether to show a close (x) button on the initial payment screen.
     let showInitialCloseButton: Bool
+
+    /// Optional barcode scan handler for the success screen.
+    /// When provided, barcode scanning is enabled after a successful payment
+    /// (automatically disabled during receipt email entry).
+    let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
 }
 
 /// A labeled action used by the payment flow configuration.
 struct PaymentFlowAction {
     let title: String
     let action: () -> Void
+    let analyticsEvent: WooAnalyticsStat?
 }
 
 // MARK: - Cart
 
 extension POSPaymentFlowConfiguration {
     static func cart(onNewOrder: @escaping () -> Void,
-                     onEditOrder: @escaping () -> Void) -> Self {
+                     onEditOrder: @escaping () -> Void,
+                     onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)? = nil) -> Self {
         POSPaymentFlowConfiguration(
             successAction: PaymentFlowAction(
                 title: Localization.Cart.newOrder,
-                action: onNewOrder),
+                action: onNewOrder,
+                analyticsEvent: .pointOfSaleCreateNewOrderTapped),
             captureErrorExitAction: PaymentFlowAction(
                 title: Localization.Cart.newOrder,
-                action: onNewOrder),
+                action: onNewOrder,
+                analyticsEvent: nil),
             intentCreationErrorExitAction: PaymentFlowAction(
                 title: Localization.Cart.editOrder,
-                action: onEditOrder),
-            showInitialCloseButton: false
+                action: onEditOrder,
+                analyticsEvent: nil),
+            showInitialCloseButton: false,
+            onSuccessScreenBarcodeScanned: onSuccessScreenBarcodeScanned
         )
     }
 }
@@ -50,14 +62,18 @@ extension POSPaymentFlowConfiguration {
         POSPaymentFlowConfiguration(
             successAction: PaymentFlowAction(
                 title: Localization.Bookings.done,
-                action: onDismiss),
+                action: onDismiss,
+                analyticsEvent: nil),
             captureErrorExitAction: PaymentFlowAction(
                 title: Localization.Bookings.backToBooking,
-                action: onDismiss),
+                action: onDismiss,
+                analyticsEvent: nil),
             intentCreationErrorExitAction: PaymentFlowAction(
                 title: Localization.Bookings.backToBooking,
-                action: onDismiss),
-            showInitialCloseButton: true
+                action: onDismiss,
+                analyticsEvent: nil),
+            showInitialCloseButton: true,
+            onSuccessScreenBarcodeScanned: nil
         )
     }
 }

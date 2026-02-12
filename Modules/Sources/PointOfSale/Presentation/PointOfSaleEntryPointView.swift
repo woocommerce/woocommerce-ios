@@ -166,6 +166,7 @@ public struct PointOfSaleEntryPointView: View {
             if let posModel {
                 PointOfSaleDashboardView()
                     .environment(posModel)
+                    .environment(posModel.paymentModel)
             } else {
                 PointOfSaleLoadingView()
             }

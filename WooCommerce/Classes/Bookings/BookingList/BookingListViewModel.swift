@@ -58,13 +58,9 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        var predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
-        if let localPredicate = type.localPredicate {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
-        }
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
-                                                                  matching: predicate,
+                                                                  matching: currentPredicate,
                                                                   sortedBy: [sortDescriptorByDate])
         return resultsController
     }()
@@ -128,17 +124,19 @@ final class BookingListViewModel: ObservableObject {
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         hasFilters = filters.numberOfActiveFilters > 0
         self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
-        var predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: self.filters)
-        if let localPredicate = type.localPredicate {
-            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
-        }
-        resultsController.predicate = predicate
+        resultsController.predicate = currentPredicate
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
 
     /// Converts SortBy to BookingsRemote.Order
     private func remoteOrder(from sortBy: SortBy) -> BookingsRemote.Order {
         sortBy == .oldestToNewest ? .ascending : .descending
+    }
+
+    private var currentPredicate: NSPredicate {
+        let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
+        guard let localPredicate = type.localPredicate else { return predicate }
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, localPredicate])
     }
 }
 

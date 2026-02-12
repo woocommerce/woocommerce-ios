@@ -94,7 +94,6 @@ struct POSRefundModalContentView: View {
                     onContinue: { navigateToRefundReview() }
                 )
             } else {
-                assertionFailure("Unexpected .itemSelection state when showsItemSelection is false")
                 EmptyView()
             }
         case .review(let reviewData):

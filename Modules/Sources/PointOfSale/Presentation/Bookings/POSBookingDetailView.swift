@@ -6,6 +6,8 @@ struct POSBookingDetailView: View {
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(POSBookingsModel.self) private var bookingsModel
 
     @State private var navigationPath: [NavigationDestination] = []
 
@@ -40,6 +42,20 @@ struct POSBookingDetailView: View {
                         })
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    case .orderDetailRefund:
+                        POSOrderDetailsView(
+                            order: booking.order,
+                            onBack: { navigationPath.removeLast() },
+                            autoStartRefund: true,
+                            onRefundSuccess: {
+                                Task {
+                                    await bookingsModel.bookingsController.refreshBookings()
+                                }
+                            }
+                        )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                             navigationPath.removeLast()
                         }))
@@ -83,6 +99,12 @@ struct POSBookingDetailView: View {
         Menu {
             Button(Localization.viewOrderAction) {
                 navigationPath.append(.orderDetail)
+            }
+            if isPaid {
+                Button(Localization.issueRefundAction) {
+                    orderListModel.ordersController.selectOrder(booking.order)
+                    navigationPath.append(.orderDetailRefund)
+                }
             }
         } label: {
             Image(systemName: "ellipsis")
@@ -337,6 +359,7 @@ private extension DateFormatter {
 
 private enum NavigationDestination: Hashable {
     case orderDetail
+    case orderDetailRefund
 }
 
 // MARK: - Localization
@@ -460,5 +483,11 @@ private enum Localization {
         "pos.bookingDetailView.viewOrderAction",
         value: "View Order",
         comment: "Menu action to view the linked order from a booking detail."
+    )
+
+    static let issueRefundAction = NSLocalizedString(
+        "pos.bookingDetailView.issueRefundAction",
+        value: "Issue Refund",
+        comment: "Menu action to issue a full refund for a booking."
     )
 }

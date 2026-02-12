@@ -11,6 +11,8 @@ struct POSBookingDetailView: View {
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var cancelModalState: CancelBookingModalState?
+    @State private var updateAttendanceModalState: UpdateAttendanceModalState?
+    @State private var selectedAttendanceTarget: POSBookingAttendanceDisplay = .attended
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -35,6 +37,11 @@ struct POSBookingDetailView: View {
     private var isBookingCancellable: Bool {
         lifecycleStatus != .cancelled && lifecycleStatus != .completed
     }
+
+    private var canUpdateAttendance: Bool {
+        lifecycleStatus != .cancelled
+    }
+
 
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -102,6 +109,14 @@ struct POSBookingDetailView: View {
                 state: state,
                 booking: booking,
                 cancelModalState: $cancelModalState
+            )
+        }
+        .posModal(item: $updateAttendanceModalState) { state in
+            POSUpdateAttendanceModalContent(
+                state: state,
+                booking: booking,
+                targetStatus: selectedAttendanceTarget,
+                updateAttendanceModalState: $updateAttendanceModalState
             )
         }
     }
@@ -245,16 +260,40 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var attendanceSection: some View {
-        HStack {
-            Text(Localization.attendanceLabel)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+        VStack(spacing: POSSpacing.medium) {
+            HStack {
+                Text(Localization.attendanceLabel)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
-            Spacer()
+                Spacer()
 
-            Text(attendanceDisplay.localizedTitle)
-                .font(.posBodySmallBold())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                Text(attendanceDisplay.localizedTitle)
+                    .font(.posBodySmallBold())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
+
+            if canUpdateAttendance {
+                HStack(spacing: POSSpacing.medium) {
+                    Button(action: {
+                        selectedAttendanceTarget = .attended
+                        updateAttendanceModalState = .confirmation
+                    }) {
+                        Text(Localization.markAttendedButton)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+
+                    Button(action: {
+                        selectedAttendanceTarget = .unattended
+                        updateAttendanceModalState = .confirmation
+                    }) {
+                        Text(Localization.markUnattendedButton)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                }
+            }
         }
         .sectionCard()
     }
@@ -513,6 +552,18 @@ private enum Localization {
         "pos.bookingDetailView.cancelBookingAction",
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let markAttendedButton = NSLocalizedString(
+        "pos.bookingDetailView.markAttendedButton",
+        value: "Mark Attended",
+        comment: "Button to mark a booking as attended in the POS booking detail view."
+    )
+
+    static let markUnattendedButton = NSLocalizedString(
+        "pos.bookingDetailView.markUnattendedButton",
+        value: "Mark Unattended",
+        comment: "Button to mark a booking as unattended in the POS booking detail view."
     )
 
 }

@@ -5,9 +5,9 @@ struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     @State private var showingOptions = false
-    @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
     @State private var cancellingBooking = false
+    @State private var updatingAttendance = false
     @State private var markingAsPaid = false
     @State private var notice: Notice?
 
@@ -84,14 +84,6 @@ struct BookingDetailsView: View {
             /// Applied only for phones because it affects navigation title positioning on tablets
             $0.toolbarRole(.editor)
         }
-        .sheet(isPresented: $showingStatusSheet) {
-            UpdateAttendanceStatusView(selectedStatus: viewModel.bookingAttendanceStatus) { selectedStatus in
-                viewModel.updateAttendanceStatus(to: selectedStatus)
-            }
-            .padding(.top)
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
-        }
         .alert(
             Localization.cancelBookingAlertTitle,
             isPresented: $showingCancelAlert
@@ -151,8 +143,6 @@ private extension BookingDetailsView {
             HeaderView(content: content)
         case .appointmentDetails(let content):
             appointmentDetailsView(with: content)
-        case .attendance(let content):
-            attendanceView(with: content)
         case .customer(let content):
             CustomerDetailsView(content: content, showNotice: {
                 notice = $0
@@ -169,17 +159,6 @@ private extension BookingDetailsView {
         }
     }
 
-    func attendanceView(with content: BookingDetailsViewModel.AttendanceContent) -> some View {
-        TitleAndValueRow(
-            title: Localization.statusRowTitle,
-            value: .placeholder(content.value),
-            selectionStyle: .disclosure,
-            horizontalPadding: 0
-        ) {
-            showingStatusSheet = true
-        }
-    }
-
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(content.rows) { row in
@@ -193,6 +172,15 @@ private extension BookingDetailsView {
                 Divider()
                     .padding(.trailing, -Layout.contentSidePadding)
             }
+
+            Button {
+                updateAttendance()
+            } label: {
+                Text(viewModel.attendanceButtonTitle)
+            }
+            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: updatingAttendance))
+            .padding(.top, Layout.contentVerticalPadding)
+            .renderedIf(viewModel.shouldShowAttendanceButton)
 
             Button {
                 showingCancelAlert = true
@@ -248,6 +236,12 @@ private extension BookingDetailsView {
 }
 
 extension BookingDetailsView {
+    func updateAttendance() {
+        updatingAttendance = true
+        viewModel.updateAttendanceStatus(to: viewModel.targetAttendanceStatus)
+        updatingAttendance = false
+    }
+
     func cancelBooking() {
         Task { @MainActor in
             cancellingBooking = true
@@ -313,13 +307,6 @@ extension BookingDetailsView {
             "BookingDetailsView.cancelation.alert.cancelAction",
             value: "No, keep it",
             comment: "Cancel button title for the booking cancellation confirmation alert."
-        )
-
-        /// Attendance section
-        static let statusRowTitle = NSLocalizedString(
-            "BookingDetailsView.customer.status.title",
-            value: "Status",
-            comment: "'Status' row title in attendance section in booking details view."
         )
 
         /// Booking notes

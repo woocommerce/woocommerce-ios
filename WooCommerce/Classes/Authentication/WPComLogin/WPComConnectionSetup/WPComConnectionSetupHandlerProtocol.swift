@@ -35,16 +35,19 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
 
     private let siteURL: String
     private let credentials: Credentials?
+    private let stores: StoresManager
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let pluginVersionChecker: PluginVersionCheckerProtocol
 
     init(siteID: Int64,
          siteURL: String,
          credentials: Credentials?,
+         stores: StoresManager = ServiceLocator.stores,
          jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil) {
         self.siteURL = siteURL
         self.credentials = credentials
+        self.stores = stores
         self.jetpackConnectionService = jetpackConnectionService
         self.pluginVersionChecker = pluginVersionChecker ?? PluginVersionChecker(
             siteID: siteID,
@@ -137,10 +140,11 @@ private extension WPComConnectionSetupHandler {
 
     @MainActor
     func startConnectionWithWebView() {
+        let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
         Task { @MainActor [weak self] in
             guard let self else { return }
             do {
-                let url = try await self.jetpackConnectionService.fetchJetpackConnectionURL(authenticatedWithWPCom: true)
+                let url = try await jetpackConnectionService.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom)
                 let connectionURL: URL
                 if url.absoluteString.hasPrefix(Constants.accountConnectionURL) {
                     connectionURL = url
@@ -148,10 +152,10 @@ private extension WPComConnectionSetupHandler {
                     let fallback = String(format: Constants.siteConnectionURLFormat, self.siteURL)
                     connectionURL = URL(string: fallback) ?? url
                 }
-                self.delegate?.setupDidRequireWebView(url: connectionURL, siteURL: self.siteURL)
+                delegate?.setupDidRequireWebView(url: connectionURL, siteURL: self.siteURL)
             } catch {
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
-                self.delegate?.stepDidUpdate(.connect, status: .failure(reason: error.localizedDescription))
+                delegate?.stepDidUpdate(.connect, status: .failure(reason: error.localizedDescription))
             }
         }
     }

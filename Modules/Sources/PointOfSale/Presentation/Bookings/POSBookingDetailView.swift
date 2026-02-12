@@ -10,6 +10,7 @@ struct POSBookingDetailView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
 
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var cancelModalState: CancelBookingModalState?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -20,7 +21,7 @@ struct POSBookingDetailView: View {
     }
 
     private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
+        POSBookingPaymentStatus(bookingStatus: booking.status, isBookingPaid: booking.isBookingPaid)
     }
 
     private var attendanceDisplay: POSBookingAttendanceDisplay {
@@ -29,6 +30,10 @@ struct POSBookingDetailView: View {
 
     private var isPaid: Bool {
         paymentStatus == .paid
+    }
+
+    private var isBookingCancellable: Bool {
+        lifecycleStatus != .cancelled && lifecycleStatus != .completed
     }
 
     var body: some View {
@@ -92,6 +97,13 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posModal(item: $cancelModalState) { state in
+            POSCancelBookingModalContent(
+                state: state,
+                booking: booking,
+                cancelModalState: $cancelModalState
+            )
+        }
     }
 
     @ViewBuilder
@@ -104,6 +116,11 @@ struct POSBookingDetailView: View {
                 Button(Localization.issueRefundAction) {
                     orderListModel.ordersController.selectOrder(booking.order)
                     navigationPath.append(.orderDetailRefund)
+                }
+            }
+            if isBookingCancellable {
+                Button(Localization.cancelBookingAction, role: .destructive) {
+                    cancelModalState = .confirmation
                 }
             }
         } label: {
@@ -318,6 +335,7 @@ struct POSBookingDetailView: View {
         let end = formatter.string(from: booking.endDate)
         return "\(start) – \(end)"
     }
+
 }
 
 // MARK: - Section Card Modifier
@@ -490,4 +508,11 @@ private enum Localization {
         value: "Issue Refund",
         comment: "Menu action to issue a full refund for a booking."
     )
+
+    static let cancelBookingAction = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingAction",
+        value: "Cancel Booking",
+        comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
 }

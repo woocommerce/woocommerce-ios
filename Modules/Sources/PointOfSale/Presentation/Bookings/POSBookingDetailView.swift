@@ -42,6 +42,8 @@ struct POSBookingDetailView: View {
         Task { @MainActor in
             await bookingsModel.bookingsController.refreshBookings()
         }
+    }
+
     private var isBookingCancellable: Bool {
         lifecycleStatus != .cancelled && lifecycleStatus != .completed
     }

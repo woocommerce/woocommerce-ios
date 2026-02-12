@@ -5,6 +5,7 @@ import Combine
 import struct Yosemite.Order
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
+import class Yosemite.PaymentCaptureCelebration
 
 /// Shared payment model that owns all payment state and logic.
 @Observable
@@ -55,7 +56,7 @@ final class POSPaymentModel {
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
-         celebration: PaymentCaptureCelebrationProtocol,
+         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          paymentState: PointOfSalePaymentState = .idle) {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider

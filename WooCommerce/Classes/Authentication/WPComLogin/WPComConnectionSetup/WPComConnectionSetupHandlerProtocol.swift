@@ -90,18 +90,18 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
                 delegate?.stepDidUpdate(.connect, status: .success)
                 // TODO: continue to next steps
             } catch {
-                delegate?.stepDidUpdate(.connect, status: .failure(reason: error.localizedDescription))
+                didFailConnection(with: error)
             }
         }
     }
 
     func didEncounterWebViewError(code: Int?) {
-        let reason = code.map { "Web view error (code: \($0))" } ?? "Web view error"
-        delegate?.stepDidUpdate(.connect, status: .failure(reason: reason))
+        DDLogError("⛔️ Web view error (code: \(String(describing: code)))")
+        delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.ConnectionStep.genericError))
     }
 
     func didCancelWebView() {
-        delegate?.stepDidUpdate(.connect, status: .failure(reason: "Connection cancelled"))
+        delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.ConnectionStep.canceled))
     }
 }
 
@@ -118,7 +118,7 @@ private extension WPComConnectionSetupHandler {
                 // When `completed` is false, the web view flow has been triggered
                 // and the flow will resume via didAuthorizeWebViewConnection().
             } catch {
-                delegate?.stepDidUpdate(.connect, status: .failure(reason: error.localizedDescription)) // TODO: update msg
+                didFailConnection(with: error)
             }
         }
 
@@ -155,9 +155,14 @@ private extension WPComConnectionSetupHandler {
                 delegate?.setupDidRequireWebView(url: connectionURL, siteURL: self.siteURL)
             } catch {
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
-                delegate?.stepDidUpdate(.connect, status: .failure(reason: error.localizedDescription))
+                didFailConnection(with: error)
             }
         }
+    }
+
+    func didFailConnection(with error: Error) {
+        DDLogError("⛔️ WPCom connection fails: \(error)")
+        delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.ConnectionStep.genericError))
     }
 }
 
@@ -167,5 +172,20 @@ private extension WPComConnectionSetupHandler {
         static let minimumWooVersion = "10.5.3" // This is for testing
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
         static let siteConnectionURLFormat = "%@/wp-admin/admin.php?page=jetpack"
+    }
+
+    enum Localization {
+        enum ConnectionStep {
+            static let genericError = NSLocalizedString(
+                "wpcomConnectionSetupHandler.ConnectionStep.genericError",
+                value: "There was an error completing your request. Please try again or contact support if this error continues.",
+                comment: "Generic error message when the connection step fails during push notification setup"
+            )
+            static let canceled = NSLocalizedString(
+                "wpcomConnectionSetupHandler.ConnectionStep.canceled",
+                value: "Connection canceled.",
+                comment: "Error message when the connection step is canceled during push notification setup"
+            )
+        }
     }
 }

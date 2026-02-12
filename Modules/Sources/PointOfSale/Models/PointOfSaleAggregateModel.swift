@@ -196,11 +196,13 @@ extension PointOfSaleAggregateModel {
         }
     }
 
-    @MainActor func addMoreToCart() {
+    @MainActor
+    func addMoreToCart() {
         setStateForEditing()
     }
 
-    @MainActor func startNewCart() {
+    @MainActor
+    func startNewCart() {
         removeAllItemsFromCart()
         orderController.clearOrder()
         setStateForEditing()
@@ -368,51 +370,63 @@ private extension PointOfSaleAggregateModel {
 
 // MARK: - Payment (delegated to POSPaymentModel)
 extension PointOfSaleAggregateModel {
-    @MainActor func connectCardReader() {
+    @MainActor
+    func connectCardReader() {
         paymentModel.connectCardReader()
     }
 
-    @MainActor func disconnectCardReader() {
+    @MainActor
+    func disconnectCardReader() {
         paymentModel.disconnectCardReader()
     }
 
-    @MainActor func updateCardReaderSoftware() {
+    @MainActor
+    func updateCardReaderSoftware() {
         paymentModel.updateCardReaderSoftware()
     }
 
-    @MainActor func startCashPayment() async {
+    @MainActor
+    func startCashPayment() async {
         await paymentModel.startCashPayment()
     }
 
-    @MainActor func cancelCashPayment() async {
+    @MainActor
+    func cancelCashPayment() async {
         await paymentModel.cancelCashPayment()
     }
 
-    @MainActor func collectCashPayment(changeDueAmount: String?) async throws {
+    @MainActor
+    func collectCashPayment(changeDueAmount: String?) async throws {
         try await paymentModel.collectCashPayment(changeDueAmount: changeDueAmount)
     }
 
-    @MainActor func sendReceipt(to emailAddress: String) async throws {
+    @MainActor
+    func sendReceipt(to emailAddress: String) async throws {
         try await paymentModel.sendReceipt(to: emailAddress)
     }
 
-    @MainActor func cancelThenCollectPayment() {
+    @MainActor
+    func cancelThenCollectPayment() {
         paymentModel.cancelThenCollectPayment()
     }
 
-    @MainActor func cancelThenCollectPayment() async {
+    @MainActor
+    func cancelThenCollectPayment() async {
         await paymentModel.cancelThenCollectPayment()
     }
 
-    @MainActor func cancelCardPaymentsOnboarding() {
+    @MainActor
+    func cancelCardPaymentsOnboarding() {
         paymentModel.cancelCardPaymentsOnboarding()
     }
 
-    @MainActor func trackCardPaymentsOnboardingShown() {
+    @MainActor
+    func trackCardPaymentsOnboardingShown() {
         paymentModel.trackCardPaymentsOnboardingShown()
     }
 
-    @MainActor @Sendable private func setupReaderReconnectionObservation() {
+    @MainActor
+    private func setupReaderReconnectionObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }
             switch orderStage {
@@ -470,7 +484,8 @@ extension PointOfSaleAggregateModel {
 // MARK: - Incremental catalog sync on payment success
 
 private extension PointOfSaleAggregateModel {
-    @MainActor @Sendable private func setupPaymentSuccessObservation() {
+    @MainActor
+    private func setupPaymentSuccessObservation() {
         withObservationTracking { [weak self] in
             guard let self else { return }
             if paymentState.isSuccess {

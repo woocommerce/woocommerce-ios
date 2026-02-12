@@ -149,7 +149,12 @@ public struct PointOfSaleEntryPointView: View {
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         if let bookingListFetchStrategyFactory {
             let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
-            self.bookingsModel = POSBookingsModel(bookingsController: bookingsController)
+            self.bookingsModel = POSBookingsModel(
+                bookingsController: bookingsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                receiptSender: receiptSender,
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         } else {
             self.bookingsModel = nil
         }

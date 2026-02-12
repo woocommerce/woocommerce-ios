@@ -538,7 +538,12 @@ final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
 extension POSPreviewHelpers {
     static func makePreviewBookingsModel(state: POSBookingListState = .empty) -> POSBookingsModel {
         let controller = POSConfigurablePreviewBookingListController(state: state)
-        return POSBookingsModel(bookingsController: controller)
+        return POSBookingsModel(
+            bookingsController: controller,
+            cardPresentPaymentService: CardPresentPaymentPreviewService(),
+            orderService: POSOrderServicePreview(),
+            receiptSender: POSReceiptSenderPreview(),
+            collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics())
     }
 
     static func makePreviewBookings() -> [POSBooking] {
@@ -684,6 +689,10 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
+        .empty
+    }
+
+    func loadOrder(orderID: Int64) async throws -> Order {
         .empty
     }
 

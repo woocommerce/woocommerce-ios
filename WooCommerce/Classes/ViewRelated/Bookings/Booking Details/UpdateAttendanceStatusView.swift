@@ -61,39 +61,33 @@ struct UpdateAttendanceStatusView: View {
 private extension BookingAttendanceStatus {
     var title: String {
         switch self {
-        case .booked:
-            return UpdateAttendanceStatusView.Localization.bookedTitle
-        case .checkedIn:
-            return UpdateAttendanceStatusView.Localization.checkedInTitle
-        case .noShow:
-            return UpdateAttendanceStatusView.Localization.noShowTitle
-        case .cancelled, .unknown:
+        case .attended:
+            return UpdateAttendanceStatusView.Localization.attendedTitle
+        case .unattended:
+            return UpdateAttendanceStatusView.Localization.unattendedTitle
+        case .unknown:
             return ""
         }
     }
 
     var information: String {
         switch self {
-        case .booked:
-            return UpdateAttendanceStatusView.Localization.bookedDescription
-        case .checkedIn:
-            return UpdateAttendanceStatusView.Localization.checkedInDescription
-        case .noShow:
-            return UpdateAttendanceStatusView.Localization.noShowDescription
-        case .cancelled, .unknown:
+        case .attended:
+            return UpdateAttendanceStatusView.Localization.attendedDescription
+        case .unattended:
+            return UpdateAttendanceStatusView.Localization.unattendedDescription
+        case .unknown:
             return ""
         }
     }
 
     var iconName: String {
         switch self {
-        case .booked:
-            return "calendar.badge.checkmark"
-        case .checkedIn:
+        case .attended:
             return "calendar.and.person"
-        case .noShow:
+        case .unattended:
             return "calendar.badge.exclamationmark"
-        case .cancelled, .unknown:
+        case .unknown:
             return ""
         }
     }
@@ -101,7 +95,7 @@ private extension BookingAttendanceStatus {
 
 private extension UpdateAttendanceStatusView {
     enum Constants {
-        static let statuses: [BookingAttendanceStatus] = [.booked, .checkedIn, .noShow]
+        static let statuses: [BookingAttendanceStatus] = [.attended, .unattended]
         static let statusSelectionDelay: TimeInterval = 0.2
     }
 
@@ -112,37 +106,26 @@ private extension UpdateAttendanceStatusView {
             comment: "Title of the update attendance status bottom sheet."
         )
 
-        static let bookedTitle = NSLocalizedString(
-            "UpdateAttendanceStatusView.booked.title",
-            value: "Booked",
-            comment: "Title for the 'Booked' attendance status."
+        static let attendedTitle = NSLocalizedString(
+            "UpdateAttendanceStatusView.attended.title",
+            value: "Attended",
+            comment: "Title for the 'Attended' attendance status."
         )
-        static let bookedDescription = NSLocalizedString(
-            "UpdateAttendanceStatusView.booked.description",
-            value: "The appointment is scheduled but hasn't happened yet.",
-            comment: "Description for the 'Booked' attendance status."
-        )
-
-        static let checkedInTitle = NSLocalizedString(
-            "UpdateAttendanceStatusView.checkedIn.title",
-            value: "Checked-in",
-            comment: "Title for the 'Checked-in' attendance status."
-        )
-        static let checkedInDescription = NSLocalizedString(
-            "UpdateAttendanceStatusView.checkedIn.description",
+        static let attendedDescription = NSLocalizedString(
+            "UpdateAttendanceStatusView.attended.description",
             value: "The customer arrived and the session took place as planned.",
-            comment: "Description for the 'Checked-in' attendance status."
+            comment: "Description for the 'Attended' attendance status."
         )
 
-        static let noShowTitle = NSLocalizedString(
-            "UpdateAttendanceStatusView.noShow.title",
-            value: "No-show",
-            comment: "Title for the 'No-show' attendance status."
+        static let unattendedTitle = NSLocalizedString(
+            "UpdateAttendanceStatusView.unattended.title",
+            value: "Unattended",
+            comment: "Title for the 'Unattended' attendance status."
         )
-        static let noShowDescription = NSLocalizedString(
-            "UpdateAttendanceStatusView.noShow.description",
-            value: "The client missed the appointment without canceling in advance.",
-            comment: "Description for the 'No-show' attendance status."
+        static let unattendedDescription = NSLocalizedString(
+            "UpdateAttendanceStatusView.unattended.description",
+            value: "The customer did not attend the appointment.",
+            comment: "Description for the 'Unattended' attendance status."
         )
     }
 }
@@ -150,7 +133,7 @@ private extension UpdateAttendanceStatusView {
 #if DEBUG
 struct UpdateAttendanceStatusView_Previews: PreviewProvider {
     static var previews: some View {
-        UpdateAttendanceStatusView(selectedStatus: .booked) { selectedStatus in
+        UpdateAttendanceStatusView(selectedStatus: .unattended) { selectedStatus in
             print("Selected status: \(selectedStatus)")
         }
     }

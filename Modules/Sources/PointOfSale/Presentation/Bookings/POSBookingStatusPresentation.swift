@@ -14,6 +14,7 @@ import enum Yosemite.BookingAttendanceStatus
 ///    - Derived from the API `status` field values.
 /// 3. **Attendance status**: Unattended / Attended
 ///    - Comes from the API `attendance_status` field.
+// TODO: WOOMOB-2143 - Revisit status matching once status-matching changes land.
 
 // MARK: - Payment Status (derived from BookingStatus)
 
@@ -32,6 +33,20 @@ enum POSBookingPaymentStatus: Equatable {
         }
     }
 
+    /// Initializer that considers whether the linked order has been paid.
+    /// When a booking is cancelled, the booking status alone doesn't tell us
+    /// whether it was previously paid. The order's payment state is the source of truth.
+    init(bookingStatus: BookingStatus, isBookingPaid: Bool) {
+        switch bookingStatus {
+        case .paid, .complete:
+            self = .paid
+        case .cancelled:
+            self = isBookingPaid ? .paid : .unpaid
+        case .unpaid, .pendingConfirmation, .confirmed, .unknown:
+            self = .unpaid
+        }
+    }
+
     var localizedTitle: String {
         switch self {
         case .paid:
@@ -41,12 +56,23 @@ enum POSBookingPaymentStatus: Equatable {
         }
     }
 
-    var color: Color {
+    var color: Color { textColor }
+
+    var textColor: Color {
         switch self {
         case .paid:
-            return .posSuccess
+            return .posOnDefault
         case .unpaid:
-            return .posAlert
+            return .posOnErrorLowest
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .paid:
+            return .posDefault
+        case .unpaid:
+            return .posErrorLowest
         }
     }
 }
@@ -59,9 +85,9 @@ enum POSBookingAttendanceDisplay: Equatable {
 
     init(attendanceStatus: BookingAttendanceStatus) {
         switch attendanceStatus {
-        case .checkedIn:
+        case .attended:
             self = .attended
-        case .booked, .noShow, .cancelled, .unknown:
+        case .unattended, .unknown:
             self = .unattended
         }
     }
@@ -73,6 +99,14 @@ enum POSBookingAttendanceDisplay: Equatable {
         case .unattended:
             return Localization.unattended
         }
+    }
+
+    var textColor: Color {
+        .posOnDefault
+    }
+
+    var backgroundColor: Color {
+        .posDefault
     }
 }
 
@@ -111,10 +145,21 @@ enum POSBookingLifecycleStatus: Equatable {
         }
     }
 
-    var badgeColor: Color {
+    var badgeColor: Color { textColor }
+
+    var textColor: Color {
         switch self {
         case .cancelled:
-            return .posError
+            return .posOnErrorLowest
+        case .booked, .completed:
+            return .clear
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .cancelled:
+            return .posErrorLowest
         case .booked, .completed:
             return .clear
         }

@@ -4,6 +4,7 @@ import Storage
 
 public final class FeatureFlagStore: Store {
     private let remote: FeatureFlagRemoteProtocol
+    private let overrideStore: RemoteFeatureFlagOverrideStore?
     private var cachedFeatureFlags: [RemoteFeatureFlag: Bool]?
     private var cacheTimestamp: Date?
     private let cacheMaxAge: TimeInterval
@@ -13,11 +14,13 @@ public final class FeatureFlagStore: Store {
          storageManager: StorageManagerType,
          network: Network,
          remote: FeatureFlagRemoteProtocol,
+         overrideStore: RemoteFeatureFlagOverrideStore? = nil,
          cacheMaxAge: TimeInterval = 24 * 60 * 60,
          currentDate: @escaping () -> Date = { Date() }) {
         self.remote = remote
         self.cacheMaxAge = cacheMaxAge
         self.currentDate = currentDate
+        self.overrideStore = overrideStore
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -27,7 +30,19 @@ public final class FeatureFlagStore: Store {
         self.init(dispatcher: dispatcher,
                   storageManager: storageManager,
                   network: network,
-                  remote: FeatureFlagRemote(network: network))
+                  remote: FeatureFlagRemote(network: network),
+                  overrideStore: nil)
+    }
+
+    public convenience init(dispatcher: Dispatcher,
+                            storageManager: StorageManagerType,
+                            network: Network,
+                            overrideStore: RemoteFeatureFlagOverrideStore?) {
+        self.init(dispatcher: dispatcher,
+                  storageManager: storageManager,
+                  network: network,
+                  remote: FeatureFlagRemote(network: network),
+                  overrideStore: overrideStore)
     }
 
     // MARK: - Actions
@@ -67,6 +82,12 @@ private extension FeatureFlagStore {
                                     defaultValue: Bool,
                                     useCache: Bool,
                                     completion: @escaping (Bool) -> Void) {
+        // Check for override first
+        if let overrideValue = overrideStore?.overrideValue(for: featureFlag) {
+            completion(overrideValue)
+            return
+        }
+
         if useCache, let cachedFlags = cachedFeatureFlags, !isCacheExpired {
             completion(cachedFlags[featureFlag] ?? defaultValue)
             return

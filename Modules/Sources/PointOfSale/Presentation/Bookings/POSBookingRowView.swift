@@ -8,16 +8,12 @@ struct POSBookingRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    private var minHeight: CGFloat {
-        min(Constants.bookingCardMinHeight * scale, Constants.maximumBookingCardHeight)
-    }
-
     private var lifecycleStatus: POSBookingLifecycleStatus {
         POSBookingLifecycleStatus(bookingStatus: booking.status)
     }
 
     private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
+        POSBookingPaymentStatus(bookingStatus: booking.status, isBookingPaid: booking.isBookingPaid)
     }
 
     private var attendanceDisplay: POSBookingAttendanceDisplay {
@@ -25,15 +21,16 @@ struct POSBookingRowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: POSSpacing.none) {
             bookingHeaderRow
+                .padding(.bottom, POSSpacing.xSmall)
             bookingDetailsRow
-            Spacer().frame(height: POSSpacing.xSmall)
-            statusLabels
+                .padding(.bottom, POSSpacing.small)
+            statusBadges
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
-        .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : minHeight, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .overlay {
@@ -43,73 +40,94 @@ struct POSBookingRowView: View {
             }
         }
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     @ViewBuilder
     private var bookingHeaderRow: some View {
         HStack(alignment: .center) {
-            Text(booking.customerName)
+            Text(formattedTimeRange)
                 .font(.posBodySmallBold())
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
-            Text(booking.formattedAmount)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .fixedSize(horizontal: false, vertical: true)
+            POSBookingAvatarView(imageURL: booking.resourceImageURL)
         }
     }
 
     @ViewBuilder
     private var bookingDetailsRow: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            if !booking.serviceName.isEmpty {
-                Text(booking.serviceName)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Text(formattedTimeRange)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        Text(detailsText)
+            .font(.posBodySmallRegular())
+            .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
-    private var statusLabels: some View {
+    private var statusBadges: some View {
         HStack(spacing: POSSpacing.small) {
-            if lifecycleStatus.shouldShowBadge {
-                Text(lifecycleStatus.localizedTitle)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(lifecycleStatus.badgeColor)
+            if lifecycleStatus == .cancelled {
+                POSBookingBadgeView(title: lifecycleStatus.localizedTitle,
+                                    textColor: lifecycleStatus.textColor,
+                                    backgroundColor: lifecycleStatus.backgroundColor)
+            } else {
+                POSBookingBadgeView(title: attendanceDisplay.localizedTitle,
+                                    textColor: attendanceDisplay.textColor,
+                                    backgroundColor: attendanceDisplay.backgroundColor)
             }
-
-            Text(paymentStatus.localizedTitle)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(paymentStatus.color)
-
-            Text(attendanceDisplay.localizedTitle)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            POSBookingBadgeView(title: paymentStatus.localizedTitle,
+                                textColor: paymentStatus.textColor,
+                                backgroundColor: paymentStatus.backgroundColor)
         }
+    }
+
+    private var accessibilityLabel: String {
+        let timeRange = Localization.timeRangeAccessibilityLabel(
+            start: DateFormatter.timeFormatter.string(from: booking.startDate),
+            end: DateFormatter.timeFormatter.string(from: booking.endDate)
+        )
+
+        let customerDisplayName = booking.customerName ?? booking.customerEmail
+
+        var parts = [timeRange, booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
+
+        if lifecycleStatus == .cancelled {
+            parts.append(lifecycleStatus.localizedTitle)
+        } else {
+            parts.append(attendanceDisplay.localizedTitle)
+        }
+        parts.append(paymentStatus.localizedTitle)
+
+        return parts.joined(separator: ", ")
     }
 
     private var formattedTimeRange: String {
         let formatter = DateFormatter.timeFormatter
         let start = formatter.string(from: booking.startDate)
         let end = formatter.string(from: booking.endDate)
-        return "\(start) – \(end)"
+        return "\(start)-\(end)"
+    }
+
+    private var detailsText: String {
+        let customerDisplayName = booking.customerName ?? booking.customerEmail
+        let parts = [booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
+        return parts.joined(separator: " \u{00B7} ")
     }
 }
 
-private enum Constants {
-    static let bookingCardMinHeight: CGFloat = 112
-    static let maximumBookingCardHeight: CGFloat = bookingCardMinHeight * 2
+private enum Localization {
+    static func timeRangeAccessibilityLabel(start: String, end: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingListView.bookingRow.accessibilityLabel.timeRange",
+            value: "%1$@ to %2$@",
+            comment: "Time range for booking row accessibility. %1$@ is start time, %2$@ is end time."
+        )
+        return String(format: format, start, end)
+    }
 }
 
 private extension DateFormatter {

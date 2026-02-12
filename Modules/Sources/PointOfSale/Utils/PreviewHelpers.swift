@@ -34,6 +34,7 @@ import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import struct Yosemite.POSBooking
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSBookingServiceProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
@@ -322,7 +323,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "$0.00",
             formattedTotalTax: "$3.76",
             formattedPaymentTotal: "$45.75",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date()
         )
     }
 
@@ -376,7 +378,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "-$15.00",
             formattedTotalTax: "$8.95",
             formattedPaymentTotal: "$89.50",
-            formattedNetAmount: "$69.51"
+            formattedNetAmount: "$69.51",
+            datePaid: Date().addingTimeInterval(-7200)
         )
     }
 
@@ -444,7 +447,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "$0.00",
             formattedTotalTax: "$2.00",
             formattedPaymentTotal: "$24.99",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date().addingTimeInterval(-10800)
         )
     }
 
@@ -494,7 +498,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "-$10.00",
             formattedTotalTax: "$11.47",
             formattedPaymentTotal: "$156.47",
-            formattedNetAmount: "$153.50"
+            formattedNetAmount: "$153.50",
+            datePaid: Date().addingTimeInterval(-14400)
         )
     }
 }
@@ -502,6 +507,8 @@ struct POSPreviewHelpers {
 // MARK: - Preview Bookings
 
 final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
+    let bookingService: POSBookingServiceProtocol = POSBookingServicePreview()
+
     func defaultStrategy() -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
@@ -509,6 +516,14 @@ final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrate
     func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
+}
+
+final class POSBookingServicePreview: POSBookingServiceProtocol {
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+
+    func cancelBooking(bookingID: Int64) async throws {}
 }
 
 final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
@@ -542,7 +557,7 @@ extension POSPreviewHelpers {
                 endDate: Date().addingTimeInterval(3600),
                 formattedAmount: "$55.00",
                 status: .confirmed,
-                attendanceStatus: .booked,
+                attendanceStatus: .unattended,
                 orderID: 101,
                 resourceName: "Marianne Renoir",
                 customerEmail: "margarita.n@gmail.com",
@@ -563,7 +578,7 @@ extension POSPreviewHelpers {
                 endDate: Date().addingTimeInterval(10800),
                 formattedAmount: "$90.00",
                 status: .paid,
-                attendanceStatus: .booked,
+                attendanceStatus: .unattended,
                 orderID: 102,
                 resourceName: nil,
                 customerEmail: "jane.doe@email.com",
@@ -584,7 +599,7 @@ extension POSPreviewHelpers {
                 endDate: Date(),
                 formattedAmount: "$25.00",
                 status: .cancelled,
-                attendanceStatus: .booked,
+                attendanceStatus: .unattended,
                 orderID: nil,
                 resourceName: nil,
                 duration: "60 min",
@@ -607,6 +622,7 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func refreshBookings() async {}
     func loadNextBookings() async {}
     func selectBooking(_ booking: POSBooking?) { }
+    func cancelBooking(bookingID: Int64) async throws {}
     func searchBookings(searchTerm: String) async {}
     func clearSearchBookings() {}
 }

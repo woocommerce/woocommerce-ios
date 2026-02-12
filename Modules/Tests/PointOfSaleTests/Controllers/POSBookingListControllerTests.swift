@@ -186,7 +186,7 @@ private extension POSBookingListControllerTests {
             endDate: Date().addingTimeInterval(3600),
             formattedAmount: "$50.00",
             status: .confirmed,
-            attendanceStatus: .booked,
+            attendanceStatus: .unattended,
             orderID: id * 10,
             resourceName: nil,
             order: makeOrder(id: id * 10)
@@ -205,7 +205,8 @@ private extension POSBookingListControllerTests {
             paymentMethodTitle: "Cash",
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
-            formattedPaymentTotal: "$50.00"
+            formattedPaymentTotal: "$50.00",
+            datePaid: Date()
         )
     }
 }

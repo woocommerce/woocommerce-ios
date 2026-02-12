@@ -22,26 +22,6 @@ struct POSBookingDetailView: View {
         horizontalSizeClass == .compact
     }
 
-    private var lifecycleStatus: POSBookingLifecycleStatus {
-        POSBookingLifecycleStatus(bookingStatus: booking.status)
-    }
-
-    private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(booking: booking)
-    }
-
-    private var attendanceDisplay: POSBookingAttendanceDisplay {
-        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
-    }
-
-    private var isPaid: Bool {
-        paymentStatus == .paid
-    }
-
-    private var isBookingCancellable: Bool {
-        lifecycleStatus != .cancelled && lifecycleStatus != .completed
-    }
-
     var body: some View {
         NavigationStack(path: $navigationPath) {
             bookingDetailContent
@@ -127,13 +107,13 @@ struct POSBookingDetailView: View {
             Button(Localization.viewOrderAction) {
                 navigationPath.append(.orderDetail)
             }
-            if isPaid {
+            if booking.isPaid {
                 Button(Localization.issueRefundAction) {
                     orderListModel.ordersController.selectOrder(booking.order)
                     navigationPath.append(.orderDetailRefund)
                 }
             }
-            if isBookingCancellable {
+            if booking.isCancellable {
                 Button(Localization.cancelBookingAction, role: .destructive) {
                     cancelModalState = .confirmation
                 }
@@ -292,11 +272,11 @@ struct POSBookingDetailView: View {
             sectionTitleWithAction(title: Localization.attendanceStatusTitle) {
                 HStack(spacing: POSSpacing.small) {
                     attendanceButton(Localization.attendedPill,
-                                     isSelected: attendanceDisplay == .attended) {
+                                     isSelected: booking.attendanceDisplay == .attended) {
                         DDLogInfo("⚠️ [Bookings] Attended button tapped — to be implemented in a future task")
                     }
                     attendanceButton(Localization.unattendedPill,
-                                     isSelected: attendanceDisplay == .unattended) {
+                                     isSelected: booking.attendanceDisplay == .unattended) {
                         DDLogInfo("⚠️ [Bookings] Unattended button tapped — to be implemented in a future task")
                     }
                 }
@@ -330,7 +310,7 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private var shouldShowStickyPayment: Bool {
-        !isPaid && lifecycleStatus != .cancelled
+        !booking.isPaid && booking.lifecycleStatus != .cancelled
     }
 
     private var stickyCollectPaymentContainer: some View {

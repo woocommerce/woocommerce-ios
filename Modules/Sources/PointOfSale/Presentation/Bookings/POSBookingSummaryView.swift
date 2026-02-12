@@ -4,18 +4,6 @@ import struct Yosemite.POSBooking
 struct POSBookingSummaryView: View {
     let booking: POSBooking
 
-    private var lifecycleStatus: POSBookingLifecycleStatus {
-        POSBookingLifecycleStatus(bookingStatus: booking.status)
-    }
-
-    private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(booking: booking)
-    }
-
-    private var attendanceDisplay: POSBookingAttendanceDisplay {
-        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             subtitleText
@@ -39,18 +27,18 @@ struct POSBookingSummaryView: View {
     @ViewBuilder
     private var statusBadges: some View {
         HStack(spacing: POSSpacing.small) {
-            if lifecycleStatus == .cancelled {
-                POSBookingBadgeView(title: lifecycleStatus.localizedTitle,
-                                    textColor: lifecycleStatus.textColor,
-                                    backgroundColor: lifecycleStatus.backgroundColor)
+            if booking.lifecycleStatus == .cancelled {
+                POSBookingBadgeView(title: booking.lifecycleStatus.localizedTitle,
+                                    textColor: booking.lifecycleStatus.textColor,
+                                    backgroundColor: booking.lifecycleStatus.backgroundColor)
             } else {
-                POSBookingBadgeView(title: attendanceDisplay.localizedTitle,
-                                    textColor: attendanceDisplay.textColor,
-                                    backgroundColor: attendanceDisplay.backgroundColor)
+                POSBookingBadgeView(title: booking.attendanceDisplay.localizedTitle,
+                                    textColor: booking.attendanceDisplay.textColor,
+                                    backgroundColor: booking.attendanceDisplay.backgroundColor)
             }
-            POSBookingBadgeView(title: paymentStatus.localizedTitle,
-                                textColor: paymentStatus.textColor,
-                                backgroundColor: paymentStatus.backgroundColor)
+            POSBookingBadgeView(title: booking.paymentStatus.localizedTitle,
+                                textColor: booking.paymentStatus.textColor,
+                                backgroundColor: booking.paymentStatus.backgroundColor)
         }
     }
 
@@ -64,8 +52,8 @@ struct POSBookingSummaryView: View {
         let parts = [
             booking.serviceName,
             booking.customerName ?? booking.customerEmail,
-            lifecycleStatus == .cancelled ? lifecycleStatus.localizedTitle : attendanceDisplay.localizedTitle,
-            paymentStatus.localizedTitle
+            booking.lifecycleStatus == .cancelled ? booking.lifecycleStatus.localizedTitle : booking.attendanceDisplay.localizedTitle,
+            booking.paymentStatus.localizedTitle
         ].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: ", ")
     }

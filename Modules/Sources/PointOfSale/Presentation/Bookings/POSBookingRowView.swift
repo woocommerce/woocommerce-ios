@@ -8,18 +8,6 @@ struct POSBookingRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
-    private var lifecycleStatus: POSBookingLifecycleStatus {
-        POSBookingLifecycleStatus(bookingStatus: booking.status)
-    }
-
-    private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(booking: booking)
-    }
-
-    private var attendanceDisplay: POSBookingAttendanceDisplay {
-        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
             bookingHeaderRow
@@ -62,19 +50,16 @@ struct POSBookingRowView: View {
             end: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.endDate)
         )
 
-        let lifecycleStatus = POSBookingLifecycleStatus(bookingStatus: booking.status)
-        let paymentStatus = POSBookingPaymentStatus(booking: booking)
-        let attendanceDisplay = POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
         let customerDisplayName = booking.customerName ?? booking.customerEmail
 
         var parts = [timeRange, booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
 
-        if lifecycleStatus == .cancelled {
-            parts.append(lifecycleStatus.localizedTitle)
+        if booking.lifecycleStatus == .cancelled {
+            parts.append(booking.lifecycleStatus.localizedTitle)
         } else {
-            parts.append(attendanceDisplay.localizedTitle)
+            parts.append(booking.attendanceDisplay.localizedTitle)
         }
-        parts.append(paymentStatus.localizedTitle)
+        parts.append(booking.paymentStatus.localizedTitle)
 
         return parts.joined(separator: ", ")
     }

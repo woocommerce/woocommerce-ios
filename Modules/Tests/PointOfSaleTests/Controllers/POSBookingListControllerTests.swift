@@ -199,8 +199,6 @@ final class POSBookingListControllerTests {
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
         searchStrategy.supportsCaching = false
-        searchStrategy.id = "SearchStrategy"
-        mockFactory.searchStrategyResult = searchStrategy
 
         // When
         await sut.searchBookings(searchTerm: "test")

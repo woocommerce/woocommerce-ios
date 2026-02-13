@@ -80,6 +80,9 @@ extension UserDefaults {
 
         /// Pending flow for magic link: notification setup or Jetpack setup
         case pendingMagicLinkFlow
+
+        /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
+        case debugMinWooVersionForSelfDrivenPushNotifications
     }
 }
 

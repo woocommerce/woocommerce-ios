@@ -49,10 +49,19 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
         self.credentials = credentials
         self.stores = stores
         self.jetpackConnectionService = jetpackConnectionService
+        let minimumVersion: String = {
+            #if DEBUG
+            if let override: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications],
+               !override.isEmpty {
+                return override
+            }
+            #endif
+            return Constants.minimumWooVersion
+        }()
         self.pluginVersionChecker = pluginVersionChecker ?? PluginVersionChecker(
             siteID: siteID,
             pluginPath: Constants.wooPluginPath,
-            minimumVersion: Constants.minimumWooVersion
+            minimumVersion: minimumVersion
         )
     }
 
@@ -185,7 +194,7 @@ private extension WPComConnectionSetupHandler {
                 }
             } catch {
                 DDLogError("⛔️ Plugin version check failed: \(error)")
-                delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .generic(reason: Localization.ConnectionStep.genericError)))
+                delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .generic(reason: Localization.PluginCheckStep.genericError)))
             }
         }
     }
@@ -200,6 +209,14 @@ private extension WPComConnectionSetupHandler {
     }
 
     enum Localization {
+        enum PluginCheckStep {
+            static let genericError = NSLocalizedString(
+                "wpcomConnectionSetupHandler.PluginCheckStep.genericError",
+                value: "There was an error checking the version of WooCommerce plugin on your store. " +
+                "Please try again or contact support if this error continues.",
+                comment: "Generic error message when the plugin check step fails during push notification setup"
+            )
+        }
         enum ConnectionStep {
             static let genericError = NSLocalizedString(
                 "wpcomConnectionSetupHandler.ConnectionStep.genericError",

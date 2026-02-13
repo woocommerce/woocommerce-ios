@@ -62,6 +62,10 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var triggersForRequestedLocalNotificationsIfNeeded: [UNNotificationTrigger] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
     private(set) var resetBadgeCountKinds: [Note.Kind] = []
+    private(set) var registerForRemoteNotificationsCallCount = 0
+    private(set) var ensureAuthorizationCallCount = 0
+    private(set) var lastIncludesProvisionalAuth: Bool?
+    private var authorizationCompletion: ((Bool) -> Void)?
     var onRequestLocalNotificationCalled: (() -> Void)?
 
     init(mockedDeviceID: String? = nil,
@@ -86,7 +90,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func registerForRemoteNotifications() {
-
+        registerForRemoteNotificationsCallCount += 1
     }
 
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
@@ -94,7 +98,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> ())?) {
-
+        ensureAuthorizationCallCount += 1
+        lastIncludesProvisionalAuth = includesProvisionalAuth
+        authorizationCompletion = onCompletion
     }
 
     func registrationDidFail(with error: Error) {
@@ -153,6 +159,12 @@ final class MockPushNotificationsManager: PushNotesManager {
             triggersForRequestedLocalNotifications.removeAll()
             triggersForRequestedLocalNotificationsIfNeeded.removeAll()
         }
+    }
+}
+
+extension MockPushNotificationsManager {
+    func completeAuthorizationRequest(isAllowed: Bool) {
+        authorizationCompletion?(isAllowed)
     }
 }
 

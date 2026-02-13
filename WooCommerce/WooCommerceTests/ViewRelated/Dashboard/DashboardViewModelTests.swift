@@ -1098,6 +1098,93 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
         XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
+
+    // MARK: - Plugin Version Check Tests
+
+    @MainActor
+    func test_isWooPluginOutdated_is_true_when_checker_returns_incompatible() async {
+        // Given
+        mockReloadingData()
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pluginVersionChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.isWooPluginOutdated)
+    }
+
+    @MainActor
+    func test_isWooPluginOutdated_stays_false_when_checker_returns_compatible() async {
+        // Given
+        mockReloadingData()
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pluginVersionChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.isWooPluginOutdated)
+    }
+
+    @MainActor
+    func test_isWooPluginOutdated_stays_false_when_checker_throws_error() async {
+        // Given
+        mockReloadingData()
+        let checker = MockPluginVersionChecker()
+        checker.result = .failure(NSError(domain: "test", code: 1))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           pluginVersionChecker: checker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.isWooPluginOutdated)
+    }
+
+    @MainActor
+    func test_isWooPluginOutdated_stays_false_when_no_checker_provided() async {
+        // Given
+        mockReloadingData()
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.isWooPluginOutdated)
+    }
 }
 
 private extension DashboardViewModelTests {

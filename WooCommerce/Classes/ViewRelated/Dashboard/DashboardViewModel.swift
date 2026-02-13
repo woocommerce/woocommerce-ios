@@ -77,6 +77,8 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldSuggestWPComConnection = false
 
+    @Published private(set) var isWooPluginOutdated = false
+
     @Published private(set) var dismissedWPComConnectionSuggestion = false
 
     @Published private var hasOrders = false
@@ -104,6 +106,7 @@ final class DashboardViewModel: ObservableObject {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
+    private let pluginVersionChecker: PluginVersionCheckerProtocol?
     private let clientSideBannerProvider: ClientSideBannerProvider
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -158,6 +161,7 @@ final class DashboardViewModel: ObservableObject {
          siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
+         pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          clientSideBannerProvider: ClientSideBannerProvider? = nil) {
         self.siteID = siteID
         self.stores = stores
@@ -201,6 +205,7 @@ final class DashboardViewModel: ObservableObject {
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
         self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+        self.pluginVersionChecker = pluginVersionChecker
 
         self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
             stores: stores,
@@ -410,6 +415,7 @@ private extension DashboardViewModel {
             }
             group.addTask { [weak self] in
                 await self?.updateSelfDrivenPushRegistrationStatus()
+                await self?.checkWooPluginVersion()
             }
         }
     }
@@ -518,11 +524,11 @@ private extension DashboardViewModel {
             })
             .store(in: &subscriptions)
 
-        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection, $isWooPluginOutdated)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((cards, showFeedbackCard, suggestWPComConnection), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let ((cards, showFeedbackCard, suggestWPComConnection, isWooPluginOutdated), showNewCardsNotice, hasOrders, isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -542,8 +548,8 @@ private extension DashboardViewModel {
                         allCards.append(DashboardCard.shareStoreCard)
                     }
 
-                    /// Insert card for connecting WPCom at the top if needed
-                    if suggestWPComConnection {
+                    /// Insert card for connecting WPCom or updating plugin at the top if needed
+                    if suggestWPComConnection || isWooPluginOutdated {
                         allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
                     return allCards
@@ -939,6 +945,29 @@ private extension DashboardViewModel {
             stores.isAuthenticatedWithoutWPCom &&
             !dismissedWPComConnectionSuggestion &&
             featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
+    }
+
+    @MainActor
+    func checkWooPluginVersion() async {
+        let checker: PluginVersionCheckerProtocol? = pluginVersionChecker ?? {
+            guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
+                return nil
+            }
+            return PluginVersionChecker(
+                siteID: site.siteID,
+                pluginPath: WooPluginRequirements.pluginPath,
+                minimumVersion: WooPluginRequirements.minimumVersion
+            )
+        }()
+        guard let checker else { return }
+        do {
+            let result = try await checker.checkCompatibility()
+            if case .incompatible = result {
+                isWooPluginOutdated = true
+            }
+        } catch {
+            DDLogError("⛔️ Plugin version check failed: \(error)")
+        }
     }
 }
 

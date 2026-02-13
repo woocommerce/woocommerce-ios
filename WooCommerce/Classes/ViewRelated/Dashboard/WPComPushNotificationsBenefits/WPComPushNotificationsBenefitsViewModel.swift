@@ -4,13 +4,22 @@ import protocol WooFoundation.Analytics
 @MainActor
 final class WPComPushNotificationsBenefitsViewModel {
 
+    enum Variant {
+        case connect
+        case pluginUpdate
+    }
+
+    let variant: Variant
+
     private let analytics: Analytics
     private let onDismiss: () -> Void
 
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
-    init(analytics: Analytics = ServiceLocator.analytics,
+    init(variant: Variant = .connect,
+         analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
+        self.variant = variant
         self.analytics = analytics
         self.onDismiss = onDismiss
     }
@@ -25,7 +34,12 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     func continueTapped() {
         // TODO: Track continue tapped event
-        pushNotificationSetupCoordinator?.start()
+        switch variant {
+        case .connect:
+            pushNotificationSetupCoordinator?.start()
+        case .pluginUpdate:
+            pushNotificationSetupCoordinator?.showPluginUpdateSetup()
+        }
     }
 
     func notNowTapped() {

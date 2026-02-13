@@ -94,7 +94,7 @@ struct WPComPushNotificationsBenefitsView: View {
 
     private var footer: some View {
         VStack {
-            Button(Localization.continueButton) {
+            Button(primaryButtonText) {
                 viewModel.continueTapped()
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -103,6 +103,15 @@ struct WPComPushNotificationsBenefitsView: View {
                 viewModel.notNowTapped()
             }
             .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+
+    private var primaryButtonText: String {
+        switch viewModel.variant {
+        case .connect:
+            return Localization.continueButton
+        case .pluginUpdate:
+            return Localization.updatePluginButton
         }
     }
 }
@@ -153,6 +162,12 @@ fileprivate extension WPComPushNotificationsBenefitsView {
             "wpcomPushNotificationsBenefitsView.cancelButton",
             value: "Cancel",
             comment: "Cancel button title in the WordPress.com Push Notifications Benefits View toolbar"
+        )
+
+        static let updatePluginButton = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.updatePluginButton",
+            value: "Update plugin",
+            comment: "Button title to update the WooCommerce plugin in the Push Notifications Benefits View"
         )
     }
 }

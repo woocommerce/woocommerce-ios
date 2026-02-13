@@ -94,7 +94,13 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func onAppear() {
+        guard setupState == .inProgress else { return }
         handler.start()
+    }
+
+    func setPluginOutdatedState() {
+        stepDidUpdate(.connect, status: .success)
+        stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "")))
     }
 
     func primaryButtonTapped() {

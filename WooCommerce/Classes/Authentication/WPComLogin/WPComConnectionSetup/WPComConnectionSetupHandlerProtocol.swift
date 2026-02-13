@@ -56,11 +56,11 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
                 return override
             }
             #endif
-            return Constants.minimumWooVersion
+            return WooPluginRequirements.minimumVersion
         }()
         self.pluginVersionChecker = pluginVersionChecker ?? PluginVersionChecker(
             siteID: siteID,
-            pluginPath: Constants.wooPluginPath,
+            pluginPath: WooPluginRequirements.pluginPath,
             minimumVersion: minimumVersion
         )
     }
@@ -202,8 +202,6 @@ private extension WPComConnectionSetupHandler {
 
 private extension WPComConnectionSetupHandler {
     enum Constants {
-        static let wooPluginPath = "woocommerce/woocommerce.php"
-        static let minimumWooVersion = "10.5.3" // This is for testing
         static let accountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
         static let siteConnectionURLFormat = "%@/wp-admin/admin.php?page=jetpack"
     }

@@ -21,9 +21,7 @@ extension BookingDetailsView {
                         .font(.body)
                         .foregroundColor(.secondary)
                 }
-                HStack {
-                    BookingBadgeView(content.attendanceStatus)
-                }
+                BookingBadgeView(content.statusBadge)
                 .padding(.top, Layout.headerBadgesAdditionalTopPadding)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

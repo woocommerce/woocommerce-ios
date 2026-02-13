@@ -386,6 +386,7 @@
 		26F94E26267A559300DB6CCF /* ProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E25267A559300DB6CCF /* ProductAddOn.swift */; };
 		26F94E2E267A96A000DB6CCF /* ProductAddOnViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */; };
 		26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */; };
+		2D49A8242F3CB63100F7445A /* Booking+View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D49A8232F3CB62B00F7445A /* Booking+View.swift */; };
 		2D5389262F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */; };
 		2D880B492DFB2F3F00A6FB2C /* OptionalBinding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */; };
 		2D88C1112DF883C300A6FB2C /* AttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */; };
@@ -1599,6 +1600,7 @@
 		26F94E25267A559300DB6CCF /* ProductAddOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOn.swift; sourceTree = "<group>"; };
 		26F94E2D267A96A000DB6CCF /* ProductAddOnViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductAddOnViewModel.swift; sourceTree = "<group>"; };
 		26FE09DC24D9F3F600B9BDF5 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		2D49A8232F3CB62B00F7445A /* Booking+View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Booking+View.swift"; sourceTree = "<group>"; };
 		2D5389252F27BF59006A6618 /* PushNotificationRegistrationStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationRegistrationStateTests.swift; sourceTree = "<group>"; };
 		2D880B482DFB2F3D00A6FB2C /* OptionalBinding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionalBinding.swift; sourceTree = "<group>"; };
 		2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AttributedString+Helpers.swift"; sourceTree = "<group>"; };
@@ -4715,6 +4717,7 @@
 		CE1CCB4C20572444000EE3AC /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				2D49A8232F3CB62B00F7445A /* Booking+View.swift */,
 				DE4C23B82EA09AFA0079240D /* Booking+Helpers.swift */,
 				02A239732E811A690067AB38 /* SiteAddress+ServiceLocator.swift */,
 				010F7D8C2E7A8447002B02EA /* ProductImageThumbnail+Extensions.swift */,
@@ -6362,6 +6365,7 @@
 				450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */,
 				45F627B8253603AE00894B86 /* ProductDownloadSettingsViewController.swift in Sources */,
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
+				2D49A8242F3CB63100F7445A /* Booking+View.swift in Sources */,
 				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				204C9C742B6BDFFB007A94E0 /* UIUserInterfaceSizeClass+Helpers.swift in Sources */,

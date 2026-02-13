@@ -351,7 +351,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Header section not found")
             return
         }
-        XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Attended")
+        XCTAssertEqual(headerContent.statusBadge.text, "Attended")
     }
 
     func test_shouldShowAttendanceButton_returns_false_when_booking_is_cancelled() {

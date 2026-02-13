@@ -182,7 +182,7 @@ private extension BookingListView {
             }
 
             HStack {
-                BookingBadgeView(booking.attendanceStatus)
+                BookingBadgeView(booking.bookingItemHeaderStatusBadge)
                 Spacer()
             }
         }

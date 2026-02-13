@@ -17,7 +17,6 @@ final class BookingDetailsViewModel: ObservableObject {
     private let headerContent = HeaderContent()
     private let customerContent = CustomerContent()
     private let appointmentDetailsContent = AppointmentDetailsContent()
-    private let attendanceContent = AttendanceContent()
     private let paymentContent = PaymentContent()
     private let notesContent = NotesContent()
     private let analytics: Analytics
@@ -35,6 +34,20 @@ final class BookingDetailsViewModel: ObservableObject {
 
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
+    }
+
+    var shouldShowAttendanceButton: Bool {
+        booking.bookingStatus != .cancelled
+    }
+
+    var attendanceButtonTitle: String {
+        booking.attendanceStatus == .attended
+            ? Localization.markAsUnattended
+            : Localization.markAsAttended
+    }
+
+    var targetAttendanceStatus: BookingAttendanceStatus {
+        booking.attendanceStatus == .attended ? .unattended : .attended
     }
 
     init(booking: Booking,
@@ -103,9 +116,6 @@ private extension BookingDetailsViewModel {
 
         appointmentDetailsContent.update(with: booking, resource: bookingResource)
 
-        setupAttendanceSectionVisibility()
-        attendanceContent.update(with: booking)
-
         paymentContent.update(with: booking)
         notesContent.update(with: booking)
     }
@@ -116,39 +126,6 @@ private extension BookingDetailsViewModel {
         } else {
             deleteCustomerSectionIfPresent()
         }
-    }
-
-    func setupAttendanceSectionVisibility() {
-        if booking.bookingStatus == .cancelled {
-            deleteAttendanceSectionIfPresent()
-        } else {
-            insertAttendanceSectionIfAbsent()
-        }
-    }
-
-    func insertAttendanceSectionIfAbsent() {
-        guard let insertAfterIndex = sections.firstIndex(where: {
-            if case .customer = $0.content {
-                return true
-            }
-            return false
-        }) ?? sections.firstIndex(where: {
-            if case .appointmentDetails = $0.content {
-                return true
-            }
-            return false
-        }) else {
-            return
-        }
-
-        insertSectionIfAbsent(
-            section: Section(
-                header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
-                footerText: Localization.attendanceSectionFooterText,
-                content: .attendance(attendanceContent)
-            ),
-            at: insertAfterIndex + 1
-        )
     }
 
     func insertCustomerSectionIfAbsent() {
@@ -185,21 +162,6 @@ private extension BookingDetailsViewModel {
 
         withAnimation {
             sections.insert(section, at: index)
-        }
-    }
-
-    func deleteAttendanceSectionIfPresent() {
-        guard let attendanceSectionIndex = sections.firstIndex(where: {
-            if case .attendance = $0.content {
-                return true
-            }
-            return false
-        }) else {
-            return
-        }
-
-        withAnimation {
-            _ = sections.remove(at: attendanceSectionIndex)
         }
     }
 
@@ -466,22 +428,22 @@ private extension BookingDetailsViewModel {
             comment: "Header title for the 'Appointment Details' section in the booking details screen."
         )
 
-        static let attendanceSectionHeaderTitle = NSLocalizedString(
-            "BookingDetailsView.attendance.headerTitle",
-            value: "Attendance",
-            comment: "Header title for the 'Attendance' section in the booking details screen."
-        )
-
         static let customerSectionHeaderTitle = NSLocalizedString(
             "BookingDetailsView.customer.headerTitle",
             value: "Customer",
             comment: "Header title for the 'Customer' section in the booking details screen."
         )
 
-        static let attendanceSectionFooterText = NSLocalizedString(
-            "BookingDetailsView.attendance.footerText",
-            value: "Mark attendance to keep your reports accurate and spot booking trends.",
-            comment: "Footer text for the 'Attendance' section in the booking details screen."
+        static let markAsAttended = NSLocalizedString(
+            "BookingDetailsView.attendance.markAsAttended",
+            value: "Mark as attended",
+            comment: "Button title to mark a booking's attendance as attended."
+        )
+
+        static let markAsUnattended = NSLocalizedString(
+            "BookingDetailsView.attendance.markAsUnattended",
+            value: "Mark as unattended",
+            comment: "Button title to mark a booking's attendance as unattended."
         )
 
         static let paymentSectionHeaderTitle = NSLocalizedString(

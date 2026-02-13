@@ -279,6 +279,7 @@ struct POSBookingDetailView: View {
             sectionTitleWithAction(title: Localization.attendanceStatusTitle) {
                 if isUpdatingAttendance {
                     ProgressView()
+                        .frame(maxHeight: .infinity, alignment: .center)
                 } else {
                     HStack(spacing: POSSpacing.small) {
                         attendanceButton(Localization.attendedPill,

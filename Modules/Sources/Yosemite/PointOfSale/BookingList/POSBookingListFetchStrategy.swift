@@ -23,10 +23,6 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
     let supportsCaching: Bool = true
     let showsLoadingWithItems: Bool = true
 
-    var id: String {
-        "POSDefaultBookingListFetchStrategy-\(order.rawValue)"
-    }
-
     init(bookingService: POSBookingServiceProtocol, siteID: Int64, order: BookingsRemote.Order = .ascending, pageSize: Int = 25) {
         self.bookingService = bookingService
         self.siteID = siteID
@@ -53,10 +49,6 @@ struct POSSearchBookingListFetchStrategy: POSBookingListFetchStrategy {
     private let order: BookingsRemote.Order
     let supportsCaching: Bool = false
     let showsLoadingWithItems: Bool = false
-
-    var id: String {
-        "POSSearchBookingListFetchStrategy-\(order.rawValue)"
-    }
 
     init(bookingService: POSBookingServiceProtocol, siteID: Int64, searchTerm: String, order: BookingsRemote.Order = .ascending, pageSize: Int = 25) {
         self.bookingService = bookingService

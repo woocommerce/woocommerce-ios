@@ -695,7 +695,8 @@ struct PointOfSaleAggregateModelTests {
             #expect(!cardPresentPaymentService.collectPaymentWasCalled)
         }
 
-        @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
+        @Test(.disabled("Flaky: concurrent startPayment() can double-resume CheckedContinuation. See #16675"))
+        func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(

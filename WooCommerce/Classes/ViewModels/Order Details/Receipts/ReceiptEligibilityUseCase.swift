@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import Experiments
 import class WooFoundation.VersionHelpers
@@ -6,7 +7,7 @@ protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void)
-    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void)
+    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, datePaid: Date?, onCompletion: @escaping (Bool) -> Void)
 }
 
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
@@ -74,9 +75,16 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         }
     }
 
-    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
+    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, datePaid: Date?, onCompletion: @escaping (Bool) -> Void) {
         switch orderStatus {
-        case .completed, .processing, .refunded, .custom:
+        case .completed, .processing, .refunded:
+            isEligibleForBackendReceipts { isEligibleForReceipt in
+                onCompletion(isEligibleForReceipt)
+            }
+        case .custom:
+            guard datePaid != nil else {
+                return onCompletion(false)
+            }
             isEligibleForBackendReceipts { isEligibleForReceipt in
                 onCompletion(isEligibleForReceipt)
             }

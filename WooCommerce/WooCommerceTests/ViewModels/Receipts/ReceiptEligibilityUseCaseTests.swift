@@ -179,7 +179,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.completed) { result in
+            sut.isEligibleForReceipt(.completed, datePaid: Date()) { result in
                 promise(result)
             }
         }
@@ -199,7 +199,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.processing) { result in
+            sut.isEligibleForReceipt(.processing, datePaid: Date()) { result in
                 promise(result)
             }
         }
@@ -219,7 +219,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.refunded) { result in
+            sut.isEligibleForReceipt(.refunded, datePaid: Date()) { result in
                 promise(result)
             }
         }
@@ -245,7 +245,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.failed) { result in
+            sut.isEligibleForReceipt(.failed, datePaid: nil) { result in
                 promise(result)
             }
         }
@@ -279,7 +279,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.failed) { result in
+            sut.isEligibleForReceipt(.failed, datePaid: nil) { result in
                 promise(result)
             }
         }
@@ -288,7 +288,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
-    func test_isEligibleForReceipt_with_custom_status_returns_true() {
+    func test_isEligibleForReceipt_with_paid_custom_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let mockPluginsService = MockPluginsService()
@@ -299,13 +299,33 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.custom("shipped")) { result in
+            sut.isEligibleForReceipt(.custom("shipped"), datePaid: Date()) { result in
                 promise(result)
             }
         }
 
         // Then
         XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleForReceipt_with_unpaid_custom_status_returns_false() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let mockPluginsService = MockPluginsService()
+        let plugin = SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", version: "9.5.0", active: true)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, pluginsService: mockPluginsService)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleForReceipt(.custom("awaiting-approval"), datePaid: nil) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
     }
 
     func test_isEligibleForReceipt_with_cancelled_status_returns_false() {
@@ -315,7 +335,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
 
         // When
         let isEligible: Bool = waitFor { promise in
-            sut.isEligibleForReceipt(.cancelled) { result in
+            sut.isEligibleForReceipt(.cancelled, datePaid: nil) { result in
                 promise(result)
             }
         }

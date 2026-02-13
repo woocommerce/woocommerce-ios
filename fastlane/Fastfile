@@ -1366,8 +1366,6 @@ lane :test_without_building do |options|
 
   UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}") unless !xctestrun_path.nil? && File.exist?(xctestrun_path)
 
-  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
-
   # Only run UI tests in parallel.
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
   parallel_testing_value = options[:name] == 'UITests'
@@ -1385,18 +1383,10 @@ lane :test_without_building do |options|
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,
-    # settings for XML test report generation via `trainer`
-    output_types: '',
+    output_types: 'junit',
     fail_build: false
   )
 
-  trainer(
-    path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH],
-    output_remove_retry_attempts: true,
-    fail_build: true
-  )
-
-  # `trainer` sometimes doesn't detect test failures, so we manually throw an error in the lane if there are failures to make sure there are no false positives
   UI.user_error!("Tests failed with #{tests_result[:number_of_failures_excluding_retries]} failures.") if tests_result[:number_of_failures_excluding_retries].positive?
 end
 
@@ -1436,24 +1426,6 @@ def trigger_buildkite_release_build(branch:, beta:)
 
     UI.success("Release build triggered on #{branch}: #{build_url}")
   end
-end
-
-def inject_buildkite_analytics_environment(xctestrun_path:)
-  require 'plist'
-
-  xctestrun = Plist.parse_xml(xctestrun_path)
-  xctestrun['TestConfigurations'].each do |configuration|
-    configuration['TestTargets'].each do |target|
-      TEST_ANALYTICS_ENVIRONMENT.each do |key|
-        value = ENV.fetch(key)
-        next if value.nil?
-
-        target['EnvironmentVariables'][key] = value
-      end
-    end
-  end
-
-  File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
 end
 
 # -----------------------------------------------------------------------------------
@@ -1531,10 +1503,6 @@ def commit_version_bump
   )
 end
 
-def buildkite_ci?
-  ENV.fetch('BUILDKITE', false)
-end
-
 def prompt_user_for_app_store_connect_credentials
   require 'credentials_manager'
 
@@ -1545,18 +1513,6 @@ def prompt_user_for_app_store_connect_credentials
   # to check it so we have to do it anyway.
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 end
-
-# https://buildkite.com/docs/test-analytics/ci-environments
-TEST_ANALYTICS_ENVIRONMENT = %w[
-  BUILDKITE_ANALYTICS_TOKEN
-  BUILDKITE_BUILD_ID
-  BUILDKITE_BUILD_NUMBER
-  BUILDKITE_JOB_ID
-  BUILDKITE_BRANCH
-  BUILDKITE_COMMIT
-  BUILDKITE_MESSAGE
-  BUILDKITE_BUILD_URL
-].freeze
 
 # -----------------------------------------------------------------------------------
 # Release Management Utils

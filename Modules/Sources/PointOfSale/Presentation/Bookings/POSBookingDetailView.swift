@@ -310,6 +310,7 @@ struct POSBookingDetailView: View {
     }
 
     private func performAttendanceUpdate(targetStatus: BookingAttendanceStatus) {
+        guard targetStatus != booking.attendanceStatus else { return }
         attendanceUpdateError = false
         isUpdatingAttendance = true
         Task { @MainActor in

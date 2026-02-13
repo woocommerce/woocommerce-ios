@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.POSBooking
+import enum Yosemite.BookingAttendanceStatus
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
@@ -15,6 +16,8 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
+    @State private var isUpdatingAttendance = false
+    @State private var attendanceUpdateError = false
 
 
     private var actionTintColor: Color {
@@ -274,23 +277,50 @@ struct POSBookingDetailView: View {
     private var attendanceSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             sectionTitleWithAction(title: Localization.attendanceStatusTitle) {
-                HStack(spacing: POSSpacing.small) {
-                    attendanceButton(Localization.attendedPill,
-                                     isSelected: booking.attendanceDisplay == .attended) {
-                        // TODO: Implement mark attended action
-                    }
-                    attendanceButton(Localization.unattendedPill,
-                                     isSelected: booking.attendanceDisplay == .unattended) {
-                        // TODO: Implement mark unattended action
+                if isUpdatingAttendance {
+                    ProgressView()
+                } else {
+                    HStack(spacing: POSSpacing.small) {
+                        attendanceButton(Localization.attendedPill,
+                                         isSelected: booking.attendanceDisplay == .attended) {
+                            performAttendanceUpdate(targetStatus: .attended)
+                        }
+                        attendanceButton(Localization.unattendedPill,
+                                         isSelected: booking.attendanceDisplay == .unattended) {
+                            performAttendanceUpdate(targetStatus: .unattended)
+                        }
                     }
                 }
             }
             .sectionCard()
 
-            Text(Localization.attendanceSubtitle)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .padding(.horizontal, POSPadding.xSmall)
+            if attendanceUpdateError {
+                Text(Localization.attendanceUpdateErrorMessage)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posError)
+                    .padding(.horizontal, POSPadding.xSmall)
+            } else {
+                Text(Localization.attendanceSubtitle)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .padding(.horizontal, POSPadding.xSmall)
+            }
+        }
+    }
+
+    private func performAttendanceUpdate(targetStatus: BookingAttendanceStatus) {
+        attendanceUpdateError = false
+        isUpdatingAttendance = true
+        Task { @MainActor in
+            do {
+                try await bookingsModel.bookingsController.updateAttendanceStatus(
+                    bookingID: booking.id,
+                    status: targetStatus
+                )
+            } catch {
+                attendanceUpdateError = true
+            }
+            isUpdatingAttendance = false
         }
     }
 
@@ -589,6 +619,12 @@ private enum Localization {
         "pos.bookingDetailView.cancelBookingAction",
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let attendanceUpdateErrorMessage = NSLocalizedString(
+        "pos.bookingDetailView.attendanceUpdateError",
+        value: "Failed to update attendance. Please try again.",
+        comment: "Error message shown below attendance section when updating attendance status fails."
     )
 }
 

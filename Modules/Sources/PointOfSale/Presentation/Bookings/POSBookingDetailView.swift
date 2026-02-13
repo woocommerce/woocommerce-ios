@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.POSBooking
+import enum Yosemite.BookingAttendanceStatus
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
@@ -11,8 +12,8 @@ struct POSBookingDetailView: View {
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var cancelModalState: CancelBookingModalState?
-    @State private var updateAttendanceModalState: UpdateAttendanceModalState?
-    @State private var selectedAttendanceTarget: POSBookingAttendanceDisplay = .attended
+    @State private var isUpdatingAttendance = false
+    @State private var attendanceUpdateError = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -109,14 +110,6 @@ struct POSBookingDetailView: View {
                 state: state,
                 booking: booking,
                 cancelModalState: $cancelModalState
-            )
-        }
-        .posModal(item: $updateAttendanceModalState) { state in
-            POSUpdateAttendanceModalContent(
-                state: state,
-                booking: booking,
-                targetStatus: selectedAttendanceTarget,
-                updateAttendanceModalState: $updateAttendanceModalState
             )
         }
     }
@@ -260,7 +253,7 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var attendanceSection: some View {
-        VStack(spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
             HStack {
                 Text(Localization.attendanceLabel)
                     .font(.posBodySmallRegular())
@@ -268,34 +261,53 @@ struct POSBookingDetailView: View {
 
                 Spacer()
 
-                Text(attendanceDisplay.localizedTitle)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                if canUpdateAttendance {
+                    if isUpdatingAttendance {
+                        ProgressView()
+                    } else {
+                        HStack(spacing: POSSpacing.small) {
+                            Button(Localization.markAttendedButton) {
+                                performAttendanceUpdate(targetStatus: .attended)
+                            }
+                            .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+
+                            Button(Localization.markUnattendedButton) {
+                                performAttendanceUpdate(targetStatus: .unattended)
+                            }
+                            .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+                        }
+                    }
+                } else {
+                    Text(attendanceDisplay.localizedTitle)
+                        .font(.posBodySmallBold())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
             }
 
-            if canUpdateAttendance {
-                HStack(spacing: POSSpacing.medium) {
-                    Button(action: {
-                        selectedAttendanceTarget = .attended
-                        updateAttendanceModalState = .confirmation
-                    }) {
-                        Text(Localization.markAttendedButton)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-
-                    Button(action: {
-                        selectedAttendanceTarget = .unattended
-                        updateAttendanceModalState = .confirmation
-                    }) {
-                        Text(Localization.markUnattendedButton)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-                }
+            if attendanceUpdateError {
+                Text(Localization.attendanceUpdateErrorMessage)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posError)
             }
         }
         .sectionCard()
+    }
+
+    private func performAttendanceUpdate(targetStatus: POSBookingAttendanceDisplay) {
+        attendanceUpdateError = false
+        isUpdatingAttendance = true
+        let targetAttendanceStatus: BookingAttendanceStatus = targetStatus == .attended ? .attended : .unattended
+        Task { @MainActor in
+            do {
+                try await bookingsModel.bookingsController.updateAttendanceStatus(
+                    bookingID: booking.id,
+                    status: targetAttendanceStatus
+                )
+            } catch {
+                attendanceUpdateError = true
+            }
+            isUpdatingAttendance = false
+        }
     }
 
     // MARK: - Section 6: Payment Breakdown
@@ -556,14 +568,20 @@ private enum Localization {
 
     static let markAttendedButton = NSLocalizedString(
         "pos.bookingDetailView.markAttendedButton",
-        value: "Mark Attended",
+        value: "Attended",
         comment: "Button to mark a booking as attended in the POS booking detail view."
     )
 
     static let markUnattendedButton = NSLocalizedString(
         "pos.bookingDetailView.markUnattendedButton",
-        value: "Mark Unattended",
+        value: "Unattended",
         comment: "Button to mark a booking as unattended in the POS booking detail view."
+    )
+
+    static let attendanceUpdateErrorMessage = NSLocalizedString(
+        "pos.bookingDetailView.attendanceUpdateError",
+        value: "Failed to update attendance. Try again.",
+        comment: "Error message shown below attendance section when updating attendance status fails."
     )
 
 }

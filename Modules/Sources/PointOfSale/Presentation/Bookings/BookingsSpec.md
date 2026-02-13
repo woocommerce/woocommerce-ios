@@ -95,11 +95,11 @@ Note: Duration, location, customer email/phone/billing address, and customer not
 - More visible time range
 
 **Update Attendance Status**
-- Bidirectional toggle: "Mark Attended" button when attendance is `unattended`, "Mark Unattended" button when attendance is `attended`
-- Button hidden when booking is cancelled
-- Requires `.posModal()` confirmation dialog before executing
+- Two inline buttons ("Attended" / "Unattended") in the attendance row trailing area
+- Buttons hidden when booking is cancelled
+- On tap: buttons replaced by inline loading indicator (no confirmation modal)
 - On success: badge updates, list row refreshes
-- On failure: error alert with retry
+- On failure: red error text below attendance row ("Failed to update attendance. Try again.")
 
 **Cancel Booking**
 - "Cancel Booking" button — destructive style, shown when `canCancel` (booking status is NOT cancelled/completed)
@@ -624,18 +624,14 @@ func cancelBooking(booking: POSBooking) async throws
 
 #### M2-B2. Attendance update UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
-**New files:** `PointOfSale/Presentation/Bookings/UpdateAttendance/` (4 files: modal state, confirmation view, success view, modal content)
 
-- Bidirectional attendance toggle in the detail view (section 5):
-  - "Mark Attended" button when current status is `unattended`
-  - "Mark Unattended" button when current status is `attended`
-  - Button hidden when booking is cancelled
-- Requires `.posModal()` confirmation dialog before executing (mirrors cancel booking modal flow)
-- Calls `bookingsController.updateAttendanceStatus(bookingID:status:)` on confirm
-- Modal states: confirmation → processing → success/error
-- Error state reuses `POSRefundErrorView` with retry
+- Inline attendance toggle in the detail view (section 5):
+  - Two compact buttons ("Attended" / "Unattended") in the attendance row trailing area
+  - Buttons hidden when booking is cancelled (shows attendance label text instead)
+- On tap: buttons replaced by inline `ProgressView()` loading indicator (no confirmation modal)
+- Calls `bookingsController.updateAttendanceStatus(bookingID:status:)` directly
 - On success: badge updates inline, header status badges update, list row refreshes via `refreshBookings()`
-- On failure: error alert with retry
+- On failure: red error text below attendance row ("Failed to update attendance. Try again.")
 
 #### M2-B3. Cancel booking UI
 **Modify:** `PointOfSale/Presentation/Bookings/POSBookingDetailView.swift`
@@ -884,10 +880,11 @@ M3-C1/C2 ── after all above
 ### M2: Attendance Updates
 | Scenario | Expected |
 |----------|----------|
-| Unattended booking | "Mark Attended" button shown |
-| Attended booking | "Mark Unattended" button shown |
-| Cancelled booking | Attendance button hidden |
-| Network failure on update | Error alert with retry |
+| Non-cancelled booking | Both "Attended" and "Unattended" buttons shown inline |
+| Cancelled booking | Buttons hidden, attendance label shown instead |
+| Tap attendance button | Buttons replaced by loading spinner |
+| Network failure on update | Red error text below attendance row, buttons restored |
+| Tap button after error | Error clears, spinner shows, retries |
 | Two people update same booking simultaneously | Last write wins, refresh shows latest |
 | Update attendance on booking with no linked order | Allowed (attendance is independent of payment) |
 | Mark attended → then mark unattended | Both directions work, badge toggles |

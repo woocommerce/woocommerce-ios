@@ -155,7 +155,7 @@ private extension WPComConnectionSetupHandler {
     @MainActor
     func startConnectionWithWebView() {
         let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
-        Task { @MainActor [weak self] in
+        Task { [weak self] in
             guard let self else { return }
             do {
                 let url = try await jetpackConnectionService.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom)
@@ -181,7 +181,7 @@ private extension WPComConnectionSetupHandler {
 
     func startPluginVersionCheck() {
         currentStep = .checkPlugin
-        Task { @MainActor in
+        Task {
             do {
                 delegate?.stepDidUpdate(.checkPlugin, status: .running)
                 let result = try await pluginVersionChecker.checkCompatibility()

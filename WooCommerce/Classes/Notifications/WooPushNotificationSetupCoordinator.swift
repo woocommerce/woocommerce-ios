@@ -1,4 +1,3 @@
-import SwiftUI
 import UIKit
 import Yosemite
 
@@ -53,24 +52,12 @@ final class WooPushNotificationSetupCoordinator {
     func showPluginUpdateSetup() {
         let (navigationController, _) = makeConnectionSetupStack(credentials: nil, pluginOutdated: true)
 
-        // Dismiss benefits modal, then present setup view, then auto-open web view
-        let presentAndAutoOpen: (UIViewController) -> Void = { [stores] presenter in
-            presenter.present(navigationController, animated: true) {
-                guard let site = stores.sessionManager.defaultSite,
-                      let url = URL(string: site.pluginsURL) else { return }
-                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
-                let webViewController = UIHostingController(rootView: webView)
-                webViewController.modalPresentationStyle = .formSheet
-                navigationController.present(webViewController, animated: true)
-            }
-        }
-
         if let presenter = rootViewController.presentingViewController {
             rootViewController.dismiss(animated: true) {
-                presentAndAutoOpen(presenter)
+                presenter.present(navigationController, animated: true)
             }
         } else {
-            presentAndAutoOpen(rootViewController)
+            rootViewController.present(navigationController, animated: true)
         }
     }
 
@@ -124,12 +111,8 @@ private extension WooPushNotificationSetupCoordinator {
                 navigationController?.dismiss(animated: true)
                 onSetupCompleted?()
             },
-            onUpdatePlugin: { [weak navigationController] in
-                guard let url = URL(string: site.pluginsURL) else { return }
-                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
-                let webViewController = UIHostingController(rootView: webView)
-                webViewController.modalPresentationStyle = .formSheet
-                navigationController?.present(webViewController, animated: true)
+            onUpdatePlugin: {
+                // TODO: Open wp-admin plugins page
             }
         )
         if pluginOutdated {
@@ -173,11 +156,6 @@ private extension WooPushNotificationSetupCoordinator {
             "wooPushNotificationSetupCoordinator.flowTitle",
             value: "Connect to WordPress.com",
             comment: "Title of the self-driven push notification setup flow"
-        )
-        static let updateWooCommerce = NSLocalizedString(
-            "wooPushNotificationSetupCoordinator.updateWooCommerce",
-            value: "Update WooCommerce",
-            comment: "Title of the web view shown when the user taps 'Update plugin' to update WooCommerce"
         )
     }
 }

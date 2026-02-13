@@ -61,9 +61,11 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
         if credentials != nil {
             currentStep = .connect
             startJetpackConnection()
+        } else {
+            /// Step 2: Check plugin version
+            delegate?.stepDidUpdate(.connect, status: .success)
+            startPluginVersionCheck()
         }
-
-        /// Step 2: TODO: Check plugin version
 
         /// Step 3: Enable push notification
         /// TODO: Inject PushNotificationManager to trigger Woo PN registration
@@ -73,7 +75,9 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
         switch currentStep {
         case .connect:
             startJetpackConnection()
-        case .checkPlugin, .enablePush, .none:
+        case .checkPlugin:
+            startPluginVersionCheck()
+        case .enablePush, .none:
             // TODO
             break
         }
@@ -88,7 +92,7 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
             do {
                 let _ = try await jetpackConnectionService.verifyConnection()
                 delegate?.stepDidUpdate(.connect, status: .success)
-                // TODO: continue to next steps
+                startPluginVersionCheck()
             } catch {
                 didFailConnection(with: error)
             }
@@ -97,11 +101,11 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
 
     func didEncounterWebViewError(code: Int?) {
         DDLogError("⛔️ Web view error (code: \(String(describing: code)))")
-        delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.ConnectionStep.genericError))
+        delegate?.stepDidUpdate(.connect, status: .failure(error: .generic(reason: Localization.ConnectionStep.genericError)))
     }
 
     func didCancelWebView() {
-        delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.ConnectionStep.canceled))
+        delegate?.stepDidUpdate(.connect, status: .failure(error: .generic(reason: Localization.ConnectionStep.canceled)))
     }
 }
 
@@ -114,6 +118,7 @@ private extension WPComConnectionSetupHandler {
                 let completed = try await checkJetpackConnection(with: credentials)
                 if completed {
                     delegate?.stepDidUpdate(.connect, status: .success)
+                    startPluginVersionCheck()
                 }
                 // When `completed` is false, the web view flow has been triggered
                 // and the flow will resume via didAuthorizeWebViewConnection().
@@ -162,7 +167,27 @@ private extension WPComConnectionSetupHandler {
 
     func didFailConnection(with error: Error) {
         DDLogError("⛔️ WPCom connection fails: \(error)")
-        delegate?.stepDidUpdate(.connect, status: .failure(reason: Localization.ConnectionStep.genericError))
+        delegate?.stepDidUpdate(.connect, status: .failure(error: .generic(reason: Localization.ConnectionStep.genericError)))
+    }
+
+    func startPluginVersionCheck() {
+        currentStep = .checkPlugin
+        Task { @MainActor in
+            do {
+                delegate?.stepDidUpdate(.checkPlugin, status: .running)
+                let result = try await pluginVersionChecker.checkCompatibility()
+                switch result {
+                case .compatible:
+                    delegate?.stepDidUpdate(.checkPlugin, status: .success)
+                    // TODO: continue to step 3
+                case .incompatible(let currentVersion, _):
+                    delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: currentVersion)))
+                }
+            } catch {
+                DDLogError("⛔️ Plugin version check failed: \(error)")
+                delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .generic(reason: Localization.ConnectionStep.genericError)))
+            }
+        }
     }
 }
 

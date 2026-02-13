@@ -4,6 +4,7 @@ import Networking
 
 public protocol CardReaderRemoteConfigLoading {
     func setContext(siteID: Int64, remote: CardReaderCapableRemote)
+    func resetContext()
 }
 
 public protocol CommonReaderConfigProviding: CardReaderRemoteConfigLoading & CardReaderConfigProvider {}
@@ -21,6 +22,11 @@ final public class CommonReaderConfigProvider: CommonReaderConfigProviding {
     public func setContext(siteID: Int64, remote: CardReaderCapableRemote) {
         self.siteID = siteID
         self.readerConfigRemote = remote
+    }
+
+    public func resetContext() {
+        self.siteID = nil
+        self.readerConfigRemote = nil
     }
 
     public func fetchToken(completion: @escaping(Result<String, Error>) -> Void) {

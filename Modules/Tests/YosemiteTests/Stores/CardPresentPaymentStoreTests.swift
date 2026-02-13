@@ -32,7 +32,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Card Reader Service: In memory
     private var mockCardReaderService: MockCardReaderService!
 
-    private var mockCardReaderConfigProvider: CommonReaderConfigProviding!
+    private var mockCardReaderConfigProvider: MockCommonReaderConfigProviding!
 
     private var cardPresentStore: CardPresentPaymentStore!
 
@@ -821,5 +821,30 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(action)
 
         XCTAssertNotNil(mockCardReaderService.spyCheckSupportMinimumOperatingSystemVersionOverride)
+    }
+
+    // MARK: - CardPresentPaymentAction.reset
+
+    func test_reset_clears_config_provider_context() {
+        // Given
+        mockCardReaderConfigProvider.setContext(siteID: sampleSiteID, remote: WCPayRemote(network: network))
+        XCTAssertNotNil(mockCardReaderConfigProvider.currentSiteID)
+
+        // When
+        let action = CardPresentPaymentAction.reset
+        cardPresentStore.onAction(action)
+
+        // Then
+        XCTAssertTrue(mockCardReaderConfigProvider.didResetContext)
+        XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
+    }
+
+    func test_reset_disconnects_card_reader() {
+        // When
+        let action = CardPresentPaymentAction.reset
+        cardPresentStore.onAction(action)
+
+        // Then
+        XCTAssertTrue(mockCardReaderService.didHitDisconnect)
     }
 }

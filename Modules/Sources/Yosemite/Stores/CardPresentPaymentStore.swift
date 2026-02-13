@@ -410,6 +410,13 @@ private extension CardPresentPaymentStore {
     }
 
     func reset() {
+        paymentCancellable?.cancel()
+        paymentCancellable = nil
+        refundCancellable?.cancel()
+        refundCancellable = nil
+        paymentGatewayAccount = nil
+        commonReaderConfigProvider.resetContext()
+
         cardReaderService.disconnect()
             .subscribe(Subscribers.Sink(
                         receiveCompletion: { [weak self] _ in

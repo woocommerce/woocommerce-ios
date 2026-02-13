@@ -10,11 +10,13 @@ import protocol Yosemite.POSBookingServiceProtocol
 protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
     var selectedBooking: POSBooking? { get }
+    var currentSortOption: POSBookingSortOption { get }
     func loadBookings() async
     func refreshBookings() async
     func loadNextBookings() async
     func selectBooking(_ booking: POSBooking?)
     func cancelBooking(bookingID: Int64) async throws
+    func updateSortOption(_ option: POSBookingSortOption) async
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -24,6 +26,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
 @Observable final class POSBookingListController: POSSearchingBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState
+    private(set) var currentSortOption: POSBookingSortOption = .ascending
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
     private var cachedBookings: [POSBooking] = []
@@ -45,7 +48,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         self.bookingsViewState = initialState
         self.bookingListFetchStrategyFactory = bookingListFetchStrategyFactory
         self.bookingService = bookingListFetchStrategyFactory.bookingService
-        self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy()
+        self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(order: POSBookingSortOption.ascending.order)
     }
 
     @MainActor
@@ -91,15 +94,24 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 
     @MainActor
+    func updateSortOption(_ option: POSBookingSortOption) async {
+        currentSortOption = option
+        cachedBookings = []
+        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(order: option.order)
+        bookingsViewState = .loading([])
+        await loadFirstPage()
+    }
+
+    @MainActor
     func searchBookings(searchTerm: String) async {
-        fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, order: currentSortOption.order)
         bookingsViewState = .loading([])
         await loadFirstPage()
     }
 
     @MainActor
     func clearSearchBookings() {
-        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy()
+        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(order: currentSortOption.order)
         if cachedBookings.isNotEmpty {
             bookingsViewState = .loaded(cachedBookings, hasMoreItems: true)
         } else {

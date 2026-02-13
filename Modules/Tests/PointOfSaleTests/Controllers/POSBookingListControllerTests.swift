@@ -7,6 +7,7 @@ import enum NetworkingCore.OrderStatusEnum
 import struct Yosemite.PagedItems
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import class Networking.BookingsRemote
 
 @MainActor
 final class POSBookingListControllerTests {
@@ -155,6 +156,68 @@ final class POSBookingListControllerTests {
 
         // Then - should restore cached bookings
         #expect(sut.bookingsViewState == .loaded(initialBookings, hasMoreItems: true))
+    }
+
+    // MARK: - Sort
+
+    @Test func test_default_sort_option_is_upcomingToOldest() {
+        // Then
+        #expect(sut.currentSortOption == .ascending)
+    }
+
+    @Test func test_updateSortOption_changes_current_sort_option() async {
+        // When
+        await sut.updateSortOption(.descending)
+
+        // Then
+        #expect(sut.currentSortOption == .descending)
+    }
+
+    @Test func test_updateSortOption_passes_order_to_factory() async {
+        // When
+        await sut.updateSortOption(.descending)
+
+        // Then
+        #expect(mockFactory.lastDefaultStrategyOrder == .descending)
+    }
+
+    @Test func test_updateSortOption_reloads_bookings() async {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+
+        // When
+        await sut.updateSortOption(.descending)
+
+        // Then
+        #expect(sut.bookingsViewState == .loaded(bookings, hasMoreItems: false))
+    }
+
+    @Test func test_searchBookings_passes_current_sort_order_to_factory() async {
+        // Given
+        await sut.updateSortOption(.descending)
+        let searchStrategy = MockPOSBookingListFetchStrategy()
+        searchStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
+        searchStrategy.supportsCaching = false
+        searchStrategy.id = "SearchStrategy"
+        mockFactory.searchStrategyResult = searchStrategy
+
+        // When
+        await sut.searchBookings(searchTerm: "test")
+
+        // Then
+        #expect(mockFactory.lastSearchStrategyOrder == .descending)
+    }
+
+    @Test func test_clearSearchBookings_passes_current_sort_order_to_factory() async {
+        // Given
+        await sut.updateSortOption(.descending)
+
+        // When
+        sut.clearSearchBookings()
+
+        // Then
+        #expect(mockFactory.lastDefaultStrategyOrder == .descending)
     }
 
     // MARK: - Caching

@@ -5,18 +5,24 @@ import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import protocol Yosemite.POSBookingServiceProtocol
 import struct Yosemite.PagedItems
+import class Networking.BookingsRemote
 
 final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol {
     var defaultStrategyResult: POSBookingListFetchStrategy = MockPOSBookingListFetchStrategy()
     var searchStrategyResult: POSBookingListFetchStrategy = MockPOSBookingListFetchStrategy()
     var bookingService: POSBookingServiceProtocol = MockPOSBookingService()
 
-    func defaultStrategy() -> POSBookingListFetchStrategy {
-        defaultStrategyResult
+    var lastDefaultStrategyOrder: BookingsRemote.Order?
+    var lastSearchStrategyOrder: BookingsRemote.Order?
+
+    func defaultStrategy(order: BookingsRemote.Order) -> POSBookingListFetchStrategy {
+        lastDefaultStrategyOrder = order
+        return defaultStrategyResult
     }
 
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
-        searchStrategyResult
+    func searchStrategy(searchTerm: String, order: BookingsRemote.Order) -> POSBookingListFetchStrategy {
+        lastSearchStrategyOrder = order
+        return searchStrategyResult
     }
 }
 
@@ -26,8 +32,11 @@ final class MockPOSBookingService: POSBookingServiceProtocol {
     var cancelBookingCallCount = 0
     var lastCancelledBookingID: Int64?
 
-    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
-        try fetchBookingsResult.get()
+    var lastFetchOrder: BookingsRemote.Order?
+
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?, order: BookingsRemote.Order) async throws -> PagedItems<POSBooking> {
+        lastFetchOrder = order
+        return try fetchBookingsResult.get()
     }
 
     func cancelBooking(bookingID: Int64) async throws {

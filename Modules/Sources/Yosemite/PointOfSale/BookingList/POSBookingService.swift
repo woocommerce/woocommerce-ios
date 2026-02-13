@@ -2,6 +2,7 @@ import Foundation
 import enum Alamofire.AFError
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
+import class Networking.BookingsRemote
 import protocol Networking.BookingsRemoteProtocol
 import struct Networking.Booking
 import struct Networking.BookingOrderInfo
@@ -32,7 +33,8 @@ public final class POSBookingService: POSBookingServiceProtocol {
     public func fetchBookings(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
-                              searchQuery: String?) async throws -> PagedItems<POSBooking> {
+                              searchQuery: String?,
+                              order: BookingsRemote.Order) async throws -> PagedItems<POSBooking> {
         do {
             let bookings = try await bookingsRemote.loadAllBookings(
                 for: siteID,
@@ -40,7 +42,7 @@ public final class POSBookingService: POSBookingServiceProtocol {
                 pageSize: pageSize,
                 filters: nil,
                 searchQuery: searchQuery,
-                order: .ascending
+                order: order
             )
 
             if pageNumber == 1 {

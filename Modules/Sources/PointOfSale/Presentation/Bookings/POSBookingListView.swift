@@ -72,7 +72,14 @@ struct POSBookingListView: View {
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
             if !isSearching {
-                POSBookingDateBarView()
+                POSBookingDateBarView(
+                    currentSortOption: bookingsModel.bookingsController.currentSortOption,
+                    onSortOptionSelected: { option in
+                        Task { @MainActor in
+                            await bookingsModel.bookingsController.updateSortOption(option)
+                        }
+                    }
+                )
             }
 
             switch (bookingsViewState, isSearching) {

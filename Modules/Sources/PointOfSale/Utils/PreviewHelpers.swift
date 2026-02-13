@@ -38,6 +38,7 @@ import protocol Yosemite.POSBookingServiceProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import class Networking.BookingsRemote
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -509,17 +510,17 @@ struct POSPreviewHelpers {
 final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
     let bookingService: POSBookingServiceProtocol = POSBookingServicePreview()
 
-    func defaultStrategy() -> POSBookingListFetchStrategy {
+    func defaultStrategy(order: BookingsRemote.Order) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
 
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
+    func searchStrategy(searchTerm: String, order: BookingsRemote.Order) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
 }
 
 final class POSBookingServicePreview: POSBookingServiceProtocol {
-    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?, order: BookingsRemote.Order) async throws -> PagedItems<POSBooking> {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 
@@ -701,6 +702,7 @@ extension POSPreviewHelpers {
 final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
     let bookingsViewState: POSBookingListState
     var selectedBooking: POSBooking?
+    var currentSortOption: POSBookingSortOption = .ascending
 
     init(state: POSBookingListState) {
         self.bookingsViewState = state
@@ -712,6 +714,7 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func loadNextBookings() async {}
     func selectBooking(_ booking: POSBooking?) { }
     func cancelBooking(bookingID: Int64) async throws {}
+    func updateSortOption(_ option: POSBookingSortOption) async {}
     func searchBookings(searchTerm: String) async {}
     func clearSearchBookings() {}
 }

@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct POSBookingDateBarView: View {
+    let currentSortOption: POSBookingSortOption
+    let onSortOptionSelected: (POSBookingSortOption) -> Void
+
     @ScaledMetric private var chevronSize: CGFloat = Constants.chevronSize
     @Environment(\.colorScheme) private var colorScheme
 
@@ -32,6 +35,26 @@ struct POSBookingDateBarView: View {
             .buttonStyle(.plain)
 
             Spacer()
+
+            Menu {
+                ForEach(POSBookingSortOption.allCases, id: \.self) { option in
+                    Button {
+                        onSortOptionSelected(option)
+                    } label: {
+                        if option == currentSortOption {
+                            Label(option.title, systemImage: "checkmark")
+                        } else {
+                            Text(option.title)
+                        }
+                    }
+                }
+            } label: {
+                Text(Localization.sortBy)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(tintColor)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Localization.sortButtonAccessibilityLabel)
         }
         .padding(.horizontal, POSPadding.large)
         .padding(.bottom, POSPadding.large)
@@ -40,4 +63,17 @@ struct POSBookingDateBarView: View {
 
 private enum Constants {
     static let chevronSize: CGFloat = 12
+}
+
+private enum Localization {
+    static let sortBy = NSLocalizedString(
+        "pos.bookingDateBar.sortBy",
+        value: "Sort by",
+        comment: "Label for the sort menu button in the bookings date bar"
+    )
+    static let sortButtonAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDateBar.sortButton.accessibilityLabel",
+        value: "Sort bookings",
+        comment: "Accessibility label for the sort button in the bookings date bar"
+    )
 }

@@ -446,13 +446,19 @@ extension View {
 // MARK: - Attendance Button Style
 
 private struct POSFilledAttendanceButtonStyle: ButtonStyle {
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var fillColor: Color {
+        colorScheme == .dark ? .posSecondary : .posPrimaryContainer
+    }
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(.posBodySmallBold())
             .padding(.vertical, POSPadding.small)
             .padding(.horizontal, POSPadding.medium)
             .foregroundStyle(Color.posOnInverseSurface)
-            .background(Color.posInverseSurface)
+            .background(fillColor)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             .opacity(configuration.isPressed ? 0.7 : 1.0)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)

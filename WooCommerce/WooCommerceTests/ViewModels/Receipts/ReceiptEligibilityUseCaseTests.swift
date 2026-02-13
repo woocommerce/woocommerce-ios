@@ -288,6 +288,26 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    func test_isEligibleForReceipt_with_custom_status_returns_true() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let mockPluginsService = MockPluginsService()
+        let plugin = SystemPlugin.fake().copy(plugin: "woocommerce/woocommerce.php", version: "9.5.0", active: true)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: plugin)
+
+        let sut = ReceiptEligibilityUseCase(stores: stores, pluginsService: mockPluginsService)
+
+        // When
+        let isEligible: Bool = waitFor { promise in
+            sut.isEligibleForReceipt(.custom("shipped")) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
     func test_isEligibleForReceipt_with_cancelled_status_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

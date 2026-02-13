@@ -76,7 +76,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 
     func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
         switch orderStatus {
-        case .completed, .processing, .refunded:
+        case .completed, .processing, .refunded, .custom:
             isEligibleForBackendReceipts { isEligibleForReceipt in
                 onCompletion(isEligibleForReceipt)
             }

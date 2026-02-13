@@ -30,9 +30,18 @@ struct WPComConnectionSetupStepView: View {
         case .success:
             Text(Localization.complete)
                 .foregroundColor(Color(uiColor: .success))
-        case .failure(reason: let reason):
-            Text(reason)
+        case .failure(error: let error):
+            Text(errorMessage(for: error))
                 .foregroundColor(Color(uiColor: .error))
+        }
+    }
+
+    private func errorMessage(for error: WPComConnectionSetupStep.ErrorType) -> String {
+        switch error {
+        case .outdatedPlugin(let version):
+            return String(format: Localization.outdatedPlugin, version)
+        case .generic(let reason):
+            return reason
         }
     }
 }
@@ -71,6 +80,11 @@ private extension WPComConnectionSetupStepView {
             value: "Complete",
             comment: "Status label shown when a setup step has completed successfully."
         )
+        static let outdatedPlugin = NSLocalizedString(
+            "wpComConnectionSetupStepView.outdatedPlugin",
+            value: "Your current WooCommerce plugin version %1$@ needs updating to fully connect your store to WordPress.com.",
+            comment: "Error message when the WooCommerce plugin version is outdated. %@ is the current plugin version."
+        )
     }
 }
 
@@ -81,6 +95,6 @@ private extension WPComConnectionSetupStepView {
         WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .running))
         WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title, status: .success))
         WPComConnectionSetupStepView(step: WPComConnectionSetupStep(title: title,
-                                                                          status: .failure(reason: "Plugin version 10.3.4 needs updating")))
+                                                                          status: .failure(error: .outdatedPlugin(version: "10.3.4"))))
     }
 }

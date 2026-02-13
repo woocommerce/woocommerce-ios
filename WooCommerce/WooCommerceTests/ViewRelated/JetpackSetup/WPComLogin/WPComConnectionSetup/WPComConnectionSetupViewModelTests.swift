@@ -57,7 +57,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.connect, status: .failure(reason: "Connection failed"))
+        mockHandler.simulateStepUpdate(.connect, status: .failure(error: .generic(reason: "Connection failed")))
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Try again")
@@ -70,7 +70,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Plugin outdated"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Update plugin")
@@ -84,7 +84,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Network error"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Try again")
@@ -122,7 +122,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     func test_primaryButtonTapped_on_plugin_failure_outdated_calls_updatePlugin() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Plugin outdated"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
 
         // When
         viewModel.primaryButtonTapped()
@@ -134,7 +134,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     func test_primaryButtonTapped_on_plugin_failure_other_retries() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Network error"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
 
         // When
         viewModel.primaryButtonTapped()
@@ -247,8 +247,8 @@ extension WPComConnectionSetupStep.Status: Equatable {
              (.running, .running),
              (.success, .success):
             return true
-        case let (.failure(lhsReason), .failure(rhsReason)):
-            return lhsReason == rhsReason
+        case let (.failure(lhsError), .failure(rhsError)):
+            return lhsError == rhsError
         default:
             return false
         }

@@ -172,15 +172,19 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
         updateStep(step, status: status)
 
-        if case .failure(let reason) = status {
-            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: reason) : nil
+        if case .failure(let error) = status {
+            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: error) : nil
             setupState = .failed(step: step, checkPluginError: checkPluginError)
         }
     }
 
-    private func checkPluginError(from reason: String) -> CheckPluginError {
-        // TODO: Update condition based on actual error identifier from handler
-        reason.contains("outdated") ? .outdated : .other
+    private func checkPluginError(from error: WPComConnectionSetupStep.ErrorType) -> CheckPluginError {
+        switch error {
+        case .outdatedPlugin:
+            return .outdated
+        case .generic:
+            return .other
+        }
     }
 
     func setupDidComplete() {

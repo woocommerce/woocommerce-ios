@@ -2,6 +2,8 @@ import SwiftUI
 
 struct DebugPanelView: View {
 
+    @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
+
     var body: some View {
         List {
             Button {
@@ -18,6 +20,19 @@ struct DebugPanelView: View {
 
             NavigationLink(destination: OverrideFeatureFlagsView()) {
                 Text("Override Feature Flags")
+            }
+
+            VStack(alignment: .leading) {
+                Text("Minimum Woo Version for self-driven push notifications")
+                    .frame(maxWidth: .infinity)
+                TextField("e.g. 10.5.3", text: $minimumWooVersionOverride)
+                    .textFieldStyle(.roundedBorder)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .onChange(of: minimumWooVersionOverride) { _, newValue in
+                        let trimmed = newValue.trimmingCharacters(in: .whitespaces)
+                        UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] = trimmed.isEmpty ? nil : trimmed
+                    }
             }
 
             if let site = ServiceLocator.stores.sessionManager.defaultSite {

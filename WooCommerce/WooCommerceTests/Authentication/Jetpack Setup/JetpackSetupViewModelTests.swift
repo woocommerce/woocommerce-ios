@@ -513,7 +513,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
                                               stores: stores, connectionService: connectionService)
 
-        var triggeredConnectionURL = false
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case .retrieveJetpackPluginDetails(let completion):
@@ -522,8 +521,6 @@ final class JetpackSetupViewModelTests: XCTestCase {
                 completion(.success(()))
             case .activateJetpackPlugin(let completion):
                 completion(.success(()))
-            case .fetchJetpackConnectionURL:
-                triggeredConnectionURL = true
             default:
                 break
             }
@@ -531,11 +528,11 @@ final class JetpackSetupViewModelTests: XCTestCase {
 
         // When
         viewModel.startSetup()
-        waitUntil { triggeredConnectionURL }
+        waitUntil { connectionService.fetchJetpackConnectionURLCallCount > 0 }
 
         // Then
         XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
-        XCTAssertTrue(triggeredConnectionURL)
+        XCTAssertEqual(connectionService.fetchJetpackConnectionURLCallCount, 1)
     }
 
     func test_shouldPresentWebView_is_true_when_fetching_connection_url_returns_account_connection_url() throws {

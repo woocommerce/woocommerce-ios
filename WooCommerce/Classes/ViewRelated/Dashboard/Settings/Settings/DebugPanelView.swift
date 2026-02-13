@@ -20,15 +20,21 @@ struct DebugPanelView: View {
                 Text("Override Feature Flags")
             }
 
-            DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
-                let viewModel = WPComConnectionSetupViewModel(
-                    storeName: "nicestore.com",
-                    handler: WPComConnectionSetupHandler(),
-                    onDismiss: dismiss,
-                    onGoToStore: dismiss,
-                    onUpdatePlugin: {}
-                )
-                WPComConnectionSetupView(viewModel: viewModel)
+            if let site = ServiceLocator.stores.sessionManager.defaultSite {
+                DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
+                    let viewModel = WPComConnectionSetupViewModel(
+                        storeName: "nicestore.com",
+                        handler: WPComConnectionSetupHandler(
+                            siteID: site.siteID,
+                            siteURL: site.url,
+                            credentials: nil
+                        ),
+                        onDismiss: dismiss,
+                        onGoToStore: dismiss,
+                        onUpdatePlugin: {}
+                    )
+                    WPComConnectionSetupView(viewModel: viewModel)
+                }
             }
         }
         .contentMargins(20)

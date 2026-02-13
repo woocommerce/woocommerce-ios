@@ -8,6 +8,9 @@ final class MockWPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol
     private(set) var startCallCount = 0
     private(set) var retryCallCount = 0
     private(set) var cancelCallCount = 0
+    private(set) var didAuthorizeWebViewConnectionCallCount = 0
+    private(set) var didEncounterWebViewErrorCallCount = 0
+    private(set) var didCancelWebViewCallCount = 0
 
     func start() {
         startCallCount += 1
@@ -21,6 +24,18 @@ final class MockWPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol
         cancelCallCount += 1
     }
 
+    func didAuthorizeWebViewConnection() {
+        didAuthorizeWebViewConnectionCallCount += 1
+    }
+
+    func didEncounterWebViewError(code: Int?) {
+        didEncounterWebViewErrorCallCount += 1
+    }
+
+    func didCancelWebView() {
+        didCancelWebViewCallCount += 1
+    }
+
     // MARK: - Test helpers
 
     func simulateStepUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
@@ -29,5 +44,9 @@ final class MockWPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol
 
     func simulateSetupComplete() {
         delegate?.setupDidComplete()
+    }
+
+    func simulateWebViewRequired(url: URL, siteURL: String) {
+        delegate?.setupDidRequireWebView(url: url, siteURL: siteURL)
     }
 }

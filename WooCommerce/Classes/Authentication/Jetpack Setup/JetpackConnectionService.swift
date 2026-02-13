@@ -33,9 +33,12 @@ protocol JetpackConnectionServiceProtocol {
     func evaluateAndConnect(siteURL: String,
                             credentials: Credentials) async throws -> JetpackConnectionOutcome
 
-    /// Verify a connected WPCom user exists (used after webview auth).
+    /// Verify a connected WPCom user exists.
     /// Retries internally. Returns the connected email or throws.
     func verifyConnection() async throws -> String
+
+    /// Fetches the URL used for setting up Jetpack connection via web view.
+    func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool) async throws -> URL
 }
 
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
@@ -86,6 +89,15 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
             return .connected(email: email)
         case .error(let error):
             throw error
+        }
+    }
+
+    func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool) async throws -> URL {
+        try await dispatch { completion in
+            JetpackConnectionAction.fetchJetpackConnectionURL(
+                authenticatedWithWPCom: authenticatedWithWPCom,
+                completion: completion
+            )
         }
     }
 

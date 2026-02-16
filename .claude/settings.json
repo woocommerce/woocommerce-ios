@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild build *)",
+      "Bash(xcodebuild test *)",
+      "Bash(xcodebuild clean *)",
+      "Bash(xcodebuild -workspace *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git switch *)",
+      "Bash(git stash *)",
+      "Bash(git fetch *)",
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git remote *)",
+      "Bash(git rev-parse *)",
+      "Bash(git push *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(gh api *)",
+      "Bash(pushd BuildTools *)",
+      "Bash(xcrun *)",
+      "Bash(swift build *)",
+      "Bash(swift package *)",
+      "Bash(rake lint *)",
+      "Bash(rake test *)",
+      "Bash(rake build *)",
+      "Bash(rake generate *)",
+      "Bash(rake clean *)",
+      "Bash(bundle exec *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -f *)",
+      "Bash(rm -rf *)",
+      "Bash(sudo *)",
+      "Bash(fastlane release *)",
+      "Bash(fastlane deliver *)"
+    ]
+  }
+}

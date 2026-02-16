@@ -649,8 +649,12 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
 
             await withCheckedContinuation { continuation in
+                var resumed = false
                 cardPresentPaymentService.onCollectPaymentCalled = {
-                    continuation.resume()
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
                 }
 
                 // When: the card reader connects
@@ -711,8 +715,12 @@ struct PointOfSaleAggregateModelTests {
             cardPresentPaymentService.collectPaymentWasCalled = false
 
             await withCheckedContinuation { continuation in
+                var resumed = false
                 cardPresentPaymentService.onCollectPaymentCalled = {
-                    continuation.resume()
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
                 }
 
                 // When: the card reader is reconnected
@@ -723,14 +731,14 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
-        @Test(.disabled()) func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
+        @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$1.00")
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
             await orderController.syncOrder(for: .init(), retryHandler: {})
 
             struct TestError: Error {}

@@ -206,19 +206,23 @@ private extension WPComConnectionSetupHandler {
         currentStep = .enablePush
         delegate?.stepDidUpdate(.enablePush, status: .running)
         #if targetEnvironment(simulator)
+        if !isRunningTests {
         DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         delegate?.stepDidUpdate(.enablePush, status: .success)
         delegate?.setupDidComplete()
-        #else
-        pushNotesManager.registerForRemoteNotifications()
-        pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false) { [weak self] _ in
-            guard let self else { return }
-            Task { @MainActor in
-                self.delegate?.stepDidUpdate(.enablePush, status: .success)
-                self.delegate?.setupDidComplete()
-            }
+        return
         }
         #endif
+        Task { @MainActor in
+            do {
+                let _ = try await pushNotesManager.registerDeviceAndWaitForTokenAcceptance()
+                delegate?.stepDidUpdate(.enablePush, status: .success)
+                delegate?.setupDidComplete()
+            } catch {
+                DDLogError("⛔️ Push notification registration failed: \(error)")
+                delegate?.stepDidUpdate(.enablePush, status: .failure(error: .generic(reason: Localization.PushStep.genericError)))
+            }
+        }
     }
 }
 
@@ -237,6 +241,13 @@ private extension WPComConnectionSetupHandler {
                 value: "There was an error checking the version of WooCommerce plugin on your store. " +
                 "Please try again or contact support if this error continues.",
                 comment: "Generic error message when the plugin check step fails during push notification setup"
+            )
+        }
+        enum PushStep {
+            static let genericError = NSLocalizedString(
+                "wpcomConnectionSetupHandler.PushStep.genericError",
+                value: "There was an error enabling push notifications. Please try again or contact support if this error continues.",
+                comment: "Error message when push notification registration fails during setup"
             )
         }
         enum ConnectionStep {

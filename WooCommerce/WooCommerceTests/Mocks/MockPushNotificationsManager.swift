@@ -67,6 +67,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var lastIncludesProvisionalAuth: Bool?
     private var authorizationCompletion: ((Bool) -> Void)?
     var onRequestLocalNotificationCalled: (() -> Void)?
+    var registerDeviceAndWaitForTokenAcceptanceResult: Result<Int64, Error> = .success(1)
 
     init(mockedDeviceID: String? = nil,
          siteIDsRegisteredForWooPNs: [Int64] = [],
@@ -87,6 +88,13 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     func reloadBadgeCount() {
 
+    }
+
+    @MainActor
+    func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64 {
+        // Yield to allow MainActor scheduling to settle
+        await Task.yield()
+        return try registerDeviceAndWaitForTokenAcceptanceResult.get()
     }
 
     func registerForRemoteNotifications() {

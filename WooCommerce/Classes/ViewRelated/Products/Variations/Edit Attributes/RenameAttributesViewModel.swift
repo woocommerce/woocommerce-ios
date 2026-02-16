@@ -23,7 +23,7 @@ extension RenameAttributesViewModel {
     /// Prevents the Done button from being enabled when the new attribute name is empty
     ///
     var shouldEnableDoneButton: Bool {
-        newAttributeName != ""
+        !newAttributeName.isEmpty
     }
 
     /// Name of the attribute

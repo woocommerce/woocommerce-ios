@@ -130,7 +130,7 @@ extension ShippingLabelCustomsFormInputViewModel {
               !missingITNForDestination,
               !missingITNForClassesAbove2500usd,
               !invalidITN,
-              itemViewModels.filter({ $0.validatedItem == nil }).isEmpty else {
+              !itemViewModels.contains({ $0.validatedItem == nil }) else {
             return nil
         }
         return ShippingLabelCustomsForm(packageID: packageID,

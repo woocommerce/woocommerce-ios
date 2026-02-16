@@ -257,7 +257,7 @@ private extension StoreStatsPeriodViewModel {
         /// with x being the number of intervals available from order stats.
         ///
         if let orderStats = orderStatsResultsController.fetchedObjects.first,
-           orderStats.intervals.count > 0,
+           !orderStats.intervals.isEmpty,
            let items = siteStats?.items,
            items.count > orderStats.intervals.count {
             let sortedItems = items.sorted(by: { (lhs, rhs) -> Bool in

@@ -54,7 +54,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.count > 0)
+        XCTAssertTrue(!viewModel.sections.isEmpty)
     }
 
     func test_sections_contain_install_jetpack_row_when_default_site_is_jcp() {

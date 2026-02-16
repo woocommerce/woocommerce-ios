@@ -61,7 +61,7 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     }
 
     var hasUnreadNotifications: Bool {
-        return unreadNotifications.count != 0
+        return !unreadNotifications.isEmpty
     }
 
     private var unreadNotifications: [Note] {

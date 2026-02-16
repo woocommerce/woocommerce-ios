@@ -591,7 +591,7 @@ final class POSOrderListControllerTests {
         sut.clearRefundSelection()
 
         // Then
-        #expect(sut.refundSelectableItems.count == 0)
+        #expect(sut.refundSelectableItems.isEmpty)
     }
 
     @MainActor
@@ -992,7 +992,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(sut.refundSelectableItems.count == 0)
+        #expect(sut.refundSelectableItems.isEmpty)
     }
 
     @MainActor

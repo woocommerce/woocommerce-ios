@@ -95,7 +95,7 @@ private extension AddAttributeViewModel {
         for _ in 0..<localAndGlobalAttributes.count {
             attributesRows.append(.existingAttribute)
         }
-        let attributesSection = attributesRows.count > 0 ? Section(header: Localization.headerAttributes, footer: nil, rows: attributesRows) : nil
+        let attributesSection = !attributesRows.isEmpty ? Section(header: Localization.headerAttributes, footer: nil, rows: attributesRows) : nil
 
         sections = [Section(header: nil, footer: Localization.footerTextField, rows: [.attributeTextField]), attributesSection].compactMap { $0 }
     }

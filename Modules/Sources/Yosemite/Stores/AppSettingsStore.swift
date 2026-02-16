@@ -1156,7 +1156,7 @@ extension AppSettingsStore {
 
     func loadSiteHasAtLeastOneIPPTransactionFinished(siteID: Int64, onCompletion: (Bool) -> Void) {
         let storeSettings = getStoreSettings(for: siteID)
-        let hasStoredTransactionsByReader = storeSettings.firstInPersonPaymentsTransactionsByReaderType.count > 0
+        let hasStoredTransactionsByReader = !storeSettings.firstInPersonPaymentsTransactionsByReaderType.isEmpty
         let hasLegacyIPPTransactionStored = generalAppSettings.value(for: \.sitesWithAtLeastOneIPPTransactionFinished).contains(siteID)
         onCompletion(hasStoredTransactionsByReader || hasLegacyIPPTransactionStored)
     }

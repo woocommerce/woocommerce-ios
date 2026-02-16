@@ -1288,7 +1288,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.productRows.count == 0 // no product matches the filter and search term
+            viewModel.productRows.isEmpty // no product matches the filter and search term
         }
 
         // When

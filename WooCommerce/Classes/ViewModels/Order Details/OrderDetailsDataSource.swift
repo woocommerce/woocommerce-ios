@@ -82,7 +82,7 @@ final class OrderDetailsDataSource: NSObject {
     var shouldAllowWCShipInstallation: Bool {
         let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
         let plugin = resultsControllers.sitePlugins.first { $0.plugin == SitePlugin.SupportedPluginPath.LegacyWCShip }
-        let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
+        let isPluginInstalled = plugin != nil && !resultsControllers.sitePlugins.isEmpty
         let isPluginActive = plugin?.status.isActive ?? false
         let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == CountryCode.US
         let isCurrencyUSD = currencySettings.currencyCode == .USD
@@ -1301,7 +1301,7 @@ extension OrderDetailsDataSource {
                 break
             }
 
-            if rows.count == 0 {
+            if rows.isEmpty {
                 return nil
             }
 
@@ -1397,7 +1397,7 @@ extension OrderDetailsDataSource {
         }()
 
         let shippingLinesSection: Section? = {
-            guard shippingLines.count > 0 else {
+            guard !shippingLines.isEmpty else {
                 return nil
             }
 
@@ -1429,7 +1429,7 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            guard orderTracking.count > 0 else {
+            guard !orderTracking.isEmpty else {
                 return nil
             }
 
@@ -1450,7 +1450,7 @@ extension OrderDetailsDataSource {
             }
 
             let title: String?
-            if orderTracking.count == 0 {
+            if orderTracking.isEmpty {
                 title = NSLocalizedString(
                     "orderDetails.addTrackingRow.title",
                     value: "Optional Tracking Information",

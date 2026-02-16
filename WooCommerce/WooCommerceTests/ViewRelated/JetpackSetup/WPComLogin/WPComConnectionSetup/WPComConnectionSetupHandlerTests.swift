@@ -326,26 +326,40 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
     // MARK: - Plugin + Push Registration Tests
 
-    func test_start_with_compatible_plugin_triggers_push_registration() async throws {
+    func test_start_with_compatible_plugin_triggers_push_registration_and_completes_on_success() async throws {
         // Given
         mockPluginVersionChecker.result = .success(.compatible)
+        mockPushNotesManager.registerDeviceAndWaitForTokenAcceptanceResult = .success(1)
         let handler = makeHandler(credentials: .none)
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 3)
+        await delegateSpy.waitForStepUpdate(count: 5)
 
         // Then
-        XCTAssertTrue(delegateSpy.stepUpdates.contains { $0.step == .checkPlugin })
         XCTAssertTrue(delegateSpy.stepUpdates.contains { $0.step == .enablePush && $0.status == .running })
-
-        // When
-        mockPushNotesManager.completeAuthorizationRequest(isAllowed: true)
-        await delegateSpy.waitForStepUpdate(count: 4)
-
-        // Then
         XCTAssertTrue(delegateSpy.stepUpdates.contains { $0.step == .enablePush && $0.status == .success })
         XCTAssertTrue(delegateSpy.setupCompleteCalled)
+    }
+
+    func test_start_with_compatible_plugin_marks_push_step_as_failure_on_registration_error() async throws {
+        // Given
+        mockPluginVersionChecker.result = .success(.compatible)
+        mockPushNotesManager.registerDeviceAndWaitForTokenAcceptanceResult = .failure(NSError(domain: "Test", code: -1))
+        let handler = makeHandler(credentials: .none)
+
+        // When
+        handler.start()
+
+        // Wait for all steps including the async push registration failure
+        await delegateSpy.waitForStepUpdate(count: 5, timeout: 5.0)
+
+        // Then
+        XCTAssertTrue(delegateSpy.stepUpdates.contains { $0.step == .enablePush && $0.status == .running })
+        let pushUpdates = delegateSpy.stepUpdates.filter { $0.step == .enablePush }
+        XCTAssertEqual(pushUpdates.count, 2, "Expected enablePush.running and enablePush.failure, got: \(pushUpdates.map { $0.status })")
+        assertFailureStatus(pushUpdates.last?.status)
+        XCTAssertFalse(delegateSpy.setupCompleteCalled)
     }
 
     func test_start_with_incompatible_plugin_marks_check_plugin_failure() async throws {

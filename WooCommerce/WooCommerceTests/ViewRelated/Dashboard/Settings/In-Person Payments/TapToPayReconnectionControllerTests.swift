@@ -92,4 +92,28 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
                     connectionControllerFactory.spyCreateConnectionControllerAnalyticsTracker?.connectionType)
     }
 
+    func test_cancelReconnection_resets_isReconnecting() {
+        // Given
+        let supportDeterminer = MockCardReaderSupportDeterminer()
+        supportDeterminer.shouldReturnLocationIsAuthorized = true
+        supportDeterminer.shouldReturnConnectedReader = nil
+        supportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
+        supportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
+        supportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
+
+        waitFor { promise in
+            self.connectionControllerFactory.onSearchAndConnectCalled = {
+                promise(())
+            }
+            self.sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
+        }
+        XCTAssertTrue(sut.isReconnecting)
+
+        // When
+        sut.cancelReconnection()
+
+        // Then
+        XCTAssertFalse(sut.isReconnecting)
+    }
+
 }

@@ -110,6 +110,8 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
         stores.dispatch(reviewAction)
 
+        ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+
         group.enter()
         let resetAction = CardPresentPaymentAction.reset
 

@@ -50,7 +50,7 @@ final class WooPushNotificationSetupCoordinator {
     }
 
     func showPluginUpdateSetup() {
-        let (navigationController, _) = makeConnectionSetupStack(credentials: nil, pluginOutdated: true)
+        let navigationController = makeConnectionSetupStack(credentials: nil, pluginOutdated: true)
 
         if let presenter = rootViewController.presentingViewController {
             rootViewController.dismiss(animated: true) {
@@ -89,9 +89,8 @@ private extension WooPushNotificationSetupCoordinator {
     }
 
     /// Creates the connection setup navigation stack with a handler, view model, and hosting controller.
-    /// Returns the navigation controller and the view model for further configuration.
     func makeConnectionSetupStack(credentials: Credentials? = nil,
-                                  pluginOutdated: Bool = false) -> (WooNavigationController, WPComConnectionSetupViewModel) {
+                                  pluginOutdated: Bool = false) -> WooNavigationController {
         guard let site = stores.sessionManager.defaultSite else {
             fatalError("❌ No default site found for Woo push notification setup!")
         }
@@ -120,11 +119,11 @@ private extension WooPushNotificationSetupCoordinator {
         }
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel, credentials: credentials)
         navigationController.viewControllers = [connectionSetupController]
-        return (navigationController, viewModel)
+        return navigationController
     }
 
     func showConnectionSetup(with credentials: Credentials? = nil) {
-        let (navigationController, _) = makeConnectionSetupStack(credentials: credentials)
+        let navigationController = makeConnectionSetupStack(credentials: credentials)
 
         // Dismiss current modal (login or benefits) and present connection setup
         if let loginNav = loginCoordinator?.navigationController,

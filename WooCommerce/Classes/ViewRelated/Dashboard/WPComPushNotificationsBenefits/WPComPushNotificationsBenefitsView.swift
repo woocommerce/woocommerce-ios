@@ -7,9 +7,11 @@ import WooFoundation
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         rootViewController: UIViewController) {
+         rootViewController: UIViewController,
+         onSetupCompleted: (() -> Void)? = nil) {
         super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
-        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController,
+                                                              onSetupCompleted: onSetupCompleted)
         viewModel.updateCoordinator(coordinator)
     }
 

@@ -112,7 +112,7 @@ private extension WooPushNotificationSetupCoordinator {
                 onSetupCompleted?()
             },
             onUpdatePlugin: {
-                // TODO: Open wp-admin plugins page
+                // TODO: Implement plugin update flow in follow-up PR
             }
         )
         if pluginOutdated {

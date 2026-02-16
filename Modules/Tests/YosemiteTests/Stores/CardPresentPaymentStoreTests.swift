@@ -831,7 +831,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertNotNil(mockCardReaderConfigProvider.currentSiteID)
 
         // When
-        let action = CardPresentPaymentAction.reset
+        let action = CardPresentPaymentAction.reset(onCompletion: {})
         cardPresentStore.onAction(action)
 
         // Then
@@ -841,7 +841,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     func test_reset_disconnects_card_reader() {
         // When
-        let action = CardPresentPaymentAction.reset
+        let action = CardPresentPaymentAction.reset(onCompletion: {})
         cardPresentStore.onAction(action)
 
         // Then

@@ -132,8 +132,8 @@ public final class CardPresentPaymentStore: Store {
             observeTapToPayCardReaderAcceptToS(onCompletion: completion)
         case .startCardReaderUpdate:
             startCardReaderUpdate()
-        case .reset:
-            reset()
+        case .reset(let onCompletion):
+            reset(onCompletion: onCompletion)
         case .publishCardReaderConnections(onCompletion: let completion):
             publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
@@ -409,7 +409,7 @@ private extension CardPresentPaymentStore {
         cardReaderService.installUpdate()
     }
 
-    func reset() {
+    func reset(onCompletion: @escaping () -> Void) {
         paymentCancellable?.cancel()
         paymentCancellable = nil
         refundCancellable?.cancel()
@@ -421,6 +421,7 @@ private extension CardPresentPaymentStore {
             .subscribe(Subscribers.Sink(
                         receiveCompletion: { [weak self] _ in
                             self?.cardReaderService.clear()
+                            onCompletion()
                         },
                         receiveValue: { _ in }
             ))

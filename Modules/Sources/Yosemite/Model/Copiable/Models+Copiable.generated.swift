@@ -4,8 +4,6 @@ import Codegen
 import Foundation
 import Networking
 import WooFoundation
-import enum Networking.BookingAttendanceStatus
-import enum Networking.BookingStatus
 import enum NetworkingCore.OrderStatusEnum
 import struct NetworkingCore.Address
 import struct NetworkingCore.MetaData

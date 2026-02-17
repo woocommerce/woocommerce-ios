@@ -1,0 +1,208 @@
+# WooCommerce iOS
+
+WooCommerce iOS is the official mobile client for WooCommerce stores, developed by Automattic. Large-scale Swift app using MVVM + Coordinators, SwiftUI and UIKit, Combine, and a Flux/Redux-inspired business logic layer (Yosemite).
+
+## Repository Layout
+
+```
+WooCommerce.xcworkspace          # Open this to build
+WooCommerce/
+  Classes/                       # Main app source
+    ViewRelated/                 # Views, ViewControllers, SwiftUI views
+    ServiceLocator/              # Global dependency provider
+    Analytics/                   # WooAnalyticsEvent extensions
+    Authentication/              # Login flows
+    Model/                       # App-level model types
+    Copiable/                    # Generated copy() methods
+    Extensions/                  # Swift extensions
+    POS/                         # Point of Sale feature
+    Notifications/               # Push notifications
+  WooCommerceTests/              # Unit tests for main app
+    Mocks/                       # Hand-written mock classes
+
+Modules/
+  Package.swift                  # SPM package (23+ internal targets, 40+ external deps)
+  Sources/
+    Yosemite/                    # Business logic (Flux/Redux: Actions, Stores, Dispatcher)
+    Networking/                  # REST API layer (Alamofire-based Remotes, Mappers, Models)
+    Storage/                     # CoreData persistence (NSManagedObject subclasses, model versions)
+    WooFoundation/               # Shared utilities (currency, formatting)
+    WooFoundationCore/           # Analytics protocols, WooAnalyticsStat enum
+    Hardware/                    # Stripe Terminal card reader integration
+    Experiments/                 # Feature flags, A/B testing
+    Fakes/                       # Generated .fake() methods (test-only)
+    TestKit/                     # XCTest helper extensions (test-only)
+    PointOfSale/                 # POS-specific module code
+    Codegen/                     # Copiable/Fakeable protocol definitions
+  Tests/
+    YosemiteTests/
+    NetworkingTests/
+    StorageTests/
+    PointOfSaleTests/
+    WooFoundationTests/
+
+BuildTools/                      # SwiftLint + Sourcery SPM plugin package
+Rakefile                         # Build automation tasks
+fastlane/                        # Deployment automation
+docs/                            # Architecture docs, style guides, conventions
+RELEASE-NOTES.txt                # Release notes (specific format)
+CONTRIBUTING.md                  # PR merge policy
+.swiftlint.yml                   # SwiftLint configuration (opt-in rules only)
+```
+
+## Build Commands
+
+```bash
+# Build
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build
+
+# Run all unit tests
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build test
+
+# Run single test class
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  test -only-testing:"WooCommerceTests/SomeTestClass"
+
+# Run single test method
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  test -only-testing:"WooCommerceTests/SomeTestClass/test_method_name"
+
+# Run module tests (e.g. Yosemite)
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  test -only-testing:"YosemiteTests"
+
+# Lint (SwiftLint via BuildTools plugin)
+pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
+  swift package plugin --allow-writing-to-directory .. \
+  --allow-writing-to-package-directory swiftlint --working-directory .. --quiet && popd
+
+# Lint with autocorrect
+pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
+  swift package plugin --allow-writing-to-directory .. \
+  --allow-writing-to-package-directory swiftlint --working-directory .. --quiet --fix && popd
+
+# Code generation (Sourcery for Copiable/Fakeable)
+pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
+  swift package plugin --allow-writing-to-directory .. \
+  --allow-writing-to-package-directory sourcery-command --disableCache && popd
+```
+
+If the simulator name `iPhone 16` is not available, try `iPhone 15` or `iPhone 16 Pro`.
+
+## Architecture
+
+```
+WooCommerce (UI: ViewControllers, SwiftUI Views, ViewModels, Coordinators)
+     |
+     v
+Yosemite (Business Logic: Stores, Actions, Dispatcher)
+     |
+     +----> Networking (REST API: Remotes, Mappers, Models)
+     +----> Storage (CoreData: StorageManager, NSManagedObject subclasses)
+```
+
+**Key rule**: The WooCommerce app target ONLY interacts with business logic through Yosemite. Never import Networking or Storage directly from app code (except for existing type aliases).
+
+### Action Dispatch Pattern (Flux/Redux)
+```swift
+let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { result in
+    switch result {
+    case .success(let product): // handle
+    case .failure(let error): // handle
+    }
+}
+ServiceLocator.stores.dispatch(action)
+```
+
+### Entity Flow
+1. **Networking models**: Immutable `struct`s conforming to `Decodable`
+2. **Storage models**: `NSManagedObject` subclasses (mutable, internal to Storage/Yosemite)
+3. **Yosemite re-exports** Networking models as read-only types for the UI
+4. Use `copy()` (GeneratedCopiable + Sourcery) to create modified copies
+5. Use `.fake()` (GeneratedFakeable + Sourcery) to create test data
+
+### Dependency Injection
+- Prefer constructor injection over ServiceLocator for new code
+- Declare dependencies at the top of each class and inject via init with protocol types
+- ServiceLocator acceptable for top-level bootstrapping
+
+### Navigation
+- Coordinators manage navigation flow and own child coordinators
+- Coordinators should not contain business logic — delegate to ViewModels
+
+### ViewModels
+- Expose state via `@Published` properties or Combine publishers
+- Dispatch Yosemite actions and handle results
+- Should be testable without UI dependencies
+
+## Git Conventions
+
+- **Main branch**: `trunk`
+- **Feature branches**: `WOOMOB-XXXX-description` or `issue/XXXX-description`
+- **Commit messages**: Capitalized verb + description. Examples:
+  - `Add push notification support`
+  - `Fix product type filters issue`
+  - `Update Stripe SDK to 5.1.1`
+  - `Remove redundant MainActor annotation`
+- **PR merge policy**: Merge commits (not squash). 1 reviewer required. PR author merges own PR.
+- **PR size**: Keep non-test diff under 300 lines (enforced by Danger)
+- **Labels and milestones**: Required on non-draft PRs
+
+## Release Notes
+
+Entries in `RELEASE-NOTES.txt` use this format:
+```
+- [*] Short description of the change [PR_URL]
+- [**] Higher priority change [PR_URL]
+- [Internal] Internal-only change [PR_URL]
+```
+Stars indicate priority. `[Internal]` for changes not visible to users.
+
+## Testing
+
+- **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files
+- When adding to existing XCTest classes, follow that class's framework
+- **Naming**: snake_case — `test_<operation>_when_<condition>_then_<expected_result>()`
+- **Structure**: Given / When / Then blocks with comments
+- **Mocks**: Hand-written, named `Mock<ServiceName>`, in `Mocks/` subdirectories
+- **Test data**: Use `.fake()` from Fakes module and `.copy()` from Copiable
+- **Test plan**: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
+- See `Modules/Tests/CLAUDE.md` for detailed async testing patterns
+
+## Localization
+
+- Use `NSLocalizedString` with reverse-DNS keys, `value:`, and `comment:` parameters
+- **Never** use `LocalizedStringKey` (SwiftLint error)
+- **Never** use string interpolation in localized strings (SwiftLint error)
+- Use positional placeholders: `%1$@` not `%@`
+- Group constants in `enum Localization { }` within the class/struct
+- When changing a string value, always update the key too
+
+## Analytics
+
+- Event names: cases in `WooAnalyticsStat` enum (`Modules/Sources/WooFoundationCore/Analytics/WooAnalyticsStat.swift`)
+- Events with properties: `WooAnalyticsEvent` static factory methods in `WooCommerce/Classes/Analytics/WooAnalyticsEvent+*.swift`
+- Track via injected `analytics: Analytics` (default: `ServiceLocator.analytics`)
+- Import with: `import protocol WooFoundation.Analytics`
+
+## SwiftLint
+
+Opt-in only rules configured in `.swiftlint.yml`:
+- Line length: 163 max
+- control_statement: no parentheses (error)
+- vertical_whitespace: max 3 empty lines (error)
+- weak_delegate (error)
+- Custom rules: no LocalizedStringKey (error), no string interpolation in NSLocalizedString (error), natural alignment for RTL
+
+## Module Dependencies
+
+- iOS 17+
+- WooCommerce imports: Yosemite, WooFoundation, Hardware, Experiments, Storage (type aliases only)
+- Yosemite imports: Networking, Storage
+- Networking imports: Alamofire
+- Storage imports: CoreData, GRDB

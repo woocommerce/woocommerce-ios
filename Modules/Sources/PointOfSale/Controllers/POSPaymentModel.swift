@@ -44,6 +44,10 @@ final class POSPaymentModel {
     // MARK: - Internal
     private var startPaymentOnCardReaderConnection: AnyCancellable?
     private var cardReaderDisconnection: AnyCancellable?
+    /// Incremented each time `startPayment()` is called so that stale
+    /// `startPaymentOnCardReaderConnection` callbacks (which may already
+    /// have been enqueued as Tasks) can detect they've been superseded.
+    private var startPaymentGeneration: Int = 0
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
@@ -83,11 +87,20 @@ extension POSPaymentModel {
     /// Collects immediately if a reader is connected; otherwise waits for connection.
     func startPayment() async {
         DDLogInfo("🃏 [CardPayment] startPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
+
         subscribeToPaymentSessionEvents()
-        try? await cardPresentPaymentService.cancelPayment()
-        DDLogInfo("🃏 [CardPayment] startPayment cancel completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
+
+        // Invalidate stale `startPaymentOnCardReaderConnection` callbacks
+        // so only the latest subscription can reach `collectCardPayment`.
+        startPaymentGeneration += 1
+        let generation = startPaymentGeneration
+
+        // Check reader status synchronously — before any `await` — so
+        // concurrent calls on @MainActor all see the same state and
+        // can't race into different branches.
         guard case .connected = cardReaderConnectionStatus else {
             DDLogInfo("🃏 [CardPayment] reader not connected, waiting for connection")
+            startPaymentOnCardReaderConnection?.cancel()
             return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
                 .filter { status in
                     switch status {
@@ -98,12 +111,32 @@ extension POSPaymentModel {
                     }
                 }
                 .removeDuplicates()
-                .sink { [weak self] _ in
+                .sink { [weak self, generation] _ in
                     Task { @MainActor [weak self] in
-                        await self?.collectCardPayment()
+                        guard self?.startPaymentGeneration == generation else { return }
+                        await self?.cancelThenCollectCardPayment(generation: generation)
                     }
                 }
         }
+
+        // Reader is connected — cancel any stale payment, then collect.
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        await cancelThenCollectCardPayment(generation: generation)
+    }
+
+    /// Cancels any stale payment on the reader, then collects.
+    /// The generation check after the cancel guards against a newer
+    /// `startPayment()` call that may have started during the await.
+    private func cancelThenCollectCardPayment(generation: Int) async {
+        try? await cardPresentPaymentService.cancelPayment()
+        DDLogInfo("🃏 [CardPayment] startPayment cancel completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
+
+        guard startPaymentGeneration == generation else {
+            DDLogInfo("🃏 [CardPayment] startPayment superseded by a newer call, bailing out")
+            return
+        }
+
         DDLogInfo("🃏 [CardPayment] startPayment proceeding to collectCardPayment")
         await collectCardPayment()
     }

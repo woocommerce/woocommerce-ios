@@ -2309,7 +2309,7 @@ which should be translated separately and considered part of this sentence. */
 "bookingsTabViewHostingController.tab.title" = "Bookings";
 
 /* Status of a canceled booking */
-"bookingStatus.title.canceled" = "Cancelled";
+"bookingStatus.title.canceled" = "Canceled";
 
 /* Status of a complete booking */
 "bookingStatus.title.complete" = "Complete";

@@ -5,6 +5,11 @@ import SwiftUI
 @MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
 
+    struct WebViewPresentation: Equatable {
+        let url: URL
+        let siteURL: String
+    }
+
     enum CheckPluginError: Equatable {
         case outdated
         case other
@@ -18,6 +23,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
     @Published private var setupState: SetupState = .inProgress
+    @Published var webViewPresentation: WebViewPresentation?
 
     let subtitleAttributedString: AttributedString
 
@@ -124,6 +130,21 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         onDismiss()
     }
 
+    func didAuthorizeWebViewConnection() {
+        webViewPresentation = nil
+        handler.didAuthorizeWebViewConnection()
+    }
+
+    func didEncounterWebViewError(code: Int?) {
+        webViewPresentation = nil
+        handler.didEncounterWebViewError(code: code)
+    }
+
+    func didCancelWebView() {
+        webViewPresentation = nil
+        handler.didCancelWebView()
+    }
+
     private func retrySetup() {
         setupState = .inProgress
         handler.retry()
@@ -151,19 +172,27 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
         updateStep(step, status: status)
 
-        if case .failure(let reason) = status {
-            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: reason) : nil
+        if case .failure(let error) = status {
+            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: error) : nil
             setupState = .failed(step: step, checkPluginError: checkPluginError)
         }
     }
 
-    private func checkPluginError(from reason: String) -> CheckPluginError {
-        // TODO: Update condition based on actual error identifier from handler
-        reason.contains("outdated") ? .outdated : .other
+    private func checkPluginError(from error: WPComConnectionSetupStep.ErrorType) -> CheckPluginError {
+        switch error {
+        case .outdatedPlugin:
+            return .outdated
+        case .generic:
+            return .other
+        }
     }
 
     func setupDidComplete() {
         setupState = .completed
+    }
+
+    func setupDidRequireWebView(url: URL, siteURL: String) {
+        webViewPresentation = WebViewPresentation(url: url, siteURL: siteURL)
     }
 }
 

@@ -57,7 +57,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.connect, status: .failure(reason: "Connection failed"))
+        mockHandler.simulateStepUpdate(.connect, status: .failure(error: .generic(reason: "Connection failed")))
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Try again")
@@ -70,7 +70,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Plugin outdated"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Update plugin")
@@ -84,7 +84,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Network error"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Try again")
@@ -122,7 +122,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     func test_primaryButtonTapped_on_plugin_failure_outdated_calls_updatePlugin() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Plugin outdated"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
 
         // When
         viewModel.primaryButtonTapped()
@@ -134,7 +134,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     func test_primaryButtonTapped_on_plugin_failure_other_retries() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(reason: "Network error"))
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
 
         // When
         viewModel.primaryButtonTapped()
@@ -168,6 +168,63 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertTrue(dismissCalled)
     }
 
+    // MARK: - Web View Presentation Tests
+
+    func test_setupDidRequireWebView_sets_webViewPresentation() {
+        // Given
+        let viewModel = makeViewModel()
+        let url = URL(string: "https://jetpack.wordpress.com/jetpack.authorize/123")!
+        let siteURL = "https://example.com"
+
+        // When
+        mockHandler.simulateWebViewRequired(url: url, siteURL: siteURL)
+
+        // Then
+        XCTAssertEqual(viewModel.webViewPresentation, WPComConnectionSetupViewModel.WebViewPresentation(url: url, siteURL: siteURL))
+    }
+
+    func test_didAuthorizeWebViewConnection_clears_presentation_and_forwards_to_handler() {
+        // Given
+        let viewModel = makeViewModel()
+        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
+        XCTAssertNotNil(viewModel.webViewPresentation)
+
+        // When
+        viewModel.didAuthorizeWebViewConnection()
+
+        // Then
+        XCTAssertNil(viewModel.webViewPresentation)
+        XCTAssertEqual(mockHandler.didAuthorizeWebViewConnectionCallCount, 1)
+    }
+
+    func test_didEncounterWebViewError_clears_presentation_and_forwards_to_handler() {
+        // Given
+        let viewModel = makeViewModel()
+        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
+        XCTAssertNotNil(viewModel.webViewPresentation)
+
+        // When
+        viewModel.didEncounterWebViewError(code: 404)
+
+        // Then
+        XCTAssertNil(viewModel.webViewPresentation)
+        XCTAssertEqual(mockHandler.didEncounterWebViewErrorCallCount, 1)
+    }
+
+    func test_didCancelWebView_clears_presentation_and_forwards_to_handler() {
+        // Given
+        let viewModel = makeViewModel()
+        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
+        XCTAssertNotNil(viewModel.webViewPresentation)
+
+        // When
+        viewModel.didCancelWebView()
+
+        // Then
+        XCTAssertNil(viewModel.webViewPresentation)
+        XCTAssertEqual(mockHandler.didCancelWebViewCallCount, 1)
+    }
+
     // MARK: - Helpers
 
     private func makeViewModel() -> WPComConnectionSetupViewModel {
@@ -190,8 +247,8 @@ extension WPComConnectionSetupStep.Status: Equatable {
              (.running, .running),
              (.success, .success):
             return true
-        case let (.failure(lhsReason), .failure(rhsReason)):
-            return lhsReason == rhsReason
+        case let (.failure(lhsError), .failure(rhsError)):
+            return lhsError == rhsError
         default:
             return false
         }

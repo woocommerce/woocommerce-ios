@@ -262,10 +262,10 @@ private extension JetpackSetupViewModel {
         connectionType = .web
         trackSetup()
         let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom) { [weak self] result in
+        Task { @MainActor [weak self] in
             guard let self else { return }
-            switch result {
-            case .success(let url):
+            do {
+                let url = try await self.connectionService.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom)
                 /// Checks if the fetch URL is for account connection;
                 /// if not, use the web view solution to avoid the need for cookie-nonce.
                 /// Reference: pe5sF9-1le-p2#comment-1942.
@@ -275,14 +275,13 @@ private extension JetpackSetupViewModel {
                     self.jetpackConnectionURL = self.siteConnectionURL
                 }
                 self.shouldPresentWebView = true
-            case .failure(let error):
+            } catch {
                 self.trackSetup(failure: error)
                 DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
                 self.setupError = error
                 self.setupFailed = true
             }
         }
-        stores.dispatch(action)
     }
 
     func updateErrorMessage() {

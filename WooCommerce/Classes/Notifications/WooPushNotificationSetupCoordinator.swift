@@ -23,13 +23,9 @@ final class WooPushNotificationSetupCoordinator {
                 flow: .notificationSetup,
                 navigationController: UINavigationController(),
                 completionHandler: { [weak self] credentials in
-                    // TODO: use credentials for Jetpack connection flow.
-                    // Consider reusing JetpackSetupViewModel
-                    // Also check JetpackSetupHostingController for more details on what the credentials are for.
-
                     DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
                     DispatchQueue.main.async {
-                        self?.showConnectionSetup()
+                        self?.showConnectionSetup(with: credentials)
                     }
             })
         }()
@@ -66,9 +62,8 @@ final class WooPushNotificationSetupCoordinator {
             return false
         }
 
-        // TODO: start Jetpack connection flow with the retrieved authToken.
         DDLogDebug("📱 Magic link success, now proceed with Jetpack connection")
-        showConnectionSetup()
+        showConnectionSetup(with: Credentials(authToken: authToken))
         return true
     }
 }
@@ -78,10 +73,17 @@ private extension WooPushNotificationSetupCoordinator {
         static let magicLinkUrlHostname = "magic-login"
     }
 
-    func showConnectionSetup() {
-        let storeName = stores.sessionManager.defaultSite?.name ?? stores.sessionManager.defaultSite?.url ?? ""
+    func showConnectionSetup(with credentials: Credentials? = nil) {
+        guard let site = stores.sessionManager.defaultSite else {
+            fatalError("❌ No default site found for Woo push notification setup!")
+        }
+        let storeName = site.name
         let navigationController = WooNavigationController()
-        let handler = WPComConnectionSetupHandler()
+        let handler = WPComConnectionSetupHandler(
+            siteID: site.siteID,
+            siteURL: site.url,
+            credentials: credentials
+        )
         let viewModel = WPComConnectionSetupViewModel(
             storeName: storeName,
             handler: handler,
@@ -95,7 +97,7 @@ private extension WooPushNotificationSetupCoordinator {
                 // TODO: Implement plugin update flow in follow-up PR
             }
         )
-        let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
+        let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel, credentials: credentials)
         navigationController.viewControllers = [connectionSetupController]
 
         // Dismiss current modal (login or benefits) and present connection setup

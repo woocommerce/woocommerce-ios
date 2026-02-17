@@ -206,7 +206,16 @@ final class DashboardViewModel: ObservableObject {
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
         self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
-        self.pluginVersionChecker = pluginVersionChecker
+        self.pluginVersionChecker = pluginVersionChecker ?? {
+            guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
+                return nil
+            }
+            return PluginVersionChecker(
+                siteID: site.siteID,
+                pluginPath: WooPluginRequirements.pluginPath,
+                minimumVersion: WooPluginRequirements.minimumVersion
+            )
+        }()
 
         self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
             stores: stores,
@@ -952,19 +961,9 @@ private extension DashboardViewModel {
     func checkWooPluginVersion() async {
         isWooPluginOutdated = false
         outdatedPluginVersion = ""
-        let checker: PluginVersionCheckerProtocol? = pluginVersionChecker ?? {
-            guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
-                return nil
-            }
-            return PluginVersionChecker(
-                siteID: site.siteID,
-                pluginPath: WooPluginRequirements.pluginPath,
-                minimumVersion: WooPluginRequirements.minimumVersion
-            )
-        }()
-        guard let checker else { return }
+        guard let pluginVersionChecker else { return }
         do {
-            let result = try await checker.checkCompatibility()
+            let result = try await pluginVersionChecker.checkCompatibility()
             if case .incompatible(let currentVersion, _) = result {
                 isWooPluginOutdated = true
                 outdatedPluginVersion = currentVersion

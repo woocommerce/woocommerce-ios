@@ -116,6 +116,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
                 return
             }
 
+            DDLogInfo("🔍 WOOMOB-2216 state: \(oldValue) → \(state)")
             didLeave(state: oldValue)
             didEnter(state: state)
         }
@@ -205,6 +206,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        DDLogInfo("🔍 WOOMOB-2216 viewWillAppear, state=\(state), snapshotItems=\(dataSource?.snapshot().numberOfItems ?? -1)")
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
@@ -303,6 +305,8 @@ private extension OrderListViewController {
         viewModel.snapshot.sink { [weak self] snapshot in
             guard let self = self else { return }
 
+            let isScrolling = tableView.isDragging || tableView.isDecelerating
+            DDLogInfo("🔍 WOOMOB-2216 snapshot.sink: \(snapshot.numberOfItems) items in \(snapshot.numberOfSections) sections, isScrolling=\(isScrolling), state=\(state)")
             dataSource?.apply(snapshot)
 
             transitionToResultsUpdatedState()
@@ -326,6 +330,7 @@ private extension OrderListViewController {
                 }
             }
             .store(in: &cancellables)
+
     }
 
     /// Setup: Sync'ing Coordinator
@@ -428,6 +433,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             }
         }
 
+        DDLogInfo("🔍 WOOMOB-2216 sync(page:\(pageNumber), size:\(pageSize), reason:\(reason ?? "nil"), retryTimeout:\(retryTimeout))")
         transitionToSyncingState()
         viewModel.dataLoadingError = nil
 
@@ -438,8 +444,11 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             reason: SyncReason(rawValue: reason ?? ""),
             lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, error in
                 guard let self = self else {
+                    DDLogWarn("🔍 WOOMOB-2216 sync(page:\(pageNumber)) completion: self was deallocated!")
                     return
                 }
+
+                DDLogInfo("🔍 WOOMOB-2216 sync(page:\(pageNumber)) completed in \(String(format: "%.2f", totalDuration ?? -1))s, error: \(error?.localizedDescription ?? "none")")
 
                 if let error {
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
@@ -808,16 +817,26 @@ private extension OrderListViewController {
 extension OrderListViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        DDLogInfo("🔍 WOOMOB-2216 didSelectRowAt \(indexPath), state=\(state), isScrolling=\(tableView.isDragging || tableView.isDecelerating)")
+
         if splitViewController?.isCollapsed == true {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
         guard state != .placeholder else {
+            DDLogWarn("🔍 WOOMOB-2216 ❌ Blocked by .placeholder state")
             return
         }
 
-        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
+        let objectID = dataSource?.itemIdentifier(for: indexPath)
+        if objectID == nil {
+            DDLogWarn("🔍 WOOMOB-2216 ❌ itemIdentifier(for: \(indexPath)) returned nil. dataSource is \(dataSource == nil ? "nil" : "non-nil"), snapshot has \(dataSource?.snapshot().numberOfItems ?? -1) items in \(dataSource?.snapshot().numberOfSections ?? -1) sections")
+        }
+        guard let objectID,
             let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+                if objectID != nil {
+                    DDLogWarn("🔍 WOOMOB-2216 ❌ detailsViewModel(withID:) returned nil for objectID \(objectID!)")
+                }
                 return
         }
 
@@ -826,12 +845,19 @@ extension OrderListViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
                                                                                  horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         selectedOrderID = order.orderID
+        let startTime = CFAbsoluteTimeGetCurrent()
         let allViewModels = allViewModels()
+        let allVMDuration = CFAbsoluteTimeGetCurrent() - startTime
+        DDLogInfo("🔍 WOOMOB-2216 allViewModels() took \(String(format: "%.3f", allVMDuration))s, returned \(allViewModels.count) items")
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
 
-        guard let currentIndex = currentIndex else { return }
+        guard let currentIndex = currentIndex else {
+            DDLogWarn("🔍 WOOMOB-2216 ❌ currentIndex not found for orderID \(order.orderID) in \(allViewModels.count) view models")
+            return
+        }
 
         let allowOrderNavigation = splitViewController?.isCollapsed ?? true
+        DDLogInfo("🔍 WOOMOB-2216 ✅ Navigating to order \(order.orderID) at index \(currentIndex), allowNav=\(allowOrderNavigation)")
         // There is no point of having order navigation in the order details view when we have a split screen,
         // because orders can be easily selected in the left view (orders list).
         // Passing just one order (the selected one) disables navigation

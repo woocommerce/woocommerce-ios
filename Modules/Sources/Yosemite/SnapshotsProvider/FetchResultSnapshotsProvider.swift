@@ -258,6 +258,7 @@ private extension FetchResultSnapshotsProvider {
         func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                         didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
             let snapshot = snapshot as FetchResultSnapshot
+            DDLogInfo("🔍 WOOMOB-2216 FRC didChangeContentWith: \(snapshot.numberOfItems) items in \(snapshot.numberOfSections) sections")
             snapshotsProvider?.snapshotSubject.send(snapshot)
         }
     }
@@ -346,6 +347,7 @@ private extension FetchResultSnapshotsProvider {
         var newSnapshot = currentSnapshot
         newSnapshot.reloadItems(Array(objectIDsToRefresh))
 
+        DDLogInfo("🔍 WOOMOB-2216 ObjectsDidChange: reloading \(objectIDsToRefresh.count) items in snapshot of \(newSnapshot.numberOfItems)")
         snapshotSubject.send(newSnapshot)
     }
 }

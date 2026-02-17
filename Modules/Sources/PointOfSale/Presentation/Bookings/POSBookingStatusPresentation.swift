@@ -10,7 +10,7 @@ import struct Yosemite.POSBooking
 /// For POS display, we interpret this into three independent dimensions:
 ///
 /// 1. **Booking lifecycle**: Booked / Completed / Cancelled
-///    - Only "Cancelled" is shown as a badge. Booked/Completed are automatic transitions.
+///    - Only "Canceled" is shown as a badge. Booked/Completed are automatic transitions.
 /// 2. **Payment status**: Paid / Unpaid
 ///    - Derived from the API `status` field values.
 /// 3. **Attendance status**: Unattended / Attended
@@ -211,8 +211,8 @@ private enum Localization {
     )
 
     static let cancelled = NSLocalizedString(
-        "pos.bookingLifecycleStatus.cancelled",
-        value: "Cancelled",
-        comment: "POS booking lifecycle status label for cancelled bookings."
+        "pos.bookingLifecycleStatus.cancelled.2",
+        value: "Canceled",
+        comment: "POS booking lifecycle status label for canceled bookings."
     )
 }

@@ -80,30 +80,32 @@ public final class POSBookingService: POSBookingServiceProtocol {
         }
     }
 
-    public func cancelBooking(bookingID: Int64) async throws {
-        let result = try await bookingsRemote.updateBooking(
+    @discardableResult
+    public func cancelBooking(bookingID: Int64) async throws -> BookingStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
             from: siteID,
             bookingID: bookingID,
             attendanceStatus: nil,
             bookingStatus: .cancelled,
             note: nil
-        )
-        guard result != nil else {
+        ) else {
             throw POSBookingServiceError.requestFailed
         }
+        return booking.bookingStatus
     }
 
-    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {
-        let result = try await bookingsRemote.updateBooking(
+    @discardableResult
+    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
             from: siteID,
             bookingID: bookingID,
             attendanceStatus: status,
             bookingStatus: nil,
             note: nil
-        )
-        guard result != nil else {
+        ) else {
             throw POSBookingServiceError.requestFailed
         }
+        return booking.attendanceStatus
     }
 }
 

@@ -523,9 +523,9 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 
-    func cancelBooking(bookingID: Int64) async throws {}
+    func cancelBooking(bookingID: Int64) async throws -> BookingStatus { .cancelled }
 
-    func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
+    func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus { status }
 }
 
 final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {

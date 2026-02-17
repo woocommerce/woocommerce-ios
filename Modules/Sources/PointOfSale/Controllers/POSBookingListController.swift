@@ -7,6 +7,7 @@ import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.POSBookingServiceError
 import protocol Yosemite.POSBookingServiceProtocol
 import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.BookingStatus
 
 protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
@@ -88,15 +89,17 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func cancelBooking(bookingID: Int64) async throws {
-        try await bookingService.cancelBooking(bookingID: bookingID)
-        await refreshBookings()
+        let updatedStatus = try await bookingService.cancelBooking(bookingID: bookingID)
+        if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
+            updateBooking(existing.copy(status: updatedStatus))
+        }
     }
 
     @MainActor
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {
-        try await bookingService.updateAttendanceStatus(bookingID: bookingID, status: status)
+        let updatedStatus = try await bookingService.updateAttendanceStatus(bookingID: bookingID, status: status)
         if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
-            updateBooking(existing.copy(attendanceStatus: status))
+            updateBooking(existing.copy(attendanceStatus: updatedStatus))
         }
     }
 

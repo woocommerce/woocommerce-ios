@@ -85,11 +85,11 @@ public final class POSBookingService: POSBookingServiceProtocol {
             throw POSBookingServiceError.requestFailed
         }
 
-        let orderID = booking.orderID != 0 ? booking.orderID : nil
-        let resourceID = booking.resourceID != 0 ? booking.resourceID : nil
+        let orderIDs = booking.orderID != 0 ? [booking.orderID] : []
+        let resourceIDs = booking.resourceID != 0 ? [booking.resourceID] : []
 
-        async let orderTask = orderID.map { fetchOrders(orderIDs: [$0]) } ?? [:]
-        async let resourceTask = resourceID.map { fetchResources(resourceIDs: [$0]) } ?? [:]
+        async let orderTask = fetchOrders(orderIDs: orderIDs)
+        async let resourceTask = fetchResources(resourceIDs: resourceIDs)
         let (orders, resources) = await (orderTask, resourceTask)
 
         let order = orders[booking.orderID]

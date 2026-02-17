@@ -16,7 +16,6 @@ struct POSBookingDetailView: View {
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
 
-
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
     }
@@ -83,7 +82,7 @@ struct POSBookingDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.large) {
                     bookingDetailsSection
-                    attendanceSection
+                    POSBookingAttendanceSectionView(booking: booking)
                     customerSection
                     paymentBreakdownSection
                     bookingNoteSection
@@ -268,32 +267,6 @@ struct POSBookingDetailView: View {
         }
     }
 
-    // MARK: - Attendance Status
-
-    @ViewBuilder
-    private var attendanceSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
-            sectionTitleWithAction(title: Localization.attendanceStatusTitle) {
-                HStack(spacing: POSSpacing.small) {
-                    attendanceButton(Localization.attendedPill,
-                                     isSelected: booking.attendanceDisplay == .attended) {
-                        // TODO: Implement mark attended action
-                    }
-                    attendanceButton(Localization.unattendedPill,
-                                     isSelected: booking.attendanceDisplay == .unattended) {
-                        // TODO: Implement mark unattended action
-                    }
-                }
-            }
-            .sectionCard()
-
-            Text(Localization.attendanceSubtitle)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-                .padding(.horizontal, POSPadding.xSmall)
-        }
-    }
-
     // MARK: - Payment Breakdown
 
     private var paymentBreakdownSection: some View {
@@ -366,19 +339,6 @@ struct POSBookingDetailView: View {
     }
 
     @ViewBuilder
-    private func attendanceButton(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        if isSelected {
-            Button(title, action: action)
-                .buttonStyle(POSFilledAttendanceButtonStyle())
-                .accessibilityAddTraits(.isSelected)
-        } else {
-            Button(title, action: action)
-                .buttonStyle(POSOutlinedButtonStyle(size: .compact))
-                .accessibilityRemoveTraits(.isSelected)
-        }
-    }
-
-    @ViewBuilder
     private func detailRow(label: String, value: String) -> some View {
         HStack {
             Text(label)
@@ -410,22 +370,6 @@ struct POSBookingSectionCardModifier: ViewModifier {
 extension View {
     func sectionCard() -> some View {
         modifier(POSBookingSectionCardModifier())
-    }
-}
-
-// MARK: - Attendance Button Style
-
-private struct POSFilledAttendanceButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.posBodySmallBold())
-            .padding(.vertical, POSPadding.small)
-            .padding(.horizontal, POSPadding.medium)
-            .foregroundStyle(Color.posOnInverseSurface)
-            .background(Color.posInverseSurface)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            .opacity(configuration.isPressed ? 0.7 : 1.0)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }
 }
 
@@ -499,30 +443,6 @@ private enum Localization {
         comment: "Subtitle text below the booking note section explaining the note is private."
     )
 
-    static let attendanceStatusTitle = NSLocalizedString(
-        "pos.bookingDetailView.attendanceStatusTitle",
-        value: "Attendance status",
-        comment: "Section title for the attendance status in booking details."
-    )
-
-    static let attendedPill = NSLocalizedString(
-        "pos.bookingDetailView.attendedPill",
-        value: "Attended",
-        comment: "Label for the attended pill button in booking attendance section."
-    )
-
-    static let unattendedPill = NSLocalizedString(
-        "pos.bookingDetailView.unattendedPill",
-        value: "Unattended",
-        comment: "Label for the unattended pill button in booking attendance section."
-    )
-
-    static let attendanceSubtitle = NSLocalizedString(
-        "pos.bookingDetailView.attendanceSubtitle",
-        value: "Mark attendance to keep your reports accurate and spot booking trends.",
-        comment: "Subtitle text below the attendance section explaining why marking attendance matters."
-    )
-
     static let paymentTitle = NSLocalizedString(
         "pos.bookingDetailView.paymentTitle",
         value: "Payment",
@@ -590,6 +510,7 @@ private enum Localization {
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
     )
+
 }
 
 // MARK: - Previews

@@ -157,6 +157,41 @@ final class POSBookingListControllerTests {
         #expect(sut.bookingsViewState == .loaded(initialBookings, hasMoreItems: true))
     }
 
+    // MARK: - updateAttendanceStatus
+
+    @Test func test_updateAttendanceStatus_calls_service_and_refreshes_bookings() async throws {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+
+        // When
+        try await sut.updateAttendanceStatus(bookingID: 1, status: .attended)
+
+        // Then
+        #expect(mockService.updateAttendanceCallCount == 1)
+        #expect(mockService.lastUpdatedAttendanceBookingID == 1)
+        #expect(mockService.lastUpdatedAttendanceStatus == .attended)
+        // Verify bookings were refreshed (loadBookings was called)
+        #expect(sut.bookingsViewState == .loaded(bookings, hasMoreItems: false))
+    }
+
+    @Test func test_updateAttendanceStatus_when_service_throws_then_throws_error() async {
+        // Given
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+        mockService.updateAttendanceError = NSError(domain: "test", code: 1)
+
+        // When/Then
+        do {
+            try await sut.updateAttendanceStatus(bookingID: 1, status: .attended)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            #expect(mockService.updateAttendanceCallCount == 1)
+        }
+    }
+
     // MARK: - Caching
 
     @Test func test_loadBookings_uses_cached_data_on_reload() async {

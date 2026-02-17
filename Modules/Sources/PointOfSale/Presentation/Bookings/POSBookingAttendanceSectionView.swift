@@ -7,7 +7,7 @@ struct POSBookingAttendanceSectionView: View {
 
     @Environment(POSBookingsModel.self) private var bookingsModel
 
-    @State private var isUpdatingAttendance = false
+    @State private var optimisticAttendanceStatus: BookingAttendanceStatus?
     @State private var attendanceUpdateError = false
 
     var body: some View {
@@ -19,6 +19,14 @@ struct POSBookingAttendanceSectionView: View {
         }
     }
 
+    private var isUpdatingAttendance: Bool {
+        optimisticAttendanceStatus != nil
+    }
+
+    private var displayedAttendance: POSBookingAttendanceDisplay {
+        POSBookingAttendanceDisplay(attendanceStatus: optimisticAttendanceStatus ?? booking.attendanceStatus)
+    }
+
     @ViewBuilder
     private var sectionContent: some View {
         HStack(alignment: .top) {
@@ -27,21 +35,18 @@ struct POSBookingAttendanceSectionView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
             Spacer()
-            if isUpdatingAttendance {
-                ProgressView()
-                    .frame(maxHeight: .infinity, alignment: .center)
-            } else {
-                HStack(spacing: POSSpacing.small) {
-                    attendanceButton(Localization.attendedPill,
-                                     isSelected: booking.attendanceDisplay == .attended) {
-                        performAttendanceUpdate(targetStatus: .attended)
-                    }
-                    attendanceButton(Localization.unattendedPill,
-                                     isSelected: booking.attendanceDisplay == .unattended) {
-                        performAttendanceUpdate(targetStatus: .unattended)
-                    }
+            HStack(spacing: POSSpacing.small) {
+                attendanceButton(Localization.attendedPill,
+                                 isSelected: displayedAttendance == .attended) {
+                    performAttendanceUpdate(targetStatus: .attended)
+                }
+                attendanceButton(Localization.unattendedPill,
+                                 isSelected: displayedAttendance == .unattended) {
+                    performAttendanceUpdate(targetStatus: .unattended)
                 }
             }
+            .disabled(isUpdatingAttendance)
+            .shimmering(active: isUpdatingAttendance)
         }
     }
 
@@ -62,8 +67,8 @@ struct POSBookingAttendanceSectionView: View {
 
     private func performAttendanceUpdate(targetStatus: BookingAttendanceStatus) {
         guard targetStatus != booking.attendanceStatus else { return }
+        optimisticAttendanceStatus = targetStatus
         attendanceUpdateError = false
-        isUpdatingAttendance = true
         Task { @MainActor in
             do {
                 try await bookingsModel.bookingsController.updateAttendanceStatus(
@@ -73,7 +78,7 @@ struct POSBookingAttendanceSectionView: View {
             } catch {
                 attendanceUpdateError = true
             }
-            isUpdatingAttendance = false
+            optimisticAttendanceStatus = nil
         }
     }
 

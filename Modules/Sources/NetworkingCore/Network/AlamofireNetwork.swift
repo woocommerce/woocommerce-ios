@@ -94,7 +94,16 @@ public class AlamofireNetwork: Network {
         if let sessionManager {
             self.alamofireSession = sessionManager
         } else {
-            self.alamofireSession = Alamofire.Session(configuration: .default, interceptor: requestAuthenticator)
+            // The uploadStreamProvider event monitor tracks which upload data
+            // belongs to each URLSessionTask so the delegate can provide it
+            // when needNewBodyStream is called.
+            let delegate = SafeUploadSessionDelegate()
+            self.alamofireSession = Alamofire.Session(
+                configuration: .default,
+                delegate: delegate,
+                interceptor: requestAuthenticator,
+                eventMonitors: [delegate.uploadStreamProvider]
+            )
         }
 
         let authenticationMode: RequestAuthenticationMode? = {

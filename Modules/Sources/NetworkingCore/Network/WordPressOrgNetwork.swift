@@ -170,7 +170,16 @@ private extension WordPressOrgNetwork {
 
         sessionConfiguration.httpAdditionalHeaders = additionalHeaders
 
-        return Alamofire.Session(configuration: sessionConfiguration, interceptor: authenticator)
+        // The uploadStreamProvider event monitor tracks which upload data
+        // belongs to each URLSessionTask so the delegate can provide it
+        // when needNewBodyStream is called.
+        let delegate = SafeUploadSessionDelegate()
+        return Alamofire.Session(
+            configuration: sessionConfiguration,
+            delegate: delegate,
+            interceptor: authenticator,
+            eventMonitors: [delegate.uploadStreamProvider]
+        )
     }
 
     /// Validates whether the REST API request failed with an invalid cookie nonce.

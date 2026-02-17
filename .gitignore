@@ -105,3 +105,6 @@ Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 
 # Periphery install
 vendor/Periphery/
+
+# AI Agents
+.claude/settings.local.json

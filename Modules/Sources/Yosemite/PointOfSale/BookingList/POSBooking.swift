@@ -1,4 +1,5 @@
 import Foundation
+import Codegen
 import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
 

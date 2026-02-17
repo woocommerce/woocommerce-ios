@@ -523,7 +523,7 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 
-    func fetchBooking(bookingID: Int64) async throws -> POSBooking { throw POSBookingServiceError.requestFailed }
+    func fetchBooking(bookingID: Int64) async throws -> POSBooking { throw NSError(domain: "Preview", code: 0) }
 
     func cancelBooking(bookingID: Int64) async throws -> BookingStatus { .cancelled }
 

@@ -66,16 +66,26 @@ public class DevicesRemote: Remote {
     /// - Parameters:
     ///     - siteID: ID of the site
     ///     - device: APNS Device to be registered.
-    ///     - applicationId: App ID.
+    ///     - applicationID: App ID.
+    ///     - deviceLocale: Device locale in `xx_XX` format (e.g. `en_US`).
+    ///     - appVersion: App version string (e.g. `1.0.0`).
     /// - Returns: The unique ID of the push token record
     ///
     public func registerForSelfDrivenPushNotifications(siteID: Int64,
                                                        device: APNSDevice,
-                                                       applicationID: String) async throws -> Int64 {
-        var parameters = [
+                                                       applicationID: String,
+                                                       deviceLocale: String,
+                                                       appVersion: String) async throws -> Int64 {
+        var parameters: [String: Any] = [
             ParameterKeys.origin: applicationID,
             ParameterKeys.token: device.token,
-            ParameterKeys.platform: Values.platform
+            ParameterKeys.platform: Values.platform,
+            ParameterKeys.deviceLocale: deviceLocale,
+            ParameterKeys.metadata: [
+                ParameterKeys.applicationVersion: appVersion,
+                ParameterKeys.deviceModel: device.model,
+                ParameterKeys.deviceOSVersion: device.iOSVersion
+            ]
         ]
 
         if let deviceUUID = device.identifierForVendor {
@@ -136,5 +146,7 @@ private extension DevicesRemote {
         static let token = "token"
         static let platform = "platform"
         static let origin = "origin"
+        static let deviceLocale = "device_locale"
+        static let metadata = "metadata"
     }
 }

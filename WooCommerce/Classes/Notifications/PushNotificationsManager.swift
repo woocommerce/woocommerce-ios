@@ -710,7 +710,9 @@ private extension PushNotificationsManager {
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
             siteID: siteID,
             device: device,
-            applicationID: WooConstants.pushApplicationID
+            applicationID: WooConstants.pushApplicationID,
+            deviceLocale: Self.formattedDeviceLocale(),
+            appVersion: Bundle.main.version
         ) { [weak self] result in
             guard let self = self else { return }
 
@@ -780,6 +782,18 @@ private extension PushNotificationsManager {
                 analytics.track(.wpcomDeviceDisablePushNotificationsError, withError: error)
             }
         }))
+    }
+
+    /// Returns the device locale in `xx_XX` format (e.g. `en_US`).
+    /// Falls back to `Locale.current.identifier` if language or region components are unavailable.
+    ///
+    static func formattedDeviceLocale() -> String {
+        let locale = Locale.current
+        guard let languageCode = locale.language.languageCode?.identifier,
+              let regionCode = locale.region?.identifier else {
+            return locale.identifier
+        }
+        return "\(languageCode)_\(regionCode)"
     }
 
     func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {

@@ -2142,7 +2142,6 @@
 		D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderPaymentDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderPaymentDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8C11A6122E24C4A00D4A88D /* LedgerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LedgerTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/LedgerTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
-		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 		DA24152A2D116EA90008F69A /* WooShippingAddPackageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddPackageViewModelTests.swift; sourceTree = "<group>"; };
 		DA25ADDE2C87403900AE81FE /* PushNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationTests.swift; sourceTree = "<group>"; };
 		DA3F99B92C92F6D30034BDA5 /* MarkOrderAsReadUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkOrderAsReadUseCaseTests.swift; sourceTree = "<group>"; };
@@ -2608,6 +2607,7 @@
 		3FA611E72F306A0D00F48C4E /* WooCommerceUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA611F82F306A0D00F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceUITests; sourceTree = "<group>"; };
 		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
+		3FDA4E362F440D3900CC3259 /* docs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = docs; path = ../docs; sourceTree = "<group>"; };
 		3FECBD452F341ACA000990D8 /* AgeGate */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AgeGate; sourceTree = "<group>"; };
 		3FECBD4A2F341ACE000990D8 /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
 		3FECBD4E2F341AD9000990D8 /* GoogleAds */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GoogleAds; sourceTree = "<group>"; };
@@ -4275,7 +4275,7 @@
 			isa = PBXGroup;
 			children = (
 				3F3689E22DCB1B470065B48F /* Modules */,
-				D8FBFF1622D4CC2F006E3336 /* docs */,
+				3FDA4E362F440D3900CC3259 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,

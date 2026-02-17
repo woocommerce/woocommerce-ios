@@ -80,6 +80,29 @@ public final class POSBookingService: POSBookingServiceProtocol {
         }
     }
 
+    public func fetchBooking(bookingID: Int64) async throws -> POSBooking {
+        guard let booking = try await bookingsRemote.loadBooking(bookingID: bookingID, siteID: siteID) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        let orderID = booking.orderID != 0 ? booking.orderID : nil
+        let resourceID = booking.resourceID != 0 ? booking.resourceID : nil
+
+        async let orderTask = orderID.map { fetchOrders(orderIDs: [$0]) } ?? [:]
+        async let resourceTask = resourceID.map { fetchResources(resourceIDs: [$0]) } ?? [:]
+        let (orders, resources) = await (orderTask, resourceTask)
+
+        let order = orders[booking.orderID]
+        let orderInfo: BookingOrderInfo? = order.map { BookingOrderInfo(booking: booking, order: $0) }
+        let resource = resources[booking.resourceID]
+
+        guard let posOrder = order.flatMap({ try? orderMapper.map(order: $0) }) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
+    }
+
     @discardableResult
     public func cancelBooking(bookingID: Int64) async throws -> BookingStatus {
         guard let booking = try await bookingsRemote.updateBooking(

@@ -18,6 +18,7 @@ protocol POSBookingListControllerProtocol {
     func selectBooking(_ booking: POSBooking?)
     func cancelBooking(bookingID: Int64) async throws
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws
+    func updateBooking(bookingID: Int64) async throws
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -101,6 +102,12 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
             updateBooking(existing.copy(attendanceStatus: updatedStatus))
         }
+    }
+
+    @MainActor
+    func updateBooking(bookingID: Int64) async throws {
+        let updatedBooking = try await bookingService.fetchBooking(bookingID: bookingID)
+        updateBooking(updatedBooking)
     }
 
     @MainActor

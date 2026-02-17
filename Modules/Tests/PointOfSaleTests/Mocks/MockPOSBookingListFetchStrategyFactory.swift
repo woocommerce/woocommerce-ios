@@ -32,8 +32,17 @@ final class MockPOSBookingService: POSBookingServiceProtocol {
     var lastUpdatedAttendanceBookingID: Int64?
     var lastUpdatedAttendanceStatus: BookingAttendanceStatus?
 
+    var fetchBookingResult: Result<POSBooking, Error>?
+
     func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
         try fetchBookingsResult.get()
+    }
+
+    func fetchBooking(bookingID: Int64) async throws -> POSBooking {
+        guard let result = fetchBookingResult else {
+            throw NSError(domain: "MockPOSBookingService", code: 0)
+        }
+        return try result.get()
     }
 
     var cancelBookingStatusResult: BookingStatus = .cancelled

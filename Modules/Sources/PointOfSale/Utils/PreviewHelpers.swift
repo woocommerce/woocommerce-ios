@@ -523,6 +523,8 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 
+    func fetchBooking(bookingID: Int64) async throws -> POSBooking { throw POSBookingServiceError.requestFailed }
+
     func cancelBooking(bookingID: Int64) async throws -> BookingStatus { .cancelled }
 
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus { status }
@@ -715,6 +717,7 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func selectBooking(_ booking: POSBooking?) { }
     func cancelBooking(bookingID: Int64) async throws {}
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
+    func updateBooking(bookingID: Int64) async throws {}
     func searchBookings(searchTerm: String) async {}
     func clearSearchBookings() {}
 }

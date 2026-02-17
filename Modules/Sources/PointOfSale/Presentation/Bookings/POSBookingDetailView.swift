@@ -45,7 +45,7 @@ struct POSBookingDetailView: View {
                             autoStartRefund: true,
                             onRefundSuccess: {
                                 Task {
-                                    await bookingsModel.bookingsController.refreshBookings()
+                                    try? await bookingsModel.bookingsController.updateBooking(bookingID: booking.id)
                                 }
                             }
                         )
@@ -290,7 +290,7 @@ struct POSBookingDetailView: View {
         showPaymentView = false
         paymentModel = nil
         Task { @MainActor in
-            await bookingsModel.bookingsController.refreshBookings()
+            try? await bookingsModel.bookingsController.updateBooking(bookingID: booking.id)
         }
     }
 

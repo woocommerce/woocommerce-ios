@@ -98,9 +98,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         handler.start()
     }
 
-    func setPluginOutdatedState() {
+    func setPluginOutdatedState(version: String) {
         stepDidUpdate(.connect, status: .success)
-        stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "")))
+        stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: version)))
     }
 
     func primaryButtonTapped() {

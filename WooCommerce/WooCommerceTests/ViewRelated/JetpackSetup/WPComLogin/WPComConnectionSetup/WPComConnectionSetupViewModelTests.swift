@@ -232,11 +232,11 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        viewModel.setPluginOutdatedState()
+        viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // Then
         XCTAssertEqual(viewModel.steps[0].status, .success)
-        XCTAssertEqual(viewModel.steps[1].status, .failure(error: .outdatedPlugin(version: "")))
+        XCTAssertEqual(viewModel.steps[1].status, .failure(error: .outdatedPlugin(version: "10.4.0")))
         XCTAssertEqual(viewModel.steps[2].status, .notStarted)
     }
 
@@ -245,7 +245,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        viewModel.setPluginOutdatedState()
+        viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Update plugin")
@@ -257,7 +257,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     func test_onAppear_does_not_call_handler_start_after_setPluginOutdatedState() {
         // Given
         let viewModel = makeViewModel()
-        viewModel.setPluginOutdatedState()
+        viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // When
         viewModel.onAppear()

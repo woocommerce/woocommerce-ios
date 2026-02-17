@@ -78,6 +78,7 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var shouldSuggestWPComConnection = false
 
     @Published private(set) var isWooPluginOutdated = false
+    private(set) var outdatedPluginVersion: String = ""
 
     @Published private(set) var dismissedWPComConnectionSuggestion = false
 
@@ -950,6 +951,7 @@ private extension DashboardViewModel {
     @MainActor
     func checkWooPluginVersion() async {
         isWooPluginOutdated = false
+        outdatedPluginVersion = ""
         let checker: PluginVersionCheckerProtocol? = pluginVersionChecker ?? {
             guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
                 return nil
@@ -963,8 +965,9 @@ private extension DashboardViewModel {
         guard let checker else { return }
         do {
             let result = try await checker.checkCompatibility()
-            if case .incompatible = result {
+            if case .incompatible(let currentVersion, _) = result {
                 isWooPluginOutdated = true
+                outdatedPluginVersion = currentVersion
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")

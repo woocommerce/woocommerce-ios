@@ -10,6 +10,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     let variant: Variant
+    let pluginVersion: String
 
     private let analytics: Analytics
     private let onDismiss: () -> Void
@@ -17,9 +18,11 @@ final class WPComPushNotificationsBenefitsViewModel {
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
     init(variant: Variant = .connect,
+         pluginVersion: String = "",
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
         self.variant = variant
+        self.pluginVersion = pluginVersion
         self.analytics = analytics
         self.onDismiss = onDismiss
     }
@@ -38,7 +41,7 @@ final class WPComPushNotificationsBenefitsViewModel {
         case .connect:
             pushNotificationSetupCoordinator?.start()
         case .pluginUpdate:
-            pushNotificationSetupCoordinator?.showPluginUpdateSetup()
+            pushNotificationSetupCoordinator?.showPluginUpdateSetup(pluginVersion: pluginVersion)
         }
     }
 

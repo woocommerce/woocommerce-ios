@@ -49,8 +49,8 @@ final class WooPushNotificationSetupCoordinator {
         }
     }
 
-    func showPluginUpdateSetup() {
-        let navigationController = makeConnectionSetupStack(credentials: nil, pluginOutdated: true)
+    func showPluginUpdateSetup(pluginVersion: String = "") {
+        let navigationController = makeConnectionSetupStack(credentials: nil, pluginOutdatedVersion: pluginVersion)
 
         if let presenter = rootViewController.presentingViewController {
             rootViewController.dismiss(animated: true) {
@@ -90,7 +90,7 @@ private extension WooPushNotificationSetupCoordinator {
 
     /// Creates the connection setup navigation stack with a handler, view model, and hosting controller.
     func makeConnectionSetupStack(credentials: Credentials? = nil,
-                                  pluginOutdated: Bool = false) -> WooNavigationController {
+                                  pluginOutdatedVersion: String? = nil) -> WooNavigationController {
         guard let site = stores.sessionManager.defaultSite else {
             fatalError("❌ No default site found for Woo push notification setup!")
         }
@@ -114,8 +114,8 @@ private extension WooPushNotificationSetupCoordinator {
                 // TODO: Implement plugin update flow in follow-up PR
             }
         )
-        if pluginOutdated {
-            viewModel.setPluginOutdatedState()
+        if let pluginOutdatedVersion {
+            viewModel.setPluginOutdatedState(version: pluginOutdatedVersion)
         }
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel, credentials: credentials)
         navigationController.viewControllers = [connectionSetupController]

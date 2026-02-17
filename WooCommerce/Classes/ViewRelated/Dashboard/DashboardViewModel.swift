@@ -949,6 +949,7 @@ private extension DashboardViewModel {
 
     @MainActor
     func checkWooPluginVersion() async {
+        isWooPluginOutdated = false
         let checker: PluginVersionCheckerProtocol? = pluginVersionChecker ?? {
             guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
                 return nil

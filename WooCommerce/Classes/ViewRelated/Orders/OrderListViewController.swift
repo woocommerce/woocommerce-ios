@@ -124,6 +124,21 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    // MARK: - WOOMOB-2216 Diagnostic Properties
+
+    /// Heartbeat timer that periodically logs UI state during the freeze.
+    private var diagnosticHeartbeatTimer: Timer?
+
+    /// Main thread watchdog — detects if the main thread is blocked.
+    private var diagnosticWatchdogTimer: Timer?
+    private var diagnosticLastWatchdogFire = CFAbsoluteTimeGetCurrent()
+
+    /// Tracks the number of pending (incomplete) dataSource.apply() calls.
+    private var diagnosticPendingApplyCount = 0
+
+    /// Tracks whether a snapshot apply is in flight (completion not yet called).
+    private var diagnosticApplyInFlight = false
+
     private let siteID: Int64
 
     /// Current top banner that is displayed.
@@ -174,6 +189,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         cancellables.forEach {
             $0.cancel()
         }
+        diagnosticHeartbeatTimer?.invalidate()
+        diagnosticWatchdogTimer?.invalidate()
     }
 
     override func viewDidLoad() {
@@ -187,6 +204,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
+        configureDiagnosticLogging()
     }
 
     private func createDataSource() {
@@ -261,6 +279,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
+            let cellStart = CFAbsoluteTimeGetCurrent()
             let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
             guard let self = self else {
                 return cell
@@ -270,6 +289,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
             cell.configureCell(viewModel: cellViewModel)
             cell.layoutIfNeeded()
+            let cellDuration = CFAbsoluteTimeGetCurrent() - cellStart
+            if cellDuration > 0.05 {
+                DDLogWarn("🔍 WOOMOB-2216 ⚠️ slow cellProvider: \(String(format: "%.3f", cellDuration))s at \(indexPath)")
+            }
             return cell
         }
     }
@@ -306,8 +329,19 @@ private extension OrderListViewController {
             guard let self = self else { return }
 
             let isScrolling = tableView.isDragging || tableView.isDecelerating
-            DDLogInfo("🔍 WOOMOB-2216 snapshot.sink: \(snapshot.numberOfItems) items in \(snapshot.numberOfSections) sections, isScrolling=\(isScrolling), state=\(state)")
-            dataSource?.apply(snapshot)
+            self.diagnosticPendingApplyCount += 1
+            self.diagnosticApplyInFlight = true
+            DDLogInfo("🔍 WOOMOB-2216 snapshot.sink: \(snapshot.numberOfItems) items in \(snapshot.numberOfSections) sections, isScrolling=\(isScrolling), state=\(state), pendingApplies=\(self.diagnosticPendingApplyCount)")
+            let applyStart = CFAbsoluteTimeGetCurrent()
+            dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
+                guard let self else { return }
+                let applyDuration = CFAbsoluteTimeGetCurrent() - applyStart
+                self.diagnosticPendingApplyCount -= 1
+                self.diagnosticApplyInFlight = self.diagnosticPendingApplyCount > 0
+                if applyDuration > 0.1 {
+                    DDLogInfo("🔍 WOOMOB-2216 apply() completed in \(String(format: "%.3f", applyDuration))s, pendingApplies=\(self.diagnosticPendingApplyCount)")
+                }
+            }
 
             transitionToResultsUpdatedState()
 
@@ -337,6 +371,55 @@ private extension OrderListViewController {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
+    }
+
+    // MARK: - WOOMOB-2216 Diagnostic Logging Setup
+
+    /// Sets up diagnostic tools: heartbeat, main thread watchdog, and passive touch logging.
+    func configureDiagnosticLogging() {
+        // Heartbeat: every 5s, dump UI state. Captures state during freeze when no events fire.
+        diagnosticHeartbeatTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            let snapshot = dataSource?.snapshot()
+            DDLogInfo("🔍 WOOMOB-2216 ♥️ heartbeat: state=\(state)"
+                      + ", items=\(snapshot?.numberOfItems ?? -1)"
+                      + ", sections=\(snapshot?.numberOfSections ?? -1)"
+                      + ", allowsSelection=\(tableView.allowsSelection)"
+                      + ", isUserInteractionEnabled=\(tableView.isUserInteractionEnabled)"
+                      + ", isGhost=\(tableView.isDisplayingGhostContent)"
+                      + ", isScrolling=\(tableView.isDragging || tableView.isDecelerating)"
+                      + ", applyInFlight=\(diagnosticApplyInFlight)"
+                      + ", pendingApplies=\(diagnosticPendingApplyCount)")
+        }
+
+        // Main thread watchdog: fires every 1s. If it fires late, main thread was blocked.
+        diagnosticLastWatchdogFire = CFAbsoluteTimeGetCurrent()
+        diagnosticWatchdogTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            let now = CFAbsoluteTimeGetCurrent()
+            let elapsed = now - diagnosticLastWatchdogFire
+            diagnosticLastWatchdogFire = now
+            // Only log if the main thread was blocked for >1.5s (expected ~1.0s interval)
+            if elapsed > 1.5 {
+                DDLogWarn("🔍 WOOMOB-2216 ⚠️ main thread blocked for \(String(format: "%.2f", elapsed - 1.0))s (watchdog interval: \(String(format: "%.2f", elapsed))s)")
+            }
+        }
+
+        // Passive touch detection: logs ALL taps on the table view, even if UITableView doesn't
+        // process them (e.g., during batch updates or when selection is disabled).
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(diagnosticTapDetected(_:)))
+        tapGesture.cancelsTouchesInView = false
+        tapGesture.delaysTouchesEnded = false
+        tableView.addGestureRecognizer(tapGesture)
+    }
+
+    @objc private func diagnosticTapDetected(_ gesture: UITapGestureRecognizer) {
+        let point = gesture.location(in: tableView)
+        let indexPath = tableView.indexPathForRow(at: point)
+        DDLogInfo("🔍 WOOMOB-2216 👆 tap detected at \(point), indexPath=\(indexPath?.description ?? "nil")"
+                  + ", allowsSelection=\(tableView.allowsSelection)"
+                  + ", isGhost=\(tableView.isDisplayingGhostContent)"
+                  + ", state=\(state)")
     }
 
     /// Setup: TableView
@@ -816,6 +899,11 @@ private extension OrderListViewController {
 //
 extension OrderListViewController: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        DDLogInfo("🔍 WOOMOB-2216 willSelectRowAt \(indexPath)")
+        return indexPath
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         DDLogInfo("🔍 WOOMOB-2216 didSelectRowAt \(indexPath), state=\(state), isScrolling=\(tableView.isDragging || tableView.isDecelerating)")
 
@@ -889,6 +977,18 @@ extension OrderListViewController: UITableViewDelegate {
         header.rightText = nil
 
         return header
+    }
+
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        DDLogInfo("🔍 WOOMOB-2216 scrollViewWillBeginDragging")
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        DDLogInfo("🔍 WOOMOB-2216 scrollViewDidEndDragging, willDecelerate=\(decelerate)")
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        DDLogInfo("🔍 WOOMOB-2216 scrollViewDidEndDecelerating")
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

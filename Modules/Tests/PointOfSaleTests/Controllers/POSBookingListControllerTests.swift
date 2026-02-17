@@ -159,7 +159,7 @@ final class POSBookingListControllerTests {
 
     // MARK: - updateAttendanceStatus
 
-    @Test func test_updateAttendanceStatus_calls_service_and_refreshes_bookings() async throws {
+    @Test func test_updateAttendanceStatus_calls_service_and_updates_booking_in_place() async throws {
         // Given
         let bookings = [makeBooking(id: 1)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
@@ -174,8 +174,7 @@ final class POSBookingListControllerTests {
         #expect(mockService.updateAttendanceCallCount == 1)
         #expect(mockService.lastUpdatedAttendanceBookingID == 1)
         #expect(mockService.lastUpdatedAttendanceStatus == .attended)
-        // Verify bookings were refreshed (loadBookings was called)
-        #expect(sut.bookingsViewState == .loaded(bookings, hasMoreItems: false))
+        #expect(sut.bookingsViewState.bookings.first?.attendanceStatus == .attended)
     }
 
     @Test func test_updateAttendanceStatus_when_service_throws_then_throws_error() async {

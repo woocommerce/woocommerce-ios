@@ -95,7 +95,9 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {
         try await bookingService.updateAttendanceStatus(bookingID: bookingID, status: status)
-        await refreshBookings()
+        if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
+            updateBooking(existing.copy(attendanceStatus: status))
+        }
     }
 
     @MainActor
@@ -193,5 +195,19 @@ private extension POSBookingListController {
         }
 
         bookingsViewState = .loading(cachedBookings)
+    }
+
+    @MainActor
+    func updateBooking(_ updatedBooking: POSBooking) {
+        let updatedBookings = bookingsViewState.bookings.map { booking in
+            booking.id == updatedBooking.id ? updatedBooking : booking
+        }
+        bookingsViewState = bookingsViewState.updatingBookings(with: updatedBookings)
+        cachedBookings = cachedBookings.map { booking in
+            booking.id == updatedBooking.id ? updatedBooking : booking
+        }
+        if selectedBooking?.id == updatedBooking.id {
+            selectedBooking = updatedBooking
+        }
     }
 }

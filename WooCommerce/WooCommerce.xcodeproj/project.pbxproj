@@ -897,10 +897,8 @@
 		D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */; };
 		D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */; };
 		D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */; };
-		D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */; };
 		D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136CC231E15B700DD0539 /* MockReviews.swift */; };
 		D85136D5231E40B500DD0539 /* ProductReviewTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136D4231E40B500DD0539 /* ProductReviewTableViewCellTests.swift */; };
-		D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
 		D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */; };
 		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
@@ -2119,10 +2117,8 @@
 		D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndEditableValueTableViewCell.xib; sourceTree = "<group>"; };
 		D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewModel.swift; sourceTree = "<group>"; };
 		D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewModel.swift; sourceTree = "<group>"; };
-		D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewViewModelTests.swift; path = WooCommerceTests/Reviews/ReviewViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D85136CC231E15B700DD0539 /* MockReviews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockReviews.swift; sourceTree = "<group>"; };
 		D85136D4231E40B500DD0539 /* ProductReviewTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProductReviewTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/ProductReviewTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
-		D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewsViewModelTests.swift; path = WooCommerceTests/Reviews/ReviewsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
 		D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusListTableViewCell.xib; sourceTree = "<group>"; };
 		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
@@ -2608,6 +2604,7 @@
 		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
 		3FDA4E362F440D3900CC3259 /* docs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = docs; path = ../docs; sourceTree = "<group>"; };
+		3FDA4E3B2F44107400CC3259 /* Reviews */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Reviews; sourceTree = "<group>"; };
 		3FECBD452F341ACA000990D8 /* AgeGate */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = AgeGate; sourceTree = "<group>"; };
 		3FECBD4A2F341ACE000990D8 /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
 		3FECBD4E2F341AD9000990D8 /* GoogleAds */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GoogleAds; sourceTree = "<group>"; };
@@ -4174,7 +4171,6 @@
 				D85136D4231E40B500DD0539 /* ProductReviewTableViewCellTests.swift */,
 				B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */,
 				D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */,
-				D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */,
 				D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */,
 				45F5A3C223DF31D2007D40E5 /* ShippingInputFormatterTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
@@ -4339,7 +4335,7 @@
 				746791642108D853007CF1DC /* Mocks */,
 				B5F571AC21BEF03C0010D1B8 /* Model */,
 				B5718D6321B56B3F0026C9F0 /* Notifications */,
-				D85136C7231E128500DD0539 /* Reviews */,
+				3FDA4E3B2F44107400CC3259 /* Reviews */,
 				3FECBDF02F341B77000990D8 /* System */,
 				B53A569521123D27000776C9 /* Tools */,
 				3FECBDFB2F341B80000990D8 /* Yosemite */,
@@ -5053,14 +5049,6 @@
 			path = ViewRelated;
 			sourceTree = "<group>";
 		};
-		D85136C7231E128500DD0539 /* Reviews */ = {
-			isa = PBXGroup;
-			children = (
-				D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */,
-			);
-			path = Reviews;
-			sourceTree = "<group>";
-		};
 		DABF35242C11B40C006AF826 /* POS */ = {
 			isa = PBXGroup;
 			children = (
@@ -5661,6 +5649,7 @@
 				B56DB3DF2049BFAA00D4AA8E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				3FDA4E3B2F44107400CC3259 /* Reviews */,
 				3FECBD452F341ACA000990D8 /* AgeGate */,
 				3FECBD4A2F341ACE000990D8 /* Analytics */,
 				3FECBD4E2F341AD9000990D8 /* GoogleAds */,
@@ -6833,7 +6822,6 @@
 				EEB4E2D329B2047700371C3C /* StoreOnboardingViewHostingControllerTests.swift in Sources */,
 				DE1152822F3C8EC30058F51B /* WooPushNotificationEligibilityCheckTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
-				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,
 				024EB5812B21A981009BC2D9 /* ProductWithQuantityStepperViewModelTests.swift in Sources */,
 				57C5FF7C25091DE50074EC26 /* OrderListSyncActionUseCaseTests.swift in Sources */,
 				B6440FB9292E74230012D506 /* AnalyticsHubTimeRangeSelectionTests.swift in Sources */,
@@ -7105,7 +7093,6 @@
 				EE3272A429A88F750015F8D0 /* StoreOnboardingViewModelTests.swift in Sources */,
 				262A2C2B2537A3330086C1BE /* MockRefunds.swift in Sources */,
 				027F240C258371150021DB06 /* RefundShippingLabelViewModelTests.swift in Sources */,
-				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,
 				DEFD6E61264990FB00E51E0D /* PluginListViewModelTests.swift in Sources */,
 				02B2C831249C4C8D0040C83C /* TextFieldTextAlignmentTests.swift in Sources */,
 				CC923A1D2847A8E0008EEEBE /* OrderStatusListViewModelTests.swift in Sources */,

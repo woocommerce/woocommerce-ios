@@ -149,7 +149,7 @@ enum POSBookingLifecycleStatus: Equatable {
     var textColor: Color {
         switch self {
         case .cancelled:
-            return .posOnErrorLowest
+            return .posOnInfoLowest
         case .booked, .completed:
             return .clear
         }
@@ -158,7 +158,7 @@ enum POSBookingLifecycleStatus: Equatable {
     var backgroundColor: Color {
         switch self {
         case .cancelled:
-            return .posErrorLowest
+            return .posInfoLowest
         case .booked, .completed:
             return .clear
         }

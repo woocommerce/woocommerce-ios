@@ -38,13 +38,15 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     private let stores: StoresManager
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let pluginVersionChecker: PluginVersionCheckerProtocol
+    private let pushNotesManager: PushNotesManager
 
     init(siteID: Int64,
          siteURL: String,
          credentials: Credentials?,
          stores: StoresManager = ServiceLocator.stores,
          jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
-         pluginVersionChecker: PluginVersionCheckerProtocol? = nil) {
+         pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteURL = siteURL
         self.credentials = credentials
         self.stores = stores
@@ -63,6 +65,7 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
             pluginPath: Constants.wooPluginPath,
             minimumVersion: minimumVersion
         )
+        self.pushNotesManager = pushNotesManager
     }
 
     func start() {
@@ -75,9 +78,6 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
             delegate?.stepDidUpdate(.connect, status: .success)
             startPluginVersionCheck()
         }
-
-        /// Step 3: Enable push notification
-        /// TODO: Inject PushNotificationManager to trigger Woo PN registration
     }
 
     func retry() {
@@ -86,9 +86,10 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
             startJetpackConnection()
         case .checkPlugin:
             startPluginVersionCheck()
-        case .enablePush, .none:
-            // TODO
-            break
+        case .enablePush:
+            startPushRegistration()
+        case .none:
+            start()
         }
     }
 
@@ -188,13 +189,38 @@ private extension WPComConnectionSetupHandler {
                 switch result {
                 case .compatible:
                     delegate?.stepDidUpdate(.checkPlugin, status: .success)
-                    // TODO: continue to step 3
+                    startPushRegistration()
                 case .incompatible(let currentVersion, _):
                     delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: currentVersion)))
                 }
             } catch {
                 DDLogError("⛔️ Plugin version check failed: \(error)")
                 delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .generic(reason: Localization.PluginCheckStep.genericError)))
+            }
+        }
+    }
+}
+
+private extension WPComConnectionSetupHandler {
+    func startPushRegistration() {
+        currentStep = .enablePush
+        delegate?.stepDidUpdate(.enablePush, status: .running)
+        #if targetEnvironment(simulator)
+        if !isRunningTests {
+        DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
+        delegate?.stepDidUpdate(.enablePush, status: .success)
+        delegate?.setupDidComplete()
+        return
+        }
+        #endif
+        Task { @MainActor in
+            do {
+                let _ = try await pushNotesManager.registerDeviceAndWaitForTokenAcceptance()
+                delegate?.stepDidUpdate(.enablePush, status: .success)
+                delegate?.setupDidComplete()
+            } catch {
+                DDLogError("⛔️ Push notification registration failed: \(error)")
+                delegate?.stepDidUpdate(.enablePush, status: .failure(error: .generic(reason: Localization.PushStep.genericError)))
             }
         }
     }
@@ -217,6 +243,13 @@ private extension WPComConnectionSetupHandler {
                 comment: "Generic error message when the plugin check step fails during push notification setup"
             )
         }
+        enum PushStep {
+            static let genericError = NSLocalizedString(
+                "wpcomConnectionSetupHandler.PushStep.genericError",
+                value: "There was an error enabling push notifications. Please try again or contact support if this error continues.",
+                comment: "Error message when push notification registration fails during setup"
+            )
+        }
         enum ConnectionStep {
             static let genericError = NSLocalizedString(
                 "wpcomConnectionSetupHandler.ConnectionStep.genericError",
@@ -229,5 +262,6 @@ private extension WPComConnectionSetupHandler {
                 comment: "Error message when the connection step is canceled during push notification setup"
             )
         }
+
     }
 }

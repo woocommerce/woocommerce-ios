@@ -147,6 +147,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     private func retrySetup() {
         setupState = .inProgress
+        updateStep(.enablePush, status: .notStarted)
         handler.retry()
     }
 

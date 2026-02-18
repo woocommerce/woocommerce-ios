@@ -8,12 +8,15 @@ final class WooPushNotificationSetupCoordinator {
     let rootViewController: UIViewController
 
     private let stores: StoresManager
+    private let onSetupCompleted: (() -> Void)?
     private var loginCoordinator: WPComLoginCoordinator?
 
     init(rootViewController: UIViewController,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onSetupCompleted: (() -> Void)? = nil) {
         self.rootViewController = rootViewController
         self.stores = stores
+        self.onSetupCompleted = onSetupCompleted
         self.loginCoordinator = {
             if stores.sessionManager.defaultSite?.isJetpackConnected == true {
                 return nil // no need to connect WPCom
@@ -90,8 +93,9 @@ private extension WooPushNotificationSetupCoordinator {
             onDismiss: { [weak navigationController] in
                 navigationController?.dismiss(animated: true)
             },
-            onGoToStore: { [weak navigationController] in
+            onGoToStore: { [weak navigationController, onSetupCompleted] in
                 navigationController?.dismiss(animated: true)
+                onSetupCompleted?()
             },
             onUpdatePlugin: {
                 // TODO: Implement plugin update flow in follow-up PR

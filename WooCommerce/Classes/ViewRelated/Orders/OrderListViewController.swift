@@ -271,7 +271,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
             let cellViewModel = self.viewModel.cellViewModel(withID: objectID)
 
             cell.configureCell(viewModel: cellViewModel)
-            cell.layoutIfNeeded()
             return cell
         }
     }
@@ -386,9 +385,7 @@ extension OrderListViewController {
     }
 
     private func applySnapshot(_ snapshot: FetchResultSnapshot) {
-        let previousCount = dataSource?.snapshot().numberOfItems ?? 0
-        let animate = abs(snapshot.numberOfItems - previousCount) <= 1
-        dataSource?.apply(snapshot, animatingDifferences: animate)
+        dataSource?.apply(snapshot, animatingDifferences: false)
 
         transitionToResultsUpdatedState()
 

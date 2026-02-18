@@ -85,6 +85,10 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private lazy var emptyStateViewController = EmptyStateViewController(style: .list)
 
+    /// Snapshot buffered during scroll to avoid interrupting the scroll gesture recognizer.
+    ///
+    private var pendingSnapshot: FetchResultSnapshot?
+
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
@@ -300,22 +304,18 @@ private extension OrderListViewController {
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.
+        /// Buffer snapshots while scrolling to avoid interrupting the scroll gesture recognizer.
         viewModel.snapshot
             .throttle(for: .milliseconds(100), scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] snapshot in
             guard let self = self else { return }
 
-            let previousCount = dataSource?.snapshot().numberOfItems ?? 0
-            let animate = abs(snapshot.numberOfItems - previousCount) <= 1
-            dataSource?.apply(snapshot, animatingDifferences: animate)
-
-            transitionToResultsUpdatedState()
-
-            /// Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
-            if isViewLoaded == true && view.window != nil,
-               self.splitViewController?.isCollapsed == false {
-                self.checkSelectedItem()
+            if tableView.isDragging || tableView.isDecelerating {
+                pendingSnapshot = snapshot
+                return
             }
+
+            applySnapshot(snapshot)
         }.store(in: &cancellables)
 
         /// Update the top banner when needed
@@ -383,6 +383,25 @@ extension OrderListViewController {
     func showErrorNotice(_ notice: Notice, in viewController: UIViewController) {
         noticePresenter.presentingViewController = viewController
         noticePresenter.enqueue(notice: notice)
+    }
+
+    private func applySnapshot(_ snapshot: FetchResultSnapshot) {
+        let previousCount = dataSource?.snapshot().numberOfItems ?? 0
+        let animate = abs(snapshot.numberOfItems - previousCount) <= 1
+        dataSource?.apply(snapshot, animatingDifferences: animate)
+
+        transitionToResultsUpdatedState()
+
+        if isViewLoaded == true && view.window != nil,
+           self.splitViewController?.isCollapsed == false {
+            self.checkSelectedItem()
+        }
+    }
+
+    private func applyPendingSnapshotIfNeeded() {
+        guard let snapshot = pendingSnapshot else { return }
+        pendingSnapshot = nil
+        applySnapshot(snapshot)
     }
 
     private func markOrderAsCompleted(resultID: FetchResultSnapshotObjectID) {
@@ -871,6 +890,16 @@ extension OrderListViewController: UITableViewDelegate {
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         delegate?.orderListScrollViewDidScroll(scrollView)
+    }
+
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            applyPendingSnapshotIfNeeded()
+        }
+    }
+
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        applyPendingSnapshotIfNeeded()
     }
 
     /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.

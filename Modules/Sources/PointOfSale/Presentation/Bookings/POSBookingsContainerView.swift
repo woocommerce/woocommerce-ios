@@ -128,3 +128,49 @@ private enum Localization {
         comment: "Title at the header for the Bookings view."
     )
 }
+
+// MARK: - Previews
+
+#if DEBUG
+#Preview("Empty List") {
+    POSBookingsContainerView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewBookingsModel(state: .empty))
+}
+
+#Preview("Loaded - No Selection") {
+    let bookings = POSPreviewHelpers.makePreviewBookings()
+    let model = POSPreviewHelpers.makePreviewBookingsModel(state: .loaded(bookings, hasMoreItems: false))
+    model.bookingsController.selectBooking(nil)
+    return POSBookingsContainerView(isPresented: .constant(true))
+        .environment(model)
+}
+
+#Preview("Loaded - Booking Selected") {
+    let bookings = POSPreviewHelpers.makePreviewBookings()
+    return POSBookingsContainerView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewBookingsModel(state: .loaded(bookings, hasMoreItems: false)))
+}
+
+#Preview("Loading") {
+    POSBookingsContainerView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewBookingsModel(state: .loading([])))
+}
+
+#Preview("Loading with Cached Bookings") {
+    let bookings = POSPreviewHelpers.makePreviewBookings()
+    return POSBookingsContainerView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewBookingsModel(state: .loading(bookings)))
+}
+
+#Preview("Error") {
+    POSBookingsContainerView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewBookingsModel(state: .error(.errorOnLoadingBookings())))
+}
+
+#Preview("Inline Error") {
+    let bookings = POSPreviewHelpers.makePreviewBookings()
+    return POSBookingsContainerView(isPresented: .constant(true))
+        .environment(POSPreviewHelpers.makePreviewBookingsModel(
+            state: .inlineError(bookings, error: .errorOnLoadingBookingsNextPage(), context: .pagination)))
+}
+#endif

@@ -14,6 +14,7 @@ struct POSBookingDetailsEmptyView: View {
                 .foregroundStyle(Color.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurface)
         .navigationBarHidden(true)
     }

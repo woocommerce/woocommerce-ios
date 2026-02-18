@@ -82,7 +82,9 @@ struct POSBookingDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.large) {
                     bookingDetailsSection
-                    POSBookingAttendanceSectionView(booking: booking)
+                    if booking.lifecycleStatus != .cancelled {
+                        POSBookingAttendanceSectionView(booking: booking)
+                    }
                     customerSection
                     paymentBreakdownSection
                     bookingNoteSection

@@ -83,8 +83,8 @@ struct POSBookingListView: View {
                 .refreshable {
                     await bookingsModel.bookingsController.refreshBookings()
                 }
-            case (.error, _):
-                POSListErrorView(error: PointOfSaleErrorState.errorOnLoadingBookings())
+            case (.error(let errorState), _):
+                POSListErrorView(error: errorState)
                     .refreshable {
                         await bookingsModel.bookingsController.loadBookings()
                     }

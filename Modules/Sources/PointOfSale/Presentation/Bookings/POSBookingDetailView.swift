@@ -15,6 +15,9 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
+    @State private var inlineButtonMinY: CGFloat = .infinity
+    @State private var stickyButtonHeight: CGFloat = 0
+    @State private var scrollViewHeight: CGFloat = 0
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -87,15 +90,33 @@ struct POSBookingDetailView: View {
                     }
                     customerSection
                     paymentBreakdownSection
+
+                    if shouldShowCollectPayment {
+                        collectPaymentButton
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear.preference(
+                                        key: InlineButtonMinYPreferenceKey.self,
+                                        value: geo.frame(in: .named("bookingDetailScroll")).minY
+                                    )
+                                }
+                            )
+                    }
+
                     bookingNoteSection
                 }
                 .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.bottom, shouldShowCollectPayment ? stickyButtonHeight + POSPadding.medium : POSPadding.medium)
             }
-            .safeAreaInset(edge: .bottom) {
-                if shouldShowStickyPayment {
-                    stickyCollectPaymentContainer
+            .coordinateSpace(name: "bookingDetailScroll")
+            .measureHeight { scrollViewHeight = $0 }
+            .onPreferenceChange(InlineButtonMinYPreferenceKey.self) { value in
+                inlineButtonMinY = value
+            }
+            .overlay(alignment: .bottom) {
+                if shouldShowCollectPayment {
+                    stickyPaymentOverlay
                 }
             }
         }
@@ -303,29 +324,43 @@ struct POSBookingDetailView: View {
         }
     }
 
-    private var shouldShowStickyPayment: Bool {
+    private func startPaymentCollection() {
+        guard booking.orderID != nil else { return }
+        paymentModel = bookingsModel.makePaymentModel(
+            for: booking, onDismiss: dismissPayment, analytics: analytics)
+        showPaymentView = true
+    }
+
+    private var shouldShowCollectPayment: Bool {
         !booking.isPaid && booking.lifecycleStatus != .cancelled
     }
 
-    private var stickyCollectPaymentContainer: some View {
-        Button(action: {
-            guard booking.orderID != nil else { return }
-            paymentModel = bookingsModel.makePaymentModel(
-                for: booking, onDismiss: dismissPayment, analytics: analytics)
-            showPaymentView = true
-        }) {
+    private var collectPaymentButton: some View {
+        Button(action: { startPaymentCollection() }) {
             Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .padding(POSPadding.medium)
-        .background(Color.posSurfaceContainerLowest)
-        .overlay(alignment: .top) {
+    }
+
+    @ViewBuilder
+    private var stickyPaymentOverlay: some View {
+        let stickyButtonY = scrollViewHeight - stickyButtonHeight + POSPadding.medium
+        let isVisible = inlineButtonMinY - stickyButtonY > 0
+
+        VStack(spacing: 0) {
             Divider()
                 .overlay(Color.posOutlineVariant)
+
+            collectPaymentButton
+                .padding(POSPadding.medium)
+                .background(Color.posSurfaceContainerLowest)
         }
         .shadow(color: .black.opacity(0.08), radius: 15, x: 0, y: -5)
         .shadow(color: .black.opacity(0.04), radius: 18, x: 0, y: -15)
+        .opacity(isVisible ? 1 : 0)
+        .allowsHitTesting(isVisible)
+        .measureHeight { stickyButtonHeight = $0 }
     }
 
     // MARK: - Shared Components
@@ -379,6 +414,15 @@ struct POSBookingSectionCardModifier: ViewModifier {
 extension View {
     func sectionCard() -> some View {
         modifier(POSBookingSectionCardModifier())
+    }
+}
+
+// MARK: - Preference Keys
+
+private struct InlineButtonMinYPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .infinity
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = min(value, nextValue())
     }
 }
 

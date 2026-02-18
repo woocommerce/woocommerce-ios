@@ -17,6 +17,17 @@ public protocol ReadOnlyConvertible: TypeErasedReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     func toReadOnly() -> ReadOnlyType
+
+    /// Returns a lightweight ReadOnly version for list display, skipping expensive relationship conversions.
+    /// Default implementation falls back to `toReadOnly()`. Override for entities with costly relationships.
+    ///
+    func toReadOnlyForListDisplay() -> ReadOnlyType
+}
+
+extension ReadOnlyConvertible {
+    public func toReadOnlyForListDisplay() -> ReadOnlyType {
+        toReadOnly()
+    }
 }
 
 

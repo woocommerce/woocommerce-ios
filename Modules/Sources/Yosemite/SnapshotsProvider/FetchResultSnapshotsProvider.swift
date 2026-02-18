@@ -179,6 +179,15 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
             return nil
         }
     }
+
+    /// Retrieve a lightweight immutable type for list display, skipping expensive relationship conversions.
+    public func objectForListDisplay(withID objectID: FetchResultSnapshotObjectID) -> MutableType.ReadOnlyType? {
+        if let storageObject = storage.loadObject(ofType: MutableType.self, with: objectID) {
+            return storageObject.toReadOnlyForListDisplay()
+        } else {
+            return nil
+        }
+    }
 }
 
 // MARK: - FetchedResultsController Activation

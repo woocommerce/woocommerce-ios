@@ -343,8 +343,10 @@ extension OrderListViewModel {
 extension OrderListViewModel {
 
     /// Creates an `OrderListCellViewModel` for the `Order` pointed to by `objectID`.
+    /// Uses a lightweight read-only conversion that skips relationship faults (items, metadata, etc.)
+    /// since the list cell only needs scalar properties.
     func cellViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderListCellViewModel? {
-        guard let order = snapshotsProvider.object(withID: objectID) else {
+        guard let order = snapshotsProvider.objectForListDisplay(withID: objectID) else {
             return nil
         }
 

@@ -127,6 +127,52 @@ extension Storage.Order: ReadOnlyConvertible {
     }
 
 
+    /// Returns a lightweight ReadOnly version with only the scalar properties needed for list display.
+    /// Skips all relationship conversions (items, coupons, metadata, etc.) to avoid firing Core Data faults.
+    ///
+    public func toReadOnlyForListDisplay() -> Yosemite.Order {
+        return Order(siteID: siteID,
+                     orderID: orderID,
+                     parentID: parentID,
+                     customerID: customerID,
+                     orderKey: orderKey,
+                     isEditable: isEditable,
+                     needsPayment: needsPayment,
+                     needsProcessing: needsPayment,
+                     number: number ?? "",
+                     status: OrderStatusEnum(rawValue: statusKey),
+                     currency: currency ?? "",
+                     currencySymbol: "",
+                     customerNote: customerNote ?? "",
+                     dateCreated: dateCreated ?? Date(),
+                     dateModified: dateModified ?? Date(),
+                     datePaid: datePaid,
+                     discountTotal: discountTotal ?? "",
+                     discountTax: discountTax ?? "",
+                     shippingTotal: shippingTotal ?? "",
+                     shippingTax: shippingTax ?? "",
+                     total: total ?? "",
+                     totalTax: totalTax ?? "",
+                     paymentMethodID: paymentMethodID ?? "",
+                     paymentMethodTitle: paymentMethodTitle ?? "",
+                     paymentURL: paymentURL as URL?,
+                     chargeID: chargeID,
+                     items: [],
+                     billingAddress: createReadOnlyBillingAddress(),
+                     shippingAddress: createReadOnlyShippingAddress(),
+                     shippingLines: [],
+                     coupons: [],
+                     refunds: [],
+                     fees: [],
+                     taxes: [],
+                     customFields: [],
+                     renewalSubscriptionID: renewalSubscriptionID,
+                     appliedGiftCards: [],
+                     attributionInfo: nil,
+                     shippingLabels: [],
+                     createdVia: createdVia)
+    }
+
     // MARK: - Private Helpers
 
     private func createReadOnlyBillingAddress() -> Yosemite.Address? {

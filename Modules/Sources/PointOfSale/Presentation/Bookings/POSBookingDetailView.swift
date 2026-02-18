@@ -15,6 +15,7 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
+    @State private var emailCopied = false
     @State private var inlineButtonMinY: CGFloat = .infinity
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
@@ -221,13 +222,19 @@ struct POSBookingDetailView: View {
                     Spacer()
                     Button {
                         UIPasteboard.general.string = email
+                        emailCopied = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            emailCopied = false
+                        }
                     } label: {
-                        Image(systemName: "doc.on.doc")
+                        Image(systemName: emailCopied ? "checkmark" : "doc.on.doc")
                             .font(.posBodyMediumRegular())
                             .foregroundStyle(actionTintColor)
+                            .contentTransition(.symbolEffect(.replace))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
+                    .frame(minHeight: 32)
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(Localization.emailAccessibilityLabel(email))

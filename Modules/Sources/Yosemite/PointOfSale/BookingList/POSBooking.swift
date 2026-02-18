@@ -11,6 +11,12 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
         order.datePaid != nil
     }
 
+    /// Whether the booking has no associated customer information.
+    public var isGuest: Bool {
+        customerName == nil && customerEmail == nil && customerPhone == nil
+            && billingAddress == nil && customerNote == nil
+    }
+
     public let id: Int64
     public let customerName: String?
     public let serviceName: String

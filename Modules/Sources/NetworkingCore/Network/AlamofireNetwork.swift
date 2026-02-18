@@ -97,7 +97,7 @@ public class AlamofireNetwork: Network {
             // The uploadStreamProvider event monitor tracks which upload data
             // belongs to each URLSessionTask so the delegate can provide it
             // when needNewBodyStream is called.
-            let delegate = SafeUploadSessionDelegate()
+            let delegate = StreamableUploadSessionDelegate()
             self.alamofireSession = Alamofire.Session(
                 configuration: .default,
                 delegate: delegate,

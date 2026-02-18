@@ -3,13 +3,13 @@ import Foundation
 import Testing
 @testable import NetworkingCore
 
-struct SafeUploadSessionDelegateTests {
+struct StreamableUploadSessionDelegateTests {
 
     private let urlSession: URLSession
-    private let delegate: SafeUploadSessionDelegate
+    private let delegate: StreamableUploadSessionDelegate
 
     init() {
-        delegate = SafeUploadSessionDelegate()
+        delegate = StreamableUploadSessionDelegate()
         urlSession = URLSession(configuration: .default)
     }
 
@@ -81,7 +81,7 @@ struct SafeUploadSessionDelegateTests {
 
 // MARK: - Helpers
 
-private extension SafeUploadSessionDelegateTests {
+private extension StreamableUploadSessionDelegateTests {
 
     func callNeedNewBodyStream(task: URLSessionTask) -> InputStream? {
         var receivedStream: InputStream?

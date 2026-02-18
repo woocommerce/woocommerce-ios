@@ -17,7 +17,7 @@ struct POSBookingListEmptyViewModel: POSListEmptyViewModelProtocol {
     }
 
     var icon: Image {
-        isSearching ? PointOfSaleAssets.magnifierNotFound.decorativeImage : PointOfSaleAssets.noOrders.decorativeImage
+        PointOfSaleAssets.magnifierNotFound.decorativeImage
     }
 }
 

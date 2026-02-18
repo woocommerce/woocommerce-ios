@@ -125,7 +125,7 @@ public class DevicesRemote: Remote {
 //
 private extension DevicesRemote {
     enum Values {
-        static let platform = "ios"
+        static let platform = "apple"
     }
 
     enum Paths {

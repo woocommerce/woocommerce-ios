@@ -26,7 +26,7 @@ private enum Constants {
 
 private enum Localization {
     static let noBookingSelected = NSLocalizedString(
-        "pos.bookingDetailsEmptyView.descrition",
+        "pos.bookingDetailsEmptyView.description",
         value: "Tap a booking to view its details",
         comment: "Text appearing in the booking details pane when no booking is selected."
     )

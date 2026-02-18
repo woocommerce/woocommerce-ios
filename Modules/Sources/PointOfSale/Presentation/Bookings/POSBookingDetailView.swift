@@ -174,55 +174,62 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var customerSection: some View {
-        let hasCustomerDetails = booking.customerEmail != nil || booking.customerPhone != nil
-            || booking.billingAddress != nil || booking.customerNote != nil
-        if hasCustomerDetails {
-            VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            HStack(spacing: POSSpacing.medium) {
                 Text(Localization.customerTitle)
                     .font(.posBodyXLargeRegular)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
-                if let email = booking.customerEmail {
-                    HStack {
-                        Text(email)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(Color.posOnSurface)
-                        Spacer()
-                        Button {
-                            // TODO: Implement copy email action
-                        } label: {
-                            Image(systemName: "doc.on.doc")
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(actionTintColor)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Localization.emailAccessibilityLabel(email))
-                }
-
-                if let phone = booking.customerPhone {
-                    sectionDivider
-                    Text(phone)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
-                }
-
-                if let address = booking.billingAddress {
-                    sectionDivider
-                    stackedField(label: Localization.billingAddressLabel, value: address)
-                }
-
-                if let note = booking.customerNote {
-                    sectionDivider
-                    stackedField(label: Localization.noteLabel, value: note)
+                if booking.isGuest {
+                    POSBookingBadgeView(
+                        title: Localization.guestBadge,
+                        textColor: .posOnDefault,
+                        backgroundColor: .posDefault
+                    )
                 }
             }
-            .sectionCard()
+
+            if let email = booking.customerEmail {
+                HStack {
+                    Text(email)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                    Spacer()
+                    Button {
+                        // TODO: Implement copy email action
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(actionTintColor)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Localization.emailAccessibilityLabel(email))
+            }
+
+            if let phone = booking.customerPhone {
+                sectionDivider
+                Text(phone)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
+            }
+
+            if let address = booking.billingAddress {
+                sectionDivider
+                stackedField(label: Localization.billingAddressLabel, value: address)
+            }
+
+            if let note = booking.customerNote {
+                sectionDivider
+                stackedField(label: Localization.noteLabel, value: note)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .sectionCard()
     }
 
     @ViewBuilder
@@ -413,6 +420,12 @@ private enum Localization {
         comment: "Section title for the customer details in booking details."
     )
 
+    static let guestBadge = NSLocalizedString(
+        "pos.bookingDetailView.guestBadge",
+        value: "Guest",
+        comment: "Badge label shown next to the customer section title when there is no customer info for a booking."
+    )
+
     static let noteLabel = NSLocalizedString(
         "pos.bookingDetailView.noteLabel",
         value: "Note",
@@ -526,6 +539,20 @@ private enum Localization {
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        onBack: {}
+    )
+}
+
+#Preview("Guest Booking") {
+    POSBookingDetailView(
+        booking: POSPreviewHelpers.makePreviewGuestBooking(),
+        onBack: {}
+    )
+}
+
+#Preview("Cancelled Booking") {
+    POSBookingDetailView(
+        booking: POSPreviewHelpers.makePreviewCancelledBooking(),
         onBack: {}
     )
 }

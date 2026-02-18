@@ -205,7 +205,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+        syncingCoordinator.synchronizeFirstPage(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
@@ -290,7 +290,7 @@ private extension OrderListViewController {
             // Send a delegate event in case the updated happened while the app was in the background.
             self.delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
 
-            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+            self.syncingCoordinator.synchronizeFirstPage(reason: SyncReason.viewWillAppear.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in

@@ -12,14 +12,12 @@ import Foundation
 ///
 final class UploadStreamProvider: EventMonitor, @unchecked Sendable {
 
-    private let lock = NSLock()
+    private let syncQueue = DispatchQueue(label: "com.woocommerce.UploadStreamProvider")
     private var uploadables: [Int: UploadRequest.Uploadable] = [:]
     private var taskIDs: [ObjectIdentifier: [Int]] = [:]
 
     func uploadable(for taskIdentifier: Int) -> UploadRequest.Uploadable? {
-        lock.lock()
-        defer { lock.unlock() }
-        return uploadables[taskIdentifier]
+        syncQueue.sync { uploadables[taskIdentifier] }
     }
 
     // MARK: - EventMonitor
@@ -30,10 +28,10 @@ final class UploadStreamProvider: EventMonitor, @unchecked Sendable {
             return
         }
         let key = ObjectIdentifier(request)
-        lock.lock()
-        uploadables[task.taskIdentifier] = uploadable
-        taskIDs[key, default: []].append(task.taskIdentifier)
-        lock.unlock()
+        syncQueue.sync {
+            uploadables[task.taskIdentifier] = uploadable
+            taskIDs[key, default: []].append(task.taskIdentifier)
+        }
     }
 
     func requestDidFinish(_ request: Alamofire.Request) {
@@ -47,28 +45,26 @@ final class UploadStreamProvider: EventMonitor, @unchecked Sendable {
     // MARK: - Internal (for testing)
 
     func trackUploadable(_ uploadable: UploadRequest.Uploadable, for taskIdentifier: Int) {
-        lock.lock()
-        uploadables[taskIdentifier] = uploadable
-        lock.unlock()
+        syncQueue.sync { uploadables[taskIdentifier] = uploadable }
     }
 
     func removeAllUploadables() {
-        lock.lock()
-        uploadables.removeAll()
-        taskIDs.removeAll()
-        lock.unlock()
+        syncQueue.sync {
+            uploadables.removeAll()
+            taskIDs.removeAll()
+        }
     }
 
     // MARK: - Private
 
     private func removeUploadables(for request: Alamofire.Request) {
         let key = ObjectIdentifier(request)
-        lock.lock()
-        if let ids = taskIDs.removeValue(forKey: key) {
-            for id in ids {
-                uploadables.removeValue(forKey: id)
+        syncQueue.sync {
+            if let ids = taskIDs.removeValue(forKey: key) {
+                for id in ids {
+                    uploadables.removeValue(forKey: id)
+                }
             }
         }
-        lock.unlock()
     }
 }

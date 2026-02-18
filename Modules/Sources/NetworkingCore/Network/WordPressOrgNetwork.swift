@@ -170,9 +170,6 @@ private extension WordPressOrgNetwork {
 
         sessionConfiguration.httpAdditionalHeaders = additionalHeaders
 
-        // The uploadStreamProvider event monitor tracks which upload data
-        // belongs to each URLSessionTask so the delegate can provide it
-        // when needNewBodyStream is called.
         let delegate = StreamableUploadSessionDelegate()
         return Alamofire.Session(
             configuration: sessionConfiguration,

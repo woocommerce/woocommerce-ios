@@ -5,70 +5,37 @@ import Testing
 
 struct StreamableUploadSessionDelegateTests {
 
-    private let urlSession: URLSession
-    private let delegate: StreamableUploadSessionDelegate
+    private let urlSession = URLSession(configuration: .default)
+    private let delegate = StreamableUploadSessionDelegate()
 
-    init() {
-        delegate = StreamableUploadSessionDelegate()
-        urlSession = URLSession(configuration: .default)
-    }
+    @Test(arguments: ["data", "file"])
+    func test_needNewBodyStream_when_tracked_upload_then_returns_original_bytes(type: String) throws {
+        let expectedData = Data("test upload content".utf8)
+        let task = makeTask()
+        var tempURL: URL?
+        defer { tempURL.flatMap { try? FileManager.default.removeItem(at: $0) } }
 
-    // MARK: - needNewBodyStream for data uploads
+        if type == "data" {
+            delegate.uploadStreamProvider.trackUploadable(.data(expectedData), for: task.taskIdentifier)
+        } else {
+            tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            try expectedData.write(to: tempURL!)
+            delegate.uploadStreamProvider.trackUploadable(.file(tempURL!, shouldRemove: false), for: task.taskIdentifier)
+        }
 
-    @Test func test_needNewBodyStream_when_data_upload_then_returns_inputStream() {
-        // Given
-        let uploadData = Data("test upload data".utf8)
-        let task = urlSession.dataTask(with: URLRequest(url: URL(string: "https://example.com")!))
-        delegate.uploadStreamProvider.trackUploadable(.data(uploadData), for: task.taskIdentifier)
-
-        // When
         let stream = callNeedNewBodyStream(task: task)
-
-        // Then
-        let readData = stream.flatMap { readAll(from: $0) }
-        #expect(readData == uploadData)
+        #expect(stream != nil)
+        #expect(Data(reading: stream!) == expectedData)
     }
-
-    // MARK: - needNewBodyStream for file uploads
-
-    @Test func test_needNewBodyStream_when_file_upload_then_returns_inputStream() throws {
-        // Given
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        let fileData = Data("file upload test".utf8)
-        try fileData.write(to: tempURL)
-        defer { try? FileManager.default.removeItem(at: tempURL) }
-
-        let task = urlSession.dataTask(with: URLRequest(url: URL(string: "https://example.com")!))
-        delegate.uploadStreamProvider.trackUploadable(.file(tempURL, shouldRemove: false), for: task.taskIdentifier)
-
-        // When
-        let stream = callNeedNewBodyStream(task: task)
-
-        // Then
-        let readData = stream.flatMap { readAll(from: $0) }
-        #expect(readData == fileData)
-    }
-
-    // MARK: - needNewBodyStream for unknown tasks
 
     @Test func test_needNewBodyStream_when_unknown_task_then_returns_nil() {
-        // Given
-        let task = urlSession.dataTask(with: URLRequest(url: URL(string: "https://example.com")!))
-
-        // When
-        let stream = callNeedNewBodyStream(task: task)
-
-        // Then
-        #expect(stream == nil)
+        #expect(callNeedNewBodyStream(task: makeTask()) == nil)
     }
-
-    // MARK: - Cleanup
 
     @Test func test_uploadable_when_removeAll_called_then_is_cleaned_up() {
         // Given
-        let uploadData = Data("cleanup test".utf8)
-        let task = urlSession.dataTask(with: URLRequest(url: URL(string: "https://example.com")!))
-        delegate.uploadStreamProvider.trackUploadable(.data(uploadData), for: task.taskIdentifier)
+        let task = makeTask()
+        delegate.uploadStreamProvider.trackUploadable(.data(Data("x".utf8)), for: task.taskIdentifier)
         #expect(delegate.uploadStreamProvider.uploadable(for: task.taskIdentifier) != nil)
 
         // When
@@ -83,31 +50,28 @@ struct StreamableUploadSessionDelegateTests {
 
 private extension StreamableUploadSessionDelegateTests {
 
-    func callNeedNewBodyStream(task: URLSessionTask) -> InputStream? {
-        var receivedStream: InputStream?
-        delegate.urlSession(urlSession, task: task, needNewBodyStream: { stream in
-            receivedStream = stream
-        })
-        return receivedStream
+    func makeTask() -> URLSessionTask {
+        urlSession.dataTask(with: URLRequest(url: URL(string: "https://example.com")!))
     }
 
-    func readAll(from stream: InputStream) -> Data {
+    func callNeedNewBodyStream(task: URLSessionTask) -> InputStream? {
+        var result: InputStream?
+        delegate.urlSession(urlSession, task: task, needNewBodyStream: { result = $0 })
+        return result
+    }
+}
+
+private extension Data {
+    init(reading stream: InputStream) {
+        self.init()
         stream.open()
         defer { stream.close() }
-
-        var data = Data()
-        let bufferSize = 1024
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: 1024)
         defer { buffer.deallocate() }
-
         while stream.hasBytesAvailable {
-            let bytesRead = stream.read(buffer, maxLength: bufferSize)
-            if bytesRead > 0 {
-                data.append(buffer, count: bytesRead)
-            } else {
-                break
-            }
+            let count = stream.read(buffer, maxLength: 1024)
+            guard count > 0 else { break }
+            append(buffer, count: count)
         }
-        return data
     }
 }

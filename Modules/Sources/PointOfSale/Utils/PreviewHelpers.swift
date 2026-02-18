@@ -712,7 +712,9 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func loadBookings() async {}
     func refreshBookings() async {}
     func loadNextBookings() async {}
-    func selectBooking(_ booking: POSBooking?) { }
+    func selectBooking(_ booking: POSBooking?) {
+        selectedBooking = booking
+    }
     func cancelBooking(bookingID: Int64) async throws {}
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
     func searchBookings(searchTerm: String) async {}

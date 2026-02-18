@@ -4,7 +4,7 @@ import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-import protocol WooFoundation.Analytics
+import WooFoundation
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
@@ -710,7 +710,9 @@ private extension PushNotificationsManager {
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
             siteID: siteID,
             device: device,
-            applicationID: WooConstants.pushApplicationID
+            applicationID: WooConstants.pushApplicationID,
+            deviceLocale: Locale.current.languageRegionIdentifier ?? Locale.current.identifier,
+            appVersion: Bundle.main.version
         ) { [weak self] result in
             guard let self = self else { return }
 

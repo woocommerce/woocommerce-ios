@@ -76,16 +76,18 @@ struct POSBookingListView: View {
             }
 
             switch (bookingsViewState, isSearching) {
-            case (.empty, true):
+            case (.empty, _):
                 POSListEmptyView(
-                    viewModel: POSBookingListEmptyViewModel(isSearching: true)
-                ) {}
-            case (.error(let errorState), true):
-                POSListErrorView(error: errorState) {
-                    Task { @MainActor in
+                    viewModel: POSBookingListEmptyViewModel(isSearching: isSearching)
+                )
+                .refreshable {
+                    await bookingsModel.bookingsController.refreshBookings()
+                }
+            case (.error, _):
+                POSListErrorView(error: PointOfSaleErrorState.errorOnLoadingBookings())
+                    .refreshable {
                         await bookingsModel.bookingsController.loadBookings()
                     }
-                }
             default:
                 listView
             }

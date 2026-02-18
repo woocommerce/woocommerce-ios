@@ -220,7 +220,7 @@ struct POSBookingDetailView: View {
                         .foregroundStyle(Color.posOnSurface)
                     Spacer()
                     Button {
-                        // TODO: Implement copy email action
+                        UIPasteboard.general.string = email
                     } label: {
                         Image(systemName: "doc.on.doc")
                             .font(.posBodyMediumRegular())

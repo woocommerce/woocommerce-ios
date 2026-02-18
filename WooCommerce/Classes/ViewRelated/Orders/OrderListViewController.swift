@@ -116,28 +116,12 @@ final class OrderListViewController: UIViewController, GhostableViewController {
                 return
             }
 
-            DDLogInfo("🔍 WOOMOB-2216 state: \(oldValue) → \(state)")
             didLeave(state: oldValue)
             didEnter(state: state)
         }
     }
 
     private var cancellables = Set<AnyCancellable>()
-
-    // MARK: - WOOMOB-2216 Diagnostic Properties
-
-    /// Heartbeat timer that periodically logs UI state during the freeze.
-    private var diagnosticHeartbeatTimer: Timer?
-
-    /// Main thread watchdog — detects if the main thread is blocked.
-    private var diagnosticWatchdogTimer: Timer?
-    private var diagnosticLastWatchdogFire = CFAbsoluteTimeGetCurrent()
-
-    /// Tracks the number of pending (incomplete) dataSource.apply() calls.
-    private var diagnosticPendingApplyCount = 0
-
-    /// Tracks whether a snapshot apply is in flight (completion not yet called).
-    private var diagnosticApplyInFlight = false
 
     private let siteID: Int64
 
@@ -189,8 +173,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         cancellables.forEach {
             $0.cancel()
         }
-        diagnosticHeartbeatTimer?.invalidate()
-        diagnosticWatchdogTimer?.invalidate()
     }
 
     override func viewDidLoad() {
@@ -204,7 +186,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
-        configureDiagnosticLogging()
     }
 
     private func createDataSource() {
@@ -224,7 +205,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        DDLogInfo("🔍 WOOMOB-2216 viewWillAppear, state=\(state), snapshotItems=\(dataSource?.snapshot().numberOfItems ?? -1)")
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
         // Fix any incomplete animation of the refresh control
@@ -279,7 +259,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
-            let cellStart = CFAbsoluteTimeGetCurrent()
             let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
             guard let self = self else {
                 return cell
@@ -289,10 +268,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
             cell.configureCell(viewModel: cellViewModel)
             cell.layoutIfNeeded()
-            let cellDuration = CFAbsoluteTimeGetCurrent() - cellStart
-            if cellDuration > 0.05 {
-                DDLogWarn("🔍 WOOMOB-2216 ⚠️ slow cellProvider: \(String(format: "%.3f", cellDuration))s at \(indexPath)")
-            }
             return cell
         }
     }
@@ -325,23 +300,14 @@ private extension OrderListViewController {
         viewModel.activate()
 
         /// Update the `dataSource` whenever there is a new snapshot.
-        viewModel.snapshot.sink { [weak self] snapshot in
+        viewModel.snapshot
+            .throttle(for: .milliseconds(100), scheduler: DispatchQueue.main, latest: true)
+            .sink { [weak self] snapshot in
             guard let self = self else { return }
 
-            let isScrolling = tableView.isDragging || tableView.isDecelerating
-            self.diagnosticPendingApplyCount += 1
-            self.diagnosticApplyInFlight = true
-            DDLogInfo("🔍 WOOMOB-2216 snapshot.sink: \(snapshot.numberOfItems) items in \(snapshot.numberOfSections) sections, isScrolling=\(isScrolling), state=\(state), pendingApplies=\(self.diagnosticPendingApplyCount)")
-            let applyStart = CFAbsoluteTimeGetCurrent()
-            dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
-                guard let self else { return }
-                let applyDuration = CFAbsoluteTimeGetCurrent() - applyStart
-                self.diagnosticPendingApplyCount -= 1
-                self.diagnosticApplyInFlight = self.diagnosticPendingApplyCount > 0
-                if applyDuration > 0.1 {
-                    DDLogInfo("🔍 WOOMOB-2216 apply() completed in \(String(format: "%.3f", applyDuration))s, pendingApplies=\(self.diagnosticPendingApplyCount)")
-                }
-            }
+            let previousCount = dataSource?.snapshot().numberOfItems ?? 0
+            let animate = abs(snapshot.numberOfItems - previousCount) <= 1
+            dataSource?.apply(snapshot, animatingDifferences: animate)
 
             transitionToResultsUpdatedState()
 
@@ -364,62 +330,12 @@ private extension OrderListViewController {
                 }
             }
             .store(in: &cancellables)
-
     }
 
     /// Setup: Sync'ing Coordinator
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
-    }
-
-    // MARK: - WOOMOB-2216 Diagnostic Logging Setup
-
-    /// Sets up diagnostic tools: heartbeat, main thread watchdog, and passive touch logging.
-    func configureDiagnosticLogging() {
-        // Heartbeat: every 5s, dump UI state. Captures state during freeze when no events fire.
-        diagnosticHeartbeatTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            let snapshot = dataSource?.snapshot()
-            DDLogInfo("🔍 WOOMOB-2216 ♥️ heartbeat: state=\(state)"
-                      + ", items=\(snapshot?.numberOfItems ?? -1)"
-                      + ", sections=\(snapshot?.numberOfSections ?? -1)"
-                      + ", allowsSelection=\(tableView.allowsSelection)"
-                      + ", isUserInteractionEnabled=\(tableView.isUserInteractionEnabled)"
-                      + ", isGhost=\(tableView.isDisplayingGhostContent)"
-                      + ", isScrolling=\(tableView.isDragging || tableView.isDecelerating)"
-                      + ", applyInFlight=\(diagnosticApplyInFlight)"
-                      + ", pendingApplies=\(diagnosticPendingApplyCount)")
-        }
-
-        // Main thread watchdog: fires every 1s. If it fires late, main thread was blocked.
-        diagnosticLastWatchdogFire = CFAbsoluteTimeGetCurrent()
-        diagnosticWatchdogTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            guard let self else { return }
-            let now = CFAbsoluteTimeGetCurrent()
-            let elapsed = now - diagnosticLastWatchdogFire
-            diagnosticLastWatchdogFire = now
-            // Only log if the main thread was blocked for >1.5s (expected ~1.0s interval)
-            if elapsed > 1.5 {
-                DDLogWarn("🔍 WOOMOB-2216 ⚠️ main thread blocked for \(String(format: "%.2f", elapsed - 1.0))s (watchdog interval: \(String(format: "%.2f", elapsed))s)")
-            }
-        }
-
-        // Passive touch detection: logs ALL taps on the table view, even if UITableView doesn't
-        // process them (e.g., during batch updates or when selection is disabled).
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(diagnosticTapDetected(_:)))
-        tapGesture.cancelsTouchesInView = false
-        tapGesture.delaysTouchesEnded = false
-        tableView.addGestureRecognizer(tapGesture)
-    }
-
-    @objc private func diagnosticTapDetected(_ gesture: UITapGestureRecognizer) {
-        let point = gesture.location(in: tableView)
-        let indexPath = tableView.indexPathForRow(at: point)
-        DDLogInfo("🔍 WOOMOB-2216 👆 tap detected at \(point), indexPath=\(indexPath?.description ?? "nil")"
-                  + ", allowsSelection=\(tableView.allowsSelection)"
-                  + ", isGhost=\(tableView.isDisplayingGhostContent)"
-                  + ", state=\(state)")
     }
 
     /// Setup: TableView
@@ -516,7 +432,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             }
         }
 
-        DDLogInfo("🔍 WOOMOB-2216 sync(page:\(pageNumber), size:\(pageSize), reason:\(reason ?? "nil"), retryTimeout:\(retryTimeout))")
         transitionToSyncingState()
         viewModel.dataLoadingError = nil
 
@@ -527,11 +442,8 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             reason: SyncReason(rawValue: reason ?? ""),
             lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, error in
                 guard let self = self else {
-                    DDLogWarn("🔍 WOOMOB-2216 sync(page:\(pageNumber)) completion: self was deallocated!")
                     return
                 }
-
-                DDLogInfo("🔍 WOOMOB-2216 sync(page:\(pageNumber)) completed in \(String(format: "%.2f", totalDuration ?? -1))s, error: \(error?.localizedDescription ?? "none")")
 
                 if let error {
                     ServiceLocator.analytics.track(event: .ordersListLoadError(error))
@@ -899,32 +811,17 @@ private extension OrderListViewController {
 //
 extension OrderListViewController: UITableViewDelegate {
 
-    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        DDLogInfo("🔍 WOOMOB-2216 willSelectRowAt \(indexPath)")
-        return indexPath
-    }
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        DDLogInfo("🔍 WOOMOB-2216 didSelectRowAt \(indexPath), state=\(state), isScrolling=\(tableView.isDragging || tableView.isDecelerating)")
-
         if splitViewController?.isCollapsed == true {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
         guard state != .placeholder else {
-            DDLogWarn("🔍 WOOMOB-2216 ❌ Blocked by .placeholder state")
             return
         }
 
-        let objectID = dataSource?.itemIdentifier(for: indexPath)
-        if objectID == nil {
-            DDLogWarn("🔍 WOOMOB-2216 ❌ itemIdentifier(for: \(indexPath)) returned nil. dataSource is \(dataSource == nil ? "nil" : "non-nil"), snapshot has \(dataSource?.snapshot().numberOfItems ?? -1) items in \(dataSource?.snapshot().numberOfSections ?? -1) sections")
-        }
-        guard let objectID,
+        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
             let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-                if objectID != nil {
-                    DDLogWarn("🔍 WOOMOB-2216 ❌ detailsViewModel(withID:) returned nil for objectID \(objectID!)")
-                }
                 return
         }
 
@@ -933,19 +830,12 @@ extension OrderListViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
                                                                                  horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         selectedOrderID = order.orderID
-        let startTime = CFAbsoluteTimeGetCurrent()
         let allViewModels = allViewModels()
-        let allVMDuration = CFAbsoluteTimeGetCurrent() - startTime
-        DDLogInfo("🔍 WOOMOB-2216 allViewModels() took \(String(format: "%.3f", allVMDuration))s, returned \(allViewModels.count) items")
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
 
-        guard let currentIndex = currentIndex else {
-            DDLogWarn("🔍 WOOMOB-2216 ❌ currentIndex not found for orderID \(order.orderID) in \(allViewModels.count) view models")
-            return
-        }
+        guard let currentIndex = currentIndex else { return }
 
         let allowOrderNavigation = splitViewController?.isCollapsed ?? true
-        DDLogInfo("🔍 WOOMOB-2216 ✅ Navigating to order \(order.orderID) at index \(currentIndex), allowNav=\(allowOrderNavigation)")
         // There is no point of having order navigation in the order details view when we have a split screen,
         // because orders can be easily selected in the left view (orders list).
         // Passing just one order (the selected one) disables navigation
@@ -977,18 +867,6 @@ extension OrderListViewController: UITableViewDelegate {
         header.rightText = nil
 
         return header
-    }
-
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        DDLogInfo("🔍 WOOMOB-2216 scrollViewWillBeginDragging")
-    }
-
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        DDLogInfo("🔍 WOOMOB-2216 scrollViewDidEndDragging, willDecelerate=\(decelerate)")
-    }
-
-    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        DDLogInfo("🔍 WOOMOB-2216 scrollViewDidEndDecelerating")
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

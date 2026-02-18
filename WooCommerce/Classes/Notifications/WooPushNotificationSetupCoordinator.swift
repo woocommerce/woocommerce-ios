@@ -49,6 +49,18 @@ final class WooPushNotificationSetupCoordinator {
         }
     }
 
+    func showPluginUpdateSetup(pluginVersion: String = "") {
+        let navigationController = makeConnectionSetupStack(credentials: nil, pluginOutdatedVersion: pluginVersion)
+
+        if let presenter = rootViewController.presentingViewController {
+            rootViewController.dismiss(animated: true) {
+                presenter.present(navigationController, animated: true)
+            }
+        } else {
+            rootViewController.present(navigationController, animated: true)
+        }
+    }
+
     func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
         let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
         guard url.absoluteString.hasPrefix(expectedPrefix) else {
@@ -76,11 +88,12 @@ private extension WooPushNotificationSetupCoordinator {
         static let magicLinkUrlHostname = "magic-login"
     }
 
-    func showConnectionSetup(with credentials: Credentials? = nil) {
+    /// Creates the connection setup navigation stack with a handler, view model, and hosting controller.
+    func makeConnectionSetupStack(credentials: Credentials? = nil,
+                                  pluginOutdatedVersion: String? = nil) -> WooNavigationController {
         guard let site = stores.sessionManager.defaultSite else {
             fatalError("❌ No default site found for Woo push notification setup!")
         }
-        let storeName = site.name
         let navigationController = WooNavigationController()
         let handler = WPComConnectionSetupHandler(
             siteID: site.siteID,
@@ -88,7 +101,7 @@ private extension WooPushNotificationSetupCoordinator {
             credentials: credentials
         )
         let viewModel = WPComConnectionSetupViewModel(
-            storeName: storeName,
+            storeName: site.name,
             handler: handler,
             onDismiss: { [weak navigationController] in
                 navigationController?.dismiss(animated: true)
@@ -101,8 +114,16 @@ private extension WooPushNotificationSetupCoordinator {
                 // TODO: Implement plugin update flow in follow-up PR
             }
         )
+        if let pluginOutdatedVersion {
+            viewModel.setPluginOutdatedState(version: pluginOutdatedVersion)
+        }
         let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel, credentials: credentials)
         navigationController.viewControllers = [connectionSetupController]
+        return navigationController
+    }
+
+    func showConnectionSetup(with credentials: Credentials? = nil) {
+        let navigationController = makeConnectionSetupStack(credentials: credentials)
 
         // Dismiss current modal (login or benefits) and present connection setup
         if let loginNav = loginCoordinator?.navigationController,
@@ -121,6 +142,11 @@ private extension WooPushNotificationSetupCoordinator {
         }
     }
 
+}
+
+enum WooPluginRequirements {
+    static let pluginPath = "woocommerce/woocommerce.php"
+    static let minimumVersion = "10.5.3" // This is for testing
 }
 
 private extension WooPushNotificationSetupCoordinator {

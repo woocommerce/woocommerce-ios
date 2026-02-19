@@ -1,6 +1,6 @@
 # Swift Style Rules
 
-Based on [Swift.org API Design Guidelines](https://swift.org/documentation/api-design-guidelines/) with project-specific additions from `docs/coding-style-guide.md`.
+These rules are enforced by SwiftLint (see `.swiftlint.yml` for the full configuration). Based on [Swift.org API Design Guidelines](https://swift.org/documentation/api-design-guidelines/) with project-specific additions from `docs/coding-style-guide.md`.
 
 ## Braces
 - Closing braces on a new line, never single-line blocks

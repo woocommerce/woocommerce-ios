@@ -252,8 +252,6 @@ Opt-in only rules configured in `.swiftlint.yml`:
 
 ## Module Dependencies
 
-- iOS 17+
-- WooCommerce imports: Yosemite, WooFoundation, Hardware, Experiments, Storage (type aliases only)
-- Yosemite imports: Networking, Storage
-- Networking imports: Alamofire
-- Storage imports: CoreData, GRDB
+See `Modules/Package.swift` for the definitive list of supported platforms, internal module targets, and external dependencies. Key architectural constraints:
+- WooCommerce app must only import Yosemite for business logic (never Networking or Storage directly)
+- Yosemite bridges Networking and Storage

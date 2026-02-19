@@ -532,7 +532,6 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
 }
 
 final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
-    var supportsCaching: Bool = true
     var showsLoadingWithItems: Bool = false
     var id: String = "BookingPreview"
 

@@ -126,7 +126,7 @@ final class POSBookingListControllerTests {
         let searchBookings = [makeBooking(id: 10)]
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: searchBookings, hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
+
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
 
@@ -139,16 +139,17 @@ final class POSBookingListControllerTests {
 
     // MARK: - clearSearchBookings
 
-    @Test func test_clearSearchBookings_restores_cached_bookings() async {
-        // Given - load initial bookings (cached)
+    @Test func test_clearSearchBookings_restores_local_bookings() async {
+        // Given - load initial bookings
         let initialBookings = [makeBooking(id: 1), makeBooking(id: 2)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: initialBookings, hasMorePages: false, totalItems: nil))
+        mockStrategy.localBookings = initialBookings
         await sut.loadBookings()
 
         // Switch to search
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
+
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
         await sut.searchBookings(searchTerm: "test")
@@ -156,7 +157,7 @@ final class POSBookingListControllerTests {
         // When
         sut.clearSearchBookings()
 
-        // Then - should restore cached bookings
+        // Then - should restore local bookings from CoreData
         #expect(sut.bookingsViewState == .loaded(initialBookings, hasMoreItems: true))
     }
 
@@ -440,7 +441,7 @@ final class POSBookingListControllerTests {
         // Given - start a search
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
+
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
         await sut.searchBookings(searchTerm: "test")

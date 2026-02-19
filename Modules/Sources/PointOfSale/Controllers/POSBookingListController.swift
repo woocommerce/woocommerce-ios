@@ -38,7 +38,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     private(set) var selectedDate: Date
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
-    private var cachedBookings: [POSBooking] = []
     private var activeSearchTerm: String?
     private(set) var selectedBooking: POSBooking?
     private let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol
@@ -74,8 +73,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         } else {
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
         }
-        setCachedData()
-        setLoadingState()
+        setLocalDataOrLoadingState()
         await loadFirstPage()
     }
 
@@ -150,14 +148,15 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func selectDate(_ date: Date) async {
         selectedDate = date
-        cachedBookings = []
         let filters = dateFilters(for: date)
         if let searchTerm = activeSearchTerm {
             fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
+            bookingsViewState = .loading([])
         } else {
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
+            let localBookings = fetchStrategy.fetchLocalBookings()
+            bookingsViewState = .loading(localBookings)
         }
-        bookingsViewState = .loading([])
         await loadFirstPage()
     }
 
@@ -189,8 +188,9 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     func clearSearchBookings() {
         activeSearchTerm = nil
         fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
-        if cachedBookings.isNotEmpty {
-            bookingsViewState = .loaded(cachedBookings, hasMoreItems: true)
+        let localBookings = fetchStrategy.fetchLocalBookings()
+        if localBookings.isNotEmpty {
+            bookingsViewState = .loaded(localBookings, hasMoreItems: true)
         } else {
             bookingsViewState = .loading([])
             Task {
@@ -249,16 +249,18 @@ private extension POSBookingListController {
         }
     }
 
-    func setLoadingState() {
-        if !fetchStrategy.showsLoadingWithItems {
+    func setLocalDataOrLoadingState() {
+        let localBookings = fetchStrategy.fetchLocalBookings()
+        if localBookings.isNotEmpty {
+            bookingsViewState = .loading(localBookings)
+        } else if !fetchStrategy.showsLoadingWithItems {
             bookingsViewState = .loading([])
-            return
-        }
-
-        let bookings = bookingsViewState.bookings
-        let isInitialState = bookingsViewState.isLoading && bookings.isEmpty
-        if !isInitialState {
-            bookingsViewState = .loading(bookings)
+        } else {
+            let bookings = bookingsViewState.bookings
+            let isInitialState = bookingsViewState.isLoading && bookings.isEmpty
+            if !isInitialState {
+                bookingsViewState = .loading(bookings)
+            }
         }
     }
 
@@ -280,27 +282,10 @@ private extension POSBookingListController {
                 selectedBooking = updatedSelectedBooking
             }
 
-            if fetchStrategy.supportsCaching {
-                cachedBookings = allBookings
-            }
-
             return pagedBookings.hasMorePages
         } catch POSBookingServiceError.requestCancelled {
             return true
         }
-    }
-
-    @MainActor
-    func setCachedData() {
-        guard fetchStrategy.supportsCaching else {
-            return
-        }
-
-        guard !bookingsViewState.bookings.isEmpty || !cachedBookings.isEmpty else {
-            return
-        }
-
-        bookingsViewState = .loading(cachedBookings)
     }
 
     @MainActor
@@ -309,9 +294,6 @@ private extension POSBookingListController {
             booking.id == updatedBooking.id ? updatedBooking : booking
         }
         bookingsViewState = bookingsViewState.updatingBookings(with: updatedBookings)
-        cachedBookings = cachedBookings.map { booking in
-            booking.id == updatedBooking.id ? updatedBooking : booking
-        }
         if selectedBooking?.id == updatedBooking.id {
             selectedBooking = updatedBooking
         }

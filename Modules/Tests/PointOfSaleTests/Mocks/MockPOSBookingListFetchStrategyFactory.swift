@@ -23,7 +23,7 @@ final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyF
     func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         lastSearchTerm = searchTerm
         searchStrategyCallCount += 1
-        searchStrategyResult
+        return searchStrategyResult
     }
 }
 

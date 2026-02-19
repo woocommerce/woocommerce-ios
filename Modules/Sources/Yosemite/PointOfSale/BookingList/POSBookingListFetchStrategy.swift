@@ -53,6 +53,10 @@ struct POSSearchBookingListFetchStrategy: POSBookingListFetchStrategy {
     let supportsCaching: Bool = false
     let showsLoadingWithItems: Bool = false
 
+    var id: String {
+        "POSSearchBookingListFetchStrategy-\(searchTerm)-\(filters?.startDateAfter ?? "none")"
+    }
+
     init(bookingService: POSBookingServiceProtocol, siteID: Int64, searchTerm: String, filters: BookingFilters? = nil, pageSize: Int = 25) {
         self.bookingService = bookingService
         self.siteID = siteID

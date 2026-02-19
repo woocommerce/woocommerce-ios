@@ -8,25 +8,31 @@ import struct Networking.BookingOrderInfo
 import struct Networking.BookingResource
 import protocol NetworkingCore.POSOrdersRemoteProtocol
 import class WooFoundationCore.CurrencyFormatter
+import Storage
 
 public final class POSBookingService: POSBookingServiceProtocol {
     private let siteID: Int64
     private let bookingsRemote: BookingsRemoteProtocol
     private let ordersRemote: POSOrdersRemoteProtocol
     private let mapper: POSBookingMapper
+    private let storageBookingMapper: StorageBookingToPOSBookingMapper
     private let orderMapper: POSOrderMapper
     private let resourceCache = BookingResourceCache()
+    private let storageManager: StorageManagerType?
 
     public init(siteID: Int64,
                 bookingsRemote: BookingsRemoteProtocol,
                 ordersRemote: POSOrdersRemoteProtocol,
                 currencyFormatter: CurrencyFormatter,
+                storageManager: StorageManagerType? = nil,
                 siteSettings: [SiteSetting] = []) {
         self.siteID = siteID
         self.bookingsRemote = bookingsRemote
         self.ordersRemote = ordersRemote
         self.mapper = POSBookingMapper(currencyFormatter: currencyFormatter, siteSettings: siteSettings)
+        self.storageBookingMapper = StorageBookingToPOSBookingMapper(currencyFormatter: currencyFormatter, siteSettings: siteSettings)
         self.orderMapper = POSOrderMapper(currencyFormatter: currencyFormatter)
+        self.storageManager = storageManager
     }
 
     public func fetchBookings(siteID: Int64,
@@ -34,6 +40,34 @@ public final class POSBookingService: POSBookingServiceProtocol {
                               pageSize: Int,
                               filters: BookingFilters?,
                               searchQuery: String?) async throws -> PagedItems<POSBooking> {
+        // Page 1 with date filters and no search: try local cache first
+        if pageNumber == 1, searchQuery == nil, let filters, let storageManager {
+            let cachedBookings = fetchCachedBookings(storageManager: storageManager, siteID: siteID, filters: filters)
+            if cachedBookings.isNotEmpty {
+                triggerBackgroundRefresh(siteID: siteID, pageSize: pageSize, filters: filters)
+                return PagedItems(items: cachedBookings, hasMorePages: true, totalItems: nil)
+            }
+        }
+
+        return try await fetchRemoteBookings(
+            siteID: siteID,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            filters: filters,
+            searchQuery: searchQuery
+        )
+    }
+
+}
+
+// MARK: - Remote Fetching
+
+private extension POSBookingService {
+    func fetchRemoteBookings(siteID: Int64,
+                             pageNumber: Int,
+                             pageSize: Int,
+                             filters: BookingFilters?,
+                             searchQuery: String?) async throws -> PagedItems<POSBooking> {
         do {
             let bookings = try await bookingsRemote.loadAllBookings(
                 for: siteID,
@@ -67,6 +101,17 @@ public final class POSBookingService: POSBookingServiceProtocol {
                     return nil
                 }
                 return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
+            }
+
+            // Persist to CoreData for caching
+            if let storageManager, searchQuery == nil {
+                persistBookings(
+                    storageManager: storageManager,
+                    bookings: bookings,
+                    orders: Array(orders.values),
+                    siteID: siteID,
+                    filters: pageNumber == 1 ? filters : nil
+                )
             }
 
             let hasMorePages = bookings.count == pageSize
@@ -185,9 +230,117 @@ private extension POSBookingService {
     }
 }
 
+// MARK: - Local Storage
+
+private extension POSBookingService {
+    func fetchCachedBookings(storageManager: StorageManagerType, siteID: Int64, filters: BookingFilters) -> [POSBooking] {
+        let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
+        let descriptor = NSSortDescriptor(keyPath: \Storage.Booking.startDate, ascending: true)
+        let resultsController = ResultsController<Storage.Booking>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor]
+        )
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            return []
+        }
+
+        let readOnlyBookings = resultsController.fetchedObjects
+
+        // Load resources from storage
+        let resourceIDs = Set(readOnlyBookings.compactMap { $0.resourceID != 0 ? $0.resourceID : nil })
+        let storedResources: [Int64: BookingResource] = {
+            guard !resourceIDs.isEmpty else { return [:] }
+            let resourcePredicate = NSPredicate(format: "siteID == %lld AND resourceID IN %@", siteID, Array(resourceIDs))
+            let resourceDescriptor = NSSortDescriptor(keyPath: \Storage.BookingResource.resourceID, ascending: true)
+            let resourceRC = ResultsController<Storage.BookingResource>(
+                storageManager: storageManager,
+                matching: resourcePredicate,
+                sortedBy: [resourceDescriptor]
+            )
+            do {
+                try resourceRC.performFetch()
+            } catch {
+                return [:]
+            }
+            return Dictionary(uniqueKeysWithValues: resourceRC.fetchedObjects.map { ($0.resourceID, $0) })
+        }()
+
+        return readOnlyBookings.compactMap { booking in
+            let resource = storedResources[booking.resourceID]
+            return storageBookingMapper.map(booking: booking, resource: resource)
+        }
+    }
+
+    func triggerBackgroundRefresh(siteID: Int64, pageSize: Int, filters: BookingFilters?) {
+        Task { [weak self] in
+            _ = try? await self?.fetchRemoteBookings(
+                siteID: siteID,
+                pageNumber: 1,
+                pageSize: pageSize,
+                filters: filters,
+                searchQuery: nil
+            )
+        }
+    }
+
+    func persistBookings(storageManager: StorageManagerType,
+                         bookings: [Networking.Booking],
+                         orders: [Order],
+                         siteID: Int64,
+                         filters: BookingFilters?) {
+        storageManager.performAndSave({ storage in
+            // Smart deletion: only delete bookings matching the filter scope on page 1
+            if let filters {
+                let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
+                storage.deleteBookings(matching: predicate)
+            }
+
+            // Upsert bookings
+            let bookingIDs = bookings.map { $0.bookingID }
+            let storedBookings = storage.loadBookings(siteID: siteID, bookingIDs: bookingIDs)
+
+            for readOnlyBooking in bookings {
+                let storageBooking = storedBookings.first { $0.bookingID == readOnlyBooking.bookingID } ??
+                    storage.insertNewObject(ofType: Storage.Booking.self)
+
+                if let associatedOrder = orders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
+                    let readOnlyOrderInfo = BookingOrderInfo(booking: readOnlyBooking, order: associatedOrder)
+
+                    let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
+
+                    let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
+                    if let readOnlyProductInfo = readOnlyOrderInfo.productInfo {
+                        productInfo.update(with: readOnlyProductInfo)
+                    }
+                    orderInfo.productInfo = productInfo
+
+                    let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
+                    if let readOnlyCustomerInfo = readOnlyOrderInfo.customerInfo {
+                        customerInfo.update(with: readOnlyCustomerInfo)
+                    }
+                    orderInfo.customerInfo = customerInfo
+
+                    let paymentInfo = orderInfo.paymentInfo ?? storage.insertNewObject(ofType: Storage.BookingPaymentInfo.self)
+                    if let readOnlyPaymentInfo = readOnlyOrderInfo.paymentInfo {
+                        paymentInfo.update(with: readOnlyPaymentInfo)
+                    }
+                    orderInfo.paymentInfo = paymentInfo
+
+                    orderInfo.update(with: readOnlyOrderInfo)
+                    storageBooking.orderInfo = orderInfo
+                }
+
+                storageBooking.update(with: readOnlyBooking)
+            }
+        }, completion: nil, on: .main)
+    }
+}
+
 // MARK: - BookingResourceCache
-// Caches booking resources across pages to avoid redundant network requests,
-// since multiple bookings often share the same resource. Cleared on page 1 reload.
 
 private actor BookingResourceCache {
     private var cache: [Int64: BookingResource] = [:]

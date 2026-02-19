@@ -50,6 +50,16 @@ CONTRIBUTING.md                  # PR merge policy
 .swiftlint.yml                   # SwiftLint configuration (opt-in rules only)
 ```
 
+## Bootstrap (Required Once)
+
+Use this to make builds and tests runnable from a clean checkout:
+
+```bash
+# Ensure Xcode 14+ is installed and selected.
+# Ensure Ruby matches .ruby-version.
+bundle install && bundle exec rake dependencies
+```
+
 ## Build Commands
 
 ```bash
@@ -226,6 +236,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 - **Test data**: Use `.fake()` from Fakes module and `.copy()` from Copiable
 - **Test plan**: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
 - See `Modules/Tests/CLAUDE.md` for detailed async testing patterns
+- UI tests require a local mock server: run `rake mocks` and use the `WooCommerceUITests` scheme
 
 ## Localization
 

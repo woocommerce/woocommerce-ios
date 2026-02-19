@@ -31,6 +31,7 @@ struct POSBookingDateBarView: View {
                         .foregroundStyle(tintColor)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(Localization.previousDay)
 
                 Button {
                     showingCalendar = true
@@ -46,6 +47,7 @@ struct POSBookingDateBarView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(String(format: Localization.selectedDateFormat, formattedDate))
                 .popover(isPresented: $showingCalendar) {
                     POSBookingCalendarView(
                         selectedDate: bookingsModel.bookingsController.selectedDate,
@@ -65,6 +67,7 @@ struct POSBookingDateBarView: View {
                         .foregroundStyle(tintColor)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(Localization.nextDay)
 
                 Spacer()
             }
@@ -81,4 +84,24 @@ struct POSBookingDateBarView: View {
 private enum Constants {
     static let barHeight: CGFloat = 62
     static let dateTextMinWidth: CGFloat = 140
+}
+
+private enum Localization {
+    static let previousDay = NSLocalizedString(
+        "pos.bookingDateBar.previousDay",
+        value: "Previous day",
+        comment: "Accessibility label for the previous day button in the bookings date bar."
+    )
+
+    static let nextDay = NSLocalizedString(
+        "pos.bookingDateBar.nextDay",
+        value: "Next day",
+        comment: "Accessibility label for the next day button in the bookings date bar."
+    )
+
+    static let selectedDateFormat = NSLocalizedString(
+        "pos.bookingDateBar.selectedDate",
+        value: "%@, tap to open calendar",
+        comment: "Accessibility label for the date button in the bookings date bar. %@ is the formatted date."
+    )
 }

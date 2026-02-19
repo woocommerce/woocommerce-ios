@@ -167,12 +167,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 // MARK: - Date Helpers
 
 extension POSBookingListController {
-    static func todayInSiteTimezone(_ timezone: TimeZone) -> Date {
-        var calendar = Calendar.current
-        calendar.timeZone = timezone
-        return calendar.startOfDay(for: Date())
-    }
-
     func dateFilters(for date: Date) -> BookingFilters {
         var calendar = Calendar.current
         calendar.timeZone = siteTimezone
@@ -194,6 +188,12 @@ extension POSBookingListController {
 // MARK: - Private
 
 private extension POSBookingListController {
+    static func todayInSiteTimezone(_ timezone: TimeZone) -> Date {
+        var calendar = Calendar.current
+        calendar.timeZone = timezone
+        return calendar.startOfDay(for: Date())
+    }
+
     @MainActor
     func loadFirstPage() async {
         do {

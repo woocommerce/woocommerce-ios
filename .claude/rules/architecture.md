@@ -37,9 +37,11 @@ ServiceLocator.stores.dispatch(action)
 - Should not contain business logic — delegate to ViewModels
 
 ## ViewModels
-- Expose state via `@Published` properties or Combine publishers
+- Prefer `Observation` framework with `@Observable` for new view models
+- For existing `ObservableObject` view models, expose state via `@Published` properties or Combine publishers
 - Dispatch Yosemite actions and handle results
 - Should be testable without UI dependencies
+- See `Modules/Tests/CLAUDE.md` for `@Observable` testing patterns using `withObservationTracking`
 
 ## Immutability
 - Networking/Yosemite model entities are immutable (read-only structs)

@@ -94,10 +94,12 @@ private extension WPComPushNotificationsBenefitsViewModel {
                 variant = .pluginUpdate
                 pluginVersion = currentVersion
             } else {
+                // TODO: add error handling for unexpected case
                 variant = .connect
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
+            // TODO: add error handling for unexpected case
             variant = .connect
         }
     }

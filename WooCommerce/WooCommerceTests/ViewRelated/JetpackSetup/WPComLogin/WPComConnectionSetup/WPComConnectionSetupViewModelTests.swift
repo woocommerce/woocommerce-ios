@@ -225,6 +225,58 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertEqual(mockHandler.didCancelWebViewCallCount, 1)
     }
 
+    // MARK: - setPluginOutdatedState Tests
+
+    func test_setPluginOutdatedState_sets_connect_to_success_and_checkPlugin_to_failure() {
+        // Given
+        let viewModel = makeViewModel()
+
+        // When
+        viewModel.setPluginOutdatedState(version: "10.4.0")
+
+        // Then
+        XCTAssertEqual(viewModel.steps[0].status, .success)
+        XCTAssertEqual(viewModel.steps[1].status, .failure(error: .outdatedPlugin(version: "10.4.0")))
+        XCTAssertEqual(viewModel.steps[2].status, .notStarted)
+    }
+
+    func test_setPluginOutdatedState_shows_updatePlugin_primary_and_tryAgain_secondary() {
+        // Given
+        let viewModel = makeViewModel()
+
+        // When
+        viewModel.setPluginOutdatedState(version: "10.4.0")
+
+        // Then
+        XCTAssertEqual(viewModel.primaryButtonTitle, "Update plugin")
+        XCTAssertTrue(viewModel.isPrimaryButtonEnabled)
+        XCTAssertTrue(viewModel.isShowingSecondaryButton)
+        XCTAssertEqual(viewModel.secondaryButtonTitle, "Try again")
+    }
+
+    func test_onAppear_does_not_call_handler_start_after_setPluginOutdatedState() {
+        // Given
+        let viewModel = makeViewModel()
+        viewModel.setPluginOutdatedState(version: "10.4.0")
+
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertEqual(mockHandler.startCallCount, 0)
+    }
+
+    func test_onAppear_calls_handler_start_when_in_initial_state() {
+        // Given
+        let viewModel = makeViewModel()
+
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertEqual(mockHandler.startCallCount, 1)
+    }
+
     // MARK: - Helpers
 
     private func makeViewModel() -> WPComConnectionSetupViewModel {

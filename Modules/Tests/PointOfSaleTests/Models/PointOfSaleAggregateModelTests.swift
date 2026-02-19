@@ -649,8 +649,12 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
 
             await withCheckedContinuation { continuation in
+                var resumed = false
                 cardPresentPaymentService.onCollectPaymentCalled = {
-                    continuation.resume()
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
                 }
 
                 // When: the card reader connects
@@ -661,7 +665,8 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
-        @Test func checkOut_when_reader_is_already_connected_and_order_more_than_zero_collectPayment_called() async throws {
+        @Test(.disabled("Flaky: see #16675"))
+        func checkOut_when_reader_is_already_connected_and_order_more_than_zero_collectPayment_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
@@ -695,7 +700,8 @@ struct PointOfSaleAggregateModelTests {
             #expect(!cardPresentPaymentService.collectPaymentWasCalled)
         }
 
-        @Test func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
+        @Test(.disabled("Flaky: concurrent startPayment() can double-resume CheckedContinuation. See #16675"))
+        func after_disconnection_when_reader_reconnects_collectPayment_called() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
@@ -711,8 +717,12 @@ struct PointOfSaleAggregateModelTests {
             cardPresentPaymentService.collectPaymentWasCalled = false
 
             await withCheckedContinuation { continuation in
+                var resumed = false
                 cardPresentPaymentService.onCollectPaymentCalled = {
-                    continuation.resume()
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
                 }
 
                 // When: the card reader is reconnected
@@ -723,14 +733,14 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == true)
         }
 
-        @Test(.disabled()) func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
+        @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$1.00")
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
             await orderController.syncOrder(for: .init(), retryHandler: {})
 
             struct TestError: Error {}

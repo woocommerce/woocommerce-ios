@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pos-no-bookings.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -4,7 +4,7 @@ import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-import protocol WooFoundation.Analytics
+import WooFoundation
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
@@ -117,6 +117,10 @@ final class PushNotificationsManager: PushNotesManager {
     private var selfDrivenPushNotificationEnabled: Bool?
     private var pendingTokenData: Data?
 
+    /// Continuation used by `registerDeviceAndWaitForTokenAcceptance()` to wait for the device token
+    /// delivered asynchronously via `registerDeviceToken(with:)`.
+    private var deviceTokenContinuation: CheckedContinuation<String, Error>?
+
     /// Initializes the PushNotificationsManager.
     ///
     /// - Parameter configuration: PushNotificationsConfiguration Instance that should be used.
@@ -172,6 +176,44 @@ extension PushNotificationsManager {
     func registerForRemoteNotifications() {
         DDLogInfo("📱 Registering for Remote Notifications...")
         configuration.application.registerForRemoteNotifications()
+    }
+
+    /// Registers for remote notifications, requests authorization, waits for the device token,
+    /// and sends it to the push-tokens endpoint.
+    /// - Returns: The token ID on success.
+    /// - Throws: If any step in the registration pipeline fails.
+    @MainActor
+    func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64 {
+        // 1. Register with iOS for remote notifications
+        registerForRemoteNotifications()
+
+        // 2. Request authorization
+        let _ = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            ensureAuthorizationIsRequested(includesProvisionalAuth: false) { granted in
+                continuation.resume(returning: granted)
+            }
+        }
+
+        // 3. Wait for device token from iOS
+        let deviceToken = try await waitForDeviceToken()
+
+        // 4. Send token to endpoint and wait for acceptance
+        return try await withCheckedThrowingContinuation { continuation in
+            registerSelfDrivenPushNotificationFlow(with: deviceToken) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
+    /// Waits for the device token to arrive via `registerDeviceToken(with:)`.
+    /// Returns immediately if a token is already available.
+    private func waitForDeviceToken() async throws -> String {
+        if let existingToken = registrationState.deviceToken {
+            return existingToken
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            deviceTokenContinuation = continuation
+        }
     }
 
 
@@ -260,6 +302,15 @@ extension PushNotificationsManager {
 
         registrationState.applyNewDeviceToken(newToken)
 
+        // Resume any pending continuation waiting for the device token
+        // (from registerDeviceAndWaitForTokenAcceptance). The caller handles
+        // the self-driven registration flow, so we skip the existing path.
+        if let continuation = deviceTokenContinuation {
+            deviceTokenContinuation = nil
+            continuation.resume(returning: newToken)
+            return
+        }
+
         func registerForWPComPushNotifications() {
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { (device, error) in
@@ -308,6 +359,14 @@ extension PushNotificationsManager {
     ///
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
+
+        // Resume any pending continuation so the awaiting caller gets the error
+        if let continuation = deviceTokenContinuation {
+            deviceTokenContinuation = nil
+            continuation.resume(throwing: error)
+            return
+        }
+
         unregisterForRemoteNotifications {}
     }
 
@@ -651,7 +710,9 @@ private extension PushNotificationsManager {
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
             siteID: siteID,
             device: device,
-            applicationID: WooConstants.pushApplicationID
+            applicationID: WooConstants.pushApplicationID,
+            deviceLocale: Locale.current.languageRegionIdentifier ?? Locale.current.identifier,
+            appVersion: Bundle.main.version
         ) { [weak self] result in
             guard let self = self else { return }
 

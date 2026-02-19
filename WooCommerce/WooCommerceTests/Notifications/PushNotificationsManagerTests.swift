@@ -771,7 +771,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, onCompletion):
+            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Failure", code: 404)))
             default:
                 break
@@ -845,7 +845,7 @@ private extension PushNotificationsManagerTests {
     func mockSelfDrivenRegistrationActions(token: Int64 = 42, error: Error? = nil) {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case .registerDeviceForSelfDrivenPushNotifications(_, _, _, let completion):
+            case .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, let completion):
                 if let error {
                     completion(.failure(error))
                 } else {

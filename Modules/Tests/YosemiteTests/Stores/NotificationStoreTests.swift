@@ -454,7 +454,9 @@ final class NotificationStoreTests: XCTestCase {
             let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
                 device: self.sampleAPNSDevice(),
-                applicationID: self.sampleApplicationID
+                applicationID: self.sampleApplicationID,
+                deviceLocale: "en_US",
+                appVersion: "1.0.0"
             ) { result in
                 promise(result)
             }
@@ -483,7 +485,9 @@ final class NotificationStoreTests: XCTestCase {
             let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
                 device: self.sampleAPNSDevice(),
-                applicationID: self.sampleApplicationID
+                applicationID: self.sampleApplicationID,
+                deviceLocale: "en_US",
+                appVersion: "1.0.0"
             ) { result in
                 promise(result)
             }

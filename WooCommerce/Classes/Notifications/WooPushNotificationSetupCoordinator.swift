@@ -110,8 +110,20 @@ private extension WooPushNotificationSetupCoordinator {
                 navigationController?.dismiss(animated: true)
                 onSetupCompleted?()
             },
-            onUpdatePlugin: {
-                // TODO: Implement plugin update flow in follow-up PR
+            onUpdatePlugin: { [weak navigationController, stores] in
+                guard let navigationController,
+                      let site = stores.sessionManager.defaultSite,
+                      let url = URL(string: site.adminURL + "plugin-install.php?tab=plugin-information&plugin=woocommerce") else { return }
+                let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.updateWooCommerce, initialURL: url)
+                let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+                let webNavController = WooNavigationController(rootViewController: webViewController)
+                webViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
+                    systemItem: .done,
+                    primaryAction: UIAction { [weak webNavController] _ in
+                        webNavController?.dismiss(animated: true)
+                    }
+                )
+                navigationController.present(webNavController, animated: true)
             }
         )
         if let pluginOutdatedVersion {
@@ -155,6 +167,11 @@ private extension WooPushNotificationSetupCoordinator {
             "wooPushNotificationSetupCoordinator.flowTitle",
             value: "Connect to WordPress.com",
             comment: "Title of the self-driven push notification setup flow"
+        )
+        static let updateWooCommerce = NSLocalizedString(
+            "wooPushNotificationSetupCoordinator.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin during push notification setup"
         )
     }
 }

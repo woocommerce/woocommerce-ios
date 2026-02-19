@@ -13,11 +13,11 @@ final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyF
     var searchStrategyResult: POSBookingListFetchStrategy = MockPOSBookingListFetchStrategy()
     var bookingService: POSBookingServiceProtocol = MockPOSBookingService()
 
-    func defaultStrategy() -> POSBookingListFetchStrategy {
+    func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         defaultStrategyResult
     }
 
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
+    func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         searchStrategyResult
     }
 }

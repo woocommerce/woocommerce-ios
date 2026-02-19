@@ -47,7 +47,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         self.bookingsViewState = initialState
         self.bookingListFetchStrategyFactory = bookingListFetchStrategyFactory
         self.bookingService = bookingListFetchStrategyFactory.bookingService
-        self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy()
+        self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: nil)
     }
 
     @MainActor
@@ -100,7 +100,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func searchBookings(searchTerm: String) async {
-        fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: nil)
         bookingsViewState = .loading([])
         await loadFirstPage()
     }

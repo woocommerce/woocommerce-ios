@@ -7,8 +7,8 @@ import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
 public protocol POSBookingListFetchStrategyFactoryProtocol {
-    func defaultStrategy() -> POSBookingListFetchStrategy
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy
+    func defaultStrategy(filters: BookingFilters?) -> POSBookingListFetchStrategy
+    func searchStrategy(searchTerm: String, filters: BookingFilters?) -> POSBookingListFetchStrategy
     var bookingService: POSBookingServiceProtocol { get }
 }
 
@@ -37,11 +37,11 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
         )
     }
 
-    public func defaultStrategy() -> POSBookingListFetchStrategy {
-        POSDefaultBookingListFetchStrategy(bookingService: bookingService, siteID: siteID)
+    public func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
+        POSDefaultBookingListFetchStrategy(bookingService: bookingService, siteID: siteID, filters: filters)
     }
 
-    public func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
-        POSSearchBookingListFetchStrategy(bookingService: bookingService, siteID: siteID, searchTerm: searchTerm)
+    public func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
+        POSSearchBookingListFetchStrategy(bookingService: bookingService, siteID: siteID, searchTerm: searchTerm, filters: filters)
     }
 }

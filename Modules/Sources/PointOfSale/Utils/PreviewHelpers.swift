@@ -510,11 +510,11 @@ struct POSPreviewHelpers {
 final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
     let bookingService: POSBookingServiceProtocol = POSBookingServicePreview()
 
-    func defaultStrategy() -> POSBookingListFetchStrategy {
+    func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
 
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
+    func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
 }

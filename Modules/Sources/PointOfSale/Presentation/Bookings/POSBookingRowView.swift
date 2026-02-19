@@ -40,7 +40,7 @@ struct POSBookingRowView: View {
 
             Spacer()
 
-            POSBookingAvatarView(imageURL: booking.resourceImageURL)
+            POSBookingAvatarView(imageURL: booking.resourceImageURL, resourceName: booking.resourceName)
         }
     }
 

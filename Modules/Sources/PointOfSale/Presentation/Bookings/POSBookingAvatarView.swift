@@ -5,6 +5,14 @@ struct POSBookingAvatarView: View {
     let imageURL: String?
     let resourceName: String?
 
+    private var fillColor: Color {
+        Color(light: .posDefault, dark: .posSurfaceDim)
+    }
+
+    private var textColor: Color {
+        Color(light: .posOnSurfaceVariantLowest, dark: .posOnSurfaceVariantHighest)
+    }
+
     var body: some View {
         if let imageURL, let url = URL(string: imageURL) {
             KFImage
@@ -18,7 +26,7 @@ struct POSBookingAvatarView: View {
                 .clipShape(Circle())
                 .overlay(
                     Circle()
-                        .stroke(Color.posOutlineVariant, lineWidth: Constants.borderWidth)
+                        .stroke(fillColor, lineWidth: Constants.borderWidth)
                 )
         } else if resourceName != nil {
             initialsPlaceholder
@@ -36,12 +44,12 @@ struct POSBookingAvatarView: View {
     private var initialsPlaceholder: some View {
         if let initials = Self.initials(from: resourceName) {
             Circle()
-                .fill(Color.posOutline)
+                .fill(fillColor)
                 .frame(width: Constants.avatarSize, height: Constants.avatarSize)
                 .overlay(
                     Text(initials)
                         .font(.system(size: Constants.initialsSize, weight: .medium))
-                        .foregroundStyle(Color.posOnPrimary)
+                        .foregroundStyle(textColor)
                 )
         }
     }

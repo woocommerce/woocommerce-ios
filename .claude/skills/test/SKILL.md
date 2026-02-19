@@ -8,17 +8,24 @@ argument-hint: "[target] [class] [method]"
 
 Run unit tests for the WooCommerce iOS project. Determine scope from $ARGUMENTS:
 
-- **No arguments**: Run the full test suite
-- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`): Run that module's tests with `-only-testing:"<Module>Tests"`
-- **Test class name**: Run only that class with `-only-testing:"WooCommerceTests/<ClassName>"`
-- **Test method name**: Run only that method with `-only-testing:"WooCommerceTests/<ClassName>/<method>"`
+- **No arguments**: Run the full test suite using rake:
+```bash
+bundle exec rake test 2>&1 | tail -100
+```
 
-Base command:
+- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`): Run that module's tests:
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -sdk iphonesimulator -configuration Debug build test \
-  [-only-testing:"<target>"] 2>&1 | tail -100
+  -sdk iphonesimulator test -only-testing:"<Module>Tests" 2>&1 | tail -100
+```
+
+- **Test class or method**: Run targeted tests:
+```bash
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -sdk iphonesimulator test \
+  -only-testing:"WooCommerceTests/<ClassName>[/<method>]" 2>&1 | tail -100
 ```
 
 After running:

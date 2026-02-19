@@ -8,18 +8,14 @@ argument-hint: "[--fix]"
 
 Run SwiftLint to check for style violations.
 
-If $ARGUMENTS contains "fix" or "autocorrect", run with `--fix`:
+If $ARGUMENTS contains "fix" or "autocorrect":
 ```bash
-pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
-  swift package plugin --allow-writing-to-directory .. \
-  --allow-writing-to-package-directory swiftlint --working-directory .. --quiet --fix 2>&1 && popd
+bundle exec rake lint:autocorrect
 ```
 
 Otherwise, run check only:
 ```bash
-pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
-  swift package plugin --allow-writing-to-directory .. \
-  --allow-writing-to-package-directory swiftlint --working-directory .. --quiet 2>&1 && popd
+bundle exec rake lint
 ```
 
 After running:

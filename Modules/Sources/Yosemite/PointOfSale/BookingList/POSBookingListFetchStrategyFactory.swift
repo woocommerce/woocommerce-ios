@@ -5,7 +5,6 @@ import class Networking.OrdersRemote
 import class WooFoundationCore.CurrencyFormatter
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
-import protocol Storage.StorageManagerType
 
 public protocol POSBookingListFetchStrategyFactoryProtocol {
     func defaultStrategy(filters: BookingFilters?) -> POSBookingListFetchStrategy
@@ -22,7 +21,6 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
                 currencyFormatter: CurrencyFormatter,
-                storageManager: StorageManagerType,
                 siteSettings: [SiteSetting] = []) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
@@ -35,7 +33,6 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
             bookingsRemote: bookingsRemote,
             ordersRemote: ordersRemote,
             currencyFormatter: currencyFormatter,
-            storageManager: storageManager,
             siteSettings: siteSettings
         )
     }

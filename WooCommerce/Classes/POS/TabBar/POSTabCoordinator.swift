@@ -277,7 +277,6 @@ private extension POSTabCoordinator {
                         selectedSite: defaultSitePublisher,
                         appPasswordSupportState: isAppPasswordSupported,
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-                        storageManager: ServiceLocator.storageManager,
                         siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
                     ) : nil
 

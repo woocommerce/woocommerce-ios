@@ -177,8 +177,8 @@ extension POSBookingListController {
         formatter.timeZone = siteTimezone
 
         return BookingFilters(
-            startDateAfter: formatter.string(from: startOfDay),
-            startDateBefore: formatter.string(from: endOfDay)
+            startDateBefore: formatter.string(from: endOfDay),
+            startDateAfter: formatter.string(from: startOfDay)
         )
     }
 }

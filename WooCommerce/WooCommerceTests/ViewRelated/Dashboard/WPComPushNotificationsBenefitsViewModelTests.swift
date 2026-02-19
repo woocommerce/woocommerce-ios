@@ -145,11 +145,14 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
     // MARK: - Helpers
 
+    private let sampleSiteID: Int64 = 123
+
     private func makeViewModel(
         jetpackConnectionService: JetpackConnectionServiceProtocol = MockJetpackConnectionService(),
         pluginVersionChecker: PluginVersionCheckerProtocol? = nil
     ) -> WPComPushNotificationsBenefitsViewModel {
         WPComPushNotificationsBenefitsViewModel(
+            siteID: sampleSiteID,
             jetpackConnectionService: jetpackConnectionService,
             pluginVersionChecker: pluginVersionChecker,
             onDismiss: {}

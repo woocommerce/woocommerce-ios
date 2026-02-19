@@ -181,6 +181,6 @@ fileprivate extension WPComPushNotificationsBenefitsView {
 
 #Preview {
     WPComPushNotificationsBenefitsView(
-        viewModel: WPComPushNotificationsBenefitsViewModel(onDismiss: {})
+        viewModel: WPComPushNotificationsBenefitsViewModel(siteID: 0, onDismiss: {})
     )
 }

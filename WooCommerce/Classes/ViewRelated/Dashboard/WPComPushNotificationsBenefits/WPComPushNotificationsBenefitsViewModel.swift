@@ -19,28 +19,23 @@ final class WPComPushNotificationsBenefitsViewModel {
     private let analytics: Analytics
     private let onDismiss: () -> Void
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
-    private let pluginVersionChecker: PluginVersionCheckerProtocol?
+    private let pluginVersionChecker: PluginVersionCheckerProtocol
 
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
-    init(jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
+    init(siteID: Int64,
+         jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
-         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
         self.jetpackConnectionService = jetpackConnectionService
         self.analytics = analytics
         self.onDismiss = onDismiss
-        self.pluginVersionChecker = pluginVersionChecker ?? {
-            guard let site = stores.sessionManager.defaultSite else {
-                return nil
-            }
-            return PluginVersionChecker(
-                siteID: site.siteID,
-                pluginPath: WooPluginRequirements.pluginPath,
-                minimumVersion: WooPluginRequirements.minimumVersion
-            )
-        }()
+        self.pluginVersionChecker = pluginVersionChecker ?? PluginVersionChecker(
+            siteID: siteID,
+            pluginPath: WooPluginRequirements.pluginPath,
+            minimumVersion: WooPluginRequirements.minimumVersion
+        )
     }
 
     func updateCoordinator(_ coordinator: WooPushNotificationSetupCoordinator) {
@@ -93,11 +88,6 @@ final class WPComPushNotificationsBenefitsViewModel {
 
 private extension WPComPushNotificationsBenefitsViewModel {
     func checkWooPluginVersion() async {
-        guard let pluginVersionChecker else {
-            variant = .connect
-            return
-        }
-
         do {
             let result = try await pluginVersionChecker.checkCompatibility()
             if case .incompatible(let currentVersion, _) = result {

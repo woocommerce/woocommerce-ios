@@ -27,7 +27,7 @@ struct POSBookingDateBarView: View {
                     Task { await bookingsModel.bookingsController.goToPreviousDay() }
                 } label: {
                     Image(systemName: "chevron.left")
-                        .font(.posButtonSymbolSmall)
+                        .font(.posButtonSymbolXSmall)
                         .foregroundStyle(tintColor)
                 }
                 .buttonStyle(.plain)
@@ -42,8 +42,8 @@ struct POSBookingDateBarView: View {
 
                         Text(formattedDate)
                             .font(.posBodySmallRegular())
+                            .fontWidth(.condensed)
                             .foregroundStyle(tintColor)
-                            .frame(minWidth: Constants.dateTextMinWidth, alignment: .leading)
                     }
                 }
                 .buttonStyle(.plain)
@@ -63,7 +63,7 @@ struct POSBookingDateBarView: View {
                     Task { await bookingsModel.bookingsController.goToNextDay() }
                 } label: {
                     Image(systemName: "chevron.right")
-                        .font(.posButtonSymbolSmall)
+                        .font(.posButtonSymbolXSmall)
                         .foregroundStyle(tintColor)
                 }
                 .buttonStyle(.plain)
@@ -72,8 +72,9 @@ struct POSBookingDateBarView: View {
                 Spacer()
             }
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            .padding(.horizontal, POSPadding.large)
-            .frame(height: Constants.barHeight)
+            .frame(height: Constants.minBarHeight)
+            .frame(minWidth: Constants.dateMinWidth, alignment: .leading)
+            .padding(.horizontal, POSPadding.medium)
 
             Divider()
                 .overlay(Color.posOutlineVariant)
@@ -82,8 +83,8 @@ struct POSBookingDateBarView: View {
 }
 
 private enum Constants {
-    static let barHeight: CGFloat = 62
-    static let dateTextMinWidth: CGFloat = 140
+    static let minBarHeight: CGFloat = 64
+    static let dateMinWidth: CGFloat = 200
 }
 
 private enum Localization {

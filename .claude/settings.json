@@ -27,14 +27,12 @@
       "Bash(gh api *)",
       "Bash(pushd BuildTools *)",
       "Bash(xcrun *)",
-      "Bash(swift build *)",
-      "Bash(swift package *)",
       "Bash(rake lint *)",
       "Bash(rake test *)",
       "Bash(rake build *)",
       "Bash(rake generate *)",
       "Bash(rake clean *)",
-      "Bash(bundle exec *)"
+      "Bash(bundle exec rake *)"
     ],
     "deny": [
       "Bash(git push --force *)",

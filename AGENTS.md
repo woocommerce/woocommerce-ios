@@ -99,6 +99,8 @@ If the simulator name `iPhone 16` is not available, try `iPhone 15` or `iPhone 1
 ```
 WooCommerce (UI: ViewControllers, SwiftUI Views, ViewModels, Coordinators)
      |
+     +----> PointOfSale (Standalone SwiftUI module, Aggregate Model architecture)
+     |
      v
 Yosemite (Business Logic: Stores, Actions, Dispatcher)
      |
@@ -139,6 +141,55 @@ ServiceLocator.stores.dispatch(action)
 - Expose state via `@Published` properties or Combine publishers
 - Dispatch Yosemite actions and handle results
 - Should be testable without UI dependencies
+
+## Point of Sale (POS) Module
+
+The POS module (`Modules/Sources/PointOfSale/`) is a **self-contained SwiftUI module** with its own architecture, distinct from the main app. It is reachable as a dedicated tab via `POSTabCoordinator`. See `Modules/Sources/PointOfSale/README.md` for full architectural documentation and `.claude/rules/architecture.md` for POS-specific rules.
+
+**Key differences from the main app:**
+
+| Aspect | Main App | PointOfSale Module |
+|--------|----------|-------------------|
+| Presentation | SwiftUI + UIKit | SwiftUI only |
+| State management | Combine + Yosemite Flux/Redux | Aggregate Model + @Observable Controllers |
+| Dependency injection | ServiceLocator + constructor injection | `POSDependencyProviding` protocol + `@Environment` |
+| Navigation | UIKit Coordinators | SwiftUI state-driven navigation |
+| Testing framework | Mixed XCTest / Swift Testing | Primarily Swift Testing |
+
+### POS Build and Test Commands
+When working on POS, you can build and test the module in isolation for faster feedback:
+```bash
+# Build PointOfSale module only
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  build-for-testing -only-testing:"PointOfSaleTests"
+
+# Run POS tests only
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  test -only-testing:"PointOfSaleTests"
+
+# Run a specific POS test class
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  test -only-testing:"PointOfSaleTests/SomeTestClass"
+```
+
+### POS Source Layout
+```
+Modules/Sources/PointOfSale/
+  Controllers/            # Business logic (order, items, coupons, order list)
+  Models/                 # State definitions (aggregate model, payment state, order stage)
+  Presentation/           # SwiftUI views organized by feature
+  ViewHelpers/            # Stateless view logic extracted for testability
+  Protocols/              # Public interfaces (POSDependencyProviding)
+  Card Present Payments/  # Stripe Terminal integration
+  Analytics/              # POS-specific event tracking
+  Utils/                  # Helpers (PreviewHelpers, audio, etc.)
+  Resources/              # Assets (images, colors)
+Modules/Tests/PointOfSaleTests/  # POS unit tests
+WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator, adaptors)
+```
 
 ## Git Conventions
 

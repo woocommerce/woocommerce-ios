@@ -1,3 +1,4 @@
+import Kingfisher
 import SwiftUI
 
 struct POSBookingAvatarView: View {
@@ -6,25 +7,29 @@ struct POSBookingAvatarView: View {
 
     var body: some View {
         if let imageURL, let url = URL(string: imageURL) {
-            AsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: Constants.avatarSize, height: Constants.avatarSize)
-                        .clipShape(Circle())
-                        .overlay(
-                            Circle()
-                                .stroke(Color.posOutlineVariant, lineWidth: Constants.borderWidth)
-                        )
-                default:
-                    initialsPlaceholder
+            KFImage
+                .url(url)
+                .placeholder {
+                    ghostAvatar
                 }
-            }
+                .resizable()
+                .scaledToFill()
+                .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+                .clipShape(Circle())
+                .overlay(
+                    Circle()
+                        .stroke(Color.posOutlineVariant, lineWidth: Constants.borderWidth)
+                )
         } else if resourceName != nil {
             initialsPlaceholder
         }
+    }
+
+    private var ghostAvatar: some View {
+        Circle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
+            .shimmering()
     }
 
     @ViewBuilder

@@ -125,24 +125,6 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    // MARK: - determineSetupVariant without plugin checker
-
-    func test_variant_is_connect_when_jetpack_connected_but_no_checker() async {
-        // Given
-        let connectionService = MockJetpackConnectionService()
-        connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: true))
-        )
-        let viewModel = makeViewModel(jetpackConnectionService: connectionService)
-
-        // When
-        await viewModel.determineSetupVariant()
-
-        // Then
-        XCTAssertEqual(viewModel.variant, .connect)
-        XCTAssertFalse(viewModel.isCheckingPlugin)
-    }
-
     // MARK: - Helpers
 
     private let sampleSiteID: Int64 = 123
@@ -159,7 +141,3 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         )
     }
 }
-
-// MARK: - WPComPushNotificationsBenefitsViewModel.Variant Equatable
-
-extension WPComPushNotificationsBenefitsViewModel.Variant: Equatable {}

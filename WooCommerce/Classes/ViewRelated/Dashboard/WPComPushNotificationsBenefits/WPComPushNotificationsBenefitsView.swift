@@ -63,6 +63,9 @@ struct WPComPushNotificationsBenefitsView: View {
         .onAppear {
             viewModel.onAppear()
         }
+        .task {
+            await viewModel.determineSetupVariant()
+        }
         .environment(\.openURL, OpenURLAction { [viewModel] url in
             viewModel.whatIsWPComTapped()
             safariURL = url

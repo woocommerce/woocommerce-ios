@@ -18,14 +18,17 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     private let analytics: Analytics
     private let onDismiss: () -> Void
+    private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let pluginVersionChecker: PluginVersionCheckerProtocol?
 
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
-    init(pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
+    init(jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
+         pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
+        self.jetpackConnectionService = jetpackConnectionService
         self.analytics = analytics
         self.onDismiss = onDismiss
         self.pluginVersionChecker = pluginVersionChecker ?? {
@@ -46,9 +49,24 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     func onAppear() {
         // TODO: Track modal shown event
-        Task {
-            await checkWooPluginVersion()
+    }
+
+    /// Fetches Jetpack connection data to determine whether the site is connected,
+    /// then checks the WooCommerce plugin version if Jetpack is connected.
+    func determineSetupVariant() async {
+        isCheckingPlugin = true
+        do {
+            let connectionData = try await jetpackConnectionService.fetchConnectionData()
+            if connectionData.currentUser.isConnected {
+                await checkWooPluginVersion()
+            } else {
+                variant = .connect
+            }
+        } catch {
+            DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
+            variant = .connect
         }
+        isCheckingPlugin = false
     }
 
     func continueTapped() {
@@ -71,6 +89,8 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 }
 
+// MARK: - Plugin version check
+
 private extension WPComPushNotificationsBenefitsViewModel {
     func checkWooPluginVersion() async {
         guard let pluginVersionChecker else {
@@ -78,7 +98,6 @@ private extension WPComPushNotificationsBenefitsViewModel {
             return
         }
 
-        isCheckingPlugin = true
         do {
             let result = try await pluginVersionChecker.checkCompatibility()
             if case .incompatible(let currentVersion, _) = result {
@@ -91,6 +110,5 @@ private extension WPComPushNotificationsBenefitsViewModel {
             DDLogError("⛔️ Plugin version check failed: \(error)")
             variant = .connect
         }
-        isCheckingPlugin = false
     }
 }

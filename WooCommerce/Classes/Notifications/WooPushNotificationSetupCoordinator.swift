@@ -17,29 +17,20 @@ final class WooPushNotificationSetupCoordinator {
         self.rootViewController = rootViewController
         self.stores = stores
         self.onSetupCompleted = onSetupCompleted
-        self.loginCoordinator = {
-            if stores.sessionManager.defaultSite?.isJetpackConnected == true {
-                return nil // no need to connect WPCom
-            }
-            return WPComLoginCoordinator(
-                title: Localization.flowTitle,
-                flow: .notificationSetup,
-                navigationController: UINavigationController(),
-                completionHandler: { [weak self] credentials in
-                    DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
-                    DispatchQueue.main.async {
-                        self?.showConnectionSetup(with: credentials)
-                    }
-            })
-        }()
     }
 
     func start() {
-        guard let loginCoordinator else {
-            DDLogDebug("📱 Site is connected to Jetpack, now checking plugin version...")
-            showConnectionSetup()
-            return
-        }
+        let loginCoordinator = WPComLoginCoordinator(
+            title: Localization.flowTitle,
+            flow: .notificationSetup,
+            navigationController: UINavigationController(),
+            completionHandler: { [weak self] credentials in
+                DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
+                DispatchQueue.main.async {
+                    self?.showConnectionSetup(with: credentials)
+                }
+        })
+        self.loginCoordinator = loginCoordinator
 
         // Capture the presenting view controller before dismissing
         let presentingVC = rootViewController.presentingViewController

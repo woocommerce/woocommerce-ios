@@ -13,6 +13,9 @@ final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
     private(set) var fetchJetpackConnectionURLCallCount = 0
     private(set) var lastAuthenticatedWithWPCom: Bool?
 
+    var fetchConnectionDataResult: Result<JetpackConnectionData, Error>?
+    private(set) var fetchConnectionDataCallCount = 0
+
     func evaluateAndConnect(siteURL: String, credentials: Credentials) async throws -> JetpackConnectionOutcome {
         evaluateAndConnectCallCount += 1
         return try evaluateAndConnectResult.get()
@@ -27,5 +30,13 @@ final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
         fetchJetpackConnectionURLCallCount += 1
         lastAuthenticatedWithWPCom = authenticatedWithWPCom
         return try fetchJetpackConnectionURLResult.get()
+    }
+
+    func fetchConnectionData() async throws -> JetpackConnectionData {
+        fetchConnectionDataCallCount += 1
+        guard let result = fetchConnectionDataResult else {
+            throw NSError(domain: "MockJetpackConnectionService", code: 0, userInfo: [NSLocalizedDescriptionKey: "fetchConnectionDataResult not set"])
+        }
+        return try result.get()
     }
 }

@@ -1,7 +1,10 @@
 import Foundation
+import Observation
+import Yosemite
 import protocol WooFoundation.Analytics
 
 @MainActor
+@Observable
 final class WPComPushNotificationsBenefitsViewModel {
 
     enum Variant {
@@ -9,22 +12,32 @@ final class WPComPushNotificationsBenefitsViewModel {
         case pluginUpdate
     }
 
-    let variant: Variant
-    let pluginVersion: String
+    private(set) var variant: Variant = .connect
+    private(set) var pluginVersion: String = ""
+    private(set) var isCheckingPlugin: Bool = false
 
     private let analytics: Analytics
     private let onDismiss: () -> Void
+    private let pluginVersionChecker: PluginVersionCheckerProtocol?
 
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
-    init(variant: Variant = .connect,
-         pluginVersion: String = "",
+    init(pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
-        self.variant = variant
-        self.pluginVersion = pluginVersion
         self.analytics = analytics
         self.onDismiss = onDismiss
+        self.pluginVersionChecker = pluginVersionChecker ?? {
+            guard let site = stores.sessionManager.defaultSite else {
+                return nil
+            }
+            return PluginVersionChecker(
+                siteID: site.siteID,
+                pluginPath: WooPluginRequirements.pluginPath,
+                minimumVersion: WooPluginRequirements.minimumVersion
+            )
+        }()
     }
 
     func updateCoordinator(_ coordinator: WooPushNotificationSetupCoordinator) {
@@ -33,6 +46,9 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     func onAppear() {
         // TODO: Track modal shown event
+        Task {
+            await checkWooPluginVersion()
+        }
     }
 
     func continueTapped() {
@@ -52,5 +68,29 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     func whatIsWPComTapped() {
         // TODO: Track link tapped event
+    }
+}
+
+private extension WPComPushNotificationsBenefitsViewModel {
+    func checkWooPluginVersion() async {
+        guard let pluginVersionChecker else {
+            variant = .connect
+            return
+        }
+
+        isCheckingPlugin = true
+        do {
+            let result = try await pluginVersionChecker.checkCompatibility()
+            if case .incompatible(let currentVersion, _) = result {
+                variant = .pluginUpdate
+                pluginVersion = currentVersion
+            } else {
+                variant = .connect
+            }
+        } catch {
+            DDLogError("⛔️ Plugin version check failed: \(error)")
+            variant = .connect
+        }
+        isCheckingPlugin = false
     }
 }

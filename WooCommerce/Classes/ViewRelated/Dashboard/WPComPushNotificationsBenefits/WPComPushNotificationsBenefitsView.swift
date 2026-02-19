@@ -26,7 +26,7 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
 }
 
 struct WPComPushNotificationsBenefitsView: View {
-    private let viewModel: WPComPushNotificationsBenefitsViewModel
+    private var viewModel: WPComPushNotificationsBenefitsViewModel
 
     @State private var safariURL: URL?
 
@@ -47,6 +47,8 @@ struct WPComPushNotificationsBenefitsView: View {
                     Spacer()
                     footer
                 }
+                .redacted(reason: viewModel.isCheckingPlugin ? .placeholder : [])
+                .shimmering(active: viewModel.isCheckingPlugin)
                 .padding([.leading, .bottom, .trailing], Layout.contentPadding)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

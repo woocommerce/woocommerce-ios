@@ -127,7 +127,7 @@ Hardware module (Stripe Terminal SDK integration)
 **Key types:**
 
 - **`CardPresentPaymentFacade`** (`Card Present Payments/CardPresentPaymentFacade.swift`) - protocol defining the payment interface. Exposes three long-lived Combine publishers (`paymentEventPublisher`, `readerConnectionStatusPublisher`, `cardReaderUpdateStatePublisher`) and async methods (`connectReader`, `collectPayment`, `cancelPayment`, `disconnectReader`)
-- **`CardPresentPaymentService`** (`WooCommerce/Classes/POS/Adaptors/Card Present Payments/`) - concrete implementation living in the app target. Dispatches `CardPresentPaymentAction` to Yosemite stores and bridges to the Hardware module's `CollectOrderPaymentUseCase`
+- **`CardPresentPaymentService`** (`WooCommerce/Classes/POS/Adaptors/Card Present Payments/`) - concrete implementation in the app target. Dispatches `CardPresentPaymentAction` to Yosemite stores and bridges to the app target's `CollectOrderPaymentUseCase` via `CardPresentPaymentCollectOrderPaymentUseCaseAdaptor`
 - **`POSPaymentModel`** (`Controllers/POSPaymentModel.swift`) - `@Observable` `@MainActor` controller that owns all payment state. Subscribes to facade publishers and maps `CardPresentPaymentEvent` stream into UI-consumable state
 - **`PointOfSalePaymentState`** (`Models/PointOfSalePaymentState.swift`) - top-level state containing `card` (`PointOfSaleCardPaymentState`) and `cash` (`PointOfSaleCashPaymentState`) sub-states
 
@@ -139,7 +139,7 @@ idle -> validatingOrder -> preparingReader -> acceptingCard -> cardInserted -> p
 
 **Event-driven communication:**
 1. `CardPresentPaymentService` publishes `CardPresentPaymentEvent` values (idle, show(eventDetails), showOnboarding)
-2. `CardPresentPaymentEventDetails` has ~47 cases covering reader scanning, connection, payment processing, results, and firmware updates
+2. `CardPresentPaymentEventDetails` cases cover reader scanning, connection, payment processing, results, and firmware updates
 3. `POSPaymentModel` subscribes with two scopes:
    - **Always-on** (`cancellables`): reader connection status, update state, onboarding, alerts
    - **Session-scoped** (`paymentSessionCancellables`): payment state, inline messages - prevents cross-flow contamination between payments

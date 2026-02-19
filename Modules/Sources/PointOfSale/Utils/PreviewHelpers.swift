@@ -38,6 +38,7 @@ import protocol Yosemite.POSBookingServiceProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.BookingFilters
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -519,7 +520,7 @@ final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrate
 }
 
 final class POSBookingServicePreview: POSBookingServiceProtocol {
-    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, filters: BookingFilters?, searchQuery: String?) async throws -> PagedItems<POSBooking> {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 

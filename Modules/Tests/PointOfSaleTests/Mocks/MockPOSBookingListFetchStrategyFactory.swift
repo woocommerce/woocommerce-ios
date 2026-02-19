@@ -6,6 +6,7 @@ import protocol Yosemite.POSBookingListFetchStrategy
 import protocol Yosemite.POSBookingServiceProtocol
 import struct Yosemite.PagedItems
 import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.BookingFilters
 
 final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol {
     var defaultStrategyResult: POSBookingListFetchStrategy = MockPOSBookingListFetchStrategy()
@@ -31,7 +32,7 @@ final class MockPOSBookingService: POSBookingServiceProtocol {
     var lastUpdatedAttendanceBookingID: Int64?
     var lastUpdatedAttendanceStatus: BookingAttendanceStatus?
 
-    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, filters: BookingFilters?, searchQuery: String?) async throws -> PagedItems<POSBooking> {
         try fetchBookingsResult.get()
     }
 

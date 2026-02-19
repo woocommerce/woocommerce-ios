@@ -704,6 +704,7 @@ extension POSPreviewHelpers {
 final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
     let bookingsViewState: POSBookingListState
     var selectedBooking: POSBooking?
+    var selectedDate: Date = Date()
 
     init(state: POSBookingListState) {
         self.bookingsViewState = state
@@ -716,6 +717,9 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func selectBooking(_ booking: POSBooking?) {
         selectedBooking = booking
     }
+    func selectDate(_ date: Date) async { selectedDate = date }
+    func goToPreviousDay() async {}
+    func goToNextDay() async {}
     func cancelBooking(bookingID: Int64) async throws {}
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
     func searchBookings(searchTerm: String) async {}

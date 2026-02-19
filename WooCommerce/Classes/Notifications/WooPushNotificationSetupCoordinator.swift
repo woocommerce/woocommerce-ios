@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
@@ -114,16 +115,10 @@ private extension WooPushNotificationSetupCoordinator {
                 guard let navigationController,
                       let site = stores.sessionManager.defaultSite,
                       let url = URL(string: site.adminURL + "plugin-install.php?tab=plugin-information&plugin=woocommerce") else { return }
-                let viewModel = DefaultAuthenticatedWebViewModel(title: Localization.updateWooCommerce, initialURL: url)
-                let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-                let webNavController = WooNavigationController(rootViewController: webViewController)
-                webViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
-                    systemItem: .done,
-                    primaryAction: UIAction { [weak webNavController] _ in
-                        webNavController?.dismiss(animated: true)
-                    }
-                )
-                navigationController.present(webNavController, animated: true)
+                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
+                let vc = UIHostingController(rootView: webView)
+                vc.modalPresentationStyle = .formSheet
+                navigationController.present(vc, animated: true)
             }
         )
         if let pluginOutdatedVersion {

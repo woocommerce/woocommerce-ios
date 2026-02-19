@@ -42,11 +42,11 @@ struct POSBookingDateBarView: View {
 
                         Text(formattedDate)
                             .font(.posBodySmallRegular())
-                            .fontWidth(.condensed)
                             .foregroundStyle(tintColor)
                     }
                 }
                 .buttonStyle(.plain)
+                .frame(minWidth: Constants.dateTextMinWidth, alignment: .center)
                 .accessibilityLabel(String(format: Localization.selectedDateFormat, formattedDate))
                 .popover(isPresented: $showingCalendar) {
                     POSBookingCalendarView(
@@ -72,10 +72,8 @@ struct POSBookingDateBarView: View {
                 Spacer()
             }
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            .frame(height: Constants.minBarHeight)
-            .frame(minWidth: Constants.dateMinWidth, alignment: .leading)
             .padding(.horizontal, POSPadding.medium)
-
+            .frame(minHeight: Constants.minBarHeight)
             Divider()
                 .overlay(Color.posOutlineVariant)
         }
@@ -84,7 +82,7 @@ struct POSBookingDateBarView: View {
 
 private enum Constants {
     static let minBarHeight: CGFloat = 64
-    static let dateMinWidth: CGFloat = 200
+    static let dateTextMinWidth: CGFloat = 120
 }
 
 private enum Localization {

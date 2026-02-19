@@ -126,7 +126,8 @@ private extension BookingStore {
                     readOnlyBookings: bookings,
                     readOnlyOrders: orders,
                     siteID: siteID,
-                    shouldDeleteExistingBookings: shouldClearCache
+                    shouldDeleteExistingBookings: shouldClearCache,
+                    deleteFilters: shouldClearCache ? nil : filters
                 )
                 let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
@@ -478,10 +479,12 @@ private extension BookingStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread* async.
     /// Also deletes existing bookings if requested.
+    /// When `deleteFilters` is provided, only bookings matching that filter scope are deleted (smart invalidation).
     func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
                                           readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
-                                          shouldDeleteExistingBookings: Bool = false) async {
+                                          shouldDeleteExistingBookings: Bool = false,
+                                          deleteFilters: BookingFilters? = nil) async {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume()
@@ -490,7 +493,8 @@ private extension BookingStore {
             upsertStoredBookingsInBackground(readOnlyBookings: readOnlyBookings,
                                              readOnlyOrders: readOnlyOrders,
                                              siteID: siteID,
-                                             shouldDeleteExistingBookings: shouldDeleteExistingBookings) {
+                                             shouldDeleteExistingBookings: shouldDeleteExistingBookings,
+                                             deleteFilters: deleteFilters) {
                 continuation.resume()
             }
         }
@@ -498,12 +502,14 @@ private extension BookingStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread*.
     /// Also deletes existing bookings if requested.
+    /// When `deleteFilters` is provided, only bookings matching that filter scope are deleted (smart invalidation).
     /// `onCompletion` will be called on the main thread!
     ///
     func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
                                           readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false,
+                                          deleteFilters: BookingFilters? = nil,
                                           onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else {
@@ -511,6 +517,9 @@ private extension BookingStore {
             }
             if shouldDeleteExistingBookings {
                 storage.deleteBookings(siteID: siteID)
+            } else if let deleteFilters {
+                let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: deleteFilters)
+                storage.deleteBookings(matching: predicate)
             }
             upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
         }, completion: onCompletion, on: .main)

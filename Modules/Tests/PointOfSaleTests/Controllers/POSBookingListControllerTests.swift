@@ -308,6 +308,26 @@ final class POSBookingListControllerTests {
         #expect(filters.startDateBefore == "2026-06-20T23:59:59+09:00")
     }
 
+    @Test func test_selectDate_when_searching_then_uses_search_strategy_with_new_date() async {
+        // Given - start a search
+        let searchStrategy = MockPOSBookingListFetchStrategy()
+        searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
+        searchStrategy.supportsCaching = false
+        searchStrategy.id = "SearchStrategy"
+        mockFactory.searchStrategyResult = searchStrategy
+        await sut.searchBookings(searchTerm: "test")
+
+        let initialSearchCallCount = mockFactory.searchStrategyCallCount
+
+        // When - change date while searching
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+        await sut.selectDate(tomorrow)
+
+        // Then - should use search strategy again (not default)
+        #expect(mockFactory.searchStrategyCallCount == initialSearchCallCount + 1)
+        #expect(mockFactory.lastSearchTerm == "test")
+    }
+
     @Test func test_selectDate_clears_cache_and_shows_loading() async {
         // Given - load bookings for initial date
         let bookings = [makeBooking(id: 1)]

@@ -81,6 +81,7 @@ struct POSListEmptyView: View {
         }
         .multilineTextAlignment(.center)
         .padding(.bottom, !keyboard.isFullSizeKeyboardVisible ? floatingControlAreaSize.height : 0)
+        .padding(.top, POSPadding.medium)
         .animation(.default, value: keyboard.keyboardHeight)
         .measureWidth { width in
             viewWidth = width

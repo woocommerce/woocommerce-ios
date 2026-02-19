@@ -35,6 +35,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
     private var cachedBookings: [POSBooking] = []
+    private var activeSearchTerm: String?
     private(set) var selectedBooking: POSBooking?
     private let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol
     private let bookingService: POSBookingServiceProtocol
@@ -114,7 +115,12 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     func selectDate(_ date: Date) async {
         selectedDate = date
         cachedBookings = []
-        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: date))
+        let filters = dateFilters(for: date)
+        if let searchTerm = activeSearchTerm {
+            fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
+        } else {
+            fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
+        }
         bookingsViewState = .loading([])
         await loadFirstPage()
     }
@@ -137,6 +143,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func searchBookings(searchTerm: String) async {
+        activeSearchTerm = searchTerm
         fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: dateFilters(for: selectedDate))
         bookingsViewState = .loading([])
         await loadFirstPage()
@@ -144,6 +151,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func clearSearchBookings() {
+        activeSearchTerm = nil
         fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
         if cachedBookings.isNotEmpty {
             bookingsViewState = .loaded(cachedBookings, hasMoreItems: true)

@@ -4,7 +4,6 @@ struct POSBookingDateBarView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(\.colorScheme) private var colorScheme
-    @ScaledMetric private var chevronSize: CGFloat = Constants.chevronSize
     @State private var showingCalendar = false
 
     private var tintColor: Color {
@@ -19,56 +18,67 @@ struct POSBookingDateBarView: View {
     }
 
     var body: some View {
-        HStack(spacing: POSSpacing.medium) {
-            Button {
-                Task { await bookingsModel.bookingsController.goToPreviousDay() }
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.system(size: chevronSize, weight: .medium))
-                    .foregroundStyle(tintColor)
-            }
-            .buttonStyle(.plain)
+        VStack(spacing: 0) {
+            Divider()
+                .overlay(Color.posOutlineVariant)
 
-            Button {
-                showingCalendar = true
-            } label: {
-                HStack(spacing: POSSpacing.small) {
-                    Image(systemName: "calendar")
-                        .foregroundStyle(tintColor)
-
-                    Text(formattedDate)
-                        .font(.posBodyMediumRegular())
+            HStack(spacing: POSSpacing.medium) {
+                Button {
+                    Task { await bookingsModel.bookingsController.goToPreviousDay() }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.posButtonSymbolSmall)
                         .foregroundStyle(tintColor)
                 }
-            }
-            .buttonStyle(.plain)
-            .popover(isPresented: $showingCalendar) {
-                POSBookingCalendarView(
-                    selectedDate: bookingsModel.bookingsController.selectedDate,
-                    siteTimezone: siteTimezone,
-                    onDateSelected: { date in
-                        showingCalendar = false
-                        Task { await bookingsModel.bookingsController.selectDate(date) }
+                .buttonStyle(.plain)
+
+                Button {
+                    showingCalendar = true
+                } label: {
+                    HStack(spacing: POSSpacing.small) {
+                        Image(systemName: "calendar")
+                            .foregroundStyle(tintColor)
+
+                        Text(formattedDate)
+                            .font(.posBodySmallRegular())
+                            .foregroundStyle(tintColor)
+                            .frame(minWidth: Constants.dateTextMinWidth, alignment: .leading)
                     }
-                )
-            }
+                }
+                .buttonStyle(.plain)
+                .popover(isPresented: $showingCalendar) {
+                    POSBookingCalendarView(
+                        selectedDate: bookingsModel.bookingsController.selectedDate,
+                        siteTimezone: siteTimezone,
+                        onDateSelected: { date in
+                            showingCalendar = false
+                            Task { await bookingsModel.bookingsController.selectDate(date) }
+                        }
+                    )
+                }
 
-            Button {
-                Task { await bookingsModel.bookingsController.goToNextDay() }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.system(size: chevronSize, weight: .medium))
-                    .foregroundStyle(tintColor)
-            }
-            .buttonStyle(.plain)
+                Button {
+                    Task { await bookingsModel.bookingsController.goToNextDay() }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.posButtonSymbolSmall)
+                        .foregroundStyle(tintColor)
+                }
+                .buttonStyle(.plain)
 
-            Spacer()
+                Spacer()
+            }
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .padding(.horizontal, POSPadding.large)
+            .frame(height: Constants.barHeight)
+
+            Divider()
+                .overlay(Color.posOutlineVariant)
         }
-        .padding(.horizontal, POSPadding.large)
-        .padding(.bottom, POSPadding.large)
     }
 }
 
 private enum Constants {
-    static let chevronSize: CGFloat = 12
+    static let barHeight: CGFloat = 62
+    static let dateTextMinWidth: CGFloat = 140
 }

@@ -71,9 +71,8 @@ struct POSBookingListView: View {
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
-            if !isSearching {
-                POSBookingDateBarView()
-            }
+            POSBookingDateBarView()
+                .opacity(isSearching ? 0 : 1)
 
             switch (bookingsViewState, isSearching) {
             case (.empty, _):
@@ -142,7 +141,7 @@ struct POSBookingListView: View {
                         footerRows
                     }
                     .padding(.horizontal)
-                    .padding(.top, POSPadding.xSmall)
+                    .padding(.top, POSPadding.medium)
                     .padding(.bottom, POSPadding.medium)
                 }
             )

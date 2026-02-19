@@ -7,6 +7,7 @@ import Storage
 public class BookingStore: Store {
     private let remote: BookingsRemoteProtocol
     private let ordersRemote: OrdersRemoteProtocol
+    private let methods: BookingStoreMethods
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
@@ -21,6 +22,7 @@ public class BookingStore: Store {
                 ordersRemote: OrdersRemoteProtocol) {
         self.remote = remote
         self.ordersRemote = ordersRemote
+        self.methods = BookingStoreMethods(storageManager: storageManager, bookingsRemote: remote, ordersRemote: ordersRemote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -110,26 +112,13 @@ private extension BookingStore {
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let bookings = try await remote.loadAllBookings(for: siteID,
-                                                                pageNumber: pageNumber,
-                                                                pageSize: pageSize,
-                                                                filters: filters,
-                                                                searchQuery: nil,
-                                                                order: order)
-
-                let orders = try await ordersRemote.loadOrders(
-                    for: siteID,
-                    orderIDs: bookings.map { $0.orderID }
-                )
-
-                await upsertStoredBookingsInBackground(
-                    readOnlyBookings: bookings,
-                    readOnlyOrders: orders,
+                let hasNextPage = try await methods.synchronizeBookings(
                     siteID: siteID,
-                    shouldDeleteExistingBookings: shouldClearCache,
-                    deleteFilters: shouldClearCache ? nil : filters
+                    pageNumber: pageNumber,
+                    pageSize: pageSize,
+                    filters: shouldClearCache ? nil : filters,
+                    searchQuery: nil
                 )
-                let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
             } catch {
                 onCompletion(.failure(error))

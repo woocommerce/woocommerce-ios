@@ -237,7 +237,6 @@ struct POSBookingDetailView: View {
                             .contentTransition(.symbolEffect(.replace))
                     }
                     .buttonStyle(.plain)
-                    .disabled(emailCopied)
                     .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
                     .frame(minHeight: 32)
                 }

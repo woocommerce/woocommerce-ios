@@ -7,9 +7,6 @@ import Storage
 ///
 internal protocol BookingStoreMethodsProtocol {
     /// Syncs bookings from remote and persists to local storage.
-    /// On page 1 with filters, performs smart deletion (only deletes bookings matching the filter scope).
-    /// On page 1 without filters, deletes all bookings for the site.
-    /// On subsequent pages, appends (upsert only, no deletion).
     ///
     /// - Returns: `true` if there are more pages to fetch.
     func synchronizeBookings(siteID: Int64,
@@ -17,10 +14,18 @@ internal protocol BookingStoreMethodsProtocol {
                              pageSize: Int,
                              filters: BookingFilters?,
                              searchQuery: String?,
-                             order: BookingsRemote.Order) async throws -> Bool
+                             order: BookingsRemote.Order,
+                             cacheClearStrategy: BookingStoreMethods.CacheClearStrategy) async throws -> Bool
 }
 
 internal class BookingStoreMethods: BookingStoreMethodsProtocol {
+
+    enum CacheClearStrategy {
+        case none
+        case all
+        case filtersOnly(BookingFilters)
+    }
+
     private let bookingsRemote: BookingsRemoteProtocol
     private let ordersRemote: OrdersRemoteProtocol
     private let storageManager: StorageManagerType
@@ -38,7 +43,8 @@ internal class BookingStoreMethods: BookingStoreMethodsProtocol {
                              pageSize: Int,
                              filters: BookingFilters?,
                              searchQuery: String?,
-                             order: BookingsRemote.Order = .ascending) async throws -> Bool {
+                             order: BookingsRemote.Order = .ascending,
+                             cacheClearStrategy: CacheClearStrategy = .none) async throws -> Bool {
         let bookings = try await bookingsRemote.loadAllBookings(
             for: siteID,
             pageNumber: pageNumber,
@@ -53,13 +59,11 @@ internal class BookingStoreMethods: BookingStoreMethodsProtocol {
             orderIDs: bookings.map { $0.orderID }
         )
 
-        let isFirstPage = pageNumber == 1
         await upsertStoredBookingsInBackground(
             readOnlyBookings: bookings,
             readOnlyOrders: orders,
             siteID: siteID,
-            shouldDeleteAllBookings: isFirstPage && filters == nil,
-            deleteFilters: isFirstPage ? filters : nil
+            cacheClearStrategy: cacheClearStrategy
         )
 
         return bookings.count == pageSize
@@ -72,14 +76,16 @@ private extension BookingStoreMethods {
     func upsertStoredBookingsInBackground(readOnlyBookings: [Networking.Booking],
                                           readOnlyOrders: [Networking.Order],
                                           siteID: Int64,
-                                          shouldDeleteAllBookings: Bool = false,
-                                          deleteFilters: BookingFilters? = nil) async {
+                                          cacheClearStrategy: CacheClearStrategy = .none) async {
         await withCheckedContinuation { continuation in
             storageManager.performAndSave({ storage in
-                if shouldDeleteAllBookings {
+                switch cacheClearStrategy {
+                case .none:
+                    break
+                case .all:
                     storage.deleteBookings(siteID: siteID)
-                } else if let deleteFilters {
-                    let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: deleteFilters)
+                case .filtersOnly(let filters):
+                    let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
                     storage.deleteBookings(matching: predicate)
                 }
                 Self.upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)

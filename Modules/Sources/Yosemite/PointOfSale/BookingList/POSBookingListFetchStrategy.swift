@@ -52,13 +52,17 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
         do {
+            let cacheClearStrategy: BookingStoreMethods.CacheClearStrategy = pageNumber == 1
+                ? (filters.map { .filtersOnly($0) } ?? .all)
+                : .none
             let hasMorePages = try await bookingStoreMethods.synchronizeBookings(
                 siteID: siteID,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
                 filters: filters,
                 searchQuery: nil,
-                order: .ascending
+                order: .ascending,
+                cacheClearStrategy: cacheClearStrategy
             )
             let bookings = await fetchLocalBookingsFromStorage()
             return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)

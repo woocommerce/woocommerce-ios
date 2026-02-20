@@ -1,1 +1,2 @@
-Esta atualização deixa o processo de login mais claro ao mostrar um erro nítido quando o login do site falha devido a problemas de autenticação, adiciona um fluxo útil para explicar melhor as funcionalidades do ponto de venda e inclui rastreamento de conexão em segundo plano para nos ajudar a melhorar a confiabilidade e o desempenho.
+Nossa pesquisa aprimorada de itens em ponto de venda está mais rápida do que nunca. Ela permite que você localize produtos e agora os resultados também incluem variações! Os resultados são instantâneos e você pode usar qualquer ordem de palavras para sua pesquisa.
+Também facilitamos a criação de pedidos, com correções nos filtros de produtos e atualizações de endereço de entrega. Atualize hoje para manter sua loja funcionando perfeitamente!

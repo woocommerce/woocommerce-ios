@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-04 14:10:11+0000 */
+/* Translation-Revision-Date: 2026-02-19 09:58:46+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -532,6 +532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Fügt Variante der Bestellung hinzu.";
 
+/* User's Administrator role. */
+"Administrator" = "Administrator";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Unterschrift eines Erwachsenen erforderlich (+%1$@)";
 
@@ -663,6 +666,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when an order already exists in the backend for a given receipt */
 "An order already exists for this receipt" = "Für diesen Beleg ist bereits eine Bestellung vorhanden";
+
+/* Message presented when an unexpected error occurs with the store's payment gateway. */
+"An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "Beim Erfassen der Zahlung für die Bestellung ist ein unerwarteter Fehler mit dem Zahlungs-Gateway des Shops aufgetreten";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Es ist ein unbekannter Fehler aufgetreten.";
@@ -1823,6 +1829,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Weiter mit Apple";
+
+/* User's Contributor role. */
+"Contributor" = "Mitarbeiter";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Zielabschlussrate";
@@ -6207,6 +6216,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Nur Versand";
 
+/* User's Shop Manager role. */
+"Shop Manager" = "Shop-Manager";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Shop und Suchergebnisse";
 
@@ -6526,6 +6538,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Supportanfrage senden";
+
+/* User's Subscriber role. */
+"Subscriber" = "Abonnent";
 
 /* Display label for simple subscription product type. */
 "Subscription" = "Abonnement";
@@ -6858,6 +6873,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "Die Bluetooth-Verbindung zum Kartenlesegerät wurde unerwartet unterbrochen";
 
+/* Message shown when a GIF failed to load while trying to add it to the Media library. */
+"The GIF could not be added to the Media Library." = "Die GIF-Datei konnte nicht zur Mediathek hinzugefügt werden.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Das Google-Konto „%@“ stimmt mit keinem WordPress.com-Konto überein";
 
@@ -6959,6 +6977,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when an image failed to load while trying to add it to the Media library. */
 "The image could not be added to the Media Library." = "Das Bild konnte nicht zur Mediathek hinzugefügt werden.";
+
+/* Message shown when an asset failed to load while trying to add it to the Media library. */
+"The item could not be added to the Media Library." = "Das Element konnte nicht zur Mediathek hinzugefügt werden.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Der neue Name des individuellen Pakets ist nicht einzigartig.";
@@ -8750,6 +8771,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "Mit einem anderen Konto anmelden";
 
+/* Message shown when a video failed to load while trying to add it to the Media library. */
+"assetExportError.expectedPHAssetVideoType.message" = "Das Video konnte nicht zur Mediathek hinzugefügt werden.";
+
+/* Message shown when a video file failed to export from the local library. */
+"assetExportError.failedToExportVideo.message" = "Export der ausgewählten Medien fehlgeschlagen.";
+
 /* Label displayed on audio media items. */
 "audio" = "Audio";
 
@@ -10080,6 +10107,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Abgelaufen am %@";
+
+/* A default error when coupon application failed. */
+"couponsError.default.title" = "Der Gutschein konnte aufgrund eines unerwarteten Fehlers nicht angewendet werden.";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Adresse";
@@ -11654,6 +11684,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "Artikeltyp nicht unterstützt";
 
+/* A placeholder name when we can't determine the name of a variation for an error message */
+"pointOfSale.barcodeScanning.unresolved.variation.name" = "Unbekannt";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Zahlung am Lesegerät storniert";
 
@@ -12034,6 +12067,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Wird geladen";
+
+/* Fallback name for a product that couldn't be identified in error handling. */
+"pointOfSale.orderController.unknownProduct" = "Eines oder mehrere Produkte";
 
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "Bestellung bearbeiten";
@@ -12584,8 +12620,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "Bestellstatus: %1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "Keine anzuzeigende Bestellung";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "Keine Bestellung ausgewählt.";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Bestellung";
@@ -12595,6 +12631,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Gesamt";
+
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "Bitte versuche es erneut.";
+
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "Rückerstattung konnte nicht erstellt werden";
 
 /* Accessibility label for discount total. %1$@ is the discount amount. */
 "pos.orderDetailsView.discount.accessibilityLabel" = "Rabatt insgesamt: %1$@";
@@ -12619,6 +12661,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Rückerstattung ausstellen";
+
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "Bitte versuche es erneut.";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "Rückerstattungsdetails konnten nicht geladen werden";
 
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Weitere Aktionen";
@@ -12691,6 +12739,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "Weitere Informationen";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.2" = "Wir konnten keine Bestellungen mit diesem Namen finden. Versuche, deinen Suchbegriff anzupassen.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Keine Bestellungen gefunden";
@@ -12780,10 +12831,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.confirmButton" = "Ja, fortfahren";
 
 /* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat" = "Bist du sicher, dass du die Rückerstattung in Höhe von %1$@ über %2$@ bearbeiten möchtest? Diese Aktion kann nicht rückgängig gemacht werden.";
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "Bist du sicher, dass du %1$@ (%2$@) zurückerstatten möchtest? Diese Aktion kann nicht rückgängig gemacht werden.";
+
+/* Message shown while the refund is being processed. */
+"pos.refundConfirmationView.processingMessage" = "Bitte warte, während wir die Rückerstattung bearbeiten.";
+
+/* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.processingTitleFormat" = "Rückerstattung in Höhe von %@ wird vorgenommen";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Rückerstattung: %@";
+
+/* Button to cancel and dismiss the refund error screen */
+"pos.refundErrorView.cancelButton" = "Abbrechen";
+
+/* Accessibility label for close button on refund error screen */
+"pos.refundErrorView.closeButton.accessibilityLabel" = "Schließen";
+
+/* Button to retry the refund creation */
+"pos.refundErrorView.retryButton" = "Erneut versuchen";
 
 /* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
 "pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
@@ -12821,6 +12887,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "Artikel für Rückerstattung auswählen";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "Rückerstattungsdetails werden geladen …";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Schließen";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "Fertig";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "Alle Artikel in dieser Bestellung wurden bereits zurückerstattet.";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "Keine Artikel für Rückerstattung vorhanden";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Hinzufügen";
@@ -12875,6 +12956,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Rückerstattung überprüfen";
+
+/* Accessibility label for close button on refund success screen */
+"pos.refundSuccessView.closeButton.accessibilityLabel" = "Schließen";
+
+/* Button to dismiss the refund success screen */
+"pos.refundSuccessView.doneButton" = "Fertig";
+
+/* Button to email a receipt for the refund */
+"pos.refundSuccessView.emailReceiptButton" = "Beleg per E-Mail senden";
+
+/* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundSuccessView.messageFormat" = "Du hast %1$@ (%2$@) zurückerstattet.";
+
+/* Title shown when a refund has been successfully processed */
+"pos.refundSuccessView.title" = "Rückerstattung abgeschlossen";
 
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Suche löschen";
@@ -13272,6 +13368,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "Scannt zur Bestandsverwaltung Barcodes, die mit einer global eindeutigen Produktkennung (GUID) verknüpft sind.";
 
+/* Error message when saving an invalid or duplicated product global unique ID */
+"productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID" = "GTIN, UPC, EAN oder ISBN ungültig oder dupliziert.";
+
 /* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.placeholder" = "Optional";
 
@@ -13445,6 +13544,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "Angehalten";
+
+/* The acronym for 'Point of Sale'. */
+"salesChannel.pos.description" = "POS";
+
+/* Orders created through web checkout. */
+"salesChannel.webCheckout.description" = "Web-Bezahlvorgang";
+
+/* Orders created through WordPress admin interface. */
+"salesChannel.wpAdmin.description" = "WP Admin";
 
 /* Description for the Sales channel filter option, when selecting 'Any' order */
 "salesChannelFilter.row.any.description" = "Alle";
@@ -14060,6 +14168,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the UPS Terms and Conditions view */
 "upsTermsView.title" = "UPS®-Geschäftsbedingungen";
 
+/* Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +'Roast: Dark, Size: 100g, Origin: Brazil, Any grind' */
+"variationAttributeView.namedAttributeFormat" = "%1$@: %2$@";
+
 /* Label displayed on video media items. */
 "video" = "Video";
 
@@ -14131,6 +14242,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Wochen";
+
+/* Title of the self-driven push notification setup flow */
+"wooPushNotificationSetupCoordinator.flowTitle" = "Mit WordPress.com verbinden";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "Verpackungsdetails hinzufügen";
@@ -14324,6 +14438,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Gesamtsumme";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "Bitte gib eine gültige Telefonnummer für die Zieladresse ein.";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "Für die Zieladresse ist eine Telefonnummer erforderlich.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Unternehmen hinzufügen";
 
@@ -14464,6 +14584,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "Gesamtgewicht der Sendung (mit Verpackung)";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "Adresse bearbeiten";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "Bitte gib eine gültige Telefonnummer für die Zieladresse ein.";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "Ungültige Telefonnummer.";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "So druckst du von deinem Mobilgerät aus";
@@ -15055,6 +15184,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "Ups, etwas ist schiefgelaufen. Versuche es bitte noch einmal!";
+
+/* Status label shown when a setup step has completed successfully. */
+"wpComConnectionSetupStepView.complete" = "Abgeschlossen";
+
+/* Status label shown when a setup step is currently running. */
+"wpComConnectionSetupStepView.inProgress" = "In Bearbeitung";
+
+/* Status label shown when a setup step has not been started yet. */
+"wpComConnectionSetupStepView.notStarted" = "Nicht gestartet";
+
+/* Cancel button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.cancelButton" = "Abbrechen";
+
+/* Title for the WPCom connection setup screen. */
+"wpComConnectionSetupView.title" = "Mit WordPress.com verbinden";
+
+/* Step title for checking plugin compatibility during WPCom connection setup. */
+"wpComConnectionSetupViewModel.checkPluginStep" = "Plugin-Kompatibilität prüfen";
+
+/* Step title for connecting the store to WordPress.com during WPCom connection setup. */
+"wpComConnectionSetupViewModel.connectStoreStep" = "Shop mit Wordpress.com verbinden";
+
+/* Step title for enabling push notifications during WPCom connection setup. */
+"wpComConnectionSetupViewModel.enablePushNotificationsStep" = "Push-Benachrichtigungen aktivieren";
+
+/* Button title to navigate to the store after successful WPCom connection setup. */
+"wpComConnectionSetupViewModel.goToMyStore" = "Meinen Shop aufrufen";
+
+/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
+"wpComConnectionSetupViewModel.subtitle" = "Bitte warte, bis wir die Verbindung deines Shops %@ mit deinem WordPress.com-Konto abgeschlossen haben.";
+
+/* Button title to retry the WPCom connection setup after a failure. */
+"wpComConnectionSetupViewModel.tryAgain" = "Erneut versuchen";
+
+/* Button title to update the plugin when WPCom connection setup fails due to outdated plugin. */
+"wpComConnectionSetupViewModel.updatePlugin" = "Plugin aktualisieren";
 
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "Wenn du noch kein Konto hast, benutzen wir diese E-Mail-Adresse, um ein neues zu erstellen.";

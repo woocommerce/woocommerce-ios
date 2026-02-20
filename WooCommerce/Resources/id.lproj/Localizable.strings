@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-04 14:10:11+0000 */
+/* Translation-Revision-Date: 2026-02-16 10:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -532,6 +532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Menambahkan variasi ke pesanan.";
 
+/* User's Administrator role. */
+"Administrator" = "Administrator";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Tanda tangan orang dewasa wajib diisi (+%1$@)";
 
@@ -663,6 +666,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when an order already exists in the backend for a given receipt */
 "An order already exists for this receipt" = "Pesanan untuk resi ini sudah ada";
+
+/* Message presented when an unexpected error occurs with the store's payment gateway. */
+"An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "Terjadi error tak terduga pada gateway pembayaran toko saat mengambil pembayaran untuk pesanan";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Terjadi eror yang tidak diketahui.";
@@ -1823,6 +1829,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Melanjutkan dengan Apple";
+
+/* User's Contributor role. */
+"Contributor" = "Kontributor";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Angka Konversi";
@@ -6207,6 +6216,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Hanya pengiriman";
 
+/* User's Shop Manager role. */
+"Shop Manager" = "Manajer Toko";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Hasil penelusuran dan toko";
 
@@ -6526,6 +6538,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Daftarkan Permohonan Dukungan";
+
+/* User's Subscriber role. */
+"Subscriber" = "Pelanggan";
 
 /* Display label for simple subscription product type. */
 "Subscription" = "Langganan";
@@ -6858,6 +6873,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "Koneksi Bluetooth dengan pembaca kartu tiba-tiba terputus";
 
+/* Message shown when a GIF failed to load while trying to add it to the Media library. */
+"The GIF could not be added to the Media Library." = "GIF tidak bisa ditambahkan ke Pustaka Media.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Akun Google \"%@\" tidak cocok dengan akun mana pun di WordPress.com";
 
@@ -6959,6 +6977,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when an image failed to load while trying to add it to the Media library. */
 "The image could not be added to the Media Library." = "Gambar tidak bisa ditambahkan ke Pustaka Media.";
+
+/* Message shown when an asset failed to load while trying to add it to the Media library. */
+"The item could not be added to the Media Library." = "Item tidak bisa ditambahkan ke Pustaka Media.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Nama paket khusus baru tidak unik.";
@@ -8747,6 +8768,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "Login dengan Akun Lain";
 
+/* Message shown when a video failed to load while trying to add it to the Media library. */
+"assetExportError.expectedPHAssetVideoType.message" = "Video tidak bisa ditambahkan ke Pustaka Media.";
+
+/* Message shown when a video file failed to export from the local library. */
+"assetExportError.failedToExportVideo.message" = "Gagal mengekspor media terpilih.";
+
 /* Label displayed on audio media items. */
 "audio" = "audio";
 
@@ -10077,6 +10104,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Kedaluwarsa pada %@";
+
+/* A default error when coupon application failed. */
+"couponsError.default.title" = "Kupon tidak dapat digunakan karena error tak terduga.";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Alamat";
@@ -11651,6 +11681,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "Jenis item yang tidak didukung";
 
+/* A placeholder name when we can't determine the name of a variation for an error message */
+"pointOfSale.barcodeScanning.unresolved.variation.name" = "Tidak diketahui";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "Pembayaran dibatalkan pada pembaca kartu";
 
@@ -12031,6 +12064,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Memuat";
+
+/* Fallback name for a product that couldn't be identified in error handling. */
+"pointOfSale.orderController.unknownProduct" = "Satu atau lebih produk";
 
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "Sunting pesanan";
@@ -12581,8 +12617,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "Status pesanan: %1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "Tidak ada pesanan untuk ditampilkan";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "Tidak ada pesanan terpilih.";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Pesanan";
@@ -12592,6 +12628,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Total";
+
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "Coba lagi.";
+
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "Gagal membuat pengembalian dana";
 
 /* Accessibility label for discount total. %1$@ is the discount amount. */
 "pos.orderDetailsView.discount.accessibilityLabel" = "Total diskon: %1$@";
@@ -12616,6 +12658,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Keluarkan pengembalian dana";
+
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "Coba lagi.";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "Tidak dapat memuat detail pengembalian dana";
 
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Tindakan lainnya";
@@ -12688,6 +12736,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "Pelajari lebih lanjut";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.2" = "Kami tidak menemukan pesanan dengan nama tersebut. Coba ganti istilah pencarian.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "Tidak ada pesanan";
@@ -12777,10 +12828,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.confirmButton" = "Ya, lanjutkan";
 
 /* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat" = "Anda yakin ingin memproses pengembalian dana %1$@ %2$@? Tindakan ini tidak dapat dibatalkan.";
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "Anda yakin ingin mengembalikan dana %1$@ %2$@? Tindakan ini tidak dapat dibatalkan.";
+
+/* Message shown while the refund is being processed. */
+"pos.refundConfirmationView.processingMessage" = "Harap tunggu, kami sedang memproses pengembalian dana.";
+
+/* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.processingTitleFormat" = "Mengembalikan dana %@";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Kembalikan dana %@";
+
+/* Button to cancel and dismiss the refund error screen */
+"pos.refundErrorView.cancelButton" = "Batalkan";
+
+/* Accessibility label for close button on refund error screen */
+"pos.refundErrorView.closeButton.accessibilityLabel" = "Tutup";
+
+/* Button to retry the refund creation */
+"pos.refundErrorView.retryButton" = "Coba lagi";
 
 /* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
 "pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
@@ -12818,6 +12884,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "Pilih item yang akan dikembalikan dananya";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "Memuat detail pengembalian dana...";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Tutup";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "Selesai";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "Semua item dalam pesanan ini telah dikembalikan dananya.";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "Tidak ada item untuk pengembalian dana";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Tambah";
@@ -12872,6 +12953,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Ulas pengembalian dana";
+
+/* Accessibility label for close button on refund success screen */
+"pos.refundSuccessView.closeButton.accessibilityLabel" = "Tutup";
+
+/* Button to dismiss the refund success screen */
+"pos.refundSuccessView.doneButton" = "Selesai";
+
+/* Button to email a receipt for the refund */
+"pos.refundSuccessView.emailReceiptButton" = "Email tanda terima";
+
+/* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundSuccessView.messageFormat" = "Anda mengembalikan dana %1$@ %2$@.";
+
+/* Title shown when a refund has been successfully processed */
+"pos.refundSuccessView.title" = "Pengembalian dana selesai";
 
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Hapus Pencarian";
@@ -13269,6 +13365,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "Pindai barcode yang terkait dengan Pengidentifikasi Unik Global produk untuk manajemen stok.";
 
+/* Error message when saving an invalid or duplicated product global unique ID */
+"productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID" = "GTIN, UPC, EAN, atau ISBN tidak valid atau duplikat.";
+
 /* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.placeholder" = "Opsional";
 
@@ -13442,6 +13541,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "Tertahan";
+
+/* The acronym for 'Point of Sale'. */
+"salesChannel.pos.description" = "POS";
+
+/* Orders created through web checkout. */
+"salesChannel.webCheckout.description" = "Checkout Web";
+
+/* Orders created through WordPress admin interface. */
+"salesChannel.wpAdmin.description" = "WP-Admin";
 
 /* Description for the Sales channel filter option, when selecting 'Any' order */
 "salesChannelFilter.row.any.description" = "Apa pun";
@@ -14057,6 +14165,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the UPS Terms and Conditions view */
 "upsTermsView.title" = "Syarat dan Ketentuan UPS®";
 
+/* Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +'Roast: Dark, Size: 100g, Origin: Brazil, Any grind' */
+"variationAttributeView.namedAttributeFormat" = "%1$@: %2$@";
+
 /* Label displayed on video media items. */
 "video" = "video";
 
@@ -14128,6 +14239,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Minggu";
+
+/* Title of the self-driven push notification setup flow */
+"wooPushNotificationSetupCoordinator.flowTitle" = "Hubungkan ke WordPress.com";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "Tambahkan Rincian Paket";
@@ -14321,6 +14435,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "Masukkan nomor telepon yang valid untuk alamat tujuan.";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "Nomor telepon wajib disertakan untuk alamat tujuan.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Tambahkan perusahaan";
 
@@ -14461,6 +14581,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "Total berat pengiriman (dengan paket)";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "Sunting alamat";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "Masukkan nomor telepon yang valid untuk alamat tujuan.";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "Nomor telepon tidak valid.";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Pelajari cara mencetak dari perangkat seluler Anda";
@@ -15052,6 +15181,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "Ups, sepertinya ada yang salah. Coba lagi!";
+
+/* Status label shown when a setup step has completed successfully. */
+"wpComConnectionSetupStepView.complete" = "Selesai";
+
+/* Status label shown when a setup step is currently running. */
+"wpComConnectionSetupStepView.inProgress" = "Sedang berlangsung";
+
+/* Status label shown when a setup step has not been started yet. */
+"wpComConnectionSetupStepView.notStarted" = "Belum dimulai";
+
+/* Cancel button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.cancelButton" = "Batalkan";
+
+/* Title for the WPCom connection setup screen. */
+"wpComConnectionSetupView.title" = "Hubungkan ke WordPress.com";
+
+/* Step title for checking plugin compatibility during WPCom connection setup. */
+"wpComConnectionSetupViewModel.checkPluginStep" = "Periksa kompatibilitas plugin";
+
+/* Step title for connecting the store to WordPress.com during WPCom connection setup. */
+"wpComConnectionSetupViewModel.connectStoreStep" = "Hubungkan toko ke WordPress.com";
+
+/* Step title for enabling push notifications during WPCom connection setup. */
+"wpComConnectionSetupViewModel.enablePushNotificationsStep" = "Aktifkan pemberitahuan push";
+
+/* Button title to navigate to the store after successful WPCom connection setup. */
+"wpComConnectionSetupViewModel.goToMyStore" = "Kunjungi Toko Saya";
+
+/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
+"wpComConnectionSetupViewModel.subtitle" = "Harap tunggu kami menyelesaikan penyambungan toko Anda, %@, ke akun WordPress.com.";
+
+/* Button title to retry the WPCom connection setup after a failure. */
+"wpComConnectionSetupViewModel.tryAgain" = "Coba lagi";
+
+/* Button title to update the plugin when WPCom connection setup fails due to outdated plugin. */
+"wpComConnectionSetupViewModel.updatePlugin" = "Perbarui plugin";
 
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "Jika Anda belum mempunyai akun, kami akan menggunakan email ini untuk membuat akun.";

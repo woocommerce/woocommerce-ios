@@ -136,6 +136,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
         let parameters: [String: Any] = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
+            ParameterKeys.perPage: String(orderIDs.count),
             ParameterKeys.fields: ParameterValues.fieldValues
         ]
 

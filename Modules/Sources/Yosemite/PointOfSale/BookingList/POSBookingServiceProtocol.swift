@@ -13,7 +13,9 @@ public protocol POSBookingServiceProtocol: Sendable {
                        filters: BookingFilters?,
                        searchQuery: String?) async throws -> PagedItems<POSBooking>
 
-    func cancelBooking(bookingID: Int64) async throws
+    func fetchBooking(bookingID: Int64) async throws -> POSBooking
 
-    func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws
+    func cancelBooking(bookingID: Int64) async throws -> BookingStatus
+
+    func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus
 }

@@ -81,30 +81,55 @@ public final class POSBookingService: POSBookingServiceProtocol {
         }
     }
 
-    public func cancelBooking(bookingID: Int64) async throws {
-        let result = try await bookingsRemote.updateBooking(
+    public func fetchBooking(bookingID: Int64) async throws -> POSBooking {
+        guard let booking = try await bookingsRemote.loadBooking(bookingID: bookingID, siteID: siteID) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        let orderIDs = booking.orderID != 0 ? [booking.orderID] : []
+        let resourceIDs = booking.resourceID != 0 ? [booking.resourceID] : []
+
+        async let orderTask = fetchOrders(orderIDs: orderIDs)
+        async let resourceTask = fetchResources(resourceIDs: resourceIDs)
+        let (orders, resources) = await (orderTask, resourceTask)
+
+        let order = orders[booking.orderID]
+        let orderInfo: BookingOrderInfo? = order.map { BookingOrderInfo(booking: booking, order: $0) }
+        let resource = resources[booking.resourceID]
+
+        guard let posOrder = order.flatMap({ try? orderMapper.map(order: $0) }) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
+    }
+
+    @discardableResult
+    public func cancelBooking(bookingID: Int64) async throws -> BookingStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
             from: siteID,
             bookingID: bookingID,
             attendanceStatus: nil,
             bookingStatus: .cancelled,
             note: nil
-        )
-        guard result != nil else {
+        ) else {
             throw POSBookingServiceError.requestFailed
         }
+        return booking.bookingStatus
     }
 
-    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {
-        let result = try await bookingsRemote.updateBooking(
+    @discardableResult
+    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
             from: siteID,
             bookingID: bookingID,
             attendanceStatus: status,
             bookingStatus: nil,
             note: nil
-        )
-        guard result != nil else {
+        ) else {
             throw POSBookingServiceError.requestFailed
         }
+        return booking.attendanceStatus
     }
 }
 

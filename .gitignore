@@ -106,5 +106,6 @@ Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 # Periphery install
 vendor/Periphery/
 
-# AI Agents
+# AI Agents / Claude Code local config (personal, not shared)
+CLAUDE.local.md
 .claude/settings.local.json

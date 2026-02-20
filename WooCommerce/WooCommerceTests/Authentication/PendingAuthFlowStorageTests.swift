@@ -54,19 +54,6 @@ struct PendingAuthFlowStorageTests {
         #expect(result == .jetpackSetup)
     }
 
-    @Test func current_returns_notificationSetup_when_stored() {
-        // Given
-        let userDefaults = makeUserDefaults()
-        let storage = PendingAuthFlowStorage(userDefaults: userDefaults)
-        storage.updateCurrentFlow(.notificationSetup)
-
-        // When
-        let result = storage.current
-
-        // Then
-        #expect(result == .notificationSetup)
-    }
-
     @Test func current_returns_nil_when_flow_is_expired() {
         // Given
         let userDefaults = makeUserDefaults()
@@ -90,13 +77,13 @@ struct PendingAuthFlowStorageTests {
 
         // Store a flow that is not expired (5 minutes ago)
         let recentDate = Date().addingTimeInterval(-5 * 60)
-        storeFlow(.notificationSetup, timestamp: recentDate, in: userDefaults)
+        storeFlow(.jetpackSetup, timestamp: recentDate, in: userDefaults)
 
         // When
         let result = storage.current
 
         // Then
-        #expect(result == .notificationSetup)
+        #expect(result == .jetpackSetup)
     }
 
     @Test func current_clears_storage_when_expired() {
@@ -142,11 +129,11 @@ struct PendingAuthFlowStorageTests {
         storage.updateCurrentFlow(.jetpackSetup)
 
         // When
-        storage.updateCurrentFlow(.notificationSetup)
+        storage.updateCurrentFlow(.jetpackSetup)
 
         // Then
         let result = storage.current
-        #expect(result == .notificationSetup)
+        #expect(result == .jetpackSetup)
     }
 
     // MARK: - clear

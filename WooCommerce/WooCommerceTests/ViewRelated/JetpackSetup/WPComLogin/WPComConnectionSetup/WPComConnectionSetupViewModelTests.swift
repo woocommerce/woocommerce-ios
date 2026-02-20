@@ -168,63 +168,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertTrue(dismissCalled)
     }
 
-    // MARK: - Web View Presentation Tests
-
-    func test_setupDidRequireWebView_sets_webViewPresentation() {
-        // Given
-        let viewModel = makeViewModel()
-        let url = URL(string: "https://jetpack.wordpress.com/jetpack.authorize/123")!
-        let siteURL = "https://example.com"
-
-        // When
-        mockHandler.simulateWebViewRequired(url: url, siteURL: siteURL)
-
-        // Then
-        XCTAssertEqual(viewModel.webViewPresentation, WPComConnectionSetupViewModel.WebViewPresentation(url: url, siteURL: siteURL))
-    }
-
-    func test_didAuthorizeWebViewConnection_clears_presentation_and_forwards_to_handler() {
-        // Given
-        let viewModel = makeViewModel()
-        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
-        XCTAssertNotNil(viewModel.webViewPresentation)
-
-        // When
-        viewModel.didAuthorizeWebViewConnection()
-
-        // Then
-        XCTAssertNil(viewModel.webViewPresentation)
-        XCTAssertEqual(mockHandler.didAuthorizeWebViewConnectionCallCount, 1)
-    }
-
-    func test_didEncounterWebViewError_clears_presentation_and_forwards_to_handler() {
-        // Given
-        let viewModel = makeViewModel()
-        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
-        XCTAssertNotNil(viewModel.webViewPresentation)
-
-        // When
-        viewModel.didEncounterWebViewError(code: 404)
-
-        // Then
-        XCTAssertNil(viewModel.webViewPresentation)
-        XCTAssertEqual(mockHandler.didEncounterWebViewErrorCallCount, 1)
-    }
-
-    func test_didCancelWebView_clears_presentation_and_forwards_to_handler() {
-        // Given
-        let viewModel = makeViewModel()
-        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
-        XCTAssertNotNil(viewModel.webViewPresentation)
-
-        // When
-        viewModel.didCancelWebView()
-
-        // Then
-        XCTAssertNil(viewModel.webViewPresentation)
-        XCTAssertEqual(mockHandler.didCancelWebViewCallCount, 1)
-    }
-
     // MARK: - setPluginOutdatedState Tests
 
     func test_setPluginOutdatedState_sets_connect_to_success_and_checkPlugin_to_failure() {

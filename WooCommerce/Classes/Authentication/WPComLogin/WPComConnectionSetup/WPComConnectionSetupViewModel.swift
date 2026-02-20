@@ -23,7 +23,6 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
     @Published private var setupState: SetupState = .inProgress
-    @Published var webViewPresentation: WebViewPresentation?
 
     let subtitleAttributedString: AttributedString
 
@@ -65,6 +64,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
     private let onUpdatePlugin: () -> Void
+    private var shouldAutoOpenUpdatePlugin = false
 
     init(storeName: String,
          handler: WPComConnectionSetupHandlerProtocol,
@@ -94,6 +94,11 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func onAppear() {
+        if shouldAutoOpenUpdatePlugin {
+            shouldAutoOpenUpdatePlugin = false
+            onUpdatePlugin()
+            return
+        }
         guard setupState == .inProgress else { return }
         handler.start()
     }
@@ -101,6 +106,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func setPluginOutdatedState(version: String) {
         stepDidUpdate(.connect, status: .success)
         stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: version)))
+        shouldAutoOpenUpdatePlugin = true
     }
 
     func primaryButtonTapped() {
@@ -134,21 +140,6 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     func doneTapped() {
         onDismiss()
-    }
-
-    func didAuthorizeWebViewConnection() {
-        webViewPresentation = nil
-        handler.didAuthorizeWebViewConnection()
-    }
-
-    func didEncounterWebViewError(code: Int?) {
-        webViewPresentation = nil
-        handler.didEncounterWebViewError(code: code)
-    }
-
-    func didCancelWebView() {
-        webViewPresentation = nil
-        handler.didCancelWebView()
     }
 
     private func retrySetup() {
@@ -196,10 +187,6 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
 
     func setupDidComplete() {
         setupState = .completed
-    }
-
-    func setupDidRequireWebView(url: URL, siteURL: String) {
-        webViewPresentation = WebViewPresentation(url: url, siteURL: siteURL)
     }
 }
 

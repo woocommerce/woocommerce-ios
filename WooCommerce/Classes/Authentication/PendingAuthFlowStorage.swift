@@ -5,7 +5,6 @@ import Foundation
 /// is launched from a cold start via the magic link.
 enum PendingAuthFlow: String, Codable {
     case jetpackSetup
-    case notificationSetup
 }
 
 struct PendingAuthFlowStorage {

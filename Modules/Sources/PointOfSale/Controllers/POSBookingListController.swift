@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import Observation
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
@@ -8,6 +9,7 @@ import enum Yosemite.POSBookingServiceError
 import protocol Yosemite.POSBookingServiceProtocol
 import enum Yosemite.BookingAttendanceStatus
 import struct Yosemite.BookingFilters
+import enum Yosemite.BookingStatus
 
 protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
@@ -22,6 +24,8 @@ protocol POSBookingListControllerProtocol {
     func goToNextDay() async
     func cancelBooking(bookingID: Int64) async throws
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws
+    func updateBooking(bookingID: Int64) async throws
+    func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -101,14 +105,41 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func cancelBooking(bookingID: Int64) async throws {
-        try await bookingService.cancelBooking(bookingID: bookingID)
-        await refreshBookings()
+        let updatedStatus = try await bookingService.cancelBooking(bookingID: bookingID)
+        if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
+            updateBooking(existing.copy(status: updatedStatus))
+        }
     }
 
     @MainActor
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {
-        try await bookingService.updateAttendanceStatus(bookingID: bookingID, status: status)
-        await refreshBookings()
+        let updatedStatus = try await bookingService.updateAttendanceStatus(bookingID: bookingID, status: status)
+        if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
+            updateBooking(existing.copy(attendanceStatus: updatedStatus))
+        }
+    }
+
+    @MainActor
+    func updateBooking(bookingID: Int64) async throws {
+        let updatedBooking = try await bookingService.fetchBooking(bookingID: bookingID)
+        updateBooking(updatedBooking)
+    }
+
+    @MainActor
+    func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async {
+        guard let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) else {
+            return
+        }
+
+        let optimisticBooking = optimisticUpdate(existing)
+        updateBooking(optimisticBooking)
+
+        do {
+            let realBooking = try await bookingService.fetchBooking(bookingID: bookingID)
+            updateBooking(realBooking)
+        } catch {
+            DDLogError("⛔️ Failed to fetch booking \(bookingID) after optimistic update: \(error)")
+        }
     }
 
     @MainActor
@@ -265,5 +296,19 @@ private extension POSBookingListController {
         }
 
         bookingsViewState = .loading(cachedBookings)
+    }
+
+    @MainActor
+    func updateBooking(_ updatedBooking: POSBooking) {
+        let updatedBookings = bookingsViewState.bookings.map { booking in
+            booking.id == updatedBooking.id ? updatedBooking : booking
+        }
+        bookingsViewState = bookingsViewState.updatingBookings(with: updatedBookings)
+        cachedBookings = cachedBookings.map { booking in
+            booking.id == updatedBooking.id ? updatedBooking : booking
+        }
+        if selectedBooking?.id == updatedBooking.id {
+            selectedBooking = updatedBooking
+        }
     }
 }

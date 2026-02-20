@@ -16,7 +16,8 @@ internal protocol BookingStoreMethodsProtocol {
                              pageNumber: Int,
                              pageSize: Int,
                              filters: BookingFilters?,
-                             searchQuery: String?) async throws -> Bool
+                             searchQuery: String?,
+                             order: BookingsRemote.Order) async throws -> Bool
 }
 
 internal class BookingStoreMethods: BookingStoreMethodsProtocol {
@@ -36,14 +37,15 @@ internal class BookingStoreMethods: BookingStoreMethodsProtocol {
                              pageNumber: Int,
                              pageSize: Int,
                              filters: BookingFilters?,
-                             searchQuery: String?) async throws -> Bool {
+                             searchQuery: String?,
+                             order: BookingsRemote.Order = .ascending) async throws -> Bool {
         let bookings = try await bookingsRemote.loadAllBookings(
             for: siteID,
             pageNumber: pageNumber,
             pageSize: pageSize,
             filters: filters,
             searchQuery: searchQuery,
-            order: .ascending
+            order: order
         )
 
         let orders = try await ordersRemote.loadOrders(

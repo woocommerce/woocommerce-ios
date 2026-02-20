@@ -117,7 +117,8 @@ private extension BookingStore {
                     pageNumber: pageNumber,
                     pageSize: pageSize,
                     filters: shouldClearCache ? nil : filters,
-                    searchQuery: nil
+                    searchQuery: nil,
+                    order: order
                 )
                 onCompletion(.success(hasNextPage))
             } catch {

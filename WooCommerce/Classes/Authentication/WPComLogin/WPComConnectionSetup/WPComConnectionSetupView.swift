@@ -66,6 +66,11 @@ struct WPComConnectionSetupView: View {
                         viewModel.cancelTapped()
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(Localization.getHelpButton) {
+                        viewModel.getHelpTapped()
+                    }
+                }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .safeAreaInset(edge: .bottom) {
@@ -75,9 +80,25 @@ struct WPComConnectionSetupView: View {
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             }
         }
+        .sheet(isPresented: $viewModel.isShowingGetHelp) {
+            helpAndSupportView
+        }
         .onAppear {
             viewModel.onAppear()
         }
+    }
+
+    var helpAndSupportView: some View {
+        ViewControllerContainer(Self.makeHelpAndSupportController())
+    }
+
+    private static func makeHelpAndSupportController() -> UIViewController {
+        let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
+        let helpVC = UIStoryboard.settings.instantiateViewController(identifier: identifier) { coder in
+            HelpAndSupportViewController(sourceTag: WPComConnectionSetupViewModel.supportSourceTag, coder: coder)
+        }
+        helpVC.displaysDismissAction = true
+        return WooNavigationController(rootViewController: helpVC)
     }
 
     @ViewBuilder var footer: some View {
@@ -115,6 +136,11 @@ private extension WPComConnectionSetupView {
             "wpComConnectionSetupView.cancelButton",
             value: "Cancel",
             comment: "Cancel button title in the WPCom connection setup screen toolbar."
+        )
+        static let getHelpButton = NSLocalizedString(
+            "wpComConnectionSetupView.getHelpButton",
+            value: "Get help",
+            comment: "Get help button title in the WPCom connection setup screen toolbar."
         )
     }
 }

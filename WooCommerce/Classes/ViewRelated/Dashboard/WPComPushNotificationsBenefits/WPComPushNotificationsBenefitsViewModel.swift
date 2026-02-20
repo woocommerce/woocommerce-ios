@@ -62,6 +62,7 @@ final class WPComPushNotificationsBenefitsViewModel {
             let connectionData = try await jetpackConnectionService.fetchConnectionData()
             /// only site-connection is required for Woo PN
             /// ref: C03L1NF1EA3-slack-p1771522327596419
+
             if connectionData.isRegistered == true {
                 await checkWooPluginVersion()
             } else {
@@ -78,9 +79,12 @@ final class WPComPushNotificationsBenefitsViewModel {
         // TODO: Track continue tapped event
         switch variant {
         case .connect:
-            pushNotificationSetupCoordinator?.start()
+            pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
-            pushNotificationSetupCoordinator?.showPluginUpdateSetup(pluginVersion: currentVersion)
+            pushNotificationSetupCoordinator?.startSetup(
+                siteAlreadyConnected: true,
+                pluginOutdatedVersion: currentVersion
+            )
         }
     }
 

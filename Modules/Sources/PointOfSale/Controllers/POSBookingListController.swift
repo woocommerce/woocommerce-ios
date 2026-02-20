@@ -175,6 +175,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func selectDate(_ date: Date) async {
         loadTask?.cancel()
+        prefetchTask?.cancel()
         isPaginating = false
         selectedDate = date
         let filters = dateFilters(for: date)
@@ -189,6 +190,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         let task = Task { await loadFirstPage() }
         loadTask = task
         await task.value
+        prefetchTask = Task { await syncAdjacentDateBookings(for: date) }
     }
 
     @MainActor

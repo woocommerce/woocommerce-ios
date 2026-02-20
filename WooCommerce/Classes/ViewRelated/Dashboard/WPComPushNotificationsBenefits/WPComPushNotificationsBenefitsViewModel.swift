@@ -7,13 +7,12 @@ import protocol WooFoundation.Analytics
 @Observable
 final class WPComPushNotificationsBenefitsViewModel {
 
-    enum Variant {
+    enum Variant: Equatable {
         case connect
-        case pluginUpdate
+        case pluginUpdate(currentVersion: String)
     }
 
     private(set) var variant: Variant = .connect
-    private(set) var pluginVersion: String = ""
     private(set) var isCheckingPlugin: Bool = false
 
     private let analytics: Analytics
@@ -52,7 +51,9 @@ final class WPComPushNotificationsBenefitsViewModel {
         isCheckingPlugin = true
         do {
             let connectionData = try await jetpackConnectionService.fetchConnectionData()
-            if connectionData.currentUser.isConnected {
+            /// only site-connection is required for Woo PN
+            /// ref: C03L1NF1EA3-slack-p1771522327596419
+            if connectionData.isRegistered == true {
                 await checkWooPluginVersion()
             } else {
                 variant = .connect
@@ -69,8 +70,8 @@ final class WPComPushNotificationsBenefitsViewModel {
         switch variant {
         case .connect:
             pushNotificationSetupCoordinator?.start()
-        case .pluginUpdate:
-            pushNotificationSetupCoordinator?.showPluginUpdateSetup(pluginVersion: pluginVersion)
+        case .pluginUpdate(let currentVersion):
+            pushNotificationSetupCoordinator?.showPluginUpdateSetup(pluginVersion: currentVersion)
         }
     }
 
@@ -91,8 +92,7 @@ private extension WPComPushNotificationsBenefitsViewModel {
         do {
             let result = try await pluginVersionChecker.checkCompatibility()
             if case .incompatible(let currentVersion, _) = result {
-                variant = .pluginUpdate
-                pluginVersion = currentVersion
+                variant = .pluginUpdate(currentVersion: currentVersion)
             } else {
                 // TODO: add error handling for unexpected case
                 variant = .connect

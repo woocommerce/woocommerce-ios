@@ -23,21 +23,13 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_pluginVersion_is_empty_initially() {
-        // Given
-        let viewModel = makeViewModel()
-
-        // Then
-        XCTAssertEqual(viewModel.pluginVersion, "")
-    }
-
     // MARK: - determineSetupVariant with Jetpack connected
 
     func test_variant_is_pluginUpdate_when_jetpack_connected_and_plugin_incompatible() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: true))
+            JetpackConnectionData.fake().copy(isRegistered: true)
         )
         let checker = MockPluginVersionChecker()
         checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
@@ -47,8 +39,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        XCTAssertEqual(viewModel.variant, .pluginUpdate)
-        XCTAssertEqual(viewModel.pluginVersion, "10.0.0")
+        XCTAssertEqual(viewModel.variant, .pluginUpdate(currentVersion: "10.0.0"))
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
@@ -56,7 +47,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: true))
+            JetpackConnectionData.fake().copy(isRegistered: true)
         )
         let checker = MockPluginVersionChecker()
         checker.result = .success(.compatible)
@@ -67,7 +58,6 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.variant, .connect)
-        XCTAssertEqual(viewModel.pluginVersion, "")
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
@@ -75,7 +65,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: true))
+            JetpackConnectionData.fake().copy(isRegistered: true)
         )
         let checker = MockPluginVersionChecker()
         checker.result = .failure(NSError(domain: "test", code: 1))
@@ -95,7 +85,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: false))
+            JetpackConnectionData.fake().copy(isRegistered: false)
         )
         let checker = MockPluginVersionChecker()
         checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))

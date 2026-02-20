@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
@@ -77,6 +78,7 @@ final class WooPushNotificationSetupCoordinator {
 private extension WooPushNotificationSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
     }
 
     /// Creates the connection setup navigation stack with a handler, view model, and hosting controller.
@@ -101,8 +103,14 @@ private extension WooPushNotificationSetupCoordinator {
                 navigationController?.dismiss(animated: true)
                 onSetupCompleted?()
             },
-            onUpdatePlugin: {
-                // TODO: Implement plugin update flow in follow-up PR
+            onUpdatePlugin: { [weak navigationController, stores] in
+                guard let navigationController,
+                      let site = stores.sessionManager.defaultSite,
+                      let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else { return }
+                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
+                let vc = UIHostingController(rootView: webView)
+                vc.modalPresentationStyle = .formSheet
+                navigationController.present(vc, animated: true)
             }
         )
         if let pluginOutdatedVersion {
@@ -146,6 +154,11 @@ private extension WooPushNotificationSetupCoordinator {
             "wooPushNotificationSetupCoordinator.flowTitle",
             value: "Connect to WordPress.com",
             comment: "Title of the self-driven push notification setup flow"
+        )
+        static let updateWooCommerce = NSLocalizedString(
+            "wooPushNotificationSetupCoordinator.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin during push notification setup"
         )
     }
 }

@@ -81,12 +81,15 @@ private extension POSDefaultBookingListFetchStrategy {
     }
 
     func fetchLocalBookingsSync(filters: BookingFilters) -> [POSBooking] {
-        let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
-        let descriptor = NSSortDescriptor(keyPath: \StorageBooking.startDate, ascending: true)
+        let bookingPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
+        let hasOrderPredicate = NSPredicate(format: "orderInfo != nil")
+        let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [bookingPredicate, hasOrderPredicate])
+        let sortByDate = NSSortDescriptor(keyPath: \StorageBooking.startDate, ascending: true)
+        let sortByID = NSSortDescriptor(keyPath: \StorageBooking.bookingID, ascending: true)
         let resultsController = ResultsController<StorageBooking>(
             storageManager: storageManager,
             matching: predicate,
-            sortedBy: [descriptor]
+            sortedBy: [sortByDate, sortByID]
         )
 
         do {

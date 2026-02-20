@@ -4,6 +4,7 @@ import struct Yosemite.POSBooking
 struct POSBookingsContainerView: View {
     @Binding var isPresented: Bool
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isSearching: Bool = false
     @State private var searchTerm: String = ""
@@ -40,6 +41,7 @@ struct POSBookingsContainerView: View {
                 )
                 .id(selection.id)
                 .environment(bookingsModel)
+                .environment(orderListModel)
             } detailPlaceholderView: {
                 if bookingsModel.bookingsController.bookingsViewState.isLoading {
                     POSBookingDetailsLoadingView()

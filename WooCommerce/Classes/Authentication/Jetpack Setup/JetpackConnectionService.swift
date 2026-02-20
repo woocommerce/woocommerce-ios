@@ -39,6 +39,9 @@ protocol JetpackConnectionServiceProtocol {
 
     /// Fetches the URL used for setting up Jetpack connection via web view.
     func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool) async throws -> URL
+
+    /// Fetches the current Jetpack connection data for the site.
+    func fetchConnectionData() async throws -> JetpackConnectionData
 }
 
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
@@ -119,6 +122,10 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
         DDLogWarn("⚠️ Cannot find connected WPCom user after \(maxRetryCount + 1) attempts")
         throw JetpackConnectionServiceError.verificationFailed
     }
+
+    func fetchConnectionData() async throws -> JetpackConnectionData {
+        try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
+    }
 }
 
 private extension JetpackConnectionService {
@@ -126,10 +133,6 @@ private extension JetpackConnectionService {
         case installed
         case notFound
         case error(Error)
-    }
-
-    func fetchConnectionData() async throws -> JetpackConnectionData {
-        try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
     }
 
     func nativeConnect(with connectionData: JetpackConnectionData,

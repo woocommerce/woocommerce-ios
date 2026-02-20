@@ -372,8 +372,7 @@ private extension DashboardViewHostingController {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self else { return }
             let benefitsViewModel = WPComPushNotificationsBenefitsViewModel(
-                variant: self.viewModel.isWooPluginOutdated ? .pluginUpdate : .connect,
-                pluginVersion: self.viewModel.outdatedPluginVersion,
+                siteID: self.viewModel.siteID,
                 onDismiss: {
                     self.dismiss(animated: true)
                 }

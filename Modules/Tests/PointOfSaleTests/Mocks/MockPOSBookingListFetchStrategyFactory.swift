@@ -33,12 +33,16 @@ final class MockPOSBookingService: POSBookingServiceProtocol {
     var lastUpdatedAttendanceStatus: BookingAttendanceStatus?
 
     var fetchBookingResult: Result<POSBooking, Error>?
+    var fetchBookingCallCount = 0
+    var lastFetchedBookingID: Int64?
 
     func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
         try fetchBookingsResult.get()
     }
 
     func fetchBooking(bookingID: Int64) async throws -> POSBooking {
+        fetchBookingCallCount += 1
+        lastFetchedBookingID = bookingID
         guard let result = fetchBookingResult else {
             throw NSError(domain: "MockPOSBookingService", code: 0)
         }

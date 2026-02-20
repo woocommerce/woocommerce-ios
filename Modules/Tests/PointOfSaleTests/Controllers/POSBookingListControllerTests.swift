@@ -260,6 +260,66 @@ final class POSBookingListControllerTests {
         }
     }
 
+    // MARK: - updateBookingOptimistically
+
+    @Test func test_updateBookingOptimistically_applies_optimistic_state_then_fetches_real_booking() async {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+        sut.selectBooking(bookings[0])
+
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+        let realBooking = makeBooking(id: 1, serviceName: "Updated Service", attendanceStatus: .attended)
+        mockService.fetchBookingResult = .success(realBooking)
+
+        // When
+        await sut.updateBookingOptimistically(bookingID: 1) {
+            $0.copy(status: .paid, order: $0.order.copy(datePaid: Date()))
+        }
+
+        // Then - real booking replaces optimistic
+        #expect(sut.bookingsViewState.bookings.first?.serviceName == "Updated Service")
+        #expect(sut.bookingsViewState.bookings.first?.attendanceStatus == .attended)
+        #expect(sut.selectedBooking?.serviceName == "Updated Service")
+        #expect(mockService.fetchBookingCallCount == 1)
+        #expect(mockService.lastFetchedBookingID == 1)
+    }
+
+    @Test func test_updateBookingOptimistically_when_fetch_fails_then_keeps_optimistic_state() async {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+        sut.selectBooking(bookings[0])
+
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+        mockService.fetchBookingResult = nil
+
+        // When
+        await sut.updateBookingOptimistically(bookingID: 1) {
+            $0.copy(status: .paid, order: $0.order.copy(datePaid: Date()))
+        }
+
+        // Then - optimistic state persists
+        #expect(sut.bookingsViewState.bookings.first?.status == .paid)
+        #expect(sut.bookingsViewState.bookings.first?.order.datePaid != nil)
+        #expect(sut.selectedBooking?.status == .paid)
+    }
+
+    @Test func test_updateBookingOptimistically_when_booking_not_found_then_does_nothing() async {
+        // Given - no bookings loaded
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+
+        // When
+        await sut.updateBookingOptimistically(bookingID: 999) {
+            $0.copy(status: .paid)
+        }
+
+        // Then - no fetch attempted
+        #expect(mockService.fetchBookingCallCount == 0)
+    }
+
     // MARK: - Caching
 
     @Test func test_loadBookings_uses_cached_data_on_reload() async {

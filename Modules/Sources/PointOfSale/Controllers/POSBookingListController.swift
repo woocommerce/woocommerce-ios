@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import Observation
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
@@ -19,6 +20,7 @@ protocol POSBookingListControllerProtocol {
     func cancelBooking(bookingID: Int64) async throws
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws
     func updateBooking(bookingID: Int64) async throws
+    func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -108,6 +110,23 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     func updateBooking(bookingID: Int64) async throws {
         let updatedBooking = try await bookingService.fetchBooking(bookingID: bookingID)
         updateBooking(updatedBooking)
+    }
+
+    @MainActor
+    func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async {
+        guard let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) else {
+            return
+        }
+
+        let optimisticBooking = optimisticUpdate(existing)
+        updateBooking(optimisticBooking)
+
+        do {
+            let realBooking = try await bookingService.fetchBooking(bookingID: bookingID)
+            updateBooking(realBooking)
+        } catch {
+            DDLogError("⛔️ Failed to fetch booking \(bookingID) after optimistic update: \(error)")
+        }
     }
 
     @MainActor

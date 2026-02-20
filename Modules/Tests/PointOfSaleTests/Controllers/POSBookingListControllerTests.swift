@@ -478,6 +478,57 @@ final class POSBookingListControllerTests {
         #expect(mockFactory.defaultStrategyCallCount == defaultCallCountBeforeReload)
     }
 
+    // MARK: - Prefetch
+
+    @Test func test_syncBookings_syncs_today_and_adjacent_dates() async throws {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
+
+        _ = sut.selectedDate
+        let callCountBeforeSync = mockFactory.defaultStrategyCallCount
+
+        // When
+        sut.syncBookings()
+
+        // Wait for the sync task to complete
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        // Then - 3 calls: today + yesterday + tomorrow
+        let newCalls = mockFactory.defaultStrategyCallCount - callCountBeforeSync
+        #expect(newCalls == 3)
+    }
+
+    // MARK: - isPaginating
+
+    @Test func test_isPaginating_is_false_initially() {
+        #expect(sut.isPaginating == false)
+    }
+
+    @Test func test_isPaginating_is_false_after_loadBookings() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
+
+        // When
+        await sut.loadBookings()
+
+        // Then
+        #expect(sut.isPaginating == false)
+    }
+
+    @Test func test_isPaginating_is_false_after_selectDate() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+
+        // When
+        await sut.selectDate(tomorrow)
+
+        // Then
+        #expect(sut.isPaginating == false)
+    }
+
     @Test func test_selectDate_clears_cache_and_shows_loading() async {
         // Given - load bookings for initial date
         let bookings = [makeBooking(id: 1)]

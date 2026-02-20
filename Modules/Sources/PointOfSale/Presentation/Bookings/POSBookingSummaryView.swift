@@ -62,16 +62,11 @@ struct POSBookingSummaryView: View {
 // MARK: - Date Formatting
 
 extension POSBookingSummaryView {
-    static func formattedTimeRange(for booking: POSBooking) -> String {
-        DateIntervalFormatter.posTimeRangeFormatter.string(from: booking.startDate, to: booking.endDate)
-    }
-}
-
-private extension DateIntervalFormatter {
-    static let posTimeRangeFormatter: DateIntervalFormatter = {
+    static func formattedTimeRange(for booking: POSBooking, siteTimezone: TimeZone) -> String {
         let formatter = DateIntervalFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
-        return formatter
-    }()
+        formatter.timeZone = siteTimezone
+        return formatter.string(from: booking.startDate, to: booking.endDate)
+    }
 }

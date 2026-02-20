@@ -152,6 +152,11 @@ struct POSBookingListView: View {
                     proxy.scrollTo(Constants.scrollTopID, anchor: .top)
                 }
             }
+            .onChange(of: bookingsModel.bookingsController.selectedDate) { _, _ in
+                withAnimation {
+                    proxy.scrollTo(Constants.scrollTopID, anchor: .top)
+                }
+            }
         }
     }
 

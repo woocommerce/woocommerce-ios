@@ -11,7 +11,6 @@ enum SetupStep: Int, CaseIterable {
 protocol WPComConnectionSetupHandlerDelegate: AnyObject {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status)
     func setupDidComplete()
-    func setupDidRequireWebView(url: URL, siteURL: String)
 }
 
 @MainActor
@@ -20,9 +19,6 @@ protocol WPComConnectionSetupHandlerProtocol: AnyObject {
     func start()
     func retry()
     func cancel()
-    func didAuthorizeWebViewConnection()
-    func didEncounterWebViewError(code: Int?)
-    func didCancelWebView()
 }
 
 /// Stub implementation for the handler protocol.
@@ -34,7 +30,7 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     private var currentStep: SetupStep?
 
     private let siteURL: String
-    private let credentials: Credentials?
+    private let siteAlreadyConnected: Bool
     private let stores: StoresManager
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let pluginVersionChecker: PluginVersionCheckerProtocol
@@ -42,13 +38,13 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
 
     init(siteID: Int64,
          siteURL: String,
-         credentials: Credentials?,
+         siteAlreadyConnected: Bool,
          stores: StoresManager = ServiceLocator.stores,
          jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteURL = siteURL
-        self.credentials = credentials
+        self.siteAlreadyConnected = siteAlreadyConnected
         self.stores = stores
         self.jetpackConnectionService = jetpackConnectionService
         let minimumVersion: String = {
@@ -70,7 +66,7 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
 
     func start() {
         /// Step 1 (optional): check Jetpack connection
-        if credentials != nil {
+        if !siteAlreadyConnected {
             currentStep = .connect
             startJetpackConnection()
         } else {
@@ -96,83 +92,21 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     func cancel() {
         // TODO: Implement in follow-up PR
     }
+}
 
-    func didAuthorizeWebViewConnection() {
+private extension WPComConnectionSetupHandler {
+    func startJetpackConnection() {
         Task { @MainActor in
             do {
-                let _ = try await jetpackConnectionService.verifyConnection()
+                delegate?.stepDidUpdate(.connect, status: .running)
+                try await jetpackConnectionService.establishSiteConnection(siteURL: siteURL)
                 delegate?.stepDidUpdate(.connect, status: .success)
                 startPluginVersionCheck()
             } catch {
                 didFailConnection(with: error)
             }
         }
-    }
 
-    func didEncounterWebViewError(code: Int?) {
-        DDLogError("⛔️ Web view error (code: \(String(describing: code)))")
-        delegate?.stepDidUpdate(.connect, status: .failure(error: .generic(reason: Localization.ConnectionStep.genericError)))
-    }
-
-    func didCancelWebView() {
-        delegate?.stepDidUpdate(.connect, status: .failure(error: .generic(reason: Localization.ConnectionStep.canceled)))
-    }
-}
-
-private extension WPComConnectionSetupHandler {
-    func startJetpackConnection() {
-        guard let credentials else { return }
-        Task { @MainActor in
-            do {
-                delegate?.stepDidUpdate(.connect, status: .running)
-                let completed = try await checkJetpackConnection(with: credentials)
-                if completed {
-                    delegate?.stepDidUpdate(.connect, status: .success)
-                    startPluginVersionCheck()
-                }
-                // When `completed` is false, the web view flow has been triggered
-                // and the flow will resume via didAuthorizeWebViewConnection().
-            } catch {
-                didFailConnection(with: error)
-            }
-        }
-
-    }
-
-    /// Returns `true` when the connection step completed (already connected or just connected).
-    /// Returns `false` when a web view is required — the flow pauses until the web view finishes.
-    @MainActor
-    func checkJetpackConnection(with credentials: Credentials) async throws -> Bool {
-        let result = try await jetpackConnectionService.evaluateAndConnect(siteURL: siteURL, credentials: credentials)
-        switch result {
-        case .alreadyConnected, .connected:
-            return true
-        case .webViewRequired:
-            startConnectionWithWebView()
-            return false
-        }
-    }
-
-    @MainActor
-    func startConnectionWithWebView() {
-        let authenticatedWithWPCom = !stores.isAuthenticatedWithoutWPCom
-        Task { [weak self] in
-            guard let self else { return }
-            do {
-                let url = try await jetpackConnectionService.fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom)
-                let connectionURL: URL
-                if url.absoluteString.hasPrefix(Constants.accountConnectionURL) {
-                    connectionURL = url
-                } else {
-                    let fallback = String(format: Constants.siteConnectionURLFormat, self.siteURL)
-                    connectionURL = URL(string: fallback) ?? url
-                }
-                delegate?.setupDidRequireWebView(url: connectionURL, siteURL: self.siteURL)
-            } catch {
-                DDLogError("⛔️ Error fetching Jetpack connection URL: \(error)")
-                didFailConnection(with: error)
-            }
-        }
     }
 
     func didFailConnection(with error: Error) {

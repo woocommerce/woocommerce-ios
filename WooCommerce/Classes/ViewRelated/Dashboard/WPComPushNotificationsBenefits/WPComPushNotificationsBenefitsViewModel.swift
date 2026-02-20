@@ -78,9 +78,12 @@ final class WPComPushNotificationsBenefitsViewModel {
         // TODO: Track continue tapped event
         switch variant {
         case .connect:
-            pushNotificationSetupCoordinator?.start()
+            pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
-            pushNotificationSetupCoordinator?.showPluginUpdateSetup(pluginVersion: currentVersion)
+            pushNotificationSetupCoordinator?.startSetup(
+                siteAlreadyConnected: true,
+                pluginOutdatedVersion: currentVersion
+            )
         }
     }
 

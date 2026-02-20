@@ -146,13 +146,9 @@ struct POSBookingListView: View {
                     }
                 }
             )
+            .id(bookingsModel.bookingsController.selectedDate)
             .scrollDismissesKeyboard(.immediately)
             .onChange(of: searchTerm) { _, _ in
-                withAnimation {
-                    proxy.scrollTo(Constants.scrollTopID, anchor: .top)
-                }
-            }
-            .onChange(of: bookingsModel.bookingsController.selectedDate) { _, _ in
                 withAnimation {
                     proxy.scrollTo(Constants.scrollTopID, anchor: .top)
                 }

@@ -16,6 +16,7 @@ struct POSBookingDetailView: View {
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
     @State private var emailCopied = false
+    @State private var emailCopiedTask: Task<Void, Never>?
     @State private var inlineButtonMinY: CGFloat = .infinity
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
@@ -205,7 +206,7 @@ struct POSBookingDetailView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
-                if booking.isGuest {
+                if booking.hasNoCustomerDetails {
                     POSBookingBadgeView(
                         title: Localization.guestBadge,
                         textColor: .posOnDefault,

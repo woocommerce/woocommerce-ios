@@ -1,1 +1,2 @@
-Pembaruan ini memperjelas proses login dengan menampilkan indikasi error yang jelas ketika login situs gagal karena masalah autentikasi, menambahkan alur "Pelajari lebih lanjut" untuk penjelasan fitur POS yang lebih tertata, dan menghadirkan pelacakan koneksi di balik layar untuk membantu kami meningkatkan keandalan dan performa.
+Pencarian item Point of Sale yang kami optimalkan kini jauh lebih cepat. Pencarian membantu Anda menemukan produk, dan kini hasilnya juga mencakup variasi! Hasil seketika, dan segala macam urutan kata dapat digunakan untuk pencarian.
+Kami juga memperlancar proses pembuatan pesanan, dengan perbaikan penyaring produk dan pembaruan alamat pengiriman. Segera perbarui agar toko Anda tetap lancar jaya!

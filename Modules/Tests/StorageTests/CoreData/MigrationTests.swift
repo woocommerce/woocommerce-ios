@@ -2363,6 +2363,40 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedCustomerInfo.value(forKey: "note") as? String, updatedNote)
     }
+
+    func test_migrating_from_131_to_132_adds_new_attributes_to_bookingOrderInfo() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 131")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderInfo = insertBookingOrderInfo(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderInfo.entity.attributesByName["orderID"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(orderInfo.entity.attributesByName["orderNumber"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(orderInfo.entity.attributesByName["dateCreated"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(orderInfo.entity.attributesByName["datePaid"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(orderInfo.entity.attributesByName["discountTotal"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 132")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["orderID"])
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["orderNumber"])
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["dateCreated"])
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["datePaid"])
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["discountTotal"])
+
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "orderID") as? Int64, 0)
+        XCTAssertNil(migratedOrderInfo.value(forKey: "orderNumber") as? String)
+        XCTAssertNil(migratedOrderInfo.value(forKey: "dateCreated") as? Date)
+        XCTAssertNil(migratedOrderInfo.value(forKey: "datePaid") as? Date)
+        XCTAssertNil(migratedOrderInfo.value(forKey: "discountTotal") as? String)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

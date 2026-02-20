@@ -2,6 +2,9 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 132
+- Added `orderID`, `orderNumber`, `dateCreated`, `datePaid`, `discountTotal` attributes to `BookingOrderInfo` entity.
+
 ## Model 130 (Release 23.7)
 - @adborbas 2025-11-06
   - Added `note` attribute to `Booking` entity.

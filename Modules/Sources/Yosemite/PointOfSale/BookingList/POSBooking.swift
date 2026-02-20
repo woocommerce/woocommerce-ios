@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
 
-public struct POSBooking: Equatable, Hashable, Identifiable {
+public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
     /// Whether the linked order indicates payment was collected.
     /// Uses `datePaid` rather than order status because the Bookings API
     /// may change the order status when a booking is cancelled,

@@ -940,6 +940,7 @@ private extension DashboardViewModel {
             !dismissedWPComConnectionSuggestion &&
             featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
     }
+
 }
 
 // MARK: InAppFeedback card

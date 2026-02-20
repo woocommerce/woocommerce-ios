@@ -57,6 +57,14 @@ protocol PushNotesManager {
     ///
     func reloadBadgeCount()
 
+    /// Registers for remote notifications, requests authorization, waits for the device token,
+    /// and sends it to the push-tokens endpoint.
+    /// - Note: This must run on the main actor since the registration flow dispatches actions
+    ///   that assert main-thread execution.
+    /// - Returns: The token ID on success.
+    /// - Throws: If any step in the registration pipeline fails.
+    @MainActor func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64
+
     /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications()

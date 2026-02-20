@@ -102,7 +102,9 @@ final class DevicesRemoteTests: XCTestCase {
         let tokenID = try await remote.registerForSelfDrivenPushNotifications(
             siteID: Parameters.siteID,
             device: Parameters.appleDevice,
-            applicationID: Parameters.applicationId
+            applicationID: Parameters.applicationId,
+            deviceLocale: Parameters.deviceLocale,
+            appVersion: Parameters.applicationVersion
         )
 
         XCTAssertEqual(tokenID, 123)
@@ -119,7 +121,9 @@ final class DevicesRemoteTests: XCTestCase {
             _ = try await remote.registerForSelfDrivenPushNotifications(
                 siteID: Parameters.siteID,
                 device: Parameters.appleDevice,
-                applicationID: Parameters.applicationId
+                applicationID: Parameters.applicationId,
+                deviceLocale: Parameters.deviceLocale,
+                appVersion: Parameters.applicationVersion
             )
             XCTFail("Expected error to be thrown")
         } catch {
@@ -174,4 +178,5 @@ private enum Parameters {
     static let dotcomDeviceID = "1234"
     static let siteID: Int64 = 123456
     static let tokenID: Int64 = 123
+    static let deviceLocale = "en_US"
 }

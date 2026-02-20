@@ -42,7 +42,7 @@ struct DebugPanelView: View {
                         handler: WPComConnectionSetupHandler(
                             siteID: site.siteID,
                             siteURL: site.url,
-                            credentials: nil
+                            siteAlreadyConnected: false
                         ),
                         onDismiss: dismiss,
                         onGoToStore: dismiss,

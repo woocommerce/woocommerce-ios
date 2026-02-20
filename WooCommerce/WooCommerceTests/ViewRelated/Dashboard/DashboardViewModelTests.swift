@@ -1098,6 +1098,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
         XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
+
 }
 
 private extension DashboardViewModelTests {

@@ -20,6 +20,7 @@ struct POSBookingDetailView: View {
     @State private var inlineButtonMinY: CGFloat = .infinity
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
+    @State private var isDetailsUpdating = false
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -50,7 +51,9 @@ struct POSBookingDetailView: View {
                             autoStartRefund: true,
                             onRefundSuccess: {
                                 Task {
-                                    await bookingsModel.bookingsController.refreshBookings()
+                                    isDetailsUpdating = true
+                                    await bookingsModel.updateAfterRefund(bookingID: booking.id)
+                                    isDetailsUpdating = false
                                 }
                             }
                         )
@@ -72,6 +75,7 @@ struct POSBookingDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: POSBookingSummaryView.formattedTimeRange(for: booking),
+                isLoading: isDetailsUpdating,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     viewOrderMenu
@@ -331,7 +335,9 @@ struct POSBookingDetailView: View {
         showPaymentView = false
         paymentModel = nil
         Task { @MainActor in
-            await bookingsModel.bookingsController.refreshBookings()
+            isDetailsUpdating = true
+            await bookingsModel.updateAfterPayment(bookingID: booking.id)
+            isDetailsUpdating = false
         }
     }
 

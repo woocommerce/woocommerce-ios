@@ -7,9 +7,11 @@ import WooFoundation
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
-         rootViewController: UIViewController) {
+         rootViewController: UIViewController,
+         onSetupCompleted: (() -> Void)? = nil) {
         super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
-        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
+        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController,
+                                                              onSetupCompleted: onSetupCompleted)
         viewModel.updateCoordinator(coordinator)
     }
 
@@ -24,7 +26,7 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
 }
 
 struct WPComPushNotificationsBenefitsView: View {
-    private let viewModel: WPComPushNotificationsBenefitsViewModel
+    private var viewModel: WPComPushNotificationsBenefitsViewModel
 
     @State private var safariURL: URL?
 
@@ -45,6 +47,8 @@ struct WPComPushNotificationsBenefitsView: View {
                     Spacer()
                     footer
                 }
+                .redacted(reason: viewModel.isCheckingPlugin ? .placeholder : [])
+                .shimmering(active: viewModel.isCheckingPlugin)
                 .padding([.leading, .bottom, .trailing], Layout.contentPadding)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
@@ -58,6 +62,9 @@ struct WPComPushNotificationsBenefitsView: View {
         }
         .onAppear {
             viewModel.onAppear()
+        }
+        .task {
+            await viewModel.determineSetupVariant()
         }
         .environment(\.openURL, OpenURLAction { [viewModel] url in
             viewModel.whatIsWPComTapped()
@@ -94,7 +101,7 @@ struct WPComPushNotificationsBenefitsView: View {
 
     private var footer: some View {
         VStack {
-            Button(Localization.continueButton) {
+            Button(primaryButtonText) {
                 viewModel.continueTapped()
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -103,6 +110,15 @@ struct WPComPushNotificationsBenefitsView: View {
                 viewModel.notNowTapped()
             }
             .buttonStyle(SecondaryButtonStyle())
+        }
+    }
+
+    private var primaryButtonText: String {
+        switch viewModel.variant {
+        case .connect:
+            return Localization.continueButton
+        case .pluginUpdate:
+            return Localization.updatePluginButton
         }
     }
 }
@@ -154,11 +170,17 @@ fileprivate extension WPComPushNotificationsBenefitsView {
             value: "Cancel",
             comment: "Cancel button title in the WordPress.com Push Notifications Benefits View toolbar"
         )
+
+        static let updatePluginButton = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.updatePluginButton",
+            value: "Update plugin",
+            comment: "Button title to update the WooCommerce plugin in the Push Notifications Benefits View"
+        )
     }
 }
 
 #Preview {
     WPComPushNotificationsBenefitsView(
-        viewModel: WPComPushNotificationsBenefitsViewModel(onDismiss: {})
+        viewModel: WPComPushNotificationsBenefitsViewModel(siteID: 0, onDismiss: {})
     )
 }

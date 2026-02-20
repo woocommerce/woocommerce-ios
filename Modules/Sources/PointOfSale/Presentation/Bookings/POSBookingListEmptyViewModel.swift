@@ -17,20 +17,20 @@ struct POSBookingListEmptyViewModel: POSListEmptyViewModelProtocol {
     }
 
     var icon: Image {
-        isSearching ? PointOfSaleAssets.magnifierNotFound.decorativeImage : PointOfSaleAssets.noOrders.decorativeImage
+        PointOfSaleAssets.magnifierNotFound.decorativeImage
     }
 }
 
 private enum Localization {
     static let emptyBookingsTitle = NSLocalizedString(
-        "pos.bookingListView.emptyBookingsTitle",
-        value: "No bookings yet",
+        "pos.bookingListView.emptyBookingsTitle.2",
+        value: "No bookings for this day",
         comment: "Title appearing when there are no bookings to display."
     )
 
     static let emptyBookingsSubtitle = NSLocalizedString(
-        "pos.bookingListView.emptyBookingsSubtitle",
-        value: "Bookings will appear here once customers start booking.",
+        "pos.bookingListView.emptyBookingsSubtitle.2",
+        value: "Any bookings scheduled for this date will appear here.",
         comment: "Subtitle appearing when there are no bookings to display."
     )
 

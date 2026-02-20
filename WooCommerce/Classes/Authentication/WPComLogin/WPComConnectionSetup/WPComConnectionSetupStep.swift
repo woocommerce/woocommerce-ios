@@ -1,7 +1,7 @@
 import Foundation
 
 struct WPComConnectionSetupStep: Identifiable {
-    enum Status {
+    enum Status: Equatable {
         case notStarted
         case running
         case success

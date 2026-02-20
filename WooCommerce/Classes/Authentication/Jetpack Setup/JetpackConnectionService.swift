@@ -28,6 +28,9 @@ enum JetpackConnectionServiceError: Error, CustomNSError {
 /// fetch data → decide native/webview → connect → verify.
 /// Ref: pe5sF9-401-p2
 protocol JetpackConnectionServiceProtocol {
+    /// Establish site-only connection - minimum requirement for self-driven push notifications.
+    func establishSiteConnection(siteURL: String) async throws
+
     /// Full decision tree: evaluate connection data, perform native connection if possible,
     /// or return `.webViewRequired` if the site uses outdated Jetpack.
     func evaluateAndConnect(siteURL: String,
@@ -39,6 +42,9 @@ protocol JetpackConnectionServiceProtocol {
 
     /// Fetches the URL used for setting up Jetpack connection via web view.
     func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool) async throws -> URL
+
+    /// Fetches the current Jetpack connection data for the site.
+    func fetchConnectionData() async throws -> JetpackConnectionData
 }
 
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
@@ -52,6 +58,10 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
         self.stores = stores
         self.maxRetryCount = maxRetryCount
         self.delayBeforeRetry = delayBeforeRetry
+    }
+
+    func establishSiteConnection(siteURL: String) async throws {
+        _ = try await dispatch(JetpackConnectionAction.registerSite)
     }
 
     func evaluateAndConnect(siteURL: String,
@@ -119,6 +129,10 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
         DDLogWarn("⚠️ Cannot find connected WPCom user after \(maxRetryCount + 1) attempts")
         throw JetpackConnectionServiceError.verificationFailed
     }
+
+    func fetchConnectionData() async throws -> JetpackConnectionData {
+        try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
+    }
 }
 
 private extension JetpackConnectionService {
@@ -126,10 +140,6 @@ private extension JetpackConnectionService {
         case installed
         case notFound
         case error(Error)
-    }
-
-    func fetchConnectionData() async throws -> JetpackConnectionData {
-        try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
     }
 
     func nativeConnect(with connectionData: JetpackConnectionData,

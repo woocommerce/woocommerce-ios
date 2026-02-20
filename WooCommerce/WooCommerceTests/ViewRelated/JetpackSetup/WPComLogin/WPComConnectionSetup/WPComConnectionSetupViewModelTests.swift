@@ -168,61 +168,56 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertTrue(dismissCalled)
     }
 
-    // MARK: - Web View Presentation Tests
+    // MARK: - setPluginOutdatedState Tests
 
-    func test_setupDidRequireWebView_sets_webViewPresentation() {
+    func test_setPluginOutdatedState_sets_connect_to_success_and_checkPlugin_to_failure() {
         // Given
         let viewModel = makeViewModel()
-        let url = URL(string: "https://jetpack.wordpress.com/jetpack.authorize/123")!
-        let siteURL = "https://example.com"
 
         // When
-        mockHandler.simulateWebViewRequired(url: url, siteURL: siteURL)
+        viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // Then
-        XCTAssertEqual(viewModel.webViewPresentation, WPComConnectionSetupViewModel.WebViewPresentation(url: url, siteURL: siteURL))
+        XCTAssertEqual(viewModel.steps[0].status, .success)
+        XCTAssertEqual(viewModel.steps[1].status, .failure(error: .outdatedPlugin(version: "10.4.0")))
+        XCTAssertEqual(viewModel.steps[2].status, .notStarted)
     }
 
-    func test_didAuthorizeWebViewConnection_clears_presentation_and_forwards_to_handler() {
+    func test_setPluginOutdatedState_shows_updatePlugin_primary_and_tryAgain_secondary() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
-        XCTAssertNotNil(viewModel.webViewPresentation)
 
         // When
-        viewModel.didAuthorizeWebViewConnection()
+        viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // Then
-        XCTAssertNil(viewModel.webViewPresentation)
-        XCTAssertEqual(mockHandler.didAuthorizeWebViewConnectionCallCount, 1)
+        XCTAssertEqual(viewModel.primaryButtonTitle, "Update plugin")
+        XCTAssertTrue(viewModel.isPrimaryButtonEnabled)
+        XCTAssertTrue(viewModel.isShowingSecondaryButton)
+        XCTAssertEqual(viewModel.secondaryButtonTitle, "Try again")
     }
 
-    func test_didEncounterWebViewError_clears_presentation_and_forwards_to_handler() {
+    func test_onAppear_does_not_call_handler_start_after_setPluginOutdatedState() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
-        XCTAssertNotNil(viewModel.webViewPresentation)
+        viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // When
-        viewModel.didEncounterWebViewError(code: 404)
+        viewModel.onAppear()
 
         // Then
-        XCTAssertNil(viewModel.webViewPresentation)
-        XCTAssertEqual(mockHandler.didEncounterWebViewErrorCallCount, 1)
+        XCTAssertEqual(mockHandler.startCallCount, 0)
     }
 
-    func test_didCancelWebView_clears_presentation_and_forwards_to_handler() {
+    func test_onAppear_calls_handler_start_when_in_initial_state() {
         // Given
         let viewModel = makeViewModel()
-        mockHandler.simulateWebViewRequired(url: URL(string: "https://example.com")!, siteURL: "https://example.com")
-        XCTAssertNotNil(viewModel.webViewPresentation)
 
         // When
-        viewModel.didCancelWebView()
+        viewModel.onAppear()
 
         // Then
-        XCTAssertNil(viewModel.webViewPresentation)
-        XCTAssertEqual(mockHandler.didCancelWebViewCallCount, 1)
+        XCTAssertEqual(mockHandler.startCallCount, 1)
     }
 
     // MARK: - Helpers

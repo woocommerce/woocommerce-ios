@@ -224,7 +224,10 @@ struct POSBookingDetailView: View {
                     Button {
                         UIPasteboard.general.string = email
                         emailCopied = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        emailCopiedTask?.cancel()
+                        emailCopiedTask = Task {
+                            try? await Task.sleep(for: .seconds(1.5))
+                            guard !Task.isCancelled else { return }
                             emailCopied = false
                         }
                     } label: {
@@ -234,6 +237,7 @@ struct POSBookingDetailView: View {
                             .contentTransition(.symbolEffect(.replace))
                     }
                     .buttonStyle(.plain)
+                    .disabled(emailCopied)
                     .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
                     .frame(minHeight: 32)
                 }

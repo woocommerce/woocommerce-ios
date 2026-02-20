@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-04 19:28:35+0000 */
+/* Translation-Revision-Date: 2026-02-17 09:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -532,6 +532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "يضيف مجموعة إلى الطلب.";
 
+/* User's Administrator role. */
+"Administrator" = "المسؤول";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "يلزم توقيع شخص بالغ (+%1$@)";
 
@@ -663,6 +666,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when an order already exists in the backend for a given receipt */
 "An order already exists for this receipt" = "هناك طلب موجود بالفعل لهذا الإيصال";
+
+/* Message presented when an unexpected error occurs with the store's payment gateway. */
+"An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "حدث خطأ غير متوقع في بوابة الدفع الخاصة بالمتجر عند تسجيل الدفع للطلب";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "حدث خطأ غير متوقع.";
@@ -1823,6 +1829,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "المتابعة باستخدام Apple";
+
+/* User's Contributor role. */
+"Contributor" = "مساهم";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "معدل التحويل";
@@ -6207,6 +6216,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the product's tax status setting option */
 "Shipping only" = "الشحن فقط";
 
+/* User's Shop Manager role. */
+"Shop Manager" = "مدير المتجر";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "المحال ونتائج البحث";
 
@@ -6861,6 +6873,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "تم قطع اتصال البلوتوث بقارئ البطاقة بشكل غير متوقع";
 
+/* Message shown when a GIF failed to load while trying to add it to the Media library. */
+"The GIF could not be added to the Media Library." = "تتعذر إضافة تنسيق GIF إلى مكتبة الوسائط.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "لا يتطابق حساب غوغل \"‎%@\" مع أي حساب موجود على ووردبريس.كوم";
 
@@ -6962,6 +6977,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when an image failed to load while trying to add it to the Media library. */
 "The image could not be added to the Media Library." = "تعذرت إضافة الصورة إلى مكتبة الوسائط.";
+
+/* Message shown when an asset failed to load while trying to add it to the Media library. */
+"The item could not be added to the Media Library." = "تتعذر إضافة العنصر إلى مكتبة الوسائط.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "اسم الحزمة المخصصة الجديد غير فريد.";
@@ -8753,6 +8771,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "تسجيل الدخول باستخدام حساب آخر";
 
+/* Message shown when a video failed to load while trying to add it to the Media library. */
+"assetExportError.expectedPHAssetVideoType.message" = "تتعذر إضافة الفيديو إلى مكتبة الوسائط.";
+
+/* Message shown when a video file failed to export from the local library. */
+"assetExportError.failedToExportVideo.message" = "فشل تصدير الوسائط المحددة.";
+
 /* Label displayed on audio media items. */
 "audio" = "صوت";
 
@@ -9724,7 +9748,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingServiceEventSelectorView.title" = "الخدمة \/ الحدث";
 
 /* Status of a canceled booking */
-"bookingStatus.title.canceled" = "مُلغى";
+"bookingStatus.title.canceled" = "تم الإلغاء";
 
 /* Status of a complete booking */
 "bookingStatus.title.complete" = "مكتمل";
@@ -10083,6 +10107,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "انتهت الصلاحية في %@";
+
+/* A default error when coupon application failed. */
+"couponsError.default.title" = "يتعذر تطبيق القسيمة بسبب خطأ غير متوقع.";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "العنوان";
@@ -11657,6 +11684,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "نوع عنصر غير مدعوم";
 
+/* A placeholder name when we can't determine the name of a variation for an error message */
+"pointOfSale.barcodeScanning.unresolved.variation.name" = "غير معروف";
+
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
 "pointOfSale.cardPresent.cancelledOnReader.title" = "تم إلغاء عملية الدفع على القارئ";
 
@@ -12037,6 +12067,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "جارٍ التحميل";
+
+/* Fallback name for a product that couldn't be identified in error handling. */
+"pointOfSale.orderController.unknownProduct" = "منتج واحد أو أكثر";
 
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "تحرير الطلب";
@@ -12587,8 +12620,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "حالة الطلب: %1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "لا يوجد طلب للعرض";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "لم يتم تحديد أي طلب.";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "طلب";
@@ -12598,6 +12631,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "الإجماليات";
+
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "يُرجى المحاولة مرة أخرى.";
+
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "فشل إنشاء عملية استرداد الأموال";
 
 /* Accessibility label for discount total. %1$@ is the discount amount. */
 "pos.orderDetailsView.discount.accessibilityLabel" = "إجمالي الخصم: %1$@";
@@ -12622,6 +12661,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "إصدار أمر باسترداد الأموال";
+
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "يُرجى المحاولة مرة أخرى.";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "يتعذر تحميل تفاصيل الاسترداد";
 
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "المزيد من الإجراءات";
@@ -12694,6 +12739,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "معرفة المزيد";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.2" = "لم نتمكن من العثور على أي طلبات تحمل هذا الاسم. حاول ضبط مصطلح البحث.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "لم يتم العثور على طلبات";
@@ -12783,10 +12831,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.confirmButton" = "نعم، المتابعة";
 
 /* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat" = "هل أنت متأكد من رغبتك في معالجة استرداد %1$@ %2$@؟ لا يمكن التراجع عن هذا الإجراء.";
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "هل أنت متأكد من رغبتك في استرداد %1$@ %2$@؟ لا يمكن التراجع عن هذا الإجراء.";
+
+/* Message shown while the refund is being processed. */
+"pos.refundConfirmationView.processingMessage" = "يُرجى الانتظار بينما نعالج استرداد الأموال.";
+
+/* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.processingTitleFormat" = "جارٍ استرداد %@";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "استرداد %@";
+
+/* Button to cancel and dismiss the refund error screen */
+"pos.refundErrorView.cancelButton" = "إلغاء";
+
+/* Accessibility label for close button on refund error screen */
+"pos.refundErrorView.closeButton.accessibilityLabel" = "إغلاق";
+
+/* Button to retry the refund creation */
+"pos.refundErrorView.retryButton" = "إعادة المحاولة";
 
 /* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
 "pos.refundItemRow.accessibilityLabelFormat" = "%1$@، %2$@، %3$@";
@@ -12824,6 +12887,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "تحديد العناصر لاسترداد الأموال";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "جارٍ تحميل تفاصيل الاسترداد...";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "إغلاق";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "تم";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "تم استرداد جميع العناصر الموجودة في هذا الطلب بالفعل.";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "لا يوجد شيء لاسترداده";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "زر";
@@ -12878,6 +12956,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "مراجعة الاسترداد";
+
+/* Accessibility label for close button on refund success screen */
+"pos.refundSuccessView.closeButton.accessibilityLabel" = "إغلاق";
+
+/* Button to dismiss the refund success screen */
+"pos.refundSuccessView.doneButton" = "تم";
+
+/* Button to email a receipt for the refund */
+"pos.refundSuccessView.emailReceiptButton" = "إرسال الإيصال عبر البريد الإلكتروني";
+
+/* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundSuccessView.messageFormat" = "لقد قمت باسترداد %1$@ %2$@.";
+
+/* Title shown when a refund has been successfully processed */
+"pos.refundSuccessView.title" = "اكتملت عملية استرداد الأموال";
 
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "مسح البحث";
@@ -13275,6 +13368,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "يفحص الأكواد الشريطية المرتبطة بالمعرِّف الفريد العالمي للمنتج لإدارة المخزون.";
 
+/* Error message when saving an invalid or duplicated product global unique ID */
+"productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID" = "GTIN أو UPC أو EAN أو ISBN غير صالح أو مكرر.";
+
 /* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.placeholder" = "اختياري";
 
@@ -13448,6 +13544,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "انتظار";
+
+/* Orders created through web checkout. */
+"salesChannel.webCheckout.description" = "السداد عبر الويب";
+
+/* Orders created through WordPress admin interface. */
+"salesChannel.wpAdmin.description" = "مشرف ووردبريس";
 
 /* Description for the Sales channel filter option, when selecting 'Any' order */
 "salesChannelFilter.row.any.description" = "أخرى";
@@ -14063,6 +14165,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the UPS Terms and Conditions view */
 "upsTermsView.title" = "شروط وأحكام UPS®";
 
+/* Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +'Roast: Dark, Size: 100g, Origin: Brazil, Any grind' */
+"variationAttributeView.namedAttributeFormat" = "%1$@: %2$@";
+
 /* Label displayed on video media items. */
 "video" = "فيديو";
 
@@ -14134,6 +14239,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "أسابيع";
+
+/* Title of the self-driven push notification setup flow */
+"wooPushNotificationSetupCoordinator.flowTitle" = "الاتصال بموقع WordPress.com";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "إضافة تفاصيل الطرد";
@@ -14327,6 +14435,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "الإجمالي";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "يُرجى إدخال رقم هاتف صالح لعنوان الوجهة.";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "رقم الهاتف مطلوب لعنوان الوجهة.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "إضافة شركة";
 
@@ -14467,6 +14581,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "إجمالي وزن الشحنة (مع الطرد)";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "تحرير العنوان";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "يُرجى إدخال رقم هاتف صالح لعنوان الوجهة.";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "رقم هاتف غير صالح.";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "التعرف على كيفية الطباعة من جهازك المحمول";
@@ -15058,6 +15181,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "عذرًا، حدث خطأ ما. يرجى المحاولة مرة أخرى!";
+
+/* Status label shown when a setup step has completed successfully. */
+"wpComConnectionSetupStepView.complete" = "مكتمل";
+
+/* Status label shown when a setup step is currently running. */
+"wpComConnectionSetupStepView.inProgress" = "قيد التنفيذ";
+
+/* Status label shown when a setup step has not been started yet. */
+"wpComConnectionSetupStepView.notStarted" = "لم يبدأ";
+
+/* Cancel button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.cancelButton" = "إلغاء";
+
+/* Title for the WPCom connection setup screen. */
+"wpComConnectionSetupView.title" = "الاتصال بموقع WordPress.com";
+
+/* Step title for checking plugin compatibility during WPCom connection setup. */
+"wpComConnectionSetupViewModel.checkPluginStep" = "التحقق من توافق الإضافة";
+
+/* Step title for connecting the store to WordPress.com during WPCom connection setup. */
+"wpComConnectionSetupViewModel.connectStoreStep" = "ربط متجرك بموقع WordPress.com";
+
+/* Step title for enabling push notifications during WPCom connection setup. */
+"wpComConnectionSetupViewModel.enablePushNotificationsStep" = "تمكين التنبيهات المنبثقة";
+
+/* Button title to navigate to the store after successful WPCom connection setup. */
+"wpComConnectionSetupViewModel.goToMyStore" = "الانتقال إلى متجري";
+
+/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
+"wpComConnectionSetupViewModel.subtitle" = "يُرجى الانتظار بينما ننتهي من ربط متجرك %@ بحسابك على WordPress.com.";
+
+/* Button title to retry the WPCom connection setup after a failure. */
+"wpComConnectionSetupViewModel.tryAgain" = "حاول مرة أخرى";
+
+/* Button title to update the plugin when WPCom connection setup fails due to outdated plugin. */
+"wpComConnectionSetupViewModel.updatePlugin" = "تحديث الإضافة";
 
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "إذا لم يكن لديك حساب، فإننا سنستخدم هذا البريد الإلكتروني لإنشاء واحد.";

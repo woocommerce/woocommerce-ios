@@ -12,11 +12,6 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
         order.datePaid != nil
     }
 
-    public var hasNoCustomerDetails: Bool {
-        customerName == nil && customerEmail == nil && customerPhone == nil
-            && billingAddress == nil && customerNote == nil
-    }
-
     public let id: Int64
     public let customerName: String?
     public let serviceName: String

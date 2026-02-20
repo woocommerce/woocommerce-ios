@@ -417,6 +417,15 @@ struct POSBookingDetailView: View {
     }
 }
 
+// MARK: - POSBooking Presentation Helpers
+
+private extension POSBooking {
+    var hasNoCustomerDetails: Bool {
+        customerName == nil && customerEmail == nil && customerPhone == nil
+            && billingAddress == nil && customerNote == nil
+    }
+}
+
 // MARK: - Section Card Modifier
 
 struct POSBookingSectionCardModifier: ViewModifier {

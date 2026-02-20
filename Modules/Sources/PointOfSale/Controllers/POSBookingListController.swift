@@ -72,10 +72,11 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     func syncBookings() {
         prefetchTask?.cancel()
+        let date = selectedDate
         prefetchTask = Task {
-            let todayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
+            let todayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: date))
             _ = try? await todayStrategy.fetchBookings(pageNumber: 1)
-            await syncAdjacentDateBookings()
+            await syncAdjacentDateBookings(for: date)
         }
     }
 
@@ -94,7 +95,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         let task = Task { await loadFirstPage() }
         loadTask = task
         await task.value
-        prefetchTask = Task { await syncAdjacentDateBookings() }
+        prefetchTask = Task { await syncAdjacentDateBookings(for: selectedDate) }
     }
 
     @MainActor
@@ -261,11 +262,11 @@ extension POSBookingListController {
 // MARK: - Private
 
 private extension POSBookingListController {
-    func syncAdjacentDateBookings() async {
+    func syncAdjacentDateBookings(for date: Date) async {
         var calendar = Calendar.current
         calendar.timeZone = siteTimezone
-        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: selectedDate),
-              let tomorrow = calendar.date(byAdding: .day, value: 1, to: selectedDate) else {
+        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: date),
+              let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) else {
             return
         }
         let yesterdayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: yesterday))

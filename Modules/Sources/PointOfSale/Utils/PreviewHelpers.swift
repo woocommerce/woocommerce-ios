@@ -786,12 +786,14 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     let bookingsViewState: POSBookingListState
     var selectedBooking: POSBooking?
     var selectedDate: Date = Date()
+    var isPaginating: Bool = false
 
     init(state: POSBookingListState) {
         self.bookingsViewState = state
         self.selectedBooking = state.bookings.first
     }
 
+    func syncBookings() {}
     func loadBookings() async {}
     func refreshBookings() async {}
     func loadNextBookings() async {}

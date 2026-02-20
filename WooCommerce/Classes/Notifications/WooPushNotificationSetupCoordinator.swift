@@ -87,6 +87,7 @@ final class WooPushNotificationSetupCoordinator {
 private extension WooPushNotificationSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
     }
 
     /// Creates the connection setup navigation stack with a handler, view model, and hosting controller.
@@ -114,7 +115,7 @@ private extension WooPushNotificationSetupCoordinator {
             onUpdatePlugin: { [weak navigationController, stores] in
                 guard let navigationController,
                       let site = stores.sessionManager.defaultSite,
-                      let url = URL(string: site.adminURL + "plugin-install.php?tab=plugin-information&plugin=woocommerce") else { return }
+                      let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else { return }
                 let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
                 let vc = UIHostingController(rootView: webView)
                 vc.modalPresentationStyle = .formSheet

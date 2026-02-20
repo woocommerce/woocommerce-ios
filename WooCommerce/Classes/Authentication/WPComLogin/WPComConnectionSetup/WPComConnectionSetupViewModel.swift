@@ -64,6 +64,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
     private let onUpdatePlugin: () -> Void
+    private var shouldAutoOpenUpdatePlugin = false
 
     init(storeName: String,
          handler: WPComConnectionSetupHandlerProtocol,
@@ -93,6 +94,11 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func onAppear() {
+        if shouldAutoOpenUpdatePlugin {
+            shouldAutoOpenUpdatePlugin = false
+            onUpdatePlugin()
+            return
+        }
         guard setupState == .inProgress else { return }
         handler.start()
     }
@@ -100,6 +106,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func setPluginOutdatedState(version: String) {
         stepDidUpdate(.connect, status: .success)
         stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: version)))
+        shouldAutoOpenUpdatePlugin = true
     }
 
     func primaryButtonTapped() {

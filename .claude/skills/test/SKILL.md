@@ -34,4 +34,8 @@ After running:
 3. Read the failing test files to understand what went wrong
 4. Suggest fixes for failing tests
 
-If the simulator `iPhone 16` is not available, try `iPhone 15` or `iPhone 16 Pro`.
+If the simulator `iPhone 16` is not available, discover available simulators:
+```bash
+xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5
+```
+Then retry with an available iPhone name.

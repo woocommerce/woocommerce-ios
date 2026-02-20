@@ -210,10 +210,19 @@ final class DashboardViewModel: ObservableObject {
             guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
                 return nil
             }
+            let minimumVersion: String = {
+#if DEBUG
+                if let override: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications],
+                   !override.isEmpty {
+                    return override
+                }
+#endif
+                return WooPluginRequirements.minimumVersion
+            }()
             return PluginVersionChecker(
                 siteID: site.siteID,
                 pluginPath: WooPluginRequirements.pluginPath,
-                minimumVersion: WooPluginRequirements.minimumVersion
+                minimumVersion: minimumVersion
             )
         }()
 

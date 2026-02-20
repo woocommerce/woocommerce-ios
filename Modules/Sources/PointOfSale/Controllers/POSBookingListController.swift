@@ -92,9 +92,8 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
         }
         setLocalDataOrLoadingState()
-        let task = Task { await loadFirstPage() }
-        loadTask = task
-        await task.value
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
         prefetchTask = Task { await syncAdjacentDateBookings(for: selectedDate) }
     }
 
@@ -102,9 +101,8 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     func refreshBookings() async {
         loadTask?.cancel()
         isPaginating = false
-        let task = Task { await loadFirstPage() }
-        loadTask = task
-        await task.value
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
     }
 
     @MainActor
@@ -187,9 +185,8 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
             let localBookings = fetchStrategy.fetchLocalBookings()
             bookingsViewState = .loading(localBookings)
         }
-        let task = Task { await loadFirstPage() }
-        loadTask = task
-        await task.value
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
         prefetchTask = Task { await syncAdjacentDateBookings(for: date) }
     }
 
@@ -216,9 +213,8 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         activeSearchTerm = searchTerm
         fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: dateFilters(for: selectedDate))
         bookingsViewState = .loading([])
-        let task = Task { await loadFirstPage() }
-        loadTask = task
-        await task.value
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
     }
 
     @MainActor
@@ -232,10 +228,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
             bookingsViewState = .loaded(localBookings, hasMoreItems: true)
         } else {
             bookingsViewState = .loading([])
-            let task = Task {
-                await loadFirstPage()
-            }
-            loadTask = task
+            loadTask = Task { await loadFirstPage() }
         }
     }
 }
@@ -328,13 +321,7 @@ private extension POSBookingListController {
             let uniqueNewBookings = pagedBookings.items.filter { newBooking in
                 !existingBookings.contains(where: { $0.id == newBooking.id })
             }
-            let mergedBookings = appendToExistingBookings ? existingBookings + uniqueNewBookings : uniqueNewBookings
-            let allBookings = mergedBookings.sorted { lhs, rhs in
-                if lhs.startDate == rhs.startDate {
-                    return lhs.id < rhs.id
-                }
-                return lhs.startDate < rhs.startDate
-            }
+            let allBookings = appendToExistingBookings ? existingBookings + uniqueNewBookings : uniqueNewBookings
 
             bookingsViewState = allBookings.isEmpty ? .empty : .loaded(allBookings, hasMoreItems: pagedBookings.hasMorePages)
 

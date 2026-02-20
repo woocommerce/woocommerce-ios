@@ -1,4 +1,6 @@
 import Foundation
+import enum Alamofire.AFError
+import class Networking.BookingsRemote
 import struct NetworkingCore.PagedItems
 import protocol Storage.StorageManagerType
 import class WooFoundationCore.CurrencyFormatter
@@ -49,15 +51,20 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
     }
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
-        let hasMorePages = try await bookingStoreMethods.synchronizeBookings(
-            siteID: siteID,
-            pageNumber: pageNumber,
-            pageSize: pageSize,
-            filters: filters,
-            searchQuery: nil
-        )
-        let bookings = await fetchLocalBookingsFromStorage()
-        return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)
+        do {
+            let hasMorePages = try await bookingStoreMethods.synchronizeBookings(
+                siteID: siteID,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                filters: filters,
+                searchQuery: nil,
+                order: .ascending
+            )
+            let bookings = await fetchLocalBookingsFromStorage()
+            return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSBookingServiceError.requestCancelled
+        }
     }
 
     func fetchLocalBookings() -> [POSBooking] {

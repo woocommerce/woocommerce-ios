@@ -30,10 +30,19 @@ final class WPComPushNotificationsBenefitsViewModel {
         self.jetpackConnectionService = jetpackConnectionService
         self.analytics = analytics
         self.onDismiss = onDismiss
+        let minimumVersion: String = {
+        #if DEBUG
+            if let override: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications],
+               !override.isEmpty {
+                return override
+            }
+        #endif
+            return WooPluginRequirements.minimumVersion
+        }()
         self.pluginVersionChecker = pluginVersionChecker ?? PluginVersionChecker(
             siteID: siteID,
             pluginPath: WooPluginRequirements.pluginPath,
-            minimumVersion: WooPluginRequirements.minimumVersion
+            minimumVersion: minimumVersion
         )
     }
 

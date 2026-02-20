@@ -165,7 +165,7 @@ struct POSBookingListView: View {
                 }
                 .opacity(bookings.isEmpty ? 1 : 0)
                 .animation(.default, value: bookings.isEmpty)
-            } else {
+            } else if bookingsModel.bookingsController.isPaginating {
                 POSBookingGhostRowView()
             }
         case .inlineError(_, let errorState, .pagination):

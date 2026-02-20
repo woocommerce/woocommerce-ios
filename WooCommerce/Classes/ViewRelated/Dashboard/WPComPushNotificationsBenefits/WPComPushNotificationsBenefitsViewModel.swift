@@ -62,7 +62,6 @@ final class WPComPushNotificationsBenefitsViewModel {
             let connectionData = try await jetpackConnectionService.fetchConnectionData()
             /// only site-connection is required for Woo PN
             /// ref: C03L1NF1EA3-slack-p1771522327596419
-
             if connectionData.isRegistered == true {
                 await checkWooPluginVersion()
             } else {

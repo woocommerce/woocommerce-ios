@@ -94,7 +94,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         let task = Task { await loadFirstPage() }
         loadTask = task
         await task.value
-        prefetchTask?.cancel()
         prefetchTask = Task { await syncAdjacentDateBookings() }
     }
 

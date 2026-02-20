@@ -42,7 +42,7 @@ struct POSBookingAvatarView: View {
 
     @ViewBuilder
     private var initialsPlaceholder: some View {
-        if let initials = Self.initials(from: resourceName) {
+        if let initials = POSAvatarInitialsFormatter.initials(from: resourceName) {
             Circle()
                 .fill(fillColor)
                 .frame(width: Constants.avatarSize, height: Constants.avatarSize)
@@ -52,15 +52,6 @@ struct POSBookingAvatarView: View {
                         .foregroundStyle(textColor)
                 )
         }
-    }
-
-    static func initials(from name: String?) -> String? {
-        guard let name, !name.isEmpty else { return nil }
-        let components = name.split(separator: " ")
-        if components.count >= 2 {
-            return String(components[0].prefix(1) + components[1].prefix(1)).uppercased()
-        }
-        return String(components[0].prefix(1)).uppercased()
     }
 }
 

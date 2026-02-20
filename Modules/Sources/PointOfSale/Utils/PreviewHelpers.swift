@@ -700,6 +700,86 @@ extension POSPreviewHelpers {
             order: order
         )
     }
+
+    static func makePreviewGuestBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 335,
+            number: "335",
+            dateCreated: now,
+            status: .pending,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: nil,
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$0.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 335,
+            customerName: nil,
+            serviceName: "Women's Haircut",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .confirmed,
+            attendanceStatus: .unattended,
+            orderID: 335,
+            resourceName: "Marianne Renoir",
+            bookingNote: "This is a private note. It'll not be shared with the customer.",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
+
+    static func makePreviewCancelledBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 336,
+            number: "336",
+            dateCreated: now,
+            status: .pending,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: "alex.j@email.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$0.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 336,
+            customerName: "Alex Johnson",
+            serviceName: "Consultation",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .cancelled,
+            attendanceStatus: .unattended,
+            orderID: 336,
+            resourceName: "Marianne Renoir",
+            customerEmail: "alex.j@email.com",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
 }
 
 final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {

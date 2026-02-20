@@ -15,6 +15,11 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
+    @State private var emailCopied = false
+    @State private var emailCopiedTask: Task<Void, Never>?
+    @State private var inlineButtonMinY: CGFloat = .infinity
+    @State private var stickyButtonHeight: CGFloat = 0
+    @State private var scrollViewHeight: CGFloat = 0
     @State private var isDetailsUpdating = false
 
     private var actionTintColor: Color {
@@ -86,18 +91,38 @@ struct POSBookingDetailView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.large) {
                     bookingDetailsSection
-                    POSBookingAttendanceSectionView(booking: booking)
+                    if booking.lifecycleStatus != .cancelled {
+                        POSBookingAttendanceSectionView(booking: booking)
+                    }
                     customerSection
                     paymentBreakdownSection
+
+                    if shouldShowCollectPayment {
+                        collectPaymentButton
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear.preference(
+                                        key: InlineButtonMinYPreferenceKey.self,
+                                        value: geo.frame(in: .named("bookingDetailScroll")).minY
+                                    )
+                                }
+                            )
+                    }
+
                     bookingNoteSection
                 }
                 .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.bottom, shouldShowCollectPayment ? stickyButtonHeight + POSPadding.medium : POSPadding.medium)
             }
-            .safeAreaInset(edge: .bottom) {
-                if shouldShowStickyPayment {
-                    stickyCollectPaymentContainer
+            .coordinateSpace(name: "bookingDetailScroll")
+            .measureHeight { scrollViewHeight = $0 }
+            .onPreferenceChange(InlineButtonMinYPreferenceKey.self) { value in
+                inlineButtonMinY = value
+            }
+            .overlay(alignment: .bottom) {
+                if shouldShowCollectPayment {
+                    stickyPaymentOverlay
                 }
             }
         }
@@ -178,55 +203,71 @@ struct POSBookingDetailView: View {
 
     @ViewBuilder
     private var customerSection: some View {
-        let hasCustomerDetails = booking.customerEmail != nil || booking.customerPhone != nil
-            || booking.billingAddress != nil || booking.customerNote != nil
-        if hasCustomerDetails {
-            VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            HStack(spacing: POSSpacing.medium) {
                 Text(Localization.customerTitle)
                     .font(.posBodyXLargeRegular)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
-                if let email = booking.customerEmail {
-                    HStack {
-                        Text(email)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(Color.posOnSurface)
-                        Spacer()
-                        Button {
-                            // TODO: Implement copy email action
-                        } label: {
-                            Image(systemName: "doc.on.doc")
-                                .font(.posBodyMediumRegular())
-                                .foregroundStyle(actionTintColor)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(Localization.emailAccessibilityLabel(email))
-                }
-
-                if let phone = booking.customerPhone {
-                    sectionDivider
-                    Text(phone)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                        .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
-                }
-
-                if let address = booking.billingAddress {
-                    sectionDivider
-                    stackedField(label: Localization.billingAddressLabel, value: address)
-                }
-
-                if let note = booking.customerNote {
-                    sectionDivider
-                    stackedField(label: Localization.noteLabel, value: note)
+                if booking.hasNoCustomerDetails {
+                    POSBookingBadgeView(
+                        title: Localization.guestBadge,
+                        textColor: .posOnDefault,
+                        backgroundColor: .posDefault
+                    )
                 }
             }
-            .sectionCard()
+
+            if let email = booking.customerEmail {
+                HStack {
+                    Text(email)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                    Spacer()
+                    Button {
+                        UIPasteboard.general.string = email
+                        emailCopied = true
+                        emailCopiedTask?.cancel()
+                        emailCopiedTask = Task {
+                            try? await Task.sleep(for: .seconds(1.5))
+                            guard !Task.isCancelled else { return }
+                            emailCopied = false
+                        }
+                    } label: {
+                        Image(systemName: emailCopied ? "checkmark" : "doc.on.doc")
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(actionTintColor)
+                            .contentTransition(.symbolEffect(.replace))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
+                    .frame(minHeight: 32)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Localization.emailAccessibilityLabel(email))
+            }
+
+            if let phone = booking.customerPhone {
+                sectionDivider
+                Text(phone)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
+            }
+
+            if let address = booking.billingAddress {
+                sectionDivider
+                stackedField(label: Localization.billingAddressLabel, value: address)
+            }
+
+            if let note = booking.customerNote {
+                sectionDivider
+                stackedField(label: Localization.noteLabel, value: note)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .sectionCard()
     }
 
     @ViewBuilder
@@ -300,29 +341,43 @@ struct POSBookingDetailView: View {
         }
     }
 
-    private var shouldShowStickyPayment: Bool {
+    private func startPaymentCollection() {
+        guard booking.orderID != nil else { return }
+        paymentModel = bookingsModel.makePaymentModel(
+            for: booking, onDismiss: dismissPayment, analytics: analytics)
+        showPaymentView = true
+    }
+
+    private var shouldShowCollectPayment: Bool {
         !booking.isPaid && booking.lifecycleStatus != .cancelled
     }
 
-    private var stickyCollectPaymentContainer: some View {
-        Button(action: {
-            guard booking.orderID != nil else { return }
-            paymentModel = bookingsModel.makePaymentModel(
-                for: booking, onDismiss: dismissPayment, analytics: analytics)
-            showPaymentView = true
-        }) {
+    private var collectPaymentButton: some View {
+        Button(action: { startPaymentCollection() }) {
             Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .padding(POSPadding.medium)
-        .background(Color.posSurfaceContainerLowest)
-        .overlay(alignment: .top) {
+    }
+
+    @ViewBuilder
+    private var stickyPaymentOverlay: some View {
+        let stickyButtonY = scrollViewHeight - stickyButtonHeight + POSPadding.medium
+        let isVisible = inlineButtonMinY - stickyButtonY > 0
+
+        VStack(spacing: 0) {
             Divider()
                 .overlay(Color.posOutlineVariant)
+
+            collectPaymentButton
+                .padding(POSPadding.medium)
+                .background(Color.posSurfaceContainerLowest)
         }
         .shadow(color: .black.opacity(0.08), radius: 15, x: 0, y: -5)
         .shadow(color: .black.opacity(0.04), radius: 18, x: 0, y: -15)
+        .opacity(isVisible ? 1 : 0)
+        .allowsHitTesting(isVisible)
+        .measureHeight { stickyButtonHeight = $0 }
     }
 
     // MARK: - Shared Components
@@ -362,6 +417,15 @@ struct POSBookingDetailView: View {
     }
 }
 
+// MARK: - POSBooking Presentation Helpers
+
+private extension POSBooking {
+    var hasNoCustomerDetails: Bool {
+        customerName == nil && customerEmail == nil && customerPhone == nil
+            && billingAddress == nil && customerNote == nil
+    }
+}
+
 // MARK: - Section Card Modifier
 
 struct POSBookingSectionCardModifier: ViewModifier {
@@ -376,6 +440,15 @@ struct POSBookingSectionCardModifier: ViewModifier {
 extension View {
     func sectionCard() -> some View {
         modifier(POSBookingSectionCardModifier())
+    }
+}
+
+// MARK: - Preference Keys
+
+private struct InlineButtonMinYPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .infinity
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = min(value, nextValue())
     }
 }
 
@@ -417,6 +490,12 @@ private enum Localization {
         "pos.bookingDetailView.customerTitle",
         value: "Customer",
         comment: "Section title for the customer details in booking details."
+    )
+
+    static let guestBadge = NSLocalizedString(
+        "pos.bookingDetailView.guestBadge",
+        value: "Guest",
+        comment: "Badge label shown next to the customer section title when there is no customer info for a booking."
     )
 
     static let noteLabel = NSLocalizedString(
@@ -532,6 +611,20 @@ private enum Localization {
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        onBack: {}
+    )
+}
+
+#Preview("Guest Booking") {
+    POSBookingDetailView(
+        booking: POSPreviewHelpers.makePreviewGuestBooking(),
+        onBack: {}
+    )
+}
+
+#Preview("Cancelled Booking") {
+    POSBookingDetailView(
+        booking: POSPreviewHelpers.makePreviewCancelledBooking(),
         onBack: {}
     )
 }

@@ -313,6 +313,7 @@ private extension POSBookingListController {
         }
     }
 
+    @MainActor
     func setLocalDataOrLoadingState() {
         let localBookings = fetchStrategy.fetchLocalBookings()
         if localBookings.isNotEmpty {

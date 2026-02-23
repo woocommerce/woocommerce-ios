@@ -7,7 +7,7 @@ import class WooFoundationCore.CurrencyFormatter
 
 public protocol POSBookingListFetchStrategy {
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking>
-    func fetchLocalBookings() -> [POSBooking]
+    @MainActor func fetchLocalBookings() -> [POSBooking]
     var showsLoadingWithItems: Bool { get }
     var id: String { get }
 }
@@ -17,7 +17,7 @@ extension POSBookingListFetchStrategy {
         String(describing: type(of: self))
     }
 
-    public func fetchLocalBookings() -> [POSBooking] {
+    @MainActor public func fetchLocalBookings() -> [POSBooking] {
         []
     }
 }
@@ -71,6 +71,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
         }
     }
 
+    @MainActor
     func fetchLocalBookings() -> [POSBooking] {
         guard let filters else { return [] }
         return fetchLocalBookingsSync(filters: filters)
@@ -84,6 +85,7 @@ private extension POSDefaultBookingListFetchStrategy {
         return fetchLocalBookingsSync(filters: filters)
     }
 
+    @MainActor
     func fetchLocalBookingsSync(filters: BookingFilters) -> [POSBooking] {
         let bookingPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
         let hasOrderPredicate = NSPredicate(format: "orderInfo != nil")

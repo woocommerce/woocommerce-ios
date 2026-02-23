@@ -78,11 +78,25 @@ struct POSInfoCardButtonStyle: ButtonStyle {
 }
 
 
+/// Surface button style in POS with a subtle surface background and no border.
+struct POSSurfaceButtonStyle: ButtonStyle {
+    private let size: POSButtonSize
+
+    init(size: POSButtonSize) {
+        self.size = size
+    }
+
+    func makeBody(configuration: Configuration) -> some View {
+        POSButtonStyleInternal(configuration: configuration, variant: .surface, size: size, state: .idle)
+    }
+}
+
 /// The visual variant of the POS button.
 fileprivate enum POSButtonVariant {
     case filled
     case outlined
     case infoCardOutlined
+    case surface
 }
 
 private struct POSButtonStyleInternal: View {
@@ -154,6 +168,10 @@ private struct POSButtonStyleInternal: View {
                 .clear
         case (.infoCardOutlined, _):
                 .posSurfaceContainerLowest
+        case (.surface, true):
+                .posSurface
+        case (.surface, false):
+                .posDisabledContainer
         }
     }
 
@@ -170,6 +188,10 @@ private struct POSButtonStyleInternal: View {
         case (.infoCardOutlined, true):
                 .posOnSurface
         case (.infoCardOutlined, false):
+                .posOnDisabledContainer
+        case (.surface, true):
+                .posOnSurface
+        case (.surface, false):
                 .posOnDisabledContainer
         }
     }
@@ -314,6 +336,13 @@ struct POSButtonStyle_Previews: View {
 
                 Button("Disabled Button") {}
                     .buttonStyle(POSInfoCardButtonStyle(size: size, variant: .default))
+                    .disabled(true)
+            case .surface:
+                Button("Enabled Button") {}
+                    .buttonStyle(POSSurfaceButtonStyle(size: size))
+
+                Button("Disabled Button") {}
+                    .buttonStyle(POSSurfaceButtonStyle(size: size))
                     .disabled(true)
             }
         }

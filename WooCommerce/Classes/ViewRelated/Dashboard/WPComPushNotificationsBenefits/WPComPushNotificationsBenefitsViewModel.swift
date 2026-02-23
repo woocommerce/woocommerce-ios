@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import Yosemite
 import protocol WooFoundation.Analytics
+import enum NetworkingCore.NetworkError
 
 @MainActor
 @Observable
@@ -14,6 +15,7 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     private(set) var variant: Variant = .connect
     private(set) var isCheckingPlugin: Bool = false
+    private(set) var error: VariantCheckError?
 
     private let analytics: Analytics
     private let onDismiss: () -> Void
@@ -69,7 +71,11 @@ final class WPComPushNotificationsBenefitsViewModel {
             }
         } catch {
             DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
-            variant = .connect
+            if case NetworkError.unacceptableStatusCode(403, _) = error {
+                self.error = .noPermission
+            } else {
+                self.error = .generic(underlyingError: error)
+            }
         }
         isCheckingPlugin = false
     }
@@ -106,13 +112,43 @@ private extension WPComPushNotificationsBenefitsViewModel {
             if case .incompatible(let currentVersion, _) = result {
                 variant = .pluginUpdate(currentVersion: currentVersion)
             } else {
-                // TODO: add error handling for unexpected case
-                variant = .connect
+                error = .noMissingRequirements
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
-            // TODO: add error handling for unexpected case
-            variant = .connect
+            self.error = .generic(underlyingError: error)
+        }
+    }
+}
+
+extension WPComPushNotificationsBenefitsViewModel {
+    enum VariantCheckError: Error {
+        case noPermission
+        case noMissingRequirements
+        case generic(underlyingError: Error)
+
+        var message: String {
+            switch self {
+            case .noPermission:
+                Localization.noPermission
+            case .noMissingRequirements, .generic:
+                Localization.generic
+            }
+        }
+
+        enum Localization {
+            static let noPermission = NSLocalizedString(
+                "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission",
+                value: "Your account does not have permission to complete push notifications setup. " +
+                "Please ask your store administrator to handle this.",
+                comment: "Error message in the Push Notifications Benefits View for users without admin role"
+            )
+            static let generic = NSLocalizedString(
+                "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic",
+                value: "We could not complete the push notifications setup. " +
+                "Please contact support for assistance.",
+                comment: "Generic rror message in the Push Notifications Benefits View"
+            )
         }
     }
 }

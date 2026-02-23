@@ -29,6 +29,8 @@ struct WPComPushNotificationsBenefitsView: View {
     private var viewModel: WPComPushNotificationsBenefitsViewModel
 
     @State private var safariURL: URL?
+    @State private var showSupport = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel) {
         self.viewModel = viewModel
@@ -45,19 +47,33 @@ struct WPComPushNotificationsBenefitsView: View {
                         detail
                     }
                     Spacer()
-                    footer
                 }
                 .redacted(reason: viewModel.isCheckingPlugin ? .placeholder : [])
                 .shimmering(active: viewModel.isCheckingPlugin)
-                .padding([.leading, .bottom, .trailing], Layout.contentPadding)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(Localization.cancelButton) {
-                            viewModel.notNowTapped()
-                        }
+                .renderedIf(viewModel.error == nil)
+
+                if let error = viewModel.error {
+                    errorView(with: error)
+                }
+
+                if dynamicTypeSize.isAccessibilitySize {
+                    footer
+                }
+            }
+            .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        viewModel.notNowTapped()
                     }
                 }
-                .toolbarBackground(.hidden, for: .navigationBar)
+            }
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .bottom) {
+                footer
+                    .padding(Layout.contentPadding)
+                    .background(Color(uiColor: .systemBackground))
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             }
         }
         .onAppear {
@@ -72,6 +88,7 @@ struct WPComPushNotificationsBenefitsView: View {
             return .handled
         })
         .safariSheet(url: $safariURL)
+        .sheet(isPresented: $showSupport, content: { supportForm })
     }
 
     private var stackedImages: some View {
@@ -101,10 +118,17 @@ struct WPComPushNotificationsBenefitsView: View {
 
     private var footer: some View {
         VStack {
-            Button(primaryButtonText) {
-                viewModel.continueTapped()
+            if viewModel.error != nil {
+                Button(Localization.contactSupport) {
+                    showSupport = true
+                }
+                .buttonStyle(PrimaryButtonStyle())
+            } else {
+                Button(primaryButtonText) {
+                    viewModel.continueTapped()
+                }
+                .buttonStyle(PrimaryButtonStyle())
             }
-            .buttonStyle(PrimaryButtonStyle())
 
             Button(Localization.notNowButton) {
                 viewModel.notNowTapped()
@@ -119,6 +143,37 @@ struct WPComPushNotificationsBenefitsView: View {
             return Localization.continueButton
         case .pluginUpdate:
             return Localization.updatePluginButton
+        }
+    }
+
+    private func errorView(with error: WPComPushNotificationsBenefitsViewModel.VariantCheckError) -> some View {
+        VStack(spacing: Layout.contentPadding) {
+            Spacer()
+            Image(systemName: "exclamationmark.circle.fill")
+                .font(.largeTitle)
+                .foregroundStyle(Color(.error))
+            Text(Localization.errorTitle)
+                .font(.title)
+            Text(error.message)
+                .font(.body)
+                .multilineTextAlignment(.center)
+            Spacer()
+        }
+    }
+
+    private var supportForm: some View {
+        NavigationStack {
+            SupportForm(
+                isPresented: $showSupport,
+                viewModel: SupportFormViewModel(sourceTag: "origin:woo-push-notifications-setup")
+            )
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        showSupport = false
+                    }
+                }
+            }
         }
     }
 }
@@ -175,6 +230,18 @@ fileprivate extension WPComPushNotificationsBenefitsView {
             "wpcomPushNotificationsBenefitsView.updatePluginButton",
             value: "Update plugin",
             comment: "Button title to update the WooCommerce plugin in the Push Notifications Benefits View"
+        )
+
+        static let errorTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.errorTitle",
+            value: "Something went wrong",
+            comment: "Title of the error state in the Push Notifications Benefits View"
+        )
+
+        static let contactSupport = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.contactSupport",
+            value: "Contact support",
+            comment: "Button title to contact support in the Push Notifications Benefits View"
         )
     }
 }

@@ -228,6 +228,53 @@ final class POSBookingListControllerTests {
         }
     }
 
+    // MARK: - updateBookingNote
+
+    @Test func test_updateBookingNote_calls_service_and_updates_booking_in_place() async throws {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+
+        // When
+        try await sut.updateBookingNote(bookingID: 1, note: "Test note")
+
+        // Then
+        #expect(mockService.updateBookingNoteCallCount == 1)
+        #expect(mockService.lastUpdatedNoteBookingID == 1)
+        #expect(mockService.lastUpdatedNote == "Test note")
+        #expect(sut.bookingsViewState.bookings.first?.bookingNote == "Test note")
+    }
+
+    @Test func test_updateBookingNote_when_empty_note_then_sets_bookingNote_to_nil() async throws {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        // When
+        try await sut.updateBookingNote(bookingID: 1, note: "")
+
+        // Then
+        #expect(sut.bookingsViewState.bookings.first?.bookingNote == nil)
+    }
+
+    @Test func test_updateBookingNote_when_service_throws_then_throws_error() async {
+        // Given
+        let mockService = mockFactory.bookingService as! MockPOSBookingService
+        mockService.updateBookingNoteError = NSError(domain: "test", code: 1)
+
+        // When/Then
+        do {
+            try await sut.updateBookingNote(bookingID: 1, note: "Test note")
+            Issue.record("Expected error to be thrown")
+        } catch {
+            #expect(mockService.updateBookingNoteCallCount == 1)
+        }
+    }
+
     // MARK: - updateBooking
 
     @Test func test_updateBooking_fetches_and_updates_booking_in_place() async throws {

@@ -83,6 +83,21 @@ final class MockPOSBookingService: POSBookingServiceProtocol {
         }
         return updateAttendanceStatusResult ?? status
     }
+
+    var updateBookingNoteError: Error?
+    var updateBookingNoteCallCount = 0
+    var lastUpdatedNoteBookingID: Int64?
+    var lastUpdatedNote: String?
+
+    func updateBookingNote(bookingID: Int64, note: String) async throws -> String {
+        updateBookingNoteCallCount += 1
+        lastUpdatedNoteBookingID = bookingID
+        lastUpdatedNote = note
+        if let error = updateBookingNoteError {
+            throw error
+        }
+        return note
+    }
 }
 
 final class MockPOSBookingListFetchStrategy: POSBookingListFetchStrategy {

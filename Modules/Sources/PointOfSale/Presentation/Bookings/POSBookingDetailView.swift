@@ -22,6 +22,7 @@ struct POSBookingDetailView: View {
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
     @State private var isDetailsUpdating = false
+    @State private var isShowingNoteView = false
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -68,6 +69,10 @@ struct POSBookingDetailView: View {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
             }
+        }
+        .posFullScreenCover(isPresented: $isShowingNoteView) {
+            POSBookingNoteView(booking: booking, isShowingNoteView: $isShowingNoteView)
+                .posHeaderBackButtonIcon(systemName: "xmark")
         }
     }
 
@@ -291,8 +296,8 @@ struct POSBookingDetailView: View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 sectionTitleWithAction(title: Localization.bookingNoteLabel) {
-                    Button(Localization.addNoteButton) {
-                        // TODO: Implement add note action
+                    Button(noteButtonTitle) {
+                        isShowingNoteView = true
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))
                 }
@@ -347,6 +352,14 @@ struct POSBookingDetailView: View {
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true
+    }
+
+    private var noteButtonTitle: String {
+        if booking.bookingNote != nil {
+            Localization.editNoteButton
+        } else {
+            Localization.addNoteButton
+        }
     }
 
     private var shouldShowCollectPayment: Bool {
@@ -521,6 +534,12 @@ private enum Localization {
         "pos.bookingDetailView.addNoteButton",
         value: "Add note",
         comment: "Button to add a private note to a booking."
+    )
+
+    static let editNoteButton = NSLocalizedString(
+        "pos.bookingDetailView.editNoteButton",
+        value: "Edit note",
+        comment: "Button to edit an existing private note on a booking."
     )
 
     static let bookingNoteSubtitle = NSLocalizedString(

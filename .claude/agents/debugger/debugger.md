@@ -60,4 +60,7 @@ xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
 
 # Check for stale generated code
 git diff -- '*.generated.swift'
+
+# Discover available simulators (if destination fails)
+xcrun simctl list devices available
 ```

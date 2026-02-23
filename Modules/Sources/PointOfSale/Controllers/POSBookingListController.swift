@@ -45,7 +45,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     private let bookingService: POSBookingServiceProtocol
     private let siteTimezone: TimeZone
     private var loadTask: Task<Void, Never>?
-    private var prefetchTask: Task<Void, Never>?
+    private var prefetchTasks: [Date: Task<Void, Never>] = [:]
 
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -69,23 +69,14 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 
     func syncBookings() {
-        prefetchTask?.cancel()
         let date = selectedDate
-        prefetchTask = Task {
-            let todayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: date))
-            do {
-                _ = try await todayStrategy.fetchBookings(pageNumber: 1)
-            } catch {
-                DDLogError("⛔️ Failed to prefetch bookings for today: \(error)")
-            }
-            await syncAdjacentDateBookings(for: date)
-        }
+        prefetchDateIfNeeded(date)
+        prefetchAdjacentDates(for: date)
     }
 
     @MainActor
     func loadBookings() async {
         loadTask?.cancel()
-        prefetchTask?.cancel()
         let filters = dateFilters(for: selectedDate)
         if let searchTerm = activeSearchTerm {
             fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
@@ -95,7 +86,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         setLocalDataOrLoadingState()
         loadTask = Task { await loadFirstPage() }
         await loadTask?.value
-        prefetchTask = Task { await syncAdjacentDateBookings(for: selectedDate) }
+        prefetchAdjacentDates(for: selectedDate)
     }
 
     @MainActor
@@ -171,7 +162,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func selectDate(_ date: Date) async {
         loadTask?.cancel()
-        prefetchTask?.cancel()
         selectedDate = date
         let filters = dateFilters(for: date)
         if let searchTerm = activeSearchTerm {
@@ -184,7 +174,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         }
         loadTask = Task { await loadFirstPage() }
         await loadTask?.value
-        prefetchTask = Task { await syncAdjacentDateBookings(for: date) }
+        prefetchAdjacentDates(for: date)
     }
 
     @MainActor
@@ -252,31 +242,33 @@ extension POSBookingListController {
 // MARK: - Private
 
 private extension POSBookingListController {
-    func syncAdjacentDateBookings(for date: Date) async {
+    func prefetchAdjacentDates(for date: Date) {
         var calendar = Calendar.current
         calendar.timeZone = siteTimezone
-        guard let yesterday = calendar.date(byAdding: .day, value: -1, to: date),
-              let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) else {
-            return
+        if let yesterday = calendar.date(byAdding: .day, value: -1, to: date) {
+            prefetchDateIfNeeded(yesterday)
         }
-        let yesterdayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: yesterday))
-        let tomorrowStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: tomorrow))
+        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) {
+            prefetchDateIfNeeded(tomorrow)
+        }
+    }
 
-        async let yesterdayFetch: Void = {
+    func prefetchDateIfNeeded(_ date: Date) {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        let normalizedDate = calendar.startOfDay(for: date)
+
+        guard prefetchTasks[normalizedDate] == nil else { return }
+
+        let strategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: normalizedDate))
+        prefetchTasks[normalizedDate] = Task { [weak self] in
             do {
-                _ = try await yesterdayStrategy.fetchBookings(pageNumber: 1)
+                _ = try await strategy.fetchBookings(pageNumber: 1)
             } catch {
-                DDLogError("⛔️ Failed to prefetch bookings for yesterday: \(error)")
+                DDLogError("⛔️ Failed to prefetch bookings for \(normalizedDate): \(error)")
             }
-        }()
-        async let tomorrowFetch: Void = {
-            do {
-                _ = try await tomorrowStrategy.fetchBookings(pageNumber: 1)
-            } catch {
-                DDLogError("⛔️ Failed to prefetch bookings for tomorrow: \(error)")
-            }
-        }()
-        _ = await (yesterdayFetch, tomorrowFetch)
+            self?.prefetchTasks[normalizedDate] = nil
+        }
     }
 
     static func todayInSiteTimezone(_ timezone: TimeZone) -> Date {

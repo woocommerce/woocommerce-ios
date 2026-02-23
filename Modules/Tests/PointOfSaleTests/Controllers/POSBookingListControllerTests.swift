@@ -472,8 +472,6 @@ final class POSBookingListControllerTests {
         // 2 search strategy calls: initial searchBookings + loadBookings reload
         #expect(mockFactory.searchStrategyCallCount == 2)
         #expect(mockFactory.lastSearchTerm == "test")
-        // 1 default strategy call from init only
-        #expect(mockFactory.defaultStrategyCallCount == 1)
     }
 
     // MARK: - Prefetch

@@ -55,13 +55,11 @@ struct POSBookingNoteView: View {
                     VStack(alignment: .center, spacing: POSSpacing.xSmall) {
                         TextField("",
                                   text: $noteText,
-                                  prompt: Text(Localization.placeholder).foregroundColor(.posOnDisabledContainer),
-                                  axis: .vertical)
+                                  prompt: Text(Localization.placeholder).foregroundColor(.posOnDisabledContainer))
                         .foregroundStyle(Color.posOnSurface)
                         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                         .textInputAutocapitalization(.sentences)
                         .multilineTextAlignment(.center)
-                        .lineLimit(3...10)
                         .font(POSFontStyle.posHeadingRegular)
                         .focused()
                         .focused($isTextFieldFocused)

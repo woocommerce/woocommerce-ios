@@ -52,13 +52,7 @@ CONTRIBUTING.md                  # PR merge policy
 
 ## Bootstrap (Required Once)
 
-Use this to make builds and tests runnable from a clean checkout:
-
-```bash
-# Ensure Xcode 14+ is installed and selected.
-# Ensure Ruby matches .ruby-version.
-bundle install && bundle exec rake dependencies
-```
+Use the `bootstrap` skill to set up the environment from a clean checkout. It will guide through Xcode version verification, Ruby version setup, and dependency installation.
 
 ## Build Commands
 

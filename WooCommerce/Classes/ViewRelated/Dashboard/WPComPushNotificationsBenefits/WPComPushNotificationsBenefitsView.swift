@@ -109,6 +109,7 @@ struct WPComPushNotificationsBenefitsView: View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
             Text(Localization.description)
                 .font(.body)
+                .frame(maxWidth: .infinity, alignment: .leading)
             Text(Localization.subdescription)
                 .font(.body)
             Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
@@ -135,6 +136,10 @@ struct WPComPushNotificationsBenefitsView: View {
                 viewModel.notNowTapped()
             }
             .buttonStyle(SecondaryButtonStyle())
+
+            if case .connect = viewModel.variant {
+                Text(viewModel.termsAttributedString)
+            }
         }
     }
 
@@ -158,6 +163,7 @@ struct WPComPushNotificationsBenefitsView: View {
             Text(error.message)
                 .font(.body)
                 .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center)
             Spacer()
         }
     }
@@ -249,6 +255,6 @@ fileprivate extension WPComPushNotificationsBenefitsView {
 
 #Preview {
     WPComPushNotificationsBenefitsView(
-        viewModel: WPComPushNotificationsBenefitsViewModel(siteID: 0, onDismiss: {})
+        viewModel: WPComPushNotificationsBenefitsViewModel(siteID: 0, siteURL: "https://example.com", onDismiss: {})
     )
 }

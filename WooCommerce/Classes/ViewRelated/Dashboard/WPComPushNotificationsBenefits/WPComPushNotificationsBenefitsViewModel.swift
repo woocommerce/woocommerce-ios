@@ -13,6 +13,8 @@ final class WPComPushNotificationsBenefitsViewModel {
         case pluginUpdate(currentVersion: String)
     }
 
+    let termsAttributedString: AttributedString
+
     private(set) var variant: Variant = .connect
     private(set) var isCheckingPlugin: Bool = false
     private(set) var error: VariantCheckError?
@@ -25,6 +27,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
     init(siteID: Int64,
+         siteURL: String,
          jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          analytics: Analytics = ServiceLocator.analytics,
@@ -46,6 +49,21 @@ final class WPComPushNotificationsBenefitsViewModel {
             pluginPath: WooPluginRequirements.pluginPath,
             minimumVersion: minimumVersion
         )
+
+        self.termsAttributedString = {
+            let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+
+            let attributedText = AttributedString.withEmbeddedLinks(
+                content: content,
+                links: [
+                    Localization.termsOfService: Constants.jetpackTermsURL + siteURL,
+                    Localization.shareDetails: Constants.jetpackShareDetailsURL + siteURL
+                ],
+                font: .footnote,
+                foregroundColor: .secondary
+            )
+            return attributedText
+        }()
     }
 
     func updateCoordinator(_ coordinator: WooPushNotificationSetupCoordinator) {
@@ -150,5 +168,29 @@ extension WPComPushNotificationsBenefitsViewModel {
                 comment: "Generic rror message in the Push Notifications Benefits View"
             )
         }
+    }
+
+    private enum Constants {
+        static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
+        static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
+    }
+
+    enum Localization {
+        static let termsContent = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.termsContent",
+            value: "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.",
+            comment: "Content of the label at the end of the Wrong Account screen. " +
+            "Reads like: By continuing, you agree to our Terms of Service and to share details with WordPress.com."
+        )
+        static let termsOfService = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.termsOfService",
+            value: "Terms of Service",
+            comment: "The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View."
+        )
+        static let shareDetails = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.shareDetails",
+            value: "share details",
+            comment: "The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View."
+        )
     }
 }

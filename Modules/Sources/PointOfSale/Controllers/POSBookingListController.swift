@@ -26,6 +26,7 @@ protocol POSBookingListControllerProtocol {
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws
     func updateBooking(bookingID: Int64) async throws
     func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async
+    func updateBookingNote(bookingID: Int64, note: String) async throws
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -121,6 +122,14 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         let updatedStatus = try await bookingService.updateAttendanceStatus(bookingID: bookingID, status: status)
         if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
             updateBooking(existing.copy(attendanceStatus: updatedStatus))
+        }
+    }
+
+    @MainActor
+    func updateBookingNote(bookingID: Int64, note: String) async throws {
+        let updatedNote = try await bookingService.updateBookingNote(bookingID: bookingID, note: note)
+        if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
+            updateBooking(existing.copy(bookingNote: updatedNote.isEmpty ? nil : updatedNote))
         }
     }
 

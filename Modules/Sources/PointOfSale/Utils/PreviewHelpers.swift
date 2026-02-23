@@ -529,6 +529,8 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
     func cancelBooking(bookingID: Int64) async throws -> BookingStatus { .cancelled }
 
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus { status }
+
+    func updateBookingNote(bookingID: Int64, note: String) async throws -> String { note }
 }
 
 final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
@@ -806,6 +808,7 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
     func updateBooking(bookingID: Int64) async throws {}
     func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async {}
+    func updateBookingNote(bookingID: Int64, note: String) async throws {}
     func searchBookings(searchTerm: String) async {}
     func clearSearchBookings() {}
 }

@@ -18,7 +18,7 @@ internal protocol BookingStoreMethodsProtocol {
                              cacheClearStrategy: BookingStoreMethods.CacheClearStrategy) async throws -> Bool
 }
 
-internal class BookingStoreMethods: BookingStoreMethodsProtocol {
+internal final class BookingStoreMethods: BookingStoreMethodsProtocol {
 
     enum CacheClearStrategy {
         case none

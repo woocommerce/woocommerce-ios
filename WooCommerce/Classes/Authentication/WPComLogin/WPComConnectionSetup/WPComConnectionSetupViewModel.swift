@@ -23,6 +23,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
     @Published private var setupState: SetupState = .inProgress
+    @Published var isShowingGetHelp = false
+
+    static let supportSourceTag = "origin:woo-push-notifications-setup"
 
     let subtitleAttributedString: AttributedString
 
@@ -135,6 +138,10 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func cancelTapped() {
         handler.cancel()
         onDismiss()
+    }
+
+    func getHelpTapped() {
+        isShowingGetHelp = true
     }
 
     func doneTapped() {

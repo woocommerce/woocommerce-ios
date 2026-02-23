@@ -587,13 +587,11 @@
 		B958A7D628B5310100823EEF /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D428B5302500823EEF /* URLOpener.swift */; };
 		B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D728B5316A00823EEF /* MockURLOpener.swift */; };
 		B95B15C92B15EBA000A54044 /* UpdateProductInventoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */; };
-		B976D5BB2D3808A000D01E2E /* WooShippingCustomsFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B976D5BA2D38089C00D01E2E /* WooShippingCustomsFormViewModelTests.swift */; };
 		B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */; };
 		B98C6D502B149C3900A243E1 /* UINavigationItem+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */; };
 		B98D425B2AF9374400973C76 /* LargeHeightLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98D425A2AF9374400973C76 /* LargeHeightLeftImageTableViewCell.swift */; };
 		B98D425D2AF9400900973C76 /* LargeHeightLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B98D425C2AF9400900973C76 /* LargeHeightLeftImageTableViewCell.xib */; };
 		B98DA0AE2B275F45008A3607 /* ProductLoaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98DA0AD2B275F45008A3607 /* ProductLoaderView.swift */; };
-		B9A5317F2D2FCC5600208304 /* WooShippingCustomsItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A5317E2D2FCC5000208304 /* WooShippingCustomsItemViewModelTests.swift */; };
 		B9ACF6882BEE4FC60076E6BC /* String+ProductQuantityRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
 		B9B6DEEF283F8B9F00901FB7 /* Site+URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B6DEEE283F8B9F00901FB7 /* Site+URL.swift */; };
@@ -1554,13 +1552,11 @@
 		B958A7D428B5302500823EEF /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		B958A7D728B5316A00823EEF /* MockURLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLOpener.swift; sourceTree = "<group>"; };
 		B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModel.swift; sourceTree = "<group>"; };
-		B976D5BA2D38089C00D01E2E /* WooShippingCustomsFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsFormViewModelTests.swift; sourceTree = "<group>"; };
 		B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryView.swift; sourceTree = "<group>"; };
 		B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+Configuration.swift"; sourceTree = "<group>"; };
 		B98D425A2AF9374400973C76 /* LargeHeightLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeHeightLeftImageTableViewCell.swift; sourceTree = "<group>"; };
 		B98D425C2AF9400900973C76 /* LargeHeightLeftImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LargeHeightLeftImageTableViewCell.xib; sourceTree = "<group>"; };
 		B98DA0AD2B275F45008A3607 /* ProductLoaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductLoaderView.swift; sourceTree = "<group>"; };
-		B9A5317E2D2FCC5000208304 /* WooShippingCustomsItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingCustomsItemViewModelTests.swift; sourceTree = "<group>"; };
 		B9ACF6872BEE4FC60076E6BC /* String+ProductQuantityRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+ProductQuantityRules.swift"; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
 		B9B6DEEE283F8B9F00901FB7 /* Site+URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Site+URL.swift"; sourceTree = "<group>"; };
@@ -2115,6 +2111,7 @@
 		3FDA987C2F4C0E2C00CC3259 /* Create Shipping Label */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Create Shipping Label"; sourceTree = "<group>"; };
 		3FDA988E2F4C0E3100CC3259 /* Reprint Shipping Label */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Reprint Shipping Label"; sourceTree = "<group>"; };
 		3FDA98BC2F4C0E7D00CC3259 /* Tools */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Tools; sourceTree = "<group>"; };
+		3FDA98E52F4C0EFD00CC3259 /* WooShipping Customs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "WooShipping Customs"; sourceTree = "<group>"; };
 		3FDAC53B2F45815E00CC3259 /* POS */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = POS; sourceTree = "<group>"; };
 		3FDAC5512F4581D900CC3259 /* ReusableViews */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ReusableViews; sourceTree = "<group>"; };
 		3FDAC68B2F45CB6400CC3259 /* Orders */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Orders; sourceTree = "<group>"; };
@@ -3540,15 +3537,6 @@
 			path = UpdateInventory;
 			sourceTree = "<group>";
 		};
-		B9A5317D2D2FCC3900208304 /* WooShipping Customs */ = {
-			isa = PBXGroup;
-			children = (
-				B976D5BA2D38089C00D01E2E /* WooShippingCustomsFormViewModelTests.swift */,
-				B9A5317E2D2FCC5000208304 /* WooShippingCustomsItemViewModelTests.swift */,
-			);
-			path = "WooShipping Customs";
-			sourceTree = "<group>";
-		};
 		CC01CE5B29B2342E004FF537 /* Bundled Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -3748,7 +3736,7 @@
 			isa = PBXGroup;
 			children = (
 				EEBB9B3E2D8FE5AC008D6CE5 /* Split shipments */,
-				B9A5317D2D2FCC3900208304 /* WooShipping Customs */,
+				3FDA98E52F4C0EFD00CC3259 /* WooShipping Customs */,
 				CE2207032CA5C55100E16D9B /* WooShippingCreateLabelsViewModelTests.swift */,
 				DEDC6E2F2D9FB36E005E38BD /* WooShippingShipmentDetailsViewModelTests.swift */,
 				CE7B4A572CA191F400F764EB /* WooShippingItemRowViewModelTests.swift */,
@@ -4419,6 +4407,7 @@
 				3FDA987C2F4C0E2C00CC3259 /* Create Shipping Label */,
 				3FDA988E2F4C0E3100CC3259 /* Reprint Shipping Label */,
 				3FDA98BC2F4C0E7D00CC3259 /* Tools */,
+				3FDA98E52F4C0EFD00CC3259 /* WooShipping Customs */,
 				3FDAC53B2F45815E00CC3259 /* POS */,
 				3FDAC5512F4581D900CC3259 /* ReusableViews */,
 				3FDAC68B2F45CB6400CC3259 /* Orders */,
@@ -5549,7 +5538,6 @@
 				02FADAA52A607CEE00FE8683 /* MockImageTextScanner.swift in Sources */,
 				CE315DC82CC942A200A06748 /* WooShippingServiceViewModelTests.swift in Sources */,
 				204CB80E2C0F8A5E000C9773 /* MockViewControllerPresenting.swift in Sources */,
-				B976D5BB2D3808A000D01E2E /* WooShippingCustomsFormViewModelTests.swift in Sources */,
 				CEC3CC742C9343DF00B93FBE /* WooShippingItemsViewModelTests.swift in Sources */,
 				EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */,
 				0375799D2822F9040083F2E1 /* MockCardPresentPaymentsOnboardingPresenter.swift in Sources */,
@@ -5599,7 +5587,6 @@
 				3FDA98612F4C0CD100CC3259 /* ManualTrackingViewControllerTests.swift in Sources */,
 				314DC4C3268D2F1000444C9E /* MockAppSettingsStoresManager.swift in Sources */,
 				02B8E4192DFBC218001D01FD /* MainTabBarController+TabsTests.swift in Sources */,
-				B9A5317F2D2FCC5600208304 /* WooShippingCustomsItemViewModelTests.swift in Sources */,
 				B56C721421B5BBC000E5E85B /* MockStoresManager.swift in Sources */,
 				01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */,
 				AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */,

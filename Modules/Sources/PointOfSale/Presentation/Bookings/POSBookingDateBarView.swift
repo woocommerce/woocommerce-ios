@@ -20,7 +20,7 @@ struct POSBookingDateBarView: View {
                 } label: {
                     Text("\(Image(systemName: "chevron.backward"))")
                 }
-                .buttonStyle(POSSurfaceButtonStyle(size: .extraSmall))
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(Localization.previousDay)
 
                 Button {
@@ -29,7 +29,7 @@ struct POSBookingDateBarView: View {
                     Label(formattedDate, systemImage: "calendar")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(POSSurfaceButtonStyle(size: .extraSmall))
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(String(format: Localization.selectedDateFormat, formattedDate))
                 .popover(isPresented: $showingCalendar) {
                     POSBookingCalendarView(
@@ -47,7 +47,7 @@ struct POSBookingDateBarView: View {
                 } label: {
                     Text("\(Image(systemName: "chevron.forward"))")
                 }
-                .buttonStyle(POSSurfaceButtonStyle(size: .extraSmall))
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(Localization.nextDay)
             }
             .font(.posBodySmallBold())

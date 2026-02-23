@@ -78,8 +78,8 @@ struct POSInfoCardButtonStyle: ButtonStyle {
 }
 
 
-/// Surface button style in POS with a subtle surface background and no border.
-struct POSSurfaceButtonStyle: ButtonStyle {
+/// Tonal button style in POS with a subtle surface background and no border.
+struct POSTonalButtonStyle: ButtonStyle {
     private let size: POSButtonSize
 
     init(size: POSButtonSize) {
@@ -87,7 +87,7 @@ struct POSSurfaceButtonStyle: ButtonStyle {
     }
 
     func makeBody(configuration: Configuration) -> some View {
-        POSButtonStyleInternal(configuration: configuration, variant: .surface, size: size, state: .idle)
+        POSButtonStyleInternal(configuration: configuration, variant: .tonal, size: size, state: .idle)
     }
 }
 
@@ -96,7 +96,7 @@ fileprivate enum POSButtonVariant {
     case filled
     case outlined
     case infoCardOutlined
-    case surface
+    case tonal
 }
 
 private struct POSButtonStyleInternal: View {
@@ -168,9 +168,9 @@ private struct POSButtonStyleInternal: View {
                 .clear
         case (.infoCardOutlined, _):
                 .posSurfaceContainerLowest
-        case (.surface, true):
+        case (.tonal, true):
                 .posSurface
-        case (.surface, false):
+        case (.tonal, false):
                 .posDisabledContainer
         }
     }
@@ -189,9 +189,9 @@ private struct POSButtonStyleInternal: View {
                 .posOnSurface
         case (.infoCardOutlined, false):
                 .posOnDisabledContainer
-        case (.surface, true):
+        case (.tonal, true):
                 .posOnSurface
-        case (.surface, false):
+        case (.tonal, false):
                 .posOnDisabledContainer
         }
     }
@@ -337,12 +337,12 @@ struct POSButtonStyle_Previews: View {
                 Button("Disabled Button") {}
                     .buttonStyle(POSInfoCardButtonStyle(size: size, variant: .default))
                     .disabled(true)
-            case .surface:
+            case .tonal:
                 Button("Enabled Button") {}
-                    .buttonStyle(POSSurfaceButtonStyle(size: size))
+                    .buttonStyle(POSTonalButtonStyle(size: size))
 
                 Button("Disabled Button") {}
-                    .buttonStyle(POSSurfaceButtonStyle(size: size))
+                    .buttonStyle(POSTonalButtonStyle(size: size))
                     .disabled(true)
             }
         }

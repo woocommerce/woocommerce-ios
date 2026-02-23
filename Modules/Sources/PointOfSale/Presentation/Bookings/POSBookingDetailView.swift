@@ -71,7 +71,7 @@ struct POSBookingDetailView: View {
         }
         .posFullScreenCover(isPresented: $isShowingNoteView) {
             POSBookingNoteView(booking: booking, isShowingNoteView: $isShowingNoteView)
-                .posHeaderBackButtonIcon(systemName: "chevron.left")
+                .posHeaderBackButtonIcon(systemName: "xmark")
         }
     }
 

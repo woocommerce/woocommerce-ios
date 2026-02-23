@@ -28,7 +28,8 @@
       "Bash(pushd BuildTools *)",
       "Bash(xcrun *)",
       "Bash(bundle install *)",
-      "Bash(bundle exec rake *)"
+      "Bash(bundle exec rake *)",
+      "Bash(bundle exec fastlane *)"
     ],
     "deny": [
       "Bash(git push --force *)",

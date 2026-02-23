@@ -12,8 +12,7 @@ Debug a build failure or test failure in the WooCommerce iOS project.
 
 1. Run the build and capture errors:
 ```bash
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build 2>&1 \
+bundle exec fastlane build_for_testing 2>&1 \
   | grep -E "error:|fatal|cannot find|undefined|ambiguous" | head -30
 ```
 
@@ -22,14 +21,14 @@ xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
 4. Common root causes in this codebase:
    - **Missing module**: Check Modules/Package.swift target dependencies
    - **Type mismatch**: A Networking model changed — check if Yosemite/Storage need updates
-   - **Cannot find type**: May need `rake generate` after adding GeneratedCopiable/Fakeable
+   - **Cannot find type**: May need `bundle exec rake generate` after adding GeneratedCopiable/Fakeable
    - **Ambiguous reference**: Duplicate type names across Networking vs Storage
    - **CoreData model errors**: Check Storage/CoreData/ model versions
 5. Propose or apply the fix
 
 ## For Test Failures
 
-1. Run the specific failing test:
+1. Run the specific failing test (targeted tests require `xcodebuild` directly):
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' \

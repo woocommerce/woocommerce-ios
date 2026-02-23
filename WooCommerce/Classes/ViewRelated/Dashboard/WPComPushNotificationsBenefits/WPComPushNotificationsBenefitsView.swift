@@ -137,7 +137,7 @@ struct WPComPushNotificationsBenefitsView: View {
             }
             .buttonStyle(SecondaryButtonStyle())
 
-            if case .connect = viewModel.variant {
+            if case .connect = viewModel.variant, viewModel.error == nil {
                 Text(viewModel.termsAttributedString)
             }
         }

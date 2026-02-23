@@ -6,32 +6,28 @@ allowed-tools: "Bash, Read, Grep, Glob"
 argument-hint: "[target] [class] [method]"
 ---
 
-Run unit tests for the WooCommerce iOS project. Determine scope from $ARGUMENTS:
+Run unit tests for the WooCommerce iOS project.
 
-- **No arguments**: Build via Fastlane, then run the full test suite:
+## Run tests
+
+Determine scope from $ARGUMENTS:
+
+- **No arguments**: Run the full unit test suite:
 ```bash
-bundle exec fastlane build_for_testing 2>&1 | tail -50
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -sdk iphonesimulator test-without-building 2>&1 | tail -100
+bundle exec fastlane test_without_building name:UnitTests 2>&1 | tail -100
+bundle exec fastlane test_without_building name:UnitTests 2>&1 | tail -100
 ```
 
-- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`): Run that module's tests:
-```bash
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -sdk iphonesimulator test -only-testing:"<Module>Tests" 2>&1 | tail -100
-```
-
-- **Test class or method**: Run targeted tests:
+- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`) or **test class/method**: Use `xcodebuild` with `-only-testing:` since the Fastlane lane doesn't support targeted filtering:
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -sdk iphonesimulator test \
-  -only-testing:"WooCommerceTests/<ClassName>[/<method>]" 2>&1 | tail -100
+  -sdk iphonesimulator test-without-building \
+  -only-testing:"<Module>Tests[/<ClassName>[/<method>]]" 2>&1 | tail -100
 ```
 
-After running:
+## After running
+
 1. Report pass/fail counts
 2. If failures, show the failing test names and assertion messages
 3. Read the failing test files to understand what went wrong

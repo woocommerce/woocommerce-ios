@@ -128,8 +128,9 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func updateBookingNote(bookingID: Int64, note: String) async throws {
         let updatedNote = try await bookingService.updateBookingNote(bookingID: bookingID, note: note)
-        if let existing = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
-            updateBooking(existing.copy(bookingNote: updatedNote.isEmpty ? nil : updatedNote))
+        if let existingNote = bookingsViewState.bookings.first(where: { $0.id == bookingID }) {
+            let updatedNote = existingNote.copy(bookingNote: updatedNote.isEmpty ? nil : updatedNote)
+            updateBooking(updatedNote)
         }
     }
 

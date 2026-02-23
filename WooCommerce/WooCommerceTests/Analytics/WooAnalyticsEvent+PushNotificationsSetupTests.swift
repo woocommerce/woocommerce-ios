@@ -1,71 +1,91 @@
-import XCTest
+import Testing
 @testable import WooCommerce
 
-final class WooAnalyticsEvent_PushNotificationsSetupTests: XCTestCase {
+struct WooAnalyticsEvent_PushNotificationsSetupTests {
 
     // MARK: - introductionButtonTap
 
-    func test_introductionButtonTap_produces_correct_events() {
+    @Test func test_introductionButtonTap_when_given_each_label_then_produces_correct_event() {
+        // Given
         let cases: [(WooAnalyticsEvent.PushNotificationsSetup.IntroductionButtonLabel, String)] = [
             (.continue, "continue"),
             (.notNow, "not_now"),
             (.updatePlugin, "update_plugin")
         ]
+
         for (label, expected) in cases {
+            // When
             let event = WooAnalyticsEvent.PushNotificationsSetup.introductionButtonTap(buttonLabel: label)
-            XCTAssertEqual(event.statName, .pushNotificationsSetupIntroductionButtonTap)
-            XCTAssertEqual(event.properties["button_label"] as? String, expected)
+
+            // Then
+            #expect(event.statName == .pushNotificationsSetupIntroductionButtonTap)
+            #expect(event.properties["button_label"] as? String == expected)
         }
     }
 
     // MARK: - flowSuccess
 
-    func test_flowSuccess_produces_correct_events() {
+    @Test func test_flowSuccess_when_given_each_step_then_produces_correct_event() {
+        // Given
         let cases: [(WooAnalyticsEvent.PushNotificationsSetup.FlowStep, String)] = [
             (.connectWPCom, "connect_wpcom"),
             (.pluginCompatibility, "plugin_compatibility"),
             (.enablePushNotifications, "enable_push_notifications")
         ]
+
         for (step, expected) in cases {
+            // When
             let event = WooAnalyticsEvent.PushNotificationsSetup.flowSuccess(step: step)
-            XCTAssertEqual(event.statName, .pushNotificationsSetupFlowSuccess)
-            XCTAssertEqual(event.properties["step"] as? String, expected)
+
+            // Then
+            #expect(event.statName == .pushNotificationsSetupFlowSuccess)
+            #expect(event.properties["step"] as? String == expected)
         }
     }
 
     // MARK: - flowButtonTap
 
-    func test_flowButtonTap_produces_correct_events() {
+    @Test func test_flowButtonTap_when_given_each_label_then_produces_correct_event() {
+        // Given
         let cases: [(WooAnalyticsEvent.PushNotificationsSetup.FlowButtonLabel, String)] = [
             (.done, "done"),
             (.goToMyStore, "go_to_my_store"),
             (.tryAgain, "try_again"),
             (.updatePlugin, "update_plugin")
         ]
+
         for (label, expected) in cases {
+            // When
             let event = WooAnalyticsEvent.PushNotificationsSetup.flowButtonTap(buttonLabel: label)
-            XCTAssertEqual(event.statName, .pushNotificationsSetupFlowButtonTap)
-            XCTAssertEqual(event.properties["button_label"] as? String, expected)
+
+            // Then
+            #expect(event.statName == .pushNotificationsSetupFlowButtonTap)
+            #expect(event.properties["button_label"] as? String == expected)
         }
     }
 
     // MARK: - flowError
 
-    func test_flowError_without_error_produces_correct_events() {
+    @Test func test_flowError_when_no_error_provided_then_produces_correct_event_with_nil_error() {
+        // Given
         let cases: [(WooAnalyticsEvent.PushNotificationsSetup.FlowStep, String)] = [
             (.connectWPCom, "connect_wpcom"),
             (.pluginCompatibility, "plugin_compatibility"),
             (.enablePushNotifications, "enable_push_notifications")
         ]
+
         for (step, expected) in cases {
+            // When
             let event = WooAnalyticsEvent.PushNotificationsSetup.flowError(step: step)
-            XCTAssertEqual(event.statName, .pushNotificationsSetupFlowError)
-            XCTAssertEqual(event.properties["step"] as? String, expected)
-            XCTAssertNil(event.error)
+
+            // Then
+            #expect(event.statName == .pushNotificationsSetupFlowError)
+            #expect(event.properties["step"] as? String == expected)
+            #expect(event.error == nil)
         }
     }
 
-    func test_flowError_with_error_passes_error_in_event() {
+    @Test func test_flowError_when_error_provided_then_passes_error_in_event() {
         // Given
         let underlyingError = NSError(domain: "test.domain", code: 42)
 
@@ -73,8 +93,8 @@ final class WooAnalyticsEvent_PushNotificationsSetupTests: XCTestCase {
         let event = WooAnalyticsEvent.PushNotificationsSetup.flowError(step: .connectWPCom, error: underlyingError)
 
         // Then
-        XCTAssertEqual(event.statName, .pushNotificationsSetupFlowError)
-        XCTAssertEqual(event.properties["step"] as? String, "connect_wpcom")
-        XCTAssertEqual(event.error as? NSError, underlyingError)
+        #expect(event.statName == .pushNotificationsSetupFlowError)
+        #expect(event.properties["step"] as? String == "connect_wpcom")
+        #expect(event.error as? NSError == underlyingError)
     }
 }

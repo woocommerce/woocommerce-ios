@@ -68,7 +68,12 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func loadBookings() async {
-        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
+        let filters = dateFilters(for: selectedDate)
+        if let searchTerm = activeSearchTerm {
+            fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
+        } else {
+            fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
+        }
         setCachedData()
         setLoadingState()
         await loadFirstPage()

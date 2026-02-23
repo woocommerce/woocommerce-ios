@@ -456,6 +456,27 @@ final class POSBookingListControllerTests {
         #expect(mockFactory.lastSearchTerm == "test")
     }
 
+    @Test func test_loadBookings_when_searching_then_preserves_search_strategy() async {
+        // Given - start a search
+        let searchStrategy = MockPOSBookingListFetchStrategy()
+        searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
+        searchStrategy.supportsCaching = false
+        searchStrategy.id = "SearchStrategy"
+        mockFactory.searchStrategyResult = searchStrategy
+        await sut.searchBookings(searchTerm: "test")
+
+        let searchCallCountBeforeReload = mockFactory.searchStrategyCallCount
+        let defaultCallCountBeforeReload = mockFactory.defaultStrategyCallCount
+
+        // When - loadBookings is called (e.g. from a retry path)
+        await sut.loadBookings()
+
+        // Then - should use search strategy, not default
+        #expect(mockFactory.searchStrategyCallCount == searchCallCountBeforeReload + 1)
+        #expect(mockFactory.lastSearchTerm == "test")
+        #expect(mockFactory.defaultStrategyCallCount == defaultCallCountBeforeReload)
+    }
+
     @Test func test_selectDate_clears_cache_and_shows_loading() async {
         // Given - load bookings for initial date
         let bookings = [makeBooking(id: 1)]

@@ -16,9 +16,11 @@ final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyF
 
     var lastSearchTerm: String?
     var searchStrategyCallCount = 0
+    var defaultStrategyCallCount = 0
 
     func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
-        defaultStrategyResult
+        defaultStrategyCallCount += 1
+        return defaultStrategyResult
     }
 
     func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {

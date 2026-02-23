@@ -165,7 +165,7 @@ extension WPComPushNotificationsBenefitsViewModel {
                 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic",
                 value: "We could not complete the push notifications setup. " +
                 "Please contact support for assistance.",
-                comment: "Generic rror message in the Push Notifications Benefits View"
+                comment: "Generic error message in the Push Notifications Benefits View"
             )
         }
     }

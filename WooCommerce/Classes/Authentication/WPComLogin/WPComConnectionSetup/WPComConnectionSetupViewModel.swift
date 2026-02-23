@@ -104,7 +104,6 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func setPluginOutdatedState(version: String) {
-        stepDidUpdate(.connect, status: .success)
         stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: version)))
         shouldAutoOpenUpdatePlugin = true
     }
@@ -150,8 +149,8 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     private func setupInitialSteps() {
         steps = [
-            WPComConnectionSetupStep(title: Localization.connectStoreStep, status: .notStarted),
             WPComConnectionSetupStep(title: Localization.checkPluginStep, status: .notStarted),
+            WPComConnectionSetupStep(title: Localization.connectStoreStep, status: .notStarted),
             WPComConnectionSetupStep(title: Localization.enablePushNotificationsStep, status: .notStarted)
         ]
     }

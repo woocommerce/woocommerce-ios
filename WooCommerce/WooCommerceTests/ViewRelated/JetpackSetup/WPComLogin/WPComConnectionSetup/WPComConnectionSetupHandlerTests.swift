@@ -16,6 +16,7 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         super.setUp()
         mockConnectionService = MockJetpackConnectionService()
         mockPluginVersionChecker = MockPluginVersionChecker()
+        mockPluginVersionChecker.result = .success(.compatible)
         mockPushNotesManager = MockPushNotificationsManager()
         delegateSpy = MockWPComConnectionSetupHandlerDelegate()
     }
@@ -39,11 +40,11 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         await delegateSpy.waitForStepUpdate(count: 4)
 
         // Then
-        XCTAssertGreaterThanOrEqual(delegateSpy.stepUpdates.count, 2)
-        XCTAssertEqual(delegateSpy.stepUpdates[0].step, .connect)
-        XCTAssertEqual(delegateSpy.stepUpdates[0].status, .running)
-        XCTAssertEqual(delegateSpy.stepUpdates[1].step, .connect)
-        XCTAssertEqual(delegateSpy.stepUpdates[1].status, .success)
+        XCTAssertGreaterThanOrEqual(delegateSpy.stepUpdates.count, 4)
+        XCTAssertEqual(delegateSpy.stepUpdates[2].step, .connect)
+        XCTAssertEqual(delegateSpy.stepUpdates[2].status, .running)
+        XCTAssertEqual(delegateSpy.stepUpdates[3].step, .connect)
+        XCTAssertEqual(delegateSpy.stepUpdates[3].status, .success)
     }
 
     func test_start_with_siteAlreadyConnected_skips_connect_step() async throws {
@@ -66,12 +67,12 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 2)
+        await delegateSpy.waitForStepUpdate(count: 4)
 
         // Then
-        XCTAssertGreaterThanOrEqual(delegateSpy.stepUpdates.count, 2)
-        XCTAssertEqual(delegateSpy.stepUpdates[0].status, .running)
-        assertFailureStatus(delegateSpy.stepUpdates[1].status)
+        XCTAssertGreaterThanOrEqual(delegateSpy.stepUpdates.count, 4)
+        XCTAssertEqual(delegateSpy.stepUpdates[2].status, .running)
+        assertFailureStatus(delegateSpy.stepUpdates[3].status)
     }
 
     // MARK: - retry() Tests
@@ -81,7 +82,7 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         mockConnectionService.establishSiteConnectionResult = .failure(NSError(domain: "Test", code: -1))
         let handler = makeHandler(siteAlreadyConnected: false)
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 2)
+        await delegateSpy.waitForStepUpdate(count: 4)
 
         // Reset for retry
         mockConnectionService.establishSiteConnectionResult = .success(())
@@ -100,25 +101,27 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
     // MARK: - Plugin Version Check Tests
 
-    func test_start_with_connection_success_chains_to_plugin_check_success() async throws {
+    func test_start_with_plugin_check_success_chains_to_connection_step() async throws {
         // Given
-        mockPluginVersionChecker.result = .success(.compatible)
-        let handler = makeHandler()
+        let handler = makeHandler(siteAlreadyConnected: false)
 
         // When
         handler.start()
         await delegateSpy.waitForStepUpdate(count: 4)
 
         // Then
-        XCTAssertEqual(delegateSpy.stepUpdates[2].step, .checkPlugin)
+        XCTAssertEqual(delegateSpy.stepUpdates[0].step, .checkPlugin)
+        XCTAssertEqual(delegateSpy.stepUpdates[0].status, .running)
+        XCTAssertEqual(delegateSpy.stepUpdates[1].step, .checkPlugin)
+        XCTAssertEqual(delegateSpy.stepUpdates[1].status, .success)
+        XCTAssertEqual(delegateSpy.stepUpdates[2].step, .connect)
         XCTAssertEqual(delegateSpy.stepUpdates[2].status, .running)
-        XCTAssertEqual(delegateSpy.stepUpdates[3].step, .checkPlugin)
+        XCTAssertEqual(delegateSpy.stepUpdates[3].step, .connect)
         XCTAssertEqual(delegateSpy.stepUpdates[3].status, .success)
     }
 
     func test_start_with_siteAlreadyConnected_starts_plugin_check() async throws {
         // Given
-        mockPluginVersionChecker.result = .success(.compatible)
         let handler = makeHandler(siteAlreadyConnected: true)
 
         // When
@@ -126,10 +129,10 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         await delegateSpy.waitForStepUpdate(count: 3)
 
         // Then
+        XCTAssertEqual(delegateSpy.stepUpdates[0].step, .checkPlugin)
+        XCTAssertEqual(delegateSpy.stepUpdates[0].status, .running)
         XCTAssertEqual(delegateSpy.stepUpdates[1].step, .checkPlugin)
-        XCTAssertEqual(delegateSpy.stepUpdates[1].status, .running)
-        XCTAssertEqual(delegateSpy.stepUpdates[2].step, .checkPlugin)
-        XCTAssertEqual(delegateSpy.stepUpdates[2].status, .success)
+        XCTAssertEqual(delegateSpy.stepUpdates[1].status, .success)
     }
 
     func test_plugin_check_incompatible_marks_step_as_failure_with_outdated_message() async throws {
@@ -139,11 +142,11 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 3)
+        await delegateSpy.waitForStepUpdate(count: 2)
 
         // Then
-        XCTAssertEqual(delegateSpy.stepUpdates[2].step, .checkPlugin)
-        XCTAssertEqual(delegateSpy.stepUpdates[2].status, .failure(error: .outdatedPlugin(version: "10.3.4")))
+        XCTAssertEqual(delegateSpy.stepUpdates[1].step, .checkPlugin)
+        XCTAssertEqual(delegateSpy.stepUpdates[1].status, .failure(error: .outdatedPlugin(version: "10.3.4")))
     }
 
     func test_plugin_check_error_marks_step_as_failure_with_generic_error() async throws {
@@ -153,11 +156,11 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 3)
+        await delegateSpy.waitForStepUpdate(count: 2)
 
         // Then
-        XCTAssertEqual(delegateSpy.stepUpdates[2].step, .checkPlugin)
-        assertFailureStatus(delegateSpy.stepUpdates[2].status)
+        XCTAssertEqual(delegateSpy.stepUpdates[1].step, .checkPlugin)
+        assertFailureStatus(delegateSpy.stepUpdates[1].status)
     }
 
     func test_retry_after_plugin_check_failure_restarts_plugin_check() async throws {
@@ -186,7 +189,6 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
     func test_start_with_compatible_plugin_triggers_push_registration_and_completes_on_success() async throws {
         // Given
-        mockPluginVersionChecker.result = .success(.compatible)
         mockPushNotesManager.registerDeviceAndWaitForTokenAcceptanceResult = .success(1)
         let handler = makeHandler(siteAlreadyConnected: true)
 
@@ -202,7 +204,6 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
     func test_start_with_compatible_plugin_marks_push_step_as_failure_on_registration_error() async throws {
         // Given
-        mockPluginVersionChecker.result = .success(.compatible)
         mockPushNotesManager.registerDeviceAndWaitForTokenAcceptanceResult = .failure(NSError(domain: "Test", code: -1))
         let handler = makeHandler(siteAlreadyConnected: true)
 

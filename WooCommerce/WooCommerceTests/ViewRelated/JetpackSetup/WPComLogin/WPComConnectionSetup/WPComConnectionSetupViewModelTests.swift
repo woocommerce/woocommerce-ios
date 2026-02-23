@@ -46,7 +46,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         let viewModel = makeViewModel()
 
         // When
-        mockHandler.simulateStepUpdate(.connect, status: .running)
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .running)
 
         // Then
         XCTAssertEqual(viewModel.steps[0].status, .running)
@@ -170,7 +170,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
     // MARK: - setPluginOutdatedState Tests
 
-    func test_setPluginOutdatedState_sets_connect_to_success_and_checkPlugin_to_failure() {
+    func test_setPluginOutdatedState_sets_checkPlugin_to_failure() {
         // Given
         let viewModel = makeViewModel()
 
@@ -178,8 +178,8 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         viewModel.setPluginOutdatedState(version: "10.4.0")
 
         // Then
-        XCTAssertEqual(viewModel.steps[0].status, .success)
-        XCTAssertEqual(viewModel.steps[1].status, .failure(error: .outdatedPlugin(version: "10.4.0")))
+        XCTAssertEqual(viewModel.steps[0].status, .failure(error: .outdatedPlugin(version: "10.4.0")))
+        XCTAssertEqual(viewModel.steps[1].status, .notStarted)
         XCTAssertEqual(viewModel.steps[2].status, .notStarted)
     }
 

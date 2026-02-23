@@ -2,8 +2,8 @@ import Foundation
 import Yosemite
 
 enum SetupStep: Int, CaseIterable {
-    case connect = 0
-    case checkPlugin = 1
+    case checkPlugin = 0
+    case connect = 1
     case enablePush = 2
 }
 
@@ -65,15 +65,7 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
     }
 
     func start() {
-        /// Step 1 (optional): check Jetpack connection
-        if !siteAlreadyConnected {
-            currentStep = .connect
-            startJetpackConnection()
-        } else {
-            /// Step 2: Check plugin version
-            delegate?.stepDidUpdate(.connect, status: .success)
-            startPluginVersionCheck()
-        }
+        startPluginVersionCheck()
     }
 
     func retry() {
@@ -96,12 +88,13 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
 
 private extension WPComConnectionSetupHandler {
     func startJetpackConnection() {
+        currentStep = .connect
         Task { @MainActor in
             do {
                 delegate?.stepDidUpdate(.connect, status: .running)
                 try await jetpackConnectionService.establishSiteConnection(siteURL: siteURL)
                 delegate?.stepDidUpdate(.connect, status: .success)
-                startPluginVersionCheck()
+                startPushRegistration()
             } catch {
                 didFailConnection(with: error)
             }
@@ -123,7 +116,12 @@ private extension WPComConnectionSetupHandler {
                 switch result {
                 case .compatible:
                     delegate?.stepDidUpdate(.checkPlugin, status: .success)
-                    startPushRegistration()
+                    if !siteAlreadyConnected {
+                        startJetpackConnection()
+                    } else {
+                        delegate?.stepDidUpdate(.connect, status: .success)
+                        startPushRegistration()
+                    }
                 case .incompatible(let currentVersion, _):
                     delegate?.stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: currentVersion)))
                 }

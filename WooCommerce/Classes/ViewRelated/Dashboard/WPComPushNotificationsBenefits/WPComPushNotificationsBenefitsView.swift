@@ -39,24 +39,25 @@ struct WPComPushNotificationsBenefitsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                    Spacer()
-                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                        stackedImages
-                        title
-                        detail
-                    }
-                    Spacer()
-                }
-                .redacted(reason: viewModel.isCheckingPlugin ? .placeholder : [])
-                .shimmering(active: viewModel.isCheckingPlugin)
-                .renderedIf(viewModel.error == nil)
-
                 if let error = viewModel.error {
-                    errorView(with: error)
+                    VStack(spacing: Layout.contentSpacing) {
+                        errorView(with: error)
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                        Spacer()
+                        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                            stackedImages
+                            title
+                            detail
+                        }
+                        Spacer()
+                    }
+                    .redacted(reason: viewModel.isCheckingPlugin ? .placeholder : [])
+                    .shimmering(active: viewModel.isCheckingPlugin)
                 }
 
-                if dynamicTypeSize.isAccessibilitySize {
+                if dynamicTypeSize.isAccessibilitySize && !viewModel.isCheckingPlugin {
                     footer
                 }
             }
@@ -73,7 +74,7 @@ struct WPComPushNotificationsBenefitsView: View {
                 footer
                     .padding(Layout.contentPadding)
                     .background(Color(uiColor: .systemBackground))
-                    .renderedIf(!dynamicTypeSize.isAccessibilitySize)
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize && !viewModel.isCheckingPlugin)
             }
         }
         .onAppear {

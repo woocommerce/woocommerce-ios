@@ -347,6 +347,8 @@
 		3FDA98672F4C0D2900CC3259 /* OrderDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA98662F4C0D2900CC3259 /* OrderDetailsViewModelTests.swift */; };
 		3FDA98692F4C0D5100CC3259 /* EmptyListMessageWithActionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA98682F4C0D5100CC3259 /* EmptyListMessageWithActionTests.swift */; };
 		3FDA986B2F4C0D7200CC3259 /* DatePickerTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA986A2F4C0D7200CC3259 /* DatePickerTableViewCellTests.swift */; };
+		3FDA98EF2F4C101900CC3259 /* WooShippingAddressPhoneValidationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA98ED2F4C101900CC3259 /* WooShippingAddressPhoneValidationTests.swift */; };
+		3FDA98F02F4C101900CC3259 /* WooShippingPhoneValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA98EE2F4C101900CC3259 /* WooShippingPhoneValidatorTests.swift */; };
 		4506BD712461965300FE6377 /* ProductVisibilityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */; };
 		4506BD722461965300FE6377 /* ProductVisibilityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */; };
 		450C2CB024CF006A00D570DD /* ProductTagsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450C2CAF24CF006A00D570DD /* ProductTagsDataSource.swift */; };
@@ -1294,6 +1296,8 @@
 		3FDA98662F4C0D2900CC3259 /* OrderDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		3FDA98682F4C0D5100CC3259 /* EmptyListMessageWithActionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyListMessageWithActionTests.swift; sourceTree = "<group>"; };
 		3FDA986A2F4C0D7200CC3259 /* DatePickerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCellTests.swift; sourceTree = "<group>"; };
+		3FDA98ED2F4C101900CC3259 /* WooShippingAddressPhoneValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingAddressPhoneValidationTests.swift; sourceTree = "<group>"; };
+		3FDA98EE2F4C101900CC3259 /* WooShippingPhoneValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooShippingPhoneValidatorTests.swift; sourceTree = "<group>"; };
 		3FF314EF26FC784A0012E68E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		4506BD6F2461965300FE6377 /* ProductVisibilityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVisibilityViewController.swift; sourceTree = "<group>"; };
 		4506BD702461965300FE6377 /* ProductVisibilityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductVisibilityViewController.xib; sourceTree = "<group>"; };
@@ -3731,6 +3735,8 @@
 		CEC3CC722C9343BC00B93FBE /* WooShipping Create Shipping Labels */ = {
 			isa = PBXGroup;
 			children = (
+				3FDA98ED2F4C101900CC3259 /* WooShippingAddressPhoneValidationTests.swift */,
+				3FDA98EE2F4C101900CC3259 /* WooShippingPhoneValidatorTests.swift */,
 				3FDA98EA2F4C0F1800CC3259 /* Split shipments */,
 				3FDA98E52F4C0EFD00CC3259 /* WooShipping Customs */,
 				CE2207032CA5C55100E16D9B /* WooShippingCreateLabelsViewModelTests.swift */,
@@ -5590,6 +5596,8 @@
 				3FDA98692F4C0D5100CC3259 /* EmptyListMessageWithActionTests.swift in Sources */,
 				026A23FF2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift in Sources */,
 				027B8BBF23FE0F850040944E /* MockMediaStoresManager.swift in Sources */,
+				3FDA98EF2F4C101900CC3259 /* WooShippingAddressPhoneValidationTests.swift in Sources */,
+				3FDA98F02F4C101900CC3259 /* WooShippingPhoneValidatorTests.swift in Sources */,
 				CEC3CC7C2C94A06500B93FBE /* WooShippingItemsDataSourceTests.swift in Sources */,
 				DE4D23B429B58C5A003A4B5D /* MockWordPressComAccountService.swift in Sources */,
 				CEC3CC7A2C93537B00B93FBE /* MockShippingSettingsService.swift in Sources */,

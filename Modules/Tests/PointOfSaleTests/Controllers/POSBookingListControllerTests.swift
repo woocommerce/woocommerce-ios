@@ -465,36 +465,35 @@ final class POSBookingListControllerTests {
         mockFactory.searchStrategyResult = searchStrategy
         await sut.searchBookings(searchTerm: "test")
 
-        let searchCallCountBeforeReload = mockFactory.searchStrategyCallCount
-        let defaultCallCountBeforeReload = mockFactory.defaultStrategyCallCount
-
         // When - loadBookings is called (e.g. from a retry path)
         await sut.loadBookings()
 
         // Then - should use search strategy, not default
-        #expect(mockFactory.searchStrategyCallCount == searchCallCountBeforeReload + 1)
+        // 2 search strategy calls: initial searchBookings + loadBookings reload
+        #expect(mockFactory.searchStrategyCallCount == 2)
         #expect(mockFactory.lastSearchTerm == "test")
-        #expect(mockFactory.defaultStrategyCallCount == defaultCallCountBeforeReload)
+        // 1 default strategy call from init only
+        #expect(mockFactory.defaultStrategyCallCount == 1)
     }
 
     // MARK: - Prefetch
 
-    @Test func test_syncBookings_syncs_today_and_adjacent_dates() async throws {
+    @Test func test_syncBookings_syncs_today_and_adjacent_dates() async {
         // Given
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
 
-        _ = sut.selectedDate
-        let callCountBeforeSync = mockFactory.defaultStrategyCallCount
+        // When - 3 calls expected: today + yesterday + tomorrow (+ 1 from init = 4 total)
+        await withCheckedContinuation { continuation in
+            mockFactory.onDefaultStrategyCalled = {
+                if self.mockFactory.defaultStrategyCallCount == 4 {
+                    continuation.resume()
+                }
+            }
+            sut.syncBookings()
+        }
 
-        // When
-        sut.syncBookings()
-
-        // Wait for the sync task to complete
-        try await Task.sleep(nanoseconds: 200_000_000)
-
-        // Then - 3 calls: today + yesterday + tomorrow
-        let newCalls = mockFactory.defaultStrategyCallCount - callCountBeforeSync
-        #expect(newCalls == 3)
+        // Then
+        #expect(mockFactory.defaultStrategyCallCount == 4)
     }
 
     // MARK: - isPaginating

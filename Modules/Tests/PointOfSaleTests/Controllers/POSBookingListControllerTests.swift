@@ -7,17 +7,20 @@ import enum NetworkingCore.OrderStatusEnum
 import struct Yosemite.PagedItems
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.BookingFilters
 
 @MainActor
 final class POSBookingListControllerTests {
 
+    private let siteTimezone = TimeZone(identifier: "America/New_York")!
     private let mockStrategy = MockPOSBookingListFetchStrategy()
     private lazy var mockFactory: MockPOSBookingListFetchStrategyFactory = {
         let factory = MockPOSBookingListFetchStrategyFactory()
         factory.defaultStrategyResult = mockStrategy
         return factory
     }()
-    private lazy var sut = POSBookingListController(bookingListFetchStrategyFactory: mockFactory)
+    private lazy var sut = POSBookingListController(bookingListFetchStrategyFactory: mockFactory,
+                                                     siteTimezone: siteTimezone)
 
     // MARK: - loadBookings
 
@@ -334,6 +337,160 @@ final class POSBookingListControllerTests {
 
         // Then - should still have the bookings
         #expect(sut.bookingsViewState.bookings == bookings)
+    }
+
+    // MARK: - Date Navigation
+
+    @Test func test_selectedDate_defaults_to_today_in_site_timezone() {
+        // Given
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        let expectedStartOfDay = calendar.startOfDay(for: Date())
+
+        // Then
+        #expect(sut.selectedDate == expectedStartOfDay)
+    }
+
+    @Test func test_selectDate_updates_selectedDate_and_reloads() async {
+        // Given
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+
+        // When
+        await sut.selectDate(tomorrow)
+
+        // Then
+        #expect(sut.selectedDate == tomorrow)
+    }
+
+    @Test func test_goToNextDay_advances_date_by_one_day() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+        let initialDate = sut.selectedDate
+
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        let expectedNextDay = calendar.date(byAdding: .day, value: 1, to: initialDate)!
+
+        // When
+        await sut.goToNextDay()
+
+        // Then
+        #expect(sut.selectedDate == expectedNextDay)
+    }
+
+    @Test func test_goToPreviousDay_goes_back_one_day() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+        let initialDate = sut.selectedDate
+
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        let expectedPreviousDay = calendar.date(byAdding: .day, value: -1, to: initialDate)!
+
+        // When
+        await sut.goToPreviousDay()
+
+        // Then
+        #expect(sut.selectedDate == expectedPreviousDay)
+    }
+
+    @Test func test_dateFilters_generates_correct_day_boundaries() {
+        // Given
+        let utcTimezone = TimeZone(identifier: "UTC")!
+        let controller = POSBookingListController(bookingListFetchStrategyFactory: mockFactory,
+                                                   siteTimezone: utcTimezone)
+
+        var calendar = Calendar.current
+        calendar.timeZone = utcTimezone
+        let date = calendar.date(from: DateComponents(year: 2026, month: 3, day: 15))!
+
+        // When
+        let filters = controller.dateFilters(for: date)
+
+        // Then
+        #expect(filters.startDateAfter == "2026-03-15T00:00:00Z")
+        #expect(filters.startDateBefore == "2026-03-15T23:59:59Z")
+    }
+
+    @Test func test_dateFilters_with_positive_offset_timezone() {
+        // Given - Tokyo is UTC+9
+        let tokyoTimezone = TimeZone(identifier: "Asia/Tokyo")!
+        let controller = POSBookingListController(bookingListFetchStrategyFactory: mockFactory,
+                                                   siteTimezone: tokyoTimezone)
+
+        var calendar = Calendar.current
+        calendar.timeZone = tokyoTimezone
+        let date = calendar.date(from: DateComponents(year: 2026, month: 6, day: 20))!
+
+        // When
+        let filters = controller.dateFilters(for: date)
+
+        // Then
+        #expect(filters.startDateAfter == "2026-06-20T00:00:00+09:00")
+        #expect(filters.startDateBefore == "2026-06-20T23:59:59+09:00")
+    }
+
+    @Test func test_selectDate_when_searching_then_uses_search_strategy_with_new_date() async {
+        // Given - start a search
+        let searchStrategy = MockPOSBookingListFetchStrategy()
+        searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
+        searchStrategy.supportsCaching = false
+        searchStrategy.id = "SearchStrategy"
+        mockFactory.searchStrategyResult = searchStrategy
+        await sut.searchBookings(searchTerm: "test")
+
+        let initialSearchCallCount = mockFactory.searchStrategyCallCount
+
+        // When - change date while searching
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+        await sut.selectDate(tomorrow)
+
+        // Then - should use search strategy again (not default)
+        #expect(mockFactory.searchStrategyCallCount == initialSearchCallCount + 1)
+        #expect(mockFactory.lastSearchTerm == "test")
+    }
+
+    @Test func test_loadBookings_when_searching_then_preserves_search_strategy() async {
+        // Given - start a search
+        let searchStrategy = MockPOSBookingListFetchStrategy()
+        searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
+        searchStrategy.supportsCaching = false
+        searchStrategy.id = "SearchStrategy"
+        mockFactory.searchStrategyResult = searchStrategy
+        await sut.searchBookings(searchTerm: "test")
+
+        let searchCallCountBeforeReload = mockFactory.searchStrategyCallCount
+        let defaultCallCountBeforeReload = mockFactory.defaultStrategyCallCount
+
+        // When - loadBookings is called (e.g. from a retry path)
+        await sut.loadBookings()
+
+        // Then - should use search strategy, not default
+        #expect(mockFactory.searchStrategyCallCount == searchCallCountBeforeReload + 1)
+        #expect(mockFactory.lastSearchTerm == "test")
+        #expect(mockFactory.defaultStrategyCallCount == defaultCallCountBeforeReload)
+    }
+
+    @Test func test_selectDate_clears_cache_and_shows_loading() async {
+        // Given - load bookings for initial date
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+
+        // When
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
+        await sut.selectDate(tomorrow)
+
+        // Then - cache was cleared, new date shows empty
+        #expect(sut.bookingsViewState == .empty)
     }
 }
 

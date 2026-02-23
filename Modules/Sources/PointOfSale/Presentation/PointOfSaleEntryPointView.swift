@@ -148,7 +148,8 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         if let bookingListFetchStrategyFactory {
-            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
+            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
+                                                               siteTimezone: siteTimezone)
             self.bookingsModel = POSBookingsModel(
                 bookingsController: bookingsController,
                 cardPresentPaymentService: cardPresentPaymentService,

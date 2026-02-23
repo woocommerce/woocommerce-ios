@@ -38,6 +38,7 @@ import protocol Yosemite.POSBookingServiceProtocol
 import protocol Yosemite.POSBookingListFetchStrategy
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.BookingFilters
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -509,17 +510,17 @@ struct POSPreviewHelpers {
 final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
     let bookingService: POSBookingServiceProtocol = POSBookingServicePreview()
 
-    func defaultStrategy() -> POSBookingListFetchStrategy {
+    func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
 
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
+    func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
         POSBookingListFetchStrategyPreview()
     }
 }
 
 final class POSBookingServicePreview: POSBookingServiceProtocol {
-    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, searchQuery: String?) async throws -> PagedItems<POSBooking> {
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, filters: BookingFilters?, searchQuery: String?) async throws -> PagedItems<POSBooking> {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
 
@@ -785,6 +786,7 @@ extension POSPreviewHelpers {
 final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
     let bookingsViewState: POSBookingListState
     var selectedBooking: POSBooking?
+    var selectedDate: Date = Date()
 
     init(state: POSBookingListState) {
         self.bookingsViewState = state
@@ -797,6 +799,9 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func selectBooking(_ booking: POSBooking?) {
         selectedBooking = booking
     }
+    func selectDate(_ date: Date) async { selectedDate = date }
+    func goToPreviousDay() async {}
+    func goToNextDay() async {}
     func cancelBooking(bookingID: Int64) async throws {}
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
     func updateBooking(bookingID: Int64) async throws {}

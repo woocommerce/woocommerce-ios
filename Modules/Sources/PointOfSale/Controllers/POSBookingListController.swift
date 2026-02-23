@@ -8,15 +8,20 @@ import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.POSBookingServiceError
 import protocol Yosemite.POSBookingServiceProtocol
 import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.BookingFilters
 import enum Yosemite.BookingStatus
 
 protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
     var selectedBooking: POSBooking? { get }
+    var selectedDate: Date { get }
     func loadBookings() async
     func refreshBookings() async
     func loadNextBookings() async
     func selectBooking(_ booking: POSBooking?)
+    func selectDate(_ date: Date) async
+    func goToPreviousDay() async
+    func goToNextDay() async
     func cancelBooking(bookingID: Int64) async throws
     func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws
     func updateBooking(bookingID: Int64) async throws
@@ -30,12 +35,15 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
 @Observable final class POSBookingListController: POSSearchingBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState
+    private(set) var selectedDate: Date
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
     private var cachedBookings: [POSBooking] = []
+    private var activeSearchTerm: String?
     private(set) var selectedBooking: POSBooking?
     private let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol
     private let bookingService: POSBookingServiceProtocol
+    private let siteTimezone: TimeZone
 
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -47,15 +55,25 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 
     init(bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol,
+         siteTimezone: TimeZone,
+         initialDate: Date? = nil,
          initialState: POSBookingListState = .loading([])) {
+        self.siteTimezone = siteTimezone
+        self.selectedDate = initialDate ?? Self.todayInSiteTimezone(siteTimezone)
         self.bookingsViewState = initialState
         self.bookingListFetchStrategyFactory = bookingListFetchStrategyFactory
         self.bookingService = bookingListFetchStrategyFactory.bookingService
-        self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy()
+        self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: nil)
     }
 
     @MainActor
     func loadBookings() async {
+        let filters = dateFilters(for: selectedDate)
+        if let searchTerm = activeSearchTerm {
+            fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
+        } else {
+            fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
+        }
         setCachedData()
         setLoadingState()
         await loadFirstPage()
@@ -130,15 +148,47 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 
     @MainActor
+    func selectDate(_ date: Date) async {
+        selectedDate = date
+        cachedBookings = []
+        let filters = dateFilters(for: date)
+        if let searchTerm = activeSearchTerm {
+            fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
+        } else {
+            fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
+        }
+        bookingsViewState = .loading([])
+        await loadFirstPage()
+    }
+
+    @MainActor
+    func goToPreviousDay() async {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        guard let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) else { return }
+        await selectDate(previousDay)
+    }
+
+    @MainActor
+    func goToNextDay() async {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        guard let nextDay = calendar.date(byAdding: .day, value: 1, to: selectedDate) else { return }
+        await selectDate(nextDay)
+    }
+
+    @MainActor
     func searchBookings(searchTerm: String) async {
-        fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
+        activeSearchTerm = searchTerm
+        fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: dateFilters(for: selectedDate))
         bookingsViewState = .loading([])
         await loadFirstPage()
     }
 
     @MainActor
     func clearSearchBookings() {
-        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy()
+        activeSearchTerm = nil
+        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
         if cachedBookings.isNotEmpty {
             bookingsViewState = .loaded(cachedBookings, hasMoreItems: true)
         } else {
@@ -150,9 +200,36 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 }
 
+// MARK: - Date Helpers
+
+extension POSBookingListController {
+    func dateFilters(for date: Date) -> BookingFilters {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        let startOfDay = calendar.startOfDay(for: date)
+        guard let endOfDay = calendar.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay) else {
+            return BookingFilters()
+        }
+
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = siteTimezone
+
+        return BookingFilters(
+            startDateBefore: formatter.string(from: endOfDay),
+            startDateAfter: formatter.string(from: startOfDay)
+        )
+    }
+}
+
 // MARK: - Private
 
 private extension POSBookingListController {
+    static func todayInSiteTimezone(_ timezone: TimeZone) -> Date {
+        var calendar = Calendar.current
+        calendar.timeZone = timezone
+        return calendar.startOfDay(for: Date())
+    }
+
     @MainActor
     func loadFirstPage() async {
         do {

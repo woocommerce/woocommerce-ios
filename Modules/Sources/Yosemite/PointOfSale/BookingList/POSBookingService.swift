@@ -32,13 +32,14 @@ public final class POSBookingService: POSBookingServiceProtocol {
     public func fetchBookings(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
+                              filters: BookingFilters?,
                               searchQuery: String?) async throws -> PagedItems<POSBooking> {
         do {
             let bookings = try await bookingsRemote.loadAllBookings(
                 for: siteID,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
-                filters: nil,
+                filters: filters,
                 searchQuery: searchQuery,
                 order: .ascending
             )

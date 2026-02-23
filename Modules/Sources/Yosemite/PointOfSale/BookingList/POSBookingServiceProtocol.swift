@@ -10,6 +10,7 @@ public protocol POSBookingServiceProtocol: Sendable {
     func fetchBookings(siteID: Int64,
                        pageNumber: Int,
                        pageSize: Int,
+                       filters: BookingFilters?,
                        searchQuery: String?) async throws -> PagedItems<POSBooking>
 
     func fetchBooking(bookingID: Int64) async throws -> POSBooking

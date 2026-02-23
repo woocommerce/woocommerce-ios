@@ -71,9 +71,7 @@ struct POSBookingListView: View {
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
-            if !isSearching {
-                POSBookingDateBarView()
-            }
+            POSBookingDateBarView()
 
             switch (bookingsViewState, isSearching) {
             case (.empty, _):
@@ -126,24 +124,26 @@ struct POSBookingListView: View {
                         headerRows
                             .id(Constants.scrollTopID)
 
-                        let bookings = bookingsViewState.bookings
-                        ForEach(Array(bookings.enumerated()), id: \.element.id) { _, booking in
-                            Button(action: {
-                                bookingsModel.bookingsController.selectBooking(booking)
-                            }) {
-                                POSBookingRowView(booking: booking,
-                                                  isSelected: bookingsModel.bookingsController.selectedBooking?.id == booking.id)
+                        LazyVStack(spacing: POSSpacing.medium) {
+                            let bookings = bookingsViewState.bookings
+                            ForEach(Array(bookings.enumerated()), id: \.element.id) { _, booking in
+                                Button(action: {
+                                    bookingsModel.bookingsController.selectBooking(booking)
+                                }) {
+                                    POSBookingRowView(booking: booking,
+                                                      isSelected: bookingsModel.bookingsController.selectedBooking?.id == booking.id)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .accessibilityRemoveTraits(.isButton)
                             }
-                            .buttonStyle(PlainButtonStyle())
-                            .accessibilityRemoveTraits(.isButton)
-                        }
-                        .animation(.default, value: bookings.first?.id)
+                            .animation(.default, value: bookings.first?.id)
 
-                        footerRows
+                            footerRows
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, POSPadding.medium)
+                        .padding(.bottom, POSPadding.medium)
                     }
-                    .padding(.horizontal)
-                    .padding(.top, POSPadding.xSmall)
-                    .padding(.bottom, POSPadding.medium)
                 }
             )
             .scrollDismissesKeyboard(.immediately)

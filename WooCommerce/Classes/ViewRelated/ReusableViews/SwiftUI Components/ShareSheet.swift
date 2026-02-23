@@ -36,12 +36,8 @@ private struct ShareSheetView: UIViewControllerRepresentable {
 extension View {
     func shareSheet(isPresented: Binding<Bool>, content: @escaping () -> ShareSheet) -> some View {
         sheet(isPresented: isPresented) {
-            if #available(iOS 16.0, *) {
-                ShareSheetView(shareSheet: content())
-                    .presentationDetents([.medium, .large])
-            } else {
-                ShareSheetView(shareSheet: content())
-            }
+            ShareSheetView(shareSheet: content())
+                .presentationDetents([.medium, .large])
         }
     }
 

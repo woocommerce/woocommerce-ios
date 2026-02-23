@@ -32,10 +32,8 @@ final class ImageTextScanner: ImageTextScannerProtocol {
                 continuation.resume(returning: scannedTexts)
             }
 
-            if #available(iOS 16.0, *) {
-                request.revision = VNRecognizeTextRequestRevision3
-                request.automaticallyDetectsLanguage = true
-            }
+            request.revision = VNRecognizeTextRequestRevision3
+            request.automaticallyDetectsLanguage = true
 
             do {
                 // Performs the text-recognition request.

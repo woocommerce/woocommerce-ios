@@ -1,7 +1,6 @@
 import SwiftUI
 import Yosemite
 
-@available(iOS 16.0, *)
 struct WooPaymentsPayoutsCurrencyOverviewView: View {
     @ObservedObject var viewModel: WooPaymentsPayoutsCurrencyOverviewViewModel
 
@@ -138,7 +137,6 @@ private extension WooPaymentsPayoutsBadge {
     }
 }
 
-@available(iOS 16.0, *)
 private extension WooPaymentsPayoutsCurrencyOverviewView {
     enum Layout {
         static let padding: CGFloat = 8.0
@@ -146,7 +144,6 @@ private extension WooPaymentsPayoutsCurrencyOverviewView {
     }
 }
 
-@available(iOS 16.0, *)
 private extension WooPaymentsPayoutsCurrencyOverviewView {
     enum Localization {
         static let availableFunds = NSLocalizedString(
@@ -178,7 +175,6 @@ private extension WooPaymentsPayoutsCurrencyOverviewView {
     }
 }
 
-@available(iOS 16.0, *)
 struct WooPaymentsPayoutsCurrencyOverviewView_Previews: PreviewProvider {
     static var previews: some View {
         let overviewData = WooPaymentsPayoutsOverviewByCurrency(

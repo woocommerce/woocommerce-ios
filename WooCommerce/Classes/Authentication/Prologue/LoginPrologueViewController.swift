@@ -102,11 +102,7 @@ private extension LoginPrologueView {
 
 private extension View {
     func scrollBounceBasedOnSize() -> some View {
-        if #available(iOS 16.4, *) {
-            return self.scrollBounceBehavior(.basedOnSize)
-        } else {
-            return self
-        }
+        return self.scrollBounceBehavior(.basedOnSize)
     }
 }
 

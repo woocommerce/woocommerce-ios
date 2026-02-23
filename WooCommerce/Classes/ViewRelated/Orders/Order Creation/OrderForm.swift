@@ -349,13 +349,9 @@ struct OrderForm: View {
                                                        storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
                             }
                             .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
-                                if #available(iOS 16.0, *) {
-                                    storedTaxRateBottomSheetContent
-                                        .presentationDetents([.medium])
-                                        .presentationDragIndicator(.visible)
-                                } else {
-                                    storedTaxRateBottomSheetContent
-                                }
+                                storedTaxRateBottomSheetContent
+                                    .presentationDetents([.medium])
+                                    .presentationDragIndicator(.visible)
                             }
 
                             Spacer(minLength: Layout.sectionSpacing)

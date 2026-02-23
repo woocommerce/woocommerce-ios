@@ -5,9 +5,7 @@ import SwiftUI
 class SelfSizingHostingController<Content: View>: UIHostingController<Content> {
     override init(rootView: Content) {
         super.init(rootView: rootView)
-        if #available(iOS 16.0, *) {
-            sizingOptions =  [.intrinsicContentSize]
-        }
+        sizingOptions = [.intrinsicContentSize]
     }
 
     @available(*, unavailable)

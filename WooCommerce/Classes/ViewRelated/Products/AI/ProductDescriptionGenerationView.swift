@@ -171,15 +171,9 @@ struct ProductDescriptionGenerationView: View {
         .notice($copyTextNotice, autoDismiss: true)
     }
 
-    @ViewBuilder
     private var nameTextField: some View {
-        if #available(iOS 16.0, *) {
-            TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
-                .bodyStyle()
-        } else {
-            TextField(Localization.productNamePlaceholder, text: $viewModel.name)
-                .bodyStyle()
-        }
+        TextField(Localization.productNamePlaceholder, text: $viewModel.name, axis: .vertical)
+            .bodyStyle()
     }
 }
 

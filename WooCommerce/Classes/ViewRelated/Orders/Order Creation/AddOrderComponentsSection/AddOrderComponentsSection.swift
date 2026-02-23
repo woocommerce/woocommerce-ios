@@ -84,9 +84,7 @@ private extension AddOrderComponentsSection {
         .accessibilityIdentifier("add-coupon-button")
         .tooltip(isPresented: $shouldShowCouponsInfoTooltip,
                  toolTipTitle: Localization.couponsTooltipTitle,
-                 toolTipDescription: Localization.couponsTooltipDescription,
-                 offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
-                 safeAreaInsets: EdgeInsets())
+                 toolTipDescription: Localization.couponsTooltipDescription)
         .sheet(isPresented: $shouldShowAddCouponLineDetails) {
             NavigationView {
                 CouponListView(siteID: viewModel.siteID,

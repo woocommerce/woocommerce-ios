@@ -557,19 +557,8 @@ private extension OrderListViewController {
         }
     }
 
-    /// Focus code crashes on iPadOS 16 and 16.1 versions
-    /// peaMlT-Ng-p2
-    /// https://github.com/woocommerce/woocommerce-ios/issues/13485
     private func supportsFocus() -> Bool {
-        guard UIDevice.current.userInterfaceIdiom == .pad else {
-            return true
-        }
-
-        if #available(iOS 16.2, *) {
-            return true
-        } else {
-            return false
-        }
+        return true
     }
 
     /// Checks to see if there is a selected order ID, and selects its order.

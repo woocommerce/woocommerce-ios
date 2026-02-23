@@ -75,7 +75,11 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         let date = selectedDate
         prefetchTask = Task {
             let todayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: date))
-            _ = try? await todayStrategy.fetchBookings(pageNumber: 1)
+            do {
+                _ = try await todayStrategy.fetchBookings(pageNumber: 1)
+            } catch {
+                DDLogError("⛔️ Failed to prefetch bookings for today: \(error)")
+            }
             await syncAdjacentDateBookings(for: date)
         }
     }
@@ -267,8 +271,20 @@ private extension POSBookingListController {
         let yesterdayStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: yesterday))
         let tomorrowStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: tomorrow))
 
-        async let yesterdayFetch: Void = { _ = try? await yesterdayStrategy.fetchBookings(pageNumber: 1) }()
-        async let tomorrowFetch: Void = { _ = try? await tomorrowStrategy.fetchBookings(pageNumber: 1) }()
+        async let yesterdayFetch: Void = {
+            do {
+                _ = try await yesterdayStrategy.fetchBookings(pageNumber: 1)
+            } catch {
+                DDLogError("⛔️ Failed to prefetch bookings for yesterday: \(error)")
+            }
+        }()
+        async let tomorrowFetch: Void = {
+            do {
+                _ = try await tomorrowStrategy.fetchBookings(pageNumber: 1)
+            } catch {
+                DDLogError("⛔️ Failed to prefetch bookings for tomorrow: \(error)")
+            }
+        }()
         _ = await (yesterdayFetch, tomorrowFetch)
     }
 

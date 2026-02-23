@@ -46,7 +46,8 @@ struct POSBookingRowView: View {
     }
 
     private var accessibilityLabel: String {
-        let formatter = DateFormatter.posAccessibilityTimeFormatter(timeZone: siteTimezone)
+        let formatter = DateFormatter.posAccessibilityTimeFormatter
+        formatter.timeZone = siteTimezone
         let timeRange = Localization.timeRangeAccessibilityLabel(
             start: formatter.string(from: booking.startDate),
             end: formatter.string(from: booking.endDate)
@@ -79,11 +80,10 @@ private enum Localization {
 }
 
 private extension DateFormatter {
-    static func posAccessibilityTimeFormatter(timeZone: TimeZone) -> DateFormatter {
+    static let posAccessibilityTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
-        formatter.timeZone = timeZone
         return formatter
-    }
+    }()
 }

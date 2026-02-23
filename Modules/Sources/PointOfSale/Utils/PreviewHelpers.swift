@@ -786,7 +786,6 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     let bookingsViewState: POSBookingListState
     var selectedBooking: POSBooking?
     var selectedDate: Date = Date()
-    var isPaginating: Bool = false
 
     init(state: POSBookingListState) {
         self.bookingsViewState = state

@@ -499,7 +499,7 @@ final class POSBookingListControllerTests {
     // MARK: - isPaginating
 
     @Test func test_isPaginating_is_false_initially() {
-        #expect(sut.isPaginating == false)
+        #expect(sut.bookingsViewState.isPaginating == false)
     }
 
     @Test func test_isPaginating_is_false_after_loadBookings() async {
@@ -510,7 +510,7 @@ final class POSBookingListControllerTests {
         await sut.loadBookings()
 
         // Then
-        #expect(sut.isPaginating == false)
+        #expect(sut.bookingsViewState.isPaginating == false)
     }
 
     @Test func test_isPaginating_is_false_after_selectDate() async {
@@ -524,7 +524,7 @@ final class POSBookingListControllerTests {
         await sut.selectDate(tomorrow)
 
         // Then
-        #expect(sut.isPaginating == false)
+        #expect(sut.bookingsViewState.isPaginating == false)
     }
 
     @Test func test_selectDate_clears_cache_and_shows_loading() async {

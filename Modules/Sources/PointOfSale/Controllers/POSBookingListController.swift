@@ -15,7 +15,6 @@ protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
     var selectedBooking: POSBooking? { get }
     var selectedDate: Date { get }
-    var isPaginating: Bool { get }
     func syncBookings()
     func loadBookings() async
     func refreshBookings() async
@@ -38,7 +37,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 @Observable final class POSBookingListController: POSSearchingBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState
     private(set) var selectedDate: Date
-    private(set) var isPaginating: Bool = false
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
     private var activeSearchTerm: String?
@@ -88,7 +86,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     func loadBookings() async {
         loadTask?.cancel()
         prefetchTask?.cancel()
-        isPaginating = false
         let filters = dateFilters(for: selectedDate)
         if let searchTerm = activeSearchTerm {
             fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
@@ -104,7 +101,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func refreshBookings() async {
         loadTask?.cancel()
-        isPaginating = false
         loadTask = Task { await loadFirstPage() }
         await loadTask?.value
     }
@@ -114,10 +110,8 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         guard paginationTracker.hasNextPage else {
             return
         }
-        isPaginating = true
-        defer { isPaginating = false }
         let currentBookings = bookingsViewState.bookings
-        bookingsViewState = .loading(currentBookings)
+        bookingsViewState = .loading(currentBookings, context: .nextPage)
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
@@ -178,7 +172,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     func selectDate(_ date: Date) async {
         loadTask?.cancel()
         prefetchTask?.cancel()
-        isPaginating = false
         selectedDate = date
         let filters = dateFilters(for: date)
         if let searchTerm = activeSearchTerm {
@@ -213,7 +206,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func searchBookings(searchTerm: String) async {
         loadTask?.cancel()
-        isPaginating = false
         activeSearchTerm = searchTerm
         fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: dateFilters(for: selectedDate))
         bookingsViewState = .loading([])
@@ -224,7 +216,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     @MainActor
     func clearSearchBookings() {
         loadTask?.cancel()
-        isPaginating = false
         activeSearchTerm = nil
         fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
         let localBookings = fetchStrategy.fetchLocalBookings()

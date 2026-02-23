@@ -295,7 +295,7 @@ struct POSBookingDetailView: View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 sectionTitleWithAction(title: Localization.bookingNoteLabel) {
-                    Button(booking.bookingNote != nil ? Localization.editNoteButton : Localization.addNoteButton) {
+                    Button(noteButtonTitle) {
                         isShowingNoteView = true
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))
@@ -351,6 +351,14 @@ struct POSBookingDetailView: View {
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true
+    }
+
+    private var noteButtonTitle: String {
+        if booking.bookingNote != nil {
+            Localization.editNoteButton
+        } else {
+            Localization.addNoteButton
+        }
     }
 
     private var shouldShowCollectPayment: Bool {

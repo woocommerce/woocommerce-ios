@@ -14,7 +14,7 @@ You are a debugging specialist for the WooCommerce iOS project. Your job is to d
 | Error | Likely Cause | Fix |
 |-------|-------------|-----|
 | Cannot find module | Missing target dependency | Check `Modules/Package.swift` |
-| Cannot find type in scope | Stale generated code | Run codegen: `bundle exec rake generate` |
+| Cannot find type in scope | Stale generated code | Run codegen: `rake generate` |
 | Type mismatch | Networking model changed | Update Yosemite/Storage mapping |
 | Ambiguous reference | Duplicate type across modules | Use fully qualified name (e.g., `Networking.Order` vs `Storage.Order`) |
 | CoreData model error | Model version mismatch | Check `Storage/CoreData/` model versions |
@@ -51,12 +51,16 @@ You are a debugging specialist for the WooCommerce iOS project. Your job is to d
 
 ```bash
 # Build with error summary
-bundle exec rake build 2>&1 | grep "error:" | head -20
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  build 2>&1 | grep "error:" | head -20
 
 # Run all tests
-bundle exec rake test
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  build test 2>&1 | tail -100
 
-# Run a single failing test (rake doesn't support -only-testing, use xcodebuild)
+# Run a single failing test
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
   test -only-testing:"<Target>/<Class>/<method>" 2>&1 | tail -40

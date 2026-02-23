@@ -8,9 +8,11 @@ argument-hint: "[target] [class] [method]"
 
 Run unit tests for the WooCommerce iOS project. Determine scope from $ARGUMENTS:
 
-- **No arguments**: Run the full test suite using rake:
+- **No arguments**: Run the full test suite:
 ```bash
-bundle exec rake test 2>&1 | tail -100
+xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
+  -sdk iphonesimulator build test 2>&1 | tail -100
 ```
 
 - **Module name** (e.g., `Yosemite`, `Networking`, `Storage`): Run that module's tests:

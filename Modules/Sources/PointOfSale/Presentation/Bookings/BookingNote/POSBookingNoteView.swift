@@ -20,6 +20,7 @@ struct POSBookingNoteView: View {
     @State private var shouldMinimizePadding: Bool = false
 
     private var originalNote: String
+    private var isEditingExistingNote: Bool
 
     init(booking: POSBooking, isShowingNoteView: Binding<Bool>) {
         self.booking = booking
@@ -27,6 +28,7 @@ struct POSBookingNoteView: View {
         let existingNote = booking.bookingNote ?? ""
         self._noteText = State(initialValue: existingNote)
         self.originalNote = existingNote
+        self.isEditingExistingNote = booking.bookingNote != nil
     }
 
     private var hasChanges: Bool {
@@ -37,7 +39,7 @@ struct POSBookingNoteView: View {
         ScrollView {
             VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
                 POSPageHeaderView(
-                    title: Localization.title,
+                    title: isEditingExistingNote ? Localization.editTitle : Localization.addTitle,
                     backButtonConfiguration: .init(
                         state: buttonState != .idle ? .disabled : .enabled,
                         action: {
@@ -146,10 +148,16 @@ private extension POSBookingNoteView {
 
 private extension POSBookingNoteView {
     enum Localization {
-        static let title = NSLocalizedString(
-            "pos.bookingNoteView.title",
+        static let addTitle = NSLocalizedString(
+            "pos.bookingNoteView.addTitle",
             value: "Add note",
-            comment: "Title shown at the top of the booking note editor screen in POS."
+            comment: "Title shown at the top of the booking note editor screen when adding a new note."
+        )
+
+        static let editTitle = NSLocalizedString(
+            "pos.bookingNoteView.editTitle",
+            value: "Edit note",
+            comment: "Title shown at the top of the booking note editor screen when editing an existing note."
         )
 
         static let placeholder = NSLocalizedString(

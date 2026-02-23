@@ -27,8 +27,9 @@
       "Bash(gh api *)",
       "Bash(pushd BuildTools *)",
       "Bash(xcrun *)",
-      "Bash(bundle install *)",
-      "Bash(bundle exec rake *)",
+      "Bash(bundle exec rake lint *)",
+      "Bash(bundle exec rake generate *)",
+      "Bash(bundle exec rake dependencies *)",
       "Bash(bundle exec fastlane *)"
     ],
     "deny": [

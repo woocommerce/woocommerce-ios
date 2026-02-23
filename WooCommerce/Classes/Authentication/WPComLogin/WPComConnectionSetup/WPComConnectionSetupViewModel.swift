@@ -199,8 +199,8 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
 private extension WPComConnectionSetupViewModel {
     enum Localization {
         static let subtitle = NSLocalizedString(
-            "wpComConnectionSetupViewModel.subtitle",
-            value: "Please wait while we finalize connecting your store %@ to your WordPress.com account.",
+            "wpComConnectionSetupViewModel.message",
+            value: "Please wait while we finalize connecting your store %@ to WordPress.com.",
             comment: "Subtitle for the WPCom connection setup screen. %@ is the store name."
         )
         static let goToMyStore = NSLocalizedString(

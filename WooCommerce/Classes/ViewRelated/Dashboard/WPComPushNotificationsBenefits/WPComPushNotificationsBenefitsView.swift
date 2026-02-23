@@ -136,8 +136,8 @@ fileprivate extension WPComPushNotificationsBenefitsView {
                                              comment: "Title of the WordPress.com Push Notifications Benefits View")
 
         static let description = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsView.description",
-            value: "Connect your store to a WordPress.com account to get access to push notifications for new orders, reviews and more.",
+            "wpcomPushNotificationsBenefitsView.mainDescription",
+            value: "Connect your store to WordPress.com to get access to push notifications for new orders, reviews and more.",
             comment: "Main description text of the WordPress.com Push Notifications Benefits View"
         )
 

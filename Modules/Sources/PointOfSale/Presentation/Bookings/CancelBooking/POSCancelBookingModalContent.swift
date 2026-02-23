@@ -7,6 +7,7 @@ struct POSCancelBookingModalContent: View {
     @Binding var cancelModalState: CancelBookingModalState?
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.siteTimezone) private var siteTimezone
 
     var body: some View {
         switch state {
@@ -58,8 +59,16 @@ struct POSCancelBookingModalContent: View {
         }
     }
 
+    private static let cancelDateTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
     private var formattedCancelDateTime: String {
-        DateFormatter.dateTimeFormatter.string(from: booking.startDate)
+        Self.cancelDateTimeFormatter.timeZone = siteTimezone
+        return Self.cancelDateTimeFormatter.string(from: booking.startDate)
     }
 
     @MainActor
@@ -71,17 +80,6 @@ struct POSCancelBookingModalContent: View {
             cancelModalState = .error
         }
     }
-}
-
-// MARK: - Date Formatters
-
-private extension DateFormatter {
-    static let dateTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter
-    }()
 }
 
 // MARK: - Localization

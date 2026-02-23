@@ -256,4 +256,14 @@ public extension StorageType {
             deleteObject(booking)
         }
     }
+
+    /// Deletes stored Bookings matching the given predicate.
+    ///
+    func deleteBookings(matching predicate: NSPredicate) {
+        let descriptor = NSSortDescriptor(keyPath: \Booking.bookingID, ascending: false)
+        let bookings = allObjects(ofType: Booking.self, matching: predicate, sortedBy: [descriptor])
+        for booking in bookings {
+            deleteObject(booking)
+        }
+    }
 }

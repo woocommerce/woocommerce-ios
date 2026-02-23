@@ -24,6 +24,7 @@ import class Yosemite.PaymentCaptureCelebration
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
+        bookingsController.syncBookings()
     }
 
     @MainActor

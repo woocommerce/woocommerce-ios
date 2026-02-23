@@ -58,7 +58,7 @@ public struct PointOfSaleEntryPointView: View {
          couponProvider: PointOfSaleCouponServiceProtocol,
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
-         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol?,
+         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol,
          isBookingsEligible: Bool,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
@@ -147,7 +147,7 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencySettingsProvider: services.currency,
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
-        if let bookingListFetchStrategyFactory {
+        if isBookingsEligible && services.featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) {
             let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
                                                                siteTimezone: siteTimezone)
             self.bookingsModel = POSBookingsModel(
@@ -236,7 +236,7 @@ public struct PointOfSaleEntryPointView: View {
         couponProvider: PointOfSaleCouponServicePreview(),
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
-        bookingListFetchStrategyFactory: nil,
+        bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryPreview(),
         isBookingsEligible: true,
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),

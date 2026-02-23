@@ -15,6 +15,7 @@ protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
     var selectedBooking: POSBooking? { get }
     var selectedDate: Date { get }
+    func syncBookings()
     func loadBookings() async
     func refreshBookings() async
     func loadNextBookings() async
@@ -38,12 +39,13 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     private(set) var selectedDate: Date
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
-    private var cachedBookings: [POSBooking] = []
     private var activeSearchTerm: String?
     private(set) var selectedBooking: POSBooking?
     private let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol
     private let bookingService: POSBookingServiceProtocol
     private let siteTimezone: TimeZone
+    private var loadTask: Task<Void, Never>?
+    private var prefetchTasks: [Date: Task<Void, Never>] = [:]
 
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -66,22 +68,32 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: nil)
     }
 
+    func syncBookings() {
+        let date = selectedDate
+        prefetchDateIfNeeded(date)
+        prefetchAdjacentDates(for: date)
+    }
+
     @MainActor
     func loadBookings() async {
+        loadTask?.cancel()
         let filters = dateFilters(for: selectedDate)
         if let searchTerm = activeSearchTerm {
             fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
         } else {
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
         }
-        setCachedData()
-        setLoadingState()
-        await loadFirstPage()
+        setLocalDataOrLoadingState()
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
+        prefetchAdjacentDates(for: selectedDate)
     }
 
     @MainActor
     func refreshBookings() async {
-        await loadFirstPage()
+        loadTask?.cancel()
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
     }
 
     @MainActor
@@ -90,7 +102,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
             return
         }
         let currentBookings = bookingsViewState.bookings
-        bookingsViewState = .loading(currentBookings)
+        bookingsViewState = .loading(currentBookings, context: .nextPage)
         do {
             _ = try await paginationTracker.ensureNextPageIsSynced { [weak self] pageNumber in
                 guard let self else { return true }
@@ -149,16 +161,20 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func selectDate(_ date: Date) async {
+        loadTask?.cancel()
         selectedDate = date
-        cachedBookings = []
         let filters = dateFilters(for: date)
         if let searchTerm = activeSearchTerm {
             fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
+            bookingsViewState = .loading([])
         } else {
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
+            let localBookings = fetchStrategy.fetchLocalBookings()
+            bookingsViewState = .loading(localBookings)
         }
-        bookingsViewState = .loading([])
-        await loadFirstPage()
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
+        prefetchAdjacentDates(for: date)
     }
 
     @MainActor
@@ -179,23 +195,25 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     @MainActor
     func searchBookings(searchTerm: String) async {
+        loadTask?.cancel()
         activeSearchTerm = searchTerm
         fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: dateFilters(for: selectedDate))
         bookingsViewState = .loading([])
-        await loadFirstPage()
+        loadTask = Task { await loadFirstPage() }
+        await loadTask?.value
     }
 
     @MainActor
     func clearSearchBookings() {
+        loadTask?.cancel()
         activeSearchTerm = nil
         fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: selectedDate))
-        if cachedBookings.isNotEmpty {
-            bookingsViewState = .loaded(cachedBookings, hasMoreItems: true)
+        let localBookings = fetchStrategy.fetchLocalBookings()
+        if localBookings.isNotEmpty {
+            bookingsViewState = .loaded(localBookings, hasMoreItems: true)
         } else {
             bookingsViewState = .loading([])
-            Task {
-                await loadFirstPage()
-            }
+            loadTask = Task { await loadFirstPage() }
         }
     }
 }
@@ -224,6 +242,35 @@ extension POSBookingListController {
 // MARK: - Private
 
 private extension POSBookingListController {
+    func prefetchAdjacentDates(for date: Date) {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        if let yesterday = calendar.date(byAdding: .day, value: -1, to: date) {
+            prefetchDateIfNeeded(yesterday)
+        }
+        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) {
+            prefetchDateIfNeeded(tomorrow)
+        }
+    }
+
+    func prefetchDateIfNeeded(_ date: Date) {
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
+        let normalizedDate = calendar.startOfDay(for: date)
+
+        guard prefetchTasks[normalizedDate] == nil else { return }
+
+        let strategy = bookingListFetchStrategyFactory.defaultStrategy(filters: dateFilters(for: normalizedDate))
+        prefetchTasks[normalizedDate] = Task { [weak self] in
+            do {
+                _ = try await strategy.fetchBookings(pageNumber: 1)
+            } catch {
+                DDLogError("⛔️ Failed to prefetch bookings for \(normalizedDate): \(error)")
+            }
+            self?.prefetchTasks[normalizedDate] = nil
+        }
+    }
+
     static func todayInSiteTimezone(_ timezone: TimeZone) -> Date {
         var calendar = Calendar.current
         calendar.timeZone = timezone
@@ -249,16 +296,19 @@ private extension POSBookingListController {
         }
     }
 
-    func setLoadingState() {
-        if !fetchStrategy.showsLoadingWithItems {
+    @MainActor
+    func setLocalDataOrLoadingState() {
+        let localBookings = fetchStrategy.fetchLocalBookings()
+        if localBookings.isNotEmpty {
+            bookingsViewState = .loading(localBookings)
+        } else if !fetchStrategy.showsLoadingWithItems {
             bookingsViewState = .loading([])
-            return
-        }
-
-        let bookings = bookingsViewState.bookings
-        let isInitialState = bookingsViewState.isLoading && bookings.isEmpty
-        if !isInitialState {
-            bookingsViewState = .loading(bookings)
+        } else {
+            let bookings = bookingsViewState.bookings
+            let isInitialState = bookingsViewState.isLoading && bookings.isEmpty
+            if !isInitialState {
+                bookingsViewState = .loading(bookings)
+            }
         }
     }
 
@@ -280,27 +330,10 @@ private extension POSBookingListController {
                 selectedBooking = updatedSelectedBooking
             }
 
-            if fetchStrategy.supportsCaching {
-                cachedBookings = allBookings
-            }
-
             return pagedBookings.hasMorePages
         } catch POSBookingServiceError.requestCancelled {
             return true
         }
-    }
-
-    @MainActor
-    func setCachedData() {
-        guard fetchStrategy.supportsCaching else {
-            return
-        }
-
-        guard !bookingsViewState.bookings.isEmpty || !cachedBookings.isEmpty else {
-            return
-        }
-
-        bookingsViewState = .loading(cachedBookings)
     }
 
     @MainActor
@@ -309,9 +342,6 @@ private extension POSBookingListController {
             booking.id == updatedBooking.id ? updatedBooking : booking
         }
         bookingsViewState = bookingsViewState.updatingBookings(with: updatedBookings)
-        cachedBookings = cachedBookings.map { booking in
-            booking.id == updatedBooking.id ? updatedBooking : booking
-        }
         if selectedBooking?.id == updatedBooking.id {
             selectedBooking = updatedBooking
         }

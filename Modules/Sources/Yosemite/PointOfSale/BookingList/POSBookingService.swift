@@ -72,7 +72,7 @@ public final class POSBookingService: POSBookingServiceProtocol {
             let hasMorePages = bookings.count == pageSize
 
             return PagedItems(items: posBookings, hasMorePages: hasMorePages, totalItems: nil)
-        } catch AFError.explicitlyCancelled {
+        } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSBookingServiceError.requestCancelled
         } catch is POSBookingServiceError {
             throw POSBookingServiceError.requestCancelled

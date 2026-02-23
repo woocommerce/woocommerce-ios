@@ -22,7 +22,7 @@ struct POSBookingListView: View {
                     subtitle: nil,
                     isSelected: true,
                     isLoading: isSearching ? false : {
-                        if case .loading(let bookings) = bookingsViewState {
+                        if case .loading(let bookings, _) = bookingsViewState {
                             return !bookings.isEmpty
                         }
                         return false
@@ -146,6 +146,7 @@ struct POSBookingListView: View {
                     }
                 }
             )
+            .id(bookingsModel.bookingsController.selectedDate)
             .scrollDismissesKeyboard(.immediately)
             .onChange(of: searchTerm) { _, _ in
                 withAnimation {
@@ -158,14 +159,14 @@ struct POSBookingListView: View {
     @ViewBuilder
     private var footerRows: some View {
         switch bookingsViewState {
-        case .loading(let bookings):
+        case .loading(let bookings, _):
             if bookings.isEmpty {
                 ForEach(0..<8, id: \.self) { _ in
                     POSBookingGhostRowView()
                 }
                 .opacity(bookings.isEmpty ? 1 : 0)
                 .animation(.default, value: bookings.isEmpty)
-            } else {
+            } else if bookingsViewState.isPaginating {
                 POSBookingGhostRowView()
             }
         case .inlineError(_, let errorState, .pagination):

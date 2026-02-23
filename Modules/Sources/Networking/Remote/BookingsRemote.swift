@@ -124,7 +124,8 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         var parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.order: order.rawValue
+            ParameterKey.order: order.rawValue,
+            ParameterKey.orderBy: OrderBy.startDate.rawValue
         ]
 
         // Apply filters if provided
@@ -295,6 +296,11 @@ public extension BookingsRemote {
         case descending = "desc"
     }
 
+    enum OrderBy: String {
+        case date
+        case startDate = "start_date"
+    }
+
     private enum Path {
         static let bookings = "bookings"
         static let resources = "resources/team-members"
@@ -307,6 +313,7 @@ public extension BookingsRemote {
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
         static let order: String           = "order"
+        static let orderBy: String         = "orderby"
         static let product: String         = "product"
         static let customer: String        = "customer"
         static let resource: String        = "resource"

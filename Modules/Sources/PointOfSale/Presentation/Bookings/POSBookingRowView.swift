@@ -7,6 +7,7 @@ struct POSBookingRowView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.siteTimezone) private var siteTimezone
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
@@ -33,7 +34,7 @@ struct POSBookingRowView: View {
     @ViewBuilder
     private var bookingHeaderRow: some View {
         HStack(alignment: .center) {
-            Text(POSBookingSummaryView.formattedTimeRange(for: booking))
+            Text(POSBookingSummaryView.formattedTimeRange(for: booking, siteTimezone: siteTimezone))
                 .font(.posBodySmallBold())
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
@@ -45,9 +46,11 @@ struct POSBookingRowView: View {
     }
 
     private var accessibilityLabel: String {
+        let formatter = DateFormatter.posAccessibilityTimeFormatter
+        formatter.timeZone = siteTimezone
         let timeRange = Localization.timeRangeAccessibilityLabel(
-            start: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.startDate),
-            end: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.endDate)
+            start: formatter.string(from: booking.startDate),
+            end: formatter.string(from: booking.endDate)
         )
 
         let customerDisplayName = booking.customerName ?? booking.customerEmail

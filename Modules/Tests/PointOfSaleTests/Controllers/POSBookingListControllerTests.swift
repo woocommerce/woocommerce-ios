@@ -126,7 +126,7 @@ final class POSBookingListControllerTests {
         let searchBookings = [makeBooking(id: 10)]
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: searchBookings, hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
+
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
 
@@ -139,16 +139,17 @@ final class POSBookingListControllerTests {
 
     // MARK: - clearSearchBookings
 
-    @Test func test_clearSearchBookings_restores_cached_bookings() async {
-        // Given - load initial bookings (cached)
+    @Test func test_clearSearchBookings_restores_local_bookings() async {
+        // Given - load initial bookings
         let initialBookings = [makeBooking(id: 1), makeBooking(id: 2)]
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: initialBookings, hasMorePages: false, totalItems: nil))
+        mockStrategy.localBookings = initialBookings
         await sut.loadBookings()
 
         // Switch to search
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
+
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
         await sut.searchBookings(searchTerm: "test")
@@ -156,7 +157,7 @@ final class POSBookingListControllerTests {
         // When
         sut.clearSearchBookings()
 
-        // Then - should restore cached bookings
+        // Then - should restore local bookings from CoreData
         #expect(sut.bookingsViewState == .loaded(initialBookings, hasMoreItems: true))
     }
 
@@ -440,7 +441,7 @@ final class POSBookingListControllerTests {
         // Given - start a search
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
+
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
         await sut.searchBookings(searchTerm: "test")
@@ -460,21 +461,68 @@ final class POSBookingListControllerTests {
         // Given - start a search
         let searchStrategy = MockPOSBookingListFetchStrategy()
         searchStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 10)], hasMorePages: false, totalItems: nil))
-        searchStrategy.supportsCaching = false
         searchStrategy.id = "SearchStrategy"
         mockFactory.searchStrategyResult = searchStrategy
         await sut.searchBookings(searchTerm: "test")
-
-        let searchCallCountBeforeReload = mockFactory.searchStrategyCallCount
-        let defaultCallCountBeforeReload = mockFactory.defaultStrategyCallCount
 
         // When - loadBookings is called (e.g. from a retry path)
         await sut.loadBookings()
 
         // Then - should use search strategy, not default
-        #expect(mockFactory.searchStrategyCallCount == searchCallCountBeforeReload + 1)
+        // 2 search strategy calls: initial searchBookings + loadBookings reload
+        #expect(mockFactory.searchStrategyCallCount == 2)
         #expect(mockFactory.lastSearchTerm == "test")
-        #expect(mockFactory.defaultStrategyCallCount == defaultCallCountBeforeReload)
+    }
+
+    // MARK: - Prefetch
+
+    @Test func test_syncBookings_syncs_today_and_adjacent_dates() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
+
+        // When - 3 calls expected: today + yesterday + tomorrow (+ 1 from init = 4 total)
+        await withCheckedContinuation { continuation in
+            mockFactory.onDefaultStrategyCalled = {
+                if self.mockFactory.defaultStrategyCallCount == 4 {
+                    continuation.resume()
+                }
+            }
+            sut.syncBookings()
+        }
+
+        // Then
+        #expect(mockFactory.defaultStrategyCallCount == 4)
+    }
+
+    // MARK: - isPaginating
+
+    @Test func test_isPaginating_is_false_initially() {
+        #expect(sut.bookingsViewState.isPaginating == false)
+    }
+
+    @Test func test_isPaginating_is_false_after_loadBookings() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
+
+        // When
+        await sut.loadBookings()
+
+        // Then
+        #expect(sut.bookingsViewState.isPaginating == false)
+    }
+
+    @Test func test_isPaginating_is_false_after_selectDate() async {
+        // Given
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date())!
+
+        // When
+        await sut.selectDate(tomorrow)
+
+        // Then
+        #expect(sut.bookingsViewState.isPaginating == false)
     }
 
     @Test func test_selectDate_clears_cache_and_shows_loading() async {

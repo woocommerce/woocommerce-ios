@@ -532,7 +532,6 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
 }
 
 final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
-    var supportsCaching: Bool = true
     var showsLoadingWithItems: Bool = false
     var id: String = "BookingPreview"
 
@@ -793,6 +792,7 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
         self.selectedBooking = state.bookings.first
     }
 
+    func syncBookings() {}
     func loadBookings() async {}
     func refreshBookings() async {}
     func loadNextBookings() async {}

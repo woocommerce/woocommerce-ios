@@ -17,10 +17,10 @@ extension Storage.BookingOrderInfo: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.BookingOrderInfo {
         return .init(statusKey: statusKey ?? "",
                      orderID: orderID,
-                     orderNumber: orderNumber,
-                     dateCreated: dateCreated,
+                     orderNumber: orderNumber ?? "",
+                     dateCreated: dateCreated ?? Date(),
                      datePaid: datePaid,
-                     discountTotal: discountTotal,
+                     discountTotal: discountTotal ?? "",
                      paymentInfo: paymentInfo?.toReadOnly(),
                      customerInfo: customerInfo?.toReadOnly(),
                      productInfo: productInfo?.toReadOnly())

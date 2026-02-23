@@ -97,15 +97,15 @@ private extension StorageBookingToPOSBookingMapper {
             currencyFormatter.formatAmount($0.totalTax, with: booking.currency)
         } ?? ""
 
-        let formattedDiscountTotal: String? = orderInfo.discountTotal.flatMap { discount in
-            guard let value = Double(discount), value > 0 else { return nil }
-            return currencyFormatter.formatAmount(discount, with: booking.currency, isNegative: true)
-        }
+        let formattedDiscountTotal: String? = {
+            guard let value = Double(orderInfo.discountTotal), value > 0 else { return nil }
+            return currencyFormatter.formatAmount(orderInfo.discountTotal, with: booking.currency, isNegative: true)
+        }()
 
         return POSOrder(
             id: orderInfo.orderID,
-            number: orderInfo.orderNumber ?? "",
-            dateCreated: orderInfo.dateCreated ?? Date(),
+            number: orderInfo.orderNumber,
+            dateCreated: orderInfo.dateCreated,
             status: .init(rawValue: orderInfo.statusKey),
             formattedTotal: formattedTotal,
             formattedSubtotal: formattedSubtotal,

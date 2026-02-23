@@ -4,20 +4,20 @@ import Foundation
 public struct BookingOrderInfo: Hashable {
     public let statusKey: String
     public let orderID: Int64
-    public let orderNumber: String?
-    public let dateCreated: Date?
+    public let orderNumber: String
+    public let dateCreated: Date
     public let datePaid: Date?
-    public let discountTotal: String?
+    public let discountTotal: String
     public let paymentInfo: BookingPaymentInfo?
     public let customerInfo: BookingCustomerInfo?
     public let productInfo: BookingProductInfo?
 
     public init(statusKey: String,
                 orderID: Int64 = 0,
-                orderNumber: String? = nil,
-                dateCreated: Date? = nil,
+                orderNumber: String = "",
+                dateCreated: Date = Date(),
                 datePaid: Date? = nil,
-                discountTotal: String? = nil,
+                discountTotal: String = "",
                 paymentInfo: BookingPaymentInfo?,
                 customerInfo: BookingCustomerInfo?,
                 productInfo: BookingProductInfo?) {

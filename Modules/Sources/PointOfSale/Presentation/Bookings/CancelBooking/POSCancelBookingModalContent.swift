@@ -59,12 +59,16 @@ struct POSCancelBookingModalContent: View {
         }
     }
 
-    private var formattedCancelDateTime: String {
+    private static let cancelDateTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
-        formatter.timeZone = siteTimezone
-        return formatter.string(from: booking.startDate)
+        return formatter
+    }()
+
+    private var formattedCancelDateTime: String {
+        Self.cancelDateTimeFormatter.timeZone = siteTimezone
+        return Self.cancelDateTimeFormatter.string(from: booking.startDate)
     }
 
     @MainActor

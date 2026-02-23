@@ -115,6 +115,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
             return
         }
         isPaginating = true
+        defer { isPaginating = false }
         let currentBookings = bookingsViewState.bookings
         bookingsViewState = .loading(currentBookings)
         do {
@@ -127,7 +128,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
                                              error: .errorOnLoadingBookingsNextPage(error: error),
                                              context: .pagination)
         }
-        isPaginating = false
     }
 
     @MainActor

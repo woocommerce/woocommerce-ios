@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import enum Networking.NetworkError
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 @MainActor
@@ -144,6 +145,69 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
+    // MARK: - Analytics: onAppear
+
+    func test_onAppear_tracks_introduction_view_event() {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("push_notifications_setup_introduction_view"))
+    }
+
+    // MARK: - Analytics: continueTapped
+
+    func test_continueTapped_when_connect_variant_then_tracks_continue_button_label() {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.continueTapped()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "continue")
+    }
+
+    func test_continueTapped_when_pluginUpdate_variant_then_tracks_update_plugin_button_label() async {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService,
+                                      pluginVersionChecker: checker,
+                                      analytics: analytics)
+        await viewModel.determineSetupVariant()
+
+        // When
+        viewModel.continueTapped()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "update_plugin")
+    }
+
+    // MARK: - Analytics: notNowTapped
+
+    func test_notNowTapped_tracks_not_now_button_label() {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.notNowTapped()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "not_now")
+    }
+
     // MARK: - determineSetupVariant when fetch fails
 
     func test_error_is_noPermission_when_fetching_connection_data_throws_403() async {
@@ -182,15 +246,30 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
 
+    private func makeAnalytics() -> (MockAnalyticsProvider, WooAnalytics) {
+        let provider = MockAnalyticsProvider()
+        return (provider, WooAnalytics(analyticsProvider: provider))
+    }
+
+    private func assertEqual(_ provider: MockAnalyticsProvider, eventName: String, property: String, expected: String) {
+        let index = provider.receivedEvents.firstIndex(of: eventName)
+        XCTAssertNotNil(index)
+        if let index {
+            XCTAssertEqual(provider.receivedProperties[index][property] as? String, expected)
+        }
+    }
+
     private func makeViewModel(
         jetpackConnectionService: JetpackConnectionServiceProtocol = MockJetpackConnectionService(),
-        pluginVersionChecker: PluginVersionCheckerProtocol? = nil
+        pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
+        analytics: Analytics = ServiceLocator.analytics
     ) -> WPComPushNotificationsBenefitsViewModel {
         WPComPushNotificationsBenefitsViewModel(
             siteID: sampleSiteID,
             siteURL: "https://example.com",
             jetpackConnectionService: jetpackConnectionService,
             pluginVersionChecker: pluginVersionChecker,
+            analytics: analytics,
             onDismiss: {}
         )
     }

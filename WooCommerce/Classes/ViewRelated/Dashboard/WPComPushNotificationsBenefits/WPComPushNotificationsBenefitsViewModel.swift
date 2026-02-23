@@ -71,7 +71,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func onAppear() {
-        // TODO: Track modal shown event
+        analytics.track(.pushNotificationsSetupIntroductionView)
     }
 
     /// Fetches Jetpack connection data to determine whether the site is connected,
@@ -99,11 +99,12 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func continueTapped() {
-        // TODO: Track continue tapped event
         switch variant {
         case .connect:
+            analytics.track(event: .PushNotificationsSetup.introductionButtonTap(buttonLabel: .continue))
             pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
+            analytics.track(event: .PushNotificationsSetup.introductionButtonTap(buttonLabel: .updatePlugin))
             pushNotificationSetupCoordinator?.startSetup(
                 siteAlreadyConnected: true,
                 pluginOutdatedVersion: currentVersion
@@ -112,7 +113,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func notNowTapped() {
-        // TODO: Track not now tapped event
+        analytics.track(event: .PushNotificationsSetup.introductionButtonTap(buttonLabel: .notNow))
         onDismiss()
     }
 

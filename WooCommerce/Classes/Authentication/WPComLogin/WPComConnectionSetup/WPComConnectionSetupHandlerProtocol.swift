@@ -5,6 +5,14 @@ enum SetupStep: Int, CaseIterable {
     case checkPlugin = 0
     case connect = 1
     case enablePush = 2
+
+    var analyticsFlowStep: WooAnalyticsEvent.PushNotificationsSetup.FlowStep {
+        switch self {
+        case .checkPlugin: return .pluginCompatibility
+        case .connect: return .connectWPCom
+        case .enablePush: return .enablePushNotifications
+        }
+    }
 }
 
 @MainActor

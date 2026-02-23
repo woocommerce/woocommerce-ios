@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import protocol WooFoundation.Analytics
 
 @MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
@@ -64,6 +65,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     private let storeName: String
     private let handler: WPComConnectionSetupHandlerProtocol
+    private let analytics: Analytics
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
     private let onUpdatePlugin: () -> Void
@@ -71,11 +73,13 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     init(storeName: String,
          handler: WPComConnectionSetupHandlerProtocol,
+         analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void,
          onGoToStore: @escaping () -> Void,
          onUpdatePlugin: @escaping () -> Void) {
         self.storeName = storeName
         self.handler = handler
+        self.analytics = analytics
         self.onDismiss = onDismiss
         self.onGoToStore = onGoToStore
         self.onUpdatePlugin = onUpdatePlugin
@@ -114,15 +118,19 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func primaryButtonTapped() {
         switch setupState {
         case .completed:
+            analytics.track(event: .PushNotificationsSetup.flowButtonTap(buttonLabel: .goToMyStore))
             onGoToStore()
         case .failed(let step, let checkPluginError):
             switch step {
             case .connect, .enablePush:
+                analytics.track(event: .PushNotificationsSetup.flowButtonTap(buttonLabel: .tryAgain))
                 retrySetup()
             case .checkPlugin:
                 if checkPluginError == .outdated {
+                    analytics.track(event: .PushNotificationsSetup.flowButtonTap(buttonLabel: .updatePlugin))
                     onUpdatePlugin()
                 } else {
+                    analytics.track(event: .PushNotificationsSetup.flowButtonTap(buttonLabel: .tryAgain))
                     retrySetup()
                 }
             }
@@ -132,10 +140,12 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func secondaryButtonTapped() {
+        analytics.track(event: .PushNotificationsSetup.flowButtonTap(buttonLabel: .tryAgain))
         retrySetup()
     }
 
     func cancelTapped() {
+        analytics.track(.pushNotificationsSetupFlowClose)
         handler.cancel()
         onDismiss()
     }
@@ -145,6 +155,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func doneTapped() {
+        analytics.track(.pushNotificationsSetupFlowClose)
         onDismiss()
     }
 
@@ -176,9 +187,15 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
         updateStep(step, status: status)
 
-        if case .failure(let error) = status {
+        switch status {
+        case .success:
+            analytics.track(event: .PushNotificationsSetup.flowSuccess(step: step.analyticsFlowStep))
+        case .failure(let error):
+            analytics.track(event: .PushNotificationsSetup.flowError(step: step.analyticsFlowStep, error: error))
             let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: error) : nil
             setupState = .failed(step: step, checkPluginError: checkPluginError)
+        case .notStarted, .running:
+            break
         }
     }
 

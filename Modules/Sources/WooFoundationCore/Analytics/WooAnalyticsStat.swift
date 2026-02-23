@@ -631,6 +631,15 @@ public enum WooAnalyticsStat: String {
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
 
+    case pushNotificationsCardView = "push_notifications_card_view"
+    case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
+    case pushNotificationsSetupIntroductionView = "push_notifications_setup_introduction_view"
+    case pushNotificationsSetupIntroductionButtonTap = "push_notifications_setup_introduction_button_tap"
+    case pushNotificationsSetupFlowSuccess = "push_notifications_setup_flow_success"
+    case pushNotificationsSetupFlowButtonTap = "push_notifications_setup_flow_button_tap"
+    case pushNotificationsSetupFlowClose = "push_notifications_setup_flow_close"
+    case pushNotificationsSetupFlowError = "push_notifications_setup_flow_error"
+
     // MARK: Notification View Events
     //
     case notificationOpened = "notification_open"

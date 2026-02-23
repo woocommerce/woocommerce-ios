@@ -1,4 +1,5 @@
 import XCTest
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 @MainActor
@@ -220,12 +221,143 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertEqual(mockHandler.startCallCount, 1)
     }
 
+    // MARK: - Analytics: stepDidUpdate
+
+    func test_stepDidUpdate_success_tracks_flow_success_event() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let _ = makeViewModel(analytics: analytics)
+
+        // When
+        mockHandler.simulateStepUpdate(.connect, status: .success)
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "connect_wpcom")
+    }
+
+    func test_stepDidUpdate_failure_tracks_flow_error_event() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let _ = makeViewModel(analytics: analytics)
+
+        // When
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_error", property: "step", expected: "plugin_compatibility")
+    }
+
+    func test_stepDidUpdate_success_for_enablePush_tracks_correct_step() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let _ = makeViewModel(analytics: analytics)
+
+        // When
+        mockHandler.simulateStepUpdate(.enablePush, status: .success)
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "enable_push_notifications")
+    }
+
+    // MARK: - Analytics: primaryButtonTapped
+
+    func test_primaryButtonTapped_when_completed_then_tracks_go_to_my_store() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+        mockHandler.simulateSetupComplete()
+
+        // When
+        viewModel.primaryButtonTapped()
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "go_to_my_store")
+    }
+
+    func test_primaryButtonTapped_when_connection_failed_then_tracks_try_again() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+        mockHandler.simulateStepUpdate(.connect, status: .failure(error: .generic(reason: "Connection failed")))
+
+        // When
+        viewModel.primaryButtonTapped()
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+    }
+
+    func test_primaryButtonTapped_when_plugin_outdated_then_tracks_update_plugin() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
+
+        // When
+        viewModel.primaryButtonTapped()
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "update_plugin")
+    }
+
+    func test_secondaryButtonTapped_tracks_try_again() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.secondaryButtonTapped()
+
+        // Then
+        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+    }
+
+    // MARK: - Analytics: close events
+
+    func test_cancelTapped_tracks_flow_close_event() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.cancelTapped()
+
+        // Then
+        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
+    }
+
+    func test_doneTapped_tracks_flow_close_event() {
+        // Given
+        let (provider, analytics) = makeAnalytics()
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.doneTapped()
+
+        // Then
+        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
+    }
+
     // MARK: - Helpers
 
-    private func makeViewModel() -> WPComConnectionSetupViewModel {
+    private func makeAnalytics() -> (MockAnalyticsProvider, WooAnalytics) {
+        let provider = MockAnalyticsProvider()
+        return (provider, WooAnalytics(analyticsProvider: provider))
+    }
+
+    private func assertEqual(_ provider: MockAnalyticsProvider, eventName: String, property: String, expected: String) {
+        let index = provider.receivedEvents.firstIndex(of: eventName)
+        XCTAssertNotNil(index)
+        if let index {
+            XCTAssertEqual(provider.receivedProperties[index][property] as? String, expected)
+        }
+    }
+
+    private func makeViewModel(analytics: Analytics = ServiceLocator.analytics) -> WPComConnectionSetupViewModel {
         WPComConnectionSetupViewModel(
             storeName: "Test Store",
             handler: mockHandler,
+            analytics: analytics,
             onDismiss: { [weak self] in self?.dismissCalled = true },
             onGoToStore: { [weak self] in self?.goToStoreCalled = true },
             onUpdatePlugin: { [weak self] in self?.updatePluginCalled = true }

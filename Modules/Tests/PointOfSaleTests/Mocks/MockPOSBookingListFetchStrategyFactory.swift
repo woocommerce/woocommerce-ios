@@ -103,7 +103,7 @@ final class MockPOSBookingService: POSBookingServiceProtocol {
 final class MockPOSBookingListFetchStrategy: POSBookingListFetchStrategy {
     var fetchBookingsResult: Result<PagedItems<POSBooking>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
     var localBookings: [POSBooking] = []
-    var showsLoadingWithItems: Bool = true
+    var showsCachedDataWhileLoading: Bool = true
     var id: String = "MockPOSBookingListFetchStrategy"
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {

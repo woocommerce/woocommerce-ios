@@ -26,7 +26,7 @@ private struct MockPOSOrderListFetchStrategy: POSOrderListFetchStrategy {
     let orderService: POSOrderListServiceProtocol
 
     var supportsCaching: Bool { true }
-    var showsLoadingWithItems: Bool { true }
+    var showsCachedDataWhileLoading: Bool { true }
     var id: String = "default"
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
@@ -47,7 +47,7 @@ private struct MockPOSOrderListSearchFetchStrategy: POSOrderListFetchStrategy {
     let searchTerm: String
 
     var supportsCaching: Bool { false }
-    var showsLoadingWithItems: Bool { false }
+    var showsCachedDataWhileLoading: Bool { false }
     var id: String = "search"
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {

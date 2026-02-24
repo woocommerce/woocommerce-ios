@@ -534,7 +534,7 @@ final class POSBookingServicePreview: POSBookingServiceProtocol {
 }
 
 final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
-    var showsLoadingWithItems: Bool = false
+    var showsCachedDataWhileLoading: Bool = false
     var id: String = "BookingPreview"
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
@@ -960,7 +960,7 @@ final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
 
     var supportsCaching: Bool = true
 
-    var showsLoadingWithItems: Bool = false
+    var showsCachedDataWhileLoading: Bool = false
 
     var id: String = ""
 

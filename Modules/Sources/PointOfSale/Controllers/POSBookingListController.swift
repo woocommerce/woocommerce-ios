@@ -85,7 +85,9 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         } else {
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
         }
-        setLocalDataOrLoadingState()
+
+        // Show cached bookings from local storage immediately (if any), then fetch fresh data from remote.
+        showCachedBookingsOrLoadingIndicator()
         loadTask = Task { await loadFirstPage() }
         await loadTask?.value
         prefetchAdjacentDates(for: selectedDate)
@@ -179,10 +181,13 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
             fetchStrategy = bookingListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm, filters: filters)
             bookingsViewState = .loading([])
         } else {
+            // Show cached bookings for the new date immediately (if previously prefetched).
             fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: filters)
             let localBookings = fetchStrategy.fetchLocalBookings()
             bookingsViewState = .loading(localBookings)
         }
+
+        // Then fetch fresh data from remote.
         loadTask = Task { await loadFirstPage() }
         await loadTask?.value
         prefetchAdjacentDates(for: date)
@@ -307,19 +312,29 @@ private extension POSBookingListController {
         }
     }
 
+    /// Sets the view state before a remote fetch begins.
+    /// - If local storage has bookings for the current filters, show them immediately with a loading indicator.
+    /// - If the strategy doesn't cache data (e.g. search), show an empty loading state.
+    /// - Otherwise, keep displaying whatever bookings are already on screen while loading refreshes.
     @MainActor
-    func setLocalDataOrLoadingState() {
+    func showCachedBookingsOrLoadingIndicator() {
         let localBookings = fetchStrategy.fetchLocalBookings()
         if localBookings.isNotEmpty {
             bookingsViewState = .loading(localBookings)
-        } else if !fetchStrategy.showsLoadingWithItems {
+            return
+        }
+
+        guard fetchStrategy.showsCachedDataWhileLoading else {
             bookingsViewState = .loading([])
-        } else {
-            let bookings = bookingsViewState.bookings
-            let isInitialState = bookingsViewState.isLoading && bookings.isEmpty
-            if !isInitialState {
-                bookingsViewState = .loading(bookings)
-            }
+            return
+        }
+
+        // For the default strategy, preserve existing bookings on screen while loading.
+        // Skip if we're already in the initial empty loading state (nothing to preserve).
+        let existingBookings = bookingsViewState.bookings
+        let isInitialEmptyLoading = bookingsViewState.isLoading && existingBookings.isEmpty
+        if !isInitialEmptyLoading {
+            bookingsViewState = .loading(existingBookings)
         }
     }
 

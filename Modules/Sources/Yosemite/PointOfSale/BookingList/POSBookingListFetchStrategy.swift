@@ -8,7 +8,7 @@ import class WooFoundationCore.CurrencyFormatter
 public protocol POSBookingListFetchStrategy {
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking>
     @MainActor func fetchLocalBookings() -> [POSBooking]
-    var showsLoadingWithItems: Bool { get }
+    var showsCachedDataWhileLoading: Bool { get }
     var id: String { get }
 }
 
@@ -25,7 +25,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
     private let siteID: Int64
     private let pageSize: Int
     private let filters: BookingFilters?
-    let showsLoadingWithItems: Bool = true
+    let showsCachedDataWhileLoading: Bool = true
 
     var id: String {
         "POSDefaultBookingListFetchStrategy-\(filters?.startDateAfter ?? "none")"
@@ -48,6 +48,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
         do {
+            // Sync remote bookings into CoreData, then read them back as mapped POSBooking models.
             let cacheClearStrategy = cacheClearStrategy(for: pageNumber)
             let hasMorePages = try await bookingStoreMethods.synchronizeBookings(
                 siteID: siteID,
@@ -139,7 +140,7 @@ struct POSSearchBookingListFetchStrategy: POSBookingListFetchStrategy {
     private let searchTerm: String
     private let pageSize: Int
     private let filters: BookingFilters?
-    let showsLoadingWithItems: Bool = false
+    let showsCachedDataWhileLoading: Bool = false
 
     var id: String {
         "POSSearchBookingListFetchStrategy-\(searchTerm)-\(filters?.startDateAfter ?? "none")"

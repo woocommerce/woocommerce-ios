@@ -302,6 +302,7 @@ struct POSBookingDetailView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 sectionTitleWithAction(title: Localization.bookingNoteLabel) {
                     Button(noteButtonTitle) {
+                        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAddNoteTapped(bookingID: booking.id))
                         isShowingNoteView = true
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))

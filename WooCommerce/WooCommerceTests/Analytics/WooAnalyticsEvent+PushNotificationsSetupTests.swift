@@ -37,7 +37,7 @@ struct WooAnalyticsEvent_PushNotificationsSetupTests {
 
         for (label, expected) in cases {
             // When
-            let event = WooAnalyticsEvent.PushNotificationsSetup.flowButtonTap(buttonLabel: label)
+            let event = WooAnalyticsEvent.PushNotificationsSetup.flowButtonTap(label)
 
             // Then
             #expect(event.statName == .pushNotificationsSetupFlowButtonTap)

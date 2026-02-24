@@ -5,14 +5,6 @@ enum SetupStep: Int, CaseIterable {
     case checkPlugin = 0
     case connect = 1
     case enablePush = 2
-
-    var analyticsFlowStep: String {
-        switch self {
-        case .checkPlugin: return "plugin_compatibility"
-        case .connect: return "connect_wpcom"
-        case .enablePush: return "enable_push_notifications"
-        }
-    }
 }
 
 @MainActor

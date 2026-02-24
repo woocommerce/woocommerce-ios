@@ -22,10 +22,33 @@ extension WooAnalyticsEvent {
                               properties: [Keys.buttonLabel.rawValue: buttonLabel.rawValue])
         }
 
-        static func flowButtonTap(buttonLabel: FlowButtonLabel) -> WooAnalyticsEvent {
+        static func flowButtonTap(_ buttonLabel: FlowButtonLabel) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pushNotificationsSetupFlowButtonTap,
                               properties: [Keys.buttonLabel.rawValue: buttonLabel.rawValue])
         }
 
+    }
+}
+
+// MARK: - Analytics mapping extensions
+
+extension SetupStep {
+    var analyticsFlowStep: String {
+        switch self {
+        case .checkPlugin: return "plugin_compatibility"
+        case .connect: return "connect_wpcom"
+        case .enablePush: return "enable_push_notifications"
+        }
+    }
+}
+
+extension WPComConnectionSetupStep.ErrorType: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .outdatedPlugin(let version):
+            return "Outdated plugin version: \(version)"
+        case .generic(let reason):
+            return reason
+        }
     }
 }

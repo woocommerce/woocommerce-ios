@@ -52,9 +52,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
         do {
-            let cacheClearStrategy: BookingStoreMethods.CacheClearStrategy = pageNumber == 1
-                ? (filters.map { .filtersOnly($0) } ?? .all)
-                : .none
+            let cacheClearStrategy = cacheClearStrategy(for: pageNumber)
             let hasMorePages = try await bookingStoreMethods.synchronizeBookings(
                 siteID: siteID,
                 pageNumber: pageNumber,
@@ -79,6 +77,18 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
 }
 
 private extension POSDefaultBookingListFetchStrategy {
+    /// On the first page, clear cached bookings matching the current filters (or all if no filters).
+    /// On subsequent pages, keep the cache intact to allow appending.
+    func cacheClearStrategy(for pageNumber: Int) -> BookingStoreMethods.CacheClearStrategy {
+        guard pageNumber == 1 else {
+            return .none
+        }
+        if let filters {
+            return .filtersOnly(filters)
+        }
+        return .all
+    }
+
     @MainActor
     func fetchLocalBookingsSync(filters: BookingFilters) -> [POSBooking] {
         let bookingPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)

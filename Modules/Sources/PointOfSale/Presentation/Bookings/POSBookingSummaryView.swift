@@ -58,26 +58,3 @@ struct POSBookingSummaryView: View {
         return parts.joined(separator: ", ")
     }
 }
-
-// MARK: - Date Formatting
-
-extension POSBookingSummaryView {
-    private static let timeRangeFormatter: DateIntervalFormatter = {
-        let formatter = DateIntervalFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
-
-    /// Formats the booking time range for display.
-    ///
-    /// The Bookings API encodes site-local times as UTC timestamps (the raw
-    /// Unix epoch already represents the wall-clock time at the site). Because
-    /// bookings are in-person services, we always display site-local time
-    /// regardless of the device timezone — so we format using UTC to avoid
-    /// applying any additional offset.
-    static func formattedTimeRange(for booking: POSBooking, siteTimezone: TimeZone) -> String {
-        timeRangeFormatter.timeZone = TimeZone(identifier: "UTC")
-        return timeRangeFormatter.string(from: booking.startDate, to: booking.endDate)
-    }
-}

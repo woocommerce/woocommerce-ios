@@ -10,7 +10,6 @@ struct POSBookingDetailView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.siteTimezone) private var siteTimezone
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var cancelModalState: CancelBookingModalState?
@@ -80,7 +79,7 @@ struct POSBookingDetailView: View {
     private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: POSBookingSummaryView.formattedTimeRange(for: booking, siteTimezone: siteTimezone),
+                title: POSBookingDateFormatter.formattedTimeRange(for: booking),
                 isLoading: isDetailsUpdating,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {

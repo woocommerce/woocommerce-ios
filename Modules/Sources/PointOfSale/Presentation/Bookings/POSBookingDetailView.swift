@@ -344,12 +344,32 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
+        trackPaymentOutcome()
         showPaymentView = false
         paymentModel = nil
         Task { @MainActor in
             isDetailsUpdating = true
             await bookingsModel.updateAfterPayment(bookingID: booking.id)
             isDetailsUpdating = false
+        }
+    }
+
+    private func trackPaymentOutcome() {
+        guard let paymentModel else { return }
+        let state = paymentModel.paymentState
+        switch (state.card, state.cash) {
+        case (.cardPaymentSuccessful, _):
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCardPaymentSuccess(bookingID: booking.id))
+        case (_, .paymentSuccess):
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCashPaymentSuccess(bookingID: booking.id))
+        case (.paymentError, _):
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingPaymentFailed(bookingID: booking.id, reason: .paymentError))
+        case (.validatingOrderError, _):
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingPaymentFailed(bookingID: booking.id, reason: .validatingOrderError))
+        case (.paymentIntentCreationError, _):
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingPaymentFailed(bookingID: booking.id, reason: .paymentIntentCreationError))
+        default:
+            break
         }
     }
 

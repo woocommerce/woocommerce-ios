@@ -15,7 +15,6 @@ Determine scope from $ARGUMENTS:
 - **No arguments**: Run the full unit test suite:
 ```bash
 bundle exec fastlane test_without_building name:UnitTests 2>&1 | tail -100
-bundle exec fastlane test_without_building name:UnitTests 2>&1 | tail -100
 ```
 
 - **Module name** (e.g., `Yosemite`, `Networking`, `Storage`) or **test class/method**: Use `xcodebuild` with `-only-testing:` since the Fastlane lane doesn't support targeted filtering:

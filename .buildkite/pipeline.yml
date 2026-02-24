@@ -51,7 +51,13 @@ steps:
   - label: ":microscope: Unit Tests"
     command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
-    plugins: [$CI_TOOLKIT]
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
     artifact_paths:
       - fastlane/test_output/*
     notify:
@@ -120,7 +126,13 @@ steps:
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
     if: build.branch == "trunk" || build.branch =~ /^release\//
-    plugins: [$CI_TOOLKIT]
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
     artifact_paths:
       - fastlane/test_output/*
       - build/logs/wiremock.txt
@@ -133,7 +145,13 @@ steps:
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
     if: build.branch == "trunk" || build.branch =~ /^release\//
-    plugins: [$CI_TOOLKIT]
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
     artifact_paths:
       - fastlane/test_output/*
       - build/logs/wiremock.txt

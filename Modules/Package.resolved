@@ -342,15 +342,6 @@
       }
     },
     {
-      "identity" : "test-collector-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/buildkite/test-collector-swift",
-      "state" : {
-        "revision" : "261b2feaafd601e5b35edb68f402d34ad8210967",
-        "version" : "0.5.0"
-      }
-    },
-    {
       "identity" : "uideviceidentifier",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/squarefrog/UIDeviceIdentifier",

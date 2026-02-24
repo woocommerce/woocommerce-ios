@@ -59,10 +59,6 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         Localization.tryAgain
     }
 
-    var isShowingDoneButton: Bool {
-        setupState == .completed
-    }
-
     private let storeName: String
     private let handler: WPComConnectionSetupHandlerProtocol
     private let analytics: Analytics
@@ -152,11 +148,6 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     func getHelpTapped() {
         isShowingGetHelp = true
-    }
-
-    func doneTapped() {
-        analytics.track(.pushNotificationsSetupFlowClose)
-        onDismiss()
     }
 
     private func retrySetup() {

@@ -37,7 +37,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.primaryButtonTitle, "Go to My Store")
         XCTAssertFalse(viewModel.isPrimaryButtonEnabled)
         XCTAssertFalse(viewModel.isShowingSecondaryButton)
-        XCTAssertFalse(viewModel.isShowingDoneButton)
     }
 
     // MARK: - Delegate Update Tests
@@ -103,7 +102,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Go to My Store")
         XCTAssertTrue(viewModel.isPrimaryButtonEnabled)
-        XCTAssertTrue(viewModel.isShowingDoneButton)
     }
 
     // MARK: - Button Action Tests
@@ -155,17 +153,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(mockHandler.cancelCallCount, 1)
-        XCTAssertTrue(dismissCalled)
-    }
-
-    func test_doneTapped_calls_dismiss() {
-        // Given
-        let viewModel = makeViewModel()
-
-        // When
-        viewModel.doneTapped()
-
-        // Then
         XCTAssertTrue(dismissCalled)
     }
 
@@ -313,28 +300,17 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
     // MARK: - Analytics: close events
 
-    func test_dismissal_tracks_flow_close_event() {
-        // When cancel tapped, then tracks flow close
-        do {
-            let provider = MockAnalyticsProvider()
-            let analytics = WooAnalytics(analyticsProvider: provider)
-            let viewModel = makeViewModel(analytics: analytics)
+    func test_cancelTapped_tracks_flow_close_event() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let viewModel = makeViewModel(analytics: analytics)
 
-            viewModel.cancelTapped()
+        // When
+        viewModel.cancelTapped()
 
-            XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
-        }
-
-        // When done tapped, then tracks flow close
-        do {
-            let provider = MockAnalyticsProvider()
-            let analytics = WooAnalytics(analyticsProvider: provider)
-            let viewModel = makeViewModel(analytics: analytics)
-
-            viewModel.doneTapped()
-
-            XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
-        }
+        // Then
+        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
     }
 
     // MARK: - Helpers

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSCancelBookingModalContent: View {
@@ -7,6 +8,7 @@ struct POSCancelBookingModalContent: View {
     @Binding var cancelModalState: CancelBookingModalState?
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
     @Environment(\.siteTimezone) private var siteTimezone
 
     var body: some View {
@@ -75,8 +77,10 @@ struct POSCancelBookingModalContent: View {
     private func performCancelBooking() async {
         do {
             try await bookingsModel.bookingsController.cancelBooking(bookingID: booking.id)
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelled(bookingID: booking.id))
             cancelModalState = .success
         } catch {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelFailed(bookingID: booking.id, error: error))
             cancelModalState = .error
         }
     }

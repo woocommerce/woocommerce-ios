@@ -573,9 +573,10 @@ extension WooAnalyticsEvent {
                               properties: [Key.bookingID: "\(bookingID)"])
         }
 
-        static func bookingCancelFailed(bookingID: Int64) -> WooAnalyticsEvent {
+        static func bookingCancelFailed(bookingID: Int64, error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingCancelFailed,
-                              properties: [Key.bookingID: "\(bookingID)"])
+                              properties: [Key.bookingID: "\(bookingID)"],
+                              error: error)
         }
 
         static func bookingAddNoteTapped(bookingID: Int64) -> WooAnalyticsEvent {

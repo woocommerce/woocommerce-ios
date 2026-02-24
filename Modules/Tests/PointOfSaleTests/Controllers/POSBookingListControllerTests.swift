@@ -523,18 +523,18 @@ final class POSBookingListControllerTests {
 
     // MARK: - Prefetch
 
-    @Test func test_syncBookings_syncs_today_and_adjacent_dates() async {
+    @Test func test_init_syncs_today_and_adjacent_dates() async {
         // Given
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
 
-        // When - 3 calls expected: today + yesterday + tomorrow (+ 1 from init = 4 total)
+        // When - init triggers syncBookings: 1 defaultStrategy from init + 3 from syncBookings (today + yesterday + tomorrow)
         await withCheckedContinuation { continuation in
             mockFactory.onDefaultStrategyCalled = {
                 if self.mockFactory.defaultStrategyCallCount == 4 {
                     continuation.resume()
                 }
             }
-            sut.syncBookings()
+            _ = sut
         }
 
         // Then

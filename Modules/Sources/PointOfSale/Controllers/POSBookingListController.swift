@@ -67,6 +67,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         self.bookingListFetchStrategyFactory = bookingListFetchStrategyFactory
         self.bookingService = bookingListFetchStrategyFactory.bookingService
         self.fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: nil)
+        syncBookings()
     }
 
     func syncBookings() {

@@ -223,127 +223,118 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
     // MARK: - Analytics: stepDidUpdate
 
-    func test_stepDidUpdate_success_tracks_flow_success_event() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let _ = makeViewModel(analytics: analytics)
+    func test_stepDidUpdate_tracks_correct_analytics_events() {
+        // When step succeeds, then tracks flow_success with correct step
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let _ = makeViewModel(analytics: analytics)
 
-        // When
-        mockHandler.simulateStepUpdate(.connect, status: .success)
+            mockHandler.simulateStepUpdate(.connect, status: .success)
 
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "connect_wpcom")
+            assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "connect_wpcom")
+        }
+
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let _ = makeViewModel(analytics: analytics)
+
+            mockHandler.simulateStepUpdate(.enablePush, status: .success)
+
+            assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "enable_push_notifications")
+        }
+
+        // When step fails, then tracks flow_error with correct step
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let _ = makeViewModel(analytics: analytics)
+
+            mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
+
+            assertEqual(provider, eventName: "push_notifications_setup_flow_error", property: "step", expected: "plugin_compatibility")
+        }
     }
 
-    func test_stepDidUpdate_failure_tracks_flow_error_event() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let _ = makeViewModel(analytics: analytics)
+    // MARK: - Analytics: button taps
 
-        // When
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
+    func test_buttonTapped_tracks_correct_analytics_events() {
+        // When completed and primary tapped, then tracks go_to_my_store
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            mockHandler.simulateSetupComplete()
 
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_error", property: "step", expected: "plugin_compatibility")
-    }
+            viewModel.primaryButtonTapped()
 
-    func test_stepDidUpdate_success_for_enablePush_tracks_correct_step() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let _ = makeViewModel(analytics: analytics)
+            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "go_to_my_store")
+        }
 
-        // When
-        mockHandler.simulateStepUpdate(.enablePush, status: .success)
+        // When connection failed and primary tapped, then tracks try_again
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            mockHandler.simulateStepUpdate(.connect, status: .failure(error: .generic(reason: "Connection failed")))
 
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "enable_push_notifications")
-    }
+            viewModel.primaryButtonTapped()
 
-    // MARK: - Analytics: primaryButtonTapped
+            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+        }
 
-    func test_primaryButtonTapped_when_completed_then_tracks_go_to_my_store() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
-        mockHandler.simulateSetupComplete()
+        // When plugin outdated and primary tapped, then tracks update_plugin
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
 
-        // When
-        viewModel.primaryButtonTapped()
+            viewModel.primaryButtonTapped()
 
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "go_to_my_store")
-    }
+            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "update_plugin")
+        }
 
-    func test_primaryButtonTapped_when_connection_failed_then_tracks_try_again() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
-        mockHandler.simulateStepUpdate(.connect, status: .failure(error: .generic(reason: "Connection failed")))
+        // When secondary button tapped, then tracks try_again
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
 
-        // When
-        viewModel.primaryButtonTapped()
+            viewModel.secondaryButtonTapped()
 
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
-    }
-
-    func test_primaryButtonTapped_when_plugin_outdated_then_tracks_update_plugin() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
-        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
-
-        // When
-        viewModel.primaryButtonTapped()
-
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "update_plugin")
-    }
-
-    func test_secondaryButtonTapped_tracks_try_again() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
-
-        // When
-        viewModel.secondaryButtonTapped()
-
-        // Then
-        assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+        }
     }
 
     // MARK: - Analytics: close events
 
-    func test_cancelTapped_tracks_flow_close_event() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
+    func test_dismissal_tracks_flow_close_event() {
+        // When cancel tapped, then tracks flow close
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
 
-        // When
-        viewModel.cancelTapped()
+            viewModel.cancelTapped()
 
-        // Then
-        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
-    }
+            XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
+        }
 
-    func test_doneTapped_tracks_flow_close_event() {
-        // Given
-        let (provider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
+        // When done tapped, then tracks flow close
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
 
-        // When
-        viewModel.doneTapped()
+            viewModel.doneTapped()
 
-        // Then
-        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
+            XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
+        }
     }
 
     // MARK: - Helpers
-
-    private func makeAnalytics() -> (MockAnalyticsProvider, WooAnalytics) {
-        let provider = MockAnalyticsProvider()
-        return (provider, WooAnalytics(analyticsProvider: provider))
-    }
 
     private func assertEqual(_ provider: MockAnalyticsProvider, eventName: String, property: String, expected: String) {
         let index = provider.receivedEvents.firstIndex(of: eventName)

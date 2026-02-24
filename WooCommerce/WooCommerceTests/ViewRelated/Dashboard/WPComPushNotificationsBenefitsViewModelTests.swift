@@ -145,37 +145,29 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    // MARK: - Analytics: onAppear
+    // MARK: - Analytics: introduction button actions
 
-    func test_onAppear_tracks_introduction_view_event() {
+    func test_introduction_button_actions_track_correct_analytics_events() {
         // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
         let viewModel = makeViewModel(analytics: analytics)
 
         // When
         viewModel.onAppear()
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains("push_notifications_setup_introduction_view"))
-    }
-
-    // MARK: - Analytics: continueTapped
-
-    func test_continueTapped_when_connect_variant_then_tracks_continue_button_label() {
-        // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
-
-        // When
         viewModel.continueTapped()
+        viewModel.notNowTapped()
 
         // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "continue")
+        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
+        assertEqual(provider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "continue")
+        XCTAssertEqual(provider.receivedEvents.filter { $0 == "push_notifications_setup_introduction_button_tap" }.count, 2)
     }
 
     func test_continueTapped_when_pluginUpdate_variant_then_tracks_update_plugin_button_label() async {
         // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
             JetpackConnectionData.fake().copy(isRegistered: true)
@@ -191,87 +183,73 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         viewModel.continueTapped()
 
         // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "update_plugin")
-    }
-
-    // MARK: - Analytics: notNowTapped
-
-    func test_notNowTapped_tracks_not_now_button_label() {
-        // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
-        let viewModel = makeViewModel(analytics: analytics)
-
-        // When
-        viewModel.notNowTapped()
-
-        // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "not_now")
+        assertEqual(provider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "update_plugin")
     }
 
     // MARK: - Analytics: determineSetupVariant errors
 
-    func test_determineSetupVariant_when_403_error_then_tracks_no_permission_introduction_error() async {
-        // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
-        let connectionService = MockJetpackConnectionService()
-        connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
-        let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+    func test_determineSetupVariant_when_connection_errors_then_tracks_correct_introduction_error() async {
+        // When 403 error, then tracks no_permission
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
 
-        // When
-        await viewModel.determineSetupVariant()
+            await viewModel.determineSetupVariant()
 
-        // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "no_permission")
+            assertEqual(provider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "no_permission")
+        }
+
+        // When generic error, then tracks generic
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .failure(NSError(domain: "test", code: 1))
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+            await viewModel.determineSetupVariant()
+
+            assertEqual(provider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "generic")
+        }
     }
 
-    func test_determineSetupVariant_when_generic_error_then_tracks_generic_introduction_error() async {
-        // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
-        let connectionService = MockJetpackConnectionService()
-        connectionService.fetchConnectionDataResult = .failure(NSError(domain: "test", code: 1))
-        let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+    func test_determineSetupVariant_when_plugin_check_errors_then_tracks_correct_introduction_error() async {
+        // When plugin compatible, then tracks no_missing_requirements
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .success(
+                JetpackConnectionData.fake().copy(isRegistered: true)
+            )
+            let checker = MockPluginVersionChecker()
+            checker.result = .success(.compatible)
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
 
-        // When
-        await viewModel.determineSetupVariant()
+            await viewModel.determineSetupVariant()
 
-        // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "generic")
-    }
+            assertEqual(provider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "no_missing_requirements")
+        }
 
-    func test_determineSetupVariant_when_plugin_compatible_then_tracks_no_missing_requirements_introduction_error() async {
-        // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
-        let connectionService = MockJetpackConnectionService()
-        connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(isRegistered: true)
-        )
-        let checker = MockPluginVersionChecker()
-        checker.result = .success(.compatible)
-        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+        // When plugin check throws, then tracks generic
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .success(
+                JetpackConnectionData.fake().copy(isRegistered: true)
+            )
+            let checker = MockPluginVersionChecker()
+            checker.result = .failure(NSError(domain: "test", code: 1))
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
 
-        // When
-        await viewModel.determineSetupVariant()
+            await viewModel.determineSetupVariant()
 
-        // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "no_missing_requirements")
-    }
-
-    func test_determineSetupVariant_when_plugin_check_throws_then_tracks_generic_introduction_error() async {
-        // Given
-        let (analyticsProvider, analytics) = makeAnalytics()
-        let connectionService = MockJetpackConnectionService()
-        connectionService.fetchConnectionDataResult = .success(
-            JetpackConnectionData.fake().copy(isRegistered: true)
-        )
-        let checker = MockPluginVersionChecker()
-        checker.result = .failure(NSError(domain: "test", code: 1))
-        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
-
-        // When
-        await viewModel.determineSetupVariant()
-
-        // Then
-        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "generic")
+            assertEqual(provider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "generic")
+        }
     }
 
     // MARK: - determineSetupVariant when fetch fails
@@ -311,11 +289,6 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
     // MARK: - Helpers
 
     private let sampleSiteID: Int64 = 123
-
-    private func makeAnalytics() -> (MockAnalyticsProvider, WooAnalytics) {
-        let provider = MockAnalyticsProvider()
-        return (provider, WooAnalytics(analyticsProvider: provider))
-    }
 
     private func assertEqual(_ provider: MockAnalyticsProvider, eventName: String, property: String, expected: String) {
         let index = provider.receivedEvents.firstIndex(of: eventName)

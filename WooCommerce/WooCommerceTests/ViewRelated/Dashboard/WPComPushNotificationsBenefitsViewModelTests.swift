@@ -208,6 +208,72 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_button_tap", property: "button_label", expected: "not_now")
     }
 
+    // MARK: - Analytics: determineSetupVariant errors
+
+    func test_determineSetupVariant_when_403_error_then_tracks_no_permission_introduction_error() async {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "no_permission")
+    }
+
+    func test_determineSetupVariant_when_generic_error_then_tracks_generic_introduction_error() async {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .failure(NSError(domain: "test", code: 1))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "generic")
+    }
+
+    func test_determineSetupVariant_when_plugin_compatible_then_tracks_no_missing_requirements_introduction_error() async {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "no_missing_requirements")
+    }
+
+    func test_determineSetupVariant_when_plugin_check_throws_then_tracks_generic_introduction_error() async {
+        // Given
+        let (analyticsProvider, analytics) = makeAnalytics()
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .failure(NSError(domain: "test", code: 1))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        assertEqual(analyticsProvider, eventName: "push_notifications_setup_introduction_error", property: "error_type", expected: "generic")
+    }
+
     // MARK: - determineSetupVariant when fetch fails
 
     func test_error_is_noPermission_when_fetching_connection_data_throws_403() async {

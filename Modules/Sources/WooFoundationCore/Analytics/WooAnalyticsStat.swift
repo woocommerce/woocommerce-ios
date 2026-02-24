@@ -635,6 +635,7 @@ public enum WooAnalyticsStat: String {
     case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
     case pushNotificationsSetupIntroductionView = "push_notifications_setup_introduction_view"
     case pushNotificationsSetupIntroductionButtonTap = "push_notifications_setup_introduction_button_tap"
+    case pushNotificationsSetupIntroductionError = "push_notifications_setup_introduction_error"
     case pushNotificationsSetupFlowSuccess = "push_notifications_setup_flow_success"
     case pushNotificationsSetupFlowButtonTap = "push_notifications_setup_flow_button_tap"
     case pushNotificationsSetupFlowClose = "push_notifications_setup_flow_close"

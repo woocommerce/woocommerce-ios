@@ -91,8 +91,10 @@ final class WPComPushNotificationsBenefitsViewModel {
             DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
             if case NetworkError.unacceptableStatusCode(403, _) = error {
                 self.error = .noPermission
+                analytics.track(event: .PushNotificationsSetup.introductionError(errorType: .noPermission))
             } else {
                 self.error = .generic(underlyingError: error)
+                analytics.track(event: .PushNotificationsSetup.introductionError(errorType: .generic, error: error))
             }
         }
         isCheckingPlugin = false
@@ -132,10 +134,12 @@ private extension WPComPushNotificationsBenefitsViewModel {
                 variant = .pluginUpdate(currentVersion: currentVersion)
             } else {
                 error = .noMissingRequirements
+                analytics.track(event: .PushNotificationsSetup.introductionError(errorType: .noMissingRequirements))
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
             self.error = .generic(underlyingError: error)
+            analytics.track(event: .PushNotificationsSetup.introductionError(errorType: .generic, error: error))
         }
     }
 }

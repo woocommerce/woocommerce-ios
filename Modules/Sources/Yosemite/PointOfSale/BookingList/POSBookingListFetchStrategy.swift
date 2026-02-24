@@ -16,10 +16,6 @@ extension POSBookingListFetchStrategy {
     public var id: String {
         String(describing: type(of: self))
     }
-
-    @MainActor public func fetchLocalBookings() -> [POSBooking] {
-        []
-    }
 }
 
 struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
@@ -165,5 +161,10 @@ struct POSSearchBookingListFetchStrategy: POSBookingListFetchStrategy {
             filters: filters,
             searchQuery: searchTerm
         )
+    }
+
+    @MainActor
+    func fetchLocalBookings() -> [POSBooking] {
+        []
     }
 }

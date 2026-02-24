@@ -540,6 +540,11 @@ final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
         PagedItems(items: [], hasMorePages: false, totalItems: nil)
     }
+
+    @MainActor
+    func fetchLocalBookings() -> [POSBooking] {
+        []
+    }
 }
 
 extension POSPreviewHelpers {

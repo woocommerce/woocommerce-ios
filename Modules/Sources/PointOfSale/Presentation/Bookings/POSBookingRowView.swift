@@ -27,7 +27,6 @@ struct POSBookingRowView: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
@@ -45,45 +44,4 @@ struct POSBookingRowView: View {
         }
     }
 
-    private var accessibilityLabel: String {
-        let formatter = DateFormatter.posAccessibilityTimeFormatter
-        formatter.timeZone = siteTimezone
-        let timeRange = Localization.timeRangeAccessibilityLabel(
-            start: formatter.string(from: booking.startDate),
-            end: formatter.string(from: booking.endDate)
-        )
-
-        let customerDisplayName = booking.customerName ?? booking.customerEmail
-
-        var parts = [timeRange, booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
-
-        if booking.lifecycleStatus == .cancelled {
-            parts.append(booking.lifecycleStatus.localizedTitle)
-        } else {
-            parts.append(booking.attendanceDisplay.localizedTitle)
-        }
-        parts.append(booking.paymentStatus.localizedTitle)
-
-        return parts.joined(separator: ", ")
-    }
-}
-
-private enum Localization {
-    static func timeRangeAccessibilityLabel(start: String, end: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.timeRange",
-            value: "%1$@ to %2$@",
-            comment: "Time range for booking row accessibility. %1$@ is start time, %2$@ is end time."
-        )
-        return String(format: format, start, end)
-    }
-}
-
-private extension DateFormatter {
-    static let posAccessibilityTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
 }

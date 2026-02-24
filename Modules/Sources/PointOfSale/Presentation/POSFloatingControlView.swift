@@ -118,6 +118,7 @@ private extension POSFloatingControlView {
 
         if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
             Button {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
                 showBookings = true
             } label: {
                 Label(

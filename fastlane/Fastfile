@@ -1370,8 +1370,7 @@ lane :test_without_building do |options|
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
   parallel_testing_value = options[:name] == 'UITests'
 
-  # Capture the result of run_tests
-  tests_result = run_tests(
+  run_tests(
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
@@ -1385,8 +1384,6 @@ lane :test_without_building do |options|
     result_bundle: true,
     output_types: 'junit'
   )
-
-  UI.user_error!("Tests failed with #{tests_result[:number_of_failures_excluding_retries]} failures.") if tests_result[:number_of_failures_excluding_retries].positive?
 end
 
 # -----------------------------------------------------------------------------------

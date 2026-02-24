@@ -67,7 +67,8 @@ struct POSCancelBookingModalContent: View {
     }()
 
     private var formattedCancelDateTime: String {
-        Self.cancelDateTimeFormatter.timeZone = siteTimezone
+        // Use UTC: the API timestamps already represent site-local wall-clock time.
+        Self.cancelDateTimeFormatter.timeZone = TimeZone(identifier: "UTC")
         return Self.cancelDateTimeFormatter.string(from: booking.startDate)
     }
 

@@ -47,7 +47,8 @@ struct POSBookingRowView: View {
 
     private var accessibilityLabel: String {
         let formatter = DateFormatter.posAccessibilityTimeFormatter
-        formatter.timeZone = siteTimezone
+        // Use UTC: the API timestamps already represent site-local wall-clock time.
+        formatter.timeZone = TimeZone(identifier: "UTC")
         let timeRange = Localization.timeRangeAccessibilityLabel(
             start: formatter.string(from: booking.startDate),
             end: formatter.string(from: booking.endDate)

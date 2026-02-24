@@ -529,11 +529,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingsMenuItemTapped, properties: [:])
         }
 
-        static func bookingsListFetched(millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingsListFetched,
-                              properties: [Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"])
-        }
-
         static func bookingsListSearchButtonTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingsListSearchButtonTapped, properties: [:])
         }

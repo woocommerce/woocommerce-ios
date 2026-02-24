@@ -228,32 +228,35 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         do {
             let provider = MockAnalyticsProvider()
             let analytics = WooAnalytics(analyticsProvider: provider)
-            let _ = makeViewModel(analytics: analytics)
+            let viewModel = makeViewModel(analytics: analytics)
+            withExtendedLifetime(viewModel) {
+                mockHandler.simulateStepUpdate(.connect, status: .success)
 
-            mockHandler.simulateStepUpdate(.connect, status: .success)
-
-            assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "connect_wpcom")
+                assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "connect_wpcom")
+            }
         }
 
         do {
             let provider = MockAnalyticsProvider()
             let analytics = WooAnalytics(analyticsProvider: provider)
-            let _ = makeViewModel(analytics: analytics)
+            let viewModel = makeViewModel(analytics: analytics)
+            withExtendedLifetime(viewModel) {
+                mockHandler.simulateStepUpdate(.enablePush, status: .success)
 
-            mockHandler.simulateStepUpdate(.enablePush, status: .success)
-
-            assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "enable_push_notifications")
+                assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "enable_push_notifications")
+            }
         }
 
         // When step fails, then tracks flow_error with correct step
         do {
             let provider = MockAnalyticsProvider()
             let analytics = WooAnalytics(analyticsProvider: provider)
-            let _ = makeViewModel(analytics: analytics)
+            let viewModel = makeViewModel(analytics: analytics)
+            withExtendedLifetime(viewModel) {
+                mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
 
-            mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
-
-            assertEqual(provider, eventName: "push_notifications_setup_flow_error", property: "step", expected: "plugin_compatibility")
+                assertEqual(provider, eventName: "push_notifications_setup_flow_error", property: "step", expected: "plugin_compatibility")
+            }
         }
     }
 

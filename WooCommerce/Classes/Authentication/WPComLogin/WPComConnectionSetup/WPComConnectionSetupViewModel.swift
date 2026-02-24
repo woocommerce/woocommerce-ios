@@ -189,9 +189,9 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
 
         switch status {
         case .success:
-            analytics.track(event: .PushNotificationsSetup.flowSuccess(step: step.analyticsFlowStep))
+            analytics.track(.pushNotificationsSetupFlowSuccess, withProperties: ["step": step.analyticsFlowStep])
         case .failure(let error):
-            analytics.track(event: .PushNotificationsSetup.flowError(step: step.analyticsFlowStep, error: error))
+            analytics.track(.pushNotificationsSetupFlowError, properties: ["step": step.analyticsFlowStep], error: error)
             let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: error) : nil
             setupState = .failed(step: step, checkPluginError: checkPluginError)
         case .notStarted, .running:

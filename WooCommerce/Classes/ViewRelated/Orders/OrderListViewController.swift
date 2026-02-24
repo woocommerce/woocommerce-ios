@@ -813,12 +813,17 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         guard state != .placeholder else {
+            DDLogWarn("⚠️ [didSelectRowAt] Tap ignored at \(indexPath) — state is .placeholder")
             return
         }
 
-        guard let objectID = dataSource?.itemIdentifier(for: indexPath),
-            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-                return
+        let objectID = dataSource?.itemIdentifier(for: indexPath)
+        let orderDetailsViewModel = objectID.flatMap { viewModel.detailsViewModel(withID: $0) }
+        guard objectID != nil, let orderDetailsViewModel else {
+            DDLogWarn("⚠️ [didSelectRowAt] Tap ignored at \(indexPath) — "
+                + "objectID: \(String(describing: objectID)), "
+                + "detailsViewModel resolved: \(orderDetailsViewModel != nil)")
+            return
         }
 
         selectedIndexPath = indexPath
@@ -829,7 +834,10 @@ extension OrderListViewController: UITableViewDelegate {
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
 
-        guard let currentIndex = currentIndex else { return }
+        guard let currentIndex = currentIndex else {
+            DDLogWarn("⚠️ [didSelectRowAt] Tap ignored at \(indexPath) — order #\(order.orderID) not found in allViewModels (count: \(allViewModels.count))")
+            return
+        }
 
         let allowOrderNavigation = splitViewController?.isCollapsed ?? true
         // There is no point of having order navigation in the order details view when we have a split screen,

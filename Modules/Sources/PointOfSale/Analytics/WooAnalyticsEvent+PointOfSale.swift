@@ -48,6 +48,9 @@ extension WooAnalyticsEvent {
             static let syncStrategy = "sync_strategy"
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
+            static let bookingID = "booking_id"
+            static let bookingStatus = "booking_status"
+            static let paymentStatus = "payment_status"
         }
 
         /// Source of the event where the event is triggered
@@ -519,6 +522,71 @@ extension WooAnalyticsEvent {
                     Key.syncStrategy: syncStrategy
                 ]
             )
+        }
+        // MARK: - Bookings
+
+        static func bookingsMenuItemTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsMenuItemTapped, properties: [:])
+        }
+
+        static func bookingsListFetched(millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsListFetched,
+                              properties: [Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"])
+        }
+
+        static func bookingsListSearchButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsListSearchButtonTapped, properties: [:])
+        }
+
+        static func bookingDetailLoaded(bookingID: Int64,
+                                        bookingStatus: String,
+                                        paymentStatus: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDetailLoaded,
+                              properties: [
+                                Key.bookingID: "\(bookingID)",
+                                Key.bookingStatus: bookingStatus,
+                                Key.paymentStatus: paymentStatus
+                              ])
+        }
+
+        static func bookingCollectPaymentTapped(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCollectPaymentTapped,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingCardPaymentSuccess(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCardPaymentSuccess,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingCashPaymentSuccess(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCashPaymentSuccess,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingPaymentFailed(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingPaymentFailed,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingCancelTapped(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelTapped,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingCancelled(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelled,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingCancelFailed(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelFailed,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
+
+        static func bookingAddNoteTapped(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAddNoteTapped,
+                              properties: [Key.bookingID: "\(bookingID)"])
         }
     }
 }

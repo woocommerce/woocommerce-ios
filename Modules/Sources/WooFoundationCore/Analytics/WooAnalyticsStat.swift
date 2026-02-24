@@ -1356,6 +1356,20 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
 
+    // MARK: Point of Sale Bookings
+    case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
+    case pointOfSaleBookingsListFetched = "bookings_list_fetched"
+    case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
+    case pointOfSaleBookingDetailLoaded = "booking_detail_loaded"
+    case pointOfSaleBookingCollectPaymentTapped = "booking_collect_payment_tapped"
+    case pointOfSaleBookingCardPaymentSuccess = "booking_card_payment_success"
+    case pointOfSaleBookingCashPaymentSuccess = "booking_cash_payment_success"
+    case pointOfSaleBookingPaymentFailed = "booking_payment_failed"
+    case pointOfSaleBookingCancelTapped = "booking_cancel_tapped"
+    case pointOfSaleBookingCancelled = "booking_cancelled"
+    case pointOfSaleBookingCancelFailed = "booking_cancel_failed"
+    case pointOfSaleBookingAddNoteTapped = "booking_add_note_tapped"
+
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
 

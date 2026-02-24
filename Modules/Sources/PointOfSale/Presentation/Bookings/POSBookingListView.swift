@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 import enum Yosemite.SearchDebounceStrategy
 
@@ -8,6 +9,7 @@ struct POSBookingListView: View {
     let onClose: () -> Void
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     private var bookingsViewState: POSBookingListState {
@@ -36,6 +38,7 @@ struct POSBookingListView: View {
                             backgroundColor: .posSurface,
                             imageColor: .posOnSurface
                         ) {
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsListSearchButtonTapped())
                             setSearch(true)
                         }
                         .accessibilityLabel(Localization.searchButtonAccessibilityLabel)

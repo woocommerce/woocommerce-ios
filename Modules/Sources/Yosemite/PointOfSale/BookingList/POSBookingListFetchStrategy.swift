@@ -59,7 +59,8 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
                 order: .ascending,
                 cacheClearStrategy: cacheClearStrategy
             )
-            let bookings = await fetchLocalBookings()
+            guard let filters else { return PagedItems(items: [], hasMorePages: hasMorePages, totalItems: nil) }
+            let bookings = await fetchLocalBookingsSync(filters: filters, limit: nil)
             return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSBookingServiceError.requestCancelled
@@ -69,7 +70,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
     @MainActor
     func fetchLocalBookings() -> [POSBooking] {
         guard let filters else { return [] }
-        return fetchLocalBookingsSync(filters: filters)
+        return fetchLocalBookingsSync(filters: filters, limit: pageSize)
     }
 }
 
@@ -87,7 +88,7 @@ private extension POSDefaultBookingListFetchStrategy {
     }
 
     @MainActor
-    func fetchLocalBookingsSync(filters: BookingFilters) -> [POSBooking] {
+    func fetchLocalBookingsSync(filters: BookingFilters, limit: Int?) -> [POSBooking] {
         let bookingPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
         let hasOrderPredicate = NSPredicate(format: "orderInfo != nil")
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [bookingPredicate, hasOrderPredicate])
@@ -96,6 +97,7 @@ private extension POSDefaultBookingListFetchStrategy {
         let resultsController = ResultsController<StorageBooking>(
             storageManager: storageManager,
             matching: predicate,
+            fetchLimit: limit,
             sortedBy: [sortByDate, sortByID]
         )
 

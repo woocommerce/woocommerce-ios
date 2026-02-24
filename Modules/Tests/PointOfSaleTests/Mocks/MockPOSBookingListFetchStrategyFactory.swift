@@ -105,9 +105,11 @@ final class MockPOSBookingListFetchStrategy: POSBookingListFetchStrategy {
     var localBookings: [POSBooking] = []
     var showsCachedDataWhileLoading: Bool = true
     var id: String = "MockPOSBookingListFetchStrategy"
+    var onFetchBookingsCalled: ((Int) -> Void)?
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
-        try fetchBookingsResult.get()
+        onFetchBookingsCalled?(pageNumber)
+        return try fetchBookingsResult.get()
     }
 
     func fetchLocalBookings() -> [POSBooking] {

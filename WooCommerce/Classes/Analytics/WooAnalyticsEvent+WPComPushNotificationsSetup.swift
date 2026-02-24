@@ -1,3 +1,5 @@
+import Foundation
+
 extension WooAnalyticsEvent {
     enum WPComPushNotificationsSetup {
         private enum Keys: String {

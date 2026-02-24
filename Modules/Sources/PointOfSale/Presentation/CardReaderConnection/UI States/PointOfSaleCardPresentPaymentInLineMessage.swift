@@ -27,6 +27,7 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .paymentSuccess(let viewModel):
             PointOfSalePaymentSuccessView(
                 viewModel: viewModel,
+                customerEmail: paymentModel.customerBillingEmail,
                 onSendReceipt: { email in try await paymentModel.sendReceipt(to: email) },
                 successAction: paymentModel.configuration.successAction,
                 onSuccessScreenBarcodeScanned: paymentModel.configuration.onSuccessScreenBarcodeScanned)

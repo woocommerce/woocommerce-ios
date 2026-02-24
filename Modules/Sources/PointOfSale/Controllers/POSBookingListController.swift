@@ -71,7 +71,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     func syncBookings() {
         let date = selectedDate
-        prefetchDateIfNeeded(date)
+        prefetchDate(date)
         prefetchAdjacentDates(for: date)
     }
 
@@ -256,14 +256,14 @@ private extension POSBookingListController {
         var calendar = Calendar.current
         calendar.timeZone = siteTimezone
         if let yesterday = calendar.date(byAdding: .day, value: -1, to: date) {
-            prefetchDateIfNeeded(yesterday)
+            prefetchDate(yesterday)
         }
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) {
-            prefetchDateIfNeeded(tomorrow)
+            prefetchDate(tomorrow)
         }
     }
 
-    func prefetchDateIfNeeded(_ date: Date) {
+    func prefetchDate(_ date: Date) {
         var calendar = Calendar.current
         calendar.timeZone = siteTimezone
         let normalizedDate = calendar.startOfDay(for: date)

@@ -538,15 +538,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingsListSearchButtonTapped, properties: [:])
         }
 
-        static func bookingDetailLoaded(bookingID: Int64,
-                                        bookingStatus: String,
-                                        paymentStatus: String) -> WooAnalyticsEvent {
+        static func bookingDetailLoaded(bookingID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingDetailLoaded,
-                              properties: [
-                                Key.bookingID: "\(bookingID)",
-                                Key.bookingStatus: bookingStatus,
-                                Key.paymentStatus: paymentStatus
-                              ])
+                              properties: [Key.bookingID: "\(bookingID)"])
         }
 
         static func bookingCollectPaymentTapped(bookingID: Int64) -> WooAnalyticsEvent {

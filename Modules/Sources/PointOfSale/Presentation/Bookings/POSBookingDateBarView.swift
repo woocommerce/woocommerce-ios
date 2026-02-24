@@ -2,7 +2,6 @@ import SwiftUI
 
 struct POSBookingDateBarView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
-    @Environment(\.siteTimezone) private var siteTimezone
     @Environment(\.colorScheme) private var colorScheme
     @State private var showingCalendar = false
 
@@ -11,10 +10,7 @@ struct POSBookingDateBarView: View {
     }
 
     private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("dMMMEEE")
-        formatter.timeZone = siteTimezone
-        return formatter.string(from: bookingsModel.bookingsController.selectedDate)
+        POSBookingDateFormatter.formattedShortDate(for: bookingsModel.bookingsController.selectedDate)
     }
 
     var body: some View {
@@ -51,7 +47,6 @@ struct POSBookingDateBarView: View {
                 .popover(isPresented: $showingCalendar) {
                     POSBookingCalendarView(
                         selectedDate: bookingsModel.bookingsController.selectedDate,
-                        siteTimezone: siteTimezone,
                         onDateSelected: { date in
                             showingCalendar = false
                             Task { await bookingsModel.bookingsController.selectDate(date) }

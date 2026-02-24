@@ -43,7 +43,7 @@ extension WordPressMedia: Decodable {
         let mimeType = try container.decodeIfPresent(String.self, forKey: .mimeType) ?? ""
         let src = try container.decodeIfPresent(String.self, forKey: .src) ?? ""
         let alt = try container.decodeIfPresent(String.self, forKey: .alt)
-        let details = try container.decodeIfPresent(MediaDetails.self, forKey: .details)
+        let details = try? container.decodeIfPresent(MediaDetails.self, forKey: .details)
         let title = try container.decodeIfPresent(MediaTitle.self, forKey: .title)
 
         self.init(mediaID: mediaID,

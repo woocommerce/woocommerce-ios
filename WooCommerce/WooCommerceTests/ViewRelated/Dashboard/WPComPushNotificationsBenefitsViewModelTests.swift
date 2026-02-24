@@ -85,7 +85,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_error_is_setupNotRequired_when_jetpack_connected_and_plugin_compatible() async {
+    func test_error_is_noMissingRequirements_when_jetpack_connected_and_plugin_compatible() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
@@ -99,8 +99,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        guard case .setupNotRequired = viewModel.error else {
-            return XCTFail("Expected setupNotRequired error, got \(String(describing: viewModel.error))")
+        guard case .noMissingRequirements = viewModel.error else {
+            return XCTFail("Expected noMissingRequirements error, got \(String(describing: viewModel.error))")
         }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }

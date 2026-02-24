@@ -133,7 +133,7 @@ private extension WPComPushNotificationsBenefitsViewModel {
             if case .incompatible(let currentVersion, _) = result {
                 variant = .pluginUpdate(currentVersion: currentVersion)
             } else {
-                error = .setupNotRequired
+                error = .noMissingRequirements
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
@@ -153,7 +153,7 @@ extension WPComPushNotificationsBenefitsViewModel {
             switch self {
             case .noPermission:
                 Localization.noPermission
-            case .setupNotRequired, .generic:
+            case .noMissingRequirements, .generic:
                 Localization.generic
             }
         }

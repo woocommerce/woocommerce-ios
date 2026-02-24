@@ -28,10 +28,12 @@
       "Bash(pushd BuildTools *)",
       "Bash(xcrun *)",
       "Bash(rake lint *)",
+      "Bash(rake mocks *)",
       "Bash(rake test *)",
       "Bash(rake build *)",
       "Bash(rake generate *)",
       "Bash(rake clean *)",
+      "Bash(bundle install *)",
       "Bash(bundle exec rake *)"
     ],
     "deny": [

@@ -16,6 +16,7 @@ If the build fails:
 1. Analyze the error output — look for compilation errors, identify file and line
 2. Check if it is a missing import, type mismatch, syntax error, or stale generated code
 3. If stale codegen, run: `bundle exec rake generate`
-4. Suggest or apply the fix
+4. If `Unable to find a device matching` — run `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5` to find an available simulator name, then retry
+5. Suggest or apply the fix
 
 If the build succeeds, report success.

@@ -50,6 +50,10 @@ CONTRIBUTING.md                  # PR merge policy
 .swiftlint.yml                   # SwiftLint configuration (opt-in rules only)
 ```
 
+## Bootstrap (Required Once)
+
+Use the `bootstrap` skill to set up the environment from a clean checkout. It will guide through Xcode version verification, Ruby version setup, and dependency installation.
+
 ## Build Commands
 
 ```bash
@@ -92,7 +96,7 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   --allow-writing-to-package-directory sourcery-command --disableCache && popd
 ```
 
-If the simulator name `iPhone 16` is not available, try `iPhone 15` or `iPhone 16 Pro`.
+If the simulator `iPhone 16` is not available, discover what's installed: `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5`
 
 ## Architecture
 
@@ -226,6 +230,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 - **Test data**: Use `.fake()` from Fakes module and `.copy()` from Copiable
 - **Test plan**: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
 - See `Modules/Tests/CLAUDE.md` for detailed async testing patterns
+- UI tests require a local mock server: run `rake mocks` and use the `WooCommerceUITests` scheme
 
 ## Localization
 

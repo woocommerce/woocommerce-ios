@@ -147,6 +147,7 @@ struct POSRefundModalContentView: View {
             POSRefundSuccessView(
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
+                customerEmail: reviewData.customerEmail,
                 onDone: { modalState = nil },
                 onEmailReceipt: {
                     modalState = nil

@@ -118,19 +118,19 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func primaryButtonTapped() {
         switch setupState {
         case .completed:
-            analytics.track(event: .PushNotificationsSetup.flowButtonTap( .goToMyStore))
+            analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap( .goToMyStore))
             onGoToStore()
         case .failed(let step, let checkPluginError):
             switch step {
             case .connect, .enablePush:
-                analytics.track(event: .PushNotificationsSetup.flowButtonTap( .tryAgain))
+                analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap( .tryAgain))
                 retrySetup()
             case .checkPlugin:
                 if checkPluginError == .outdated {
-                    analytics.track(event: .PushNotificationsSetup.flowButtonTap( .updatePlugin))
+                    analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap( .updatePlugin))
                     onUpdatePlugin()
                 } else {
-                    analytics.track(event: .PushNotificationsSetup.flowButtonTap( .tryAgain))
+                    analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap( .tryAgain))
                     retrySetup()
                 }
             }
@@ -140,7 +140,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func secondaryButtonTapped() {
-        analytics.track(event: .PushNotificationsSetup.flowButtonTap( .tryAgain))
+        analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap( .tryAgain))
         retrySetup()
     }
 

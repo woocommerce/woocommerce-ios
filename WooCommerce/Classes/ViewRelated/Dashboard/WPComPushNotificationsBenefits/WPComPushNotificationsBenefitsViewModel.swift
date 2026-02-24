@@ -103,10 +103,10 @@ final class WPComPushNotificationsBenefitsViewModel {
     func continueTapped() {
         switch variant {
         case .connect:
-            analytics.track(event: .PushNotificationsSetup.introductionButtonTap( .continue))
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap( .continue))
             pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
-            analytics.track(event: .PushNotificationsSetup.introductionButtonTap( .updatePlugin))
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap( .updatePlugin))
             pushNotificationSetupCoordinator?.startSetup(
                 siteAlreadyConnected: true,
                 pluginOutdatedVersion: currentVersion
@@ -115,7 +115,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func notNowTapped() {
-        analytics.track(event: .PushNotificationsSetup.introductionButtonTap( .notNow))
+        analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap( .notNow))
         onDismiss()
     }
 

@@ -1,5 +1,5 @@
 extension WooAnalyticsEvent {
-    enum PushNotificationsSetup {
+    enum WPComPushNotificationsSetup {
         private enum Keys: String {
             case buttonLabel = "button_label"
         }

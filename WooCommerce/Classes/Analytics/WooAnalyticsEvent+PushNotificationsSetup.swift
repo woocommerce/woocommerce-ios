@@ -4,27 +4,27 @@ extension WooAnalyticsEvent {
             case buttonLabel = "button_label"
         }
 
-        enum IntroductionButtonLabel: String {
+        enum BenefitsButton: String {
             case `continue` = "continue"
             case notNow = "not_now"
             case updatePlugin = "update_plugin"
         }
 
-        enum FlowButtonLabel: String {
+        enum SetupButton: String {
             case done
             case goToMyStore = "go_to_my_store"
             case tryAgain = "try_again"
             case updatePlugin = "update_plugin"
         }
 
-        static func introductionButtonTap(buttonLabel: IntroductionButtonLabel) -> WooAnalyticsEvent {
+        static func introductionButtonTap(_ button: BenefitsButton) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pushNotificationsSetupIntroductionButtonTap,
-                              properties: [Keys.buttonLabel.rawValue: buttonLabel.rawValue])
+                              properties: [Keys.buttonLabel.rawValue: button.rawValue])
         }
 
-        static func flowButtonTap(_ buttonLabel: FlowButtonLabel) -> WooAnalyticsEvent {
+        static func flowButtonTap(_ button: SetupButton) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pushNotificationsSetupFlowButtonTap,
-                              properties: [Keys.buttonLabel.rawValue: buttonLabel.rawValue])
+                              properties: [Keys.buttonLabel.rawValue: button.rawValue])
         }
 
     }
@@ -33,7 +33,7 @@ extension WooAnalyticsEvent {
 // MARK: - Analytics mapping extensions
 
 extension SetupStep {
-    var analyticsFlowStep: String {
+    var analyticsKey: String {
         switch self {
         case .checkPlugin: return "plugin_compatibility"
         case .connect: return "connect_wpcom"

@@ -8,15 +8,15 @@ struct WooAnalyticsEvent_PushNotificationsSetupTests {
 
     @Test func test_introductionButtonTap_when_given_each_label_then_produces_correct_event() {
         // Given
-        let cases: [(WooAnalyticsEvent.PushNotificationsSetup.IntroductionButtonLabel, String)] = [
+        let cases: [(WooAnalyticsEvent.PushNotificationsSetup.BenefitsButton, String)] = [
             (.continue, "continue"),
             (.notNow, "not_now"),
             (.updatePlugin, "update_plugin")
         ]
 
-        for (label, expected) in cases {
+        for (button, expected) in cases {
             // When
-            let event = WooAnalyticsEvent.PushNotificationsSetup.introductionButtonTap(buttonLabel: label)
+            let event = WooAnalyticsEvent.PushNotificationsSetup.introductionButtonTap(button)
 
             // Then
             #expect(event.statName == .pushNotificationsSetupIntroductionButtonTap)
@@ -28,16 +28,16 @@ struct WooAnalyticsEvent_PushNotificationsSetupTests {
 
     @Test func test_flowButtonTap_when_given_each_label_then_produces_correct_event() {
         // Given
-        let cases: [(WooAnalyticsEvent.PushNotificationsSetup.FlowButtonLabel, String)] = [
+        let cases: [(WooAnalyticsEvent.PushNotificationsSetup.SetupButton, String)] = [
             (.done, "done"),
             (.goToMyStore, "go_to_my_store"),
             (.tryAgain, "try_again"),
             (.updatePlugin, "update_plugin")
         ]
 
-        for (label, expected) in cases {
+        for (button, expected) in cases {
             // When
-            let event = WooAnalyticsEvent.PushNotificationsSetup.flowButtonTap(label)
+            let event = WooAnalyticsEvent.PushNotificationsSetup.flowButtonTap(button)
 
             // Then
             #expect(event.statName == .pushNotificationsSetupFlowButtonTap)

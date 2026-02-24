@@ -355,6 +355,7 @@ struct POSBookingDetailView: View {
 
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCollectPaymentTapped(bookingID: booking.id))
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true

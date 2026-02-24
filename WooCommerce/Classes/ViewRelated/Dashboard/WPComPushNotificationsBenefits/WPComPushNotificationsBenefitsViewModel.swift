@@ -103,10 +103,10 @@ final class WPComPushNotificationsBenefitsViewModel {
     func continueTapped() {
         switch variant {
         case .connect:
-            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap( .continue))
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.continue))
             pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
-            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap( .updatePlugin))
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.updatePlugin))
             pushNotificationSetupCoordinator?.startSetup(
                 siteAlreadyConnected: true,
                 pluginOutdatedVersion: currentVersion
@@ -115,12 +115,12 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func notNowTapped() {
-        analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap( .notNow))
+        analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.notNow))
         onDismiss()
     }
 
     func whatIsWPComTapped() {
-        // TODO: Track link tapped event
+        analytics.track(.pushNotificationsSetupIntroductionLinkTap)
     }
 }
 
@@ -133,8 +133,7 @@ private extension WPComPushNotificationsBenefitsViewModel {
             if case .incompatible(let currentVersion, _) = result {
                 variant = .pluginUpdate(currentVersion: currentVersion)
             } else {
-                error = .noMissingRequirements
-                analytics.track(.pushNotificationsSetupIntroductionError, withProperties: ["error_type": "no_missing_requirements"])
+                error = .setupNotRequired
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
@@ -154,7 +153,7 @@ extension WPComPushNotificationsBenefitsViewModel {
             switch self {
             case .noPermission:
                 Localization.noPermission
-            case .noMissingRequirements, .generic:
+            case .setupNotRequired, .generic:
                 Localization.generic
             }
         }

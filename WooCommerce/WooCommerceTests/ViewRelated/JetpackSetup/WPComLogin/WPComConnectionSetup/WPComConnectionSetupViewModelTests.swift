@@ -232,7 +232,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
             withExtendedLifetime(viewModel) {
                 mockHandler.simulateStepUpdate(.connect, status: .success)
 
-                assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "connect_wpcom")
+                provider.assertReceived(event: "push_notifications_setup_flow_success", with: ["step": "connect_wpcom"])
             }
         }
 
@@ -243,7 +243,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
             withExtendedLifetime(viewModel) {
                 mockHandler.simulateStepUpdate(.enablePush, status: .success)
 
-                assertEqual(provider, eventName: "push_notifications_setup_flow_success", property: "step", expected: "enable_push_notifications")
+                provider.assertReceived(event: "push_notifications_setup_flow_success", with: ["step": "enable_push_notifications"])
             }
         }
 
@@ -255,7 +255,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
             withExtendedLifetime(viewModel) {
                 mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
 
-                assertEqual(provider, eventName: "push_notifications_setup_flow_error", property: "step", expected: "plugin_compatibility")
+                provider.assertReceived(event: "push_notifications_setup_flow_error", with: ["step": "plugin_compatibility"])
             }
         }
     }
@@ -272,7 +272,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
             viewModel.primaryButtonTapped()
 
-            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "go_to_my_store")
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "go_to_my_store"])
         }
 
         // When connection failed and primary tapped, then tracks try_again
@@ -284,7 +284,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
             viewModel.primaryButtonTapped()
 
-            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "try_again"])
         }
 
         // When plugin outdated and primary tapped, then tracks update_plugin
@@ -296,7 +296,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
             viewModel.primaryButtonTapped()
 
-            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "update_plugin")
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "update_plugin"])
         }
 
         // When secondary button tapped, then tracks try_again
@@ -307,7 +307,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
             viewModel.secondaryButtonTapped()
 
-            assertEqual(provider, eventName: "push_notifications_setup_flow_button_tap", property: "button_label", expected: "try_again")
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "try_again"])
         }
     }
 
@@ -338,14 +338,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - Helpers
-
-    private func assertEqual(_ provider: MockAnalyticsProvider, eventName: String, property: String, expected: String) {
-        let index = provider.receivedEvents.firstIndex(of: eventName)
-        XCTAssertNotNil(index)
-        if let index {
-            XCTAssertEqual(provider.receivedProperties[index][property] as? String, expected)
-        }
-    }
 
     private func makeViewModel(analytics: Analytics = ServiceLocator.analytics) -> WPComConnectionSetupViewModel {
         WPComConnectionSetupViewModel(

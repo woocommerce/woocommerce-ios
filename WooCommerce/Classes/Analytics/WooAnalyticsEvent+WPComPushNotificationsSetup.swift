@@ -13,7 +13,6 @@ extension WooAnalyticsEvent {
         }
 
         enum SetupButton: String {
-            case done
             case goToMyStore = "go_to_my_store"
             case tryAgain = "try_again"
             case updatePlugin = "update_plugin"

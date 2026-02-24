@@ -29,7 +29,6 @@ struct WooAnalyticsEvent_PushNotificationsSetupTests {
     @Test func test_flowButtonTap_when_given_each_label_then_produces_correct_event() {
         // Given
         let cases: [(WooAnalyticsEvent.WPComPushNotificationsSetup.SetupButton, String)] = [
-            (.done, "done"),
             (.goToMyStore, "go_to_my_store"),
             (.tryAgain, "try_again"),
             (.updatePlugin, "update_plugin")

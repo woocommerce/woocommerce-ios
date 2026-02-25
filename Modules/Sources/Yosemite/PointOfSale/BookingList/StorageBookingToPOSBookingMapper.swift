@@ -102,6 +102,52 @@ private extension StorageBookingToPOSBookingMapper {
             return currencyFormatter.formatAmount(orderInfo.discountTotal, with: booking.currency, isNegative: true)
         }()
 
+        let posLineItems: [POSOrderItem] = orderInfo.lineItems.compactMap { item in
+            guard let formattedPrice = currencyFormatter.formatAmount(item.price as Decimal, with: booking.currency),
+                  let formattedTotal = currencyFormatter.formatAmount(item.total, with: booking.currency) else {
+                return nil
+            }
+            let total = Decimal(string: item.total) ?? (item.price as Decimal) * item.quantity
+            let totalTax = Decimal(string: item.totalTax) ?? 0
+            return POSOrderItem(
+                itemID: item.itemID,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price as Decimal,
+                total: total,
+                totalTax: totalTax,
+                formattedPrice: formattedPrice,
+                formattedTotal: formattedTotal,
+                imageSrc: item.imageSrc,
+                attributes: []
+            )
+        }
+
+        let posRefunds: [POSOrderRefund] = orderInfo.refunds.map { refund in
+            POSOrderRefund(
+                refundID: refund.refundID,
+                formattedTotal: currencyFormatter.formatAmount(refund.total, with: booking.currency) ?? "",
+                reason: refund.reason
+            )
+        }
+
+        let formattedNetAmount: String? = {
+            guard !orderInfo.refunds.isEmpty,
+                  let totalDecimal = Decimal(string: orderInfo.paymentInfo?.total ?? "") else {
+                return nil
+            }
+            let refundSum = orderInfo.refunds.reduce(Decimal.zero) { acc, refund in
+                acc + (Decimal(string: refund.total) ?? 0)
+            }
+            let netAmount = totalDecimal + refundSum
+            return currencyFormatter.formatAmount(netAmount, with: booking.currency)
+        }()
+
+        let lineItemQuantitiesByProductOrVariationID = orderInfo.lineItems.reduce(into: [Int64: Decimal]()) { acc, item in
+            let id = item.variationID != 0 ? item.variationID : item.productID
+            acc[id, default: 0] += item.quantity
+        }
+
         return POSOrder(
             id: orderInfo.orderID,
             number: orderInfo.orderNumber,
@@ -109,12 +155,17 @@ private extension StorageBookingToPOSBookingMapper {
             status: .init(rawValue: orderInfo.statusKey),
             formattedTotal: formattedTotal,
             formattedSubtotal: formattedSubtotal,
+            customerEmail: orderInfo.customerEmail,
             paymentMethodID: orderInfo.paymentInfo?.paymentMethodID ?? "",
             paymentMethodTitle: orderInfo.paymentInfo?.paymentMethodTitle ?? "",
+            lineItems: posLineItems,
+            refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: formattedTotalTax,
             formattedPaymentTotal: formattedTotal,
-            datePaid: orderInfo.datePaid
+            formattedNetAmount: formattedNetAmount,
+            datePaid: orderInfo.datePaid,
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 }

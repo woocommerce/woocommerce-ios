@@ -148,10 +148,12 @@ struct POSBookingDetailView: View {
     private var viewOrderMenu: some View {
         Menu {
             Button(Localization.viewOrderAction) {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped(bookingID: booking.id))
                 navigationPath.append(.orderDetail)
             }
             if booking.isPaid {
                 Button(Localization.issueRefundAction) {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped(bookingID: booking.id))
                     orderListModel.ordersController.selectOrder(booking.order)
                     navigationPath.append(.orderDetailRefund)
                 }

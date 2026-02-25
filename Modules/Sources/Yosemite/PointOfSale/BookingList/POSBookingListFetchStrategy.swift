@@ -59,7 +59,9 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
                 order: .ascending,
                 cacheClearStrategy: cacheClearStrategy
             )
-            guard let filters else { return PagedItems(items: [], hasMorePages: hasMorePages, totalItems: nil) }
+            guard let filters else {
+                return PagedItems(items: [], hasMorePages: hasMorePages, totalItems: nil) 
+            }
             let bookings = await fetchLocalBookingsSync(filters: filters, limit: nil)
             return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)
         } catch AFError.explicitlyCancelled, is CancellationError {

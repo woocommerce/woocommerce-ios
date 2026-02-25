@@ -6,7 +6,7 @@ allowed-tools: "Bash, Read, Grep, Glob"
 argument-hint: "[target] [class] [method]"
 ---
 
-Run unit tests for the WooCommerce iOS project.
+Run unit tests for the WooCommerce iOS project using the Fastlane `test` lane.
 
 ## Run tests
 
@@ -14,15 +14,22 @@ Determine scope from $ARGUMENTS:
 
 - **No arguments**: Run the full unit test suite:
 ```bash
-bundle exec fastlane test_without_building name:UnitTests 2>&1 | tail -100
+bundle exec fastlane test 2>&1 | tail -100
 ```
 
-- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`) or **test class/method**: Use `xcodebuild` with `-only-testing:` since the Fastlane lane doesn't support targeted filtering:
+- **Module name** (e.g., `Yosemite`, `Networking`, `Storage`) or **test class/method**: Use the `only_testing` option:
 ```bash
-xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' \
-  -sdk iphonesimulator test-without-building \
-  -only-testing:"<Module>Tests[/<ClassName>[/<method>]]" 2>&1 | tail -100
+bundle exec fastlane test only_testing:"<Module>Tests[/<ClassName>[/<method>]]" 2>&1 | tail -100
+```
+
+- **Clean build requested** (or after dependency/scheme changes): Add `clean:true`:
+```bash
+bundle exec fastlane test clean:true 2>&1 | tail -100
+```
+
+Options can be combined:
+```bash
+bundle exec fastlane test only_testing:WooCommerceTests/MyClass clean:true 2>&1 | tail -100
 ```
 
 ## After running

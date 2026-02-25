@@ -377,7 +377,7 @@ struct POSBookingDetailView: View {
 
     private var collectPaymentButton: some View {
         Button(action: { startPaymentCollection() }) {
-            Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
+            Text(Localization.collectPaymentButton)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -566,7 +566,7 @@ private enum Localization {
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
-        comment: "Button to initiate payment collection for a booking. The amount is appended after a separator."
+        comment: "Button to initiate payment collection for a booking."
     )
 
     static let viewOrderAction = NSLocalizedString(

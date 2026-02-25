@@ -1359,7 +1359,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Point of Sale Bookings
     case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
     case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
-    case pointOfSaleBookingDetailLoaded = "booking_detail_loaded"
+    case pointOfSaleBookingsListBookingTapped = "bookings_list_booking_tapped"
     case pointOfSaleBookingCollectPaymentTapped = "booking_collect_payment_tapped"
     case pointOfSaleBookingCardPaymentSuccess = "booking_card_payment_success"
     case pointOfSaleBookingCashPaymentSuccess = "booking_cash_payment_success"

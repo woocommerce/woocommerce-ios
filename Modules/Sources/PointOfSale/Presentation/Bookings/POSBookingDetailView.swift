@@ -135,9 +135,6 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .onAppear {
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingDetailLoaded(bookingID: booking.id))
-        }
         .posModal(item: $cancelModalState) { state in
             POSCancelBookingModalContent(
                 state: state,

@@ -150,22 +150,12 @@ public final class POSBookingService: POSBookingServiceProtocol {
 private extension POSBookingService {
     func fetchOrders(orderIDs: [Int64]) async -> [Int64: Order] {
         guard !orderIDs.isEmpty else { return [:] }
-        var result: [Int64: Order] = [:]
-        await withTaskGroup(of: (Int64, Order?).self) { group in
-            for orderID in orderIDs {
-                group.addTask { [weak self] in
-                    guard let self else { return (orderID, nil) }
-                    let order = try? await self.ordersRemote.loadPOSOrder(siteID: self.siteID, orderID: orderID)
-                    return (orderID, order)
-                }
-            }
-            for await (orderID, order) in group {
-                if let order {
-                    result[orderID] = order
-                }
-            }
+        do {
+            let orders = try await ordersRemote.loadPOSOrders(siteID: siteID, orderIDs: Array(Set(orderIDs)))
+            return Dictionary(uniqueKeysWithValues: orders.map { ($0.orderID, $0) })
+        } catch {
+            return [:]
         }
-        return result
     }
 
     func fetchResources(resourceIDs: [Int64]) async -> [Int64: BookingResource] {

@@ -2397,6 +2397,73 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(migratedOrderInfo.value(forKey: "datePaid") as? Date)
         XCTAssertNil(migratedOrderInfo.value(forKey: "discountTotal") as? String)
     }
+
+    // MARK: - Model 132 to Model 133
+
+    func test_migrating_from_132_to_133_adds_BookingOrderLineItem_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 132")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 133")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let lineItem = NSEntityDescription.insertNewObject(forEntityName: "BookingOrderLineItem", into: targetContext)
+        XCTAssertNotNil(lineItem.entity.attributesByName["itemID"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["name"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["productID"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["variationID"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["quantity"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["price"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["subtotal"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["total"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["totalTax"])
+        XCTAssertNotNil(lineItem.entity.attributesByName["imageSrc"])
+        XCTAssertNotNil(lineItem.entity.relationshipsByName["orderInfo"])
+    }
+
+    func test_migrating_from_132_to_133_adds_BookingOrderRefund_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 132")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 133")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let refund = NSEntityDescription.insertNewObject(forEntityName: "BookingOrderRefund", into: targetContext)
+        XCTAssertNotNil(refund.entity.attributesByName["refundID"])
+        XCTAssertNotNil(refund.entity.attributesByName["reason"])
+        XCTAssertNotNil(refund.entity.attributesByName["total"])
+        XCTAssertNotNil(refund.entity.relationshipsByName["orderInfo"])
+    }
+
+    func test_migrating_from_132_to_133_adds_customerEmail_and_relationships_to_BookingOrderInfo() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 132")
+        let sourceContext = sourceContainer.viewContext
+        let orderInfo = insertBookingOrderInfo(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderInfo.entity.attributesByName["customerEmail"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(orderInfo.entity.relationshipsByName["lineItems"], "Precondition. Relationship does not exist.")
+        XCTAssertNil(orderInfo.entity.relationshipsByName["refunds"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 133")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["customerEmail"])
+        XCTAssertNotNil(migratedOrderInfo.entity.relationshipsByName["lineItems"])
+        XCTAssertNotNil(migratedOrderInfo.entity.relationshipsByName["refunds"])
+
+        // Existing data survives migration
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "statusKey") as? String, "completed")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

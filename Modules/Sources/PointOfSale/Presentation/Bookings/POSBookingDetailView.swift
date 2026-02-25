@@ -160,7 +160,6 @@ struct POSBookingDetailView: View {
             }
             if booking.isCancellable {
                 Button(Localization.cancelBookingAction, role: .destructive) {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelTapped(bookingID: booking.id))
                     cancelModalState = .confirmation
                 }
             }

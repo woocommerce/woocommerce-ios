@@ -19,31 +19,34 @@ struct POSOrderMapper {
     }
 
     func map(order: NetworkingCore.Order) throws -> POSOrder {
-        let customerEmail = order.billingAddress?.email
+        let posLineItems = try order.items.map { item in
+            try mapLineItem(
+                itemID: item.itemID,
+                name: item.name,
+                quantity: item.quantity,
+                price: item.price,
+                total: item.total,
+                totalTax: item.totalTax,
+                imageSrc: item.image?.src,
+                attributes: item.attributes,
+                currency: order.currency
+            )
+        }
 
-        let posLineItems = try order.items.map { try map(orderItem: $0, currency: order.currency) }
-
-        let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
-
-        let formattedDiscountTotal: String? = {
-            guard let discountTotalValue = Double(order.discountTotal), discountTotalValue > 0 else {
-                return nil
-            }
-            return currencyFormatter.formatAmount(order.discountTotal, with: order.currency, isNegative: true) ?? ""
-        }()
+        let posRefunds = order.refunds.map { refund in
+            mapRefund(refundID: refund.refundID, total: refund.total, reason: refund.reason, currency: order.currency)
+        }
 
         let formattedNetAmount: String? = {
             guard !order.refunds.isEmpty else {
                 return nil
             }
-            return order.netAmount(currencyFormatter: currencyFormatter)
+            return formatNetAmount(total: order.total, refundTotals: order.refunds.map(\.total), currency: order.currency)
         }()
 
-        // Aggregate quantities by product/variation ID for refund comparison
-        let lineItemQuantitiesByProductOrVariationID = order.items.reduce(into: [Int64: Decimal]()) { acc, item in
-            let id = item.variationID != 0 ? item.variationID : item.productID
-            acc[id, default: 0] += item.quantity
-        }
+        let lineItemQuantitiesByProductOrVariationID = Self.aggregateLineItemQuantities(
+            items: order.items.map { ($0.productID, $0.variationID, $0.quantity) }
+        )
 
         return POSOrder(
             id: order.orderID,
@@ -52,12 +55,12 @@ struct POSOrderMapper {
             status: order.status,
             formattedTotal: currencyFormatter.formatAmount(order.total, with: order.currency) ?? "",
             formattedSubtotal: order.subtotalValue(currencyFormatter: currencyFormatter),
-            customerEmail: customerEmail,
+            customerEmail: order.billingAddress?.email,
             paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
             refunds: posRefunds,
-            formattedDiscountTotal: formattedDiscountTotal,
+            formattedDiscountTotal: formatDiscountTotal(order.discountTotal, currency: order.currency),
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
             formattedNetAmount: formattedNetAmount,
@@ -66,38 +69,77 @@ struct POSOrderMapper {
         )
     }
 
-    private func map(orderItem: NetworkingCore.OrderItem, currency: String) throws -> POSOrderItem {
-        guard let totalTax = Decimal(string: orderItem.totalTax) else {
-            throw POSOrderItemMappingError.invalidTaxValue(itemID: orderItem.itemID, value: orderItem.totalTax)
+    // MARK: - Shared Mapping Helpers
+
+    func mapLineItem(
+        itemID: Int64,
+        name: String,
+        quantity: Decimal,
+        price: NSDecimalNumber,
+        total: String,
+        totalTax: String,
+        imageSrc: String?,
+        attributes: [OrderItemAttribute],
+        currency: String
+    ) throws -> POSOrderItem {
+        guard let totalTaxDecimal = Decimal(string: totalTax) else {
+            throw POSOrderItemMappingError.invalidTaxValue(itemID: itemID, value: totalTax)
         }
-        guard let formattedPrice = currencyFormatter.formatAmount(orderItem.price, with: currency) else {
-            throw POSOrderItemMappingError.priceFormattingFailed(itemID: orderItem.itemID, price: orderItem.price, currency: currency)
+        guard let formattedPrice = currencyFormatter.formatAmount(price, with: currency) else {
+            throw POSOrderItemMappingError.priceFormattingFailed(itemID: itemID, price: price, currency: currency)
         }
-        guard let formattedTotal = currencyFormatter.formatAmount(orderItem.total, with: currency) else {
-            throw POSOrderItemMappingError.totalFormattingFailed(itemID: orderItem.itemID, total: orderItem.total, currency: currency)
+        guard let formattedTotal = currencyFormatter.formatAmount(total, with: currency) else {
+            throw POSOrderItemMappingError.totalFormattingFailed(itemID: itemID, total: total, currency: currency)
         }
 
-        let total = Decimal(string: orderItem.total) ?? (orderItem.price as Decimal) * orderItem.quantity
+        let totalDecimal = Decimal(string: total) ?? (price as Decimal) * quantity
 
         return POSOrderItem(
-            itemID: orderItem.itemID,
-            name: orderItem.name,
-            quantity: orderItem.quantity,
-            price: orderItem.price as Decimal,
-            total: total,
-            totalTax: totalTax,
+            itemID: itemID,
+            name: name,
+            quantity: quantity,
+            price: price as Decimal,
+            total: totalDecimal,
+            totalTax: totalTaxDecimal,
             formattedPrice: formattedPrice,
             formattedTotal: formattedTotal,
-            imageSrc: orderItem.image?.src,
-            attributes: orderItem.attributes
+            imageSrc: imageSrc,
+            attributes: attributes
         )
     }
 
-    private func map(orderRefund: NetworkingCore.OrderRefundCondensed, currency: String) -> POSOrderRefund {
-        return POSOrderRefund(
-            refundID: orderRefund.refundID,
-            formattedTotal: currencyFormatter.formatAmount(orderRefund.total, with: currency) ?? "",
-            reason: orderRefund.reason
+    func mapRefund(refundID: Int64, total: String, reason: String?, currency: String) -> POSOrderRefund {
+        POSOrderRefund(
+            refundID: refundID,
+            formattedTotal: currencyFormatter.formatAmount(total, with: currency) ?? "",
+            reason: reason
         )
+    }
+
+    func formatDiscountTotal(_ discountTotal: String, currency: String) -> String? {
+        guard let discountTotalValue = Double(discountTotal), discountTotalValue > 0 else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(discountTotal, with: currency, isNegative: true) ?? ""
+    }
+
+    func formatNetAmount(total: String, refundTotals: [String], currency: String) -> String? {
+        guard let totalDecimal = Decimal(string: total) else {
+            return nil
+        }
+        let refundSum = refundTotals.reduce(Decimal.zero) { acc, refundTotal in
+            acc + (Decimal(string: refundTotal) ?? 0)
+        }
+        let netAmount = totalDecimal + refundSum
+        return currencyFormatter.formatAmount(netAmount, with: currency)
+    }
+
+    static func aggregateLineItemQuantities(
+        items: [(productID: Int64, variationID: Int64, quantity: Decimal)]
+    ) -> [Int64: Decimal] {
+        items.reduce(into: [Int64: Decimal]()) { acc, item in
+            let id = item.variationID != 0 ? item.variationID : item.productID
+            acc[id, default: 0] += item.quantity
+        }
     }
 }

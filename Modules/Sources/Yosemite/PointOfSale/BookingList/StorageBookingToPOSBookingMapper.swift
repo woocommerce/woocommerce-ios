@@ -4,10 +4,12 @@ import Storage
 
 struct StorageBookingToPOSBookingMapper {
     private let currencyFormatter: CurrencyFormatter
+    private let orderMapper: POSOrderMapper
     private let siteSettings: [SiteSetting]
 
     init(currencyFormatter: CurrencyFormatter, siteSettings: [SiteSetting] = []) {
         self.currencyFormatter = currencyFormatter
+        self.orderMapper = POSOrderMapper(currencyFormatter: currencyFormatter)
         self.siteSettings = siteSettings
     }
 
@@ -97,56 +99,40 @@ private extension StorageBookingToPOSBookingMapper {
             currencyFormatter.formatAmount($0.totalTax, with: booking.currency)
         } ?? ""
 
-        let formattedDiscountTotal: String? = {
-            guard let value = Double(orderInfo.discountTotal), value > 0 else { return nil }
-            return currencyFormatter.formatAmount(orderInfo.discountTotal, with: booking.currency, isNegative: true)
-        }()
-
         let posLineItems: [POSOrderItem] = orderInfo.lineItems.compactMap { item in
-            guard let formattedPrice = currencyFormatter.formatAmount(item.price as Decimal, with: booking.currency),
-                  let formattedTotal = currencyFormatter.formatAmount(item.total, with: booking.currency) else {
-                return nil
-            }
-            let total = Decimal(string: item.total) ?? (item.price as Decimal) * item.quantity
-            let totalTax = Decimal(string: item.totalTax) ?? 0
-            return POSOrderItem(
+            try? orderMapper.mapLineItem(
                 itemID: item.itemID,
                 name: item.name,
                 quantity: item.quantity,
-                price: item.price as Decimal,
-                total: total,
-                totalTax: totalTax,
-                formattedPrice: formattedPrice,
-                formattedTotal: formattedTotal,
+                price: item.price,
+                total: item.total,
+                totalTax: item.totalTax,
                 imageSrc: item.imageSrc,
-                attributes: []
+                attributes: [],
+                currency: booking.currency
             )
         }
 
-        let posRefunds: [POSOrderRefund] = orderInfo.refunds.map { refund in
-            POSOrderRefund(
-                refundID: refund.refundID,
-                formattedTotal: currencyFormatter.formatAmount(refund.total, with: booking.currency) ?? "",
-                reason: refund.reason
-            )
+        let posRefunds = orderInfo.refunds.map { refund in
+            orderMapper.mapRefund(refundID: refund.refundID, total: refund.total, reason: refund.reason, currency: booking.currency)
         }
+
+        let formattedDiscountTotal = orderMapper.formatDiscountTotal(orderInfo.discountTotal, currency: booking.currency)
 
         let formattedNetAmount: String? = {
-            guard !orderInfo.refunds.isEmpty,
-                  let totalDecimal = Decimal(string: orderInfo.paymentInfo?.total ?? "") else {
+            guard !orderInfo.refunds.isEmpty else {
                 return nil
             }
-            let refundSum = orderInfo.refunds.reduce(Decimal.zero) { acc, refund in
-                acc + (Decimal(string: refund.total) ?? 0)
-            }
-            let netAmount = totalDecimal + refundSum
-            return currencyFormatter.formatAmount(netAmount, with: booking.currency)
+            return orderMapper.formatNetAmount(
+                total: orderInfo.paymentInfo?.total ?? "",
+                refundTotals: orderInfo.refunds.map(\.total),
+                currency: booking.currency
+            )
         }()
 
-        let lineItemQuantitiesByProductOrVariationID = orderInfo.lineItems.reduce(into: [Int64: Decimal]()) { acc, item in
-            let id = item.variationID != 0 ? item.variationID : item.productID
-            acc[id, default: 0] += item.quantity
-        }
+        let lineItemQuantitiesByProductOrVariationID = POSOrderMapper.aggregateLineItemQuantities(
+            items: orderInfo.lineItems.map { ($0.productID, $0.variationID, $0.quantity) }
+        )
 
         return POSOrder(
             id: orderInfo.orderID,

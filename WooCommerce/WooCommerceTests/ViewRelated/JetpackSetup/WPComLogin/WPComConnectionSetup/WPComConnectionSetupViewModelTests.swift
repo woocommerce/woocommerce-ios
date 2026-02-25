@@ -279,20 +279,3 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         )
     }
 }
-
-// MARK: - WPComConnectionSetupStep.Status Equatable
-
-extension WPComConnectionSetupStep.Status: Equatable {
-    public static func == (lhs: WPComConnectionSetupStep.Status, rhs: WPComConnectionSetupStep.Status) -> Bool {
-        switch (lhs, rhs) {
-        case (.notStarted, .notStarted),
-             (.running, .running),
-             (.success, .success):
-            return true
-        case let (.failure(lhsError), .failure(rhsError)):
-            return lhsError == rhsError
-        default:
-            return false
-        }
-    }
-}

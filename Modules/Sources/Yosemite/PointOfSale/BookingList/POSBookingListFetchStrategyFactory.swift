@@ -17,7 +17,6 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
     private let store: POSBookingInMemoryStore
     public let bookingService: POSBookingServiceProtocol
 
-    @MainActor
     public init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,

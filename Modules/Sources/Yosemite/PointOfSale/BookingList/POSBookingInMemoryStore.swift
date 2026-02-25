@@ -13,6 +13,8 @@ final class POSBookingInMemoryStore {
 
     private var bookingsByDateRange: [DateRange: [POSBooking]] = [:]
 
+    nonisolated init() {}
+
     func bookings(for dateRange: DateRange, limit: Int?) -> [POSBooking] {
         let items = sorted(bookingsByDateRange[dateRange] ?? [])
         if let limit {

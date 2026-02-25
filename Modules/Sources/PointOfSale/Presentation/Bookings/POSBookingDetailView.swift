@@ -276,11 +276,6 @@ struct POSBookingDetailView: View {
                     .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
             }
 
-            if let address = booking.billingAddress {
-                sectionDivider
-                stackedField(label: Localization.billingAddressLabel, value: address)
-            }
-
             if let note = booking.customerNote {
                 sectionDivider
                 stackedField(label: Localization.noteLabel, value: note)
@@ -450,7 +445,7 @@ struct POSBookingDetailView: View {
 private extension POSBooking {
     var hasNoCustomerDetails: Bool {
         customerName == nil && customerEmail == nil && customerPhone == nil
-            && billingAddress == nil && customerNote == nil
+            && customerNote == nil
     }
 }
 
@@ -530,12 +525,6 @@ private enum Localization {
         "pos.bookingDetailView.noteLabel",
         value: "Note",
         comment: "Label for the customer note in booking details."
-    )
-
-    static let billingAddressLabel = NSLocalizedString(
-        "pos.bookingDetailView.billingAddressLabel",
-        value: "Billing address",
-        comment: "Label for the billing address in booking details."
     )
 
     static let bookingNoteLabel = NSLocalizedString(

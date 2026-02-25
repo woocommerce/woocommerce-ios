@@ -12,7 +12,7 @@ struct POSTotalsSectionView: View {
     let discountAmount: String?
     let taxAmount: String
     let totalAmount: String
-    let paidAmount: String
+    let paidAmount: String?
     let paymentMethodTitle: String
     let refunds: [POSOrderRefund]
     let netAmount: String?
@@ -32,15 +32,18 @@ struct POSTotalsSectionView: View {
                 if let discountAmount {
                     totalsRow(title: Localization.discountLabel, amount: discountAmount)
                 }
+            }
 
-                sectionDivider
-                totalsRow(
-                    title: Localization.totalLabel,
-                    amount: totalAmount,
-                    titleColor: .posOnSurface,
-                    titleFont: .posBodyLargeBold
-                )
+            sectionDivider
 
+            totalsRow(
+                title: Localization.totalLabel,
+                amount: totalAmount,
+                titleColor: .posOnSurface,
+                titleFont: .posBodyLargeBold
+            )
+
+            if let paidAmount {
                 sectionDivider
                 paidAmountRow
 
@@ -59,12 +62,14 @@ struct POSTotalsSectionView: View {
 
     private var paidAmountRow: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
-            totalsRow(
-                title: Localization.paidLabel,
-                amount: paidAmount,
-                titleColor: .posOnSurface,
-                titleFont: .posBodyLargeBold
-            )
+            if let paidAmount {
+                totalsRow(
+                    title: Localization.paidLabel,
+                    amount: paidAmount,
+                    titleColor: .posOnSurface,
+                    titleFont: .posBodyLargeBold
+                )
+            }
 
             if !paymentMethodTitle.isEmpty {
                 Text(paymentMethodTitle)
@@ -73,7 +78,7 @@ struct POSTotalsSectionView: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Localization.paidAccessibilityLabel(amount: paidAmount, method: paymentMethodTitle))
+        .accessibilityLabel(Localization.paidAccessibilityLabel(amount: paidAmount ?? "", method: paymentMethodTitle))
     }
 
     // MARK: - Refunds

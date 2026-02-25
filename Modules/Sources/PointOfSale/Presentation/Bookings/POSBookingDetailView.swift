@@ -337,10 +337,10 @@ struct POSBookingDetailView: View {
             discountAmount: booking.order.formattedDiscountTotal ?? Localization.noDiscountPlaceholder,
             taxAmount: booking.order.formattedTotalTax,
             totalAmount: booking.order.formattedTotal,
-            paidAmount: booking.order.formattedPaymentTotal,
-            paymentMethodTitle: booking.order.paymentMethodTitle,
-            refunds: booking.order.refunds,
-            netAmount: booking.order.formattedNetAmount
+            paidAmount: nil,
+            paymentMethodTitle: "",
+            refunds: [],
+            netAmount: nil
         )
     }
 

@@ -66,14 +66,14 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     private let handler: WPComConnectionSetupHandlerProtocol
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
-    private let onUpdatePlugin: () -> Void
+    private let onUpdatePlugin: (@escaping () -> Void) -> Void
     private var shouldAutoOpenUpdatePlugin = false
 
     init(storeName: String,
          handler: WPComConnectionSetupHandlerProtocol,
          onDismiss: @escaping () -> Void,
          onGoToStore: @escaping () -> Void,
-         onUpdatePlugin: @escaping () -> Void) {
+         onUpdatePlugin: @escaping (@escaping () -> Void) -> Void) {
         self.storeName = storeName
         self.handler = handler
         self.onDismiss = onDismiss
@@ -99,7 +99,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func onAppear() {
         if shouldAutoOpenUpdatePlugin {
             shouldAutoOpenUpdatePlugin = false
-            onUpdatePlugin()
+            onUpdatePlugin { [weak self] in
+                self?.retrySetup()
+            }
             return
         }
         guard setupState == .inProgress else { return }
@@ -121,7 +123,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
                 retrySetup()
             case .checkPlugin:
                 if checkPluginError == .outdated {
-                    onUpdatePlugin()
+                    onUpdatePlugin { [weak self] in
+                        self?.retrySetup()
+                    }
                 } else {
                     retrySetup()
                 }

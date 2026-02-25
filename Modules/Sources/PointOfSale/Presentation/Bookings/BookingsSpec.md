@@ -334,7 +334,7 @@ All customer-related fields come from the order enrichment that already happens 
 protocol POSBookingListFetchStrategy {
     func fetchBookings(pageNumber: Int) async throws -> POSBookingPageResult
     var supportsCaching: Bool { get }
-    var showsLoadingWithItems: Bool { get }
+    var showsCachedDataWhileLoading: Bool { get }
 }
 ```
 

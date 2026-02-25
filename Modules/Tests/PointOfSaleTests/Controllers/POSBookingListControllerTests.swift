@@ -492,18 +492,18 @@ final class POSBookingListControllerTests {
 
     // MARK: - Prefetch
 
-    @Test func test_syncBookings_syncs_today_and_adjacent_dates() async {
+    @Test func test_init_syncs_today_and_adjacent_dates() async {
         // Given
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: [makeBooking(id: 1)], hasMorePages: false, totalItems: nil))
 
-        // When - 3 calls expected: today + yesterday + tomorrow (+ 1 from init = 4 total)
+        // When - init triggers syncBookings: 1 defaultStrategy from init + 3 from syncBookings (today + yesterday + tomorrow)
         await withCheckedContinuation { continuation in
             mockFactory.onDefaultStrategyCalled = {
                 if self.mockFactory.defaultStrategyCallCount == 4 {
                     continuation.resume()
                 }
             }
-            sut.syncBookings()
+            _ = sut
         }
 
         // Then
@@ -555,6 +555,52 @@ final class POSBookingListControllerTests {
 
         // Then - cache was cleared, new date shows empty
         #expect(sut.bookingsViewState == .empty)
+    }
+
+    // MARK: - Stale fetch guard (strategy change mid-flight)
+
+    @Test func test_loadNextBookings_when_strategy_changes_during_pagination_then_discards_stale_results() async {
+        // Given - load first page with more pages available
+        let firstPageBookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: firstPageBookings, hasMorePages: true, totalItems: nil))
+        await sut.loadBookings()
+
+        // Configure: when page 2 is fetched, simulate a date switch by changing the strategy ID.
+        // This mirrors what selectDate does (replacing fetchStrategy with a new one that has a different id).
+        let originalID = mockStrategy.id
+        mockStrategy.onFetchBookingsCalled = { pageNumber in
+            if pageNumber == 2 {
+                self.mockStrategy.id = "switched-date-strategy"
+            }
+        }
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: [self.makeBooking(id: 99)], hasMorePages: false, totalItems: nil))
+
+        // When
+        await sut.loadNextBookings()
+
+        // Then - stale page 2 results should be discarded
+        let bookingIDs = sut.bookingsViewState.bookings.map(\.id)
+        #expect(!bookingIDs.contains(99), "Stale pagination results from old date should be discarded")
+        #expect(bookingIDs.contains(1), "First page bookings should still be present")
+    }
+
+    @Test func test_loadNextBookings_when_strategy_unchanged_during_pagination_then_results_are_applied() async {
+        // Given - load first page
+        let firstPageBookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: firstPageBookings, hasMorePages: true, totalItems: nil))
+        await sut.loadBookings()
+
+        // Configure page 2 - strategy ID does NOT change (no callback set)
+        let secondPageBookings = [makeBooking(id: 2)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: secondPageBookings, hasMorePages: false, totalItems: nil))
+
+        // When
+        await sut.loadNextBookings()
+
+        // Then - page 2 results should be applied normally
+        let bookingIDs = sut.bookingsViewState.bookings.map(\.id)
+        #expect(bookingIDs.contains(1))
+        #expect(bookingIDs.contains(2), "Page 2 results should be appended when strategy hasn't changed")
     }
 }
 

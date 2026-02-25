@@ -60,7 +60,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
                 cacheClearStrategy: cacheClearStrategy
             )
             guard let filters else {
-                return PagedItems(items: [], hasMorePages: hasMorePages, totalItems: nil) 
+                return PagedItems(items: [], hasMorePages: hasMorePages, totalItems: nil)
             }
             let bookings = await fetchLocalBookingsSync(filters: filters, limit: nil)
             return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)

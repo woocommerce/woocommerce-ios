@@ -371,6 +371,7 @@ private extension DashboardViewHostingController {
     func configureConnectWPComCard() {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self else { return }
+            self.viewModel.onConnectWPComCardTapped()
             let benefitsViewModel = WPComPushNotificationsBenefitsViewModel(
                 siteID: viewModel.siteID,
                 siteURL: viewModel.stores.sessionManager.defaultSite?.url ?? "",

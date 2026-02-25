@@ -1,4 +1,5 @@
 import XCTest
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 @MainActor
@@ -39,7 +40,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.primaryButtonTitle, "Go to My Store")
         XCTAssertFalse(viewModel.isPrimaryButtonEnabled)
         XCTAssertFalse(viewModel.isShowingSecondaryButton)
-        XCTAssertFalse(viewModel.isShowingDoneButton)
     }
 
     // MARK: - Delegate Update Tests
@@ -105,7 +105,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.primaryButtonTitle, "Go to My Store")
         XCTAssertTrue(viewModel.isPrimaryButtonEnabled)
-        XCTAssertTrue(viewModel.isShowingDoneButton)
     }
 
     // MARK: - Button Action Tests
@@ -148,24 +147,12 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
     // MARK: - Dismiss Tests
 
-    func test_cancelTapped_calls_handler_cancel_and_dismiss() {
+    func test_cancelTapped_calls_dismiss() {
         // Given
         let viewModel = makeViewModel()
 
         // When
         viewModel.cancelTapped()
-
-        // Then
-        XCTAssertEqual(mockHandler.cancelCallCount, 1)
-        XCTAssertTrue(dismissCalled)
-    }
-
-    func test_doneTapped_calls_dismiss() {
-        // Given
-        let viewModel = makeViewModel()
-
-        // When
-        viewModel.doneTapped()
 
         // Then
         XCTAssertTrue(dismissCalled)
@@ -264,12 +251,118 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPrimaryButtonEnabled)
     }
 
+    // MARK: - Analytics: stepDidUpdate
+
+    func test_stepDidUpdate_tracks_correct_analytics_events() {
+        // When step succeeds, then tracks flow_success with correct step
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            withExtendedLifetime(viewModel) {
+                mockHandler.simulateStepUpdate(.connect, status: .success)
+
+                provider.assertReceived(event: "push_notifications_setup_flow_success", with: ["step": "connect_wpcom"])
+            }
+        }
+
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            withExtendedLifetime(viewModel) {
+                mockHandler.simulateStepUpdate(.enablePush, status: .success)
+
+                provider.assertReceived(event: "push_notifications_setup_flow_success", with: ["step": "enable_push_notifications"])
+            }
+        }
+
+        // When step fails, then tracks flow_error with correct step
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            withExtendedLifetime(viewModel) {
+                mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .generic(reason: "Network error")))
+
+                provider.assertReceived(event: "push_notifications_setup_flow_error", with: ["step": "plugin_compatibility"])
+            }
+        }
+    }
+
+    // MARK: - Analytics: button taps
+
+    func test_buttonTapped_tracks_correct_analytics_events() {
+        // When completed and primary tapped, then tracks go_to_my_store
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            mockHandler.simulateSetupComplete()
+
+            viewModel.primaryButtonTapped()
+
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "go_to_my_store"])
+        }
+
+        // When connection failed and primary tapped, then tracks try_again
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            mockHandler.simulateStepUpdate(.connect, status: .failure(error: .generic(reason: "Connection failed")))
+
+            viewModel.primaryButtonTapped()
+
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "try_again"])
+        }
+
+        // When plugin outdated and primary tapped, then tracks update_plugin
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+            mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
+
+            viewModel.primaryButtonTapped()
+
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "update_plugin"])
+        }
+
+        // When secondary button tapped, then tracks try_again
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let viewModel = makeViewModel(analytics: analytics)
+
+            viewModel.secondaryButtonTapped()
+
+            provider.assertReceived(event: "push_notifications_setup_flow_button_tap", with: ["button_label": "try_again"])
+        }
+    }
+
+    // MARK: - Analytics: close events
+
+    func test_cancelTapped_tracks_flow_close_event() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.cancelTapped()
+
+        // Then
+        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_flow_close"))
+    }
+
     // MARK: - Helpers
 
-    private func makeViewModel() -> WPComConnectionSetupViewModel {
+    private func makeViewModel(analytics: Analytics = ServiceLocator.analytics) -> WPComConnectionSetupViewModel {
         WPComConnectionSetupViewModel(
             storeName: "Test Store",
             handler: mockHandler,
+            analytics: analytics,
             onDismiss: { [weak self] in self?.dismissCalled = true },
             onGoToStore: { [weak self] in self?.goToStoreCalled = true },
             onUpdatePlugin: { [weak self] onDismissed in

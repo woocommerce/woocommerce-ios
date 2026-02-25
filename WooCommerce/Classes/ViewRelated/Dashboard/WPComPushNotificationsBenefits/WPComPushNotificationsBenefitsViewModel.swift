@@ -71,7 +71,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func onAppear() {
-        // TODO: Track modal shown event
+        analytics.track(.pushNotificationsSetupIntroductionView)
     }
 
     /// Fetches Jetpack connection data to determine whether the site is connected,
@@ -91,19 +91,22 @@ final class WPComPushNotificationsBenefitsViewModel {
             DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
             if case NetworkError.unacceptableStatusCode(403, _) = error {
                 self.error = .noPermission
+                analytics.track(.pushNotificationsSetupIntroductionError, withProperties: ["error_type": "no_permission"])
             } else {
                 self.error = .generic(underlyingError: error)
+                analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
             }
         }
         isCheckingPlugin = false
     }
 
     func continueTapped() {
-        // TODO: Track continue tapped event
         switch variant {
         case .connect:
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.continue))
             pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.updatePlugin))
             pushNotificationSetupCoordinator?.startSetup(
                 siteAlreadyConnected: true,
                 pluginOutdatedVersion: currentVersion
@@ -112,12 +115,21 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func notNowTapped() {
-        // TODO: Track not now tapped event
+        analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.notNow))
         onDismiss()
     }
 
+    func cancelTapped() {
+        analytics.track(.pushNotificationsSetupIntroductionClose)
+        onDismiss()
+    }
+
+    func onSwipeDismiss() {
+        analytics.track(.pushNotificationsSetupIntroductionClose)
+    }
+
     func whatIsWPComTapped() {
-        // TODO: Track link tapped event
+        analytics.track(.pushNotificationsSetupIntroductionLinkTap)
     }
 }
 
@@ -135,6 +147,7 @@ private extension WPComPushNotificationsBenefitsViewModel {
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
             self.error = .generic(underlyingError: error)
+            analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
         }
     }
 }

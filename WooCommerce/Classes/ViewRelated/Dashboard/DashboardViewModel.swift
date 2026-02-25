@@ -258,6 +258,14 @@ final class DashboardViewModel: ObservableObject {
         userDefaults.set(true, forKey: .hideWPComConnectionOnDashboard)
     }
 
+    func onConnectWPComCardAppear() {
+        analytics.track(.pushNotificationsCardView)
+    }
+
+    func onConnectWPComCardTapped() {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .connectWPCom))
+    }
+
     @MainActor
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true

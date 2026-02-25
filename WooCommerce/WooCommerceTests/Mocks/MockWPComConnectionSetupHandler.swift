@@ -7,18 +7,12 @@ final class MockWPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol
 
     private(set) var startCallCount = 0
     private(set) var retryCallCount = 0
-    private(set) var cancelCallCount = 0
-
     func start() {
         startCallCount += 1
     }
 
     func retry() {
         retryCallCount += 1
-    }
-
-    func cancel() {
-        cancelCallCount += 1
     }
 
     // MARK: - Test helpers

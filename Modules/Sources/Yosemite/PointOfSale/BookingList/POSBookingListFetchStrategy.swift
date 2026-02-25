@@ -51,16 +51,13 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
             searchQuery: nil
         )
 
-        await MainActor.run {
+        let allBookings = await MainActor.run {
             if pageNumber == 1 {
                 store.replaceBookings(pagedItems.items, for: dateRange)
             } else {
                 store.appendBookings(pagedItems.items, for: dateRange)
             }
-        }
-
-        let allBookings = await MainActor.run {
-            store.allBookings(for: dateRange)
+            return store.allBookings(for: dateRange)
         }
         return PagedItems(items: allBookings, hasMorePages: pagedItems.hasMorePages, totalItems: nil)
     }

@@ -25,7 +25,7 @@ final class POSBookingInMemoryStore {
 
     /// Replaces all stored bookings for a date range. Used on page 1 fetches.
     func replaceBookings(_ bookings: [POSBooking], for dateRange: DateRange) {
-        bookingsByDateRange[dateRange] = bookings
+        bookingsByDateRange[dateRange] = sorted(bookings)
     }
 
     /// Appends bookings for a date range, deduplicating by ID. Used on page 2+ fetches.
@@ -34,7 +34,7 @@ final class POSBookingInMemoryStore {
         let existingIDs = Set(existing.map(\.id))
         let uniqueNew = bookings.filter { !existingIDs.contains($0.id) }
         existing.append(contentsOf: uniqueNew)
-        bookingsByDateRange[dateRange] = existing
+        bookingsByDateRange[dateRange] = sorted(existing)
     }
 
     func allBookings(for dateRange: DateRange) -> [POSBooking] {

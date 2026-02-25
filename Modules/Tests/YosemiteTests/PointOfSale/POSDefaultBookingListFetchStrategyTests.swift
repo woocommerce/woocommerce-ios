@@ -2,7 +2,6 @@ import Testing
 import Foundation
 @testable import Yosemite
 import struct NetworkingCore.PagedItems
-import enum NetworkingCore.OrderStatusEnum
 
 @MainActor
 struct POSDefaultBookingListFetchStrategyTests {

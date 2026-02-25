@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 @testable import Yosemite
-import enum NetworkingCore.OrderStatusEnum
 
 @MainActor
 struct POSBookingInMemoryStoreTests {

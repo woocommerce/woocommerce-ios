@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 
 extension BookingOrderInfo {
+    @NSManaged public var customerEmail: String?
     @NSManaged public var dateCreated: Date?
     @NSManaged public var datePaid: Date?
     @NSManaged public var discountTotal: String?
@@ -11,6 +12,7 @@ extension BookingOrderInfo {
     @NSManaged public var paymentInfo: BookingPaymentInfo?
     @NSManaged public var customerInfo: BookingCustomerInfo?
     @NSManaged public var productInfo: BookingProductInfo?
+    @NSManaged public var lineItems: NSOrderedSet?
+    @NSManaged public var refunds: NSSet?
     @NSManaged public var booking: Booking?
-
 }

@@ -8,6 +8,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
     private var dismissCalled: Bool!
     private var goToStoreCalled: Bool!
     private var updatePluginCalled: Bool!
+    private var capturedUpdatePluginDismissed: (() -> Void)?
 
     override func setUp() {
         super.setUp()
@@ -15,6 +16,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         dismissCalled = false
         goToStoreCalled = false
         updatePluginCalled = false
+        capturedUpdatePluginDismissed = nil
     }
 
     override func tearDown() {
@@ -22,6 +24,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         dismissCalled = nil
         goToStoreCalled = nil
         updatePluginCalled = nil
+        capturedUpdatePluginDismissed = nil
         super.tearDown()
     }
 
@@ -220,6 +223,47 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertEqual(mockHandler.startCallCount, 1)
     }
 
+    // MARK: - Plugin WebView Dismissal Tests
+
+    func test_primaryButtonTapped_on_plugin_failure_outdated_retries_when_webview_dismissed() {
+        // Given
+        let viewModel = makeViewModel()
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
+        viewModel.primaryButtonTapped()
+
+        // When (simulate web view dismissed)
+        capturedUpdatePluginDismissed?()
+
+        // Then
+        XCTAssertEqual(mockHandler.retryCallCount, 1)
+    }
+
+    func test_onAppear_autoOpen_retries_when_webview_dismissed() {
+        // Given
+        let viewModel = makeViewModel()
+        viewModel.setPluginOutdatedState(version: "10.4.0")
+        viewModel.onAppear() // triggers auto-open of web view
+
+        // When (simulate web view dismissed)
+        capturedUpdatePluginDismissed?()
+
+        // Then
+        XCTAssertEqual(mockHandler.retryCallCount, 1)
+    }
+
+    func test_primaryButtonTapped_on_plugin_failure_outdated_resets_state_when_webview_dismissed() {
+        // Given
+        let viewModel = makeViewModel()
+        mockHandler.simulateStepUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: "10.3.4")))
+        viewModel.primaryButtonTapped()
+
+        // When (simulate web view dismissed)
+        capturedUpdatePluginDismissed?()
+
+        // Then: primary button should be disabled (setup is in progress)
+        XCTAssertFalse(viewModel.isPrimaryButtonEnabled)
+    }
+
     // MARK: - Helpers
 
     private func makeViewModel() -> WPComConnectionSetupViewModel {
@@ -228,24 +272,10 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
             handler: mockHandler,
             onDismiss: { [weak self] in self?.dismissCalled = true },
             onGoToStore: { [weak self] in self?.goToStoreCalled = true },
-            onUpdatePlugin: { [weak self] in self?.updatePluginCalled = true }
+            onUpdatePlugin: { [weak self] onDismissed in
+                self?.updatePluginCalled = true
+                self?.capturedUpdatePluginDismissed = onDismissed
+            }
         )
-    }
-}
-
-// MARK: - WPComConnectionSetupStep.Status Equatable
-
-extension WPComConnectionSetupStep.Status: Equatable {
-    public static func == (lhs: WPComConnectionSetupStep.Status, rhs: WPComConnectionSetupStep.Status) -> Bool {
-        switch (lhs, rhs) {
-        case (.notStarted, .notStarted),
-             (.running, .running),
-             (.success, .success):
-            return true
-        case let (.failure(lhsError), .failure(rhsError)):
-            return lhsError == rhsError
-        default:
-            return false
-        }
     }
 }

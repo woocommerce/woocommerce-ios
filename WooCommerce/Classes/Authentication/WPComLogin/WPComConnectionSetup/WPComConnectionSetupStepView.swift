@@ -14,6 +14,7 @@ struct WPComConnectionSetupStepView: View {
 
                 detail
                     .font(.subheadline)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
     }

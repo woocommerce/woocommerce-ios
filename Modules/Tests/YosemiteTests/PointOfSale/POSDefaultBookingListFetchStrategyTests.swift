@@ -8,7 +8,7 @@ import enum NetworkingCore.OrderStatusEnum
 struct POSDefaultBookingListFetchStrategyTests {
 
     private let siteID: Int64 = 123
-    private let filters = BookingFilters(startDateAfter: "2026-03-15T00:00:00Z", startDateBefore: "2026-03-15T23:59:59Z")
+    private let filters = BookingFilters(startDateBefore: "2026-03-15T23:59:59Z", startDateAfter: "2026-03-15T00:00:00Z")
     private let dateRange = POSBookingInMemoryStore.DateRange(
         startDateAfter: "2026-03-15T00:00:00Z",
         startDateBefore: "2026-03-15T23:59:59Z"
@@ -201,8 +201,8 @@ struct POSDefaultBookingListFetchStrategyTests {
     @Test func test_different_dates_do_not_share_data() {
         // Given
         let store = POSBookingInMemoryStore()
-        let filtersA = BookingFilters(startDateAfter: "2026-03-15T00:00:00Z", startDateBefore: "2026-03-15T23:59:59Z")
-        let filtersB = BookingFilters(startDateAfter: "2026-03-16T00:00:00Z", startDateBefore: "2026-03-16T23:59:59Z")
+        let filtersA = BookingFilters(startDateBefore: "2026-03-15T23:59:59Z", startDateAfter: "2026-03-15T00:00:00Z")
+        let filtersB = BookingFilters(startDateBefore: "2026-03-16T23:59:59Z", startDateAfter: "2026-03-16T00:00:00Z")
         let dateRangeA = POSBookingInMemoryStore.DateRange(startDateAfter: "2026-03-15T00:00:00Z", startDateBefore: "2026-03-15T23:59:59Z")
 
         let strategyA = POSDefaultBookingListFetchStrategy(bookingService: MockBookingService(), store: store, siteID: siteID, filters: filtersA)
@@ -307,10 +307,11 @@ private final class MockBookingService: POSBookingServiceProtocol, @unchecked Se
 
 private extension POSDefaultBookingListFetchStrategyTests {
     func makeStrategy(service: MockBookingService = MockBookingService(),
-                      store: POSBookingInMemoryStore = POSBookingInMemoryStore()) -> POSDefaultBookingListFetchStrategy {
-        POSDefaultBookingListFetchStrategy(
+                      store: POSBookingInMemoryStore? = nil) -> POSDefaultBookingListFetchStrategy {
+        let resolvedStore = store ?? POSBookingInMemoryStore()
+        return POSDefaultBookingListFetchStrategy(
             bookingService: service,
-            store: store,
+            store: resolvedStore,
             siteID: siteID,
             filters: filters
         )

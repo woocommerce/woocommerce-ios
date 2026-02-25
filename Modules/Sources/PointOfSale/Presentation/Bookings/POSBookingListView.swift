@@ -131,7 +131,7 @@ struct POSBookingListView: View {
                             let bookings = bookingsViewState.bookings
                             ForEach(Array(bookings.enumerated()), id: \.element.id) { _, booking in
                                 Button(action: {
-                                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsListBookingTapped(bookingID: booking.id))
+                                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsListBookingTapped())
                                     bookingsModel.bookingsController.selectBooking(booking)
                                 }) {
                                     POSBookingRowView(booking: booking,

@@ -77,9 +77,9 @@ struct POSBookingAttendanceSectionView: View {
                     bookingID: booking.id,
                     status: targetStatus
                 )
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAttendanceChanged(bookingID: booking.id))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAttendanceChanged())
             } catch {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAttendanceChangeFailed(bookingID: booking.id, error: error))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAttendanceChangeFailed(error: error))
                 attendanceUpdateError = true
             }
             optimisticAttendanceStatus = nil

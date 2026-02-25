@@ -115,7 +115,7 @@ struct POSBookingNoteView: View {
                     bookingID: booking.id,
                     note: trimmedNote
                 )
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAdded(bookingID: booking.id))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAdded())
 
                 withAnimation {
                     buttonState = .success
@@ -124,7 +124,7 @@ struct POSBookingNoteView: View {
                     isTextFieldFocused = false
                 }
             } catch {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAddFailed(bookingID: booking.id, error: error))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAddFailed(error: error))
                 errorMessage = Localization.saveError
                 buttonState = .idle
             }

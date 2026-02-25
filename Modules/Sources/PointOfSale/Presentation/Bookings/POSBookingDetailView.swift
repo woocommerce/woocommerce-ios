@@ -59,8 +59,7 @@ struct POSBookingDetailView: View {
                                 }
                             },
                             onRefundFailure: { error in
-                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(bookingID: booking.id,
-                                                                                                        error: error))
+                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
                             }
                         )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
@@ -151,12 +150,12 @@ struct POSBookingDetailView: View {
     private var viewOrderMenu: some View {
         Menu {
             Button(Localization.viewOrderAction) {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped(bookingID: booking.id))
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped())
                 navigationPath.append(.orderDetail)
             }
             if booking.isPaid {
                 Button(Localization.issueRefundAction) {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped(bookingID: booking.id))
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped())
                     orderListModel.ordersController.selectOrder(booking.order)
                     navigationPath.append(.orderDetailRefund)
                 }
@@ -303,7 +302,7 @@ struct POSBookingDetailView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 sectionTitleWithAction(title: Localization.bookingNoteLabel) {
                     Button(noteButtonTitle) {
-                        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAddNoteTapped(bookingID: booking.id))
+                        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAddNoteTapped())
                         isShowingNoteView = true
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))

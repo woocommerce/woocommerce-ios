@@ -64,10 +64,10 @@ struct POSCancelBookingModalContent: View {
     private func performCancelBooking() async {
         do {
             try await bookingsModel.bookingsController.cancelBooking(bookingID: booking.id)
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelled(bookingID: booking.id))
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelled())
             cancelModalState = .success
         } catch {
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelFailed(bookingID: booking.id, error: error))
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelFailed(error: error))
             cancelModalState = .error
         }
     }

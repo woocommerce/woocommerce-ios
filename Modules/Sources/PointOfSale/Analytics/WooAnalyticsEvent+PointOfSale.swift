@@ -48,7 +48,6 @@ extension WooAnalyticsEvent {
             static let syncStrategy = "sync_strategy"
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
-            static let bookingID = "booking_id"
         }
 
         /// Source of the event where the event is triggered
@@ -531,63 +530,55 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingsListSearchButtonTapped, properties: [:])
         }
 
-        static func bookingsListBookingTapped(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingsListBookingTapped,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingsListBookingTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsListBookingTapped, properties: [:])
         }
 
-
-        static func bookingCancelled(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelled,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingCancelled() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelled, properties: [:])
         }
 
-        static func bookingAddNoteTapped(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingAddNoteTapped,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingAddNoteTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAddNoteTapped, properties: [:])
         }
 
-        static func bookingIssueRefundTapped(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingIssueRefundTapped,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingIssueRefundTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingIssueRefundTapped, properties: [:])
         }
 
-        static func bookingViewOrderTapped(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingViewOrderTapped,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingViewOrderTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingViewOrderTapped, properties: [:])
         }
 
-        static func bookingAttendanceChanged(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingAttendanceChanged,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingAttendanceChanged() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAttendanceChanged, properties: [:])
         }
 
-        static func bookingNoteAdded(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingNoteAdded,
-                              properties: [Key.bookingID: "\(bookingID)"])
+        static func bookingNoteAdded() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingNoteAdded, properties: [:])
         }
 
-        static func bookingCancelFailed(bookingID: Int64, error: Error) -> WooAnalyticsEvent {
+        static func bookingCancelFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingCancelFailed,
-                              properties: [Key.bookingID: "\(bookingID)"],
+                              properties: [:],
                               error: error)
         }
 
-        static func bookingAttendanceChangeFailed(bookingID: Int64, error: Error) -> WooAnalyticsEvent {
+        static func bookingAttendanceChangeFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingAttendanceChangeFailed,
-                              properties: [Key.bookingID: "\(bookingID)"],
+                              properties: [:],
                               error: error)
         }
 
-        static func bookingNoteAddFailed(bookingID: Int64, error: Error) -> WooAnalyticsEvent {
+        static func bookingNoteAddFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingNoteAddFailed,
-                              properties: [Key.bookingID: "\(bookingID)"],
+                              properties: [:],
                               error: error)
         }
 
-        static func bookingRefundFailed(bookingID: Int64, error: Error) -> WooAnalyticsEvent {
+        static func bookingRefundFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingRefundFailed,
-                              properties: [Key.bookingID: "\(bookingID)"],
+                              properties: [:],
                               error: error)
         }
     }

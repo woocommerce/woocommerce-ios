@@ -7,7 +7,7 @@ public protocol POSOrderListFetchStrategy {
     func trackFetched(millisecondsSinceRequestSent: Int)
     func trackNextPageLoaded(pageNumber: Int)
     var supportsCaching: Bool { get }
-    var showsLoadingWithItems: Bool { get }
+    var showsCachedDataWhileLoading: Bool { get }
     var id: String { get }
 }
 
@@ -21,7 +21,7 @@ struct POSDefaultOrderListFetchStrategy: POSOrderListFetchStrategy {
     private let orderListService: POSOrderListServiceProtocol
     private let analytics: POSOrderListFetchAnalyticsTracking
     let supportsCaching: Bool = true
-    var showsLoadingWithItems: Bool = true
+    var showsCachedDataWhileLoading: Bool = true
 
     init(orderListService: POSOrderListServiceProtocol, analytics: POSOrderListFetchAnalyticsTracking) {
         self.orderListService = orderListService
@@ -51,7 +51,7 @@ struct POSSearchOrderListFetchStrategy: POSOrderListFetchStrategy {
     private let analytics: POSOrderListFetchAnalyticsTracking
 
     var supportsCaching: Bool = false
-    var showsLoadingWithItems = false
+    var showsCachedDataWhileLoading = false
 
     init(orderListService: POSOrderListServiceProtocol, searchTerm: String, analytics: POSOrderListFetchAnalyticsTracking) {
         self.orderListService = orderListService

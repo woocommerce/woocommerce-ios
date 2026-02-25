@@ -10,7 +10,6 @@ struct POSBookingDetailView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.siteTimezone) private var siteTimezone
 
     @State private var navigationPath: [NavigationDestination] = []
     @State private var cancelModalState: CancelBookingModalState?
@@ -80,11 +79,11 @@ struct POSBookingDetailView: View {
     private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: POSBookingSummaryView.formattedTimeRange(for: booking, siteTimezone: siteTimezone),
+                title: POSBookingDateFormatter.formattedTimeRange(for: booking),
                 isLoading: isDetailsUpdating,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    viewOrderMenu
+                    headerTrailingContent
                 },
                 bottomContent: {
                     POSBookingSummaryView(booking: booking)
@@ -144,11 +143,26 @@ struct POSBookingDetailView: View {
     }
 
     @ViewBuilder
-    private var viewOrderMenu: some View {
-        Menu {
+    private var headerTrailingContent: some View {
+        HStack(spacing: POSSpacing.small) {
             Button(Localization.viewOrderAction) {
                 navigationPath.append(.orderDetail)
             }
+            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+
+            if hasOverflowMenuActions {
+                overflowMenu
+            }
+        }
+    }
+
+    private var hasOverflowMenuActions: Bool {
+        booking.isPaid || booking.isCancellable
+    }
+
+    @ViewBuilder
+    private var overflowMenu: some View {
+        Menu {
             if booking.isPaid {
                 Button(Localization.issueRefundAction) {
                     orderListModel.ordersController.selectOrder(booking.order)
@@ -569,7 +583,7 @@ private enum Localization {
     static let viewOrderAction = NSLocalizedString(
         "pos.bookingDetailView.viewOrderAction",
         value: "View Order",
-        comment: "Menu action to view the linked order from a booking detail."
+        comment: "Button to view the linked order from the booking detail header."
     )
 
     // MARK: - Accessibility

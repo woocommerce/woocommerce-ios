@@ -9,7 +9,7 @@ Build the WooCommerce iOS project.
 
 Run the build command:
 ```bash
-bundle exec rake build 2>&1 | tail -50
+bundle exec fastlane build_for_testing 2>&1 | tail -50
 ```
 
 If the build fails:

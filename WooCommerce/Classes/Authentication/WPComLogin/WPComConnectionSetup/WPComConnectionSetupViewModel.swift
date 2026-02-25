@@ -64,7 +64,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     private let analytics: Analytics
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
-    private let onUpdatePlugin: () -> Void
+    private let onUpdatePlugin: (@escaping () -> Void) -> Void
     private var shouldAutoOpenUpdatePlugin = false
 
     init(storeName: String,
@@ -72,7 +72,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void,
          onGoToStore: @escaping () -> Void,
-         onUpdatePlugin: @escaping () -> Void) {
+         onUpdatePlugin: @escaping (@escaping () -> Void) -> Void) {
         self.storeName = storeName
         self.handler = handler
         self.analytics = analytics
@@ -99,7 +99,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func onAppear() {
         if shouldAutoOpenUpdatePlugin {
             shouldAutoOpenUpdatePlugin = false
-            onUpdatePlugin()
+            onUpdatePlugin { [weak self] in
+                self?.retrySetup()
+            }
             return
         }
         guard setupState == .inProgress else { return }
@@ -124,7 +126,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
             case .checkPlugin:
                 if checkPluginError == .outdated {
                     analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.updatePlugin))
-                    onUpdatePlugin()
+                    onUpdatePlugin { [weak self] in
+                        self?.retrySetup()
+                    }
                 } else {
                     analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
                     retrySetup()

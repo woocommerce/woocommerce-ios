@@ -155,7 +155,7 @@ private extension WPComConnectionSetupView {
         ),
         onDismiss: {},
         onGoToStore: {},
-        onUpdatePlugin: {}
+        onUpdatePlugin: { _ in }
     )
     WPComConnectionSetupView(viewModel: viewModel)
 }

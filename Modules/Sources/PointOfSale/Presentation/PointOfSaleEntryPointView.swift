@@ -148,8 +148,7 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
         if isBookingsEligible && services.featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) {
-            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
-                                                               siteTimezone: siteTimezone)
+            let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
             self.bookingsModel = POSBookingsModel(
                 bookingsController: bookingsController,
                 cardPresentPaymentService: cardPresentPaymentService,

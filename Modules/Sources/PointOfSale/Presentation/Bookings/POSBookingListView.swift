@@ -116,7 +116,6 @@ struct POSBookingListView: View {
             InfiniteScrollView(
                 triggerDeterminer: infiniteScrollTriggerDeterminer,
                 loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = bookingsViewState, hasMoreItems else { return }
                     await bookingsModel.bookingsController.loadNextBookings()
                 },
                 content: {

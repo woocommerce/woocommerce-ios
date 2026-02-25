@@ -343,7 +343,6 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
-        trackPaymentOutcome()
         showPaymentView = false
         paymentModel = nil
         Task { @MainActor in
@@ -353,28 +352,8 @@ struct POSBookingDetailView: View {
         }
     }
 
-    private func trackPaymentOutcome() {
-        guard let paymentModel else { return }
-        let state = paymentModel.paymentState
-        switch (state.card, state.cash) {
-        case (.cardPaymentSuccessful, _):
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCardPaymentSuccess(bookingID: booking.id))
-        case (_, .paymentSuccess):
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCashPaymentSuccess(bookingID: booking.id))
-        case (.paymentError, _):
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingPaymentFailed(bookingID: booking.id, reason: .paymentError))
-        case (.validatingOrderError, _):
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingPaymentFailed(bookingID: booking.id, reason: .validatingOrderError))
-        case (.paymentIntentCreationError, _):
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingPaymentFailed(bookingID: booking.id, reason: .paymentIntentCreationError))
-        default:
-            break
-        }
-    }
-
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
-        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCollectPaymentTapped(bookingID: booking.id))
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true

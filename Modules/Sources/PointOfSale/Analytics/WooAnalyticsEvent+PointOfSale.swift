@@ -538,34 +538,6 @@ extension WooAnalyticsEvent {
                               properties: [Key.bookingID: "\(bookingID)"])
         }
 
-        static func bookingCollectPaymentTapped(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingCollectPaymentTapped,
-                              properties: [Key.bookingID: "\(bookingID)"])
-        }
-
-        static func bookingCardPaymentSuccess(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingCardPaymentSuccess,
-                              properties: [Key.bookingID: "\(bookingID)"])
-        }
-
-        static func bookingCashPaymentSuccess(bookingID: Int64) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingCashPaymentSuccess,
-                              properties: [Key.bookingID: "\(bookingID)"])
-        }
-
-        static func bookingPaymentFailed(bookingID: Int64, reason: BookingPaymentFailureReason) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleBookingPaymentFailed,
-                              properties: [
-                                Key.bookingID: "\(bookingID)",
-                                Key.reason: reason.rawValue
-                              ])
-        }
-
-        enum BookingPaymentFailureReason: String {
-            case paymentError = "payment_error"
-            case validatingOrderError = "validating_order_error"
-            case paymentIntentCreationError = "payment_intent_creation_error"
-        }
 
         static func bookingCancelTapped(bookingID: Int64) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingCancelTapped,

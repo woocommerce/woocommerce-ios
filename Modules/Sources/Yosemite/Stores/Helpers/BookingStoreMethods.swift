@@ -129,6 +129,24 @@ private extension BookingStoreMethods {
                 }
                 orderInfo.paymentInfo = paymentInfo
 
+                // Persist line items (replace all on each sync)
+                let existingLineItems = orderInfo.lineItems?.array as? [Storage.BookingOrderLineItem] ?? []
+                existingLineItems.forEach { storage.deleteObject($0) }
+                for readOnlyLineItem in readOnlyOrderInfo.lineItems {
+                    let storageLineItem = storage.insertNewObject(ofType: Storage.BookingOrderLineItem.self)
+                    storageLineItem.update(with: readOnlyLineItem)
+                    storageLineItem.orderInfo = orderInfo
+                }
+
+                // Persist refunds (replace all on each sync)
+                let existingRefunds = orderInfo.refunds as? Set<Storage.BookingOrderRefund> ?? []
+                existingRefunds.forEach { storage.deleteObject($0) }
+                for readOnlyRefund in readOnlyOrderInfo.refunds {
+                    let storageRefund = storage.insertNewObject(ofType: Storage.BookingOrderRefund.self)
+                    storageRefund.update(with: readOnlyRefund)
+                    storageRefund.orderInfo = orderInfo
+                }
+
                 orderInfo.update(with: readOnlyOrderInfo)
                 storageBooking.orderInfo = orderInfo
             }

@@ -1,5 +1,6 @@
 import XCTest
 import Yosemite
+import enum Networking.NetworkError
 @testable import WooCommerce
 
 @MainActor
@@ -25,6 +26,46 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
     // MARK: - determineSetupVariant with Jetpack connected
 
+    func test_error_is_nil_initially() {
+        // Given / When
+        let viewModel = makeViewModel()
+
+        // Then
+        XCTAssertNil(viewModel.error)
+    }
+
+    func test_error_is_nil_when_jetpack_connected_and_plugin_update_needed() async {
+        // Given
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertNil(viewModel.error)
+    }
+
+    func test_error_is_nil_when_jetpack_not_connected() async {
+        // Given
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: false)
+        )
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertNil(viewModel.error)
+    }
+
     func test_variant_is_pluginUpdate_when_jetpack_connected_and_plugin_incompatible() async {
         // Given
         let connectionService = MockJetpackConnectionService()
@@ -43,7 +84,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_variant_is_connect_when_jetpack_connected_and_plugin_compatible() async {
+    func test_error_is_noMissingRequirements_when_jetpack_connected_and_plugin_compatible() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
@@ -57,11 +98,13 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        XCTAssertEqual(viewModel.variant, .connect)
+        guard case .noMissingRequirements = viewModel.error else {
+            return XCTFail("Expected noMissingRequirements error, got \(String(describing: viewModel.error))")
+        }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_variant_is_connect_when_jetpack_connected_and_plugin_check_throws() async {
+    func test_error_is_generic_when_jetpack_connected_and_plugin_check_throws() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
@@ -75,7 +118,9 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        XCTAssertEqual(viewModel.variant, .connect)
+        guard case .generic = viewModel.error else {
+            return XCTFail("Expected generic error, got \(String(describing: viewModel.error))")
+        }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
@@ -101,7 +146,23 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
     // MARK: - determineSetupVariant when fetch fails
 
-    func test_variant_is_connect_when_fetching_connection_data_throws() async {
+    func test_error_is_noPermission_when_fetching_connection_data_throws_403() async {
+        // Given
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        guard case .noPermission = viewModel.error else {
+            return XCTFail("Expected noPermission error, got \(String(describing: viewModel.error))")
+        }
+        XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
+    func test_error_is_generic_when_fetching_connection_data_throws_non_403_error() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .failure(NSError(domain: "test", code: 1))
@@ -111,7 +172,9 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        XCTAssertEqual(viewModel.variant, .connect)
+        guard case .generic = viewModel.error else {
+            return XCTFail("Expected generic error, got \(String(describing: viewModel.error))")
+        }
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
@@ -125,6 +188,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
     ) -> WPComPushNotificationsBenefitsViewModel {
         WPComPushNotificationsBenefitsViewModel(
             siteID: sampleSiteID,
+            siteURL: "https://example.com",
             jetpackConnectionService: jetpackConnectionService,
             pluginVersionChecker: pluginVersionChecker,
             onDismiss: {}

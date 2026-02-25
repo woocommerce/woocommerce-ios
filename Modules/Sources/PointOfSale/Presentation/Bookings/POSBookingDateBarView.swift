@@ -2,56 +2,34 @@ import SwiftUI
 
 struct POSBookingDateBarView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
-    @Environment(\.siteTimezone) private var siteTimezone
-    @Environment(\.colorScheme) private var colorScheme
     @State private var showingCalendar = false
 
-    private var tintColor: Color {
-        colorScheme == .dark ? .posSecondary : .posPrimaryContainer
-    }
-
     private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("dMMMEEE")
-        formatter.timeZone = siteTimezone
-        return formatter.string(from: bookingsModel.bookingsController.selectedDate)
+        POSBookingDateFormatter.formattedShortDate(for: bookingsModel.bookingsController.selectedDate)
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            Divider()
-                .overlay(Color.posOutlineVariant)
-
-            HStack(spacing: POSSpacing.medium) {
+            HStack(spacing: POSSpacing.small) {
                 Button {
                     Task { await bookingsModel.bookingsController.goToPreviousDay() }
                 } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.posButtonSymbolXSmall)
-                        .foregroundStyle(tintColor)
+                    Text("\(Image(systemName: "chevron.backward"))")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(Localization.previousDay)
 
                 Button {
                     showingCalendar = true
                 } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        Image(systemName: "calendar")
-                            .foregroundStyle(tintColor)
-
-                        Text(formattedDate)
-                            .font(.posBodySmallRegular())
-                            .foregroundStyle(tintColor)
-                    }
+                    Label(formattedDate, systemImage: "calendar")
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.plain)
-                .frame(minWidth: Constants.dateTextMinWidth, alignment: .center)
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(String(format: Localization.selectedDateFormat, formattedDate))
                 .popover(isPresented: $showingCalendar) {
                     POSBookingCalendarView(
                         selectedDate: bookingsModel.bookingsController.selectedDate,
-                        siteTimezone: siteTimezone,
                         onDateSelected: { date in
                             showingCalendar = false
                             Task { await bookingsModel.bookingsController.selectDate(date) }
@@ -62,27 +40,20 @@ struct POSBookingDateBarView: View {
                 Button {
                     Task { await bookingsModel.bookingsController.goToNextDay() }
                 } label: {
-                    Image(systemName: "chevron.right")
-                        .font(.posButtonSymbolXSmall)
-                        .foregroundStyle(tintColor)
+                    Text("\(Image(systemName: "chevron.forward"))")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(Localization.nextDay)
-
-                Spacer()
             }
+            .font(.posBodySmallBold())
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .padding(.horizontal, POSPadding.medium)
-            .frame(minHeight: Constants.minBarHeight)
+            .padding(.bottom, POSPadding.medium)
+
             Divider()
                 .overlay(Color.posOutlineVariant)
         }
     }
-}
-
-private enum Constants {
-    static let minBarHeight: CGFloat = 64
-    static let dateTextMinWidth: CGFloat = 120
 }
 
 private enum Localization {
@@ -100,7 +71,7 @@ private enum Localization {
 
     static let selectedDateFormat = NSLocalizedString(
         "pos.bookingDateBar.selectedDate",
-        value: "%@, tap to open calendar",
-        comment: "Accessibility label for the date button in the bookings date bar. %@ is the formatted date."
+        value: "%1$@, tap to open calendar",
+        comment: "Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date."
     )
 }

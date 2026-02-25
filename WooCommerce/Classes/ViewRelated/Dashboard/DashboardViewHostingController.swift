@@ -372,7 +372,8 @@ private extension DashboardViewHostingController {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self else { return }
             let benefitsViewModel = WPComPushNotificationsBenefitsViewModel(
-                siteID: self.viewModel.siteID,
+                siteID: viewModel.siteID,
+                siteURL: viewModel.stores.sessionManager.defaultSite?.url ?? "",
                 onDismiss: {
                     self.dismiss(animated: true)
                 }

@@ -12,15 +12,13 @@ import struct Yosemite.BookingFilters
 @MainActor
 final class POSBookingListControllerTests {
 
-    private let siteTimezone = TimeZone(identifier: "America/New_York")!
     private let mockStrategy = MockPOSBookingListFetchStrategy()
     private lazy var mockFactory: MockPOSBookingListFetchStrategyFactory = {
         let factory = MockPOSBookingListFetchStrategyFactory()
         factory.defaultStrategyResult = mockStrategy
         return factory
     }()
-    private lazy var sut = POSBookingListController(bookingListFetchStrategyFactory: mockFactory,
-                                                     siteTimezone: siteTimezone)
+    private lazy var sut = POSBookingListController(bookingListFetchStrategyFactory: mockFactory)
 
     // MARK: - loadBookings
 
@@ -389,11 +387,9 @@ final class POSBookingListControllerTests {
 
     // MARK: - Date Navigation
 
-    @Test func test_selectedDate_defaults_to_today_in_site_timezone() {
+    @Test func test_selectedDate_defaults_to_today_in_UTC() {
         // Given
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        let expectedStartOfDay = calendar.startOfDay(for: Date())
+        let expectedStartOfDay = POSBookingDateFormatter.utcCalendar.startOfDay(for: Date())
 
         // Then
         #expect(sut.selectedDate == expectedStartOfDay)
@@ -419,10 +415,7 @@ final class POSBookingListControllerTests {
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
         await sut.loadBookings()
         let initialDate = sut.selectedDate
-
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        let expectedNextDay = calendar.date(byAdding: .day, value: 1, to: initialDate)!
+        let expectedNextDay = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: 1, to: initialDate)!
 
         // When
         await sut.goToNextDay()
@@ -436,10 +429,7 @@ final class POSBookingListControllerTests {
         mockStrategy.fetchBookingsResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
         await sut.loadBookings()
         let initialDate = sut.selectedDate
-
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        let expectedPreviousDay = calendar.date(byAdding: .day, value: -1, to: initialDate)!
+        let expectedPreviousDay = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: -1, to: initialDate)!
 
         // When
         await sut.goToPreviousDay()
@@ -448,40 +438,19 @@ final class POSBookingListControllerTests {
         #expect(sut.selectedDate == expectedPreviousDay)
     }
 
-    @Test func test_dateFilters_generates_correct_day_boundaries() {
+    @Test func test_dateFilters_generates_correct_UTC_day_boundaries() {
         // Given
-        let utcTimezone = TimeZone(identifier: "UTC")!
-        let controller = POSBookingListController(bookingListFetchStrategyFactory: mockFactory,
-                                                   siteTimezone: utcTimezone)
+        let controller = POSBookingListController(bookingListFetchStrategyFactory: mockFactory)
 
-        var calendar = Calendar.current
-        calendar.timeZone = utcTimezone
-        let date = calendar.date(from: DateComponents(year: 2026, month: 3, day: 15))!
+        let date = POSBookingDateFormatter.utcCalendar.date(from: DateComponents(year: 2026, month: 3, day: 15))!
 
         // When
         let filters = controller.dateFilters(for: date)
 
-        // Then
+        // Then - always UTC regardless of device timezone,
+        // because the API stores local times as UTC timestamps
         #expect(filters.startDateAfter == "2026-03-15T00:00:00Z")
         #expect(filters.startDateBefore == "2026-03-15T23:59:59Z")
-    }
-
-    @Test func test_dateFilters_with_positive_offset_timezone() {
-        // Given - Tokyo is UTC+9
-        let tokyoTimezone = TimeZone(identifier: "Asia/Tokyo")!
-        let controller = POSBookingListController(bookingListFetchStrategyFactory: mockFactory,
-                                                   siteTimezone: tokyoTimezone)
-
-        var calendar = Calendar.current
-        calendar.timeZone = tokyoTimezone
-        let date = calendar.date(from: DateComponents(year: 2026, month: 6, day: 20))!
-
-        // When
-        let filters = controller.dateFilters(for: date)
-
-        // Then
-        #expect(filters.startDateAfter == "2026-06-20T00:00:00+09:00")
-        #expect(filters.startDateBefore == "2026-06-20T23:59:59+09:00")
     }
 
     @Test func test_selectDate_when_searching_then_uses_search_strategy_with_new_date() async {

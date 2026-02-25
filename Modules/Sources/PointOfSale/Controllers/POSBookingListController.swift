@@ -45,7 +45,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     private(set) var selectedBooking: POSBooking?
     private let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol
     private let bookingService: POSBookingServiceProtocol
-    private let siteTimezone: TimeZone
+
     private var loadTask: Task<Void, Never>?
     private var prefetchTasks: [Date: Task<Void, Never>] = [:]
 
@@ -59,11 +59,9 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 
     init(bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol,
-         siteTimezone: TimeZone,
          initialDate: Date? = nil,
          initialState: POSBookingListState = .loading([])) {
-        self.siteTimezone = siteTimezone
-        self.selectedDate = initialDate ?? Self.todayInSiteTimezone(siteTimezone)
+        self.selectedDate = initialDate ?? Self.todayInUTC()
         self.bookingsViewState = initialState
         self.bookingListFetchStrategyFactory = bookingListFetchStrategyFactory
         self.bookingService = bookingListFetchStrategyFactory.bookingService
@@ -193,16 +191,12 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
     }
 
     func goToPreviousDay() async {
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        guard let previousDay = calendar.date(byAdding: .day, value: -1, to: selectedDate) else { return }
+        guard let previousDay = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: -1, to: selectedDate) else { return }
         await selectDate(previousDay)
     }
 
     func goToNextDay() async {
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        guard let nextDay = calendar.date(byAdding: .day, value: 1, to: selectedDate) else { return }
+        guard let nextDay = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: 1, to: selectedDate) else { return }
         await selectDate(nextDay)
     }
 
@@ -233,15 +227,13 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
 extension POSBookingListController {
     func dateFilters(for date: Date) -> BookingFilters {
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        let startOfDay = calendar.startOfDay(for: date)
-        guard let endOfDay = calendar.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay) else {
+        let startOfDay = POSBookingDateFormatter.utcCalendar.startOfDay(for: date)
+        guard let endOfDay = POSBookingDateFormatter.utcCalendar.date(byAdding: DateComponents(day: 1, second: -1), to: startOfDay) else {
             return BookingFilters()
         }
 
         let formatter = ISO8601DateFormatter()
-        formatter.timeZone = siteTimezone
+        formatter.timeZone = POSBookingDateFormatter.utcTimeZone
 
         return BookingFilters(
             startDateBefore: formatter.string(from: endOfDay),
@@ -254,20 +246,16 @@ extension POSBookingListController {
 
 private extension POSBookingListController {
     func prefetchAdjacentDates(for date: Date) {
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        if let yesterday = calendar.date(byAdding: .day, value: -1, to: date) {
+        if let yesterday = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: -1, to: date) {
             prefetchDate(yesterday)
         }
-        if let tomorrow = calendar.date(byAdding: .day, value: 1, to: date) {
+        if let tomorrow = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: 1, to: date) {
             prefetchDate(tomorrow)
         }
     }
 
     func prefetchDate(_ date: Date) {
-        var calendar = Calendar.current
-        calendar.timeZone = siteTimezone
-        let normalizedDate = calendar.startOfDay(for: date)
+        let normalizedDate = POSBookingDateFormatter.utcCalendar.startOfDay(for: date)
 
         guard prefetchTasks[normalizedDate] == nil else { return }
 
@@ -282,10 +270,8 @@ private extension POSBookingListController {
         }
     }
 
-    static func todayInSiteTimezone(_ timezone: TimeZone) -> Date {
-        var calendar = Calendar.current
-        calendar.timeZone = timezone
-        return calendar.startOfDay(for: Date())
+    static func todayInUTC() -> Date {
+        POSBookingDateFormatter.utcCalendar.startOfDay(for: Date())
     }
 
     func loadFirstPage() async {

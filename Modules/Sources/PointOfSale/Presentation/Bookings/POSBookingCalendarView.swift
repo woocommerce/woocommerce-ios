@@ -2,14 +2,12 @@ import SwiftUI
 
 struct POSBookingCalendarView: View {
     let selectedDate: Date
-    let siteTimezone: TimeZone
     let onDateSelected: (Date) -> Void
 
     @State private var pickerDate: Date
 
-    init(selectedDate: Date, siteTimezone: TimeZone, onDateSelected: @escaping (Date) -> Void) {
+    init(selectedDate: Date, onDateSelected: @escaping (Date) -> Void) {
         self.selectedDate = selectedDate
-        self.siteTimezone = siteTimezone
         self.onDateSelected = onDateSelected
         self._pickerDate = State(initialValue: selectedDate)
     }
@@ -22,7 +20,7 @@ struct POSBookingCalendarView: View {
         )
         .datePickerStyle(.graphical)
         .tint(.posPrimaryContainer)
-        .environment(\.timeZone, siteTimezone)
+        .environment(\.timeZone, POSBookingDateFormatter.utcTimeZone)
         .onChange(of: pickerDate) { _, newDate in
             onDateSelected(newDate)
         }

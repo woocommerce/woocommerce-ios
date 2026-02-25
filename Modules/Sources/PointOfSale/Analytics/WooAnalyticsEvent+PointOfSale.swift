@@ -558,6 +558,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingViewOrderTapped,
                               properties: [Key.bookingID: "\(bookingID)"])
         }
+
+        static func bookingAttendanceChanged(bookingID: Int64) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAttendanceChanged,
+                              properties: [Key.bookingID: "\(bookingID)"])
+        }
     }
 }
 

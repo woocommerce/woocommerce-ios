@@ -135,8 +135,11 @@ private extension StorageBookingToPOSBookingMapper {
             )
         }()
 
+        let mappedItemIDs = Set(posLineItems.map(\.itemID))
         let lineItemQuantitiesByProductOrVariationID = POSOrderMapper.aggregateLineItemQuantities(
-            items: orderInfo.lineItems.map { ($0.productID, $0.variationID, $0.quantity) }
+            items: orderInfo.lineItems
+                .filter { mappedItemIDs.contains($0.itemID) }
+                .map { ($0.productID, $0.variationID, $0.quantity) }
         )
 
         return POSOrder(

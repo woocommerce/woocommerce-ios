@@ -3,6 +3,7 @@ import struct Yosemite.POSBooking
 
 struct POSBookingSummaryView: View {
     let booking: POSBooking
+    var subtitleFont: POSFontStyle = .posBodyMediumRegular()
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
@@ -18,7 +19,7 @@ struct POSBookingSummaryView: View {
         let text = formattedSubtitle
         if !text.isEmpty {
             Text(text)
-                .font(.posBodyMediumRegular())
+                .font(subtitleFont)
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)
         }

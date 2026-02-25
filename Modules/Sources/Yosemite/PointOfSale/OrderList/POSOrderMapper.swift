@@ -127,8 +127,11 @@ struct POSOrderMapper {
         guard let totalDecimal = Decimal(string: total) else {
             return nil
         }
+        // Normalize each refund total to negative, since the API can briefly
+        // return a positive value right after issuing a refund.
         let refundSum = refundTotals.reduce(Decimal.zero) { acc, refundTotal in
-            acc + (Decimal(string: refundTotal) ?? 0)
+            let value = Decimal(string: refundTotal) ?? 0
+            return acc + (value > 0 ? -value : value)
         }
         let netAmount = totalDecimal + refundSum
         return currencyFormatter.formatAmount(netAmount, with: currency)

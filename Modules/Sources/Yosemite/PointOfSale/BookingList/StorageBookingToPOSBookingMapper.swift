@@ -100,17 +100,22 @@ private extension StorageBookingToPOSBookingMapper {
         } ?? ""
 
         let posLineItems: [POSOrderItem] = orderInfo.lineItems.compactMap { item in
-            try? orderMapper.mapLineItem(
-                itemID: item.itemID,
-                name: item.name,
-                quantity: item.quantity,
-                price: item.price,
-                total: item.total,
-                totalTax: item.totalTax,
-                imageSrc: item.imageSrc,
-                attributes: [],
-                currency: booking.currency
-            )
+            do {
+                return try orderMapper.mapLineItem(
+                    itemID: item.itemID,
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                    total: item.total,
+                    totalTax: item.totalTax,
+                    imageSrc: item.imageSrc,
+                    attributes: [],
+                    currency: booking.currency
+                )
+            } catch {
+                DDLogError("⚠️ Failed to map BookingOrderLineItem \(item.itemID): \(error)")
+                return nil
+            }
         }
 
         let posRefunds = orderInfo.refunds.map { refund in
@@ -148,7 +153,9 @@ private extension StorageBookingToPOSBookingMapper {
             refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: formattedTotalTax,
-            formattedPaymentTotal: formattedTotal,
+            formattedPaymentTotal: orderInfo.datePaid != nil
+                ? formattedTotal
+                : (currencyFormatter.formatAmount("0.00", with: booking.currency) ?? ""),
             formattedNetAmount: formattedNetAmount,
             datePaid: orderInfo.datePaid,
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID

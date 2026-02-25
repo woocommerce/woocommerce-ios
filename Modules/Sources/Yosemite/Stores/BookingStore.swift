@@ -512,57 +512,8 @@ private extension BookingStore {
                 let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: deleteFilters)
                 storage.deleteBookings(matching: predicate)
             }
-            upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
+            self.methods.upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
         }, completion: onCompletion, on: .main)
-    }
-
-    /// Updates (OR Inserts) the specified ReadOnly Booking Entities into the Storage Layer.
-    ///
-    /// - Parameters:
-    ///     - readOnlyBookings: Remote Bookings to be persisted.
-    ///     - readOnlyOrders: Remote Orders associated with bookings.
-    ///     - storage: Where we should save all the things!
-    ///
-    func upsertStoredBookings(readOnlyBookings: [Yosemite.Booking], readOnlyOrders: [Yosemite.Order], in storage: StorageType) {
-        // Fetch all existing bookings for the site at once
-        let bookingIDs = readOnlyBookings.map { $0.bookingID }
-        let siteID = readOnlyBookings.first?.siteID ?? 0
-        let storedBookings = storage.loadBookings(siteID: siteID, bookingIDs: bookingIDs)
-
-        for readOnlyBooking in readOnlyBookings {
-            // Filter to find existing booking by booking ID
-            let storageBooking = storedBookings.first { $0.bookingID == readOnlyBooking.bookingID } ??
-                storage.insertNewObject(ofType: StorageBooking.self)
-
-            if let associatedOrder = readOnlyOrders.first(where: { $0.orderID == readOnlyBooking.orderID }) {
-                let readOnlyOrderInfo = BookingOrderInfo(booking: readOnlyBooking, order: associatedOrder)
-
-                let orderInfo = storageBooking.orderInfo ?? storage.insertNewObject(ofType: Storage.BookingOrderInfo.self)
-
-                let productInfo = orderInfo.productInfo ?? storage.insertNewObject(ofType: Storage.BookingProductInfo.self)
-                if let readOnlyProductInfo = readOnlyOrderInfo.productInfo {
-                    productInfo.update(with: readOnlyProductInfo)
-                }
-                orderInfo.productInfo = productInfo
-
-                let customerInfo = orderInfo.customerInfo ?? storage.insertNewObject(ofType: Storage.BookingCustomerInfo.self)
-                if let readOnlyCustomerInfo = readOnlyOrderInfo.customerInfo {
-                    customerInfo.update(with: readOnlyCustomerInfo)
-                }
-                orderInfo.customerInfo = customerInfo
-
-                let paymentInfo = orderInfo.paymentInfo ?? storage.insertNewObject(ofType: Storage.BookingPaymentInfo.self)
-                if let readOnlyPaymentInfo = readOnlyOrderInfo.paymentInfo {
-                    paymentInfo.update(with: readOnlyPaymentInfo)
-                }
-                orderInfo.paymentInfo = paymentInfo
-
-                orderInfo.update(with: readOnlyOrderInfo)
-                storageBooking.orderInfo = orderInfo
-            }
-
-            storageBooking.update(with: readOnlyBooking)
-        }
     }
 
     /// Updates (OR Inserts) the specified ReadOnly BookingResource Entities *in a background thread* async.

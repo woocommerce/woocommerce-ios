@@ -77,8 +77,12 @@ private extension BookingStoreMethods {
                                           readOnlyOrders: [Networking.Order],
                                           siteID: Int64,
                                           cacheClearStrategy: CacheClearStrategy = .none) async {
-        await withCheckedContinuation { continuation in
-            storageManager.performAndSave({ storage in
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else {
+                return continuation.resume()
+            }
+            storageManager.performAndSave({ [weak self] storage in
+                guard let self else { return }
                 switch cacheClearStrategy {
                 case .none:
                     break
@@ -88,16 +92,21 @@ private extension BookingStoreMethods {
                     let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
                     storage.deleteBookings(matching: predicate)
                 }
-                Self.upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
+                self.upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
             }, completion: {
                 continuation.resume()
             }, on: .main)
         }
     }
 
-    static func upsertStoredBookings(readOnlyBookings: [Networking.Booking],
-                                     readOnlyOrders: [Networking.Order],
-                                     in storage: StorageType) {
+}
+
+// MARK: - Upsert
+
+extension BookingStoreMethods {
+    func upsertStoredBookings(readOnlyBookings: [Networking.Booking],
+                              readOnlyOrders: [Networking.Order],
+                              in storage: StorageType) {
         let bookingIDs = readOnlyBookings.map { $0.bookingID }
         let siteID = readOnlyBookings.first?.siteID ?? 0
         let storedBookings = storage.loadBookings(siteID: siteID, bookingIDs: bookingIDs)

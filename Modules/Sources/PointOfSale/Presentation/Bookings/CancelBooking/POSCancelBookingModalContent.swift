@@ -67,6 +67,7 @@ struct POSCancelBookingModalContent: View {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelled(bookingID: booking.id))
             cancelModalState = .success
         } catch {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelFailed(bookingID: booking.id, error: error))
             cancelModalState = .error
         }
     }

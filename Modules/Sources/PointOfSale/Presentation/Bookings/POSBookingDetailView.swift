@@ -57,6 +57,10 @@ struct POSBookingDetailView: View {
                                     await bookingsModel.updateAfterRefund(bookingID: booking.id)
                                     isDetailsUpdating = false
                                 }
+                            },
+                            onRefundFailure: { error in
+                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(bookingID: booking.id,
+                                                                                                        error: error))
                             }
                         )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {

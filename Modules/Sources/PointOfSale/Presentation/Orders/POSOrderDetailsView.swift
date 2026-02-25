@@ -10,6 +10,7 @@ struct POSOrderDetailsView: View {
     let onBack: () -> Void
     var autoStartRefund: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
+    var onRefundFailure: ((Error) -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
@@ -95,6 +96,7 @@ struct POSOrderDetailsView: View {
                 onEditRefund: autoStartRefund ? nil : { refundModalState = .itemSelection },
                 showsItemSelection: !autoStartRefund,
                 onRefundSuccess: onRefundSuccess,
+                onRefundFailure: onRefundFailure,
                 errorStrings: .init(
                     loadTitle: Localization.loadRefundErrorTitle,
                     loadSubtitle: Localization.loadRefundErrorSubtitle,

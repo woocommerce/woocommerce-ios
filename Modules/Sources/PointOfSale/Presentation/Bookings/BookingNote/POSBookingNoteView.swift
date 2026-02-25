@@ -124,6 +124,7 @@ struct POSBookingNoteView: View {
                     isTextFieldFocused = false
                 }
             } catch {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAddFailed(bookingID: booking.id, error: error))
                 errorMessage = Localization.saveError
                 buttonState = .idle
             }

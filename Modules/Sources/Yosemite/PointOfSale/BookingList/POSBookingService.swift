@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjack
 import enum Alamofire.AFError
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
@@ -154,6 +155,7 @@ private extension POSBookingService {
             let orders = try await ordersRemote.loadPOSOrders(siteID: siteID, orderIDs: Array(Set(orderIDs)))
             return Dictionary(uniqueKeysWithValues: orders.map { ($0.orderID, $0) })
         } catch {
+            DDLogError("⛔️ POSBookingService: Failed to batch-load orders for IDs \(orderIDs): \(error)")
             return [:]
         }
     }

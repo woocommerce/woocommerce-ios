@@ -12,7 +12,7 @@ struct POSBookingInMemoryStoreTests {
 
     // MARK: - replaceBookings
 
-    @Test func test_replaceBookings_stores_bookings() {
+    @Test func test_replaceBookings_when_called_then_stores_bookings() {
         // Given
         let store = POSBookingInMemoryStore()
         let bookings = [makeBooking(id: 1), makeBooking(id: 2)]
@@ -24,7 +24,7 @@ struct POSBookingInMemoryStoreTests {
         #expect(store.allBookings(for: dateRange) == bookings)
     }
 
-    @Test func test_replaceBookings_clears_existing_bookings() {
+    @Test func test_replaceBookings_when_called_again_then_clears_existing_bookings() {
         // Given
         let store = POSBookingInMemoryStore()
         store.replaceBookings([makeBooking(id: 1), makeBooking(id: 2)], for: dateRange)
@@ -40,7 +40,7 @@ struct POSBookingInMemoryStoreTests {
 
     // MARK: - appendBookings
 
-    @Test func test_appendBookings_adds_to_existing() {
+    @Test func test_appendBookings_when_existing_data_then_adds_to_existing() {
         // Given
         let store = POSBookingInMemoryStore()
         store.replaceBookings([makeBooking(id: 1)], for: dateRange)
@@ -53,7 +53,7 @@ struct POSBookingInMemoryStoreTests {
         #expect(ids == [1, 2])
     }
 
-    @Test func test_appendBookings_deduplicates_by_id() {
+    @Test func test_appendBookings_when_duplicate_ids_then_deduplicates() {
         // Given
         let store = POSBookingInMemoryStore()
         store.replaceBookings([makeBooking(id: 1), makeBooking(id: 2)], for: dateRange)
@@ -79,7 +79,7 @@ struct POSBookingInMemoryStoreTests {
 
     // MARK: - bookings with limit
 
-    @Test func test_bookings_with_limit_returns_prefix() {
+    @Test func test_bookings_when_limit_set_then_returns_prefix() {
         // Given
         let store = POSBookingInMemoryStore()
         store.replaceBookings([makeBooking(id: 1), makeBooking(id: 2), makeBooking(id: 3)], for: dateRange)
@@ -92,7 +92,7 @@ struct POSBookingInMemoryStoreTests {
         #expect(result.map(\.id) == [1, 2])
     }
 
-    @Test func test_bookings_with_nil_limit_returns_all() {
+    @Test func test_bookings_when_nil_limit_then_returns_all() {
         // Given
         let store = POSBookingInMemoryStore()
         store.replaceBookings([makeBooking(id: 1), makeBooking(id: 2), makeBooking(id: 3)], for: dateRange)
@@ -106,7 +106,7 @@ struct POSBookingInMemoryStoreTests {
 
     // MARK: - Isolation between date ranges
 
-    @Test func test_different_date_ranges_are_isolated() {
+    @Test func test_allBookings_when_different_date_range_then_returns_empty() {
         // Given
         let store = POSBookingInMemoryStore()
         let otherRange = POSBookingInMemoryStore.DateRange(
@@ -119,7 +119,7 @@ struct POSBookingInMemoryStoreTests {
         #expect(store.allBookings(for: otherRange).isEmpty)
     }
 
-    @Test func test_replace_on_one_date_does_not_affect_another() {
+    @Test func test_replaceBookings_when_one_date_then_does_not_affect_another() {
         // Given
         let store = POSBookingInMemoryStore()
         let otherRange = POSBookingInMemoryStore.DateRange(
@@ -139,7 +139,7 @@ struct POSBookingInMemoryStoreTests {
 
     // MARK: - Sorting
 
-    @Test func test_allBookings_are_sorted_by_startDate_then_id() {
+    @Test func test_allBookings_when_unsorted_input_then_sorts_by_startDate_and_id() {
         // Given
         let store = POSBookingInMemoryStore()
         let earlyDate = Date(timeIntervalSince1970: 1000)
@@ -158,7 +158,7 @@ struct POSBookingInMemoryStoreTests {
         #expect(result.map(\.id) == [1, 2, 3])
     }
 
-    @Test func test_bookings_with_limit_are_sorted_before_limiting() {
+    @Test func test_bookings_when_limit_set_then_sorts_before_limiting() {
         // Given
         let store = POSBookingInMemoryStore()
         let earlyDate = Date(timeIntervalSince1970: 1000)
@@ -177,20 +177,26 @@ struct POSBookingInMemoryStoreTests {
 
     // MARK: - Empty state
 
-    @Test func test_allBookings_returns_empty_for_unknown_date_range() {
+    @Test func test_allBookings_when_unknown_date_range_then_returns_empty() {
         // Given
         let store = POSBookingInMemoryStore()
 
+        // When
+        let result = store.allBookings(for: dateRange)
+
         // Then
-        #expect(store.allBookings(for: dateRange).isEmpty)
+        #expect(result.isEmpty)
     }
 
-    @Test func test_bookings_returns_empty_for_unknown_date_range() {
+    @Test func test_bookings_when_unknown_date_range_then_returns_empty() {
         // Given
         let store = POSBookingInMemoryStore()
 
+        // When
+        let result = store.bookings(for: dateRange, limit: 10)
+
         // Then
-        #expect(store.bookings(for: dateRange, limit: 10).isEmpty)
+        #expect(result.isEmpty)
     }
 }
 

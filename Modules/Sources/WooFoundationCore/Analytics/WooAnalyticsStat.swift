@@ -1365,6 +1365,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleBookingIssueRefundTapped = "booking_issue_refund_tapped"
     case pointOfSaleBookingViewOrderTapped = "booking_view_order_tapped"
     case pointOfSaleBookingAttendanceChanged = "booking_attendance_changed"
+    case pointOfSaleBookingNoteAdded = "booking_note_added"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

@@ -12,6 +12,7 @@ struct POSBookingNoteView: View {
     @FocusState private var isTextFieldFocused: Bool
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
 
     @Binding private(set) var isShowingNoteView: Bool
 
@@ -114,6 +115,7 @@ struct POSBookingNoteView: View {
                     bookingID: booking.id,
                     note: trimmedNote
                 )
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAdded(bookingID: booking.id))
 
                 withAnimation {
                     buttonState = .success

@@ -27,11 +27,11 @@ struct POSTotalsSectionView: View {
             VStack(spacing: POSSpacing.small) {
                 totalsRow(title: subtotalLabel, amount: subtotalAmount)
 
+                totalsRow(title: Localization.taxesLabel, amount: taxAmount)
+
                 if let discountAmount {
                     totalsRow(title: Localization.discountLabel, amount: discountAmount)
                 }
-
-                totalsRow(title: Localization.taxesLabel, amount: taxAmount)
 
                 sectionDivider
                 totalsRow(
@@ -149,9 +149,9 @@ struct POSTotalsSectionView: View {
 
 private enum Localization {
     static let discountLabel = NSLocalizedString(
-        "pos.totalsSectionView.discountLabel",
-        value: "Discount total",
-        comment: "Label for discount total in the totals breakdown."
+        "pos.totalsSectionView.discountLabel.v2",
+        value: "Discount",
+        comment: "Label for discount in the totals breakdown."
     )
 
     static let taxesLabel = NSLocalizedString(

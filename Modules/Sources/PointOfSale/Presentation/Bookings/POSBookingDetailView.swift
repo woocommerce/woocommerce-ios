@@ -334,7 +334,7 @@ struct POSBookingDetailView: View {
             sectionTitle: Localization.paymentTitle,
             subtotalLabel: Localization.serviceLabel,
             subtotalAmount: booking.formattedSubtotal ?? booking.order.formattedSubtotal,
-            discountAmount: booking.order.formattedDiscountTotal,
+            discountAmount: booking.order.formattedDiscountTotal ?? Localization.noDiscountPlaceholder,
             taxAmount: booking.order.formattedTotalTax,
             totalAmount: booking.order.formattedTotal,
             paidAmount: booking.order.formattedPaymentTotal,
@@ -617,6 +617,12 @@ private enum Localization {
         "pos.bookingDetailView.cancelBookingAction",
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let noDiscountPlaceholder = NSLocalizedString(
+        "pos.bookingDetailView.noDiscountPlaceholder",
+        value: "-",
+        comment: "Placeholder shown in the payment breakdown when there is no discount on the booking."
     )
 
 }

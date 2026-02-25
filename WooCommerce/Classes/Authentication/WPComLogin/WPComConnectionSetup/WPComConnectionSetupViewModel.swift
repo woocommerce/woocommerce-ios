@@ -142,7 +142,6 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     func cancelTapped() {
         analytics.track(.pushNotificationsSetupFlowClose)
-        handler.cancel()
         onDismiss()
     }
 

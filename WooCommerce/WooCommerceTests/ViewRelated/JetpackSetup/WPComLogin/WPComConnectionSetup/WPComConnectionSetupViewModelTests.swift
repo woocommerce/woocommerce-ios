@@ -144,7 +144,7 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
     // MARK: - Dismiss Tests
 
-    func test_cancelTapped_calls_handler_cancel_and_dismiss() {
+    func test_cancelTapped_calls_dismiss() {
         // Given
         let viewModel = makeViewModel()
 
@@ -152,7 +152,6 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         viewModel.cancelTapped()
 
         // Then
-        XCTAssertEqual(mockHandler.cancelCallCount, 1)
         XCTAssertTrue(dismissCalled)
     }
 

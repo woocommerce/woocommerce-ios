@@ -2,6 +2,13 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 133
+- Added `BookingOrderLineItem` entity with relationship to `BookingOrderInfo`.
+- Added `BookingOrderRefund` entity with relationship to `BookingOrderInfo`.
+- Added `customerEmail` attribute to `BookingOrderInfo` entity.
+- Added `lineItems` relationship to `BookingOrderInfo` entity.
+- Added `refunds` relationship to `BookingOrderInfo` entity.
+
 ## Model 132
 - Added `orderID`, `orderNumber`, `dateCreated`, `datePaid`, `discountTotal` attributes to `BookingOrderInfo` entity.
 

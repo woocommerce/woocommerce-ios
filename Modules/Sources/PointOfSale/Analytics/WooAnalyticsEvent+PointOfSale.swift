@@ -49,8 +49,6 @@ extension WooAnalyticsEvent {
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
             static let bookingID = "booking_id"
-            static let bookingStatus = "booking_status"
-            static let paymentStatus = "payment_status"
         }
 
         /// Source of the event where the event is triggered

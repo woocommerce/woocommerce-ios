@@ -119,6 +119,15 @@ final class WPComPushNotificationsBenefitsViewModel {
         onDismiss()
     }
 
+    func cancelTapped() {
+        analytics.track(.pushNotificationsSetupIntroductionClose)
+        onDismiss()
+    }
+
+    func onSwipeDismiss() {
+        analytics.track(.pushNotificationsSetupIntroductionClose)
+    }
+
     func whatIsWPComTapped() {
         analytics.track(.pushNotificationsSetupIntroductionLinkTap)
     }

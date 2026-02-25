@@ -186,6 +186,22 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         provider.assertReceived(event: "push_notifications_setup_introduction_button_tap", with: ["button_label": "update_plugin"])
     }
 
+    // MARK: - Analytics: close
+
+    func test_cancelTapped_and_onSwipeDismiss_track_introduction_close() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.cancelTapped()
+        viewModel.onSwipeDismiss()
+
+        // Then
+        XCTAssertEqual(provider.receivedEvents.filter { $0 == "push_notifications_setup_introduction_close" }.count, 2)
+    }
+
     // MARK: - Analytics: determineSetupVariant errors
 
     func test_determineSetupVariant_when_connection_errors_then_tracks_correct_introduction_error() async {

@@ -156,7 +156,7 @@ enum RefundActionAvailability {
     }
 
     private func setLoadingState() {
-        if !fetchStrategy.showsLoadingWithItems {
+        if !fetchStrategy.showsCachedDataWhileLoading {
             ordersViewState = .loading([])
             return
         }

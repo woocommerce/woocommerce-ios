@@ -46,7 +46,7 @@ struct DebugPanelView: View {
                         ),
                         onDismiss: dismiss,
                         onGoToStore: dismiss,
-                        onUpdatePlugin: {}
+                        onUpdatePlugin: { _ in }
                     )
                     WPComConnectionSetupView(viewModel: viewModel)
                 }

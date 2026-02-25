@@ -8,17 +8,13 @@ import class WooFoundationCore.CurrencyFormatter
 public protocol POSBookingListFetchStrategy {
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking>
     @MainActor func fetchLocalBookings() -> [POSBooking]
-    var showsLoadingWithItems: Bool { get }
+    var showsCachedDataWhileLoading: Bool { get }
     var id: String { get }
 }
 
 extension POSBookingListFetchStrategy {
     public var id: String {
         String(describing: type(of: self))
-    }
-
-    @MainActor public func fetchLocalBookings() -> [POSBooking] {
-        []
     }
 }
 
@@ -29,7 +25,7 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
     private let siteID: Int64
     private let pageSize: Int
     private let filters: BookingFilters?
-    let showsLoadingWithItems: Bool = true
+    let showsCachedDataWhileLoading: Bool = true
 
     var id: String {
         "POSDefaultBookingListFetchStrategy-\(filters?.startDateAfter ?? "none")"
@@ -52,9 +48,8 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
 
     func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
         do {
-            let cacheClearStrategy: BookingStoreMethods.CacheClearStrategy = pageNumber == 1
-                ? (filters.map { .filtersOnly($0) } ?? .all)
-                : .none
+            // Sync remote bookings into CoreData, then read them back as mapped POSBooking models.
+            let cacheClearStrategy = cacheClearStrategy(for: pageNumber)
             let hasMorePages = try await bookingStoreMethods.synchronizeBookings(
                 siteID: siteID,
                 pageNumber: pageNumber,
@@ -64,7 +59,10 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
                 order: .ascending,
                 cacheClearStrategy: cacheClearStrategy
             )
-            let bookings = await fetchLocalBookingsFromStorage()
+            guard let filters else {
+                return PagedItems(items: [], hasMorePages: hasMorePages, totalItems: nil)
+            }
+            let bookings = await fetchLocalBookingsSync(filters: filters, limit: nil)
             return PagedItems(items: bookings, hasMorePages: hasMorePages, totalItems: nil)
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSBookingServiceError.requestCancelled
@@ -74,19 +72,25 @@ struct POSDefaultBookingListFetchStrategy: POSBookingListFetchStrategy {
     @MainActor
     func fetchLocalBookings() -> [POSBooking] {
         guard let filters else { return [] }
-        return fetchLocalBookingsSync(filters: filters)
+        return fetchLocalBookingsSync(filters: filters, limit: pageSize)
     }
 }
 
 private extension POSDefaultBookingListFetchStrategy {
-    @MainActor
-    func fetchLocalBookingsFromStorage() -> [POSBooking] {
-        guard let filters else { return [] }
-        return fetchLocalBookingsSync(filters: filters)
+    /// On the first page, clear cached bookings matching the current filters (or all if no filters).
+    /// On subsequent pages, keep the cache intact to allow appending.
+    func cacheClearStrategy(for pageNumber: Int) -> BookingStoreMethods.CacheClearStrategy {
+        guard pageNumber == 1 else {
+            return .none
+        }
+        if let filters {
+            return .filtersOnly(filters)
+        }
+        return .all
     }
 
     @MainActor
-    func fetchLocalBookingsSync(filters: BookingFilters) -> [POSBooking] {
+    func fetchLocalBookingsSync(filters: BookingFilters, limit: Int?) -> [POSBooking] {
         let bookingPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
         let hasOrderPredicate = NSPredicate(format: "orderInfo != nil")
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [bookingPredicate, hasOrderPredicate])
@@ -95,6 +99,7 @@ private extension POSDefaultBookingListFetchStrategy {
         let resultsController = ResultsController<StorageBooking>(
             storageManager: storageManager,
             matching: predicate,
+            fetchLimit: limit,
             sortedBy: [sortByDate, sortByID]
         )
 
@@ -139,7 +144,7 @@ struct POSSearchBookingListFetchStrategy: POSBookingListFetchStrategy {
     private let searchTerm: String
     private let pageSize: Int
     private let filters: BookingFilters?
-    let showsLoadingWithItems: Bool = false
+    let showsCachedDataWhileLoading: Bool = false
 
     var id: String {
         "POSSearchBookingListFetchStrategy-\(searchTerm)-\(filters?.startDateAfter ?? "none")"
@@ -161,5 +166,10 @@ struct POSSearchBookingListFetchStrategy: POSBookingListFetchStrategy {
             filters: filters,
             searchQuery: searchTerm
         )
+    }
+
+    @MainActor
+    func fetchLocalBookings() -> [POSBooking] {
+        []
     }
 }

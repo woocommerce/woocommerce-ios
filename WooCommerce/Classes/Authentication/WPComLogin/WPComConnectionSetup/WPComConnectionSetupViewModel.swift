@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import protocol WooFoundation.Analytics
 
 @MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
@@ -58,24 +59,23 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         Localization.tryAgain
     }
 
-    var isShowingDoneButton: Bool {
-        setupState == .completed
-    }
-
     private let storeName: String
     private let handler: WPComConnectionSetupHandlerProtocol
+    private let analytics: Analytics
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
-    private let onUpdatePlugin: () -> Void
+    private let onUpdatePlugin: (@escaping () -> Void) -> Void
     private var shouldAutoOpenUpdatePlugin = false
 
     init(storeName: String,
          handler: WPComConnectionSetupHandlerProtocol,
+         analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void,
          onGoToStore: @escaping () -> Void,
-         onUpdatePlugin: @escaping () -> Void) {
+         onUpdatePlugin: @escaping (@escaping () -> Void) -> Void) {
         self.storeName = storeName
         self.handler = handler
+        self.analytics = analytics
         self.onDismiss = onDismiss
         self.onGoToStore = onGoToStore
         self.onUpdatePlugin = onUpdatePlugin
@@ -99,7 +99,9 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func onAppear() {
         if shouldAutoOpenUpdatePlugin {
             shouldAutoOpenUpdatePlugin = false
-            onUpdatePlugin()
+            onUpdatePlugin { [weak self] in
+                self?.retrySetup()
+            }
             return
         }
         guard setupState == .inProgress else { return }
@@ -114,15 +116,21 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     func primaryButtonTapped() {
         switch setupState {
         case .completed:
+            analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.goToMyStore))
             onGoToStore()
         case .failed(let step, let checkPluginError):
             switch step {
             case .connect, .enablePush:
+                analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
                 retrySetup()
             case .checkPlugin:
                 if checkPluginError == .outdated {
-                    onUpdatePlugin()
+                    analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.updatePlugin))
+                    onUpdatePlugin { [weak self] in
+                        self?.retrySetup()
+                    }
                 } else {
+                    analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
                     retrySetup()
                 }
             }
@@ -132,20 +140,17 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func secondaryButtonTapped() {
+        analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
         retrySetup()
     }
 
     func cancelTapped() {
-        handler.cancel()
+        analytics.track(.pushNotificationsSetupFlowClose)
         onDismiss()
     }
 
     func getHelpTapped() {
         isShowingGetHelp = true
-    }
-
-    func doneTapped() {
-        onDismiss()
     }
 
     private func retrySetup() {
@@ -176,9 +181,15 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
         updateStep(step, status: status)
 
-        if case .failure(let error) = status {
+        switch status {
+        case .success:
+            analytics.track(.pushNotificationsSetupFlowSuccess, withProperties: ["step": step.analyticsKey])
+        case .failure(let error):
+            analytics.track(.pushNotificationsSetupFlowError, properties: ["step": step.analyticsKey], error: error)
             let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: error) : nil
             setupState = .failed(step: step, checkPluginError: checkPluginError)
+        case .notStarted, .running:
+            break
         }
     }
 

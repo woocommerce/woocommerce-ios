@@ -41,11 +41,11 @@ final class WooPushNotificationSetupCoordinator {
                 navigationController?.dismiss(animated: true)
                 onSetupCompleted?()
             },
-            onUpdatePlugin: { [weak navigationController, stores] in
+            onUpdatePlugin: { [weak navigationController, stores] onDismissed in
                 guard let navigationController,
                       let site = stores.sessionManager.defaultSite,
                       let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else { return }
-                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
+                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce, onDismiss: onDismissed)
                 let vc = UIHostingController(rootView: webView)
                 vc.modalPresentationStyle = .formSheet
                 navigationController.present(vc, animated: true)

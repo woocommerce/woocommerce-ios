@@ -23,6 +23,7 @@ struct ConnectWPComCard: View {
                     .fontWeight(.semibold)
                 Text(Localization.subtitle)
                     .font(.callout)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             VStack {
                 Menu {

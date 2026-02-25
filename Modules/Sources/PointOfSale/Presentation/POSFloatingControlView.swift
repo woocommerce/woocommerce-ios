@@ -65,6 +65,7 @@ struct POSFloatingControlView: View {
         }
         .posFullScreenCover(isPresented: $showBookings) {
             POSBookingsContainerView(isPresented: $showBookings)
+                .environment(\.floatingControlAreaSize, .zero)
         }
         .onChange(of: showBookings) { _, isShowing in
             if isShowing {

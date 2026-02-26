@@ -48,6 +48,7 @@ extension WooAnalyticsEvent {
             static let syncStrategy = "sync_strategy"
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
+            static let deltaFromToday = "delta_from_today"
         }
 
         /// Source of the event where the event is triggered
@@ -580,6 +581,21 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingRefundFailed,
                               properties: [:],
                               error: error)
+        }
+
+        static func bookingDatePreviousTapped(deltaFromToday: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDatePreviousTapped,
+                              properties: [Key.deltaFromToday: "\(deltaFromToday)"])
+        }
+
+        static func bookingDateNextTapped(deltaFromToday: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDateNextTapped,
+                              properties: [Key.deltaFromToday: "\(deltaFromToday)"])
+        }
+
+        static func bookingDateCalendarSelected(deltaFromToday: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDateCalendarSelected,
+                              properties: [Key.deltaFromToday: "\(deltaFromToday)"])
         }
     }
 }

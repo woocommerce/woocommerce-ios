@@ -193,6 +193,9 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleBookingAttendanceChangeFailed,
             WooAnalyticsStat.pointOfSaleBookingNoteAddFailed,
             WooAnalyticsStat.pointOfSaleBookingRefundFailed,
+            WooAnalyticsStat.pointOfSaleBookingDatePreviousTapped,
+            WooAnalyticsStat.pointOfSaleBookingDateNextTapped,
+            WooAnalyticsStat.pointOfSaleBookingDateCalendarSelected,
 
             // Order
             WooAnalyticsStat.ordersListLoaded,

@@ -111,29 +111,29 @@ private extension POSFloatingControlView {
                     icon: { Image(systemName: "gearshape") }
                 )
             }
-        }
 
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) && horizontalSizeClass == .regular {
-            Button {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                showOrders = true
-            } label: {
-                Label(
-                    title: { Text(Localization.orders) },
-                    icon: { Image(systemName: "text.document") }
-                )
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+                Button {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                    showOrders = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.orders) },
+                        icon: { Image(systemName: "text.document") }
+                    )
+                }
             }
-        }
 
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible && horizontalSizeClass == .regular {
-            Button {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
-                showBookings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.bookings) },
-                    icon: { Image(systemName: "calendar") }
-                )
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
+                Button {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
+                    showBookings = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.bookings) },
+                        icon: { Image(systemName: "calendar") }
+                    )
+                }
             }
         }
     }

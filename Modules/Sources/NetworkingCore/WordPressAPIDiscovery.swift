@@ -1,4 +1,3 @@
-import CocoaLumberjackSwift
 import Foundation
 
 /// Discovers the WordPress REST API root URL for a given site by performing a HEAD request

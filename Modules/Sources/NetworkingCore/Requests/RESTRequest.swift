@@ -28,14 +28,21 @@ public struct RESTRequest: Request {
     ///
     let allowsCellularAccess: Bool
 
+    /// Discovered WordPress REST API root URL (e.g. `https://example.com/wp-json/` or `https://example.com/?rest_route=/`).
+    /// When set, replaces `siteURL + basePath` in URL construction.
+    ///
+    let wordpressAPIRoot: String?
+
     private init(siteURL: String,
                  apiVersionPath: String?,
+                 wordpressAPIRoot: String? = nil,
                  method: HTTPMethod,
                  path: String,
                  parameters: [String: Any]? = nil,
                  allowsCellularAccess: Bool = true) {
         self.siteURL = siteURL
         self.apiVersionPath = apiVersionPath
+        self.wordpressAPIRoot = wordpressAPIRoot
         self.method = method
         self.path = path
         self.parameters = parameters
@@ -55,6 +62,29 @@ public struct RESTRequest: Request {
          parameters: [String: Any]? = nil,
          allowsCellularAccess: Bool = true) {
         self.init(siteURL: siteURL, apiVersionPath: nil, method: method, path: path, parameters: parameters, allowsCellularAccess: allowsCellularAccess)
+    }
+
+    /// - Parameters:
+    ///     - siteURL: URL of the site to send the REST request to.
+    ///     - wordpressAPIRoot: Discovered REST API root URL. When provided, replaces the default `siteURL + ?rest_route=` prefix.
+    ///     - method: HTTP Method we should use.
+    ///     - path: path to the target endpoint.
+    ///     - parameters: Collection of String parameters to be passed over to our target endpoint.
+    ///     - allowsCellularAccess: Whether the request should allow cellular data access.
+    ///
+    public init(siteURL: String,
+                wordpressAPIRoot: String?,
+                method: HTTPMethod,
+                path: String,
+                parameters: [String: Any]? = nil,
+                allowsCellularAccess: Bool = true) {
+        self.init(siteURL: siteURL,
+                  apiVersionPath: nil,
+                  wordpressAPIRoot: wordpressAPIRoot,
+                  method: method,
+                  path: path,
+                  parameters: parameters,
+                  allowsCellularAccess: allowsCellularAccess)
     }
 
     /// - Parameters:
@@ -105,7 +135,12 @@ public struct RESTRequest: Request {
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     public func asURLRequest() throws -> URLRequest {
-        let components = [siteURL, Settings.basePath, apiVersionPath, path]
+        let rootComponents: [String?] = if let wordpressAPIRoot {
+            [wordpressAPIRoot, apiVersionPath, path]
+        } else {
+            [siteURL, Settings.basePath, apiVersionPath, path]
+        }
+        let components = rootComponents
             .compactMap { $0 }
             .map { $0.trimSlashes() }
             .filter { $0.isEmpty == false }

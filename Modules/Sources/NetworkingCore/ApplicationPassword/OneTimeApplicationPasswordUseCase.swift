@@ -16,11 +16,13 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     private let siteAddress: String
     private let session: URLSessionProtocol
     private let storage: ApplicationPasswordStorageType
+    private let discovery: (_ siteURL: String) async -> String?
 
     public init(applicationPassword: ApplicationPassword? = nil,
                 siteAddress: String,
                 injectedStorage: ApplicationPasswordStorageType? = nil,
-                session: URLSessionProtocol = URLSession(configuration: .default)) {
+                session: URLSessionProtocol = URLSession(configuration: .default),
+                discovery: ((_ siteURL: String) async -> String?)? = nil) {
         self.storage = injectedStorage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         if let applicationPassword {
             storage.saveApplicationPassword(applicationPassword)
@@ -28,6 +30,12 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         self.applicationPassword = storage.applicationPassword
         self.siteAddress = siteAddress
         self.session = session
+        if let discovery {
+            self.discovery = discovery
+        } else {
+            let wordpressDiscovery = WordPressAPIDiscovery()
+            self.discovery = { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) }
+        }
     }
 
     public func generateNewPassword() async throws -> ApplicationPassword {
@@ -38,8 +46,9 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     public func deletePassword(locally: Bool) async throws {
         /// Always fetch UUID because the one in storage was generated locally only.
         /// Check `ApplicationPasswordAuthorizationWebViewController` for more details.
-        guard let uuid = try await fetchApplicationPasswordUUID(),
-              let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
+        let discoveredRoot = await discovery(siteAddress)
+        guard let uuid = try await fetchApplicationPasswordUUID(discoveredRoot: discoveredRoot),
+              let url = restAPIURL(for: "/wp/v2/users/me/application-passwords/" + uuid, discoveredRoot: discoveredRoot) else {
             return
         }
 
@@ -55,8 +64,8 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 }
 
 private extension OneTimeApplicationPasswordUseCase {
-    func fetchApplicationPasswordUUID() async throws -> String? {
-        guard let url = URL(string: siteAddress + Path.introspect) else {
+    func fetchApplicationPasswordUUID(discoveredRoot: String?) async throws -> String? {
+        guard let url = restAPIURL(for: "/wp/v2/users/me/application-passwords/introspect", discoveredRoot: discoveredRoot) else {
             return nil
         }
 
@@ -73,6 +82,30 @@ private extension OneTimeApplicationPasswordUseCase {
 
         let password = try decoder.decode(ApplicationPassword.self, from: data)
         return password.uuid
+    }
+
+    /// Builds the full URL for a WordPress REST API path using the discovered root, or falls back to `?rest_route=`.
+    ///
+    /// Handles both permalink styles:
+    /// - Pretty permalinks: `https://example.com/wp-json/` + `/wp/v2/users/me/...` → `https://example.com/wp-json/wp/v2/users/me/...`
+    /// - Default permalinks: `https://example.com/?rest_route=/` → `https://example.com/?rest_route=/wp/v2/users/me/...`
+    /// - No discovery: falls back to `siteAddress + /?rest_route=` + path
+    ///
+    func restAPIURL(for wpPath: String, discoveredRoot: String?) -> URL? {
+        let path = wpPath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        if let root = discoveredRoot, var components = URLComponents(string: root) {
+            if components.queryItems?.contains(where: { $0.name == "rest_route" }) == true {
+                // ?rest_route=/ style
+                components.percentEncodedQueryItems = [URLQueryItem(name: "rest_route", value: "/" + path)]
+                return components.url
+            } else {
+                // wp-json/ style
+                let base = root.hasSuffix("/") ? root : root + "/"
+                return URL(string: base + path)
+            }
+        }
+        // Fallback to ?rest_route= style
+        return URL(string: siteAddress + "/?rest_route=/" + path)
     }
 
     func authenticateRequest(request: URLRequest) -> URLRequest {
@@ -94,9 +127,3 @@ private extension OneTimeApplicationPasswordUseCase {
     }
 }
 
-private extension OneTimeApplicationPasswordUseCase {
-    enum Path {
-        static let applicationPasswords = "/?rest_route=/wp/v2/users/me/application-passwords/"
-        static let introspect = "/?rest_route=/wp/v2/users/me/application-passwords/introspect"
-    }
-}

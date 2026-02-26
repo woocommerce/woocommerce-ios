@@ -36,10 +36,11 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
                                  filename: "generate-application-password-using-wporg-creds-success")
         let username = "demo"
         let siteAddress = "https://test.com"
-        let sut = try DefaultApplicationPasswordUseCase(username: username,
-                                                        password: "qeWOhQ5RUV8W",
-                                                        siteAddress: siteAddress,
-                                                        network: network)
+        let sut = DefaultApplicationPasswordUseCase(type: .wporg(username: username,
+                                                                  password: "qeWOhQ5RUV8W",
+                                                                  siteAddress: siteAddress),
+                                                    network: network,
+                                                    discovery: { _ in nil })
 
         // When
         let password = try await sut.generateNewPassword()
@@ -55,10 +56,11 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
         let username = "demo"
         let siteAddress = "https://test.com"
-        let sut = try DefaultApplicationPasswordUseCase(username: username,
-                                                        password: "qeWOhQ5RUV8W",
-                                                        siteAddress: siteAddress,
-                                                        network: network)
+        let sut = DefaultApplicationPasswordUseCase(type: .wporg(username: username,
+                                                                  password: "qeWOhQ5RUV8W",
+                                                                  siteAddress: siteAddress),
+                                                    network: network,
+                                                    discovery: { _ in nil })
 
         // When
         var failure: ApplicationPasswordUseCaseError?
@@ -78,10 +80,11 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
         let username = "demo"
         let siteAddress = "https://test.com"
-        let sut = try DefaultApplicationPasswordUseCase(username: username,
-                                                        password: "qeWOhQ5RUV8W",
-                                                        siteAddress: siteAddress,
-                                                        network: network)
+        let sut = DefaultApplicationPasswordUseCase(type: .wporg(username: username,
+                                                                  password: "qeWOhQ5RUV8W",
+                                                                  siteAddress: siteAddress),
+                                                    network: network,
+                                                    discovery: { _ in nil })
 
         // When
         var failure: ApplicationPasswordUseCaseError?
@@ -196,5 +199,25 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertNil(storage.applicationPassword)
+    }
+
+    func test_generateNewPassword_when_discovery_returns_wp_json_root_then_uses_wp_json_url() async throws {
+        // Given
+        let username = "demo"
+        let siteAddress = "https://test.com"
+        network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword,
+                                 filename: "generate-application-password-using-wporg-creds-success")
+        let sut = DefaultApplicationPasswordUseCase(
+            type: .wporg(username: username, password: "qeWOhQ5RUV8W", siteAddress: siteAddress),
+            network: network,
+            discovery: { _ in "https://test.com/wp-json/" }
+        )
+
+        // When
+        let password = try await sut.generateNewPassword()
+
+        // Then
+        XCTAssertEqual(password.password.secretValue, "passwordvalue")
+        XCTAssertEqual(password.wpOrgUsername, username)
     }
 }

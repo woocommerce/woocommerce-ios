@@ -147,6 +147,64 @@ final class RESTRequestTests: XCTestCase {
         }
     }
 
+    // MARK: - wordpressAPIRoot Tests
+
+    func test_request_url_uses_wp_json_root_when_wordpressAPIRoot_is_set_to_wp_json() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wordpressAPIRoot: "https://wordpress.com/wp-json/",
+                                  method: .get,
+                                  path: sampleRPC)
+
+        // When
+        let url = try XCTUnwrap(request.asURLRequest().url)
+
+        // Then
+        XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/sample")
+    }
+
+    func test_request_url_uses_rest_route_root_when_wordpressAPIRoot_is_set_to_rest_route() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wordpressAPIRoot: "https://wordpress.com/?rest_route=/",
+                                  method: .get,
+                                  path: sampleRPC)
+
+        // When
+        let url = try XCTUnwrap(request.asURLRequest().url)
+
+        // Then
+        XCTAssertEqual(url.absoluteString, "https://wordpress.com/?rest_route=/sample")
+    }
+
+    func test_request_url_falls_back_to_rest_route_basePath_when_wordpressAPIRoot_is_nil() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wordpressAPIRoot: nil,
+                                  method: .get,
+                                  path: sampleRPC)
+
+        // When
+        let url = try XCTUnwrap(request.asURLRequest().url)
+
+        // Then
+        XCTAssertEqual(url.absoluteString, "https://wordpress.com/?rest_route=/sample")
+    }
+
+    func test_request_url_with_wp_json_root_and_api_version() throws {
+        // Given
+        let request = RESTRequest(siteURL: sampleSiteAddress,
+                                  wordpressAPIRoot: "https://wordpress.com/wp-json/",
+                                  method: .get,
+                                  path: sampleRPC)
+
+        // When
+        let url = try XCTUnwrap(request.asURLRequest().url)
+
+        // Then
+        XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/sample")
+    }
+
     // MARK: - allowsCellularAccess Tests
 
     func test_request_with_allowsCellularAccess_true_sets_URLRequest_property() throws {

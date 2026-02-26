@@ -1,4 +1,5 @@
 import Foundation
+import NetworkingCore
 
 /// Endpoints for WordPress site information.
 ///

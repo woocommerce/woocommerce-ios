@@ -2363,6 +2363,36 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedCustomerInfo.value(forKey: "note") as? String, updatedNote)
     }
+
+    func test_migrating_from_131_to_132_adds_datePaid_attribute_to_bookingOrderInfo() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 131")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderInfo = insertBookingOrderInfo(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderInfo.entity.attributesByName["datePaid"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 132")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+
+        // `datePaid` should be present in `migratedOrderInfo`
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["datePaid"])
+
+        let datePaidValue = migratedOrderInfo.value(forKey: "datePaid") as? Date
+        XCTAssertNil(datePaidValue)
+
+        let updatedDate = Date()
+        migratedOrderInfo.setValue(updatedDate, forKey: "datePaid")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "datePaid") as? Date, updatedDate)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

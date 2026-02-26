@@ -13,7 +13,6 @@ struct POSBookingDetailView: View {
     @Environment(\.posAnalytics) private var analytics
 
     @State private var navigationPath: [NavigationDestination] = []
-    @State private var activeDestination: NavigationDestination?
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
@@ -34,30 +33,40 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
-        Group {
-            if horizontalSizeClass == .regular {
-                // On regular width, POSNavigationSplitView uses an HStack (no NavigationStack),
-                // so we need our own NavigationStack to push the order detail view.
-                NavigationStack(path: $navigationPath) {
-                    bookingDetailContent
-                        .navigationDestination(for: NavigationDestination.self) { destination in
-                            orderDetailDestination(for: destination)
-                        }
-                }
-            } else {
-                // On compact width, POSNavigationSplitView already provides a NavigationStack.
-                // Adding another would nest stacks (unsupported by SwiftUI) and cause crashes.
-                // Use isPresented-based navigation so the outer stack handles the push.
-                bookingDetailContent
-                    .navigationDestination(isPresented: Binding(
-                        get: { activeDestination != nil },
-                        set: { if !$0 { activeDestination = nil } }
-                    )) {
-                        if let activeDestination {
-                            orderDetailDestination(for: activeDestination)
-                        }
+        NavigationStack(path: $navigationPath) {
+            bookingDetailContent
+                .navigationDestination(for: NavigationDestination.self) { destination in
+                    switch destination {
+                    case .orderDetail:
+                        POSOrderDetailsView(order: booking.order, onBack: {
+                            navigationPath.removeLast()
+                        })
+                        // Forces back button to be rendered, otherwise the system assumes that
+                        // navigation is handled by the split view's sidebar, not a back button
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
+                    case .orderDetailRefund:
+                        POSOrderDetailsView(
+                            order: booking.order,
+                            onBack: { navigationPath.removeLast() },
+                            autoStartRefund: true,
+                            onRefundSuccess: {
+                                Task {
+                                    isDetailsUpdating = true
+                                    await bookingsModel.updateAfterRefund(bookingID: booking.id)
+                                    isDetailsUpdating = false
+                                }
+                            },
+                            onRefundFailure: { error in
+                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
+                            }
+                        )
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
                     }
-            }
+                }
         }
         .posFullScreenCover(isPresented: $showPaymentView) {
             if let paymentModel {
@@ -67,38 +76,6 @@ struct POSBookingDetailView: View {
         .posFullScreenCover(isPresented: $isShowingNoteView) {
             POSBookingNoteView(booking: booking, isShowingNoteView: $isShowingNoteView)
                 .posHeaderBackButtonIcon(systemName: "xmark")
-        }
-    }
-
-    @ViewBuilder
-    private func orderDetailDestination(for destination: NavigationDestination) -> some View {
-        switch destination {
-        case .orderDetail:
-            POSOrderDetailsView(order: booking.order, onBack: {
-                popNavigation()
-            })
-            .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                popNavigation()
-            }))
-        case .orderDetailRefund:
-            POSOrderDetailsView(
-                order: booking.order,
-                onBack: { popNavigation() },
-                autoStartRefund: true,
-                onRefundSuccess: {
-                    Task {
-                        isDetailsUpdating = true
-                        await bookingsModel.updateAfterRefund(bookingID: booking.id)
-                        isDetailsUpdating = false
-                    }
-                },
-                onRefundFailure: { error in
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
-                }
-            )
-            .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                popNavigation()
-            }))
         }
     }
 
@@ -174,7 +151,7 @@ struct POSBookingDetailView: View {
         HStack(spacing: POSSpacing.small) {
             Button(Localization.viewOrderAction) {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped())
-                navigateTo(.orderDetail)
+                navigationPath.append(.orderDetail)
             }
             .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
 
@@ -195,7 +172,7 @@ struct POSBookingDetailView: View {
                 Button(Localization.issueRefundAction) {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped())
                     orderListModel.ordersController.selectOrder(booking.order)
-                    navigateTo(.orderDetailRefund)
+                    navigationPath.append(.orderDetailRefund)
                 }
             }
             if booking.isCancellable {
@@ -380,23 +357,6 @@ struct POSBookingDetailView: View {
     }
 
     // MARK: - Payment Action
-
-    private func navigateTo(_ destination: NavigationDestination) {
-        if horizontalSizeClass == .regular {
-            navigationPath.append(destination)
-        } else {
-            activeDestination = destination
-        }
-    }
-
-    private func popNavigation() {
-        if horizontalSizeClass == .regular {
-            guard !navigationPath.isEmpty else { return }
-            navigationPath.removeLast()
-        } else {
-            activeDestination = nil
-        }
-    }
 
     private func dismissPayment() {
         showPaymentView = false

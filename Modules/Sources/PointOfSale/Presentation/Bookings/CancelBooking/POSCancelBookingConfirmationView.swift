@@ -115,8 +115,8 @@ private extension POSCancelBookingConfirmationView {
         )
 
         static let processingTitle = NSLocalizedString(
-            "pos.cancelBookingConfirmation.processingTitle",
-            value: "Cancelling booking...",
+            "pos.cancelBookingConfirmation.canceling.processingTitle",
+            value: "Canceling booking...",
             comment: "Title shown while a booking cancellation is being processed in POS."
         )
 
@@ -127,16 +127,16 @@ private extension POSCancelBookingConfirmationView {
         )
 
         static let confirmationMessageWithCustomer = NSLocalizedString(
-            "pos.cancelBookingConfirmation.confirmationMessageWithCustomer",
-            value: "Booking #%1$@ for %2$@ on %3$@ for %4$@ will be cancelled.",
-            comment: "Confirmation message with customer name shown before cancelling a booking in POS. "
+            "pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer",
+            value: "Booking #%1$@ for %2$@ on %3$@ for %4$@ will be canceled.",
+            comment: "Confirmation message with customer name shown before canceling a booking in POS. "
             + "%1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name."
         )
 
         static let confirmationMessage = NSLocalizedString(
-            "pos.cancelBookingConfirmation.confirmationMessage",
-            value: "Booking #%1$@ for %2$@ on %3$@ will be cancelled.",
-            comment: "Confirmation message shown before cancelling a booking in POS. "
+            "pos.cancelBookingConfirmation.canceled.confirmationMessage",
+            value: "Booking #%1$@ for %2$@ on %3$@ will be canceled.",
+            comment: "Confirmation message shown before canceling a booking in POS. "
             + "%1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time."
         )
 

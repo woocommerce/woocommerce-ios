@@ -557,16 +557,7 @@ private extension BookingStore {
                 }
                 orderInfo.paymentInfo = paymentInfo
 
-                orderInfo.statusKey = associatedOrder.status.rawValue
-                orderInfo.datePaid = associatedOrder.datePaid
-                orderInfo.total = NSDecimalNumber(string: associatedOrder.total)
-                orderInfo.refundTotal = {
-                    let sum = associatedOrder.refunds
-                        .compactMap { Decimal(string: $0.total) }
-                        .map { abs($0) }
-                        .reduce(0, +)
-                    return sum as NSDecimalNumber
-                }()
+                orderInfo.update(with: readOnlyOrderInfo)
                 storageBooking.orderInfo = orderInfo
             }
 

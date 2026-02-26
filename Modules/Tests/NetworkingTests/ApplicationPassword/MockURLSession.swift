@@ -33,12 +33,12 @@ final class MockURLSession: URLSessionProtocol {
         return (data, response)
     }
 
-    func simulateResponse(for url: String, data: Data, statusCode: Int = 200) {
+    func simulateResponse(for url: String, data: Data = Data(), statusCode: Int = 200, headerFields: [String: String]? = nil) {
         let response = HTTPURLResponse(
             url: URL(string: url)!,
             statusCode: statusCode,
             httpVersion: nil,
-            headerFields: nil
+            headerFields: headerFields
         )!
         responses[url] = (data, response)
     }

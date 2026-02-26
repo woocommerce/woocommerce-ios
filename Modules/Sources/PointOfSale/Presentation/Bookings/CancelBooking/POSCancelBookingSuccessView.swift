@@ -90,15 +90,15 @@ private extension POSCancelBookingSuccessView {
 private extension POSCancelBookingSuccessView {
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.cancelBookingSuccess.title",
-            value: "Booking cancelled",
-            comment: "Title shown when a booking has been successfully cancelled in POS."
+            "pos.cancelBookingSuccess.canceled.title",
+            value: "Booking canceled",
+            comment: "Title shown when a booking has been successfully canceled in POS."
         )
 
         static let message = NSLocalizedString(
-            "pos.cancelBookingSuccess.message",
-            value: "The booking has been successfully cancelled.",
-            comment: "Message shown after a booking is successfully cancelled in POS."
+            "pos.cancelBookingSuccess.canceled.message",
+            value: "The booking has been successfully canceled.",
+            comment: "Message shown after a booking is successfully canceled in POS."
         )
 
         static let closeButtonAccessibilityLabel = NSLocalizedString(

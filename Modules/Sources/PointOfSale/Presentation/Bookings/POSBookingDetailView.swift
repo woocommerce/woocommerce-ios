@@ -23,6 +23,7 @@ struct POSBookingDetailView: View {
     @State private var scrollViewHeight: CGFloat = 0
     @State private var isDetailsUpdating = false
     @State private var isShowingNoteView = false
+    @State private var isShowingEmailReceiptView = false
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -40,7 +41,7 @@ struct POSBookingDetailView: View {
                     case .orderDetail:
                         POSOrderDetailsView(order: booking.order, onBack: {
                             navigationPath.removeLast()
-                        })
+                        }, isShowingEmailReceiptView: $isShowingEmailReceiptView)
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
@@ -50,6 +51,7 @@ struct POSBookingDetailView: View {
                         POSOrderDetailsView(
                             order: booking.order,
                             onBack: { navigationPath.removeLast() },
+                            isShowingEmailReceiptView: $isShowingEmailReceiptView,
                             autoStartRefund: true,
                             onRefundSuccess: {
                                 Task {
@@ -72,6 +74,12 @@ struct POSBookingDetailView: View {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
             }
+        }
+        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                try await orderListModel.sendReceipt(order: booking.order, email: email)
+            }
+            .posHeaderBackButtonIcon(systemName: "xmark")
         }
         .posFullScreenCover(isPresented: $isShowingNoteView) {
             POSBookingNoteView(booking: booking, isShowingNoteView: $isShowingNoteView)

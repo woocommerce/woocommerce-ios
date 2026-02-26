@@ -26,6 +26,7 @@ public struct WordPressAPIDiscovery {
             guard let httpResponse = response as? HTTPURLResponse else { return nil }
             return parseRESTAPIRootURL(from: httpResponse)
         } catch {
+            DDLogDebug("⚠️ REST API discovery failed for \(siteURL): \(error)")
             return nil
         }
     }

@@ -26,6 +26,11 @@ final class RESTRequestTests: XCTestCase {
     ///
     private let sampleParameters = ["some": "thing", "yo": "semite"]
 
+    override func tearDown() {
+        WordPressRESTAPIRootCache.shared.reset()
+        super.tearDown()
+    }
+
     func test_request_url_is_correct() throws {
         // Given
         let request = RESTRequest(siteURL: sampleSiteAddress, method: .get, path: sampleRPC)
@@ -147,14 +152,12 @@ final class RESTRequestTests: XCTestCase {
         }
     }
 
-    // MARK: - wordpressAPIRoot Tests
+    // MARK: - Cache-Based URL Tests
 
-    func test_request_url_uses_wp_json_root_when_wordpressAPIRoot_is_set_to_wp_json() throws {
+    func test_request_url_uses_cached_wp_json_root() throws {
         // Given
-        let request = RESTRequest(siteURL: sampleSiteAddress,
-                                  wordpressAPIRoot: "https://wordpress.com/wp-json/",
-                                  method: .get,
-                                  path: sampleRPC)
+        WordPressRESTAPIRootCache.shared.setRoot("https://wordpress.com/wp-json/", for: sampleSiteAddress)
+        let request = RESTRequest(siteURL: sampleSiteAddress, method: .get, path: sampleRPC)
 
         // When
         let url = try XCTUnwrap(request.asURLRequest().url)
@@ -163,12 +166,10 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/sample")
     }
 
-    func test_request_url_uses_rest_route_root_when_wordpressAPIRoot_is_set_to_rest_route() throws {
+    func test_request_url_uses_cached_rest_route_root() throws {
         // Given
-        let request = RESTRequest(siteURL: sampleSiteAddress,
-                                  wordpressAPIRoot: "https://wordpress.com/?rest_route=/",
-                                  method: .get,
-                                  path: sampleRPC)
+        WordPressRESTAPIRootCache.shared.setRoot("https://wordpress.com/?rest_route=/", for: sampleSiteAddress)
+        let request = RESTRequest(siteURL: sampleSiteAddress, method: .get, path: sampleRPC)
 
         // When
         let url = try XCTUnwrap(request.asURLRequest().url)
@@ -177,12 +178,9 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(url.absoluteString, "https://wordpress.com/?rest_route=/sample")
     }
 
-    func test_request_url_falls_back_to_rest_route_basePath_when_wordpressAPIRoot_is_nil() throws {
-        // Given
-        let request = RESTRequest(siteURL: sampleSiteAddress,
-                                  wordpressAPIRoot: nil,
-                                  method: .get,
-                                  path: sampleRPC)
+    func test_request_url_falls_back_to_rest_route_when_cache_is_empty() throws {
+        // Given — no cache entry for sampleSiteAddress
+        let request = RESTRequest(siteURL: sampleSiteAddress, method: .get, path: sampleRPC)
 
         // When
         let url = try XCTUnwrap(request.asURLRequest().url)
@@ -191,18 +189,16 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(url.absoluteString, "https://wordpress.com/?rest_route=/sample")
     }
 
-    func test_request_url_with_wp_json_root_and_api_version() throws {
+    func test_request_url_with_cached_wp_json_root_and_api_version() throws {
         // Given
-        let request = RESTRequest(siteURL: sampleSiteAddress,
-                                  wordpressAPIRoot: "https://wordpress.com/wp-json/",
-                                  method: .get,
-                                  path: sampleRPC)
+        WordPressRESTAPIRootCache.shared.setRoot("https://wordpress.com/wp-json/", for: sampleSiteAddress)
+        let request = RESTRequest(siteURL: sampleSiteAddress, wordpressApiVersion: .wpMark2, method: .get, path: sampleRPC)
 
         // When
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/sample")
+        XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/wp/v2/sample")
     }
 
     // MARK: - allowsCellularAccess Tests

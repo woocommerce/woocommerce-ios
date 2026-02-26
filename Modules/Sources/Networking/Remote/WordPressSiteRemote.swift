@@ -3,26 +3,23 @@ import Foundation
 /// Endpoints for WordPress site information.
 ///
 public final class WordPressSiteRemote: Remote {
-    typealias RESTAPIDiscovery = (_ siteURL: String) async -> String?
 
-    private let restAPIDiscovery: RESTAPIDiscovery
+    private let apiRootCache: RESTAPIRootCaching
 
-    public convenience override init(network: Network) {
-        let discovery = WordPressAPIDiscovery()
-        self.init(network: network) { siteURL in
-            await discovery.discoverRESTAPIRootURL(for: siteURL)
-        }
+    public override init(network: Network) {
+        self.apiRootCache = WordPressRESTAPIRootCache.shared
+        super.init(network: network)
     }
 
-    init(network: Network, restAPIDiscovery: @escaping RESTAPIDiscovery) {
-        self.restAPIDiscovery = restAPIDiscovery
+    init(network: Network, apiRootCache: RESTAPIRootCaching) {
+        self.apiRootCache = apiRootCache
         super.init(network: network)
     }
 
     /// Fetches info for a WordPress site given its URL.
     ///
     public func fetchSiteInfo(for siteURL: String) async throws -> WordPressSite {
-        let url = try await resolvedSiteInfoURL(for: siteURL)
+        let url = try resolvedSiteInfoURL(for: siteURL)
         let request = try URLRequest(url: url, method: .get)
         let mapper = WordPressSiteMapper()
         return try await enqueue(request, mapper: mapper)
@@ -31,7 +28,7 @@ public final class WordPressSiteRemote: Remote {
     /// Fetches the page list for a WordPress site given its URL.
     ///
     public func fetchSitePages(for siteURL: String) async throws -> [WordPressPage] {
-        let url = try await resolvedSitePagesURL(for: siteURL)
+        let url = try resolvedSitePagesURL(for: siteURL)
         let request = try URLRequest(url: url, method: .get)
         let mapper = WordPressPageListMapper()
         return try await enqueue(request, mapper: mapper)
@@ -41,9 +38,9 @@ public final class WordPressSiteRemote: Remote {
 private extension WordPressSiteRemote {
     /// Returns the URL for the site info endpoint, using the discovered REST API root when available.
     ///
-    func resolvedSiteInfoURL(for siteURL: String) async throws -> URL {
-        if let discoveredRoot = await restAPIDiscovery(siteURL),
-           let url = URL(string: discoveredRoot) {
+    func resolvedSiteInfoURL(for siteURL: String) throws -> URL {
+        if let root = apiRootCache.root(for: siteURL),
+           let url = URL(string: root) {
             return url
         }
         guard let url = URL(string: siteURL + Path.root) else {
@@ -54,9 +51,9 @@ private extension WordPressSiteRemote {
 
     /// Returns the URL for the pages list endpoint, using the discovered REST API root when available.
     ///
-    func resolvedSitePagesURL(for siteURL: String) async throws -> URL {
-        if let discoveredRoot = await restAPIDiscovery(siteURL),
-           let url = pagesURL(from: discoveredRoot) {
+    func resolvedSitePagesURL(for siteURL: String) throws -> URL {
+        if let root = apiRootCache.root(for: siteURL),
+           let url = pagesURL(from: root) {
             return url
         }
         guard let url = URL(string: siteURL.trimSlashes() + Path.pages) else {

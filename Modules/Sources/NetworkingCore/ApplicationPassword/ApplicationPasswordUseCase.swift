@@ -208,7 +208,6 @@ private extension DefaultApplicationPasswordUseCase {
                            parameters: parameters)
         case .wporg(_, _, let siteAddress):
             RESTRequest(siteURL: siteAddress,
-                        wordpressAPIRoot: discoveredAPIRoot,
                         method: method,
                         path: path,
                         parameters: parameters)

@@ -24,7 +24,9 @@ public struct WordPressAPIDiscovery {
         do {
             let (_, response) = try await session.data(for: request)
             guard let httpResponse = response as? HTTPURLResponse else { return nil }
-            return parseRESTAPIRootURL(from: httpResponse)
+            guard let root = parseRESTAPIRootURL(from: httpResponse) else { return nil }
+            WordPressRESTAPIRootCache.shared.setRoot(root, for: siteURL)
+            return root
         } catch {
             DDLogDebug("⚠️ REST API discovery failed for \(siteURL): \(error)")
             return nil

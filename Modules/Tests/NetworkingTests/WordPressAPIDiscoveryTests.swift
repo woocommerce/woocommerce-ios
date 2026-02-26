@@ -1,5 +1,6 @@
 import XCTest
 @testable import Networking
+@testable import NetworkingCore
 
 final class WordPressAPIDiscoveryTests: XCTestCase {
     let sampleSiteURL = "https://example.com"
@@ -14,6 +15,8 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
     override func tearDown() {
         sut = nil
         session = nil
+        WordPressRESTAPIRootCache.shared.reset()
+        super.tearDown()
     }
 
     // MARK: - discoverRESTAPIRootURL
@@ -103,6 +106,33 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
 
         // Then
         XCTAssertNil(result)
+    }
+
+    // MARK: - Cache Population Tests
+
+    func test_discoverRESTAPIRootURL_when_discovery_succeeds_then_populates_cache() async {
+        // Given
+        session.simulateResponse(
+            for: sampleSiteURL,
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+
+        // When
+        _ = await sut.discoverRESTAPIRootURL(for: sampleSiteURL)
+
+        // Then
+        XCTAssertEqual(WordPressRESTAPIRootCache.shared.root(for: sampleSiteURL), "https://example.com/wp-json/")
+    }
+
+    func test_discoverRESTAPIRootURL_when_discovery_fails_then_does_not_populate_cache() async {
+        // Given
+        session.simulateResponse(for: sampleSiteURL, headerFields: nil)
+
+        // When
+        _ = await sut.discoverRESTAPIRootURL(for: sampleSiteURL)
+
+        // Then
+        XCTAssertNil(WordPressRESTAPIRootCache.shared.root(for: sampleSiteURL))
     }
 
     func test_discoverRESTAPIRootURL_sends_head_request() async {

@@ -19,6 +19,7 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
     override func tearDown() {
         mockSession = nil
         storage = nil
+        WordPressRESTAPIRootCache.shared.reset()
         super.tearDown()
     }
 

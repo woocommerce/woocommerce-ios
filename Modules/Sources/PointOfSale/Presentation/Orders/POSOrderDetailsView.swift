@@ -121,6 +121,13 @@ struct POSOrderDetailsView: View {
     }
 }
 
+
+private struct POSRefundNothingToRefundError: LocalizedError {
+    var errorDescription: String? {
+        "Nothing to refund. Order lineItems may be empty."
+    }
+}
+
 // MARK: - Main Sections
 
 private extension POSOrderDetailsView {
@@ -389,6 +396,14 @@ private extension POSOrderDetailsView {
                     refundModalState = .itemSelection
                 }
             case .nothingToRefund:
+                if autoStartRefund {
+                    // Temporary log to track "nothing to refund" case for bookings (autoStartRefund == true)
+                    // This can be removed once we're sure it works as expected.
+                    // Context: p1772005017449939-slack-C070SJRA8DP
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(
+                        error: POSRefundNothingToRefundError()
+                    ))
+                }
                 refundModalState = .nothingToRefund
             case .failed:
                 refundModalState = .loadingError

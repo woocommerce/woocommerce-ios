@@ -259,7 +259,7 @@ struct POSBookingDetailView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
-                if booking.hasNoCustomerDetails {
+                if booking.isGuest {
                     POSBookingBadgeView(
                         title: Localization.guestBadge,
                         textColor: .posOnDefault,
@@ -495,9 +495,8 @@ struct POSBookingDetailView: View {
 // MARK: - POSBooking Presentation Helpers
 
 private extension POSBooking {
-    var hasNoCustomerDetails: Bool {
-        customerName == nil && customerEmail == nil && customerPhone == nil
-            && billingAddress == nil && customerNote == nil
+    var isGuest: Bool {
+        customerID == 0
     }
 }
 
@@ -570,7 +569,7 @@ private enum Localization {
     static let guestBadge = NSLocalizedString(
         "pos.bookingDetailView.guestBadge",
         value: "Guest",
-        comment: "Badge label shown next to the customer section title when there is no customer info for a booking."
+        comment: "Badge label shown next to the customer section title when the booking has no associated customer (guest checkout)."
     )
 
     static let noteLabel = NSLocalizedString(

@@ -98,12 +98,12 @@ final class WordPressSiteRemoteTests: XCTestCase {
         ])
     }
 
-    /// Verifies that fetchSitePages uses the ?rest_route= URL style when discovery returns a rest_route root.
+    /// Verifies that fetchSitePages appends the pages path to the discovered ?rest_route= root.
     ///
-    func test_fetchSitePages_when_discovery_returns_rest_route_root_then_uses_rest_route_url() async throws {
+    func test_fetchSitePages_when_discovery_returns_rest_route_root_then_appends_pages_path() async throws {
         // Given
         let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/?rest_route=/"))
-        network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages&_fields=id,title,link", filename: "wp-page-list-success")
+        network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
         let list = try await remote.fetchSitePages(for: sampleSiteURL)
@@ -116,12 +116,12 @@ final class WordPressSiteRemoteTests: XCTestCase {
         ])
     }
 
-    /// Verifies that fetchSitePages falls back to ?rest_route= when discovery returns nil.
+    /// Verifies that fetchSitePages falls back to the ?rest_route= path when discovery returns nil.
     ///
     func test_fetchSitePages_when_discovery_fails_then_falls_back_to_rest_route() async throws {
         // Given
         let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateResponse(requestUrlSuffix: "/?rest_route=/wp/v2/pages&_fields=id,title,link", filename: "wp-page-list-success")
+        network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
         let list = try await remote.fetchSitePages(for: sampleSiteURL)
@@ -138,7 +138,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
     ///
     func test_fetchSitePages_properly_returns_page_list() async throws {
         let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateResponse(requestUrlSuffix: "/?rest_route=/wp/v2/pages&_fields=id,title,link", filename: "wp-page-list-success")
+        network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
         let list = try await remote.fetchSitePages(for: sampleSiteURL)
@@ -155,7 +155,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
     ///
     func test_fetchSitePages_properly_relays_networking_errors() async {
         let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateError(requestUrlSuffix: "/?rest_route=/wp/v2/pages&_fields=id,title,link", error: NetworkError.notFound())
+        network.simulateError(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", error: NetworkError.notFound())
 
         // When
         var fetchError: Error?

@@ -27,7 +27,6 @@ extension BookingDetailsViewModel {
             ]
 
             actions = [
-                booking.isEligibleForMarkAsPaid ? .markAsPaid : nil,
                 booking.hasAssociatedOrder ? .viewOrder : nil
             ].compactMap { $0 }
         }
@@ -82,7 +81,6 @@ extension BookingDetailsViewModel.PaymentContent.Amount.AmountType {
 
 extension BookingDetailsViewModel.PaymentContent {
     enum Action: String, Identifiable {
-        case markAsPaid
         case viewOrder
 
         var id: String {
@@ -94,8 +92,6 @@ extension BookingDetailsViewModel.PaymentContent {
 extension BookingDetailsViewModel.PaymentContent.Action {
     var buttonTitle: String {
         switch self {
-        case .markAsPaid:
-            return Localization.paymentMarkAsPaidButtonTitle
         case .viewOrder:
             return Localization.paymentViewOrderButtonTitle
         }
@@ -125,12 +121,6 @@ private enum Localization {
         "BookingDetailsView.payment.totalRow.title",
         value: "Total",
         comment: "Total row title in payment section in booking details view."
-    )
-
-    static let paymentMarkAsPaidButtonTitle = NSLocalizedString(
-        "BookingDetailsView.payment.markAsPaid.title",
-        value: "Mark as paid",
-        comment: "Title for 'Mark as paid' button in payment section in booking details view."
     )
 
     static let paymentViewOrderButtonTitle = NSLocalizedString(

@@ -102,7 +102,9 @@
     </entity>
     <entity name="BookingOrderInfo" representedClassName="BookingOrderInfo" syncable="YES">
         <attribute name="datePaid" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="refundTotal" optional="YES" attributeType="Decimal" defaultValueString="0"/>
         <attribute name="statusKey" attributeType="String"/>
+        <attribute name="total" optional="YES" attributeType="Decimal" defaultValueString="0"/>
         <relationship name="booking" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Booking" inverseName="orderInfo" inverseEntity="Booking"/>
         <relationship name="customerInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingCustomerInfo" inverseName="orderInfo" inverseEntity="BookingCustomerInfo"/>
         <relationship name="paymentInfo" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="BookingPaymentInfo" inverseName="orderInfo" inverseEntity="BookingPaymentInfo"/>

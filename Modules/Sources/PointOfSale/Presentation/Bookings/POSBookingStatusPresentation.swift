@@ -211,8 +211,8 @@ private enum Localization {
     )
 
     static let cancelled = NSLocalizedString(
-        "pos.bookingLifecycleStatus.cancelled",
-        value: "Cancelled",
-        comment: "POS booking lifecycle status label for cancelled bookings."
+        "pos.bookingLifecycleStatus.canceled",
+        value: "Canceled",
+        comment: "POS booking lifecycle status label for canceled bookings."
     )
 }

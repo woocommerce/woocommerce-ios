@@ -76,6 +76,12 @@ struct POSFloatingControlView: View {
                 }
             }
         }
+        .onChange(of: horizontalSizeClass) { _, newSizeClass in
+            guard newSizeClass != .regular else { return }
+            showOrders = false
+            showBookings = false
+            showSettings = false
+        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -95,17 +101,19 @@ private extension POSFloatingControlView {
             )
         }
         .accessibilityIdentifier("pos-exit-menu-item")
-        Button {
-            analytics.track(.pointOfSaleSettingsMenuItemTapped)
-            showSettings = true
-        } label: {
-            Label(
-                title: { Text(Localization.settings) },
-                icon: { Image(systemName: "gearshape") }
-            )
+        if horizontalSizeClass == .regular {
+            Button {
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                showSettings = true
+            } label: {
+                Label(
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
+                )
+            }
         }
 
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) && horizontalSizeClass == .regular {
             Button {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
                 showOrders = true
@@ -117,7 +125,7 @@ private extension POSFloatingControlView {
             }
         }
 
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
+        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible && horizontalSizeClass == .regular {
             Button {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
                 showBookings = true

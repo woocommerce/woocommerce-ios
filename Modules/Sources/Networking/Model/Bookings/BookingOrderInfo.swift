@@ -9,7 +9,7 @@ public struct BookingOrderInfo: Hashable {
     public let productInfo: BookingProductInfo?
 
     public init(statusKey: String,
-                datePaid: Date? = nil,
+                datePaid: Date?,
                 paymentInfo: BookingPaymentInfo?,
                 customerInfo: BookingCustomerInfo?,
                 productInfo: BookingProductInfo?) {

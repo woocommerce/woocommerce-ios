@@ -227,6 +227,7 @@ private extension BookingDetailsView {
                     case .markAsPaid:
                         Button(action.buttonTitle, action: markBookingAsPaid)
                             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: markingAsPaid))
+                            .renderedIf(viewModel.shouldShowMarkAsPaid)
                     }
                 }
             }

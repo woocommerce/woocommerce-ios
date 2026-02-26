@@ -10,6 +10,7 @@ struct POSOrderDetailsView: View {
     let onBack: () -> Void
     var autoStartRefund: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
+    var onRefundFailure: ((Error) -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.siteTimezone) private var siteTimezone
@@ -95,6 +96,7 @@ struct POSOrderDetailsView: View {
                 onEditRefund: autoStartRefund ? nil : { refundModalState = .itemSelection },
                 showsItemSelection: !autoStartRefund,
                 onRefundSuccess: onRefundSuccess,
+                onRefundFailure: onRefundFailure,
                 errorStrings: .init(
                     loadTitle: Localization.loadRefundErrorTitle,
                     loadSubtitle: Localization.loadRefundErrorSubtitle,
@@ -116,6 +118,13 @@ struct POSOrderDetailsView: View {
                 siteTimezone: siteTimezone
             ))
         }
+    }
+}
+
+
+private struct POSRefundNothingToRefundError: LocalizedError {
+    var errorDescription: String? {
+        "Nothing to refund. Order lineItems may be empty."
     }
 }
 
@@ -387,6 +396,14 @@ private extension POSOrderDetailsView {
                     refundModalState = .itemSelection
                 }
             case .nothingToRefund:
+                if autoStartRefund {
+                    // Temporary log to track "nothing to refund" case for bookings (autoStartRefund == true)
+                    // This can be removed once we're sure it works as expected.
+                    // Context: p1772005017449939-slack-C070SJRA8DP
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(
+                        error: POSRefundNothingToRefundError()
+                    ))
+                }
                 refundModalState = .nothingToRefund
             case .failed:
                 refundModalState = .loadingError

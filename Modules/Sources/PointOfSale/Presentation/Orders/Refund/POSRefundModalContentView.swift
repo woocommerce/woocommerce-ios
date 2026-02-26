@@ -57,6 +57,7 @@ struct POSRefundModalContentView: View {
     let onEditRefund: (() -> Void)?
     let showsItemSelection: Bool
     let onRefundSuccess: (() -> Void)?
+    let onRefundFailure: ((Error) -> Void)?
 
     let errorStrings: POSRefundErrorStrings
 
@@ -182,6 +183,7 @@ struct POSRefundModalContentView: View {
             onRefundSuccess?()
         } catch {
             DDLogError("⛔️ Failed to process POS refund: \(error)")
+            onRefundFailure?(error)
             modalState = .error(reviewData)
         }
     }

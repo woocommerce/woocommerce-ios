@@ -282,11 +282,6 @@ struct POSBookingDetailView: View {
                     .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
             }
 
-            if let address = booking.billingAddress {
-                sectionDivider
-                stackedField(label: Localization.billingAddressLabel, value: address)
-            }
-
             if let note = booking.customerNote {
                 sectionDivider
                 stackedField(label: Localization.noteLabel, value: note)
@@ -346,13 +341,13 @@ struct POSBookingDetailView: View {
             sectionTitle: Localization.paymentTitle,
             subtotalLabel: Localization.serviceLabel,
             subtotalAmount: booking.formattedSubtotal ?? booking.order.formattedSubtotal,
-            discountAmount: booking.order.formattedDiscountTotal,
+            discountAmount: booking.order.formattedDiscountTotal ?? Localization.noDiscountPlaceholder,
             taxAmount: booking.order.formattedTotalTax,
             totalAmount: booking.order.formattedTotal,
-            paidAmount: booking.order.formattedPaymentTotal,
-            paymentMethodTitle: booking.order.paymentMethodTitle,
-            refunds: booking.order.refunds,
-            netAmount: booking.order.formattedNetAmount
+            paidAmount: nil,
+            paymentMethodTitle: "",
+            refunds: [],
+            netAmount: nil
         )
     }
 
@@ -389,7 +384,7 @@ struct POSBookingDetailView: View {
 
     private var collectPaymentButton: some View {
         Button(action: { startPaymentCollection() }) {
-            Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
+            Text(Localization.collectPaymentButton)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -538,12 +533,6 @@ private enum Localization {
         comment: "Label for the customer note in booking details."
     )
 
-    static let billingAddressLabel = NSLocalizedString(
-        "pos.bookingDetailView.billingAddressLabel",
-        value: "Billing address",
-        comment: "Label for the billing address in booking details."
-    )
-
     static let bookingNoteLabel = NSLocalizedString(
         "pos.bookingDetailView.bookingNoteLabel",
         value: "Booking note",
@@ -583,7 +572,7 @@ private enum Localization {
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
-        comment: "Button to initiate payment collection for a booking. The amount is appended after a separator."
+        comment: "Button to initiate payment collection for a booking."
     )
 
     static let viewOrderAction = NSLocalizedString(
@@ -634,6 +623,12 @@ private enum Localization {
         "pos.bookingDetailView.cancelBookingAction",
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let noDiscountPlaceholder = NSLocalizedString(
+        "pos.bookingDetailView.noDiscountPlaceholder",
+        value: "-",
+        comment: "Placeholder shown in the payment breakdown when there is no discount on the booking."
     )
 
 }

@@ -39,17 +39,17 @@ struct POSBookingDetailView: View {
                     switch destination {
                     case .orderDetail:
                         POSOrderDetailsView(order: booking.order, onBack: {
-                            navigationPath.removeLast()
+                            popNavigationPath()
                         })
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                            navigationPath.removeLast()
+                            popNavigationPath()
                         }))
                     case .orderDetailRefund:
                         POSOrderDetailsView(
                             order: booking.order,
-                            onBack: { navigationPath.removeLast() },
+                            onBack: { popNavigationPath() },
                             autoStartRefund: true,
                             onRefundSuccess: {
                                 Task {
@@ -63,7 +63,7 @@ struct POSBookingDetailView: View {
                             }
                         )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                            navigationPath.removeLast()
+                            popNavigationPath()
                         }))
                     }
                 }
@@ -357,6 +357,14 @@ struct POSBookingDetailView: View {
     }
 
     // MARK: - Payment Action
+
+    /// Safely pops the navigation path. Guarded against empty path to prevent crashes
+    /// when an outer NavigationStack (e.g. POSNavigationSplitView in compact mode) handles
+    /// the pop before this inner stack's closure fires.
+    private func popNavigationPath() {
+        guard !navigationPath.isEmpty else { return }
+        navigationPath.removeLast()
+    }
 
     private func dismissPayment() {
         showPaymentView = false

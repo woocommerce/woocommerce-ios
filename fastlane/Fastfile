@@ -1188,6 +1188,17 @@ platform :ios do
       UI.message('Done')
     end
 
+    # Remove previously-tracked promo screenshots so that obsolete files
+    # (e.g. dropped device or reduced screenshot count) are captured by the
+    # commit as deletions rather than silently kept around.
+    if commit || push
+      existing_images = Dir.glob(File.join(output_directory, '**', '*.png'))
+      unless existing_images.empty?
+        UI.message('Removing existing promo screenshots before regeneration...')
+        existing_images.each { |f| FileUtils.rm_f(f) }
+      end
+    end
+
     begin
       promo_screenshots(
         orig_folder: original_screenshot_directory,

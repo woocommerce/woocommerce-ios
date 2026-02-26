@@ -48,7 +48,7 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         /// Check `ApplicationPasswordAuthorizationWebViewController` for more details.
         let discoveredRoot = await discovery(siteAddress)
         guard let uuid = try await fetchApplicationPasswordUUID(discoveredRoot: discoveredRoot),
-              let url = restAPIURL(for: "/wp/v2/users/me/application-passwords/" + uuid, discoveredRoot: discoveredRoot) else {
+              let url = restAPIURL(for: Path.applicationPasswords + uuid, discoveredRoot: discoveredRoot) else {
             return
         }
 
@@ -65,7 +65,7 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 
 private extension OneTimeApplicationPasswordUseCase {
     func fetchApplicationPasswordUUID(discoveredRoot: String?) async throws -> String? {
-        guard let url = restAPIURL(for: "/wp/v2/users/me/application-passwords/introspect", discoveredRoot: discoveredRoot) else {
+        guard let url = restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) else {
             return nil
         }
 
@@ -84,28 +84,15 @@ private extension OneTimeApplicationPasswordUseCase {
         return password.uuid
     }
 
-    /// Builds the full URL for a WordPress REST API path using the discovered root, or falls back to `?rest_route=`.
-    ///
-    /// Handles both permalink styles:
-    /// - Pretty permalinks: `https://example.com/wp-json/` + `/wp/v2/users/me/...` → `https://example.com/wp-json/wp/v2/users/me/...`
-    /// - Default permalinks: `https://example.com/?rest_route=/` → `https://example.com/?rest_route=/wp/v2/users/me/...`
-    /// - No discovery: falls back to `siteAddress + /?rest_route=` + path
-    ///
-    func restAPIURL(for wpPath: String, discoveredRoot: String?) -> URL? {
-        let path = wpPath.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
-        if let root = discoveredRoot, var components = URLComponents(string: root) {
-            if components.queryItems?.contains(where: { $0.name == "rest_route" }) == true {
-                // ?rest_route=/ style
-                components.percentEncodedQueryItems = [URLQueryItem(name: "rest_route", value: "/" + path)]
-                return components.url
-            } else {
-                // wp-json/ style
-                let base = root.hasSuffix("/") ? root : root + "/"
-                return URL(string: base + path)
-            }
-        }
-        // Fallback to ?rest_route= style
-        return URL(string: siteAddress + "/?rest_route=/" + path)
+    func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
+        let root = discoveredRoot ?? (siteAddress + Path.root)
+        return URL(string: root + path)
+    }
+
+    enum Path {
+        static let root = "/?rest_route=/"
+        static let introspect = "wp/v2/users/me/application-passwords/introspect"
+        static let applicationPasswords = "wp/v2/users/me/application-passwords/"
     }
 
     func authenticateRequest(request: URLRequest) -> URLRequest {

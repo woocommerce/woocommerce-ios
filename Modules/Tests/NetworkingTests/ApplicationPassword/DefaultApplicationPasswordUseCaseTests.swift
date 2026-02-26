@@ -27,7 +27,6 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
 
     override func tearDown() {
         network = nil
-        WordPressRESTAPIRootCache.shared.reset()
         super.tearDown()
     }
 
@@ -202,21 +201,17 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertNil(storage.applicationPassword)
     }
 
-    func test_generateNewPassword_when_discovery_returns_wp_json_root_then_cache_is_populated() async throws {
+    func test_generateNewPassword_when_discovery_returns_wp_json_root_then_succeeds() async throws {
         // Given
         let username = "demo"
         let siteAddress = "https://test.com"
         let wpJsonRoot = "https://test.com/wp-json/"
         network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword,
                                  filename: "generate-application-password-using-wporg-creds-success")
-        // The discovery closure simulates WordPressAPIDiscovery writing to the shared cache
         let sut = DefaultApplicationPasswordUseCase(
             type: .wporg(username: username, password: "qeWOhQ5RUV8W", siteAddress: siteAddress),
             network: network,
-            discovery: { siteURL in
-                WordPressRESTAPIRootCache.shared.setRoot(wpJsonRoot, for: siteURL)
-                return wpJsonRoot
-            }
+            discovery: { _ in wpJsonRoot }
         )
 
         // When
@@ -225,6 +220,5 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(password.password.secretValue, "passwordvalue")
         XCTAssertEqual(password.wpOrgUsername, username)
-        XCTAssertEqual(WordPressRESTAPIRootCache.shared.root(for: siteAddress), wpJsonRoot)
     }
 }

@@ -363,6 +363,7 @@ enum RefundActionAvailability {
             formattedTax: formattedTax,
             formattedRefundTotal: formattedTotal,
             paymentMethodDescription: paymentMethodDescription,
+            customerEmail: order.customerEmail,
             refundReason: nil
         )
     }

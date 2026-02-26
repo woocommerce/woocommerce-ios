@@ -1368,6 +1368,24 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
 
+    // MARK: Point of Sale Bookings
+    case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
+    case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
+    case pointOfSaleBookingsListBookingTapped = "bookings_list_booking_tapped"
+    case pointOfSaleBookingCancelled = "booking_cancelled"
+    case pointOfSaleBookingAddNoteTapped = "booking_add_note_tapped"
+    case pointOfSaleBookingIssueRefundTapped = "booking_issue_refund_tapped"
+    case pointOfSaleBookingViewOrderTapped = "booking_view_order_tapped"
+    case pointOfSaleBookingAttendanceChanged = "booking_attendance_changed"
+    case pointOfSaleBookingNoteAdded = "booking_note_added"
+    case pointOfSaleBookingCancelFailed = "booking_cancel_failed"
+    case pointOfSaleBookingAttendanceChangeFailed = "booking_attendance_change_failed"
+    case pointOfSaleBookingNoteAddFailed = "booking_note_add_failed"
+    case pointOfSaleBookingRefundFailed = "booking_refund_failed"
+    case pointOfSaleBookingDatePreviousTapped = "booking_date_previous_tapped"
+    case pointOfSaleBookingDateNextTapped = "booking_date_next_tapped"
+    case pointOfSaleBookingDateCalendarSelected = "booking_date_calendar_selected"
+
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
 

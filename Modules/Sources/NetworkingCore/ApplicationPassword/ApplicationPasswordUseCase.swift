@@ -54,25 +54,15 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let applicationPasswordName: String
 
-    /// Discovers the WordPress REST API root URL for wporg sites.
-    ///
-    private let discovery: (_ siteURL: String) async -> String?
-
-    /// Cached REST API root URL discovered during the current session.
-    ///
-    private var discoveredAPIRoot: String?
-
     /// Internal initializer (accessible from tests via @testable import).
     init(type: AuthenticationType,
          network: Network,
          passwordName: String? = nil,
-         storage: ApplicationPasswordStorageType? = nil,
-         discovery: @escaping (_ siteURL: String) async -> String?) {
+         storage: ApplicationPasswordStorageType? = nil) {
         self.authenticationType = type
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
-        self.discovery = discovery
     }
 
     /// Public initializer
@@ -80,9 +70,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                             network: Network,
                             passwordName: String? = nil,
                             storage: ApplicationPasswordStorageType? = nil) {
-        let wordpressDiscovery = WordPressAPIDiscovery()
-        self.init(type: type, network: network, passwordName: passwordName, storage: storage,
-                  discovery: { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) })
+        self.init(type: type, network: network, passwordName: passwordName, storage: storage)
     }
 
     /// Public initializer for wporg authentication
@@ -107,12 +95,10 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                                                                adminURL: adminURL)
             resolvedNetwork = WordPressOrgNetwork(configuration: config)
         }
-        let wordpressDiscovery = WordPressAPIDiscovery()
         self.init(type: .wporg(username: username, password: password, siteAddress: siteAddress),
                   network: resolvedNetwork,
                   passwordName: nil,
-                  storage: storage,
-                  discovery: { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) })
+                  storage: storage)
     }
 
     /// Returns the locally saved ApplicationPassword if available
@@ -128,7 +114,6 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     /// - Returns: Generated `ApplicationPassword` instance
     ///
     public func generateNewPassword() async throws -> ApplicationPassword {
-        await resolveAPIRootIfNeeded()
         let applicationPassword = try await {
             do {
                 return try await createApplicationPassword()
@@ -152,7 +137,6 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///  Deletes locally and also sends an API request to delete it from the site
     ///
     public func deletePassword(locally: Bool) async throws {
-        await resolveAPIRootIfNeeded()
         // Get the uuid before removing the password from storage
         let uuidFromLocalPassword = locally ? storage.applicationPassword?.uuid : nil
 
@@ -186,14 +170,6 @@ private extension DefaultApplicationPasswordUseCase {
         WKInterfaceDevice.current().identifierForVendor?.uuidString ?? ""
         return "\(bundleIdentifier).watch-app-client.\(model).\(identifierForVendor)"
         #endif
-    }
-
-    /// Resolves and caches the REST API root URL for wporg sites. No-op for wpcom sites.
-    ///
-    func resolveAPIRootIfNeeded() async {
-        guard case .wporg(_, _, let siteAddress) = authenticationType,
-              discoveredAPIRoot == nil else { return }
-        discoveredAPIRoot = await discovery(siteAddress)
     }
 
     /// Helper method to construct network requests either directly with the remote site

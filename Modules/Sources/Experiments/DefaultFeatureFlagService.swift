@@ -95,13 +95,13 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return true
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleCatalogAPI:
             return false
         case .pointOfSaleRefundsi1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleBookings:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .selfDrivenPushTokenWPCom:
             return false
         case .selfDrivenPushTokenAppPasswords:

@@ -14,12 +14,7 @@ struct POSBookingDateBarView: View {
         VStack(spacing: 0) {
             HStack(spacing: POSSpacing.small) {
                 Button {
-                    let targetDate = POSBookingDateFormatter.utcCalendar.date(
-                        byAdding: .day, value: -1, to: bookingsModel.bookingsController.selectedDate
-                    )
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingDatePreviousTapped(
-                        deltaFromToday: deltaFromToday(for: targetDate ?? bookingsModel.bookingsController.selectedDate)
-                    ))
+                    trackDateNavigation(dayOffset: -1, event: WooAnalyticsEvent.PointOfSale.bookingDatePreviousTapped)
                     Task { await bookingsModel.bookingsController.goToPreviousDay() }
                 } label: {
                     Text("\(Image(systemName: "chevron.backward"))")
@@ -40,21 +35,14 @@ struct POSBookingDateBarView: View {
                         selectedDate: bookingsModel.bookingsController.selectedDate,
                         onDateSelected: { date in
                             showingCalendar = false
-                            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingDateCalendarSelected(
-                                deltaFromToday: deltaFromToday(for: date)
-                            ))
+                            trackDateNavigation(to: date, event: WooAnalyticsEvent.PointOfSale.bookingDateCalendarSelected)
                             Task { await bookingsModel.bookingsController.selectDate(date) }
                         }
                     )
                 }
 
                 Button {
-                    let targetDate = POSBookingDateFormatter.utcCalendar.date(
-                        byAdding: .day, value: 1, to: bookingsModel.bookingsController.selectedDate
-                    )
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingDateNextTapped(
-                        deltaFromToday: deltaFromToday(for: targetDate ?? bookingsModel.bookingsController.selectedDate)
-                    ))
+                    trackDateNavigation(dayOffset: 1, event: WooAnalyticsEvent.PointOfSale.bookingDateNextTapped)
                     Task { await bookingsModel.bookingsController.goToNextDay() }
                 } label: {
                     Text("\(Image(systemName: "chevron.forward"))")
@@ -74,6 +62,19 @@ struct POSBookingDateBarView: View {
 }
 
 private extension POSBookingDateBarView {
+    /// Tracks a date navigation event for a relative day offset (e.g. -1 for previous, +1 for next).
+    func trackDateNavigation(dayOffset: Int, event: (Int) -> WooAnalyticsEvent) {
+        let targetDate = POSBookingDateFormatter.utcCalendar.date(
+            byAdding: .day, value: dayOffset, to: bookingsModel.bookingsController.selectedDate
+        ) ?? bookingsModel.bookingsController.selectedDate
+        analytics.track(event: event(deltaFromToday(for: targetDate)))
+    }
+
+    /// Tracks a date navigation event for an absolute target date (e.g. calendar selection).
+    func trackDateNavigation(to date: Date, event: (Int) -> WooAnalyticsEvent) {
+        analytics.track(event: event(deltaFromToday(for: date)))
+    }
+
     func deltaFromToday(for date: Date) -> Int {
         let today = POSBookingDateFormatter.utcCalendar.startOfDay(for: Date())
         let target = POSBookingDateFormatter.utcCalendar.startOfDay(for: date)

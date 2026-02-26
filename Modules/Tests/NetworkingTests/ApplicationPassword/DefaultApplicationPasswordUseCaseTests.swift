@@ -36,10 +36,10 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
                                  filename: "generate-application-password-using-wporg-creds-success")
         let username = "demo"
         let siteAddress = "https://test.com"
-        let sut = DefaultApplicationPasswordUseCase(type: .wporg(username: username,
-                                                                  password: "qeWOhQ5RUV8W",
-                                                                  siteAddress: siteAddress),
-                                                    network: network)
+        let sut = try DefaultApplicationPasswordUseCase(username: username,
+                                                        password: "qeWOhQ5RUV8W",
+                                                        siteAddress: siteAddress,
+                                                        network: network)
 
         // When
         let password = try await sut.generateNewPassword()
@@ -55,10 +55,10 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
         let username = "demo"
         let siteAddress = "https://test.com"
-        let sut = DefaultApplicationPasswordUseCase(type: .wporg(username: username,
-                                                                  password: "qeWOhQ5RUV8W",
-                                                                  siteAddress: siteAddress),
-                                                    network: network)
+        let sut = try DefaultApplicationPasswordUseCase(username: username,
+                                                        password: "qeWOhQ5RUV8W",
+                                                        siteAddress: siteAddress,
+                                                        network: network)
 
         // When
         var failure: ApplicationPasswordUseCaseError?
@@ -78,10 +78,10 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
         let username = "demo"
         let siteAddress = "https://test.com"
-        let sut = DefaultApplicationPasswordUseCase(type: .wporg(username: username,
-                                                                  password: "qeWOhQ5RUV8W",
-                                                                  siteAddress: siteAddress),
-                                                    network: network)
+        let sut = try DefaultApplicationPasswordUseCase(username: username,
+                                                        password: "qeWOhQ5RUV8W",
+                                                        siteAddress: siteAddress,
+                                                        network: network)
 
         // When
         var failure: ApplicationPasswordUseCaseError?
@@ -197,5 +197,4 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         // Then
         XCTAssertNil(storage.applicationPassword)
     }
-
 }

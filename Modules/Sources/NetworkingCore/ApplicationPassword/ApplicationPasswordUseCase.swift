@@ -54,34 +54,29 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let applicationPasswordName: String
 
-    /// Internal initializer (accessible from tests via @testable import).
-    init(type: AuthenticationType,
-         network: Network,
-         passwordName: String? = nil,
-         storage: ApplicationPasswordStorageType? = nil) {
+    /// Internal initializer
+    public init(type: AuthenticationType,
+                network: Network,
+                passwordName: String? = nil,
+                storage: ApplicationPasswordStorageType? = nil) {
         self.authenticationType = type
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
     }
 
-    /// Public initializer
-    public convenience init(type: AuthenticationType,
-                            network: Network,
-                            passwordName: String? = nil,
-                            storage: ApplicationPasswordStorageType? = nil) {
-        self.init(type: type, network: network, passwordName: passwordName, storage: storage)
-    }
-
     /// Public initializer for wporg authentication
-    public convenience init(username: String,
-                            password: String,
-                            siteAddress: String,
-                            network: Network? = nil,
-                            storage: ApplicationPasswordStorageType? = nil) throws {
-        let resolvedNetwork: Network
+    public init(username: String,
+                password: String,
+                siteAddress: String,
+                network: Network? = nil,
+                storage: ApplicationPasswordStorageType? = nil) throws {
+        self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
+        self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
+        self.applicationPasswordName = Self.createPasswordName()
+
         if let network {
-            resolvedNetwork = network
+            self.network = network
         } else {
             guard let loginURL = URL(string: siteAddress + Constants.loginPath),
                   let adminURL = URL(string: siteAddress + Constants.adminPath) else {
@@ -93,12 +88,8 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                                                                password: password,
                                                                loginURL: loginURL,
                                                                adminURL: adminURL)
-            resolvedNetwork = WordPressOrgNetwork(configuration: config)
+            self.network = WordPressOrgNetwork(configuration: config)
         }
-        self.init(type: .wporg(username: username, password: password, siteAddress: siteAddress),
-                  network: resolvedNetwork,
-                  passwordName: nil,
-                  storage: storage)
     }
 
     /// Returns the locally saved ApplicationPassword if available

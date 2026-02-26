@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import enum Networking.NetworkError
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
 @MainActor
@@ -144,6 +145,112 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
+    // MARK: - Analytics: introduction button actions
+
+    func test_introduction_button_actions_track_correct_analytics_events() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.onAppear()
+        viewModel.continueTapped()
+        viewModel.notNowTapped()
+
+        // Then
+        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
+        provider.assertReceived(event: "push_notifications_setup_introduction_button_tap", with: ["button_label": "continue"])
+        XCTAssertEqual(provider.receivedEvents.filter { $0 == "push_notifications_setup_introduction_button_tap" }.count, 2)
+    }
+
+    func test_continueTapped_when_pluginUpdate_variant_then_tracks_update_plugin_button_label() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService,
+                                      pluginVersionChecker: checker,
+                                      analytics: analytics)
+        await viewModel.determineSetupVariant()
+
+        // When
+        viewModel.continueTapped()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_button_tap", with: ["button_label": "update_plugin"])
+    }
+
+    // MARK: - Analytics: close
+
+    func test_cancelTapped_and_onSwipeDismiss_track_introduction_close() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let viewModel = makeViewModel(analytics: analytics)
+
+        // When
+        viewModel.cancelTapped()
+        viewModel.onSwipeDismiss()
+
+        // Then
+        XCTAssertEqual(provider.receivedEvents.filter { $0 == "push_notifications_setup_introduction_close" }.count, 2)
+    }
+
+    // MARK: - Analytics: determineSetupVariant errors
+
+    func test_determineSetupVariant_when_connection_errors_then_tracks_correct_introduction_error() async {
+        // When 403 error, then tracks no_permission
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+            await viewModel.determineSetupVariant()
+
+            provider.assertReceived(event: "push_notifications_setup_introduction_error", with: ["error_type": "no_permission"])
+        }
+
+        // When generic error, then tracks generic
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .failure(NSError(domain: "test", code: 1))
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+            await viewModel.determineSetupVariant()
+
+            provider.assertReceived(event: "push_notifications_setup_introduction_error", with: ["error_type": "generic"])
+        }
+    }
+
+    func test_determineSetupVariant_when_plugin_check_throws_then_tracks_generic_introduction_error() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .failure(NSError(domain: "test", code: 1))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_error", with: ["error_type": "generic"])
+    }
+
     // MARK: - determineSetupVariant when fetch fails
 
     func test_error_is_noPermission_when_fetching_connection_data_throws_403() async {
@@ -184,13 +291,15 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
     private func makeViewModel(
         jetpackConnectionService: JetpackConnectionServiceProtocol = MockJetpackConnectionService(),
-        pluginVersionChecker: PluginVersionCheckerProtocol? = nil
+        pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
+        analytics: Analytics = ServiceLocator.analytics
     ) -> WPComPushNotificationsBenefitsViewModel {
         WPComPushNotificationsBenefitsViewModel(
             siteID: sampleSiteID,
             siteURL: "https://example.com",
             jetpackConnectionService: jetpackConnectionService,
             pluginVersionChecker: pluginVersionChecker,
+            analytics: analytics,
             onDismiss: {}
         )
     }

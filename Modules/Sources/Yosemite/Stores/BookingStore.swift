@@ -7,7 +7,6 @@ import Storage
 public class BookingStore: Store {
     private let remote: BookingsRemoteProtocol
     private let ordersRemote: OrdersRemoteProtocol
-    private let methods: BookingStoreMethods
 
     public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
@@ -22,7 +21,6 @@ public class BookingStore: Store {
                 ordersRemote: OrdersRemoteProtocol) {
         self.remote = remote
         self.ordersRemote = ordersRemote
-        self.methods = BookingStoreMethods(storageManager: storageManager, bookingsRemote: remote, ordersRemote: ordersRemote)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
@@ -112,15 +110,25 @@ private extension BookingStore {
                              onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let hasNextPage = try await methods.synchronizeBookings(
-                    siteID: siteID,
-                    pageNumber: pageNumber,
-                    pageSize: pageSize,
-                    filters: filters,
-                    searchQuery: nil,
-                    order: order,
-                    cacheClearStrategy: shouldClearCache ? .all : .none
+                let bookings = try await remote.loadAllBookings(for: siteID,
+                                                                pageNumber: pageNumber,
+                                                                pageSize: pageSize,
+                                                                filters: filters,
+                                                                searchQuery: nil,
+                                                                order: order)
+
+                let orders = try await ordersRemote.loadOrders(
+                    for: siteID,
+                    orderIDs: bookings.map { $0.orderID }
                 )
+
+                await upsertStoredBookingsInBackground(
+                    readOnlyBookings: bookings,
+                    readOnlyOrders: orders,
+                    siteID: siteID,
+                    shouldDeleteExistingBookings: shouldClearCache
+                )
+                let hasNextPage = bookings.count == pageSize
                 onCompletion(.success(hasNextPage))
             } catch {
                 onCompletion(.failure(error))
@@ -470,12 +478,10 @@ private extension BookingStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread* async.
     /// Also deletes existing bookings if requested.
-    /// When `deleteFilters` is provided, only bookings matching that filter scope are deleted (smart invalidation).
     func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
                                           readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
-                                          shouldDeleteExistingBookings: Bool = false,
-                                          deleteFilters: BookingFilters? = nil) async {
+                                          shouldDeleteExistingBookings: Bool = false) async {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else {
                 return continuation.resume()
@@ -484,8 +490,7 @@ private extension BookingStore {
             upsertStoredBookingsInBackground(readOnlyBookings: readOnlyBookings,
                                              readOnlyOrders: readOnlyOrders,
                                              siteID: siteID,
-                                             shouldDeleteExistingBookings: shouldDeleteExistingBookings,
-                                             deleteFilters: deleteFilters) {
+                                             shouldDeleteExistingBookings: shouldDeleteExistingBookings) {
                 continuation.resume()
             }
         }
@@ -493,14 +498,12 @@ private extension BookingStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Booking Entities *in a background thread*.
     /// Also deletes existing bookings if requested.
-    /// When `deleteFilters` is provided, only bookings matching that filter scope are deleted (smart invalidation).
     /// `onCompletion` will be called on the main thread!
     ///
     func upsertStoredBookingsInBackground(readOnlyBookings: [Yosemite.Booking],
                                           readOnlyOrders: [Yosemite.Order],
                                           siteID: Int64,
                                           shouldDeleteExistingBookings: Bool = false,
-                                          deleteFilters: BookingFilters? = nil,
                                           onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ [weak self] storage in
             guard let self else {
@@ -508,9 +511,6 @@ private extension BookingStore {
             }
             if shouldDeleteExistingBookings {
                 storage.deleteBookings(siteID: siteID)
-            } else if let deleteFilters {
-                let predicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: deleteFilters)
-                storage.deleteBookings(matching: predicate)
             }
             upsertStoredBookings(readOnlyBookings: readOnlyBookings, readOnlyOrders: readOnlyOrders, in: storage)
         }, completion: onCompletion, on: .main)
@@ -557,7 +557,7 @@ private extension BookingStore {
                 }
                 orderInfo.paymentInfo = paymentInfo
 
-                orderInfo.update(with: readOnlyOrderInfo)
+                orderInfo.statusKey = associatedOrder.status.rawValue
                 storageBooking.orderInfo = orderInfo
             }
 

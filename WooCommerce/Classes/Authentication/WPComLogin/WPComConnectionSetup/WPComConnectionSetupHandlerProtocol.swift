@@ -18,7 +18,6 @@ protocol WPComConnectionSetupHandlerProtocol: AnyObject {
     var delegate: WPComConnectionSetupHandlerDelegate? { get set }
     func start()
     func retry()
-    func cancel()
 }
 
 /// Stub implementation for the handler protocol.
@@ -79,10 +78,6 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
         case .none:
             start()
         }
-    }
-
-    func cancel() {
-        // TODO: Implement in follow-up PR
     }
 }
 

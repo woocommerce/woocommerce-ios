@@ -6,8 +6,11 @@ import WooFoundation
 ///
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
 
+    private let viewModel: WPComPushNotificationsBenefitsViewModel
+
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
          rootViewController: UIViewController) {
+        self.viewModel = viewModel
         super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
         let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
         viewModel.updateCoordinator(coordinator)
@@ -20,6 +23,13 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.presentationController?.delegate = self
+    }
+}
+
+extension WPComPushNotificationsBenefitsHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        viewModel.onSwipeDismiss()
     }
 }
 
@@ -63,7 +73,7 @@ struct WPComPushNotificationsBenefitsView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancelButton) {
-                        viewModel.notNowTapped()
+                        viewModel.cancelTapped()
                     }
                 }
             }

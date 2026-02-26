@@ -7,7 +7,7 @@ public final class WordPressSiteRemote: Remote {
 
     private let restAPIDiscovery: RESTAPIDiscovery
 
-    public convenience init(network: Network) {
+    public convenience override init(network: Network) {
         let discovery = WordPressAPIDiscovery()
         self.init(network: network) { siteURL in
             await discovery.discoverRESTAPIRootURL(for: siteURL)

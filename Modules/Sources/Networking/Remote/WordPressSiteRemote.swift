@@ -63,7 +63,7 @@ private extension WordPressSiteRemote {
 
 private extension WordPressSiteRemote {
     enum Path {
-        static let root = "/?rest_route=/"
+        static let root = "?rest_route=/"
         static let pages = "wp/v2/pages?_fields=id,title,link"
     }
 }

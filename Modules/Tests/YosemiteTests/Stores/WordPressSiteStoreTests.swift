@@ -124,7 +124,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchPageList_returns_correct_page_list() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "/?rest_route=/wp/v2/pages&_fields=id,title,link", filename: "wp-page-list-success")
+        network.simulateResponse(requestUrlSuffix: "/?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When

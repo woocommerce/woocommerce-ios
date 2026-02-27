@@ -1,1 +1,1 @@
-This update improves dashboard onboarding when switching between stores, ensures barcode scanning works seamlessly in Point of Sale after payments, and enhances media library reliability. Update now for a smoother store management experience!
+This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!

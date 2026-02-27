@@ -21,6 +21,10 @@ import struct Yosemite.POSBooking
 
 extension BookingPaymentStatus {
     /// Creates a payment status from a POS booking's order data.
+    ///
+    /// `refundTotal`/`total` are not available on `POSOrder` (amounts are pre-formatted),
+    /// so partial-refund detection relies on the `orderStatus == .refunded` fallback.
+    /// POS collapses `.partiallyRefunded` → "Refunded" in `localizedTitle` anyway.
     init(booking: POSBooking) {
         self.init(orderStatusKey: booking.order.status.rawValue,
                   datePaid: booking.order.datePaid)

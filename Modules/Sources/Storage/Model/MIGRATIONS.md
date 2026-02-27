@@ -5,6 +5,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 132 (Release 24.2.0.0)
 - @jmucientes 2026-02-26
   - Added `datePaid` attribute to `BookingOrderInfo` entity.
+  - Added `total` attribute to `BookingOrderInfo` entity.
+  - Added `refundTotal` attribute to `BookingOrderInfo` entity.
 
 ## Model 131 (Release 23.8.0.0)
 - @rafaelkayumov 2025-11-21

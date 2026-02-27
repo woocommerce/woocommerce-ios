@@ -557,8 +557,7 @@ private extension BookingStore {
                 }
                 orderInfo.paymentInfo = paymentInfo
 
-                orderInfo.statusKey = associatedOrder.status.rawValue
-                orderInfo.datePaid = associatedOrder.datePaid
+                orderInfo.update(with: readOnlyOrderInfo)
                 storageBooking.orderInfo = orderInfo
             }
 

@@ -829,9 +829,7 @@ extension OrderListViewController: UITableViewDelegate {
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
 
-        guard let currentIndex = currentIndex else {
-            return
-        }
+        guard let currentIndex = currentIndex else { return }
 
         let allowOrderNavigation = splitViewController?.isCollapsed ?? true
         // There is no point of having order navigation in the order details view when we have a split screen,

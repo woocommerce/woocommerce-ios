@@ -115,7 +115,7 @@ class StoreOnboardingViewModel: ObservableObject {
     }
 
     func reloadTasks() async {
-        guard !(defaults.completedAllStoreOnboardingTasks[String(siteID)] == true) else {
+        guard defaults.completedAllStoreOnboardingTasks[String(siteID)] != true else {
             waitingTimeTracker.end(action: .loadOnboardingTasks)
             return
         }

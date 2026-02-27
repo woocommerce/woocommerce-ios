@@ -117,7 +117,7 @@ final class SessionManagerTests: XCTestCase {
         defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["123": true]
 
         // Then
-        XCTAssertNotNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])
+        XCTAssertEqual((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["123"], true)
 
         // When
         sut.reset()

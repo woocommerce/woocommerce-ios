@@ -706,6 +706,57 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.dashboardCards.contains(expectedStockCard))
     }
 
+    @MainActor
+    func test_dashboard_cards_contain_onboarding_card_when_store_is_non_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedOnboardingCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_does_not_contain_onboarding_card_when_store_is_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.dashboardCards.contains(expectedOnboardingCard))
+    }
+
     // MARK: Show New Cards Notice
 
     @MainActor

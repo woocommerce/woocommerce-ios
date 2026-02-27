@@ -1,4 +1,1 @@
-- [*] Fix onboarding tasks not displayed after switching stores [https://github.com/woocommerce/woocommerce-ios/pull/16740]
-- [*] POS: Fix barcode scanning not working after completing a payment [https://github.com/woocommerce/woocommerce-ios/pull/16672]
-- [*] Media library: Fix decoding failure when media details are returned as array [https://github.com/woocommerce/woocommerce-ios/pull/16715]
-- [Internal] Enable Bookings MVP for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16738]
+This update improves dashboard onboarding when switching between stores, ensures barcode scanning works seamlessly in Point of Sale after payments, and enhances media library reliability. Update now for a smoother store management experience!

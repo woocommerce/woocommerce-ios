@@ -60,6 +60,13 @@ EOF
    - If the feature is behind a flag, also add `status: feature-flagged`
    - Infer labels from the diff and branch name. If unsure about the feature label, ask the user.
 
-9. Report the PR URL.
+9. **Set milestone.** After creating the PR, assign the correct milestone:
+   - List open milestones: `gh api repos/woocommerce/woocommerce-ios/milestones --jq '.[] | "\(.title)\t\(.description)"'`
+   - Each milestone description contains a `Code Freeze:` date.
+   - **If the PR targets `trunk`**: pick the earliest milestone whose code freeze date has **not yet passed** (i.e., the next unfrozen milestone).
+   - **If the PR targets a `release/X.Y` branch**: use milestone `X.Y` (the frozen release milestone).
+   - Apply with: `gh pr edit <number> --milestone "<milestone title>"`
+
+10. Report the PR URL.
 
 If non-test diff exceeds 300 lines, warn that Danger will flag it and suggest splitting.

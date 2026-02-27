@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-17 09:54:03+0000 */
+/* Translation-Revision-Date: 2026-02-27 16:11:49+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -953,18 +953,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "予約可能";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "予約済み";
-
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "キャンセル済み";
-
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "チェックイン";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "ノーショー";
-
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "不明";
 
@@ -988,12 +976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "時刻";
-
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "出席をマークしてレポートを正確に保ち、予約の傾向を特定します。";
-
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "出席率";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "予約 #%1$dの出席状況を変更できません。";
@@ -1046,20 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "注意";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "ステータス";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "予約 #%1$dを支払い済みとしてマークできません。";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "予約番号%1$d";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "予約をキャンセル";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "支払い済みとしてマーク";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "注文を表示";
@@ -1069,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "支払い";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "支払い済みとしてマーク";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "サービス";
@@ -7858,27 +7828,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "設定を更新する";
 
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "予約はありますが、まだ行われていません。";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "予約済み";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "お客様が到着し、セッションは予定どおりに行われました。";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "チェックイン済み";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "クライアントが事前にキャンセルの連絡をせずに、予約の時刻が過ぎました。";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "ノーショー";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "出席率ステータスを更新";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "ソフトウェアを更新しています";
 
@@ -9657,9 +9606,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Row title for filtering bookings by payment status. */
 "bookingFilters.rowTitlePaymentStatus" = "支払いステータス";
 
-/* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "サービス \/ イベント";
-
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "チームメンバー";
 
@@ -9737,15 +9683,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "より多くの結果を表示するには、検索キーワードを調整してみてください";
-
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "サービスまたはイベントが見つかりません";
-
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "サービス \/ イベントを検索";
-
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "サービス \/ イベント";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "キャンセル済み";
@@ -11687,12 +11624,6 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "不明";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "リーダーで支払いがキャンセルされました";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "再度支払いを試す";
-
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "カードを挿入しました";
 
@@ -12638,12 +12569,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "返金を作成できませんでした";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "割引合計: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "割引合計";
-
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "タップして注文受領をメールで送信";
 
@@ -12671,21 +12596,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "その他の操作";
 
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "支払額 (正味): %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "支払額 (正味)";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "支払い合計: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "決済方法: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "支払い合計";
-
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "数量: %1$@ (各%2$@、合計%3$@)";
 
@@ -12697,33 +12607,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "理由: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "返金済み: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "理由: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "返金済み";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "商品小計: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "税額: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "税";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "注文合計: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "合計";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "合計";
@@ -12999,8 +12882,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "新しい注文";
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "領収書をメールで送信";
@@ -15212,9 +15095,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to navigate to the store after successful WPCom connection setup. */
 "wpComConnectionSetupViewModel.goToMyStore" = "自分のストアに移動";
 
-/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
-"wpComConnectionSetupViewModel.subtitle" = "ストア %@ の WordPress.com アカウントへの連携が完了するまでお待ちください。";
-
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "もう一度試す";
 
@@ -15245,18 +15125,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "メールアドレスが正しいことを確認し、スパムフォルダーを再確認してください。";
 
-/* Button to submit a WPCom email on the login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "続行";
-
-/* Subtitle for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "WordPress.com アカウントでログインしてストアを連携します。";
-
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
-"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "続行すると、当社の%1$@および WordPress.com に%2$@ことに同意したものとみなされます。";
-
-/* Title for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.title" = "WordPress.com に接続";
-
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "パスワードなしですぐにログインできるリンクのメールをお送りします。";
 
@@ -15280,9 +15148,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "続行";
-
-/* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.description" = "ストアを WordPress.com アカウントに連携すると、新規注文やレビューなどのプッシュ通知を利用できます。";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "後で";

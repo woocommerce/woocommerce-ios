@@ -2,6 +2,14 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 132 (Release 24.2.0.0)
+- @jmucientes 2026-02-26
+  - Added `datePaid` attribute to `BookingOrderInfo` entity.
+
+## Model 131 (Release 23.8.0.0)
+- @rafaelkayumov 2025-11-21
+  - Added `note` attribute to `BookingCustomerInfo` entity.
+
 ## Model 130 (Release 23.7)
 - @adborbas 2025-11-06
   - Added `note` attribute to `Booking` entity.

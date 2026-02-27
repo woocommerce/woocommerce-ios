@@ -2,6 +2,7 @@ import Foundation
 import CoreData
 
 extension BookingOrderInfo {
+    @NSManaged public var datePaid: Date?
     @NSManaged public var statusKey: String?
     @NSManaged public var paymentInfo: BookingPaymentInfo?
     @NSManaged public var customerInfo: BookingCustomerInfo?

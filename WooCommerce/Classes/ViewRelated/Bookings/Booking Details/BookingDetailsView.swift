@@ -8,7 +8,6 @@ struct BookingDetailsView: View {
     @State private var showingCancelAlert = false
     @State private var cancellingBooking = false
     @State private var updatingAttendance = false
-    @State private var markingAsPaid = false
     @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
@@ -63,11 +62,6 @@ struct BookingDetailsView: View {
                     Image(systemName: "ellipsis")
                 }
                 .confirmationDialog("", isPresented: $showingOptions, titleVisibility: .hidden) {
-                    Button(Localization.markAsPaid) {
-                        markBookingAsPaid()
-                    }
-                    .renderedIf(viewModel.shouldShowMarkAsPaid)
-
                     Button(Localization.viewOrder) {
                         viewModel.navigateToOrderDetails()
                     }
@@ -224,10 +218,6 @@ private extension BookingDetailsView {
                             viewModel.navigateToOrderDetails()
                         }
                         .buttonStyle(SecondaryButtonStyle())
-                    case .markAsPaid:
-                        Button(action.buttonTitle, action: markBookingAsPaid)
-                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: markingAsPaid))
-                            .renderedIf(viewModel.shouldShowMarkAsPaid)
                     }
                 }
             }
@@ -256,26 +246,10 @@ extension BookingDetailsView {
         }
     }
 
-    func markBookingAsPaid() {
-        Task { @MainActor in
-            markingAsPaid = true
-            do {
-                try await viewModel.markBookingAsPaid()
-            } catch {
-                viewModel.displayMarkingAsPaidErrorNotice(onRetry: markBookingAsPaid)
-            }
-            markingAsPaid = false
-        }
-    }
 }
 
 extension BookingDetailsView {
     enum Localization {
-        static let markAsPaid = NSLocalizedString(
-            "BookingDetailsView.options.markAsPaid",
-            value: "Mark as paid",
-            comment: "Action sheet option to mark a booking as paid."
-        )
         static let viewOrder = NSLocalizedString(
             "BookingDetailsView.options.viewOrder",
             value: "View order",

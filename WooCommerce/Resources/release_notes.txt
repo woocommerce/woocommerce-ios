@@ -1,2 +1,4 @@
-Our improved Point of Sale item search is faster than ever. It lets you locate products, and now the results include variations too! Results are instant, and you can use any word order for your search.
-We’ve also smoothed out order creation, with fixes to product filters and shipping address updates. Update today to keep your store running perfectly!
+- [*] Fix onboarding tasks not displayed after switching stores [https://github.com/woocommerce/woocommerce-ios/pull/16740]
+- [*] POS: Fix barcode scanning not working after completing a payment [https://github.com/woocommerce/woocommerce-ios/pull/16672]
+- [*] Media library: Fix decoding failure when media details are returned as array [https://github.com/woocommerce/woocommerce-ios/pull/16715]
+- [Internal] Enable Bookings MVP for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16738]

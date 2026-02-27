@@ -4,6 +4,7 @@
 -----
 - [*] POS: Fix barcode scanning not working after completing a payment [https://github.com/woocommerce/woocommerce-ios/pull/16672]
 - [*] Media library: Fix decoding failure when media details are returned as array [https://github.com/woocommerce/woocommerce-ios/pull/16715]
+- [Internal] Enable Bookings MVP for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16738]
 
 
 24.1

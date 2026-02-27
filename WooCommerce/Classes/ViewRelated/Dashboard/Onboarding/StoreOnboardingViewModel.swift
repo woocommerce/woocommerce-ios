@@ -108,7 +108,6 @@ class StoreOnboardingViewModel: ObservableObject {
                 }
                 return true
             }
-            .print("💀 Can show in dashboard: ")
             .map { [siteID] (noTasksAvailable, completedDict) in
                 !(noTasksAvailable || (completedDict[String(siteID)] == true))
             }

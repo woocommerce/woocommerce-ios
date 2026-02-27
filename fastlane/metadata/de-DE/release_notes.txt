@@ -1,2 +1,1 @@
-Unsere verbesserte Suche nach Point of Sale-Artikeln ist schneller als je zuvor. Damit kannst du Produkte leichter finden. Außerdem enthalten die Ergebnisse jetzt auch Varianten! Die Ergebnisse sind sofort verfügbar und du kannst jede beliebige Wortreihenfolge für deine Suche verwenden.
-Außerdem haben wir die Erstellung von Bestellungen durch die Korrektur von Produktfiltern und Versandadressen-Updates vereinfacht. Führe noch heute ein Update durch, damit dein Shop einwandfrei funktioniert!
+Dieses Update zeigt die Aufgaben zum Einrichten des Shops zuverlässiger an, sorgt dafür, dass das Scannen von Barcodes im Point of Sale reibungslos funktioniert, und verbessert die Zuverlässigkeit der Mediathek. Aktualisiere jetzt für ein besseres Erlebnis bei der Shopverwaltung!

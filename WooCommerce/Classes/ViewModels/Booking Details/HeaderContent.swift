@@ -4,6 +4,7 @@ import struct Yosemite.BookingProductInfo
 import struct Yosemite.Customer
 import struct Yosemite.Address
 import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.BookingPaymentStatus
 import enum Yosemite.BookingStatus
 
 extension BookingDetailsViewModel {
@@ -12,6 +13,7 @@ extension BookingDetailsViewModel {
         @Published private(set) var serviceLine: String = ""
         @Published private(set) var customerLine: String = ""
         @Published private(set) var statusBadge: BookingBadgeable = BookingStatus.unknown
+        @Published private(set) var paymentStatusBadge: BookingPaymentStatus = .unpaid
 
         func update(with booking: Booking) {
             bookingDate = booking.startDate.toString(
@@ -22,6 +24,7 @@ extension BookingDetailsViewModel {
             serviceLine = booking.productName ?? ""
             customerLine = booking.customerName
             statusBadge = booking.bookingItemHeaderStatusBadge
+            paymentStatusBadge = booking.paymentStatusBadge
         }
     }
 }

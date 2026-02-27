@@ -55,6 +55,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: paymentInfo,
             customerInfo: customerInfo,
             productInfo: productInfo
@@ -104,6 +105,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: nil,
             productInfo: nil
@@ -136,6 +138,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let productInfo = BookingProductInfo(name: "Massage Therapy")
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: productInfo
@@ -180,6 +183,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let customerInfo = BookingCustomerInfo(billingAddress: billingAddress)
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: nil
@@ -226,6 +230,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let customerInfo = BookingCustomerInfo(billingAddress: billingAddress, note: note)
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: nil

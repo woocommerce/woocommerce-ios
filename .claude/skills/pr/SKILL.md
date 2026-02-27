@@ -52,6 +52,14 @@ EOF
 )"
 ```
 
-8. Report the PR URL.
+8. **Add labels.** After creating the PR, add labels using `gh pr edit <number> --add-label "<label>"`. Pick labels from these categories:
+   - **Type** (pick one): `type: bug`, `type: crash`, `type: enhancement`, `type: task`, `type: technical debt`, `type: documentation`, `type: question`
+   - **Feature** (pick one if applicable): match the changed area to a `feature: *` label (e.g., `feature: POS`, `feature: order list`, `feature: order details`, `feature: product details`, `feature: login`, `feature: dashboard`, `feature: analytics hub`, `feature: coupons`, `feature: shipping labels`, `feature: order creation`, `feature: notifications`, `feature: Blaze`, `feature: CIAB Mobile Experience`, `feature: subscriptions`, `feature: app settings`, etc.)
+   - **Priority** (pick one if known): `priority: low`, `priority: medium`, `priority: high`, `priority: critical`
+   - **Category** (pick any that apply): `category: accessibility`, `category: design`, `category: performance`, `category: tracks`, `category: unit tests`, `category: ui tests`, `category: tooling`, `category: parity`, `category: i18n`, `category: dark mode`, `category: tablet`, etc.
+   - If the feature is behind a flag, also add `status: feature-flagged`
+   - Infer labels from the diff and branch name. If unsure about the feature label, ask the user.
+
+9. Report the PR URL.
 
 If non-test diff exceeds 300 lines, warn that Danger will flag it and suggest splitting.

@@ -114,10 +114,10 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["123": true]
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+        XCTAssertNotNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])
 
         // When
         sut.reset()

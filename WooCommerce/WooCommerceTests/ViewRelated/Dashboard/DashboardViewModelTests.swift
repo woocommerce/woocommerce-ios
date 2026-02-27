@@ -379,7 +379,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
+        defaults[.completedAllStoreOnboardingTasks] = ["0": true]
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            userDefaults: defaults,
@@ -563,7 +563,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() async throws {
         // Given
-        userDefaults[.completedAllStoreOnboardingTasks] = true
+        userDefaults[.completedAllStoreOnboardingTasks] = [String(sampleSiteID): true]
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,

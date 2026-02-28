@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-17 18:54:04+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:06+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -953,18 +953,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "Бронируемый";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "Забронировано";
-
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "Отменено";
-
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "Регистрация состоялась";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "Регистрация не состоялась";
-
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Неизвестно";
 
@@ -988,12 +976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Время";
-
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "Отмечайте встречи, чтобы отчёты были точными и отражали тенденции бронирования.";
-
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "Встреча";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "Не удалось изменить статус участия в бронировании № %1$d.";
@@ -1046,20 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "Примечание";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "Статус";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "Не удалось отметить бронирование № %1$d как оплаченное.";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "Номер бронирования: %1$d";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "Отменить бронирование";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "Отметить как оплаченное";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "Просмотреть заказ";
@@ -1069,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Оплата";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "Отметить как оплаченное";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Сервис";
@@ -6522,7 +6492,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Store Name" = "Название магазина";
 
 /* My Store > Settings > Store Settings section title */
-"Store Settings" = "Сохранить настройки";
+"Store Settings" = "Настройки магазина";
 
 /* Title of the webview for Store details task from onboarding. */
 "Store details" = "Сведения о магазине";
@@ -7857,27 +7827,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the hub menu settings button */
 "Update your preferences" = "Обновить настройки";
-
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "Встреча назначена, но ещё не состоялась.";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "Запланирована";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "Клиент прибыл, и встреча прошла по плану.";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "Состоялась";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "Клиент пропустил встречу, не отменив её заранее.";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "Не состоялась";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "Обновить статус встречи";
 
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Обновление программного обеспечения";
@@ -9658,7 +9607,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFilters.rowTitlePaymentStatus" = "Статус платежа";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "Сервис\/событие";
+"bookingFilters.rowTitleService" = "Услуги";
 
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Участник команды";
@@ -9738,14 +9687,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Уточните поисковый запрос, чтобы получить больше результатов";
 
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "Сервис или событие не найдены";
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "Сервис не найден";
 
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "Поиск услуги\/события";
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Поиск сервиса";
 
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "Сервис\/событие";
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Услуги";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "Отменено";
@@ -11687,12 +11636,6 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "Неизвестно";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "Платёж отменён на устройстве";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Повторить платёж";
-
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "Карта вставлена";
 
@@ -12638,12 +12581,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "Не удалось создать возврат средств";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "Итоговая скидка: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "Итоговая скидка";
-
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Нажмите, чтобы отправить чек заказа по электронной почте";
 
@@ -12671,21 +12608,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Другие действия";
 
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "Платёж нетто: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "Платёж нетто";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "Уплачено: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "Способ оплаты: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "Уплачено";
-
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Количество: %1$@ по %2$@ за шт., итого %3$@";
 
@@ -12697,33 +12619,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "Причина: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "Сумма возврата: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Причина: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "Возвращённые средства";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "Подытог по товарам: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "Налоги: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "Налоги";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "Общая сумма заказа: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "Итого";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Итого";
@@ -12999,8 +12894,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "Новый заказ";
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Отправить чек по эл. почте";
@@ -13544,6 +13439,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "Отложено";
+
+/* The acronym for 'Point of Sale'. */
+"salesChannel.pos.description" = "POS";
 
 /* Orders created through web checkout. */
 "salesChannel.webCheckout.description" = "Оформление заказа через Интернет";
@@ -15209,9 +15107,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to navigate to the store after successful WPCom connection setup. */
 "wpComConnectionSetupViewModel.goToMyStore" = "Перейти в мой магазин";
 
-/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
-"wpComConnectionSetupViewModel.subtitle" = "Дождитесь завершения подключения магазина %@ к вашей учётной записи WordPress.com.";
-
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Повторить попытку";
 
@@ -15242,18 +15137,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Проверьте, правильно ли указан ваш адрес эл. почты, и ещё раз загляните в папку «Спам».";
 
-/* Button to submit a WPCom email on the login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "Продолжить";
-
-/* Subtitle for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "Войдите в учётную запись WordPress.com, чтобы подключить магазин.";
-
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
-"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "Продолжая, вы принимаете %1$@ и соглашаетесь %2$@ WordPress.com.";
-
-/* Title for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.title" = "Подключиться к WordPress.com";
-
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "Мы отправим вам ссылку для входа, которая позволит вам сразу войти без пароля.";
 
@@ -15277,9 +15160,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "Продолжить";
-
-/* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.description" = "Подключите свой магазин к учётной записи WordPress.com, чтобы получать push-уведомления о новых заказах, отзывах и др.";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "Не сейчас";

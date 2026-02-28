@@ -23,13 +23,27 @@ steps:
   #################
   # Create Prototype Build
   #################
-  - label: ":hammer_and_wrench: Prototype Build"
-    command: .buildkite/commands/prototype-build.sh
-    plugins: [$CI_TOOLKIT]
+  - group: ":hammer_and_wrench: Prototype Build"
     if: build.pull_request.id != null
-    notify:
-      - github_commit_status:
-          context: Prototype Build
+    steps:
+      - label: ":hammer_and_wrench: Prototype Build - Build"
+        key: build_prototype
+        command: .buildkite/commands/prototype-build.sh
+        plugins: [$CI_TOOLKIT]
+        artifact_paths:
+          - artifacts/*.ipa
+          - artifacts/*.app.dSYM.zip
+        notify:
+          - github_commit_status:
+              context: Prototype Build - Build
+
+      - label: ":firebase: Prototype Build - Upload"
+        depends_on: build_prototype
+        command: .buildkite/commands/prototype-upload.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Prototype Build - Upload
 
   - group: ":rocket: Prototype Build"
     if: build.branch == "trunk"
@@ -37,13 +51,24 @@ steps:
       - input: Deploy Prototype Build?
         prompt: Share a Prototype Build via Firebase App Distribution?
         key: prototype_triggered
-      - label: Prototype Build
+      - label: ":hammer_and_wrench: Prototype Build - Build"
         depends_on: prototype_triggered
+        key: build_prototype_trunk
         command: .buildkite/commands/prototype-build.sh
+        plugins: [$CI_TOOLKIT]
+        artifact_paths:
+          - artifacts/*.ipa
+          - artifacts/*.app.dSYM.zip
+        notify:
+          - github_commit_status:
+              context: Prototype Build From Trunk - Build
+      - label: ":firebase: Prototype Build - Upload"
+        depends_on: build_prototype_trunk
+        command: .buildkite/commands/prototype-upload.sh
         plugins: [$CI_TOOLKIT]
         notify:
           - github_commit_status:
-              context: Prototype Build From Trunk
+              context: Prototype Build From Trunk - Upload
 
   #################
   # Run Unit Tests

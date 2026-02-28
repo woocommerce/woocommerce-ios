@@ -24,6 +24,8 @@ DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
+ARTIFACTS_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'artifacts')
+PROTOTYPE_BUILD_IPA_NAME = 'WooCommerce'
 
 # Firebase App Distribution
 FIREBASE_APP_ID = '1:124902176124:ios:02259de1e7c42b291620f9'
@@ -809,37 +811,7 @@ platform :ios do
     xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     build_for_prototype_build
-
-    release_notes = <<~NOTES
-      Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
-      Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
-    NOTES
-    release_notes += "Pull Request: ##{pull_request_number}" unless pull_request_number.nil?
-
-    firebase_app_distribution(
-      app: FIREBASE_APP_ID,
-      service_credentials_json_data: get_required_env('FIREBASE_APP_DISTRIBUTION_ACCOUNT_KEY'),
-      release_notes: release_notes,
-      groups: FIREBASE_TESTERS_GROUP
-    )
-
-    sentry_upload_dsym(
-      auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
-      org_slug: 'a8c',
-      project_slug: 'woocommerce-ios',
-      dsym_path: './build/WooCommerce.app.dSYM.zip'
-    )
-
-    next if pull_request_number.nil?
-
-    # PR Comment
-    comment_body = prototype_build_details_comment(app_display_name: 'WooCommerce iOS Prototype')
-    comment_on_pr(
-      project: GITHUB_REPO,
-      pr_number: pull_request_number,
-      reuse_identifier: 'prototype-build-link',
-      body: comment_body
-    )
+    upload_prototype_build
   end
 
   desc 'Builds a prototype build (Enterprise build)'
@@ -859,13 +831,62 @@ platform :ios do
       # Note that we don't want to override the `VERSION_SHORT` (with `PR #nn` or something) because that's the `.marketingVersion` and is used in API calls
       # so we need to keep it unchanged; we still update the `VERSION_LONG` (build number) to make it easy to associate it with the right PR and commit in Firebase.
       xcargs: { BUILD_CODE_KEY => build_number }.compact,
-      output_directory: 'build',
+      output_directory: ARTIFACTS_FOLDER,
+      output_name: PROTOTYPE_BUILD_IPA_NAME,
       export_team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       export_options: {
         **COMMON_EXPORT_OPTIONS,
         method: 'enterprise',
         iCloudContainerEnvironment: 'Production'
       }
+    )
+  end
+
+  #####################################################################################
+  # upload_prototype_build
+  # -----------------------------------------------------------------------------------
+  # This lane uploads a prototype build to Firebase App Distribution
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane upload_prototype_build
+  #
+  # Example:
+  # bundle exec fastlane upload_prototype_build
+  #####################################################################################
+  desc 'Uploads a prototype build to Firebase App Distribution'
+  lane :upload_prototype_build do
+    ensure_sentry_installed
+
+    release_notes = <<~NOTES
+      Branch: `#{ENV.fetch('BUILDKITE_BRANCH', 'N/A')}`
+      Commit: #{ENV.fetch('BUILDKITE_COMMIT', 'N/A')[0...7]}
+    NOTES
+    release_notes += "Pull Request: ##{pull_request_number}" unless pull_request_number.nil?
+
+    firebase_app_distribution(
+      app: FIREBASE_APP_ID,
+      ipa_path: File.join(ARTIFACTS_FOLDER, "#{PROTOTYPE_BUILD_IPA_NAME}.ipa"),
+      service_credentials_json_data: get_required_env('FIREBASE_APP_DISTRIBUTION_ACCOUNT_KEY'),
+      release_notes: release_notes,
+      groups: FIREBASE_TESTERS_GROUP
+    )
+
+    sentry_upload_dsym(
+      auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
+      org_slug: 'a8c',
+      project_slug: 'woocommerce-ios',
+      dsym_path: File.join(ARTIFACTS_FOLDER, "#{PROTOTYPE_BUILD_IPA_NAME}.app.dSYM.zip")
+    )
+
+    next if pull_request_number.nil?
+
+    # PR Comment
+    comment_body = prototype_build_details_comment(app_display_name: 'WooCommerce iOS Prototype')
+    comment_on_pr(
+      project: GITHUB_REPO,
+      pr_number: pull_request_number,
+      reuse_identifier: 'prototype-build-link',
+      body: comment_body
     )
   end
 

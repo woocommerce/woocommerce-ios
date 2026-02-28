@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-27 16:24:39+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:06+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -9606,6 +9606,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Row title for filtering bookings by payment status. */
 "bookingFilters.rowTitlePaymentStatus" = "Статус платежа";
 
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleService" = "Услуги";
+
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Участник команды";
 
@@ -9683,6 +9686,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Уточните поисковый запрос, чтобы получить больше результатов";
+
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "Сервис не найден";
+
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Поиск сервиса";
+
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Услуги";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "Отменено";

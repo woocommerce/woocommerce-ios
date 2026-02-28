@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-27 16:40:27+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:17+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -9603,6 +9603,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Row title for filtering bookings by payment status. */
 "bookingFilters.rowTitlePaymentStatus" = "Status Pembayaran";
 
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleService" = "Layanan";
+
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Anggota Tim";
 
@@ -9680,6 +9683,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Coba sesuaikan istilah pencarian Anda untuk melihat hasil lainnya";
+
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "Tidak ada layanan yang ditemukan";
+
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Layanan pencarian";
+
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Layanan";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "Dibatalkan";

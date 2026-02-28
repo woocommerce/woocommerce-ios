@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-27 16:02:23+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:26:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -9606,6 +9606,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Row title for filtering bookings by payment status. */
 "bookingFilters.rowTitlePaymentStatus" = "État du paiement";
 
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleService" = "Service";
+
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Ajouter un membre à l’équipe";
 
@@ -9683,6 +9686,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Essayez d’ajuster votre terme de recherche pour voir plus de résultats";
+
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "Aucun service trouvé";
+
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Recherche service";
+
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Service";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "Annulé";

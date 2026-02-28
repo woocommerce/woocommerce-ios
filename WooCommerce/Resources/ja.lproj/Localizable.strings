@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-27 16:11:49+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:00+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9606,6 +9606,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Row title for filtering bookings by payment status. */
 "bookingFilters.rowTitlePaymentStatus" = "支払いステータス";
 
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleService" = "サービス";
+
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "チームメンバー";
 
@@ -9683,6 +9686,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "より多くの結果を表示するには、検索キーワードを調整してみてください";
+
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "「サービスが見つかりませんでした」";
+
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "検索サービス";
+
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "サービス";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "キャンセル済み";

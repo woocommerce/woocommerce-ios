@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-27 16:33:17+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:13+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -9606,6 +9606,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Row title for filtering bookings by payment status. */
 "bookingFilters.rowTitlePaymentStatus" = "حالة المدفوعات";
 
+/* Row title for filtering bookings by product. */
+"bookingFilters.rowTitleService" = "الخدمة";
+
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "عضو الفريق";
 
@@ -9683,6 +9686,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "حاول ضبط مصطلح البحث الخاص بك لرؤية مزيد من النتائج";
+
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "لا توجد خدمة";
+
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "خدمة البحث";
+
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "الخدمة";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "تم الإلغاء";

@@ -58,21 +58,26 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 }
             default:
                 NavigationStack(path: $detailNavigationPath) {
-                    sidebar($selection)
-                        .navigationDestination(for: SelectionValue.self) { selectedValue in
-                            detail(selectedValue, $detailNavigationPath)
+                    ZStack {
+                        if let selection {
+                            detail(selection, $detailNavigationPath)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .transition(.move(edge: .trailing))
+                        } else {
+                            sidebar($selection)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .transition(.move(edge: .leading))
                         }
+                    }
+                    .animation(.default, value: selection != nil)
+                    .navigationBarHidden(true)
                 }
             }
         }
         .onAppear {
             stableHorizontalSizeClass = horizontalSizeClass
-            if horizontalSizeClass == .regular {
-                if selection == nil {
-                    setDefaultValue?()
-                }
-            } else if detailNavigationPath.isEmpty, let selection {
-                detailNavigationPath.append(selection)
+            if horizontalSizeClass == .regular, selection == nil {
+                setDefaultValue?()
             }
         }
         .task(id: horizontalSizeClass) {
@@ -86,25 +91,13 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             let previous = stableHorizontalSizeClass
             stableHorizontalSizeClass = horizontalSizeClass
 
-            // On genuine size class change, adapt the navigation path for
-            // the new layout's path semantics (compact prepends SelectionValue;
-            // regular does not).
-            if let previous, previous != horizontalSizeClass {
-                detailNavigationPath = NavigationPath()
-                if horizontalSizeClass != .regular, let selection {
-                    detailNavigationPath.append(selection)
-                }
-                if horizontalSizeClass == .regular, selection == nil {
-                    setDefaultValue?()
-                }
+            if let previous, previous != horizontalSizeClass,
+               horizontalSizeClass == .regular, selection == nil {
+                setDefaultValue?()
             }
         }
-        .onChange(of: selection) { _, newSelection in
+        .onChange(of: selection) { _, _ in
             detailNavigationPath = NavigationPath()
-            let isCompact = (stableHorizontalSizeClass ?? horizontalSizeClass) != .regular
-            if isCompact, let newSelection {
-                detailNavigationPath.append(newSelection)
-            }
         }
     }
 }

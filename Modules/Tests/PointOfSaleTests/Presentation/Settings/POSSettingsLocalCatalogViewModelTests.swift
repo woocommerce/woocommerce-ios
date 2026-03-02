@@ -3,6 +3,7 @@ import Foundation
 @testable import PointOfSale
 @testable import Yosemite
 
+@MainActor
 struct POSSettingsLocalCatalogViewModelTests {
     private let sampleSiteID: Int64 = 12345
     private let sut: POSSettingsLocalCatalogViewModel

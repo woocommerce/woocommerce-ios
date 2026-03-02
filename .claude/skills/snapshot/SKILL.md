@@ -28,12 +28,11 @@ Use swift-snapshot-testing to create a visual feedback loop when implementing UI
 3. SCAFFOLD   Create snapshot test rendering the target view
 4. LOOP       For each implementation step:
                 a. Edit code
-                b. Commit
-                c. Run snapshot test (record mode)
-                d. Read generated PNG
-                e. Compare against design
-                f. If mismatch -> fix, amend commit, re-snapshot
-                g. If match -> next step
+                b. Run snapshot test (record mode)
+                c. Read generated PNG
+                d. Compare against design
+                e. If mismatch -> fix and re-snapshot
+                f. If match -> commit the verified change, move to next step
 5. CLEANUP    Revert dependency + delete test file
 ```
 
@@ -148,7 +147,7 @@ Common issues caught by snapshots:
 - **Spacing mismatches** — check `POSPadding`/`POSSpacing` values against design
 - **Wrong section order** — compare VStack children order with design
 
-When fixing: amend the current step's commit, then re-run snapshots to verify.
+When fixing: edit the code and re-run snapshots to verify. Only commit once the snapshot matches the design goal — don't commit untested changes.
 
 ## Cleanup: Remove ALL Temporary Artifacts
 
@@ -185,5 +184,5 @@ git status
 | Find PNGs | `Modules/Tests/<Target>/__Snapshots__/<Class>/test_name.1.png` |
 | View snapshot | Read tool on the PNG path |
 | Compare | Read both snapshot PNG and design reference |
-| Fix + re-run | Edit code, `git commit --amend`, re-run xcodebuild |
+| Fix + re-run | Edit code, re-run xcodebuild, commit once verified |
 | Clean up | `git checkout -- Modules/Package.swift`, `rm` test file + snapshots |

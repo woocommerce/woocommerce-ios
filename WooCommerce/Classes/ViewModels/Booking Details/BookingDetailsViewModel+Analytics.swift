@@ -38,6 +38,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingDetailMarkAsPaidTap)
         }
 
+        // TODO: Wire up tracking call when refund feature is added to BookingDetailsViewModel
+        static func refundTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailRefundTap)
+        }
+
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Properties.action: action.rawValue

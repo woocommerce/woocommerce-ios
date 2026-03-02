@@ -53,9 +53,6 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 }
             }
             .onAppear {
-                // Clear any compact-mode path entries (SelectionValue) that don't
-                // apply in regular mode where the detail is root content.
-                detailNavigationPath = NavigationPath()
                 if selection == nil {
                     setDefaultValue?()
                 }
@@ -71,11 +68,11 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     }
             }
             .onAppear {
-                // Sync the path with the current selection on appear. This handles
-                // both initial appearance and transitions from regular mode where
-                // the path doesn't include the SelectionValue.
-                detailNavigationPath = NavigationPath()
-                if let selection {
+                // Sync the path with the current selection on initial appear or
+                // when transitioning from regular mode (where the path doesn't
+                // include SelectionValue). Only populate when empty to preserve
+                // sub-detail navigation during transient size class changes.
+                if detailNavigationPath.isEmpty, let selection {
                     detailNavigationPath.append(selection)
                 }
             }

@@ -306,39 +306,6 @@ extension BookingDetailsViewModel {
     }
 }
 
-/// Mark booking as paid
-extension BookingDetailsViewModel {
-    var shouldShowMarkAsPaid: Bool {
-        booking.isEligibleForMarkAsPaid
-    }
-
-    @MainActor
-    func markBookingAsPaid() async throws {
-        analytics.track(event: .BookingsDetail.bookingMarkAsPaidTapped())
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
-                if let error {
-                    analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .markAsPaid, error: error))
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: ())
-                }
-            })
-        }
-    }
-
-    func displayMarkingAsPaidErrorNotice(onRetry: @escaping () -> Void) {
-        let text = String.localizedStringWithFormat(
-            Localization.bookingMarkAsPaidFailedMessage,
-            booking.bookingID
-        )
-        self.notice = Notice(
-            message: text,
-            feedbackType: .error,
-            actionTitle: Localization.retryActionTitle
-        ) { onRetry() }
-    }
-}
 
 private extension BookingDetailsViewModel {
     @MainActor
@@ -497,14 +464,6 @@ private extension BookingDetailsViewModel {
             value: "Unable to cancel Booking #%1$d.",
             comment: "Content of error presented when cancelling a Booking fails. "
             + "It reads: Unable to cancel Booking #{Booking number}. "
-            + "Parameters: %1$d - Booking number"
-        )
-
-        static let bookingMarkAsPaidFailedMessage = NSLocalizedString(
-            "BookingDetailsView.markAsPaid.failureMessage",
-            value: "Unable to mark Booking #%1$d as paid.",
-            comment: "Content of error presented when cancelling a Booking fails. "
-            + "It reads: Unable to mark Booking #{Booking number} as paid. "
             + "Parameters: %1$d - Booking number"
         )
 

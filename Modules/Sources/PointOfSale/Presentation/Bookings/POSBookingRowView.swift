@@ -12,7 +12,7 @@ struct POSBookingRowView: View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
             bookingHeaderRow
                 .padding(.bottom, POSSpacing.xSmall)
-            POSBookingSummaryView(booking: booking)
+            POSBookingSummaryView(booking: booking, subtitleFont: .posBodySmallRegular())
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))

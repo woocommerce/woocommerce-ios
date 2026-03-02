@@ -5,6 +5,7 @@ import UserNotifications
 import AutomatticTracks
 import Yosemite
 import WooFoundation
+import enum NetworkingCore.NetworkError
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
@@ -184,6 +185,17 @@ extension PushNotificationsManager {
     /// - Throws: If any step in the registration pipeline fails.
     @MainActor
     func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64 {
+        #if targetEnvironment(simulator)
+        if !isRunningTests {
+            DDLogVerbose("👀 Push Notifications tokens are not supported in the Simulator - mocking success result")
+            let mockTokenID = Int64.random(in: 99...9999)
+            registrationState.setWooPushNotificationTokenID(mockTokenID)
+            if let siteID {
+                registrationState.markSiteAsRegisteredForWooPNs(siteID)
+            }
+            return mockTokenID
+        }
+        #endif
         // 1. Register with iOS for remote notifications
         registerForRemoteNotifications()
 
@@ -334,7 +346,7 @@ extension PushNotificationsManager {
                 case .failure(let error):
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
                     analytics.track(.wooPushTokenRegisterError, withError: error)
-                    if let siteID {
+                    if let siteID, case .notFound = error as? NetworkError {
                         registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
                     }
                     // Falls back to dotcom PNs if authenticated with WPCom

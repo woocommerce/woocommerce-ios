@@ -12,7 +12,7 @@ struct POSTotalsSectionView: View {
     let discountAmount: String?
     let taxAmount: String
     let totalAmount: String
-    let paidAmount: String
+    let paidAmount: String?
     let paymentMethodTitle: String
     let refunds: [POSOrderRefund]
     let netAmount: String?
@@ -27,20 +27,23 @@ struct POSTotalsSectionView: View {
             VStack(spacing: POSSpacing.small) {
                 totalsRow(title: subtotalLabel, amount: subtotalAmount)
 
+                totalsRow(title: Localization.taxesLabel, amount: taxAmount)
+
                 if let discountAmount {
                     totalsRow(title: Localization.discountLabel, amount: discountAmount)
                 }
+            }
 
-                totalsRow(title: Localization.taxesLabel, amount: taxAmount)
+            sectionDivider
 
-                sectionDivider
-                totalsRow(
-                    title: Localization.totalLabel,
-                    amount: totalAmount,
-                    titleColor: .posOnSurface,
-                    titleFont: .posBodyLargeBold
-                )
+            totalsRow(
+                title: Localization.totalLabel,
+                amount: totalAmount,
+                titleColor: .posOnSurface,
+                titleFont: .posBodyLargeBold
+            )
 
+            if let paidAmount {
                 sectionDivider
                 paidAmountRow
 
@@ -59,12 +62,14 @@ struct POSTotalsSectionView: View {
 
     private var paidAmountRow: some View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
-            totalsRow(
-                title: Localization.paidLabel,
-                amount: paidAmount,
-                titleColor: .posOnSurface,
-                titleFont: .posBodyLargeBold
-            )
+            if let paidAmount {
+                totalsRow(
+                    title: Localization.paidLabel,
+                    amount: paidAmount,
+                    titleColor: .posOnSurface,
+                    titleFont: .posBodyLargeBold
+                )
+            }
 
             if !paymentMethodTitle.isEmpty {
                 Text(paymentMethodTitle)
@@ -73,7 +78,7 @@ struct POSTotalsSectionView: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Localization.paidAccessibilityLabel(amount: paidAmount, method: paymentMethodTitle))
+        .accessibilityLabel(Localization.paidAccessibilityLabel(amount: paidAmount ?? "", method: paymentMethodTitle))
     }
 
     // MARK: - Refunds
@@ -149,9 +154,9 @@ struct POSTotalsSectionView: View {
 
 private enum Localization {
     static let discountLabel = NSLocalizedString(
-        "pos.totalsSectionView.discountLabel",
-        value: "Discount total",
-        comment: "Label for discount total in the totals breakdown."
+        "pos.totalsSectionView.discountLabel.v2",
+        value: "Discount",
+        comment: "Label for discount in the totals breakdown."
     )
 
     static let taxesLabel = NSLocalizedString(

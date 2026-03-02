@@ -30,8 +30,11 @@
       "Bash(bundle exec rake dependencies *)",
       "Bash(bundle exec rake generate *)",
       "Bash(bundle exec rake lint *)",      
-      "Bash(bundle exec rake mocks *)",      
-      "Bash(bundle exec fastlane *)"
+      "Bash(bundle exec rake mocks *)",
+      "Bash(bundle exec fastlane *)",
+      "Bash(./API-Mocks/scripts/start.sh *)",
+      "Bash(kill *)",
+      "mcp__mobile-mcp__*"
     ],
     "deny": [
       "Bash(git push --force *)",

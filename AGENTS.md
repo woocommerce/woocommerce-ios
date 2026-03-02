@@ -54,6 +54,13 @@ CONTRIBUTING.md                  # PR merge policy
 
 Use the `bootstrap` skill to set up the environment from a clean checkout. It will guide through Xcode version verification, Ruby version setup, and dependency installation.
 
+## Internal Resources (ContextA8C)
+
+ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s, Linear, Field Guide, GitHub Enterprise, and other internal resources. It is optional — the agent works without it but provides richer context when available.
+
+- **Setup and usage**: See `.agents/rules/context-a8c.md`
+- **Claude Code setup skill**: `/setup-context-a8c`
+
 ## Build Commands
 
 ```bash

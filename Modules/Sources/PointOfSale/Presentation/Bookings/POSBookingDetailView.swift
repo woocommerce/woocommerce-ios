@@ -4,7 +4,7 @@ import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
-    @Binding var detailNavigationPath: NavigationPath
+    @Binding var navigationPath: NavigationPath
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -37,17 +37,17 @@ struct POSBookingDetailView: View {
                 switch destination {
                 case .orderDetail:
                     POSOrderDetailsView(order: booking.order, onBack: {
-                        detailNavigationPath.removeLast()
+                        navigationPath.removeLast()
                     })
                     // Forces back button to be rendered, otherwise the system assumes that
                     // navigation is handled by the split view's sidebar, not a back button
                     .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                        detailNavigationPath.removeLast()
+                        navigationPath.removeLast()
                     }))
                 case .orderDetailRefund:
                     POSOrderDetailsView(
                         order: booking.order,
-                        onBack: { detailNavigationPath.removeLast() },
+                        onBack: { navigationPath.removeLast() },
                         autoStartRefund: true,
                         onRefundSuccess: {
                             Task {
@@ -61,7 +61,7 @@ struct POSBookingDetailView: View {
                         }
                     )
                     .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                        detailNavigationPath.removeLast()
+                        navigationPath.removeLast()
                     }))
                 }
             }
@@ -148,7 +148,7 @@ struct POSBookingDetailView: View {
         HStack(spacing: POSSpacing.small) {
             Button(Localization.viewOrderAction) {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped())
-                detailNavigationPath.append(NavigationDestination.orderDetail)
+                navigationPath.append(NavigationDestination.orderDetail)
             }
             .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
 
@@ -169,7 +169,7 @@ struct POSBookingDetailView: View {
                 Button(Localization.issueRefundAction) {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped())
                     orderListModel.ordersController.selectOrder(booking.order)
-                    detailNavigationPath.append(NavigationDestination.orderDetailRefund)
+                    navigationPath.append(NavigationDestination.orderDetailRefund)
                 }
             }
             if booking.isCancellable {
@@ -636,7 +636,7 @@ private enum Localization {
 #Preview("Paid Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewPaidBooking(),
-        detailNavigationPath: .constant(NavigationPath()),
+        navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }
@@ -644,7 +644,7 @@ private enum Localization {
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
-        detailNavigationPath: .constant(NavigationPath()),
+        navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }
@@ -652,7 +652,7 @@ private enum Localization {
 #Preview("Guest Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewGuestBooking(),
-        detailNavigationPath: .constant(NavigationPath()),
+        navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }
@@ -660,7 +660,7 @@ private enum Localization {
 #Preview("Cancelled Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewCancelledBooking(),
-        detailNavigationPath: .constant(NavigationPath()),
+        navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }

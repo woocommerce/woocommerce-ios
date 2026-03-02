@@ -193,6 +193,19 @@ final class POSBookingListControllerTests {
         }
     }
 
+    @Test func test_updateAttendanceStatus_then_preserves_customerID() async throws {
+        // Given
+        let bookings = [makeBooking(id: 1, customerID: 99)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        // When
+        try await sut.updateAttendanceStatus(bookingID: 1, status: .attended)
+
+        // Then
+        #expect(sut.bookingsViewState.bookings.first?.customerID == 99)
+    }
+
     // MARK: - cancelBooking
 
     @Test func test_cancelBooking_calls_service_and_updates_booking_in_place() async throws {
@@ -224,6 +237,19 @@ final class POSBookingListControllerTests {
         } catch {
             #expect(mockService.cancelBookingCallCount == 1)
         }
+    }
+
+    @Test func test_cancelBooking_then_preserves_customerID() async throws {
+        // Given
+        let bookings = [makeBooking(id: 1, customerID: 99)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        // When
+        try await sut.cancelBooking(bookingID: 1)
+
+        // Then
+        #expect(sut.bookingsViewState.bookings.first?.customerID == 99)
     }
 
     // MARK: - updateBookingNote
@@ -271,6 +297,19 @@ final class POSBookingListControllerTests {
         } catch {
             #expect(mockService.updateBookingNoteCallCount == 1)
         }
+    }
+
+    @Test func test_updateBookingNote_then_preserves_customerID() async throws {
+        // Given
+        let bookings = [makeBooking(id: 1, customerID: 99)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+
+        // When
+        try await sut.updateBookingNote(bookingID: 1, note: "Test note")
+
+        // Then
+        #expect(sut.bookingsViewState.bookings.first?.customerID == 99)
     }
 
     // MARK: - updateBooking
@@ -608,10 +647,12 @@ final class POSBookingListControllerTests {
 
 private extension POSBookingListControllerTests {
     func makeBooking(id: Int64,
+                     customerID: Int64 = 42,
                      serviceName: String? = nil,
                      attendanceStatus: BookingAttendanceStatus = .unattended) -> POSBooking {
         POSBooking(
             id: id,
+            customerID: customerID,
             customerName: "Customer \(id)",
             serviceName: serviceName ?? "Service \(id)",
             startDate: Date(),

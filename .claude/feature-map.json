@@ -1,0 +1,102 @@
+{
+  "features": {
+    "orders": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Orders/",
+        "Modules/Sources/Yosemite/Stores/Order",
+        "Modules/Sources/Networking/Remote/Order"
+      ],
+      "tab": "tab-bar-orders-item",
+      "verifyElements": ["order-search-button", "orders-filter-button"],
+      "description": "Orders list loads and displays orders from mock data"
+    },
+    "products": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Products/",
+        "Modules/Sources/Yosemite/Stores/Product",
+        "Modules/Sources/Networking/Remote/Product"
+      ],
+      "tab": "tab-bar-products-item",
+      "verifyElements": ["product-search-button", "product-add-button"],
+      "description": "Products tab loads and shows product list"
+    },
+    "pos": {
+      "pathPatterns": [
+        "WooCommerce/Classes/POS/",
+        "WooCommerce/Classes/ViewRelated/POS/",
+        "Modules/Sources/PointOfSale/"
+      ],
+      "tab": "tab-bar-pos-item",
+      "launchArgs": [
+        "bypass-pos-eligibility-checks",
+        "load-mocked-pos-products",
+        "bypass-pos-order-syncing"
+      ],
+      "verifyElements": ["pos-cart-view", "pos-checkout-button"],
+      "description": "POS tab loads with mocked products and cart"
+    },
+    "dashboard": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Dashboard/"
+      ],
+      "tab": "tab-bar-my-store-item",
+      "verifyElements": ["revenue-value", "performance-time-range-menu"],
+      "description": "Dashboard loads with performance stats"
+    },
+    "coupons": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Coupons/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-coupons"}],
+      "verifyElements": [],
+      "description": "Coupons screen accessible via Hub Menu"
+    },
+    "reviews": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Reviews/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-reviews"}],
+      "verifyElements": ["reviews-table"],
+      "description": "Reviews screen accessible via Hub Menu"
+    },
+    "payments": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/CardPresentPayments/",
+        "Modules/Sources/Hardware/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-payments"}],
+      "verifyElements": [],
+      "description": "Payments screen accessible via Hub Menu"
+    },
+    "bookings": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Bookings/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-bookings"}],
+      "verifyElements": [],
+      "description": "Bookings screen accessible via Hub Menu"
+    },
+    "customers": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Customers/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-customers"}],
+      "verifyElements": [],
+      "description": "Customers screen accessible via Hub Menu"
+    },
+    "blaze": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Blaze/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-blaze"}],
+      "verifyElements": [],
+      "description": "Blaze campaigns screen accessible via Hub Menu"
+    }
+  }
+}

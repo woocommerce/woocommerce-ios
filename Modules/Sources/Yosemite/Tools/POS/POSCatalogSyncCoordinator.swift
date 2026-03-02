@@ -170,7 +170,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         let isFirstSync = await lastFullSyncDate(for: siteID) == nil
 
-        emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
+        await emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
 
         // Track sync started analytics
         let connectionType = getConnectionType()
@@ -198,7 +198,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         do {
             let syncedCatalog = try await syncTask.value
-            emitSyncState(.syncCompleted(siteID: siteID))
+            await emitSyncState(.syncCompleted(siteID: siteID))
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
@@ -213,9 +213,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
-                emitSyncState(.initialSyncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                await emitSyncState(.initialSyncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             } else {
-                emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             }
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
@@ -227,9 +227,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete sync for site \(siteID): \(error)")
             if isFirstSync {
-                emitSyncState(.initialSyncFailed(siteID: siteID, error: error))
+                await emitSyncState(.initialSyncFailed(siteID: siteID, error: error))
             } else {
-                emitSyncState(.syncFailed(siteID: siteID, error: error))
+                await emitSyncState(.syncFailed(siteID: siteID, error: error))
             }
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
@@ -302,7 +302,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     private func fullSyncInProgress(for siteID: Int64) async -> Bool {
-        switch fullSyncStateModel.state[siteID] {
+        let currentState = await MainActor.run { fullSyncStateModel.state[siteID] }
+        switch currentState {
         case .syncStarted, .initialSyncStarted:
             return true
         default:
@@ -472,7 +473,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     public func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        if let cached = fullSyncStateModel.state[siteID] {
+        if let cached = await MainActor.run(body: { fullSyncStateModel.state[siteID] }) {
             return cached
         }
 
@@ -484,7 +485,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             state = .syncCompleted(siteID: siteID)
         }
 
-        fullSyncStateModel.state[siteID] = state
+        await MainActor.run { fullSyncStateModel.state[siteID] = state }
         return state
     }
 
@@ -536,10 +537,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Update sync state to reflect that syncs are being stopped
         // This will prevent new syncs from starting for this site
-        if let currentState = fullSyncStateModel.state[siteID] {
+        let currentState = await MainActor.run { fullSyncStateModel.state[siteID] }
+        if let currentState {
             switch currentState {
             case .initialSyncStarted, .syncStarted:
-                emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
                 DDLogInfo("🛑 POSCatalogSyncCoordinator: Updated sync state to cancelled for site \(siteID)")
             default:
                 break
@@ -556,7 +558,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
 
         // Update sync state to completed
-        emitSyncState(.syncCompleted(siteID: siteID))
+        await emitSyncState(.syncCompleted(siteID: siteID))
 
         // Record first sync date if needed
         recordFirstSyncIfNeeded(for: siteID)
@@ -717,7 +719,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 // MARK: - Syncing State
 
 private extension POSCatalogSyncCoordinator {
-    func emitSyncState(_ state: POSCatalogSyncState) {
+    func emitSyncState(_ state: POSCatalogSyncState) async {
         let siteID: Int64 = switch state {
         case .initialSyncStarted(let id),
                 .syncStarted(let id),
@@ -728,15 +730,18 @@ private extension POSCatalogSyncCoordinator {
             id
         }
 
-        fullSyncStateModel.state[siteID] = state
+        await MainActor.run {
+            fullSyncStateModel.state[siteID] = state
+        }
     }
 }
 
 @Observable
+@MainActor
 public class POSCatalogSyncStateModel {
     public var state: [Int64: POSCatalogSyncState] = [:]
 
-    public init() {}
+    nonisolated public init() {}
 }
 
 

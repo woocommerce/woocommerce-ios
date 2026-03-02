@@ -11,7 +11,6 @@ extension WooAnalyticsEvent {
         enum Action: String {
             case cancelBooking = "cancel_booking"
             case updateAttendance = "update_attendance"
-            case markAsPaid = "mark_as_paid"
         }
 
         static func bookingCancelled() -> WooAnalyticsEvent {
@@ -31,16 +30,6 @@ extension WooAnalyticsEvent {
 
         static func viewLinkedOrderTap() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingDetailViewLinkedOrderTap)
-        }
-
-        // TODO: Wire up tracking call when mark-as-paid feature is added to BookingDetailsViewModel
-        static func markAsPaidTap() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingDetailMarkAsPaidTap)
-        }
-
-        // TODO: Wire up tracking call when refund feature is added to BookingDetailsViewModel
-        static func refundTap() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingDetailRefundTap)
         }
 
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {

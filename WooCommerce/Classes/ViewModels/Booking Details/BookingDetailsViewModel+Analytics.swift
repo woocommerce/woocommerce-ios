@@ -11,6 +11,7 @@ extension WooAnalyticsEvent {
         enum Action: String {
             case cancelBooking = "cancel_booking"
             case updateAttendance = "update_attendance"
+            case markAsPaid = "mark_as_paid"
         }
 
         static func bookingCancelled() -> WooAnalyticsEvent {

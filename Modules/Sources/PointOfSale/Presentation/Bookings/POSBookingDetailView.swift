@@ -4,6 +4,7 @@ import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
     let booking: POSBooking
+    @Binding var detailNavigationPath: NavigationPath
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -11,8 +12,6 @@ struct POSBookingDetailView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
-
-    @State private var navigationPath: [NavigationDestination] = []
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
@@ -33,41 +32,39 @@ struct POSBookingDetailView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
-            bookingDetailContent
-                .navigationDestination(for: NavigationDestination.self) { destination in
-                    switch destination {
-                    case .orderDetail:
-                        POSOrderDetailsView(order: booking.order, onBack: {
-                            navigationPath.removeLast()
-                        })
-                        // Forces back button to be rendered, otherwise the system assumes that
-                        // navigation is handled by the split view's sidebar, not a back button
-                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                            navigationPath.removeLast()
-                        }))
-                    case .orderDetailRefund:
-                        POSOrderDetailsView(
-                            order: booking.order,
-                            onBack: { navigationPath.removeLast() },
-                            autoStartRefund: true,
-                            onRefundSuccess: {
-                                Task {
-                                    isDetailsUpdating = true
-                                    await bookingsModel.updateAfterRefund(bookingID: booking.id)
-                                    isDetailsUpdating = false
-                                }
-                            },
-                            onRefundFailure: { error in
-                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
+        bookingDetailContent
+            .navigationDestination(for: NavigationDestination.self) { destination in
+                switch destination {
+                case .orderDetail:
+                    POSOrderDetailsView(order: booking.order, onBack: {
+                        detailNavigationPath.removeLast()
+                    })
+                    // Forces back button to be rendered, otherwise the system assumes that
+                    // navigation is handled by the split view's sidebar, not a back button
+                    .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                        detailNavigationPath.removeLast()
+                    }))
+                case .orderDetailRefund:
+                    POSOrderDetailsView(
+                        order: booking.order,
+                        onBack: { detailNavigationPath.removeLast() },
+                        autoStartRefund: true,
+                        onRefundSuccess: {
+                            Task {
+                                isDetailsUpdating = true
+                                await bookingsModel.updateAfterRefund(bookingID: booking.id)
+                                isDetailsUpdating = false
                             }
-                        )
-                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
-                            navigationPath.removeLast()
-                        }))
-                    }
+                        },
+                        onRefundFailure: { error in
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
+                        }
+                    )
+                    .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                        detailNavigationPath.removeLast()
+                    }))
                 }
-        }
+            }
         .posFullScreenCover(isPresented: $showPaymentView) {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
@@ -151,7 +148,7 @@ struct POSBookingDetailView: View {
         HStack(spacing: POSSpacing.small) {
             Button(Localization.viewOrderAction) {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped())
-                navigationPath.append(.orderDetail)
+                detailNavigationPath.append(NavigationDestination.orderDetail)
             }
             .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
 
@@ -172,7 +169,7 @@ struct POSBookingDetailView: View {
                 Button(Localization.issueRefundAction) {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped())
                     orderListModel.ordersController.selectOrder(booking.order)
-                    navigationPath.append(.orderDetailRefund)
+                    detailNavigationPath.append(NavigationDestination.orderDetailRefund)
                 }
             }
             if booking.isCancellable {
@@ -639,6 +636,7 @@ private enum Localization {
 #Preview("Paid Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewPaidBooking(),
+        detailNavigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }
@@ -646,6 +644,7 @@ private enum Localization {
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        detailNavigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }
@@ -653,6 +652,7 @@ private enum Localization {
 #Preview("Guest Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewGuestBooking(),
+        detailNavigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }
@@ -660,6 +660,7 @@ private enum Localization {
 #Preview("Cancelled Booking") {
     POSBookingDetailView(
         booking: POSPreviewHelpers.makePreviewCancelledBooking(),
+        detailNavigationPath: .constant(NavigationPath()),
         onBack: {}
     )
 }

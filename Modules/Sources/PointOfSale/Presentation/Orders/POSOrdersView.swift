@@ -35,7 +35,7 @@ struct POSOrdersView: View {
                     isPresented = false
                 }
                 .environment(orderListModel)
-            } detail: { selection in
+            } detail: { selection, _ in
                 POSOrderDetailsView(
                     order: selection,
                     onBack: {

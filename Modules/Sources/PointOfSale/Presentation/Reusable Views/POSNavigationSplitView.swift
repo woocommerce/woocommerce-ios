@@ -6,16 +6,17 @@ import SwiftUI
 struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: View, SelectionValue: Hashable>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var selection: SelectionValue?
+    @State private var detailNavigationPath = NavigationPath()
 
     private let sidebar: (Binding<SelectionValue?>) -> Sidebar
-    private let detail: (SelectionValue) -> Detail
+    private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
     private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
-        @ViewBuilder detail: @escaping (SelectionValue) -> Detail,
+        @ViewBuilder detail: @escaping (SelectionValue, Binding<NavigationPath>) -> Detail,
         @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
         setDefaultValue: (() -> Void)? = nil
     ) {
@@ -34,18 +35,21 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     sidebar($selection)
                         .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
 
-                    VStack {
-                        if let selection = selection {
-                            detail(selection)
-                                .frame(maxWidth: .infinity)
-                                .transition(.opacity)
-                        } else {
-                            detailPlaceholderView()
-                                .frame(maxWidth: .infinity)
-                                .transition(.opacity)
+                    NavigationStack(path: $detailNavigationPath) {
+                        VStack {
+                            if let selection = selection {
+                                detail(selection, $detailNavigationPath)
+                                    .frame(maxWidth: .infinity)
+                                    .transition(.opacity)
+                            } else {
+                                detailPlaceholderView()
+                                    .frame(maxWidth: .infinity)
+                                    .transition(.opacity)
+                            }
                         }
+                        .animation(.default, value: selection != nil)
+                        .navigationBarHidden(true)
                     }
-                    .animation(.default, value: selection != nil)
                 }
             }
             .onAppear {
@@ -53,17 +57,19 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     setDefaultValue?()
                 }
             }
+            .onChange(of: selection) { _, _ in
+                detailNavigationPath = NavigationPath()
+            }
         default:
-            NavigationStack {
-                sidebar($selection)
-                    .navigationDestination(isPresented: Binding(
-                        get: { selection != nil },
-                        set: { if !$0 { selection = nil } }
-                    )) {
-                        if let selection = selection {
-                            detail(selection)
-                        }
-                    }
+            NavigationStack(path: $detailNavigationPath) {
+                if let selection = selection {
+                    detail(selection, $detailNavigationPath)
+                } else {
+                    sidebar($selection)
+                }
+            }
+            .onChange(of: selection) { _, _ in
+                detailNavigationPath = NavigationPath()
             }
         }
     }

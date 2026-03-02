@@ -23,6 +23,10 @@ final class POSPaymentModel {
         return decimal == 0
     }
 
+    var customerBillingEmail: String? {
+        currentOrder?.billingAddress?.email
+    }
+
     var isCardReaderUpdateAvailable: Bool {
         if case .available = cardReaderUpdateState {
             return true

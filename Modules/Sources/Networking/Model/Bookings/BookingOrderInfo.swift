@@ -3,41 +3,36 @@ import Foundation
 
 public struct BookingOrderInfo: Hashable {
     public let statusKey: String
-    public let orderID: Int64
-    public let orderNumber: String
-    public let dateCreated: Date
     public let datePaid: Date?
-    public let discountTotal: String
+    public let total: Decimal
+    public let refundTotal: Decimal
     public let paymentInfo: BookingPaymentInfo?
     public let customerInfo: BookingCustomerInfo?
     public let productInfo: BookingProductInfo?
 
     public init(statusKey: String,
-                orderID: Int64 = 0,
-                orderNumber: String = "",
-                dateCreated: Date = Date(),
-                datePaid: Date? = nil,
-                discountTotal: String = "",
+                datePaid: Date?,
+                total: Decimal = 0,
+                refundTotal: Decimal = 0,
                 paymentInfo: BookingPaymentInfo?,
                 customerInfo: BookingCustomerInfo?,
                 productInfo: BookingProductInfo?) {
         self.statusKey = statusKey
-        self.orderID = orderID
-        self.orderNumber = orderNumber
-        self.dateCreated = dateCreated
         self.datePaid = datePaid
-        self.discountTotal = discountTotal
+        self.total = total
+        self.refundTotal = refundTotal
         self.paymentInfo = paymentInfo
         self.customerInfo = customerInfo
         self.productInfo = productInfo
     }
 
     public init(booking: Booking, order: Order) {
-        self.orderID = order.orderID
-        self.orderNumber = order.number
-        self.dateCreated = order.dateCreated
         self.datePaid = order.datePaid
-        self.discountTotal = order.discountTotal
+        self.total = Decimal(string: order.total) ?? 0
+        self.refundTotal = order.refunds
+            .compactMap { Decimal(string: $0.total) }
+            .map { abs($0) }
+            .reduce(0, +)
         self.customerInfo = {
             guard let billingAddress = order.billingAddress else {
                 return nil

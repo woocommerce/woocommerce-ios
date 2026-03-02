@@ -77,6 +77,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             formattedTax: "$0.00",
             formattedRefundTotal: "$0.00",
             paymentMethodDescription: "Via payment card",
+            customerEmail: nil,
             refundReason: nil
         )
     }

@@ -3,6 +3,7 @@ import struct Yosemite.POSBooking
 
 struct POSBookingSummaryView: View {
     let booking: POSBooking
+    var subtitleFont: POSFontStyle = .posBodyMediumRegular()
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
@@ -18,7 +19,7 @@ struct POSBookingSummaryView: View {
         let text = formattedSubtitle
         if !text.isEmpty {
             Text(text)
-                .font(.posBodyMediumRegular())
+                .font(subtitleFont)
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -56,21 +57,5 @@ struct POSBookingSummaryView: View {
             booking.paymentStatus.localizedTitle
         ].compactMap { $0 }.filter { !$0.isEmpty }
         return parts.joined(separator: ", ")
-    }
-}
-
-// MARK: - Date Formatting
-
-extension POSBookingSummaryView {
-    private static let timeRangeFormatter: DateIntervalFormatter = {
-        let formatter = DateIntervalFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
-
-    static func formattedTimeRange(for booking: POSBooking, siteTimezone: TimeZone) -> String {
-        timeRangeFormatter.timeZone = siteTimezone
-        return timeRangeFormatter.string(from: booking.startDate, to: booking.endDate)
     }
 }

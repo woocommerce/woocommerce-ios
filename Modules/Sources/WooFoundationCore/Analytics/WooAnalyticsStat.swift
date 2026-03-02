@@ -631,6 +631,18 @@ public enum WooAnalyticsStat: String {
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
 
+    case pushNotificationsCardView = "push_notifications_card_view"
+    case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
+    case pushNotificationsSetupIntroductionView = "push_notifications_setup_introduction_view"
+    case pushNotificationsSetupIntroductionButtonTap = "push_notifications_setup_introduction_button_tap"
+    case pushNotificationsSetupIntroductionLinkTap = "push_notifications_setup_introduction_link_tap"
+    case pushNotificationsSetupIntroductionClose = "push_notifications_setup_introduction_close"
+    case pushNotificationsSetupIntroductionError = "push_notifications_setup_introduction_error"
+    case pushNotificationsSetupFlowSuccess = "push_notifications_setup_flow_success"
+    case pushNotificationsSetupFlowButtonTap = "push_notifications_setup_flow_button_tap"
+    case pushNotificationsSetupFlowClose = "push_notifications_setup_flow_close"
+    case pushNotificationsSetupFlowError = "push_notifications_setup_flow_error"
+
     // MARK: Notification View Events
     //
     case notificationOpened = "notification_open"
@@ -1355,6 +1367,24 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
+
+    // MARK: Point of Sale Bookings
+    case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
+    case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
+    case pointOfSaleBookingsListBookingTapped = "bookings_list_booking_tapped"
+    case pointOfSaleBookingCancelled = "booking_cancelled"
+    case pointOfSaleBookingAddNoteTapped = "booking_add_note_tapped"
+    case pointOfSaleBookingIssueRefundTapped = "booking_issue_refund_tapped"
+    case pointOfSaleBookingViewOrderTapped = "booking_view_order_tapped"
+    case pointOfSaleBookingAttendanceChanged = "booking_attendance_changed"
+    case pointOfSaleBookingNoteAdded = "booking_note_added"
+    case pointOfSaleBookingCancelFailed = "booking_cancel_failed"
+    case pointOfSaleBookingAttendanceChangeFailed = "booking_attendance_change_failed"
+    case pointOfSaleBookingNoteAddFailed = "booking_note_add_failed"
+    case pointOfSaleBookingRefundFailed = "booking_refund_failed"
+    case pointOfSaleBookingDatePreviousTapped = "booking_date_previous_tapped"
+    case pointOfSaleBookingDateNextTapped = "booking_date_next_tapped"
+    case pointOfSaleBookingDateCalendarSelected = "booking_date_calendar_selected"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

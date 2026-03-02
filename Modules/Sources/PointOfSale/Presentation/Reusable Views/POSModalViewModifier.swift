@@ -83,10 +83,10 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
     func body(content: Content) -> some View {
         content
             .onChange(of: item) { _, newItem in
-                // Don't show a modal if a full screen overlay is presented on top
-                guard !coverManager.isPresented else { return }
-
                 if let newItem = newItem {
+                    // Don't show a modal if a full screen overlay is presented on top
+                    guard !coverManager.isPresented else { return }
+
                     modalManager.present(onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()
@@ -113,10 +113,10 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onChange(of: isPresented) { _, newValue in
-                // Don't show a modal if a full screen overlay is presented on top
-                guard !coverManager.isPresented else { return }
-
                 if newValue {
+                    // Don't show a modal if a full screen overlay is presented on top
+                    guard !coverManager.isPresented else { return }
+
                     modalManager.present(onDismiss: {
                         // Internal dismissal, i.e. from tapping the background
                         onDismiss?()

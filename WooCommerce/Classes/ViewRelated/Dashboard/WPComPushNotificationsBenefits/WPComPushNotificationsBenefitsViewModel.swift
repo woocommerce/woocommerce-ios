@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import Yosemite
 import protocol WooFoundation.Analytics
+import enum NetworkingCore.NetworkError
 
 @MainActor
 @Observable
@@ -12,8 +13,11 @@ final class WPComPushNotificationsBenefitsViewModel {
         case pluginUpdate(currentVersion: String)
     }
 
+    let termsAttributedString: AttributedString
+
     private(set) var variant: Variant = .connect
     private(set) var isCheckingPlugin: Bool = false
+    private(set) var error: VariantCheckError?
 
     private let analytics: Analytics
     private let onDismiss: () -> Void
@@ -23,6 +27,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     private var pushNotificationSetupCoordinator: WooPushNotificationSetupCoordinator?
 
     init(siteID: Int64,
+         siteURL: String,
          jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          analytics: Analytics = ServiceLocator.analytics,
@@ -44,6 +49,21 @@ final class WPComPushNotificationsBenefitsViewModel {
             pluginPath: WooPluginRequirements.pluginPath,
             minimumVersion: minimumVersion
         )
+
+        self.termsAttributedString = {
+            let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+
+            let attributedText = AttributedString.withEmbeddedLinks(
+                content: content,
+                links: [
+                    Localization.termsOfService: Constants.jetpackTermsURL + siteURL,
+                    Localization.shareDetails: Constants.jetpackShareDetailsURL + siteURL
+                ],
+                font: .footnote,
+                foregroundColor: .secondary
+            )
+            return attributedText
+        }()
     }
 
     func updateCoordinator(_ coordinator: WooPushNotificationSetupCoordinator) {
@@ -51,7 +71,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func onAppear() {
-        // TODO: Track modal shown event
+        analytics.track(.pushNotificationsSetupIntroductionView)
     }
 
     /// Fetches Jetpack connection data to determine whether the site is connected,
@@ -69,17 +89,24 @@ final class WPComPushNotificationsBenefitsViewModel {
             }
         } catch {
             DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
-            variant = .connect
+            if case NetworkError.unacceptableStatusCode(403, _) = error {
+                self.error = .noPermission
+                analytics.track(.pushNotificationsSetupIntroductionError, withProperties: ["error_type": "no_permission"])
+            } else {
+                self.error = .generic(underlyingError: error)
+                analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
+            }
         }
         isCheckingPlugin = false
     }
 
     func continueTapped() {
-        // TODO: Track continue tapped event
         switch variant {
         case .connect:
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.continue))
             pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: false)
         case .pluginUpdate(let currentVersion):
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.updatePlugin))
             pushNotificationSetupCoordinator?.startSetup(
                 siteAlreadyConnected: true,
                 pluginOutdatedVersion: currentVersion
@@ -88,12 +115,21 @@ final class WPComPushNotificationsBenefitsViewModel {
     }
 
     func notNowTapped() {
-        // TODO: Track not now tapped event
+        analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.notNow))
         onDismiss()
     }
 
+    func cancelTapped() {
+        analytics.track(.pushNotificationsSetupIntroductionClose)
+        onDismiss()
+    }
+
+    func onSwipeDismiss() {
+        analytics.track(.pushNotificationsSetupIntroductionClose)
+    }
+
     func whatIsWPComTapped() {
-        // TODO: Track link tapped event
+        analytics.track(.pushNotificationsSetupIntroductionLinkTap)
     }
 }
 
@@ -106,13 +142,68 @@ private extension WPComPushNotificationsBenefitsViewModel {
             if case .incompatible(let currentVersion, _) = result {
                 variant = .pluginUpdate(currentVersion: currentVersion)
             } else {
-                // TODO: add error handling for unexpected case
-                variant = .connect
+                error = .noMissingRequirements
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
-            // TODO: add error handling for unexpected case
-            variant = .connect
+            self.error = .generic(underlyingError: error)
+            analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
         }
+    }
+}
+
+extension WPComPushNotificationsBenefitsViewModel {
+    enum VariantCheckError: Error {
+        case noPermission
+        case noMissingRequirements
+        case generic(underlyingError: Error)
+
+        var message: String {
+            switch self {
+            case .noPermission:
+                Localization.noPermission
+            case .noMissingRequirements, .generic:
+                Localization.generic
+            }
+        }
+
+        enum Localization {
+            static let noPermission = NSLocalizedString(
+                "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission",
+                value: "Your account does not have permission to complete push notifications setup. " +
+                "Please ask your store administrator to handle this.",
+                comment: "Error message in the Push Notifications Benefits View for users without admin role"
+            )
+            static let generic = NSLocalizedString(
+                "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic",
+                value: "We could not complete the push notifications setup. " +
+                "Please contact support for assistance.",
+                comment: "Generic error message in the Push Notifications Benefits View"
+            )
+        }
+    }
+
+    private enum Constants {
+        static let jetpackTermsURL = "https://jetpack.com/redirect/?source=wpcom-tos&site="
+        static let jetpackShareDetailsURL = "https://jetpack.com/redirect/?source=jetpack-support-what-data-does-jetpack-sync&site="
+    }
+
+    enum Localization {
+        static let termsContent = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.termsContent",
+            value: "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.",
+            comment: "Content of the label at the end of the Wrong Account screen. " +
+            "Reads like: By continuing, you agree to our Terms of Service and to share details with WordPress.com."
+        )
+        static let termsOfService = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.termsOfService",
+            value: "Terms of Service",
+            comment: "The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View."
+        )
+        static let shareDetails = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.shareDetails",
+            value: "share details",
+            comment: "The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View."
+        )
     }
 }

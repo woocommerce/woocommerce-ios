@@ -1,88 +1,85 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 
 struct POSBookingDateBarView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
-    @Environment(\.siteTimezone) private var siteTimezone
-    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.posAnalytics) private var analytics
     @State private var showingCalendar = false
 
-    private var tintColor: Color {
-        colorScheme == .dark ? .posSecondary : .posPrimaryContainer
-    }
-
     private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("dMMMEEE")
-        formatter.timeZone = siteTimezone
-        return formatter.string(from: bookingsModel.bookingsController.selectedDate)
+        POSBookingDateFormatter.formattedShortDate(for: bookingsModel.bookingsController.selectedDate)
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            Divider()
-                .overlay(Color.posOutlineVariant)
-
-            HStack(spacing: POSSpacing.medium) {
+            HStack(spacing: POSSpacing.small) {
                 Button {
+                    trackDateNavigation(dayOffset: -1, event: WooAnalyticsEvent.PointOfSale.bookingDatePreviousTapped)
                     Task { await bookingsModel.bookingsController.goToPreviousDay() }
                 } label: {
-                    Image(systemName: "chevron.left")
-                        .font(.posButtonSymbolXSmall)
-                        .foregroundStyle(tintColor)
+                    Text("\(Image(systemName: "chevron.backward"))")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(Localization.previousDay)
 
                 Button {
                     showingCalendar = true
                 } label: {
-                    HStack(spacing: POSSpacing.small) {
-                        Image(systemName: "calendar")
-                            .foregroundStyle(tintColor)
-
-                        Text(formattedDate)
-                            .font(.posBodySmallRegular())
-                            .foregroundStyle(tintColor)
-                    }
+                    Label(formattedDate, systemImage: "calendar")
+                        .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.plain)
-                .frame(minWidth: Constants.dateTextMinWidth, alignment: .center)
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(String(format: Localization.selectedDateFormat, formattedDate))
                 .popover(isPresented: $showingCalendar) {
                     POSBookingCalendarView(
                         selectedDate: bookingsModel.bookingsController.selectedDate,
-                        siteTimezone: siteTimezone,
                         onDateSelected: { date in
                             showingCalendar = false
+                            trackDateNavigation(to: date, event: WooAnalyticsEvent.PointOfSale.bookingDateCalendarSelected)
                             Task { await bookingsModel.bookingsController.selectDate(date) }
                         }
                     )
                 }
 
                 Button {
+                    trackDateNavigation(dayOffset: 1, event: WooAnalyticsEvent.PointOfSale.bookingDateNextTapped)
                     Task { await bookingsModel.bookingsController.goToNextDay() }
                 } label: {
-                    Image(systemName: "chevron.right")
-                        .font(.posButtonSymbolXSmall)
-                        .foregroundStyle(tintColor)
+                    Text("\(Image(systemName: "chevron.forward"))")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(POSTonalButtonStyle(size: .extraSmall))
                 .accessibilityLabel(Localization.nextDay)
-
-                Spacer()
             }
+            .font(.posBodySmallBold())
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .padding(.horizontal, POSPadding.medium)
-            .frame(minHeight: Constants.minBarHeight)
+            .padding(.bottom, POSPadding.medium)
+
             Divider()
                 .overlay(Color.posOutlineVariant)
         }
     }
 }
 
-private enum Constants {
-    static let minBarHeight: CGFloat = 64
-    static let dateTextMinWidth: CGFloat = 120
+private extension POSBookingDateBarView {
+    /// Tracks a date navigation event for a relative day offset (e.g. -1 for previous, +1 for next).
+    func trackDateNavigation(dayOffset: Int, event: (Int) -> WooAnalyticsEvent) {
+        let targetDate = POSBookingDateFormatter.utcCalendar.date(
+            byAdding: .day, value: dayOffset, to: bookingsModel.bookingsController.selectedDate
+        ) ?? bookingsModel.bookingsController.selectedDate
+        analytics.track(event: event(deltaFromToday(for: targetDate)))
+    }
+
+    /// Tracks a date navigation event for an absolute target date (e.g. calendar selection).
+    func trackDateNavigation(to date: Date, event: (Int) -> WooAnalyticsEvent) {
+        analytics.track(event: event(deltaFromToday(for: date)))
+    }
+
+    func deltaFromToday(for date: Date) -> Int {
+        let today = POSBookingDateFormatter.utcCalendar.startOfDay(for: Date())
+        let target = POSBookingDateFormatter.utcCalendar.startOfDay(for: date)
+        return POSBookingDateFormatter.utcCalendar.dateComponents([.day], from: today, to: target).day ?? 0
+    }
 }
 
 private enum Localization {
@@ -100,7 +97,7 @@ private enum Localization {
 
     static let selectedDateFormat = NSLocalizedString(
         "pos.bookingDateBar.selectedDate",
-        value: "%@, tap to open calendar",
-        comment: "Accessibility label for the date button in the bookings date bar. %@ is the formatted date."
+        value: "%1$@, tap to open calendar",
+        comment: "Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date."
     )
 }

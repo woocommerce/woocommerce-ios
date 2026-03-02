@@ -18,7 +18,6 @@ protocol WPComConnectionSetupHandlerProtocol: AnyObject {
     var delegate: WPComConnectionSetupHandlerDelegate? { get set }
     func start()
     func retry()
-    func cancel()
 }
 
 /// Stub implementation for the handler protocol.
@@ -80,10 +79,6 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
             start()
         }
     }
-
-    func cancel() {
-        // TODO: Implement in follow-up PR
-    }
 }
 
 private extension WPComConnectionSetupHandler {
@@ -137,14 +132,6 @@ private extension WPComConnectionSetupHandler {
     func startPushRegistration() {
         currentStep = .enablePush
         delegate?.stepDidUpdate(.enablePush, status: .running)
-        #if targetEnvironment(simulator)
-        if !isRunningTests {
-        DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
-        delegate?.stepDidUpdate(.enablePush, status: .success)
-        delegate?.setupDidComplete()
-        return
-        }
-        #endif
         Task { @MainActor in
             do {
                 let _ = try await pushNotesManager.registerDeviceAndWaitForTokenAcceptance()

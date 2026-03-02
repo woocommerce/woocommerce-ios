@@ -1,2 +1,1 @@
-Our improved Point of Sale item search is faster than ever. It lets you locate products, and now the results include variations too! Results are instant, and you can use any word order for your search.
-We’ve also smoothed out order creation, with fixes to product filters and shipping address updates. Update today to keep your store running perfectly!
+This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!

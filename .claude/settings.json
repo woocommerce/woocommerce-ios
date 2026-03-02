@@ -27,14 +27,11 @@
       "Bash(gh api *)",
       "Bash(pushd BuildTools *)",
       "Bash(xcrun *)",
-      "Bash(rake lint *)",
-      "Bash(rake mocks *)",
-      "Bash(rake test *)",
-      "Bash(rake build *)",
-      "Bash(rake generate *)",
-      "Bash(rake clean *)",
-      "Bash(bundle install *)",
-      "Bash(bundle exec rake *)"
+      "Bash(bundle exec rake dependencies *)",
+      "Bash(bundle exec rake generate *)",
+      "Bash(bundle exec rake lint *)",      
+      "Bash(bundle exec rake mocks *)",      
+      "Bash(bundle exec fastlane *)"
     ],
     "deny": [
       "Bash(git push --force *)",

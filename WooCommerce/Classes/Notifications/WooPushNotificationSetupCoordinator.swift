@@ -9,14 +9,11 @@ final class WooPushNotificationSetupCoordinator {
     let rootViewController: UIViewController
 
     private let stores: StoresManager
-    private let onSetupCompleted: (() -> Void)?
 
     init(rootViewController: UIViewController,
-         stores: StoresManager = ServiceLocator.stores,
-         onSetupCompleted: (() -> Void)? = nil) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.rootViewController = rootViewController
         self.stores = stores
-        self.onSetupCompleted = onSetupCompleted
     }
 
     /// Presents navigation stack with a handler, view model, and hosting controller.
@@ -37,15 +34,14 @@ final class WooPushNotificationSetupCoordinator {
             onDismiss: { [weak navigationController] in
                 navigationController?.dismiss(animated: true)
             },
-            onGoToStore: { [weak navigationController, onSetupCompleted] in
+            onGoToStore: { [weak navigationController] in
                 navigationController?.dismiss(animated: true)
-                onSetupCompleted?()
             },
-            onUpdatePlugin: { [weak navigationController, stores] in
+            onUpdatePlugin: { [weak navigationController, stores] onDismissed in
                 guard let navigationController,
                       let site = stores.sessionManager.defaultSite,
                       let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else { return }
-                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
+                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce, onDismiss: onDismissed)
                 let vc = UIHostingController(rootView: webView)
                 vc.modalPresentationStyle = .formSheet
                 navigationController.present(vc, animated: true)

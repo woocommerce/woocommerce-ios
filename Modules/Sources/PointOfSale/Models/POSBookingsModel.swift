@@ -24,7 +24,6 @@ import class Yosemite.PaymentCaptureCelebration
         self.orderService = orderService
         self.receiptSender = receiptSender
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
-        bookingsController.syncBookings()
     }
 
     @MainActor
@@ -47,7 +46,7 @@ import class Yosemite.PaymentCaptureCelebration
                            analytics: POSAnalyticsProviding) -> POSPaymentModel {
         let orderProvider = POSBookingPaymentOrderProvider(
             orderID: booking.orderID ?? 0,
-            formattedTotal: booking.formattedAmount,
+            formattedTotal: booking.order.formattedTotal,
             orderService: orderService)
 
         return POSPaymentModel(

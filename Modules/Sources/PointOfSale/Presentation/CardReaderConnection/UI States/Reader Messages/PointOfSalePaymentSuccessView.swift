@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
+    let customerEmail: String?
     let onSendReceipt: (String) async throws -> Void
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
@@ -70,6 +71,16 @@ struct PointOfSalePaymentSuccessView: View {
                     }
                 }
 
+                if let customerEmail, customerEmail.isNotEmpty {
+                    Spacer().frame(height: Constants.textSpacing)
+
+                    Text(String(format: Localization.receiptSentFormat, customerEmail))
+                        .font(.posBodyLargeRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                        .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
+                }
+
                 Spacer().frame(height: POSSpacing.xxLarge)
 
                 PaymentsActionButtons(successAction: successAction,
@@ -93,6 +104,15 @@ private extension PointOfSalePaymentSuccessView {
         static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }
+
+    enum Localization {
+        static let receiptSentFormat = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.receiptSent",
+            value: "A receipt has been sent to %1$@.",
+            comment: "Informational message shown on payment success screen when an email receipt is automatically sent. " +
+            "%1$@ is a placeholder for the customer's email address."
+        )
+    }
 }
 
 #if DEBUG
@@ -100,6 +120,7 @@ private extension PointOfSalePaymentSuccessView {
     PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card),
+        customerEmail: "test@example.com",
         onSendReceipt: { _ in },
         successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
         onSuccessScreenBarcodeScanned: nil

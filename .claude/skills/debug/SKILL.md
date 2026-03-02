@@ -12,7 +12,8 @@ Debug a build failure or test failure in the WooCommerce iOS project.
 
 1. Run the build and capture errors:
 ```bash
-bundle exec rake build 2>&1 | grep -E "error:|fatal|cannot find|undefined|ambiguous" | head -30
+bundle exec fastlane build_for_testing 2>&1 \
+  | grep -E "error:|fatal|cannot find|undefined|ambiguous" | head -30
 ```
 
 2. Identify the failing file and error type
@@ -27,7 +28,7 @@ bundle exec rake build 2>&1 | grep -E "error:|fatal|cannot find|undefined|ambigu
 
 ## For Test Failures
 
-1. Run the specific failing test:
+1. Run the specific failing test (targeted tests require `xcodebuild` directly):
 ```bash
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' \
@@ -46,3 +47,5 @@ xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
    - **CoreData errors**: Ensure InMemoryStorage is used, not persistent storage
    - **Missing @MainActor**: Some tests need MainActor annotation
 6. Propose or apply the fix
+
+If the simulator destination fails, run `xcrun simctl list devices available` to discover available simulators, then re-run with a matching device name.

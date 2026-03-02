@@ -1,6 +1,7 @@
 import SwiftUI
 import enum Yosemite.BookingStatus
 import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.BookingPaymentStatus
 import struct Yosemite.POSBooking
 
 /// POS presentation-only interpretation of booking statuses.
@@ -11,33 +12,22 @@ import struct Yosemite.POSBooking
 ///
 /// 1. **Booking lifecycle**: Booked / Completed / Cancelled
 ///    - Only "Cancelled" is shown as a badge. Booked/Completed are automatic transitions.
-/// 2. **Payment status**: Paid / Unpaid
-///    - Derived from the API `status` field values.
+/// 2. **Payment status**: Paid / Unpaid / Refunded / Failed
+///    - Resolved from order data using the shared `BookingPaymentStatus` resolver.
 /// 3. **Attendance status**: Unattended / Attended
 ///    - Comes from the API `attendance_status` field.
-// TODO: WOOMOB-2143 - Revisit status matching once status-matching changes land.
 
-// MARK: - Payment Status (derived from BookingStatus)
+// MARK: - Payment Status (POS presentation for shared BookingPaymentStatus)
 
-enum POSBookingPaymentStatus: Equatable {
-    case paid
-    case unpaid
-    case refunded
-
+extension BookingPaymentStatus {
+    /// Creates a payment status from a POS booking's order data.
+    ///
+    /// `refundTotal`/`total` are not available on `POSOrder` (amounts are pre-formatted),
+    /// so partial-refund detection relies on the `orderStatus == .refunded` fallback.
+    /// POS collapses `.partiallyRefunded` → "Refunded" in `localizedTitle` anyway.
     init(booking: POSBooking) {
-        if booking.order.status == .refunded {
-            self = .refunded
-            return
-        }
-
-        switch booking.status {
-        case .paid, .complete:
-            self = .paid
-        case .unpaid, .pendingConfirmation, .confirmed, .unknown:
-            self = .unpaid
-        case .cancelled:
-            self = booking.order.datePaid == nil ? .unpaid : .paid
-        }
+        self.init(orderStatusKey: booking.order.status.rawValue,
+                  datePaid: booking.order.datePaid)
     }
 
     var localizedTitle: String {
@@ -46,8 +36,10 @@ enum POSBookingPaymentStatus: Equatable {
             return Localization.paid
         case .unpaid:
             return Localization.unpaid
-        case .refunded:
+        case .refunded, .partiallyRefunded:
             return Localization.refunded
+        case .failed:
+            return Localization.failed
         }
     }
 
@@ -57,9 +49,7 @@ enum POSBookingPaymentStatus: Equatable {
         switch self {
         case .paid:
             return .posOnDefault
-        case .unpaid:
-            return .posOnErrorLowest
-        case .refunded:
+        case .unpaid, .refunded, .partiallyRefunded, .failed:
             return .posOnErrorLowest
         }
     }
@@ -68,9 +58,7 @@ enum POSBookingPaymentStatus: Equatable {
         switch self {
         case .paid:
             return .posDefault
-        case .unpaid:
-            return .posErrorLowest
-        case .refunded:
+        case .unpaid, .refunded, .partiallyRefunded, .failed:
             return .posErrorLowest
         }
     }
@@ -186,6 +174,12 @@ private enum Localization {
         comment: "POS booking payment status label when the booking order has been refunded."
     )
 
+    static let failed = NSLocalizedString(
+        "pos.bookingPaymentStatus.failed",
+        value: "Failed",
+        comment: "POS booking payment status label when the booking order payment failed."
+    )
+
     static let attended = NSLocalizedString(
         "pos.bookingAttendanceDisplay.attended",
         value: "Attended",
@@ -211,8 +205,8 @@ private enum Localization {
     )
 
     static let cancelled = NSLocalizedString(
-        "pos.bookingLifecycleStatus.cancelled",
-        value: "Cancelled",
-        comment: "POS booking lifecycle status label for cancelled bookings."
+        "pos.bookingLifecycleStatus.canceled",
+        value: "Canceled",
+        comment: "POS booking lifecycle status label for canceled bookings."
     )
 }

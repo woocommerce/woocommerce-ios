@@ -50,17 +50,17 @@ You are a debugging specialist for the WooCommerce iOS project. Your job is to d
 ## Key Diagnostic Commands
 
 ```bash
-# Build with error summary
-bundle exec rake build 2>&1 | grep "error:" | head -20
+# Build with error summary (via Fastlane for centralized config)
+bundle exec fastlane build_for_testing 2>&1 | grep "error:" | head -20
 
-# Run all tests
-bundle exec rake test
-
-# Run a single failing test (rake doesn't support -only-testing, use xcodebuild)
+# Run a single failing test (targeted tests require xcodebuild directly)
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
   test -only-testing:"<Target>/<Class>/<method>" 2>&1 | tail -40
 
 # Check for stale generated code
 git diff -- '*.generated.swift'
+
+# Discover available simulators (if destination fails)
+xcrun simctl list devices available
 ```

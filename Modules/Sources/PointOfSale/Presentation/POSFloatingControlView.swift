@@ -65,6 +65,7 @@ struct POSFloatingControlView: View {
         }
         .posFullScreenCover(isPresented: $showBookings) {
             POSBookingsContainerView(isPresented: $showBookings)
+                .environment(\.floatingControlAreaSize, .zero)
         }
         .onChange(of: showBookings) { _, isShowing in
             if isShowing {
@@ -74,6 +75,12 @@ struct POSFloatingControlView: View {
                     await posModel.paymentModel.activate()
                 }
             }
+        }
+        .onChange(of: horizontalSizeClass) { _, newSizeClass in
+            guard newSizeClass != .regular else { return }
+            showOrders = false
+            showBookings = false
+            showSettings = false
         }
         .frame(height: Constants.size)
         .background(Color.clear)
@@ -94,36 +101,39 @@ private extension POSFloatingControlView {
             )
         }
         .accessibilityIdentifier("pos-exit-menu-item")
-        Button {
-            analytics.track(.pointOfSaleSettingsMenuItemTapped)
-            showSettings = true
-        } label: {
-            Label(
-                title: { Text(Localization.settings) },
-                icon: { Image(systemName: "gearshape") }
-            )
-        }
-
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+        if horizontalSizeClass == .regular {
             Button {
-                analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                showOrders = true
+                analytics.track(.pointOfSaleSettingsMenuItemTapped)
+                showSettings = true
             } label: {
                 Label(
-                    title: { Text(Localization.orders) },
-                    icon: { Image(systemName: "text.document") }
+                    title: { Text(Localization.settings) },
+                    icon: { Image(systemName: "gearshape") }
                 )
             }
-        }
 
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
-            Button {
-                showBookings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.bookings) },
-                    icon: { Image(systemName: "calendar") }
-                )
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
+                Button {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
+                    showOrders = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.orders) },
+                        icon: { Image(systemName: "text.document") }
+                    )
+                }
+            }
+
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
+                Button {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
+                    showBookings = true
+                } label: {
+                    Label(
+                        title: { Text(Localization.bookings) },
+                        icon: { Image(systemName: "calendar") }
+                    )
+                }
             }
         }
     }

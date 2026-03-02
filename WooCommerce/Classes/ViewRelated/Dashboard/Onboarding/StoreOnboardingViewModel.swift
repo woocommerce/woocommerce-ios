@@ -108,12 +108,14 @@ class StoreOnboardingViewModel: ObservableObject {
                 }
                 return true
             }
-            .map { !($0 || $1) }
+            .map { [siteID] (noTasksAvailable, completedDict) in
+                !(noTasksAvailable || (completedDict[String(siteID)] == true))
+            }
             .assign(to: &$canShowInDashboard)
     }
 
     func reloadTasks() async {
-        guard !defaults.completedAllStoreOnboardingTasks else {
+        guard defaults.completedAllStoreOnboardingTasks[String(siteID)] != true else {
             waitingTimeTracker.end(action: .loadOnboardingTasks)
             return
         }
@@ -209,7 +211,9 @@ private extension StoreOnboardingViewModel {
         }
 
         // This will be reset to `nil` when session resets
-        defaults[.completedAllStoreOnboardingTasks] = true
+        var completedTasks: [String: Bool] = defaults[.completedAllStoreOnboardingTasks] ?? [:]
+        completedTasks[String(siteID)] = true
+        defaults[.completedAllStoreOnboardingTasks] = completedTasks
     }
 
     @MainActor
@@ -269,7 +273,7 @@ private extension StoreOnboardingTaskViewModel {
 }
 
 extension UserDefaults {
-    @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-        bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+    @objc dynamic var completedAllStoreOnboardingTasks: [String: Bool] {
+        dictionary(forKey: Key.completedAllStoreOnboardingTasks.rawValue) as? [String: Bool] ?? [:]
     }
 }

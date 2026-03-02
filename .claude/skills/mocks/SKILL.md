@@ -40,4 +40,4 @@ kill $(lsof -ti:8282) 2>/dev/null && echo "WireMock stopped" || echo "Nothing ru
 - **Mappings**: `Modules/Sources/APIMocks/Resources/mappings/`
 - **Response files**: `Modules/Sources/APIMocks/Resources/__files/`
 - **Start script**: `API-Mocks/scripts/start.sh`
-- **WireMock version**: 2.35.2 (auto-downloaded on first run)
+- **WireMock**: auto-downloaded on first run (version configured in `start.sh`)

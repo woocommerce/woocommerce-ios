@@ -67,7 +67,7 @@ The mock server always requires 2FA. Enter any 6-digit code (e.g., `123456`).
 | Store name | `name-label` | |
 | Store URL | `url-label` | |
 
-**Mock credentials** for WireMock: site `http://yourwoosite.com`, email `t@wp.com`, password `pw`.
+**Mock credentials** (only work with the WireMock mock server, not real accounts): site `http://yourwoosite.com`, email `t@wp.com`, password `pw`.
 
 ---
 

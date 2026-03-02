@@ -7,9 +7,6 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var selection: SelectionValue?
     @State private var detailNavigationPath = NavigationPath()
-    /// Debounced size class that filters out transient changes iOS 18 fires
-    /// during background/foreground transitions.
-    @State private var stableHorizontalSizeClass: UserInterfaceSizeClass?
 
     private let sidebar: (Binding<SelectionValue?>) -> Sidebar
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
@@ -32,7 +29,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
 
     var body: some View {
         Group {
-            switch stableHorizontalSizeClass ?? horizontalSizeClass {
+            switch horizontalSizeClass {
             case .regular:
                 GeometryReader { geometry in
                     HStack(spacing: 0) {
@@ -75,24 +72,12 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             }
         }
         .onAppear {
-            stableHorizontalSizeClass = horizontalSizeClass
             if horizontalSizeClass == .regular, selection == nil {
                 setDefaultValue?()
             }
         }
-        .task(id: horizontalSizeClass) {
-            // Debounce: iOS 18 devices fire transient horizontalSizeClass
-            // changes during background/foreground transitions. By waiting
-            // briefly, we let the transient change revert (cancelling this
-            // task) so the layout never swaps and the path is untouched.
-            try? await Task.sleep(for: .milliseconds(200))
-            guard !Task.isCancelled else { return }
-
-            let previous = stableHorizontalSizeClass
-            stableHorizontalSizeClass = horizontalSizeClass
-
-            if let previous, previous != horizontalSizeClass,
-               horizontalSizeClass == .regular, selection == nil {
+        .onChange(of: horizontalSizeClass) { _, newValue in
+            if newValue == .regular, selection == nil {
                 setDefaultValue?()
             }
         }

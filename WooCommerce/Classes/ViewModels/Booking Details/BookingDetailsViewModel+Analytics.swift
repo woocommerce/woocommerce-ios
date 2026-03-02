@@ -33,6 +33,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingDetailViewLinkedOrderTap)
         }
 
+        // TODO: Wire up tracking call when mark-as-paid feature is added to BookingDetailsViewModel
+        static func markAsPaidTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailMarkAsPaidTap)
+        }
+
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Properties.action: action.rawValue

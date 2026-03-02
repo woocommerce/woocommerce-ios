@@ -4,6 +4,8 @@ import Codegen
 import Foundation
 import Networking
 import WooFoundation
+import enum Networking.BookingAttendanceStatus
+import enum Networking.BookingStatus
 import enum NetworkingCore.OrderStatusEnum
 import struct NetworkingCore.Address
 import struct NetworkingCore.MetaData
@@ -61,6 +63,7 @@ extension Yosemite.JustInTimeMessage {
 extension Yosemite.POSBooking {
     public func copy(
         id: CopiableProp<Int64> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
         customerName: NullableCopiableProp<String> = .copy,
         serviceName: CopiableProp<String> = .copy,
         startDate: CopiableProp<Date> = .copy,
@@ -83,6 +86,7 @@ extension Yosemite.POSBooking {
         order: CopiableProp<POSOrder> = .copy
     ) -> Yosemite.POSBooking {
         let id = id ?? self.id
+        let customerID = customerID ?? self.customerID
         let customerName = customerName ?? self.customerName
         let serviceName = serviceName ?? self.serviceName
         let startDate = startDate ?? self.startDate
@@ -106,6 +110,7 @@ extension Yosemite.POSBooking {
 
         return Yosemite.POSBooking(
             id: id,
+            customerID: customerID,
             customerName: customerName,
             serviceName: serviceName,
             startDate: startDate,

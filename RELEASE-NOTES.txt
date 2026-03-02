@@ -3,7 +3,7 @@
 24.3
 -----
 - [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
-- [*] POS: Fix bookings/orders/settings dismissal when switching apps [https://github.com/woocommerce/woocommerce-ios/pull/16756]
+- [*] POS: Fix bookings/orders/settings dismissal when switching apps [https://github.com/woocommerce/woocommerce-ios/pull/16757]
 
 24.2
 -----

@@ -1,5 +1,6 @@
 import SwiftUI
 import enum Yosemite.BookingAttendanceStatus
+import enum Yosemite.BookingPaymentStatus
 import enum Yosemite.BookingStatus
 
 struct BookingBadgeView: View {
@@ -74,6 +75,59 @@ extension BookingStatus: BookingBadgeable {
         default:
             return BadgeColor.defaultText
         }
+    }
+}
+
+extension BookingPaymentStatus: BookingBadgeable {
+    var badgeColor: Color {
+        BadgeColor.default
+    }
+
+    var text: String {
+        switch self {
+        case .paid:
+            return Localization.paid
+        case .unpaid:
+            return Localization.unpaid
+        case .failed:
+            return Localization.failed
+        case .refunded:
+            return Localization.refunded
+        case .partiallyRefunded:
+            return Localization.partiallyRefunded
+        }
+    }
+
+    var textColor: Color {
+        BadgeColor.defaultText
+    }
+
+    private enum Localization {
+        static let paid = NSLocalizedString(
+            "bookingPaymentStatus.paid",
+            value: "Paid",
+            comment: "Badge label for a paid booking in the Store Management booking list."
+        )
+        static let unpaid = NSLocalizedString(
+            "bookingPaymentStatus.unpaid",
+            value: "Unpaid",
+            comment: "Badge label for an unpaid booking in the Store Management booking list."
+        )
+        static let failed = NSLocalizedString(
+            "bookingPaymentStatus.failed",
+            value: "Failed",
+            comment: "Badge label for a booking with a failed payment."
+        )
+        static let refunded = NSLocalizedString(
+            "bookingPaymentStatus.refunded",
+            value: "Refunded",
+            comment: "Badge label for a refunded booking."
+        )
+        static let partiallyRefunded = NSLocalizedString(
+            "bookingPaymentStatus.partiallyRefunded",
+            value: "Partially Refunded",
+            comment: "Badge label for a partially refunded booking."
+        )
     }
 }
 

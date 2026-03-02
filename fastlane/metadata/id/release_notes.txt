@@ -1,2 +1,1 @@
-Pencarian item Point of Sale yang kami optimalkan kini jauh lebih cepat. Pencarian membantu Anda menemukan produk, dan kini hasilnya juga mencakup variasi! Hasil seketika, dan segala macam urutan kata dapat digunakan untuk pencarian.
-Kami juga memperlancar proses pembuatan pesanan, dengan perbaikan penyaring produk dan pembaruan alamat pengiriman. Segera perbarui agar toko Anda tetap lancar jaya!
+Pembaruan ini menunjukkan tugas pengaturan toko dengan lebih andal, memastikan pemindaian kode batang berfungsi tanpa hambatan di Point of Sale, dan meningkatkan keandalan pustaka media. Perbarui sekarang untuk pengalaman manajemen toko yang lebih lancar!

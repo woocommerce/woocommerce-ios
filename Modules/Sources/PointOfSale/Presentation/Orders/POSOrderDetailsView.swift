@@ -8,6 +8,7 @@ import typealias Yosemite.OrderItemAttribute
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    @Binding var isShowingEmailReceiptView: Bool
     var autoStartRefund: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
@@ -18,7 +19,6 @@ struct POSOrderDetailsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
-    @State private var isShowingEmailReceiptView: Bool = false
     @State private var refundModalState: RefundModalState?
 
     private var shouldShowBackButton: Bool {
@@ -72,12 +72,6 @@ struct POSOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
-            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
-                try await orderListModel.sendReceipt(order: order, email: email)
-            }
-            .posHeaderBackButtonIcon(systemName: "xmark")
-        }
         .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
         }) { state in
@@ -558,7 +552,8 @@ private enum Localization {
 #Preview("Order Details - Completed") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrder(),
-        onBack: {}
+        onBack: {},
+        isShowingEmailReceiptView: .constant(false)
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -566,7 +561,8 @@ private enum Localization {
 #Preview("Order Details - Refunded") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithRefund(),
-        onBack: {}
+        onBack: {},
+        isShowingEmailReceiptView: .constant(false)
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -574,7 +570,8 @@ private enum Localization {
 #Preview("Order Details - Failed") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewFailedOrder(),
-        onBack: {}
+        onBack: {},
+        isShowingEmailReceiptView: .constant(false)
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -582,7 +579,8 @@ private enum Localization {
 #Preview("Order Details - Without Email") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithoutEmail(),
-        onBack: {}
+        onBack: {},
+        isShowingEmailReceiptView: .constant(false)
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -590,7 +588,8 @@ private enum Localization {
 #Preview("Order Details - With Net Payment") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithNetPayment(),
-        onBack: {}
+        onBack: {},
+        isShowingEmailReceiptView: .constant(false)
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }

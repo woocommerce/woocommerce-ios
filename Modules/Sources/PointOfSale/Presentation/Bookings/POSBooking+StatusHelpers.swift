@@ -1,12 +1,13 @@
 import struct Yosemite.POSBooking
+import enum Yosemite.BookingPaymentStatus
 
 extension POSBooking {
     var lifecycleStatus: POSBookingLifecycleStatus {
         POSBookingLifecycleStatus(bookingStatus: status)
     }
 
-    var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(booking: self)
+    var paymentStatus: BookingPaymentStatus {
+        BookingPaymentStatus(booking: self)
     }
 
     var attendanceDisplay: POSBookingAttendanceDisplay {

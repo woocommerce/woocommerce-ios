@@ -1,2 +1,1 @@
-Onze verbeterde zoekfunctie voor Point of Sale-artikelen is sneller dan ooit. Hiermee kun je producten vinden, en worden variaties ook opgenomen in de resultaten. De resultaten zijn direct beschikbaar en je kan elke woordvolgorde gebruiken voor je zoekopdracht.
-We hebben ook het aanmaken van bestellingen vereenvoudigd, met verbeteringen aan productfilters en updates van verzendadressen. Update vandaag nog om je winkel soepel draaiende te houden!
+Deze update toont winkelsetup-taken betrouwbaarder, zorgt ervoor dat het scannen van barcodes naadloos werkt in Point of Sale, en verbetert de betrouwbaarheid van de mediabibliotheek. Update nu voor een soepelere winkelbeheerervaring!

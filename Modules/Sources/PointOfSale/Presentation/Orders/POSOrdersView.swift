@@ -11,20 +11,11 @@ struct POSOrdersView: View {
     @State private var isSearching: Bool = false
     @State private var searchTerm: String = ""
     @State private var showBlog = false
-    @State private var isShowingEmailReceiptView = false
 
     var body: some View {
         contentView
             .task {
                 await orderListModel.ordersController.loadOrders()
-            }
-            .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
-                if let order = orderListModel.ordersController.selectedOrder {
-                    POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
-                        try await orderListModel.sendReceipt(order: order, email: email)
-                    }
-                    .posHeaderBackButtonIcon(systemName: "xmark")
-                }
             }
     }
 
@@ -49,8 +40,7 @@ struct POSOrdersView: View {
                     order: selection,
                     onBack: {
                         orderListModel.ordersController.selectOrder(nil)
-                    },
-                    isShowingEmailReceiptView: $isShowingEmailReceiptView
+                    }
                 )
                 .id(selection.id)
                 .environment(orderListModel)

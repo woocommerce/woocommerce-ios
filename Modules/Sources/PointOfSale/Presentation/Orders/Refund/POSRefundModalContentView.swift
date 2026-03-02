@@ -150,10 +150,7 @@ struct POSRefundModalContentView: View {
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 customerEmail: reviewData.customerEmail,
                 onDone: { modalState = nil },
-                onEmailReceipt: {
-                    modalState = nil
-                    onEmailReceipt()
-                },
+                onEmailReceipt: onEmailReceipt,
                 onClose: { modalState = nil }
             )
         case .error(let reviewData):

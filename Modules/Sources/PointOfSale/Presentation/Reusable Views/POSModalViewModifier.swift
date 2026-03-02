@@ -10,7 +10,7 @@ struct POSRootModalViewModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .blur(radius: modalManager.isPresented ? 8 : 0)
-            .disabled(modalManager.isPresented)
+            .allowsHitTesting(!modalManager.isPresented)
             .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
             .measureFrame { frame in
                 updateModalParentSize(with: frame.size)

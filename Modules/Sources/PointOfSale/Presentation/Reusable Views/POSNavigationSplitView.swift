@@ -3,7 +3,7 @@ import SwiftUI
 /// An alternative split view implementation that gives more control of the split view design,
 /// including the sidebar and content arrangement and separator colors.
 /// Just as NavigationSplitView, it adapts to a list -> details navigation on smaller screens.
-struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: View, SelectionValue: Hashable>: View {
+struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: View, SelectionValue: Hashable & Identifiable>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var selection: SelectionValue?
     @State private var detailNavigationPath = NavigationPath()
@@ -81,7 +81,8 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 setDefaultValue?()
             }
         }
-        .onChange(of: selection) { _, _ in
+        .onChange(of: selection) { oldValue, newValue in
+            guard oldValue?.id != newValue?.id else { return }
             detailNavigationPath = NavigationPath()
         }
     }

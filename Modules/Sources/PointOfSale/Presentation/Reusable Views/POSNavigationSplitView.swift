@@ -7,6 +7,9 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding private var selection: SelectionValue?
     @State private var detailNavigationPath = NavigationPath()
+    /// Debounced size class that filters out transient changes iOS 18 fires
+    /// during background/foreground transitions.
+    @State private var stableHorizontalSizeClass: UserInterfaceSizeClass?
 
     private let sidebar: (Binding<SelectionValue?>) -> Sidebar
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
@@ -28,59 +31,79 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     }
 
     var body: some View {
-        switch horizontalSizeClass {
-        case .regular:
-            GeometryReader { geometry in
-                HStack(spacing: 0) {
-                    sidebar($selection)
-                        .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
+        Group {
+            switch stableHorizontalSizeClass ?? horizontalSizeClass {
+            case .regular:
+                GeometryReader { geometry in
+                    HStack(spacing: 0) {
+                        sidebar($selection)
+                            .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
 
-                    NavigationStack(path: $detailNavigationPath) {
-                        VStack {
-                            if let selection = selection {
-                                detail(selection, $detailNavigationPath)
-                                    .frame(maxWidth: .infinity)
-                                    .transition(.opacity)
-                            } else {
-                                detailPlaceholderView()
-                                    .frame(maxWidth: .infinity)
-                                    .transition(.opacity)
+                        NavigationStack(path: $detailNavigationPath) {
+                            VStack {
+                                if let selection = selection {
+                                    detail(selection, $detailNavigationPath)
+                                        .frame(maxWidth: .infinity)
+                                        .transition(.opacity)
+                                } else {
+                                    detailPlaceholderView()
+                                        .frame(maxWidth: .infinity)
+                                        .transition(.opacity)
+                                }
                             }
+                            .animation(.default, value: selection != nil)
+                            .navigationBarHidden(true)
                         }
-                        .animation(.default, value: selection != nil)
-                        .navigationBarHidden(true)
                     }
                 }
+            default:
+                NavigationStack(path: $detailNavigationPath) {
+                    sidebar($selection)
+                        .navigationDestination(for: SelectionValue.self) { selectedValue in
+                            detail(selectedValue, $detailNavigationPath)
+                        }
+                }
             }
-            .onAppear {
+        }
+        .onAppear {
+            stableHorizontalSizeClass = horizontalSizeClass
+            if horizontalSizeClass == .regular {
                 if selection == nil {
                     setDefaultValue?()
                 }
+            } else if detailNavigationPath.isEmpty, let selection {
+                detailNavigationPath.append(selection)
             }
-            .onChange(of: selection) { _, _ in
+        }
+        .task(id: horizontalSizeClass) {
+            // Debounce: iOS 18 devices fire transient horizontalSizeClass
+            // changes during background/foreground transitions. By waiting
+            // briefly, we let the transient change revert (cancelling this
+            // task) so the layout never swaps and the path is untouched.
+            try? await Task.sleep(for: .milliseconds(200))
+            guard !Task.isCancelled else { return }
+
+            let previous = stableHorizontalSizeClass
+            stableHorizontalSizeClass = horizontalSizeClass
+
+            // On genuine size class change, adapt the navigation path for
+            // the new layout's path semantics (compact prepends SelectionValue;
+            // regular does not).
+            if let previous, previous != horizontalSizeClass {
                 detailNavigationPath = NavigationPath()
-            }
-        default:
-            NavigationStack(path: $detailNavigationPath) {
-                sidebar($selection)
-                    .navigationDestination(for: SelectionValue.self) { selectedValue in
-                        detail(selectedValue, $detailNavigationPath)
-                    }
-            }
-            .onAppear {
-                // Sync the path with the current selection on initial appear or
-                // when transitioning from regular mode (where the path doesn't
-                // include SelectionValue). Only populate when empty to preserve
-                // sub-detail navigation during transient size class changes.
-                if detailNavigationPath.isEmpty, let selection {
+                if horizontalSizeClass != .regular, let selection {
                     detailNavigationPath.append(selection)
                 }
-            }
-            .onChange(of: selection) { _, newSelection in
-                detailNavigationPath = NavigationPath()
-                if let newSelection {
-                    detailNavigationPath.append(newSelection)
+                if horizontalSizeClass == .regular, selection == nil {
+                    setDefaultValue?()
                 }
+            }
+        }
+        .onChange(of: selection) { _, newSelection in
+            detailNavigationPath = NavigationPath()
+            let isCompact = (stableHorizontalSizeClass ?? horizontalSizeClass) != .regular
+            if isCompact, let newSelection {
+                detailNavigationPath.append(newSelection)
             }
         }
     }

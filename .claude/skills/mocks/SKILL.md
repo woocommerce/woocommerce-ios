@@ -28,10 +28,13 @@ If Java is not installed, report the prerequisite and stop.
 
 ## Stop
 
-Kill by port — more reliable than tracking PIDs across shell sessions:
-
 ```bash
-kill $(lsof -ti:8282) 2>/dev/null && echo "WireMock stopped" || echo "Nothing running on 8282"
+./API-Mocks/scripts/stop.sh 8282
+```
+
+Uses WireMock's graceful shutdown endpoint. Falls back to kill-by-port if the shutdown endpoint is unreachable:
+```bash
+kill $(lsof -ti:8282) 2>/dev/null
 ```
 
 ## Details

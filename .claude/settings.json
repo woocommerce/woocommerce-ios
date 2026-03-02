@@ -33,7 +33,7 @@
       "Bash(bundle exec rake mocks *)",
       "Bash(bundle exec fastlane *)",
       "Bash(./API-Mocks/scripts/start.sh *)",
-      "Bash(kill $(lsof -ti:8282) *)",
+      "Bash(./API-Mocks/scripts/stop.sh *)",
       "mcp__mobile-mcp__*"
     ],
     "deny": [

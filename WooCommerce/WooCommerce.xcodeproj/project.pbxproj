@@ -337,6 +337,7 @@
 		3F50FE4428CAEC5E00C89201 /* AppLocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F50FE4228CAEBA800C89201 /* AppLocalizedString.swift */; };
 		3F58701F281B947E004F7556 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F58701E281B947E004F7556 /* Main.storyboard */; };
 		3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F587020281B9494004F7556 /* LaunchScreen.storyboard */; };
+		3F7459EE2F5545E9004C7FF6 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7459ED2F5545E9004C7FF6 /* StatusListTableViewCellTests.swift */; };
 		3FDA83E62F4C090900CC3259 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA83E52F4C090700CC3259 /* Constants.swift */; };
 		3FDA985F2F4C0CB600CC3259 /* LedgerTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA985E2F4C0CB600CC3259 /* LedgerTableViewCellTests.swift */; };
 		3FDA98612F4C0CD100CC3259 /* ManualTrackingViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDA98602F4C0CD100CC3259 /* ManualTrackingViewControllerTests.swift */; };
@@ -695,7 +696,6 @@
 		D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136CC231E15B700DD0539 /* MockReviews.swift */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
 		D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */; };
-		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
 		D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */; };
 		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
 		D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */; };
@@ -1267,6 +1267,7 @@
 		3F58701E281B947E004F7556 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		3F587020281B9494004F7556 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3F7459ED2F5545E9004C7FF6 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCellTests.swift; sourceTree = "<group>"; };
 		3FDA83E52F4C090700CC3259 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		3FDA985E2F4C0CB600CC3259 /* LedgerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerTableViewCellTests.swift; sourceTree = "<group>"; };
 		3FDA98602F4C0CD100CC3259 /* ManualTrackingViewControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewControllerTests.swift; sourceTree = "<group>"; };
@@ -1644,7 +1645,6 @@
 		D85136CC231E15B700DD0539 /* MockReviews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockReviews.swift; sourceTree = "<group>"; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
 		D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusListTableViewCell.xib; sourceTree = "<group>"; };
-		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsBadgeController.swift; sourceTree = "<group>"; };
 		D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
 		D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
@@ -3800,6 +3800,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				3F7459ED2F5545E9004C7FF6 /* StatusListTableViewCellTests.swift */,
 				3FDA986A2F4C0D7200CC3259 /* DatePickerTableViewCellTests.swift */,
 				3FDA98682F4C0D5100CC3259 /* EmptyListMessageWithActionTests.swift */,
 				3FDA98662F4C0D2900CC3259 /* OrderDetailsViewModelTests.swift */,
@@ -3836,7 +3837,6 @@
 				3FECC9C82F341D28000990D8 /* HubMenu */,
 				3FECC9632F341D28000990D8 /* Upgrades */,
 				3FECC92C2F341D28000990D8 /* Customers */,
-				D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */,
 				D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */,
 				45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */,
 				45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */,
@@ -5426,7 +5426,6 @@
 				DEB3879A2C32A6400025256E /* MockGoogleAdsEligibilityChecker.swift in Sources */,
 				2DE9DDFB2E6EF4A500155408 /* MockCIABEligibilityChecker.swift in Sources */,
 				02829BAA288FA8B300951E1E /* MockUserNotification.swift in Sources */,
-				D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */,
 				03B9E52D2A150D16005C77F5 /* MockTapToPayCardReaderConnectionControllerFactory.swift in Sources */,
 				3198A1E82694DC7200597213 /* MockKnownReadersProvider.swift in Sources */,
 				6489B8152EF3EB62001E0343 /* MockError.swift in Sources */,
@@ -5521,6 +5520,7 @@
 				3FDA98672F4C0D2900CC3259 /* OrderDetailsViewModelTests.swift in Sources */,
 				6856D49DB7DCF4D87745C0B1 /* MockPushNotificationsManager.swift in Sources */,
 				02E4AF7126FC4F16002AD9F4 /* ProductReviewFromNoteParcelFactory.swift in Sources */,
+				3F7459EE2F5545E9004C7FF6 /* StatusListTableViewCellTests.swift in Sources */,
 				B9C4AB2B28003481007008B8 /* MockPaymentsPluginsDataProvider.swift in Sources */,
 				3D94B7D5A94E3515D4B9BB4D /* MockWPComConnectionSetupHandler.swift in Sources */,
 				376096A213F453CB50D5C49A /* MockPluginVersionChecker.swift in Sources */,

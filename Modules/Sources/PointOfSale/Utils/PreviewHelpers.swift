@@ -1038,7 +1038,7 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
+        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
     }
 
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {

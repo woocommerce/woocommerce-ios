@@ -564,7 +564,8 @@ struct POSCatalogSyncCoordinatorTests {
         try await sut.performFullSync(for: sampleSiteID)
 
         // Then - should emit syncStarted and syncCompleted with correct siteID
-        #expect(sut.fullSyncStateModel.state[sampleSiteID] == .syncCompleted(siteID: sampleSiteID))
+        let finalState = await sut.fullSyncStateModel.state[sampleSiteID]
+        #expect(finalState == .syncCompleted(siteID: sampleSiteID))
     }
 
     // MARK: - Helper Methods

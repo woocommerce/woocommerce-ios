@@ -295,7 +295,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
+        return await fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
 
     func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {

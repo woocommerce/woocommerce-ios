@@ -362,11 +362,13 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
         paymentModel = nil
+        guard paymentSucceeded else { return }
         Task { @MainActor in
             isDetailsUpdating = true
-            await bookingsModel.updateAfterPayment(bookingID: booking.id)
+            await bookingsModel.updateAfterSuccessfulPayment(bookingID: booking.id)
             isDetailsUpdating = false
         }
     }

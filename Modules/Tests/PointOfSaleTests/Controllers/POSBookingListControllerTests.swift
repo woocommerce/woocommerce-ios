@@ -529,6 +529,27 @@ final class POSBookingListControllerTests {
         #expect(mockFactory.lastSearchTerm == "test")
     }
 
+    // MARK: - reset
+
+    @Test func test_reset_then_restores_initial_state() async {
+        // Given - modify all user-facing state
+        let bookings = [makeBooking(id: 1)]
+        mockStrategy.fetchBookingsResult = .success(PagedItems(items: bookings, hasMorePages: false, totalItems: nil))
+        await sut.loadBookings()
+        sut.selectBooking(bookings[0])
+        let tomorrow = POSBookingDateFormatter.utcCalendar.date(byAdding: .day, value: 1, to: sut.selectedDate)!
+        await sut.selectDate(tomorrow)
+
+        // When
+        sut.reset()
+
+        // Then
+        let expectedToday = POSBookingDateFormatter.utcCalendar.startOfDay(for: Date())
+        #expect(sut.selectedDate == expectedToday)
+        #expect(sut.selectedBooking == nil)
+        #expect(sut.bookingsViewState == .loading([]))
+    }
+
     // MARK: - Prefetch
 
     @Test func test_init_syncs_today_and_adjacent_dates() async {

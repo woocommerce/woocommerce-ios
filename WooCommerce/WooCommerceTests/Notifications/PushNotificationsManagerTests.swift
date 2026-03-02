@@ -2,6 +2,7 @@ import Combine
 import Experiments
 import XCTest
 import Yosemite
+import enum NetworkingCore.NetworkError
 @testable import WooCommerce
 
 
@@ -788,6 +789,96 @@ final class PushNotificationsManagerTests: XCTestCase {
             if case .registerDevice = $0 { return true }
             return false
         }))
+    }
+
+    func test_registerDeviceToken_when_self_driven_registration_fails_with_404_unmarks_registered_site() async {
+        // Given
+        let siteID: Int64 = 99
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                           featureFlagService: featureFlagService)
+        }()
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.failure(NetworkError.notFound()))
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked after 404 error")
+    }
+
+    func test_registerDeviceToken_when_self_driven_registration_fails_with_non_404_error_keeps_registered_site() async {
+        // Given
+        let siteID: Int64 = 99
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                           featureFlagService: featureFlagService)
+        }()
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertTrue(storedSiteIDs.contains("\(siteID)"), "Site ID should remain registered after non-404 error")
     }
 }
 

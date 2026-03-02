@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 import enum Yosemite.BookingAttendanceStatus
 
@@ -6,6 +7,7 @@ struct POSBookingAttendanceSectionView: View {
     let booking: POSBooking
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
 
     @State private var optimisticAttendanceStatus: BookingAttendanceStatus?
     @State private var attendanceUpdateError = false
@@ -75,7 +77,9 @@ struct POSBookingAttendanceSectionView: View {
                     bookingID: booking.id,
                     status: targetStatus
                 )
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAttendanceChanged())
             } catch {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAttendanceChangeFailed(error: error))
                 attendanceUpdateError = true
             }
             optimisticAttendanceStatus = nil

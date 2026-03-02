@@ -16,6 +16,5 @@ extension UIScrollView {
     func updateFromScrollViewDidScrollEventForLargeTitleWorkaround(_ scrollView: UIScrollView) {
         contentSize = scrollView.contentSize
         contentOffset = scrollView.contentOffset
-        panGestureRecognizer.state = scrollView.panGestureRecognizer.state
     }
 }

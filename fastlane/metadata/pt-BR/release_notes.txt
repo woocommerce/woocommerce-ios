@@ -1,2 +1,1 @@
-Nossa pesquisa aprimorada de itens em ponto de venda está mais rápida do que nunca. Ela permite que você localize produtos e agora os resultados também incluem variações! Os resultados são instantâneos e você pode usar qualquer ordem de palavras para sua pesquisa.
-Também facilitamos a criação de pedidos, com correções nos filtros de produtos e atualizações de endereço de entrega. Atualize hoje para manter sua loja funcionando perfeitamente!
+Essa atualização mostra as tarefas de configuração da loja de forma mais confiável, garante que a varredura de código de barras funcione perfeitamente no Ponto de Venda e melhora a confiabilidade da biblioteca de mídia. Atualize agora para uma experiência de gerenciamento de loja mais tranquila!

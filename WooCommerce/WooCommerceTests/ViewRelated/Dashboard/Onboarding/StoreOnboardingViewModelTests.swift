@@ -479,7 +479,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     @MainActor
     func test_it_does_not_send_network_request_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
-        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["0": true]
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
@@ -542,7 +542,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
     }
 
     @MainActor
@@ -562,7 +562,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+        XCTAssertTrue(try XCTUnwrap((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"]))
     }
 
     @MainActor
@@ -574,13 +574,13 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
     }
 
     @MainActor
@@ -592,13 +592,13 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
     }
 
     // MARK: - canShowInDashboard
@@ -677,7 +677,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     @MainActor
     func test_reloadTasks_notifies_waitingTimeTracker_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
-        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["0": true]
         let tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
         XCTAssert(tracker.startupActionsPending.contains(.loadOnboardingTasks))
         let sut = StoreOnboardingViewModel(siteID: 0,

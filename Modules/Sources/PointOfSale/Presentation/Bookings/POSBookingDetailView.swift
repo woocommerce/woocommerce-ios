@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
@@ -22,6 +23,7 @@ struct POSBookingDetailView: View {
     @State private var scrollViewHeight: CGFloat = 0
     @State private var isDetailsUpdating = false
     @State private var isShowingNoteView = false
+    @State private var isShowingEmailReceiptView = false
 
     private var actionTintColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -39,7 +41,7 @@ struct POSBookingDetailView: View {
                     case .orderDetail:
                         POSOrderDetailsView(order: booking.order, onBack: {
                             navigationPath.removeLast()
-                        })
+                        }, isShowingEmailReceiptView: $isShowingEmailReceiptView)
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
@@ -49,6 +51,7 @@ struct POSBookingDetailView: View {
                         POSOrderDetailsView(
                             order: booking.order,
                             onBack: { navigationPath.removeLast() },
+                            isShowingEmailReceiptView: $isShowingEmailReceiptView,
                             autoStartRefund: true,
                             onRefundSuccess: {
                                 Task {
@@ -56,6 +59,9 @@ struct POSBookingDetailView: View {
                                     await bookingsModel.updateAfterRefund(bookingID: booking.id)
                                     isDetailsUpdating = false
                                 }
+                            },
+                            onRefundFailure: { error in
+                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
                             }
                         )
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
@@ -68,6 +74,12 @@ struct POSBookingDetailView: View {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
             }
+        }
+        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                try await orderListModel.sendReceipt(order: booking.order, email: email)
+            }
+            .posHeaderBackButtonIcon(systemName: "xmark")
         }
         .posFullScreenCover(isPresented: $isShowingNoteView) {
             POSBookingNoteView(booking: booking, isShowingNoteView: $isShowingNoteView)
@@ -83,7 +95,7 @@ struct POSBookingDetailView: View {
                 isLoading: isDetailsUpdating,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    viewOrderMenu
+                    headerTrailingContent
                 },
                 bottomContent: {
                     POSBookingSummaryView(booking: booking)
@@ -143,13 +155,30 @@ struct POSBookingDetailView: View {
     }
 
     @ViewBuilder
-    private var viewOrderMenu: some View {
-        Menu {
+    private var headerTrailingContent: some View {
+        HStack(spacing: POSSpacing.small) {
             Button(Localization.viewOrderAction) {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped())
                 navigationPath.append(.orderDetail)
             }
+            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+
+            if hasOverflowMenuActions {
+                overflowMenu
+            }
+        }
+    }
+
+    private var hasOverflowMenuActions: Bool {
+        booking.isPaid || booking.isCancellable
+    }
+
+    @ViewBuilder
+    private var overflowMenu: some View {
+        Menu {
             if booking.isPaid {
                 Button(Localization.issueRefundAction) {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped())
                     orderListModel.ordersController.selectOrder(booking.order)
                     navigationPath.append(.orderDetailRefund)
                 }
@@ -215,7 +244,7 @@ struct POSBookingDetailView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
 
-                if booking.hasNoCustomerDetails {
+                if booking.isGuest {
                     POSBookingBadgeView(
                         title: Localization.guestBadge,
                         textColor: .posOnDefault,
@@ -261,11 +290,6 @@ struct POSBookingDetailView: View {
                     .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
             }
 
-            if let address = booking.billingAddress {
-                sectionDivider
-                stackedField(label: Localization.billingAddressLabel, value: address)
-            }
-
             if let note = booking.customerNote {
                 sectionDivider
                 stackedField(label: Localization.noteLabel, value: note)
@@ -296,6 +320,7 @@ struct POSBookingDetailView: View {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
                 sectionTitleWithAction(title: Localization.bookingNoteLabel) {
                     Button(noteButtonTitle) {
+                        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAddNoteTapped())
                         isShowingNoteView = true
                     }
                     .buttonStyle(POSOutlinedButtonStyle(size: .compact))
@@ -324,13 +349,13 @@ struct POSBookingDetailView: View {
             sectionTitle: Localization.paymentTitle,
             subtotalLabel: Localization.serviceLabel,
             subtotalAmount: booking.formattedSubtotal ?? booking.order.formattedSubtotal,
-            discountAmount: booking.order.formattedDiscountTotal,
+            discountAmount: booking.order.formattedDiscountTotal ?? Localization.noDiscountPlaceholder,
             taxAmount: booking.order.formattedTotalTax,
             totalAmount: booking.order.formattedTotal,
-            paidAmount: booking.order.formattedPaymentTotal,
-            paymentMethodTitle: booking.order.paymentMethodTitle,
-            refunds: booking.order.refunds,
-            netAmount: booking.order.formattedNetAmount
+            paidAmount: nil,
+            paymentMethodTitle: "",
+            refunds: [],
+            netAmount: nil
         )
     }
 
@@ -367,7 +392,7 @@ struct POSBookingDetailView: View {
 
     private var collectPaymentButton: some View {
         Button(action: { startPaymentCollection() }) {
-            Text("\(Localization.collectPaymentButton) \u{00B7} \(booking.formattedAmount)")
+            Text(Localization.collectPaymentButton)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
@@ -433,9 +458,8 @@ struct POSBookingDetailView: View {
 // MARK: - POSBooking Presentation Helpers
 
 private extension POSBooking {
-    var hasNoCustomerDetails: Bool {
-        customerName == nil && customerEmail == nil && customerPhone == nil
-            && billingAddress == nil && customerNote == nil
+    var isGuest: Bool {
+        customerID == 0
     }
 }
 
@@ -508,19 +532,13 @@ private enum Localization {
     static let guestBadge = NSLocalizedString(
         "pos.bookingDetailView.guestBadge",
         value: "Guest",
-        comment: "Badge label shown next to the customer section title when there is no customer info for a booking."
+        comment: "Badge label shown next to the customer section title when the booking has no associated customer (guest checkout)."
     )
 
     static let noteLabel = NSLocalizedString(
         "pos.bookingDetailView.noteLabel",
         value: "Note",
         comment: "Label for the customer note in booking details."
-    )
-
-    static let billingAddressLabel = NSLocalizedString(
-        "pos.bookingDetailView.billingAddressLabel",
-        value: "Billing address",
-        comment: "Label for the billing address in booking details."
     )
 
     static let bookingNoteLabel = NSLocalizedString(
@@ -562,13 +580,13 @@ private enum Localization {
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
-        comment: "Button to initiate payment collection for a booking. The amount is appended after a separator."
+        comment: "Button to initiate payment collection for a booking."
     )
 
     static let viewOrderAction = NSLocalizedString(
         "pos.bookingDetailView.viewOrderAction",
         value: "View Order",
-        comment: "Menu action to view the linked order from a booking detail."
+        comment: "Button to view the linked order from the booking detail header."
     )
 
     // MARK: - Accessibility
@@ -613,6 +631,12 @@ private enum Localization {
         "pos.bookingDetailView.cancelBookingAction",
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let noDiscountPlaceholder = NSLocalizedString(
+        "pos.bookingDetailView.noDiscountPlaceholder",
+        value: "-",
+        comment: "Placeholder shown in the payment breakdown when there is no discount on the booking."
     )
 
 }

@@ -10,9 +10,9 @@ struct POSBookingPaymentView: View {
 
     var body: some View {
         POSPaymentContentView(
-            formattedSubtotal: booking.formattedSubtotal ?? booking.formattedAmount,
-            formattedTax: booking.formattedTax ?? Localization.taxesZero,
-            formattedTotal: booking.formattedAmount,
+            formattedSubtotal: booking.order.formattedSubtotal,
+            formattedTax: booking.order.formattedTotalTax,
+            formattedTotal: booking.order.formattedTotal,
             onDismiss: onDismiss)
             .environment(paymentModel)
             .background(Color.posSurface)
@@ -22,17 +22,5 @@ struct POSBookingPaymentView: View {
             .onDisappear {
                 paymentModel.tearDown()
             }
-    }
-}
-
-// MARK: - Localization
-
-private extension POSBookingPaymentView {
-    enum Localization {
-        static let taxesZero = NSLocalizedString(
-            "pointOfSale.bookingPayment.taxesZero",
-            value: "$0.00",
-            comment: "Placeholder for zero taxes in the booking payment screen"
-        )
     }
 }

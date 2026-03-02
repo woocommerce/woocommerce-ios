@@ -1,2 +1,1 @@
-İyileştirilmiş Satış Noktası öğe aramamız her zamankinden daha hızlı. Ürünleri bulmanızı sağlar ve şimdi sonuçlar varyasyonları da içerir! Sonuçlar anında görüntülenir ve istediğiniz sözcük sırasını aramanız için kullanabilirsiniz.
-Ayrıca ürün filtrelerine ve gönderim adresi güncellemelerine yapılan düzeltmelerle sipariş oluşturmayı pürüzsüzleştirdik. Mağazanızın mükemmel şekilde çalışmaya devam etmesini sağlamak için hemen bugün güncelleyin!
+Bu güncelleme, mağaza kurulum görevlerini daha güvenilir bir şekilde gösterir, Barkod taramanın Satış Noktası'nda kesintisiz çalışmasını sağlar ve ortam kütüphanesinin güvenilirliğini artırır. Daha sorunsuz bir mağaza yönetimi deneyimi için şimdi güncelle!

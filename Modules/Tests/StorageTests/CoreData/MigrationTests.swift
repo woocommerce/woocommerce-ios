@@ -2364,7 +2364,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedCustomerInfo.value(forKey: "note") as? String, updatedNote)
     }
 
-    func test_migrating_from_131_to_132_adds_new_attributes_to_bookingOrderInfo() throws {
+    func test_migrating_from_131_to_132_adds_datePaid_attribute_to_bookingOrderInfo() throws {
         // Given
         let sourceContainer = try startPersistentContainer("Model 131")
         let sourceContext = sourceContainer.viewContext
@@ -2372,11 +2372,7 @@ final class MigrationTests: XCTestCase {
         let orderInfo = insertBookingOrderInfo(to: sourceContext)
         try sourceContext.save()
 
-        XCTAssertNil(orderInfo.entity.attributesByName["orderID"], "Precondition. Attribute does not exist.")
-        XCTAssertNil(orderInfo.entity.attributesByName["orderNumber"], "Precondition. Attribute does not exist.")
-        XCTAssertNil(orderInfo.entity.attributesByName["dateCreated"], "Precondition. Attribute does not exist.")
         XCTAssertNil(orderInfo.entity.attributesByName["datePaid"], "Precondition. Attribute does not exist.")
-        XCTAssertNil(orderInfo.entity.attributesByName["discountTotal"], "Precondition. Attribute does not exist.")
 
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 132")
@@ -2385,17 +2381,56 @@ final class MigrationTests: XCTestCase {
         let targetContext = targetContainer.viewContext
         let migratedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
 
-        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["orderID"])
-        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["orderNumber"])
-        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["dateCreated"])
+        // `datePaid` should be present in `migratedOrderInfo`
         XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["datePaid"])
-        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["discountTotal"])
 
-        XCTAssertEqual(migratedOrderInfo.value(forKey: "orderID") as? Int64, 0)
-        XCTAssertNil(migratedOrderInfo.value(forKey: "orderNumber") as? String)
-        XCTAssertNil(migratedOrderInfo.value(forKey: "dateCreated") as? Date)
-        XCTAssertNil(migratedOrderInfo.value(forKey: "datePaid") as? Date)
-        XCTAssertNil(migratedOrderInfo.value(forKey: "discountTotal") as? String)
+        let datePaidValue = migratedOrderInfo.value(forKey: "datePaid") as? Date
+        XCTAssertNil(datePaidValue)
+
+        let updatedDate = Date()
+        migratedOrderInfo.setValue(updatedDate, forKey: "datePaid")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "datePaid") as? Date, updatedDate)
+    }
+
+    func test_migrating_from_131_to_132_adds_total_and_refundTotal_attributes_to_bookingOrderInfo() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 131")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderInfo = insertBookingOrderInfo(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderInfo.entity.attributesByName["total"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(orderInfo.entity.attributesByName["refundTotal"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 132")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["total"])
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["refundTotal"])
+
+        // Defaults should be 0
+        let totalValue = migratedOrderInfo.value(forKey: "total") as? NSDecimalNumber
+        XCTAssertEqual(totalValue, NSDecimalNumber(string: "0"))
+
+        let refundTotalValue = migratedOrderInfo.value(forKey: "refundTotal") as? NSDecimalNumber
+        XCTAssertEqual(refundTotalValue, NSDecimalNumber(string: "0"))
+
+        // Verify values can be updated
+        let updatedTotal = NSDecimalNumber(string: "99.99")
+        let updatedRefundTotal = NSDecimalNumber(string: "25.00")
+        migratedOrderInfo.setValue(updatedTotal, forKey: "total")
+        migratedOrderInfo.setValue(updatedRefundTotal, forKey: "refundTotal")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "total") as? NSDecimalNumber, updatedTotal)
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "refundTotal") as? NSDecimalNumber, updatedRefundTotal)
     }
 }
 

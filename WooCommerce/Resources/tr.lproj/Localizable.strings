@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-16 10:54:04+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:22+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -953,18 +953,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "Rezerve edilebilir";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "Rezerve Etti";
-
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "İptal edildi";
-
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "Giriş yaptı";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "Gelmedi";
-
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Bilinmiyor";
 
@@ -988,12 +976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Zaman";
-
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "Raporlarınızı doğru tutmak ve rezervasyon trendlerini tespit etmek için katılımı işaretleyin.";
-
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "Katılım";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "%1$d numaralı Rezervasyonun katılım durumu değiştirilemiyor.";
@@ -1046,20 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "Not";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "Durum";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "%1$d numaralı Rezervasyon ödendi olarak işaretlenemedi.";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "Rezervasyon No.%1$d";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "Rezervasyonu iptal et";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "Ödendi olarak işaretle";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "Siparişi görüntüle";
@@ -1069,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Ödeme";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "Ödendi olarak işaretle";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Hizmet";
@@ -7858,27 +7828,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Tercihlerinizi güncelleyin";
 
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "Randevu planlandı ama henüz gerçekleşmedi.";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "Rezerve Edildi";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "Müşteri geldi ve oturum planlandığı gibi gerçekleşti.";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "Giriş yaptı";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "Müşteri önceden iptal etmeden randevuyu kaçırdı.";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "Gelmedi";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "Katılım durumunu güncelle";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Yazılım güncelleniyor";
 
@@ -9655,7 +9604,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFilters.rowTitlePaymentStatus" = "Ödeme Durumu";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "Hizmet\/Etkinlik";
+"bookingFilters.rowTitleService" = "Hizmet";
 
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Ekip Üyesi";
@@ -9735,14 +9684,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Daha fazla sonuç görmek için arama teriminizi düzenlemeyi deneyin";
 
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "Hizmet veya etkinlik bulunamadı";
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "Hiçbir hizmet bulunamadı";
 
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "Hizmet\/etkinlik ara";
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Ara hizmeti";
 
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "Hizmet\/Etkinlik";
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Hizmet";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "İptal edildi";
@@ -11684,12 +11633,6 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "Bilinmiyor";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "Ödeme okuyucuda iptal edildi";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Ödemeyi tekrar dene";
-
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "Kart takıldı";
 
@@ -12635,12 +12578,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "Geri ödeme oluşturulamadı";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "İndirim toplamı: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "İndirim toplamı";
-
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Sipariş makbuzunu e-posta ile göndermek için dokunun";
 
@@ -12668,21 +12605,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Daha fazla işlem";
 
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "Net ödeme: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "Net Ödeme";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "Toplam ödenen: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "Ödeme yöntemi: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "Toplam ödenen";
-
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Miktar: %1$@ her biri %2$@, Toplam %3$@";
 
@@ -12694,33 +12616,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "Neden: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "Geri ödeme yapıldı: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Neden: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "Geri ödeme yapıldı";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "Ürün ara toplamı: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "Vergiler: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "Vergiler";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "Sipariş toplamı: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "Toplam";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Toplamlar";
@@ -12996,8 +12891,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "Yeni sipariş";
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Faturayı e-posta ile gönderin";
@@ -15209,9 +15104,6 @@ which should be translated separately and considered part of this sentence. */
 /* Button title to navigate to the store after successful WPCom connection setup. */
 "wpComConnectionSetupViewModel.goToMyStore" = "Mağazama Git";
 
-/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
-"wpComConnectionSetupViewModel.subtitle" = "%@ mağazanızın WordPress.com hesabınıza bağlanması tamamlanırken lütfen bekleyin.";
-
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Tekrar dene";
 
@@ -15242,18 +15134,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "E-posta adresinizin doğru olduğundan emin olun ve istenmeyen posta klasörünüzü iki kez kontrol edin.";
 
-/* Button to submit a WPCom email on the login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "Devam";
-
-/* Subtitle for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "Mağazanıza bağlanmak için WordPress.com hesabınızla oturum açın.";
-
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
-"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "Devam ederek %1$@ belgemizi kabul eder ve WordPress.com ile %2$@ onaylarsınız.";
-
-/* Title for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.title" = "WordPress.com'a bağlan";
-
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "Size anında giriş yapacağınız bir bağlantıyı e-posta ile göndereceğiz, hiç bir şifreye gerek yok.";
 
@@ -15277,9 +15157,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "Devam";
-
-/* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.description" = "Yeni siparişler, yorumlar ve daha fazlası için anlık bildirimlere erişim elde etmek üzere mağazanızı bir WordPress.com hesabına bağlayın.";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "Şimdi değil";

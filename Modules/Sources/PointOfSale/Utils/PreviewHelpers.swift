@@ -562,6 +562,7 @@ extension POSPreviewHelpers {
         [
             POSBooking(
                 id: 1,
+                customerID: 10,
                 customerName: "Margarita Nikolaevna",
                 serviceName: "Women's Haircut",
                 startDate: Date(),
@@ -584,6 +585,7 @@ extension POSPreviewHelpers {
             ),
             POSBooking(
                 id: 2,
+                customerID: 11,
                 customerName: "Jane Doe",
                 serviceName: "Massage",
                 startDate: Date().addingTimeInterval(7200),
@@ -605,6 +607,7 @@ extension POSPreviewHelpers {
             ),
             POSBooking(
                 id: 3,
+                customerID: 12,
                 customerName: "Alex Johnson",
                 serviceName: "Consultation",
                 startDate: Date().addingTimeInterval(-3600),
@@ -642,6 +645,7 @@ extension POSPreviewHelpers {
         )
         return POSBooking(
             id: 333,
+            customerID: 10,
             customerName: "Margarita Nikolaevna",
             serviceName: "Women's Haircut",
             startDate: now,
@@ -686,6 +690,7 @@ extension POSPreviewHelpers {
         )
         return POSBooking(
             id: 334,
+            customerID: 10,
             customerName: "Margarita Nikolaevna",
             serviceName: "Women's Haircut",
             startDate: now,
@@ -770,6 +775,7 @@ extension POSPreviewHelpers {
         )
         return POSBooking(
             id: 336,
+            customerID: 12,
             customerName: "Alex Johnson",
             serviceName: "Consultation",
             startDate: now,
@@ -814,6 +820,7 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func updateBooking(bookingID: Int64) async throws {}
     func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async {}
     func updateBookingNote(bookingID: Int64, note: String) async throws {}
+    func reset() { selectedDate = Date(); selectedBooking = nil }
     func searchBookings(searchTerm: String) async {}
     func clearSearchBookings() {}
 }

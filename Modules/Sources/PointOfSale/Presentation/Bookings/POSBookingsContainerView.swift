@@ -68,7 +68,7 @@ struct POSBookingsContainerView: View {
         }
         .animation(.default, value: bookingsModel.bookingsController.bookingsViewState.bookings.isEmpty)
         .onDisappear {
-            bookingsModel.bookingsController.selectBooking(nil)
+            bookingsModel.bookingsController.reset()
         }
     }
 }

@@ -262,3 +262,14 @@ Opt-in only rules configured in `.swiftlint.yml`:
 See `Modules/Package.swift` for the definitive list of supported platforms, internal module targets, and external dependencies. Key architectural constraints:
 - WooCommerce app must only import Yosemite for business logic (never Networking or Storage directly)
 - Yosemite bridges Networking and Storage
+
+## Agent Verification
+
+Agents can verify their changes work from a user's perspective using two complementary loops:
+
+- **`/verify`** — E2E simulator verification: builds the app, launches on simulator with WireMock mocked data, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/feature-map.json`.
+- **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
+
+**Prerequisites**: Node.js v22+, Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
+
+See `.claude/rules/verification.md` for full details on tools, mock server setup, and launch arguments.

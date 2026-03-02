@@ -10,13 +10,13 @@ Agents can verify their changes work from a user's perspective using two complem
 
 ## `/verify` — E2E Simulator Verification
 
-Builds the app, launches it on the simulator with mocked data (WireMock), and uses mobile-mcp to navigate the UI and verify features work. Auto-detects which features changed via `git diff` and the feature map.
+Builds the app, launches on the simulator, and uses mobile-mcp to navigate the UI and verify features work. Auto-detects which features changed via `git diff` and the feature map.
 
 ```bash
 /verify              # auto-detect scope from git diff
 ```
 
-**How it works**: Build app -> start WireMock -> launch on simulator with mock args -> navigate to feature tabs -> screenshot and verify accessibility elements -> cleanup.
+**Environment-aware**: The agent first assesses the current state — if the simulator already has a built app with an active session (the common case during development), it just builds, re-launches, and verifies. It only sets up WireMock mocked environment when there's no existing session, deterministic mock data is needed, or the user explicitly requests it.
 
 **Feature map**: `.claude/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 

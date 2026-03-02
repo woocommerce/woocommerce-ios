@@ -21,7 +21,7 @@ struct POSBookingNoteView: View {
     @State private var shouldMinimizePadding: Bool = false
 
     private var originalNote: String
-    private var isEditingExistingNote: Bool
+    @State private var isEditingExistingNote: Bool
 
     init(booking: POSBooking, isShowingNoteView: Binding<Bool>) {
         self.booking = booking

@@ -62,14 +62,16 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             }
         default:
             NavigationStack(path: $detailNavigationPath) {
-                if let selection = selection {
-                    detail(selection, $detailNavigationPath)
-                } else {
-                    sidebar($selection)
-                }
+                sidebar($selection)
+                    .navigationDestination(for: SelectionValue.self) { selectedValue in
+                        detail(selectedValue, $detailNavigationPath)
+                    }
             }
-            .onChange(of: selection) { _, _ in
+            .onChange(of: selection) { _, newSelection in
                 detailNavigationPath = NavigationPath()
+                if let newSelection {
+                    detailNavigationPath.append(newSelection)
+                }
             }
         }
     }

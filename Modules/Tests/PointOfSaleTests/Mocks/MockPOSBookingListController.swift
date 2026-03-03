@@ -25,6 +25,7 @@ final class MockPOSBookingListController: POSSearchingBookingListControllerProto
     var updateBookingNoteCalledWith: (bookingID: Int64, note: String)?
     var searchBookingsCalledWith: String?
     var clearSearchBookingsCalled = false
+    var resetCalled = false
 
     // MARK: - Optimistic update tracking
 
@@ -49,6 +50,10 @@ final class MockPOSBookingListController: POSSearchingBookingListControllerProto
 
     func loadNextBookings() async {
         loadNextBookingsCalled = true
+    }
+
+    func reset() {
+        resetCalled = true
     }
 
     func selectBooking(_ booking: POSBooking?) {

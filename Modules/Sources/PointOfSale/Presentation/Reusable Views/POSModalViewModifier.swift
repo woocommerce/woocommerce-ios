@@ -100,6 +100,11 @@ struct POSModalViewModifier<Item: Identifiable & Equatable, ModalContent: View>:
                     modalManager.dismiss()
                 }
             }
+            .onDisappear {
+                if item != nil {
+                    modalManager.dismiss()
+                }
+            }
     }
 }
 
@@ -126,6 +131,11 @@ struct POSModalViewModifierForBool<ModalContent: View>: ViewModifier {
                     }
                 } else {
                     // External dismissal
+                    modalManager.dismiss()
+                }
+            }
+            .onDisappear {
+                if isPresented {
                     modalManager.dismiss()
                 }
             }

@@ -78,7 +78,7 @@ struct POSOrderDetailsView: View {
             POSRefundModalContentView(
                 state: state,
                 modalState: $refundModalState,
-                onEmailReceipt: { isShowingEmailReceiptView = true },
+                order: order,
                 onRetryLoading: { initiateRefundFlow() },
                 onRetryPreparation: {
                     if autoStartRefund {

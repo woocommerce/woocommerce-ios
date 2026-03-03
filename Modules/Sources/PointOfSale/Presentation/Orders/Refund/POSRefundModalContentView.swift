@@ -1,5 +1,6 @@
 import CocoaLumberjackSwift
 import SwiftUI
+import struct Yosemite.POSOrder
 
 // MARK: - Refund Modal State
 
@@ -51,7 +52,11 @@ struct POSRefundModalContentView: View {
     @Binding var modalState: RefundModalState?
     @Environment(POSOrderListModel.self) private var orderListModel
 
-    let onEmailReceipt: () -> Void
+    /// Dismisses the modal directly, bypassing the `onChange(of:)` chain in `POSModalViewModifier`
+    /// which can fail to fire when the view is inside a pushed navigation destination.
+    @Environment(\.posModalDismissAction) private var dismissModal
+
+    let order: POSOrder
     let onRetryLoading: () -> Void
     let onRetryPreparation: () -> Void
     let onEditRefund: (() -> Void)?
@@ -61,8 +66,16 @@ struct POSRefundModalContentView: View {
 
     let errorStrings: POSRefundErrorStrings
 
+    @State private var isShowingEmailReceiptView = false
+
     var body: some View {
         content
+            .fullScreenCover(isPresented: $isShowingEmailReceiptView) {
+                POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                    try await orderListModel.sendReceipt(order: order, email: email)
+                }
+                .posHeaderBackButtonIcon(systemName: "xmark")
+            }
     }
 
     @ViewBuilder
@@ -75,23 +88,23 @@ struct POSRefundModalContentView: View {
                 title: errorStrings.loadTitle,
                 subtitle: errorStrings.loadSubtitle,
                 onRetry: onRetryLoading,
-                onCancel: { modalState = nil },
-                onClose: { modalState = nil }
+                onCancel: { dismissModal?() },
+                onClose: { dismissModal?() }
             )
         case .preparationError:
             POSRefundErrorView(
                 title: errorStrings.prepareTitle,
                 subtitle: errorStrings.prepareSubtitle,
                 onRetry: onRetryPreparation,
-                onCancel: { modalState = nil },
-                onClose: { modalState = nil }
+                onCancel: { dismissModal?() },
+                onClose: { dismissModal?() }
             )
         case .nothingToRefund:
-            POSRefundNothingToRefundView(onClose: { modalState = nil })
+            POSRefundNothingToRefundView(onClose: { dismissModal?() })
         case .itemSelection:
             if showsItemSelection {
                 POSRefundItemsSelectionView(
-                    onClose: { modalState = nil },
+                    onClose: { dismissModal?() },
                     onContinue: { navigateToRefundReview() }
                 )
             } else {
@@ -99,7 +112,7 @@ struct POSRefundModalContentView: View {
             }
         case .review(let reviewData):
             POSRefundReviewView(
-                onClose: { modalState = nil },
+                onClose: { dismissModal?() },
                 itemsCount: reviewData.itemsCount,
                 formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
                 formattedTax: reviewData.formattedTax,
@@ -119,14 +132,14 @@ struct POSRefundModalContentView: View {
                     modalState = .review(updated)
                 },
                 onBack: { modalState = .review(reviewData) },
-                onClose: { modalState = nil }
+                onClose: { dismissModal?() }
             )
         case .confirmation(let reviewData):
             POSRefundConfirmationView(
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 isProcessing: false,
-                onClose: { modalState = nil },
+                onClose: { dismissModal?() },
                 onConfirm: {
                     modalState = .processing(reviewData)
                     Task { @MainActor in
@@ -149,17 +162,17 @@ struct POSRefundModalContentView: View {
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 customerEmail: reviewData.customerEmail,
-                onDone: { modalState = nil },
-                onEmailReceipt: onEmailReceipt,
-                onClose: { modalState = nil }
+                onDone: { dismissModal?() },
+                onEmailReceipt: { isShowingEmailReceiptView = true },
+                onClose: { dismissModal?() }
             )
         case .error(let reviewData):
             POSRefundErrorView(
                 title: errorStrings.createTitle,
                 subtitle: errorStrings.createSubtitle,
                 onRetry: { modalState = .confirmation(reviewData) },
-                onCancel: { modalState = nil },
-                onClose: { modalState = nil }
+                onCancel: { dismissModal?() },
+                onClose: { dismissModal?() }
             )
         }
     }

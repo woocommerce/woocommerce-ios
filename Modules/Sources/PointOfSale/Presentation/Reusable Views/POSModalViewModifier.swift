@@ -29,6 +29,7 @@ struct POSRootModalViewModifier: ViewModifier {
                     ZStack {
                         modalManager.getContent()
                             .environment(\.posModalParentSize, modalParentSize)
+                            .environment(\.posModalDismissAction, { modalManager.dismiss() })
                             .background(Color.posSurfaceBright)
                             .cornerRadius(modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                             .posShadow(modalManager.isFullScreen ? .none : .large,
@@ -236,6 +237,26 @@ extension EnvironmentValues {
     var posModalParentSize: CGSize {
         get { self[POSModalParentSizeKey.self] }
         set { self[POSModalParentSizeKey.self] = newValue }
+    }
+}
+
+// MARK: - POS Modal Dismiss Action Environment
+
+/// Environment key providing a direct dismiss action for POS modal content.
+///
+/// When modal content is inside a `NavigationStack` destination (e.g. the bookings refund flow),
+/// parent view re-renders can disrupt `onChange(of:)` tracking on the pushed view, preventing
+/// the binding-based dismiss path in `POSModalViewModifier` from firing.
+/// This environment action provides a reliable alternative that calls `POSModalManager.dismiss()` directly.
+struct POSModalDismissActionKey: EnvironmentKey {
+    static let defaultValue: (() -> Void)? = nil
+}
+
+extension EnvironmentValues {
+    /// A closure that directly dismisses the current POS modal.
+    var posModalDismissAction: (() -> Void)? {
+        get { self[POSModalDismissActionKey.self] }
+        set { self[POSModalDismissActionKey.self] = newValue }
     }
 }
 

@@ -402,6 +402,11 @@ private extension BookingDetailsViewModel {
             .topmostPresentedViewController else {
             return
         }
+        refundController.onDismissCallback = { [weak self] in
+            Task {
+                await self?.syncData()
+            }
+        }
         presenter.present(refundController, animated: true)
     }
 }

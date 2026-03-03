@@ -32,6 +32,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .bookingDetailViewLinkedOrderTap)
         }
 
+        static func refundTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailRefundTap)
+        }
+
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
                 Properties.action: action.rawValue

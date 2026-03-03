@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import Storage
 @testable import WooCommerce
 @testable import Yosemite

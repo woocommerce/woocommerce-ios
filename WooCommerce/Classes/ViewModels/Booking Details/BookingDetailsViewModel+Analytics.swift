@@ -14,22 +14,22 @@ extension WooAnalyticsEvent {
         }
 
         static func bookingCancelled() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingCancelled)
+            WooAnalyticsEvent(statName: .bookingDetailCancelBooking)
         }
 
-        static func bookingAttenceStatusUpdated(status: BookingAttendanceStatus) -> WooAnalyticsEvent {
+        static func attendanceStatusUpdate(status: BookingAttendanceStatus) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
-                statName: .bookingAttenceStatusUpdated,
+                statName: .bookingDetailAttendanceStatusUpdate,
                 properties: [Properties.bookingStatus: status.rawValue]
             )
         }
 
-        static func bookingAddNoteTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingAddNoteTapped)
+        static func addNoteTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailAddNoteTap)
         }
 
-        static func bookingViewLinkedOrderTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingViewLinkedOrderTapped)
+        static func viewLinkedOrderTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailViewLinkedOrderTap)
         }
 
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {

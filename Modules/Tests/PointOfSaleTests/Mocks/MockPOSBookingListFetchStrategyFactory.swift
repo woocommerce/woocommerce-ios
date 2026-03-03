@@ -34,7 +34,7 @@ final class MockPOSBookingListFetchStrategyFactory: POSBookingListFetchStrategyF
     }
 }
 
-final class MockPOSBookingService: POSBookingServiceProtocol {
+final class MockPOSBookingService: POSBookingServiceProtocol, @unchecked Sendable {
     var fetchBookingsResult: Result<PagedItems<POSBooking>, Error> = .success(PagedItems(items: [], hasMorePages: false, totalItems: nil))
     var cancelBookingError: Error?
     var cancelBookingCallCount = 0

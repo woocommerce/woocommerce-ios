@@ -3,7 +3,7 @@ import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
-    let booking: POSBooking
+    @Binding var booking: POSBooking
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -362,11 +362,13 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
         paymentModel = nil
+        guard paymentSucceeded else { return }
         Task { @MainActor in
             isDetailsUpdating = true
-            await bookingsModel.updateAfterPayment(bookingID: booking.id)
+            await bookingsModel.updateAfterSuccessfulPayment(bookingID: booking.id)
             isDetailsUpdating = false
         }
     }
@@ -646,28 +648,28 @@ private enum Localization {
 #if DEBUG
 #Preview("Paid Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewPaidBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewPaidBooking()),
         onBack: {}
     )
 }
 
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewUnpaidBooking()),
         onBack: {}
     )
 }
 
 #Preview("Guest Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewGuestBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewGuestBooking()),
         onBack: {}
     )
 }
 
 #Preview("Cancelled Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewCancelledBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewCancelledBooking()),
         onBack: {}
     )
 }

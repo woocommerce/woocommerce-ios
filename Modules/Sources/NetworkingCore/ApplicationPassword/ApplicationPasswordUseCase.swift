@@ -54,15 +54,31 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let applicationPasswordName: String
 
+    /// Background task that discovers the REST API root URL eagerly on init,
+    /// so REST requests made immediately after use the correct base path.
+    /// Only used when the network is not `AlamofireNetwork` (which handles discovery internally).
+    ///
+    private let discoveryTask: Task<Void, Never>?
+
     /// Internal initializer
     public init(type: AuthenticationType,
                 network: Network,
                 passwordName: String? = nil,
-                storage: ApplicationPasswordStorageType? = nil) {
+                storage: ApplicationPasswordStorageType? = nil,
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) {
         self.authenticationType = type
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
+
+        if case .wporg(_, _, let siteAddress) = type, !(network is AlamofireNetwork) {
+            self.discoveryTask = Task {
+                guard rootCache.root(for: siteAddress) == nil else { return }
+                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
+            }
+        } else {
+            self.discoveryTask = nil
+        }
     }
 
     /// Public initializer for wporg authentication
@@ -70,13 +86,22 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 password: String,
                 siteAddress: String,
                 network: Network? = nil,
-                storage: ApplicationPasswordStorageType? = nil) throws {
+                storage: ApplicationPasswordStorageType? = nil,
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) throws {
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()
 
         if let network {
             self.network = network
+            if network is AlamofireNetwork {
+                self.discoveryTask = nil
+            } else {
+                self.discoveryTask = Task {
+                    guard rootCache.root(for: siteAddress) == nil else { return }
+                    _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
+                }
+            }
         } else {
             guard let loginURL = URL(string: siteAddress + Constants.loginPath),
                   let adminURL = URL(string: siteAddress + Constants.adminPath) else {
@@ -89,6 +114,10 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                                                                loginURL: loginURL,
                                                                adminURL: adminURL)
             self.network = WordPressOrgNetwork(configuration: config)
+            self.discoveryTask = Task {
+                guard rootCache.root(for: siteAddress) == nil else { return }
+                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)
+            }
         }
     }
 
@@ -148,6 +177,13 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
 }
 
 private extension DefaultApplicationPasswordUseCase {
+    /// Awaits REST API discovery before making REST requests when the network is not `AlamofireNetwork`.
+    /// No-op when the discovery task is nil (e.g. for wpcom auth or when `AlamofireNetwork` handles it).
+    ///
+    func awaitDiscoveryIfNeeded() async {
+        await discoveryTask?.value
+    }
+
     /// Helper method to create password name from device
     static func createPasswordName() -> String {
         let bundleIdentifier = Bundle.main.bundleIdentifier ?? "Unknown"
@@ -201,6 +237,7 @@ private extension DefaultApplicationPasswordUseCase {
             }
         }()
 
+        await awaitDiscoveryIfNeeded()
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -240,6 +277,7 @@ private extension DefaultApplicationPasswordUseCase {
     func fetchUUIDForApplicationPassword(_ passwordName: String) async throws -> String {
         let request = constructRequest(method: .get, path: Path.applicationPasswords)
 
+        await awaitDiscoveryIfNeeded()
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -267,6 +305,7 @@ private extension DefaultApplicationPasswordUseCase {
     func deleteApplicationPassword(_ uuid: String) async throws {
         let request = constructRequest(method: .delete, path: Path.applicationPasswords + "/" + uuid)
 
+        await awaitDiscoveryIfNeeded()
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {

@@ -2,6 +2,7 @@ import Testing
 import Foundation
 import Combine
 import struct Yosemite.Order
+import struct Yosemite.Address
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 @testable import PointOfSale
 
@@ -154,6 +155,37 @@ struct POSPaymentModelTests {
         #expect(receiptSender.sendReceiptWasCalled == true)
         #expect(receiptSender.sendReceiptCalledWithOrderID == 123)
         #expect(receiptSender.sendReceiptCalledWithEmail == "test@example.com")
+    }
+
+    @Test("sendReceipt updates customerBillingEmail to sent email")
+    @MainActor
+    func sendReceipt_when_successful_then_updates_customerBillingEmail() async throws {
+        // Given
+        let receiptSender = MockPOSReceiptSender()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        let initialAddress = Address(firstName: "", lastName: "", company: nil, address1: "",
+                                     address2: nil, city: "", state: "", postcode: "",
+                                     country: "", phone: nil, email: "old@example.com")
+        let order = Order.fake().copy(orderID: 123, total: "10.00", billingAddress: initialAddress)
+        orderProvider.orderToReturn = order
+        orderProvider.totalDecimalToReturn = 10
+
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            receiptSender: receiptSender)
+
+        await sut.startPayment()
+        #expect(sut.customerBillingEmail == "old@example.com")
+
+        // When
+        try await sut.sendReceipt(to: "new@example.com")
+
+        // Then
+        #expect(sut.customerBillingEmail == "new@example.com")
     }
 
     @Test("sendReceipt throws when no current order")

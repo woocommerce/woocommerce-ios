@@ -42,6 +42,15 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isShowingSecondaryButton)
     }
 
+    func test_initial_state_has_two_steps_when_site_already_connected() {
+        // Given
+        let viewModel = makeViewModel(siteAlreadyConnected: true)
+
+        // Then — connect step is hidden
+        XCTAssertEqual(viewModel.steps.count, 2)
+        XCTAssertFalse(viewModel.steps.map(\.title).contains("Connect store to WordPress.com"))
+    }
+
     // MARK: - Delegate Update Tests
 
     func test_stepDidUpdate_updates_step_status() {
@@ -358,9 +367,11 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func makeViewModel(analytics: Analytics = ServiceLocator.analytics) -> WPComConnectionSetupViewModel {
+    private func makeViewModel(siteAlreadyConnected: Bool = false,
+                               analytics: Analytics = ServiceLocator.analytics) -> WPComConnectionSetupViewModel {
         WPComConnectionSetupViewModel(
             storeName: "Test Store",
+            siteAlreadyConnected: siteAlreadyConnected,
             handler: mockHandler,
             analytics: analytics,
             onDismiss: { [weak self] in self?.dismissCalled = true },

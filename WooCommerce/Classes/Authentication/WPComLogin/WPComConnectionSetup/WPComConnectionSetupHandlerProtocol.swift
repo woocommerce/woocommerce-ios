@@ -114,7 +114,6 @@ private extension WPComConnectionSetupHandler {
                     if !siteAlreadyConnected {
                         startJetpackConnection()
                     } else {
-                        delegate?.stepDidUpdate(.connect, status: .success)
                         startPushRegistration()
                     }
                 case .incompatible(let currentVersion, _):

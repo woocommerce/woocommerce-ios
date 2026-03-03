@@ -52,7 +52,7 @@ EOF
 )"
 ```
 
-8. **Add labels.** After creating the PR, add labels using `gh pr edit <number> --add-label "<label>"`. Pick labels from these categories:
+8. **Add labels.** After creating the PR, add all labels in a single call using multiple `--add-label` flags: `gh pr edit <number> --add-label "<label1>" --add-label "<label2>"`. Pick labels from these categories:
    - **Type** (pick one): `type: bug`, `type: crash`, `type: enhancement`, `type: task`, `type: technical debt`, `type: documentation`, `type: question`
    - **Feature** (pick one if applicable): match the changed area to a `feature: *` label (e.g., `feature: POS`, `feature: order list`, `feature: order details`, `feature: product details`, `feature: login`, `feature: dashboard`, `feature: analytics hub`, `feature: coupons`, `feature: shipping labels`, `feature: order creation`, `feature: notifications`, `feature: Blaze`, `feature: CIAB Mobile Experience`, `feature: subscriptions`, `feature: app settings`, etc.)
    - **Priority** (pick one if known): `priority: low`, `priority: medium`, `priority: high`, `priority: critical`

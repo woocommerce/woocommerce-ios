@@ -3,7 +3,7 @@ import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
-    let booking: POSBooking
+    @Binding var booking: POSBooking
     @Binding var navigationPath: NavigationPath
     let onBack: () -> Void
 
@@ -351,11 +351,13 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
         paymentModel = nil
+        guard paymentSucceeded else { return }
         Task { @MainActor in
             isDetailsUpdating = true
-            await bookingsModel.updateAfterPayment(bookingID: booking.id)
+            await bookingsModel.updateAfterSuccessfulPayment(bookingID: booking.id)
             isDetailsUpdating = false
         }
     }
@@ -635,7 +637,7 @@ private enum Localization {
 #if DEBUG
 #Preview("Paid Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewPaidBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewPaidBooking()),
         navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
@@ -643,7 +645,7 @@ private enum Localization {
 
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewUnpaidBooking()),
         navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
@@ -651,7 +653,7 @@ private enum Localization {
 
 #Preview("Guest Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewGuestBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewGuestBooking()),
         navigationPath: .constant(NavigationPath()),
         onBack: {}
     )
@@ -659,7 +661,7 @@ private enum Localization {
 
 #Preview("Cancelled Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewCancelledBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewCancelledBooking()),
         navigationPath: .constant(NavigationPath()),
         onBack: {}
     )

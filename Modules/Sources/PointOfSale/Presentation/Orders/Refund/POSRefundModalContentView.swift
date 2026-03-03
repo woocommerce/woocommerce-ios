@@ -70,7 +70,7 @@ struct POSRefundModalContentView: View {
 
     var body: some View {
         content
-            .fullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
                     try await orderListModel.sendReceipt(order: order, email: email)
                 }

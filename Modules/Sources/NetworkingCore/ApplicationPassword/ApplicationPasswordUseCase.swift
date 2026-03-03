@@ -222,7 +222,6 @@ private extension DefaultApplicationPasswordUseCase {
     /// - Returns: Generated `ApplicationPassword`
     ///
     func createApplicationPassword() async throws -> ApplicationPassword {
-        await awaitDiscoveryIfNeeded()
         let passwordName = applicationPasswordName
 
         let parameters = [ParameterKey.name: passwordName]
@@ -237,6 +236,8 @@ private extension DefaultApplicationPasswordUseCase {
                 return try await fetchWPOrgUsername(siteID: siteID)
             }
         }()
+
+        await awaitDiscoveryIfNeeded()
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -274,8 +275,9 @@ private extension DefaultApplicationPasswordUseCase {
     /// Get the UUID of the application password
     ///
     func fetchUUIDForApplicationPassword(_ passwordName: String) async throws -> String {
-        await awaitDiscoveryIfNeeded()
         let request = constructRequest(method: .get, path: Path.applicationPasswords)
+
+        await awaitDiscoveryIfNeeded()
         return try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {
@@ -301,8 +303,9 @@ private extension DefaultApplicationPasswordUseCase {
     /// Deletes application password using UUID
     ///
     func deleteApplicationPassword(_ uuid: String) async throws {
-        await awaitDiscoveryIfNeeded()
         let request = constructRequest(method: .delete, path: Path.applicationPasswords + "/" + uuid)
+
+        await awaitDiscoveryIfNeeded()
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { result in
                 switch result {

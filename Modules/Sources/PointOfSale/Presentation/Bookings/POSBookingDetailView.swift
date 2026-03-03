@@ -70,6 +70,9 @@ struct POSBookingDetailView: View {
                     }
                 }
         }
+        .onChange(of: bookingsModel.bookingsController.selectedDate) {
+            navigationPath = []
+        }
         .posFullScreenCover(isPresented: $showPaymentView) {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)

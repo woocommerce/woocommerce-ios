@@ -95,13 +95,6 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
         )
     }
 
-    func createFormattableAmountTextField(preset: Decimal?,
-                                          font: Font,
-                                          onSubmit: @escaping () -> Void,
-                                          onChange: @escaping (String) -> Void) -> AnyView {
-        AnyView(POSFormattableAmountTextFieldAdaptor(preset: preset, font: font, onSubmit: onSubmit, onChange: onChange))
-    }
-
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,

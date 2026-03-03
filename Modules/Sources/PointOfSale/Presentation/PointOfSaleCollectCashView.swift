@@ -49,9 +49,9 @@ struct PointOfSaleCollectCashView: View {
                                       subtitle: formattedOrderTotal,
                                       backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                                      action: {
+                        isTextFieldFocused = false
                         Task { @MainActor in
                             await paymentModel.cancelCashPayment()
-                            isTextFieldFocused = false
                         }
                     }))
 
@@ -114,17 +114,16 @@ struct PointOfSaleCollectCashView: View {
                     errorMessage = nil
                     updateChangeDueMessage()
                 }
-                .onReceive(Publishers.keyboardFrame) {
-                    keyboardFrame = $0
-                    shouldMinimizePadding = $0.intersects(buttonFrame)
+                .onReceive(Publishers.keyboardFrame) { frame in
+                    let screenHeight = UIScreen.main.bounds.height
+                    let isKeyboardDocked = frame != .zero && frame.maxY >= screenHeight - 1
+                    keyboardFrame = isKeyboardDocked ? frame : .zero
+                    shouldMinimizePadding = isKeyboardDocked && frame.intersects(buttonFrame)
                 }
                 .animation(.default, value: shouldMinimizePadding)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            isTextFieldFocused = true
-        }
     }
 
     private func markComplete() async throws {

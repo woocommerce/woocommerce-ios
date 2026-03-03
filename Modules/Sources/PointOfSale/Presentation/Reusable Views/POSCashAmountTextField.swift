@@ -32,6 +32,7 @@ struct POSCashAmountTextField: View {
             .font(.posHeadingRegular)
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .focused($isFocused)
+            .focused()
             .onSubmit {
                 onSubmit()
             }
@@ -42,6 +43,9 @@ struct POSCashAmountTextField: View {
                     amount = formatted
                     hasAppliedPreset = true
                 }
+            }
+            .onDisappear {
+                isFocused = false
             }
             .onChange(of: displayText) { oldValue, newValue in
                 handleTextChange(oldValue: oldValue, newValue: newValue)

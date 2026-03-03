@@ -120,11 +120,14 @@ private extension PointOfSaleCouponsController {
             if !storedCoupons.isEmpty {
                 setCouponsLoadedViewState(storedCoupons, hasMoreItems: true)
             }
-
-            await loadFirstPageRemotely()
         } catch {
-            setCouponsErrorViewState(error)
+            if let couponError = error as? PointOfSaleCouponServiceError,
+               couponError == .couponsDisabled {
+                setCouponsErrorViewState(error)
+                return
+            }
         }
+        await loadFirstPageRemotely()
     }
 
     func loadFirstPageRemotely() async {

@@ -29,6 +29,7 @@ final class WPComConnectionSetupViewModel: ObservableObject {
 
     static let supportSourceTag = "origin:woo-push-notifications-setup"
 
+    let title: String
     let subtitleAttributedString: AttributedString
 
     var primaryButtonTitle: String {
@@ -81,6 +82,8 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         self.onDismiss = onDismiss
         self.onGoToStore = onGoToStore
         self.onUpdatePlugin = onUpdatePlugin
+
+        self.title = siteAlreadyConnected ? Localization.titleSetUpPushNotifications : Localization.titleConnectToWordPressCom
 
         self.subtitleAttributedString = {
             let content = String.localizedStringWithFormat(Localization.subtitle, storeName)
@@ -215,6 +218,16 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
 
 private extension WPComConnectionSetupViewModel {
     enum Localization {
+        static let titleConnectToWordPressCom = NSLocalizedString(
+            "wpComConnectionSetupViewModel.titleConnectToWordPressCom",
+            value: "Connect to WordPress.com",
+            comment: "Title for the WPCom connection setup screen when the site is not yet connected."
+        )
+        static let titleSetUpPushNotifications = NSLocalizedString(
+            "wpComConnectionSetupViewModel.titleSetUpPushNotifications",
+            value: "Set up push notifications",
+            comment: "Title for the WPCom connection setup screen when the site is already connected to WordPress.com."
+        )
         static let subtitle = NSLocalizedString(
             "wpComConnectionSetupViewModel.message",
             value: "Please wait while we finalize connecting your store %1$@ to WordPress.com.",

@@ -51,6 +51,24 @@ final class WPComConnectionSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.steps.map(\.title).contains("Connect store to WordPress.com"))
     }
 
+    // MARK: - Title Tests
+
+    func test_title_is_connect_to_wordpresscom_when_site_not_connected() {
+        // Given / When
+        let viewModel = makeViewModel(siteAlreadyConnected: false)
+
+        // Then
+        XCTAssertEqual(viewModel.title, "Connect to WordPress.com")
+    }
+
+    func test_title_is_set_up_push_notifications_when_site_already_connected() {
+        // Given / When
+        let viewModel = makeViewModel(siteAlreadyConnected: true)
+
+        // Then
+        XCTAssertEqual(viewModel.title, "Set up push notifications")
+    }
+
     // MARK: - Delegate Update Tests
 
     func test_stepDidUpdate_updates_step_status() {

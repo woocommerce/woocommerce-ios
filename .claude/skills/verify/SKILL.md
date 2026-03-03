@@ -38,7 +38,7 @@ git diff --name-only trunk...HEAD
 
 If no diff against trunk, fall back to `git diff --name-only HEAD~1`.
 
-Read `.claude/feature-map.json` and match changed file paths against `pathPatterns` for each feature. Collect all matched features. If no features match, default to `"dashboard"`.
+Read `.claude/feature-map.json` and match changed file paths against `pathPatterns` for each feature. Collect all matched features. If no features match, **skip verification entirely** — report which files changed, note that none matched any feature path pattern, and stop (do not proceed to Steps 3-8).
 
 ## Step 3: Start Mock Server (only if needed)
 

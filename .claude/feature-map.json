@@ -97,6 +97,70 @@
       "interactions": [{"action": "tap", "element": "menu-blaze"}],
       "verifyElements": [],
       "description": "Blaze campaigns screen accessible via Hub Menu"
+    },
+    "settings": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Dashboard/Settings/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "dashboard-settings-button"}],
+      "verifyElements": ["settings-beta-features-button", "settings-log-out-button"],
+      "description": "Settings screen accessible via Hub Menu gear button"
+    },
+    "authentication": {
+      "pathPatterns": [
+        "WooCommerce/Classes/Authentication/",
+        "WooCommerce/Classes/ViewRelated/Authentication/"
+      ],
+      "verifyElements": [],
+      "description": "Authentication and login flows — verify app launches without crashing"
+    },
+    "notifications": {
+      "pathPatterns": [
+        "WooCommerce/Classes/Notifications/"
+      ],
+      "verifyElements": [],
+      "description": "Push notification handling — verify app launches without crashing"
+    },
+    "universal_links": {
+      "pathPatterns": [
+        "WooCommerce/Classes/Universal Links/"
+      ],
+      "verifyElements": [],
+      "description": "Universal link / deep link handling — verify app launches without crashing"
+    },
+    "google_ads": {
+      "pathPatterns": [
+        "WooCommerce/Classes/GoogleAds/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-google-ads"}],
+      "verifyElements": [],
+      "description": "Google Ads screen accessible via Hub Menu"
+    },
+    "inbox": {
+      "pathPatterns": [
+        "WooCommerce/Classes/ViewRelated/Inbox/"
+      ],
+      "tab": "tab-bar-menu-item",
+      "interactions": [{"action": "tap", "element": "menu-inbox"}],
+      "verifyElements": [],
+      "description": "Inbox screen accessible via Hub Menu"
+    },
+    "widgets": {
+      "pathPatterns": [
+        "WooCommerce/StoreWidgets/"
+      ],
+      "verifyElements": [],
+      "description": "Home screen widgets — build-only verification, cannot be launched from app"
+    },
+    "watch_app": {
+      "pathPatterns": [
+        "WooCommerce/Woo Watch App/",
+        "WooCommerce/WatchWidgetsExtension/"
+      ],
+      "verifyElements": [],
+      "description": "Watch app and watch widgets — build-only verification, cannot be tested in iPhone simulator"
     }
   }
 }

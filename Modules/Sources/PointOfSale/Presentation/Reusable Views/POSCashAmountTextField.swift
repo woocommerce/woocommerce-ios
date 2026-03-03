@@ -31,6 +31,7 @@ struct POSCashAmountTextField: View {
             .foregroundStyle(Color.posOnSurface)
             .font(.posHeadingRegular)
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            .disableNumberPadPopover()
             .focused($isFocused)
             .focused()
             .onSubmit {

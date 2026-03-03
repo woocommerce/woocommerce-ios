@@ -114,11 +114,9 @@ struct PointOfSaleCollectCashView: View {
                     errorMessage = nil
                     updateChangeDueMessage()
                 }
-                .onReceive(Publishers.keyboardFrame) { frame in
-                    let screenHeight = UIScreen.main.bounds.height
-                    let isKeyboardDocked = frame != .zero && frame.maxY >= screenHeight - 1
-                    keyboardFrame = isKeyboardDocked ? frame : .zero
-                    shouldMinimizePadding = isKeyboardDocked && frame.intersects(buttonFrame)
+                .onReceive(Publishers.keyboardFrame) {
+                    keyboardFrame = $0
+                    shouldMinimizePadding = $0.intersects(buttonFrame)
                 }
                 .animation(.default, value: shouldMinimizePadding)
             }

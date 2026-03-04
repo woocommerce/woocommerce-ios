@@ -499,8 +499,7 @@
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		9379E1A5225536AD006A6BE4 /* TestAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9379E1A4225536AD006A6BE4 /* TestAssets.xcassets */; };
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
-		A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */; };
-		A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A650BE852578E76600C655E0 /* MockStorageManager.swift */; };
+		953728F82B23635300FDF1D1 /* UIAlertController+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */; };
 		AE2E5F6629685CF8009262D3 /* ProductsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE2E5F6529685CF8009262D3 /* ProductsListViewModel.swift */; };
 		AE6C4FDF28A15BFE00EAC00D /* FeatureAnnouncementCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6C4FDD28A15BFE00EAC00D /* FeatureAnnouncementCardCell.swift */; };
 		AE6C4FE028A15BFE00EAC00D /* FeatureAnnouncementCardCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = AE6C4FDE28A15BFE00EAC00D /* FeatureAnnouncementCardCell.xib */; };
@@ -1424,8 +1423,7 @@
 		8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "RELEASE-NOTES.txt"; path = "../RELEASE-NOTES.txt"; sourceTree = "<group>"; };
 		9379E1A4225536AD006A6BE4 /* TestAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestAssets.xcassets; sourceTree = "<group>"; };
 		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
-		A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "MockStorageManager+Sample.swift"; path = "../../../Modules/Tests/YosemiteTests/Mocks/MockStorageManager+Sample.swift"; sourceTree = "<group>"; };
-		A650BE852578E76600C655E0 /* MockStorageManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MockStorageManager.swift; path = ../../../Modules/Tests/YosemiteTests/Mocks/MockStorageManager.swift; sourceTree = "<group>"; };
+		953728F72B23635300FDF1D1 /* UIAlertController+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+helpers.swift"; sourceTree = "<group>"; };
 		AE2E5F6529685CF8009262D3 /* ProductsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsListViewModel.swift; sourceTree = "<group>"; };
 		AE6C4FDD28A15BFE00EAC00D /* FeatureAnnouncementCardCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardCell.swift; sourceTree = "<group>"; };
 		AE6C4FDE28A15BFE00EAC00D /* FeatureAnnouncementCardCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FeatureAnnouncementCardCell.xib; sourceTree = "<group>"; };
@@ -2951,8 +2949,6 @@
 				02BAB01E24D0232800F8B06E /* MockProductVariation.swift */,
 				746791652108D87B007CF1DC /* MockAnalyticsProvider.swift */,
 				B555531021B57E6F00449E71 /* MockApplicationAdapter.swift */,
-				A650BE852578E76600C655E0 /* MockStorageManager.swift */,
-				A650BE842578E76600C655E0 /* MockStorageManager+Sample.swift */,
 				B56C721321B5BBC000E5E85B /* MockStoresManager.swift */,
 				03B9E52C2A150D16005C77F5 /* MockTapToPayCardReaderConnectionControllerFactory.swift */,
 				03B9E52E2A150EED005C77F5 /* MockCardReaderSupportDeterminer.swift */,
@@ -5316,7 +5312,6 @@
 				20A3AFE12B0F750B0033AF2D /* MockInPersonPaymentsCashOnDeliveryToggleRowViewModel.swift in Sources */,
 				D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */,
 				EE5B5BBD2AB41ED9009BCBD6 /* MockProductCreationAIEligibilityChecker.swift in Sources */,
-				A650BE862578E76600C655E0 /* MockStorageManager+Sample.swift in Sources */,
 				E1E50D4B26FCC7C200D65F91 /* MockFallibleCancelable.swift in Sources */,
 				3FDA83E62F4C090900CC3259 /* Constants.swift in Sources */,
 				31F21B60263CB78A0035B50A /* MockCardReader.swift in Sources */,
@@ -5339,7 +5334,7 @@
 				01F067ED2D0C5D59001C5805 /* MockLocationService.swift in Sources */,
 				AEB4DB99290AE8F300AE4340 /* MockCookieJar.swift in Sources */,
 				02A275C423FE5B64005C560F /* MockPHAssetImageLoader.swift in Sources */,
-				A650BE872578E76600C655E0 /* MockStorageManager.swift in Sources */,
+				CE2207042CA5C55800E16D9B /* WooShippingCreateLabelsViewModelTests.swift in Sources */,
 				02D635792B58071C00B1CBF6 /* MockNote.swift in Sources */,
 				0182C8BE2CE3B11300474355 /* MockReceiptEligibilityUseCase.swift in Sources */,
 				03F8D87D2A7A76DE00DD6D2F /* MockCardPresentPaymentPreflightController.swift in Sources */,

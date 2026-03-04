@@ -72,6 +72,10 @@ let package = Package(
             targets: ["Yosemite"]
         ),
         .library(
+            name: "YosemiteTestHelpers",
+            targets: ["YosemiteTestHelpers"]
+        ),
+        .library(
             name: "PointOfSale",
             targets: ["PointOfSale"]
         ),
@@ -243,6 +247,10 @@ let package = Package(
             ]
         ),
         .target(
+            name: "YosemiteTestHelpers",
+            dependencies: ["Yosemite"]
+        ),
+        .target(
             name: "PointOfSale",
             dependencies: [
                 "Experiments",
@@ -313,7 +321,8 @@ let package = Package(
                 "TestKit",
                 "WooFoundation",
                 "WordPressShared",
-                "Yosemite"
+                "Yosemite",
+                "YosemiteTestHelpers",
             ],
             resources: [
                 .process("Resources"),
@@ -453,6 +462,7 @@ enum XcodeSupport {
                     "Fakes",
                     "TestKit",
                     "WordPressShared",
+                    "YosemiteTestHelpers",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
                     .product(name: "ViewInspector", package: "ViewInspector"),

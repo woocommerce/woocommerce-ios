@@ -3,6 +3,7 @@ import XCTest
 import Combine
 import Fakes
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 @testable import Networking

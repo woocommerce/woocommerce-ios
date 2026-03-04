@@ -3,6 +3,7 @@ import Fakes
 import Storage
 import enum Networking.NetworkError
 
+import YosemiteTestHelpers
 @testable import Yosemite
 
 private typealias ProductReviewFromNoteRetrieveError = RetrieveProductReviewFromNoteUseCase.ProductReviewFromNoteRetrieveError

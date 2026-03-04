@@ -4,7 +4,7 @@ import Yosemite
 
 // MARK: - MockStorageManager Sample Entity Insertion Methods
 //
-extension MockStorageManager {
+public extension MockStorageManager {
 
     /// Inserts a new (Sample) account into the specified context.
     ///

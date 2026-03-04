@@ -2,6 +2,7 @@ import Foundation
 import TestKit
 import XCTest
 
+import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
 @testable import WooFoundation

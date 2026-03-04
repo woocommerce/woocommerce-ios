@@ -1,6 +1,7 @@
 import Combine
 import XCTest
 import Fakes
+import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
 @testable import Storage

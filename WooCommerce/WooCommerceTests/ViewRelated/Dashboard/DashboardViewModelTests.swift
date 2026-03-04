@@ -4,6 +4,7 @@ import Yosemite
 import enum NetworkingCore.DotcomError
 import protocol WooFoundation.Analytics
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {

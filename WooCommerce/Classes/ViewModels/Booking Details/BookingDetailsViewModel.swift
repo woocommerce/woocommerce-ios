@@ -219,11 +219,11 @@ extension BookingDetailsViewModel {
             }
         }
         stores.dispatch(action)
-        analytics.track(event: .BookingsDetail.bookingAttenceStatusUpdated(status: newStatus))
+        analytics.track(event: .BookingsDetail.attendanceStatusUpdate(status: newStatus))
     }
 
     func notesTapped() {
-        analytics.track(event: .BookingsDetail.bookingAddNoteTapped())
+        analytics.track(event: .BookingsDetail.addNoteTap())
     }
 
     @MainActor
@@ -371,7 +371,7 @@ extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func navigateToOrderDetails() {
-        analytics.track(event: .BookingsDetail.bookingViewLinkedOrderTapped())
+        analytics.track(event: .BookingsDetail.viewLinkedOrderTap())
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
 }

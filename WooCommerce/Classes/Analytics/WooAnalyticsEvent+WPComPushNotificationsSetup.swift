@@ -4,6 +4,7 @@ extension WooAnalyticsEvent {
     enum WPComPushNotificationsSetup {
         private enum Keys: String {
             case buttonLabel = "button_label"
+            case state = "state"
         }
 
         enum BenefitsButton: String {
@@ -16,6 +17,16 @@ extension WooAnalyticsEvent {
             case goToMyStore = "go_to_my_store"
             case tryAgain = "try_again"
             case updatePlugin = "update_plugin"
+        }
+
+        enum IntroductionViewState: String {
+            case notConnected = "not_connected"
+            case updateRequired = "update_required"
+        }
+
+        static func introductionView(state: IntroductionViewState) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pushNotificationsSetupIntroductionView,
+                              properties: [Keys.state.rawValue: state.rawValue])
         }
 
         static func introductionButtonTap(_ button: BenefitsButton) -> WooAnalyticsEvent {

@@ -4,6 +4,25 @@ import Testing
 
 struct WooAnalyticsEvent_PushNotificationsSetupTests {
 
+    // MARK: - introductionView
+
+    @Test func test_introductionView_when_given_each_state_then_produces_correct_event() {
+        // Given
+        let cases: [(WooAnalyticsEvent.WPComPushNotificationsSetup.IntroductionViewState, String)] = [
+            (.notConnected, "not_connected"),
+            (.updateRequired, "update_required")
+        ]
+
+        for (state, expected) in cases {
+            // When
+            let event = WooAnalyticsEvent.WPComPushNotificationsSetup.introductionView(state: state)
+
+            // Then
+            #expect(event.statName == .pushNotificationsSetupIntroductionView)
+            #expect(event.properties["state"] as? String == expected)
+        }
+    }
+
     // MARK: - introductionButtonTap
 
     @Test func test_introductionButtonTap_when_given_each_label_then_produces_correct_event() {

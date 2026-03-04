@@ -1,7 +1,10 @@
-project: 
-    file: ../../../../../WooCommerce/WooCommerce.xcodeproj
-    target: 
-        name: WooCommerce
+sources:
+    include:
+        - ../../../../../WooCommerce/Classes/
+    exclude:
+        - ../../../../../WooCommerce/Classes/Analytics/
 templates:
     - Models+Copiable.swifttemplate
 output: ../../../../../WooCommerce/Classes/Copiable/
+args:
+    moduleName: WooCommerce

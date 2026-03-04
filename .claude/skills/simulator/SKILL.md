@@ -12,37 +12,19 @@ Find a booted simulator or boot one. Returns the UDID for use in subsequent comm
 
 **Never hardcode a simulator name** (e.g., `iPhone 16`). Available simulators change across Xcode versions — always discover dynamically.
 
-## Step 1: Check for a Booted Device
+## Usage
+
+Run the script:
 
 ```bash
-# For iPhone (default):
-xcrun simctl list devices booted | grep -E "iPhone"
+# iPhone (default):
+UDID=$(Scripts/find-simulator.sh iphone)
 
-# For iPad (when requested):
-xcrun simctl list devices booted | grep -E "iPad"
+# iPad:
+UDID=$(Scripts/find-simulator.sh ipad)
 ```
 
-If a matching booted device is found, extract its UDID (the UUID in parentheses) and report it. Done.
-
-## Step 2: Find and Boot an Available Device
-
-If no matching device is booted:
-
-```bash
-# For iPhone (default):
-xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5
-
-# For iPad (when requested):
-xcrun simctl list devices available | grep -E "iPad" | tail -5
-```
-
-Pick the first available device. Extract its UDID. Boot it:
-
-```bash
-xcrun simctl boot <UDID>
-```
-
-Wait a few seconds for the simulator to finish booting, then report the UDID.
+The script prints the UDID to stdout and status messages to stderr. It will boot a simulator if none is already running.
 
 ## Output
 
@@ -50,3 +32,7 @@ Report the simulator name and UDID so the caller can use it:
 ```
 Simulator ready: iPhone 17 (93E9F784-2B91-4D83-BFA5-F1682C28180B)
 ```
+
+## Watch
+
+Watch app verification is not supported — the Watch app runs on a separate watchOS simulator with a different build destination (`watchOS Simulator`). It cannot be tested via the iPhone/iPad iOS simulator used for app verification.

@@ -25,54 +25,49 @@ struct POSCashAmountTextField: View {
     }
 
     var body: some View {
-        TextField("", text: $displayText)
-            .keyboardType(.decimalPad)
-            .multilineTextAlignment(.center)
-            .foregroundStyle(Color.posOnSurface)
-            .font(.posHeadingRegular)
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            .disableNumberPadPopover()
-            .focused($isFocused)
-            .focused()
-            .onSubmit {
-                onSubmit()
-            }
-            .onAppear {
-                if !hasAppliedPreset, let preset {
-                    let formatted = sanitizer.formatDecimal(preset)
-                    displayText = sanitizer.addCurrencySymbol(to: formatted)
-                    amount = formatted
-                    hasAppliedPreset = true
+        HStack(spacing: 0) {
+            Text(sanitizer.currencySymbol)
+                .foregroundStyle(Color.posOnSurface)
+                .font(.posHeadingRegular)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+            TextField("", text: $displayText)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(Color.posOnSurface)
+                .font(.posHeadingRegular)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                .fixedSize(horizontal: true, vertical: false)
+                .disableNumberPadPopover()
+                .focused($isFocused)
+                .focused()
+                .onSubmit {
+                    onSubmit()
                 }
-            }
-            .onDisappear {
-                isFocused = false
-            }
-            .onChange(of: displayText) { oldValue, newValue in
-                handleTextChange(oldValue: oldValue, newValue: newValue)
-            }
+                .onAppear {
+                    if !hasAppliedPreset, let preset {
+                        let formatted = sanitizer.formatDecimal(preset)
+                        displayText = formatted
+                        amount = formatted
+                        hasAppliedPreset = true
+                    }
+                }
+                .onDisappear {
+                    isFocused = false
+                }
+                .onChange(of: displayText) { oldValue, newValue in
+                    handleTextChange(oldValue: oldValue, newValue: newValue)
+                }
+        }
     }
 
     private func handleTextChange(oldValue: String, newValue: String) {
-        let strippedNew = stripCurrencySymbol(from: newValue)
-
-        if let sanitized = sanitizer.sanitize(strippedNew) {
+        if let sanitized = sanitizer.sanitize(newValue) {
             amount = sanitized
-            let withSymbol = sanitizer.addCurrencySymbol(to: sanitized)
-            if displayText != withSymbol {
-                displayText = withSymbol
+            if displayText != sanitized {
+                displayText = sanitized
             }
         } else {
             displayText = oldValue
         }
-    }
-
-    private func stripCurrencySymbol(from text: String) -> String {
-        var stripped = text
-        let symbol = sanitizer.currencySymbol
-        stripped = stripped.replacingOccurrences(of: symbol, with: "")
-        stripped = stripped.replacingOccurrences(of: "\u{00a0}", with: "")
-        stripped = stripped.trimmingCharacters(in: .whitespaces)
-        return stripped
     }
 }

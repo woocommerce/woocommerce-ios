@@ -116,7 +116,8 @@ public class AlamofireNetwork: Network {
                 switch credentials {
                 case let .wporg(_, _, siteAddress): return siteAddress
                 case let .applicationPassword(_, _, siteAddress): return siteAddress
-                default: return nil
+                case let .wpcom(_, _, siteAddress): return siteAddress
+                case .none: return nil
                 }
             }()
             guard let siteURL else { return nil }

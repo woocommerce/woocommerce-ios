@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import SwiftUI
 import UIKit
 
@@ -50,6 +51,8 @@ private final class TextFieldFinderView: UIView {
             guard let self else { return }
             if let textField = self.findTextField() {
                 self.configure(textField)
+            } else {
+                DDLogError("⛔️ POSTextFieldConfigurator: Could not find UITextField in view hierarchy")
             }
         }
     }

@@ -32,17 +32,9 @@ If npx is not found, tell the user to install Node.js (v18+) and stop.
 
 ### Claude Code (CLI)
 
-Find and run the `claude` binary:
+Run the setup script:
 ```bash
-which claude 2>/dev/null || ls "$HOME/.local/bin/claude" 2>/dev/null
-```
-Then register:
-```bash
-claude mcp list 2>&1
-```
-If `context-a8c` is not listed:
-```bash
-claude mcp add --transport stdio --scope user context-a8c -- npx -y @automattic/mcp-context-a8c
+bash .claude/skills/setup-context-a8c/setup-for-claude-code.sh
 ```
 
 ### Claude Desktop

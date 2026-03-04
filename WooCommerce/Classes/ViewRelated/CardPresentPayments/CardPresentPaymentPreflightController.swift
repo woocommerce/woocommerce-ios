@@ -127,18 +127,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             if connectedReader.discoveryMethod == discoveryMethod,
                paymentGatewayAccount.siteID == siteID {
                 return handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
-            } else if connectedReader.discoveryMethod == discoveryMethod {
-                // Reader is connected for a different store — disconnect and reconnect
-                do {
-                    try await automaticallyDisconnectFromReader()
-                    analyticsTracker.automaticallyDisconnectedFromReader()
-                    checkOnboarding()
-                } catch {
-                    return handlePreflightFailure(
-                        error: CardPresentPaymentPreflightError.failedToAutomaticallyDisconnect(reader: connectedReader))
-                }
             } else {
-                // If it's the wrong type, disconnect it automatically and check onboarding
+                // Wrong discovery method or different store - disconnect and reconnect
                 do {
                     try await automaticallyDisconnectFromReader()
                     analyticsTracker.automaticallyDisconnectedFromReader()

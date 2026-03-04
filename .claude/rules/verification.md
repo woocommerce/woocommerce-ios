@@ -3,7 +3,7 @@
 Agents can verify their changes work from a user's perspective using two complementary loops: **snapshot-driven iteration** (fast inner loop) and **simulator-based E2E verification** (slower outer loop).
 
 ## Prerequisites
-- **Node.js v22+** — required by mobile-mcp for simulator interaction
+- **Node.js** (see `.nvmrc` for version) — required by mobile-mcp for simulator interaction
 - **Java** — required by WireMock mock server (`brew install openjdk` if missing)
 - **Booted iOS simulator** — `xcrun simctl boot <UDID>`
 - **mobile-mcp** — auto-configured via `.mcp.json` (project-scoped, no manual setup needed)
@@ -18,7 +18,7 @@ Builds the app, launches on the simulator, and uses mobile-mcp to navigate the U
 
 **Environment-aware**: The agent first assesses the current state — if the simulator already has a built app with an active session (the common case during development), it just builds, re-launches, and verifies. It only sets up WireMock mocked environment when there's no existing session, deterministic mock data is needed, or the user explicitly requests it.
 
-**Feature map**: `.claude/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
+**Feature map**: `.claude/references/feature-map.json` maps file path patterns to feature areas (orders, products, POS, dashboard, etc.) with navigation instructions and expected elements. To add a new feature, add an entry with `pathPatterns`, `tab`, and `verifyElements`.
 
 ## `/snapshot` — Snapshot-Driven UI Iteration
 
@@ -44,7 +44,7 @@ Configured via `.mcp.json` at the project root. Provides:
 ## Key References
 
 - **Screen identifiers and navigation flows**: `.claude/references/screen-identifiers.md`
-- **Feature-to-path scope mapping**: `.claude/feature-map.json`
+- **Feature-to-path scope mapping**: `.claude/references/feature-map.json`
 - **Mock server management**: `/mocks` skill
 - **Simulator discovery**: `/simulator` skill
 - **Launch arguments**: `WooCommerce/Classes/System/ProcessConfiguration.swift`

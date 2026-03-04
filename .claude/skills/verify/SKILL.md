@@ -38,7 +38,7 @@ git diff --name-only trunk...HEAD
 
 If no diff against trunk, fall back to `git diff --name-only HEAD~1`.
 
-Read `.claude/feature-map.json` and match changed file paths against `pathPatterns` for each feature. Collect all matched features. If no features match, **skip verification entirely** — report which files changed, note that none matched any feature path pattern, and stop (do not proceed to Steps 3-8).
+Read `.claude/references/feature-map.json` and match changed file paths against `pathPatterns` for each feature. Collect all matched features. If no features match, **skip verification entirely** — report which files changed, note that none matched any feature path pattern, and stop (do not proceed to Steps 3-8).
 
 ## Step 3: Start Mock Server (only if needed)
 
@@ -61,6 +61,7 @@ If the build fails, analyze errors and report. The build must succeed — verifi
 **If using mocked environment**, collect launch arguments:
 - `logout-at-launch`, `disable-animations`, `mocked-wpcom-api`, `-ui_testing`, `-mocks-port`, `8282`
 - Append any feature-specific `launchArgs` from `feature-map.json`
+- **Mock credentials** (for login flow): site `http://yourwoosite.com`, email `t@wp.com`, password `pw`
 
 Launch using `xcrun simctl launch` (supports launch arguments, unlike mobile-mcp's `launch_app`):
 ```bash

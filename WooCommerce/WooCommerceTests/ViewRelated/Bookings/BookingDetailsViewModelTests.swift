@@ -461,6 +461,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         analyticsProvider.assertReceived(event: "booking_detail_add_note_tap")
     }
 
+
 }
 
 private extension BookingDetailsViewModelTests {

@@ -39,8 +39,4 @@ bundle exec fastlane test only_testing:WooCommerceTests/MyClass clean:true 2>&1 
 3. Read the failing test files to understand what went wrong
 4. Suggest fixes for failing tests
 
-If the simulator `iPhone 16` is not available, discover available simulators:
-```bash
-xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5
-```
-Then retry with an available iPhone name.
+If the simulator is not available, use the `/simulator` skill to discover an available one, then retry.

@@ -16,8 +16,6 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
-    @State private var emailCopied = false
-    @State private var emailCopiedTask: Task<Void, Never>?
     @State private var inlineButtonMinY: CGFloat = .infinity
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
@@ -254,40 +252,22 @@ struct POSBookingDetailView: View {
             }
 
             if let email = booking.customerEmail {
-                HStack {
-                    Text(email)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                    Spacer()
-                    Button {
-                        UIPasteboard.general.string = email
-                        emailCopied = true
-                        emailCopiedTask?.cancel()
-                        emailCopiedTask = Task {
-                            try? await Task.sleep(for: .seconds(1.5))
-                            guard !Task.isCancelled else { return }
-                            emailCopied = false
-                        }
-                    } label: {
-                        Image(systemName: emailCopied ? "checkmark" : "doc.on.doc")
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(actionTintColor)
-                            .contentTransition(.symbolEffect(.replace))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
-                    .frame(minHeight: 32)
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(Localization.emailAccessibilityLabel(email))
+                CopyableRow(
+                    text: email,
+                    copyButtonAccessibilityLabel: Localization.copyEmailAccessibilityLabel,
+                    rowAccessibilityLabel: Localization.emailAccessibilityLabel(email),
+                    tintColor: actionTintColor
+                )
             }
 
             if let phone = booking.customerPhone {
                 sectionDivider
-                Text(phone)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
+                CopyableRow(
+                    text: phone,
+                    copyButtonAccessibilityLabel: Localization.copyPhoneAccessibilityLabel,
+                    rowAccessibilityLabel: Localization.phoneAccessibilityLabel(phone),
+                    tintColor: actionTintColor
+                )
             }
 
             if let note = booking.customerNote {
@@ -617,6 +597,12 @@ private enum Localization {
         comment: "Accessibility label for the copy email button in booking details."
     )
 
+    static let copyPhoneAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.copyPhone.accessibilityLabel",
+        value: "Copy phone number",
+        comment: "Accessibility label for the copy phone button in booking details."
+    )
+
     static let moreActionsAccessibilityLabel = NSLocalizedString(
         "pos.bookingDetailView.moreActions.accessibilityLabel",
         value: "More actions",
@@ -641,6 +627,53 @@ private enum Localization {
         comment: "Placeholder shown in the payment breakdown when there is no discount on the booking."
     )
 
+}
+
+// MARK: - CopyableRow
+
+private struct CopyableRow: View {
+    let text: String
+    let copyButtonAccessibilityLabel: String
+    let rowAccessibilityLabel: String
+    let tintColor: Color
+
+    @State private var copied = false
+    @State private var copyTask: Task<Void, Never>?
+
+    var body: some View {
+        Button {
+            copyToClipboard()
+        } label: {
+            HStack {
+                Text(text)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                Spacer()
+                Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(tintColor)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .frame(minHeight: 32)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(rowAccessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint(copyButtonAccessibilityLabel)
+    }
+
+    private func copyToClipboard() {
+        UIPasteboard.general.string = text
+        copied = true
+        copyTask?.cancel()
+        copyTask = Task {
+            try? await Task.sleep(for: .seconds(1.5))
+            guard !Task.isCancelled else { return }
+            copied = false
+        }
+    }
 }
 
 // MARK: - Previews

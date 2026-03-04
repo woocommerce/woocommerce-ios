@@ -53,11 +53,11 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 3)
+        await delegateSpy.waitForStepUpdate(count: 2)
 
         // Then
         XCTAssertEqual(mockConnectionService.establishSiteConnectionCallCount, 0)
-        XCTAssertFalse(delegateSpy.stepUpdates.contains { $0.step == .connect && $0.status == .running })
+        XCTAssertFalse(delegateSpy.stepUpdates.contains { $0.step == .connect })
     }
 
     func test_start_with_connection_failure_marks_connect_step_as_failure() async throws {
@@ -194,7 +194,7 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
         // When
         handler.start()
-        await delegateSpy.waitForStepUpdate(count: 5)
+        await delegateSpy.waitForStepUpdate(count: 4)
 
         // Then
         XCTAssertTrue(delegateSpy.stepUpdates.contains { $0.step == .enablePush && $0.status == .running })
@@ -211,7 +211,7 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
         handler.start()
 
         // Wait for all steps including the async push registration failure
-        await delegateSpy.waitForStepUpdate(count: 5, timeout: 5.0)
+        await delegateSpy.waitForStepUpdate(count: 4, timeout: 5.0)
 
         // Then
         XCTAssertTrue(delegateSpy.stepUpdates.contains { $0.step == .enablePush && $0.status == .running })

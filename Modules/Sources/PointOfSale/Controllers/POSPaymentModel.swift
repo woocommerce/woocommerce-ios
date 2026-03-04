@@ -23,6 +23,10 @@ final class POSPaymentModel {
         return decimal == 0
     }
 
+    var customerBillingEmail: String? {
+        currentOrder?.billingAddress?.email
+    }
+
     var isCardReaderUpdateAvailable: Bool {
         if case .available = cardReaderUpdateState {
             return true
@@ -252,6 +256,7 @@ extension POSPaymentModel {
             throw POSPaymentError.noOrder
         }
         try await receiptSender.sendReceipt(orderID: order.orderID, recipientEmail: emailAddress)
+        currentOrder = order.copy(billingAddress: order.billingAddress?.copy(email: emailAddress))
     }
 }
 

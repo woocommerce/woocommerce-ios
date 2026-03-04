@@ -201,11 +201,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ciabBookings
 
-    /// Represents CIAB environment availability overall
-    /// Has same underlying logic as `ciabBookings` flag.
-    ///
-    case ciab
-
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
     case pointOfSaleCatalogAPI

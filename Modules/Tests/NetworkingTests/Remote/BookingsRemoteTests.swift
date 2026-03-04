@@ -71,6 +71,7 @@ struct BookingsRemoteTests {
         #expect((parameters["start_date_after"] as? String) == "2023-12-31T23:59:59Z")
         #expect((parameters["search"] as? String) == searchQuery)
         #expect((parameters["order"] as? String) == "asc")
+        #expect((parameters["orderby"] as? String) == "start_date")
     }
 
     @Test func test_loadAllBookings_omits_nil_parameters() async throws {

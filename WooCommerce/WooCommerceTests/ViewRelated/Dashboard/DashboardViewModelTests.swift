@@ -379,7 +379,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
+        defaults[.completedAllStoreOnboardingTasks] = ["0": true]
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            userDefaults: defaults,
@@ -563,7 +563,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() async throws {
         // Given
-        userDefaults[.completedAllStoreOnboardingTasks] = true
+        userDefaults[.completedAllStoreOnboardingTasks] = [String(sampleSiteID): true]
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
@@ -704,6 +704,57 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.dashboardCards.contains(expectedStockCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_onboarding_card_when_store_is_non_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedOnboardingCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_does_not_contain_onboarding_card_when_store_is_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.dashboardCards.contains(expectedOnboardingCard))
     }
 
     // MARK: Show New Cards Notice
@@ -1099,92 +1150,6 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
 
-    // MARK: - Plugin Version Check Tests
-
-    @MainActor
-    func test_isWooPluginOutdated_is_true_when_checker_returns_incompatible() async {
-        // Given
-        mockReloadingData()
-        let checker = MockPluginVersionChecker()
-        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           pluginVersionChecker: checker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertTrue(viewModel.isWooPluginOutdated)
-    }
-
-    @MainActor
-    func test_isWooPluginOutdated_stays_false_when_checker_returns_compatible() async {
-        // Given
-        mockReloadingData()
-        let checker = MockPluginVersionChecker()
-        checker.result = .success(.compatible)
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           pluginVersionChecker: checker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertFalse(viewModel.isWooPluginOutdated)
-    }
-
-    @MainActor
-    func test_isWooPluginOutdated_stays_false_when_checker_throws_error() async {
-        // Given
-        mockReloadingData()
-        let checker = MockPluginVersionChecker()
-        checker.result = .failure(NSError(domain: "test", code: 1))
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           pluginVersionChecker: checker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertFalse(viewModel.isWooPluginOutdated)
-    }
-
-    @MainActor
-    func test_isWooPluginOutdated_stays_false_when_no_checker_provided() async {
-        // Given
-        mockReloadingData()
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        XCTAssertFalse(viewModel.isWooPluginOutdated)
-    }
 }
 
 private extension DashboardViewModelTests {

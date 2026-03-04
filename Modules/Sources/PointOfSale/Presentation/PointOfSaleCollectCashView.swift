@@ -3,14 +3,14 @@ import Combine
 import WooFoundation
 
 struct PointOfSaleCollectCashView: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.posAnalytics) private var analytics
-    @Environment(\.posExternalViews) private var externalViews
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(POSPaymentModel.self) private var paymentModel
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
+    private let currencyInputSanitizer: CurrencyInputSanitizer
+    private let presetAmount: Decimal?
 
     @State private var textFieldAmountInput: String = ""
     @State private var isLoading: Bool = false
@@ -35,6 +35,8 @@ struct PointOfSaleCollectCashView: View {
 
     init(orderTotal: String, currencySettings: CurrencySettings) {
         self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
+        self.currencyInputSanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
+        self.presetAmount = viewHelper.parseCurrency(orderTotal)
         self.orderTotal = orderTotal
     }
 
@@ -46,9 +48,9 @@ struct PointOfSaleCollectCashView: View {
                                       subtitle: formattedOrderTotal,
                                       backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
                                                                      action: {
+                        isTextFieldFocused = false
                         Task { @MainActor in
                             await paymentModel.cancelCashPayment()
-                            isTextFieldFocused = false
                         }
                     }))
 
@@ -56,20 +58,17 @@ struct PointOfSaleCollectCashView: View {
                         Spacer()
 
                         VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
-                            externalViews.createFormattableAmountTextField(
-                                preset: viewHelper.parseCurrency(orderTotal),
-                                font: POSFontStyle.posHeadingRegular.font(maximumContentSizeCategory: UIContentSizeCategory(dynamicTypeSize)),
+                            POSCashAmountTextField(
+                                amount: $textFieldAmountInput,
+                                isFocused: $isTextFieldFocused,
+                                sanitizer: currencyInputSanitizer,
+                                preset: presetAmount,
                                 onSubmit: {
                                     Task { @MainActor in
                                         await submitCashAmount()
                                     }
-                                },
-                                onChange: { newValue in
-                                    textFieldAmountInput = newValue
-                                    updateChangeDueMessage()
                                 }
                             )
-                            .focused($isTextFieldFocused)
 
                             if let changeDue = changeDueMessage {
                                 Text(changeDue)
@@ -112,6 +111,7 @@ struct PointOfSaleCollectCashView: View {
                 .animation(.easeInOut, value: changeDueMessage != nil)
                 .onChange(of: textFieldAmountInput) {
                     errorMessage = nil
+                    updateChangeDueMessage()
                 }
                 .onReceive(Publishers.keyboardFrame) {
                     keyboardFrame = $0
@@ -121,9 +121,6 @@ struct PointOfSaleCollectCashView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            isTextFieldFocused = true
-        }
     }
 
     private func markComplete() async throws {

@@ -2,11 +2,16 @@ import Foundation
 import struct Yosemite.POSBooking
 
 enum POSBookingListState: Equatable {
-    case loading([POSBooking])
+    case loading([POSBooking], context: LoadingContext = .firstPage)
     case loaded([POSBooking], hasMoreItems: Bool)
     case inlineError([POSBooking], error: PointOfSaleErrorState, context: InlineErrorContext)
     case error(PointOfSaleErrorState)
     case empty
+
+    enum LoadingContext {
+        case firstPage
+        case nextPage
+    }
 
     enum InlineErrorContext {
         case refresh
@@ -22,11 +27,18 @@ enum POSBookingListState: Equatable {
         }
     }
 
+    var isPaginating: Bool {
+        if case .loading(_, .nextPage) = self {
+            return true
+        }
+        return false
+    }
+
     var isEmpty: Bool {
         switch self {
         case .loaded:
             return false
-        case .loading(let bookings):
+        case .loading(let bookings, _):
             return bookings.isEmpty
         default:
             return true
@@ -35,7 +47,7 @@ enum POSBookingListState: Equatable {
 
     var bookings: [POSBooking] {
         switch self {
-        case .loading(let bookings),
+        case .loading(let bookings, _),
              .loaded(let bookings, _),
              .inlineError(let bookings, _, _):
             return bookings
@@ -48,8 +60,8 @@ enum POSBookingListState: Equatable {
         switch self {
         case .loaded(_, let hasMoreItems):
             return .loaded(updatedBookings, hasMoreItems: hasMoreItems)
-        case .loading:
-            return .loading(updatedBookings)
+        case .loading(_, let context):
+            return .loading(updatedBookings, context: context)
         case .inlineError(_, let error, let context):
             return .inlineError(updatedBookings, error: error, context: context)
         case .empty, .error:

@@ -87,6 +87,17 @@ final class POSTabCoordinator {
                                         storage: storageManager)
     }()
 
+    private lazy var posBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory = {
+        POSBookingListFetchStrategyFactory(
+            siteID: siteID,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+            siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
+        )
+    }()
+
     /// Creates the appropriate barcode scan service based on local catalog availability
     private func createBarcodeScanService(isLocalCatalogEligible: Bool,
                                           grdbManager: GRDBManagerProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
@@ -269,17 +280,6 @@ private extension POSTabCoordinator {
                 let isBookingsEligible = storesManager.sessionManager.defaultSite
                     .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
 
-                let bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory? =
-                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleBookings)
-                    ? POSBookingListFetchStrategyFactory(
-                        siteID: siteID,
-                        credentials: credentials,
-                        selectedSite: defaultSitePublisher,
-                        appPasswordSupportState: isAppPasswordSupported,
-                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-                        siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
-                    ) : nil
-
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -294,7 +294,7 @@ private extension POSTabCoordinator {
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
-                    bookingListFetchStrategyFactory: bookingListFetchStrategyFactory,
+                    bookingListFetchStrategyFactory: posBookingListFetchStrategyFactory,
                     isBookingsEligible: isBookingsEligible,
                     orderService: orderService,
                     refundsService: refundsService,

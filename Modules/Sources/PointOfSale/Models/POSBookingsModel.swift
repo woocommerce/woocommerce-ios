@@ -1,6 +1,8 @@
 import Foundation
 import Observation
 import struct Yosemite.POSBooking
+import enum Yosemite.BookingStatus
+import enum Yosemite.OrderStatusEnum
 import protocol Yosemite.POSOrderServiceProtocol
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import class Yosemite.PaymentCaptureCelebration
@@ -25,12 +27,26 @@ import class Yosemite.PaymentCaptureCelebration
     }
 
     @MainActor
+    func updateAfterSuccessfulPayment(bookingID: Int64) async {
+        await bookingsController.updateBookingOptimistically(bookingID: bookingID) {
+            $0.copy(status: .paid, order: $0.order.copy(datePaid: Date()))
+        }
+    }
+
+    @MainActor
+    func updateAfterRefund(bookingID: Int64) async {
+        await bookingsController.updateBookingOptimistically(bookingID: bookingID) {
+            $0.copy(order: $0.order.copy(status: .refunded))
+        }
+    }
+
+    @MainActor
     func makePaymentModel(for booking: POSBooking,
                            onDismiss: @escaping () -> Void,
                            analytics: POSAnalyticsProviding) -> POSPaymentModel {
         let orderProvider = POSBookingPaymentOrderProvider(
             orderID: booking.orderID ?? 0,
-            formattedTotal: booking.formattedAmount,
+            formattedTotal: booking.order.formattedTotal,
             orderService: orderService)
 
         return POSPaymentModel(

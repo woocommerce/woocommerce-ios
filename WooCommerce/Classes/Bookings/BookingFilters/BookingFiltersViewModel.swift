@@ -295,8 +295,8 @@ private extension BookingFiltersViewModel.BookingListFilter {
             comment: "Row title for filtering bookings by team member.")
 
         static let rowTitleProduct = NSLocalizedString(
-            "bookingFilters.rowTitleProduct",
-            value: "Service / Event",
+            "bookingFilters.rowTitleService",
+            value: "Service",
             comment: "Row title for filtering bookings by product.")
 
         static let rowTitleCustomer = NSLocalizedString(

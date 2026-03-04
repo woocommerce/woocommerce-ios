@@ -55,6 +55,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: paymentInfo,
             customerInfo: customerInfo,
             productInfo: productInfo
@@ -104,6 +105,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: nil,
             productInfo: nil
@@ -136,6 +138,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let productInfo = BookingProductInfo(name: "Massage Therapy")
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: productInfo
@@ -180,6 +183,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let customerInfo = BookingCustomerInfo(billingAddress: billingAddress)
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: nil
@@ -226,6 +230,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let customerInfo = BookingCustomerInfo(billingAddress: billingAddress, note: note)
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: nil
@@ -288,7 +293,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(bookingID, booking.bookingID)
         XCTAssertEqual(status, newStatus)
 
-        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_updated",
+        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_update",
                                          with: ["booking_status": "attended"])
     }
 
@@ -427,23 +432,6 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
     }
 
-    func test_event_fired_when_booking_marked_as_paid() async throws {
-        // Given
-        let viewModel = givenViewModel()
-
-        // When
-        let task = Task { try await viewModel.markBookingAsPaid() }
-        let action = try await waitForFirstBookingAction()
-        guard case let .markBookingAsPaid(_, _, onCompletion) = action else {
-            return XCTFail("Expected markBookingAsPaid action")
-        }
-        onCompletion(nil)
-        try await task.value
-
-        // Then
-        analyticsProvider.assertReceived(event: "booking_detail_mark_as_paid_tapped")
-    }
-
     func test_event_fired_when_booking_cancelled() async throws {
         // Given
         let viewModel = givenViewModel()
@@ -469,7 +457,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         viewModel.notesTapped()
 
         // Then
-        analyticsProvider.assertReceived(event: "booking_detail_add_note_tapped")
+        analyticsProvider.assertReceived(event: "booking_detail_add_note_tap")
     }
 
 

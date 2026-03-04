@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-04 14:10:11+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:27:08+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -532,6 +532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "Añade una variación al pedido.";
 
+/* User's Administrator role. */
+"Administrator" = "Administrador";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "Firma obligatoria de un adulto (+%1$@)";
 
@@ -663,6 +666,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when an order already exists in the backend for a given receipt */
 "An order already exists for this receipt" = "Ya existe un pedido para este recibo";
+
+/* Message presented when an unexpected error occurs with the store's payment gateway. */
+"An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "Se ha producido un error inesperado con la pasarela de pago de la tienda al capturar el pago del pedido";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "Ha ocurrido un error desconocido.";
@@ -947,18 +953,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "Reservable";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "Reservado";
-
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "Cancelado";
-
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "Registrado";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "No presentarse";
-
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Desconocido";
 
@@ -982,12 +976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Hora";
-
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "Marca la asistencia para mantener la precisión de tus informes y detectar tendencias de reserva.";
-
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "Asistencia";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "No se ha podido cambiar el estado de asistencia de la reserva n.º %1$d.";
@@ -1040,20 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "Nota";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "Estado";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "No se ha podido marcar la reserva%1$d como de pago.";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "Reserva n.º %1$d";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "Cancelar reserva";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "Marcar como pagado";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "Ver pedido";
@@ -1063,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Pago";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "Marcar como pagado";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Servicio";
@@ -1823,6 +1799,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "Seguir con Apple";
+
+/* User's Contributor role. */
+"Contributor" = "Colaborador";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "Tasa de conversión";
@@ -6207,6 +6186,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the product's tax status setting option */
 "Shipping only" = "Solo envío";
 
+/* User's Shop Manager role. */
+"Shop Manager" = "Gestor de la tienda";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Resultados de búsqueda y de tiendas";
 
@@ -6526,6 +6508,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "Enviar solicitud de asistencia";
+
+/* User's Subscriber role. */
+"Subscriber" = "Suscriptor";
 
 /* Display label for simple subscription product type. */
 "Subscription" = "Suscripción";
@@ -6858,6 +6843,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "La conexión entre el Bluetooth y el lector de tarjetas se ha perdido inesperadamente.";
 
+/* Message shown when a GIF failed to load while trying to add it to the Media library. */
+"The GIF could not be added to the Media Library." = "No se ha podido añadir el GIF a la biblioteca de medios.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "La cuenta de Google \"%@\" no coincide con ninguna cuenta de WordPress.com";
 
@@ -6959,6 +6947,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when an image failed to load while trying to add it to the Media library. */
 "The image could not be added to the Media Library." = "No se pudo añadir la imagen a la biblioteca de medios.";
+
+/* Message shown when an asset failed to load while trying to add it to the Media library. */
+"The item could not be added to the Media Library." = "El elemento no se ha podido añadir a la biblioteca de medios.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "El nuevo nombre del paquete personalizado ya existe.";
@@ -7836,27 +7827,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the hub menu settings button */
 "Update your preferences" = "Actualiza tus preferencias";
-
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "La cita está programada, pero aún no ha tenido lugar.";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "Reservada";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "El cliente acudió y la sesión tuvo lugar según lo previsto.";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "Registrada";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "El cliente faltó a la cita sin cancelar por adelantado.";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "No se ha presentado";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "Actualizar estado de asistencia";
 
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "Actualizando el software";
@@ -8750,6 +8720,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "Acceder con otra cuenta";
 
+/* Message shown when a video failed to load while trying to add it to the Media library. */
+"assetExportError.expectedPHAssetVideoType.message" = "No se ha podido añadir el vídeo a la biblioteca de medios.";
+
+/* Message shown when a video file failed to export from the local library. */
+"assetExportError.failedToExportVideo.message" = "No se han podido exportar los medios seleccionados.";
+
 /* Label displayed on audio media items. */
 "audio" = "audio";
 
@@ -9631,7 +9607,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFilters.rowTitlePaymentStatus" = "Estado del pago";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "Servicio\/Evento";
+"bookingFilters.rowTitleService" = "Servicio";
 
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Miembro del equipo";
@@ -9711,17 +9687,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Prueba a ajustar el término de búsqueda para ver más resultados";
 
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "No se ha encontrado ningún servicio o evento";
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "No se ha encontrado ningún servicio";
 
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "Buscar servicios \/ eventos";
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Buscar servicio";
 
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "Servicio\/Evento";
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Servicio";
 
 /* Status of a canceled booking */
-"bookingStatus.title.canceled" = "Cancelada";
+"bookingStatus.title.canceled" = "Se ha cancelado";
 
 /* Status of a complete booking */
 "bookingStatus.title.complete" = "Completada";
@@ -10080,6 +10056,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Caducó el %@";
+
+/* A default error when coupon application failed. */
+"couponsError.default.title" = "No se ha podido aplicar el cupón debido a un error inesperado.";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "Dirección";
@@ -11654,11 +11633,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "Tipo de artículo no compatible";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "Pago cancelado en el lector";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Intentar efectuar el pago de nuevo";
+/* A placeholder name when we can't determine the name of a variation for an error message */
+"pointOfSale.barcodeScanning.unresolved.variation.name" = "Desconocido";
 
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "Tarjeta insertada";
@@ -12034,6 +12010,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "Cargando";
+
+/* Fallback name for a product that couldn't be identified in error handling. */
+"pointOfSale.orderController.unknownProduct" = "Uno o más productos";
 
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "Editar pedido";
@@ -12584,8 +12563,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "Estado del pedido: %1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "No hay ningún pedido que mostrar";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "No se ha elegido ningún pedido.";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "Pedido";
@@ -12596,11 +12575,11 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "Totales";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "Descuento total: %1$@";
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "Inténtalo de nuevo.";
 
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "Descuento total";
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "No se ha podido crear el reembolso";
 
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Toca para enviar el recibo del pedido por correo electrónico";
@@ -12620,23 +12599,14 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "Emitir reembolso";
 
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "Inténtalo de nuevo.";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "No se han podido cargar los detalles del reembolso";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Más acciones";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "Pago neto: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "Pago neto";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "Total pagado: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "Método de pago: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "Total pagado";
 
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Cantidad: %1$@ a %2$@ cada uno, total %3$@";
@@ -12649,33 +12619,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "Motivo: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "Reembolsado: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Motivo: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "Reembolsado";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "Subtotal de productos: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "Impuestos: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "Impuestos";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "Total del pedido: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "Total";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totales";
@@ -12691,6 +12634,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "Más información";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.2" = "No hemos podido encontrar ningún pedido con ese nombre. Prueba a ajustar el término de búsqueda.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "No se han encontrado pedidos";
@@ -12780,10 +12726,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.confirmButton" = "Sí, continuar";
 
 /* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat" = "¿Seguro que quieres procesar el reembolso de %1$@ %2$@? Esta acción no se puede deshacer.";
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "¿Seguro que deseas reembolsar %1$@ %2$@? Esta acción no se puede deshacer.";
+
+/* Message shown while the refund is being processed. */
+"pos.refundConfirmationView.processingMessage" = "Espera mientras procesamos el reembolso.";
+
+/* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.processingTitleFormat" = "Reembolsando %@";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Reembolsar %@";
+
+/* Button to cancel and dismiss the refund error screen */
+"pos.refundErrorView.cancelButton" = "Cancelar";
+
+/* Accessibility label for close button on refund error screen */
+"pos.refundErrorView.closeButton.accessibilityLabel" = "Cerrar";
+
+/* Button to retry the refund creation */
+"pos.refundErrorView.retryButton" = "Reintentar";
 
 /* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
 "pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
@@ -12821,6 +12782,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "Selecciona los artículos para reembolsar";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "Cargando detalles del reembolso...";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "Cerrar";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "Hecho";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "Ya se han reembolsado todos los artículos de este pedido.";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "No hay nada para reembolsar";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Añadir";
@@ -12876,6 +12852,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "Revisar reembolso";
 
+/* Accessibility label for close button on refund success screen */
+"pos.refundSuccessView.closeButton.accessibilityLabel" = "Cerrar";
+
+/* Button to dismiss the refund success screen */
+"pos.refundSuccessView.doneButton" = "Hecho";
+
+/* Button to email a receipt for the refund */
+"pos.refundSuccessView.emailReceiptButton" = "Enviar recibo por correo electrónico";
+
+/* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundSuccessView.messageFormat" = "Has reembolsado %1$@ %2$@.";
+
+/* Title shown when a refund has been successfully processed */
+"pos.refundSuccessView.title" = "Reembolso completado";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Borrar la búsqueda";
 
@@ -12903,8 +12894,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "TPV";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "Nuevo pedido";
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Enviar recibo por correo electrónico";
@@ -13272,6 +13263,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "Escanea los códigos de barras asociados con un identificador global único de producto para la gestión de inventario.";
 
+/* Error message when saving an invalid or duplicated product global unique ID */
+"productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID" = "GTIN, UPC, EAN o ISBN no válidos o duplicados.";
+
 /* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.placeholder" = "Opcional";
 
@@ -13445,6 +13439,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "Espera";
+
+/* The acronym for 'Point of Sale'. */
+"salesChannel.pos.description" = "TPV";
+
+/* Orders created through web checkout. */
+"salesChannel.webCheckout.description" = "Pago web";
+
+/* Orders created through WordPress admin interface. */
+"salesChannel.wpAdmin.description" = "WP-Admin";
 
 /* Description for the Sales channel filter option, when selecting 'Any' order */
 "salesChannelFilter.row.any.description" = "Cualquiera";
@@ -14060,6 +14063,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the UPS Terms and Conditions view */
 "upsTermsView.title" = "Términos y condiciones de UPS®";
 
+/* Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +'Roast: Dark, Size: 100g, Origin: Brazil, Any grind' */
+"variationAttributeView.namedAttributeFormat" = "%1$@: %2$@";
+
 /* Label displayed on video media items. */
 "video" = "vídeo";
 
@@ -14131,6 +14137,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "Semanas";
+
+/* Title of the self-driven push notification setup flow */
+"wooPushNotificationSetupCoordinator.flowTitle" = "Conectar a WordPress.com";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "Añadir detalles del paquete";
@@ -14324,6 +14333,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "Total";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "Introduce un número de teléfono válido para la dirección de destino.";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "Es necesario un número de teléfono para la dirección de destino.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "Añadir empresa";
 
@@ -14464,6 +14479,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "Peso total del envío (con paquete)";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "Editar dirección";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "Introduce un número de teléfono válido para la dirección de destino.";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "Número de teléfono no válido.";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "Aprende a imprimir desde tu dispositivo móvil";
@@ -15056,6 +15080,39 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "Vaya, se ha producido un error. Inténtalo de nuevo.";
 
+/* Status label shown when a setup step has completed successfully. */
+"wpComConnectionSetupStepView.complete" = "Completado";
+
+/* Status label shown when a setup step is currently running. */
+"wpComConnectionSetupStepView.inProgress" = "En curso";
+
+/* Status label shown when a setup step has not been started yet. */
+"wpComConnectionSetupStepView.notStarted" = "No iniciado";
+
+/* Cancel button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.cancelButton" = "Cancelar";
+
+/* Title for the WPCom connection setup screen. */
+"wpComConnectionSetupView.title" = "Conectar a WordPress.com";
+
+/* Step title for checking plugin compatibility during WPCom connection setup. */
+"wpComConnectionSetupViewModel.checkPluginStep" = "Comprobar la compatibilidad del plugin";
+
+/* Step title for connecting the store to WordPress.com during WPCom connection setup. */
+"wpComConnectionSetupViewModel.connectStoreStep" = "Conectar la tienda a WordPress.com";
+
+/* Step title for enabling push notifications during WPCom connection setup. */
+"wpComConnectionSetupViewModel.enablePushNotificationsStep" = "Activar notificaciones push";
+
+/* Button title to navigate to the store after successful WPCom connection setup. */
+"wpComConnectionSetupViewModel.goToMyStore" = "Ir a mi tienda";
+
+/* Button title to retry the WPCom connection setup after a failure. */
+"wpComConnectionSetupViewModel.tryAgain" = "Inténtalo de nuevo";
+
+/* Button title to update the plugin when WPCom connection setup fails due to outdated plugin. */
+"wpComConnectionSetupViewModel.updatePlugin" = "Actualiza el plugin";
+
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "Si no tienes una cuenta, usaremos este correo electrónico para crear una.";
 
@@ -15080,18 +15137,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Comprueba que tu correo electrónico está bien escrito y vuelve a mirar en tu carpeta de spam.";
 
-/* Button to submit a WPCom email on the login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "Continuar";
-
-/* Subtitle for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "Accede con tu cuenta de WordPress.com para conectar tu tienda.";
-
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
-"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "Al continuar, aceptas nuestra %1$@ y nuestros %2$@ con WordPress.com.";
-
-/* Title for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.title" = "Conecta a WordPress.com";
-
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "Te enviaremos por correo electrónico un enlace que te permitirá acceder automáticamente, sin necesidad de contraseña.";
 
@@ -15115,9 +15160,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "Continuar";
-
-/* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.description" = "Conecta tu tienda a una cuenta de WordPress.com para obtener notificaciones push de los pedidos nuevos, reseñas y más.";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "Ahora no";

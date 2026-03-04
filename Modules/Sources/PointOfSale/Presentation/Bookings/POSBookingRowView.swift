@@ -12,7 +12,7 @@ struct POSBookingRowView: View {
         VStack(alignment: .leading, spacing: POSSpacing.none) {
             bookingHeaderRow
                 .padding(.bottom, POSSpacing.xSmall)
-            POSBookingSummaryView(booking: booking)
+            POSBookingSummaryView(booking: booking, subtitleFont: .posBodySmallRegular())
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
@@ -26,61 +26,21 @@ struct POSBookingRowView: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
     }
 
     @ViewBuilder
     private var bookingHeaderRow: some View {
         HStack(alignment: .center) {
-            Text(POSBookingSummaryView.formattedTimeRange(for: booking))
+            Text(POSBookingDateFormatter.formattedTimeRange(for: booking))
                 .font(.posBodySmallBold())
                 .foregroundStyle(Color.posOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 
             Spacer()
 
-            POSBookingAvatarView(imageURL: booking.resourceImageURL)
+            POSBookingAvatarView(imageURL: booking.resourceImageURL, resourceName: booking.resourceName)
         }
     }
 
-    private var accessibilityLabel: String {
-        let timeRange = Localization.timeRangeAccessibilityLabel(
-            start: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.startDate),
-            end: DateFormatter.posAccessibilityTimeFormatter.string(from: booking.endDate)
-        )
-
-        let customerDisplayName = booking.customerName ?? booking.customerEmail
-
-        var parts = [timeRange, booking.serviceName, customerDisplayName].compactMap { $0 }.filter { !$0.isEmpty }
-
-        if booking.lifecycleStatus == .cancelled {
-            parts.append(booking.lifecycleStatus.localizedTitle)
-        } else {
-            parts.append(booking.attendanceDisplay.localizedTitle)
-        }
-        parts.append(booking.paymentStatus.localizedTitle)
-
-        return parts.joined(separator: ", ")
-    }
-}
-
-private enum Localization {
-    static func timeRangeAccessibilityLabel(start: String, end: String) -> String {
-        let format = NSLocalizedString(
-            "pos.bookingListView.bookingRow.accessibilityLabel.timeRange",
-            value: "%1$@ to %2$@",
-            comment: "Time range for booking row accessibility. %1$@ is start time, %2$@ is end time."
-        )
-        return String(format: format, start, end)
-    }
-}
-
-private extension DateFormatter {
-    static let posAccessibilityTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
 }

@@ -7,13 +7,11 @@ import Yosemite
 final class WPComConnectionSetupHostingController: UIHostingController<WPComConnectionSetupView> {
 
     private let viewModel: WPComConnectionSetupViewModel
-    private let credentials: Credentials?
     private var connectionWebView: UINavigationController?
     private var cancellables = Set<AnyCancellable>()
 
-    init(viewModel: WPComConnectionSetupViewModel, credentials: Credentials? = nil) {
+    init(viewModel: WPComConnectionSetupViewModel) {
         self.viewModel = viewModel
-        self.credentials = credentials
         super.init(rootView: WPComConnectionSetupView(viewModel: viewModel))
     }
 
@@ -25,78 +23,11 @@ final class WPComConnectionSetupHostingController: UIHostingController<WPComConn
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTransparentNavigationBar()
-        observeWebViewPresentation()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
-}
-
-// MARK: - Web View Presentation
-private extension WPComConnectionSetupHostingController {
-    func observeWebViewPresentation() {
-        viewModel.$webViewPresentation
-            .compactMap { $0 }
-            .sink { [weak self] presentation in
-                self?.presentJetpackConnectionWebView(with: presentation.url, siteURL: presentation.siteURL)
-            }
-            .store(in: &cancellables)
-    }
-
-    func presentJetpackConnectionWebView(with url: URL, siteURL: String) {
-        let webViewModel = JetpackConnectionWebViewModel(
-            initialURL: url,
-            siteURL: siteURL,
-            completion: { [weak self] in
-                guard let self else { return }
-                self.dismissWebView()
-                self.viewModel.didAuthorizeWebViewConnection()
-            },
-            onAuthorization: { [weak self] url in
-                self?.presentJetpackConnectionWebView(with: url, siteURL: siteURL)
-            },
-            onFailure: { [weak self] errorCode in
-                guard let self else { return }
-                self.dismissWebView()
-                self.viewModel.didEncounterWebViewError(code: errorCode)
-            },
-            onDismissal: { [weak self] in
-                self?.viewModel.didCancelWebView()
-            }
-        )
-
-        let webView = AuthenticatedWebViewController(viewModel: webViewModel, extraCredentials: credentials)
-        webView.navigationItem.leftBarButtonItem = UIBarButtonItem(
-            title: Localization.cancel,
-            style: .plain,
-            target: self,
-            action: #selector(dismissWebView)
-        )
-
-        if let connectionWebView {
-            connectionWebView.viewControllers = [webView]
-        } else {
-            let navigationController = UINavigationController(rootViewController: webView)
-            present(navigationController, animated: true)
-            connectionWebView = navigationController
-        }
-    }
-
-    @objc func dismissWebView() {
-        connectionWebView?.dismiss(animated: true)
-        connectionWebView = nil
-    }
-}
-
-private extension WPComConnectionSetupHostingController {
-    enum Localization {
-        static let cancel = NSLocalizedString(
-            "wpComConnectionSetupHostingController.cancel",
-            value: "Cancel",
-            comment: "Cancel button in the Jetpack connection web view."
-        )
     }
 }
 
@@ -110,7 +41,7 @@ struct WPComConnectionSetupView: View {
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
                     ConnectWPComHeaderView()
                     VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
-                        Text(Localization.title)
+                        Text(viewModel.title)
                             .largeTitleStyle()
                             .bold()
                         Text(viewModel.subtitleAttributedString)
@@ -135,6 +66,11 @@ struct WPComConnectionSetupView: View {
                         viewModel.cancelTapped()
                     }
                 }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(Localization.getHelpButton) {
+                        viewModel.getHelpTapped()
+                    }
+                }
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .safeAreaInset(edge: .bottom) {
@@ -144,9 +80,25 @@ struct WPComConnectionSetupView: View {
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize)
             }
         }
+        .sheet(isPresented: $viewModel.isShowingGetHelp) {
+            helpAndSupportView
+        }
         .onAppear {
             viewModel.onAppear()
         }
+    }
+
+    var helpAndSupportView: some View {
+        ViewControllerContainer(Self.makeHelpAndSupportController())
+    }
+
+    private static func makeHelpAndSupportController() -> UIViewController {
+        let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
+        let helpVC = UIStoryboard.settings.instantiateViewController(identifier: identifier) { coder in
+            HelpAndSupportViewController(sourceTag: WPComConnectionSetupViewModel.supportSourceTag, coder: coder)
+        }
+        helpVC.displaysDismissAction = true
+        return WooNavigationController(rootViewController: helpVC)
     }
 
     @ViewBuilder var footer: some View {
@@ -175,15 +127,15 @@ private extension WPComConnectionSetupView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "wpComConnectionSetupView.title",
-            value: "Connect to WordPress.com",
-            comment: "Title for the WPCom connection setup screen."
-        )
         static let cancelButton = NSLocalizedString(
             "wpComConnectionSetupView.cancelButton",
             value: "Cancel",
             comment: "Cancel button title in the WPCom connection setup screen toolbar."
+        )
+        static let getHelpButton = NSLocalizedString(
+            "wpComConnectionSetupView.getHelpButton",
+            value: "Get help",
+            comment: "Get help button title in the WPCom connection setup screen toolbar."
         )
     }
 }
@@ -191,10 +143,14 @@ private extension WPComConnectionSetupView {
 #Preview {
     let viewModel = WPComConnectionSetupViewModel(
         storeName: "coffeebeans.com",
-        handler: WPComConnectionSetupHandler(siteID: 123, siteURL: "https://example.com", credentials: nil),
+        handler: WPComConnectionSetupHandler(
+            siteID: 123,
+            siteURL: "https://example.com",
+            siteAlreadyConnected: false
+        ),
         onDismiss: {},
         onGoToStore: {},
-        onUpdatePlugin: {}
+        onUpdatePlugin: { _ in }
     )
     WPComConnectionSetupView(viewModel: viewModel)
 }

@@ -2014,17 +2014,11 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "Bookable";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "Booked";
+/* Title for 'Attended' booking attendance status. */
+"BookingAttendanceStatus.attended" = "Attended";
 
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "Canceled";
-
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "Checked-in";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "No-show";
+/* Title for 'Unattended' booking attendance status. */
+"BookingAttendanceStatus.unattended" = "Unattended";
 
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Unknown";
@@ -2086,11 +2080,11 @@ which should be translated separately and considered part of this sentence. */
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Time";
 
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "Mark attendance to keep your reports accurate and spot booking trends.";
+/* Button title to mark a booking's attendance as attended. */
+"BookingDetailsView.attendance.markAsAttended" = "Mark as attended";
 
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "Attendance";
+/* Button title to mark a booking's attendance as unattended. */
+"BookingDetailsView.attendance.markAsUnattended" = "Mark as unattended";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "Unable to change attendance status of Booking #%1$d.";
@@ -2143,20 +2137,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "Note";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "Status";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "Unable to mark Booking #%1$d as paid.";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "Booking #%1$d";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "Cancel booking";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "Mark as paid";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "View order";
@@ -2166,9 +2151,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Payment";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "Mark as paid";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Service";
@@ -2213,7 +2195,7 @@ which should be translated separately and considered part of this sentence. */
 "bookingFilters.rowTitlePaymentStatus" = "Payment Status";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "Service / Event";
+"bookingFilters.rowTitleService" = "Service";
 
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "Team Member";
@@ -2290,20 +2272,35 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the booking list view */
 "bookingListView.view.title" = "Bookings";
 
+/* Badge label for a booking with a failed payment. */
+"bookingPaymentStatus.failed" = "Failed";
+
+/* Badge label for a paid booking in the Store Management booking list. */
+"bookingPaymentStatus.paid" = "Paid";
+
+/* Badge label for a partially refunded booking. */
+"bookingPaymentStatus.partiallyRefunded" = "Partially Refunded";
+
+/* Badge label for a refunded booking. */
+"bookingPaymentStatus.refunded" = "Refunded";
+
+/* Badge label for an unpaid booking in the Store Management booking list. */
+"bookingPaymentStatus.unpaid" = "Unpaid";
+
 /* Displayed name on the booking list when no customer is associated with a booking. */
 "bookings.guest" = "Guest";
 
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Try adjusting your search term to see more results";
 
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "No service or event found";
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "No service found";
 
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "Search service / event";
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "Search service";
 
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "Service / Event";
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "Service";
 
 /* Title of the Bookings tab */
 "bookingsTabViewHostingController.tab.title" = "Bookings";
@@ -5627,6 +5624,12 @@ which should be translated separately and considered part of this sentence. */
 /* Post HTML content */
 "HTML Content" = "HTML Content";
 
+/* Title of the Bookings menu in the hub menu */
+"hubMenu.bookings" = "Bookings";
+
+/* Description of the Bookings menu in the hub menu */
+"hubMenu.bookingsDescription" = "Manage your client appointments";
+
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Coupons";
 
@@ -8248,10 +8251,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "Unknown";
 
 /* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "Payment cancelled on reader";
+"pointOfSale.cardPresent.canceledOnReader.title" = "Payment canceled on reader";
 
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "Try payment again";
+/* Button to try to collect a payment again. Presented to users after card reader canceled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.canceledOnReader.tryPaymentAgain.button.title" = "Try payment again";
 
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "Card inserted";
@@ -8598,6 +8601,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon not applied";
 
+/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.bookings.button.title" = "Bookings";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Please wait";
 
@@ -8676,11 +8682,47 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "One or more products";
 
+/* Message shown while loading the order for a payment in Point of Sale */
+"pointOfSale.payment.loading.message" = "Loading order";
+
+/* Title shown while loading the order for a payment in Point of Sale */
+"pointOfSale.payment.loading.title" = "Getting ready";
+
+/* Button to start a cash payment in the payment flow */
+"pointOfSale.paymentContent.cashPaymentButton" = "Cash payment";
+
+/* Label for the subtotal amount in the payment content view */
+"pointOfSale.paymentContent.subtotal" = "Subtotal";
+
+/* Label for the taxes amount in the payment content view */
+"pointOfSale.paymentContent.taxes" = "Taxes";
+
+/* Label for the total amount in the payment content view */
+"pointOfSale.paymentContent.total" = "Total";
+
+/* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
+"pointOfSale.paymentError.noOrder" = "No order loaded yet. Start a payment before sending a receipt.";
+
+/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Back to booking";
+
+/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Done";
+
+/* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
+"pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Edit order";
+
+/* Button title on the payment success and capture error screens in the Point of Sale checkout to start a new order */
+"pointOfSale.paymentFlowConfiguration.cart.newOrder.button.title" = "New order";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "A card payment of %1$@ was successfully made.";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "A cash payment of %1$@ was successfully made.";
+
+/* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
+"pointOfSale.paymentSuccessful.receiptSent" = "A receipt has been sent to %1$@.";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Payment successful";
@@ -9050,6 +9092,225 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Test your scanner";
 
+/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
+"pos.booking.durationHours" = "%dh";
+
+/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
+"pos.booking.durationHoursAndMinutes" = "%1$dh %2$dm";
+
+/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
+"pos.booking.durationMinutes" = "%d min";
+
+/* POS booking attendance status label when the customer attended. */
+"pos.bookingAttendanceDisplay.attended" = "Attended";
+
+/* POS booking attendance status label when the customer has not attended. */
+"pos.bookingAttendanceDisplay.unattended" = "Unattended";
+
+/* Accessibility label for the next day button in the bookings date bar. */
+"pos.bookingDateBar.nextDay" = "Next day";
+
+/* Accessibility label for the previous day button in the bookings date bar. */
+"pos.bookingDateBar.previousDay" = "Previous day";
+
+/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
+"pos.bookingDateBar.selectedDate" = "%1$@, tap to open calendar";
+
+/* Text appearing in the booking details pane when no booking is selected. */
+"pos.bookingDetailsEmptyView.description" = "Tap a booking to view its details";
+
+/* Button to add a private note to a booking. */
+"pos.bookingDetailView.addNoteButton" = "Add note";
+
+/* Section title for the attendance status in booking details. */
+"pos.bookingDetailView.attendanceStatusTitle" = "Attendance status";
+
+/* Subtitle text below the attendance section explaining why marking attendance matters. */
+"pos.bookingDetailView.attendanceSubtitle" = "Mark attendance to keep your reports accurate and spot booking trends.";
+
+/* Error message shown below attendance section when updating attendance status fails. */
+"pos.bookingDetailView.attendanceUpdateError" = "Failed to update attendance. Please try again.";
+
+/* Label for the attended pill button in booking attendance section. */
+"pos.bookingDetailView.attendedPill" = "Attended";
+
+/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
+"pos.bookingDetailView.bookingIdTitle" = "Booking #%lld";
+
+/* Label for the private booking note section in booking details. */
+"pos.bookingDetailView.bookingNoteLabel" = "Booking note";
+
+/* Subtitle text below the booking note section explaining the note is private. */
+"pos.bookingDetailView.bookingNoteSubtitle" = "This is a private note. It'll not be shared with the customer.";
+
+/* Menu action to cancel a booking from the POS booking detail view. */
+"pos.bookingDetailView.cancelBookingAction" = "Cancel Booking";
+
+/* Subtitle shown when cancelling a booking from POS has failed. */
+"pos.bookingDetailView.cancelBookingError.subtitle" = "Please try again.";
+
+/* Title shown when cancelling a booking from POS has failed. */
+"pos.bookingDetailView.cancelBookingError.title" = "Failed to cancel booking";
+
+/* Button to initiate payment collection for a booking. */
+"pos.bookingDetailView.collectPaymentButton" = "Collect payment";
+
+/* Accessibility label for the copy email button in booking details. */
+"pos.bookingDetailView.copyEmail.accessibilityLabel" = "Copy email address";
+
+/* Section title for the customer details in booking details. */
+"pos.bookingDetailView.customerTitle" = "Customer";
+
+/* Label for the duration in booking details. */
+"pos.bookingDetailView.durationLabel" = "Duration";
+
+/* Button to edit an existing private note on a booking. */
+"pos.bookingDetailView.editNoteButton" = "Edit note";
+
+/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
+"pos.bookingDetailView.email.accessibilityLabel" = "Email: %1$@";
+
+/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
+"pos.bookingDetailView.guestBadge" = "Guest";
+
+/* Menu action to issue a full refund for a booking. */
+"pos.bookingDetailView.issueRefundAction" = "Issue Refund";
+
+/* Label for the location in booking details. */
+"pos.bookingDetailView.locationLabel" = "Location";
+
+/* Accessibility label for the overflow actions menu button in booking details. */
+"pos.bookingDetailView.moreActions.accessibilityLabel" = "More actions";
+
+/* Placeholder shown in the payment breakdown when there is no discount on the booking. */
+"pos.bookingDetailView.noDiscountPlaceholder" = "-";
+
+/* Label for the customer note in booking details. */
+"pos.bookingDetailView.noteLabel" = "Note";
+
+/* Section title for the payment breakdown in booking details. */
+"pos.bookingDetailView.paymentTitle" = "Payment";
+
+/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
+"pos.bookingDetailView.phone.accessibilityLabel" = "Phone: %1$@";
+
+/* Label for the service cost in booking payment breakdown. */
+"pos.bookingDetailView.serviceLabel" = "Service";
+
+/* Label for the team member / staff resource in booking details. */
+"pos.bookingDetailView.teamMemberLabel" = "Team member";
+
+/* Label for the unattended pill button in booking attendance section. */
+"pos.bookingDetailView.unattendedPill" = "Unattended";
+
+/* Button to view the linked order from the booking detail header. */
+"pos.bookingDetailView.viewOrderAction" = "View Order";
+
+/* POS booking lifecycle status label for active bookings. */
+"pos.bookingLifecycleStatus.booked" = "Booked";
+
+/* POS booking lifecycle status label for canceled bookings. */
+"pos.bookingLifecycleStatus.canceled" = "Canceled";
+
+/* POS booking lifecycle status label for completed bookings. */
+"pos.bookingLifecycleStatus.completed" = "Completed";
+
+/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
+"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Unable to load more bookings";
+
+/* Text appearing on the booking list screen when there's an error loading bookings. */
+"pos.bookingList.failedToLoadBookingsTitle" = "Unable to load bookings";
+
+/* Title at the header for the Bookings view. */
+"pos.bookingListView.bookingsTitle" = "Bookings";
+
+/* Subtitle appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchSubtitle" = "We couldn't find any bookings matching your search. Try adjusting your search term.";
+
+/* Title appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchTitle" = "No bookings found";
+
+/* Subtitle appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsSubtitle.2" = "Any bookings scheduled for this date will appear here.";
+
+/* Title appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsTitle.2" = "No bookings for this day";
+
+/* Accessibility label for the search button in bookings list. */
+"pos.bookingListView.searchButton.accessibilityLabel" = "Search bookings";
+
+/* Placeholder for a search field in the Bookings view. */
+"pos.bookingListView.searchFieldPlaceholder" = "Search bookings";
+
+/* Button label shown when no changes have been made to the booking note yet. */
+"pos.bookingNoteView.addButton" = "Add";
+
+/* Title shown at the top of the booking note editor screen when adding a new note. */
+"pos.bookingNoteView.addTitle" = "Add note";
+
+/* Title shown at the top of the booking note editor screen when editing an existing note. */
+"pos.bookingNoteView.editTitle" = "Edit note";
+
+/* Placeholder text shown in the booking note text field when empty. */
+"pos.bookingNoteView.placeholder" = "Type note";
+
+/* Button to save the booking note. */
+"pos.bookingNoteView.saveButton" = "Save";
+
+/* Error message shown when saving a booking note fails. */
+"pos.bookingNoteView.saveError" = "Failed to save note. Try again.";
+
+/* POS booking payment status label when the booking order payment failed. */
+"pos.bookingPaymentStatus.failed" = "Failed";
+
+/* POS booking payment status label when the booking is paid. */
+"pos.bookingPaymentStatus.paid" = "Paid";
+
+/* POS booking payment status label when the booking order has been refunded. */
+"pos.bookingPaymentStatus.refunded" = "Refunded";
+
+/* POS booking payment status label when the booking is unpaid. */
+"pos.bookingPaymentStatus.unpaid" = "Unpaid";
+
+/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
+"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "Booking #%1$@ for %2$@ on %3$@ will be canceled.";
+
+/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
+"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "Booking #%1$@ for %2$@ on %3$@ for %4$@ will be canceled.";
+
+/* Title shown while a booking cancellation is being processed in POS. */
+"pos.cancelBookingConfirmation.canceling.processingTitle" = "Canceling booking...";
+
+/* Accessibility label for close button on cancel booking confirmation modal. */
+"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Close";
+
+/* Button to confirm and proceed with booking cancellation. */
+"pos.cancelBookingConfirmation.confirmButton" = "Yes, cancel booking";
+
+/* Secondary message informing that the customer will receive an email notification about the cancellation. */
+"pos.cancelBookingConfirmation.customerNotificationMessage" = "The customer will be notified via email.";
+
+/* Button to dismiss the cancel booking confirmation and keep the booking. */
+"pos.cancelBookingConfirmation.keepButton" = "No, keep it";
+
+/* Message shown while the booking cancellation is being processed. */
+"pos.cancelBookingConfirmation.processingMessage" = "Please wait while we cancel the booking.";
+
+/* Title for the cancel booking confirmation modal in POS. */
+"pos.cancelBookingConfirmation.title" = "Cancel this booking?";
+
+/* Message shown after a booking is successfully canceled in POS. */
+"pos.cancelBookingSuccess.canceled.message" = "The booking has been successfully canceled.";
+
+/* Title shown when a booking has been successfully canceled in POS. */
+"pos.cancelBookingSuccess.canceled.title" = "Booking canceled";
+
+/* Accessibility label for close button on cancel booking success screen. */
+"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "Close";
+
+/* Button to dismiss the cancel booking success screen in POS. */
+"pos.cancelBookingSuccess.doneButton" = "Done";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tap on a product to \n add it to the cart, or ";
 
@@ -9227,12 +9488,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund creation has failed */
 "pos.orderDetailsView.createRefundError.title" = "Failed to create refund";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "Discount total: %1$@";
-
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "Discount total";
-
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "Tap to send order receipt via email";
 
@@ -9260,20 +9515,11 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "More actions";
 
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "Net payment: %1$@";
+/* Subtitle shown when refund data preparation fails */
+"pos.orderDetailsView.prepareRefundError.subtitle" = "Please try again.";
 
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "Net Payment";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "Total paid: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "Payment method: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "Total paid";
+/* Title shown when refund data preparation fails */
+"pos.orderDetailsView.prepareRefundError.title" = "Couldn't prepare refund";
 
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Quantity: %1$@ at %2$@ each, Total %3$@";
@@ -9286,33 +9532,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "Reason: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "Refunded: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "Reason: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "Refunded";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "Products subtotal: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "Taxes: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "Taxes";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "Order total: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "Total";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totals";
@@ -9558,6 +9777,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
 "pos.refundSuccessView.messageFormat" = "You refunded %1$@ %2$@.";
 
+/* Informational message shown on refund success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
+"pos.refundSuccessView.receiptSent" = "A receipt has been sent to %1$@.";
+
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "Refund complete";
 
@@ -9588,8 +9810,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "New order";
+/* Label for discount in the totals breakdown. */
+"pos.totalsSectionView.discountLabel.v2" = "Discount";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.totalsSectionView.netPayment.accessibilityLabel" = "Net payment: %1$@";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.netPaymentLabel" = "Net Payment";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.totalsSectionView.paid.accessibilityLabel" = "Total paid: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.totalsSectionView.paid.accessibilityLabel.method" = "Payment method: %1$@";
+
+/* Label for the paid amount in the totals breakdown. */
+"pos.totalsSectionView.paidLabel" = "Total paid";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.totalsSectionView.reasonLabel" = "Reason: %1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel" = "Refunded: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.totalsSectionView.refund.accessibilityLabel.reason" = "Reason: %1$@";
+
+/* Label for a refund entry in the totals breakdown. */
+"pos.totalsSectionView.refundLabel" = "Refunded";
+
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
+
+/* Label for taxes in the totals breakdown. */
+"pos.totalsSectionView.taxesLabel" = "Taxes";
+
+/* Label for the total amount in the totals breakdown. */
+"pos.totalsSectionView.totalLabel" = "Total";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Email receipt";
@@ -13369,27 +13627,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "Update your preferences";
 
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "The appointment is scheduled but hasn't happened yet.";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "Booked";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "The customer arrived and the session took place as planned.";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "Checked-in";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "The client missed the appointment without canceling in advance.";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "No-show";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "Update attendance status";
-
 /* Message of the notice when inventory is updated successfully. Style may vary based on store settings.Reads like: 'Quantity updated: 2,345' */
 "updateInventoryNotice.scanProducts.createAddOrderByProductScanningButtonItem" = "Quantity updated: %@";
 
@@ -14016,6 +14253,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the self-driven push notification setup flow */
 "wooPushNotificationSetupCoordinator.flowTitle" = "Connect to WordPress.com";
+
+/* Title of the web view to update WooCommerce plugin during push notification setup */
+"wooPushNotificationSetupCoordinator.updateWooCommerce" = "Update WooCommerce";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "Add Package Details";
@@ -14963,6 +15203,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "Whoops, something went wrong. Please try again!";
 
+/* Error message when the connection step is canceled during push notification setup */
+"wpcomConnectionSetupHandler.ConnectionStep.canceled" = "Connection canceled.";
+
+/* Generic error message when the connection step fails during push notification setup */
+"wpcomConnectionSetupHandler.ConnectionStep.genericError" = "There was an error completing your request. Please try again or contact support if this error continues.";
+
+/* Generic error message when the plugin check step fails during push notification setup */
+"wpcomConnectionSetupHandler.PluginCheckStep.genericError" = "There was an error checking the version of WooCommerce plugin on your store. Please try again or contact support if this error continues.";
+
+/* Error message when push notification registration fails during setup */
+"wpcomConnectionSetupHandler.PushStep.genericError" = "There was an error enabling push notifications. Please try again or contact support if this error continues.";
+
 /* Status label shown when a setup step has completed successfully. */
 "wpComConnectionSetupStepView.complete" = "Complete";
 
@@ -14972,8 +15224,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Status label shown when a setup step has not been started yet. */
 "wpComConnectionSetupStepView.notStarted" = "Not started";
 
+/* Error message when the WooCommerce plugin version is outdated. %@ is the current plugin version. */
+"wpComConnectionSetupStepView.outdatedPlugin" = "Your current WooCommerce plugin version %1$@ needs updating to fully connect your store to WordPress.com.";
+
 /* Cancel button title in the WPCom connection setup screen toolbar. */
 "wpComConnectionSetupView.cancelButton" = "Cancel";
+
+/* Get help button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.getHelpButton" = "Get help";
 
 /* Title for the WPCom connection setup screen. */
 "wpComConnectionSetupView.title" = "Connect to WordPress.com";
@@ -14990,8 +15248,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title to navigate to the store after successful WPCom connection setup. */
 "wpComConnectionSetupViewModel.goToMyStore" = "Go to My Store";
 
-/* Subtitle for the WPCom connection setup screen. %@ is the store name. */
-"wpComConnectionSetupViewModel.subtitle" = "Please wait while we finalize connecting your store %@ to your WordPress.com account.";
+/* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
+"wpComConnectionSetupViewModel.message" = "Please wait while we finalize connecting your store %1$@ to WordPress.com.";
 
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Try again";
@@ -15010,18 +15268,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the username field on the WPCom email login screen of the Jetpack setup flow. */
 "wpComEmailLoginView.usernameLabel" = "Username";
-
-/* Button to submit a WPCom email on the login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "Continue";
-
-/* Subtitle for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "Log in with your WordPress.com account to connect your store.";
-
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
-"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.";
-
-/* Title for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.title" = "Connect to WordPress.com";
 
 /* Error message when the username is not found */
 "wpComEmailLoginViewModel.unknownUsername" = "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.";
@@ -15056,11 +15302,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cancel button title in the WordPress.com Push Notifications Benefits View toolbar */
 "wpcomPushNotificationsBenefitsView.cancelButton" = "Cancel";
 
+/* Button title to contact support in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.contactSupport" = "Contact support";
+
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "Continue";
 
+/* Title of the error state in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.errorTitle" = "Something went wrong";
+
 /* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.description" = "Connect your store to a WordPress.com account to get access to push notifications for new orders, reviews and more.";
+"wpcomPushNotificationsBenefitsView.mainDescription" = "Connect your store to WordPress.com to get access to push notifications for new orders, reviews and more.";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "Not now";
@@ -15071,8 +15323,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.title" = "Unlock push notifications with WordPress.com";
 
+/* Button title to update the WooCommerce plugin in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.updatePluginButton" = "Update plugin";
+
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "What is WordPress.com?";
+
+/* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
+"wpcomPushNotificationsBenefitsViewModel.shareDetails" = "share details";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By continuing, you agree to our Terms of Service and to share details with WordPress.com. */
+"wpcomPushNotificationsBenefitsViewModel.termsContent" = "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.";
+
+/* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
+"wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Terms of Service";
+
+/* Generic error message in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "We could not complete the push notifications setup. Please contact support for assistance.";
+
+/* Error message in the Push Notifications Benefits View for users without admin role */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "Your account does not have permission to complete push notifications setup. Please ask your store administrator to handle this.";
 
 /* Title in the product description AI generator view. */
 "Write a description" = "Write a description";

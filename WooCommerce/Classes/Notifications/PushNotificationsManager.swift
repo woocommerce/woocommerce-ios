@@ -5,6 +5,7 @@ import UserNotifications
 import AutomatticTracks
 import Yosemite
 import WooFoundation
+import enum NetworkingCore.NetworkError
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
@@ -184,6 +185,17 @@ extension PushNotificationsManager {
     /// - Throws: If any step in the registration pipeline fails.
     @MainActor
     func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64 {
+        #if targetEnvironment(simulator)
+        if !isRunningTests {
+            DDLogVerbose("👀 Push Notifications tokens are not supported in the Simulator - mocking success result")
+            let mockTokenID = Int64.random(in: 99...9999)
+            registrationState.setWooPushNotificationTokenID(mockTokenID)
+            if let siteID {
+                registrationState.markSiteAsRegisteredForWooPNs(siteID)
+            }
+            return mockTokenID
+        }
+        #endif
         // 1. Register with iOS for remote notifications
         registerForRemoteNotifications()
 
@@ -220,9 +232,6 @@ extension PushNotificationsManager {
     /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
-        guard stores.isAuthenticatedWithoutWPCom == false else {
-            return
-        }
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
         let group = DispatchGroup()
@@ -241,15 +250,17 @@ extension PushNotificationsManager {
             }
         }
 
-        group.enter()
-        unregisterDotcomDeviceIfPossible() { error in
-            if let error = error {
-                DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
-            } else {
-                DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+        if stores.isAuthenticatedWithoutWPCom == false {
+            group.enter()
+            unregisterDotcomDeviceIfPossible() { error in
+                if let error = error {
+                    DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
+                } else {
+                    DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+                }
+                self.registrationState.clearWPComRegistration()
+                group.leave()
             }
-            self.registrationState.clearWPComRegistration()
-            group.leave()
         }
 
         group.notify(queue: .main) {
@@ -334,7 +345,7 @@ extension PushNotificationsManager {
                 case .failure(let error):
                     DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
                     analytics.track(.wooPushTokenRegisterError, withError: error)
-                    if let siteID {
+                    if let siteID, case .notFound = error as? NetworkError {
                         registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
                     }
                     // Falls back to dotcom PNs if authenticated with WPCom

@@ -129,8 +129,6 @@ private extension WPComEmailLoginView {
         switch viewModel.flow {
         case .jetpackSetup:
             JetpackInstallHeaderView()
-        case .notificationSetup:
-            ConnectWPComHeaderView()
         }
     }
 }
@@ -168,16 +166,6 @@ private extension WPComEmailLoginView {
             comment: "Text hinting that an account will be created if the email is not associated with an existing account."
         )
     }
-}
-
-#Preview("WPComEmailLoginView - notification setup") {
-    WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
-                                         flow: .notificationSetup,
-                                         allowAccountCreation: true,
-                                         onPasswordUIRequest: { _ in },
-                                         onMagicLinkRequest: { _ in },
-                                         onMagicLinkSent: { _, _ in },
-                                         onError: { _ in }))
 }
 
 #Preview("WPComEmailLoginView - Jetpack setup connection only") {

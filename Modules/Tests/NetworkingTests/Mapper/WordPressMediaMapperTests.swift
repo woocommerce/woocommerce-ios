@@ -25,6 +25,24 @@ final class WordPressMediaMapperTests: XCTestCase {
         XCTAssertEqual(media?.details?.sizes?["large"]?.height, 768)
     }
 
+    /// Tests that WordPressMediaList and consequently WordPressMedia is correctly mapped from a response where media_details is an array.
+    ///
+    /// - Throws: An error if the mapping fails.
+    func test_it_maps_WordPressMediaList_correctly_with_media_details_as_array() throws {
+        // Given
+        let data = try retrieveWordPressMediaResponseWithMediaDetailsAsArray()
+        let mapper = WordPressMediaListMapper()
+
+        // When
+        let mediaList = try mapper.map(response: data)
+
+        // Then
+        XCTAssertEqual(mediaList.count, 1)
+        let media = mediaList.first { $0.mediaID == 7 }
+        XCTAssertNotNil(media)
+        XCTAssertNil(media?.details)
+    }
+
     /// Tests that WordPressMediaList and consequently WordPressMedia is correctly mapped from a response where sizes is an empty array.
     ///
     /// - Throws: An error if the mapping fails.
@@ -49,6 +67,14 @@ final class WordPressMediaMapperTests: XCTestCase {
 private extension WordPressMediaMapperTests {
     func retrieveWordPressMediaResponseWithSizesAsDictionary() throws -> Data {
         guard let response = Loader.contentsOf("media-library") else {
+            throw FileNotFoundError()
+        }
+
+        return response
+    }
+
+    func retrieveWordPressMediaResponseWithMediaDetailsAsArray() throws -> Data {
+        guard let response = Loader.contentsOf("media-library-with-media-details-as-array") else {
             throw FileNotFoundError()
         }
 

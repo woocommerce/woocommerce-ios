@@ -8,5 +8,6 @@ struct POSRefundReviewData: Equatable {
     let formattedTax: String
     let formattedRefundTotal: String
     let paymentMethodDescription: String
+    let customerEmail: String?
     var refundReason: String?
 }

@@ -1,4 +1,5 @@
 import Foundation
+import CocoaLumberjack
 import enum Alamofire.AFError
 import struct NetworkingCore.PagedItems
 import struct NetworkingCore.Order
@@ -32,13 +33,14 @@ public final class POSBookingService: POSBookingServiceProtocol {
     public func fetchBookings(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
+                              filters: BookingFilters?,
                               searchQuery: String?) async throws -> PagedItems<POSBooking> {
         do {
             let bookings = try await bookingsRemote.loadAllBookings(
                 for: siteID,
                 pageNumber: pageNumber,
                 pageSize: pageSize,
-                filters: nil,
+                filters: filters,
                 searchQuery: searchQuery,
                 order: .ascending
             )
@@ -71,7 +73,7 @@ public final class POSBookingService: POSBookingServiceProtocol {
             let hasMorePages = bookings.count == pageSize
 
             return PagedItems(items: posBookings, hasMorePages: hasMorePages, totalItems: nil)
-        } catch AFError.explicitlyCancelled {
+        } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSBookingServiceError.requestCancelled
         } catch is POSBookingServiceError {
             throw POSBookingServiceError.requestCancelled
@@ -80,52 +82,82 @@ public final class POSBookingService: POSBookingServiceProtocol {
         }
     }
 
-    public func cancelBooking(bookingID: Int64) async throws {
-        let result = try await bookingsRemote.updateBooking(
+    public func fetchBooking(bookingID: Int64) async throws -> POSBooking {
+        guard let booking = try await bookingsRemote.loadBooking(bookingID: bookingID, siteID: siteID) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        let orderIDs = booking.orderID != 0 ? [booking.orderID] : []
+        let resourceIDs = booking.resourceID != 0 ? [booking.resourceID] : []
+
+        async let orderTask = fetchOrders(orderIDs: orderIDs)
+        async let resourceTask = fetchResources(resourceIDs: resourceIDs)
+        let (orders, resources) = await (orderTask, resourceTask)
+
+        let order = orders[booking.orderID]
+        let orderInfo: BookingOrderInfo? = order.map { BookingOrderInfo(booking: booking, order: $0) }
+        let resource = resources[booking.resourceID]
+
+        guard let posOrder = order.flatMap({ try? orderMapper.map(order: $0) }) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
+    }
+
+    @discardableResult
+    public func cancelBooking(bookingID: Int64) async throws -> BookingStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
             from: siteID,
             bookingID: bookingID,
             attendanceStatus: nil,
             bookingStatus: .cancelled,
             note: nil
-        )
-        guard result != nil else {
+        ) else {
             throw POSBookingServiceError.requestFailed
         }
+        return booking.bookingStatus
     }
 
-    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {
-        let result = try await bookingsRemote.updateBooking(
+    @discardableResult
+    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
             from: siteID,
             bookingID: bookingID,
             attendanceStatus: status,
             bookingStatus: nil,
             note: nil
-        )
-        guard result != nil else {
+        ) else {
             throw POSBookingServiceError.requestFailed
         }
+        return booking.attendanceStatus
+    }
+
+    @discardableResult
+    public func updateBookingNote(bookingID: Int64, note: String) async throws -> String {
+        guard let booking = try await bookingsRemote.updateBooking(
+            from: siteID,
+            bookingID: bookingID,
+            attendanceStatus: nil,
+            bookingStatus: nil,
+            note: note
+        ) else {
+            throw POSBookingServiceError.requestFailed
+        }
+        return booking.note
     }
 }
 
 private extension POSBookingService {
     func fetchOrders(orderIDs: [Int64]) async -> [Int64: Order] {
         guard !orderIDs.isEmpty else { return [:] }
-        var result: [Int64: Order] = [:]
-        await withTaskGroup(of: (Int64, Order?).self) { group in
-            for orderID in orderIDs {
-                group.addTask { [weak self] in
-                    guard let self else { return (orderID, nil) }
-                    let order = try? await self.ordersRemote.loadPOSOrder(siteID: self.siteID, orderID: orderID)
-                    return (orderID, order)
-                }
-            }
-            for await (orderID, order) in group {
-                if let order {
-                    result[orderID] = order
-                }
-            }
+        do {
+            let orders = try await ordersRemote.loadPOSOrders(siteID: siteID, orderIDs: Array(Set(orderIDs)))
+            return Dictionary(uniqueKeysWithValues: orders.map { ($0.orderID, $0) })
+        } catch {
+            DDLogError("⛔️ POSBookingService: Failed to batch-load orders for IDs \(orderIDs): \(error)")
+            return [:]
         }
-        return result
     }
 
     func fetchResources(resourceIDs: [Int64]) async -> [Int64: BookingResource] {

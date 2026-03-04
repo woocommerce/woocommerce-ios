@@ -77,9 +77,6 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldSuggestWPComConnection = false
 
-    @Published private(set) var isWooPluginOutdated = false
-    private(set) var outdatedPluginVersion: String = ""
-
     @Published private(set) var dismissedWPComConnectionSuggestion = false
 
     @Published private var hasOrders = false
@@ -87,6 +84,8 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var isEligibleForInbox = false
 
     @Published private(set) var isEligibleForStock = false
+
+    @Published private(set) var isEligibleForStoreSetup = false
 
     @Published var showingCustomization = false
 
@@ -107,7 +106,6 @@ final class DashboardViewModel: ObservableObject {
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
-    private let pluginVersionChecker: PluginVersionCheckerProtocol?
     private let clientSideBannerProvider: ClientSideBannerProvider
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -162,7 +160,6 @@ final class DashboardViewModel: ObservableObject {
          siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
-         pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          clientSideBannerProvider: ClientSideBannerProvider? = nil) {
         self.siteID = siteID
         self.stores = stores
@@ -206,16 +203,6 @@ final class DashboardViewModel: ObservableObject {
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
         self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
-        self.pluginVersionChecker = pluginVersionChecker ?? {
-            guard let site = stores.sessionManager.defaultSite, site.isJetpackConnected else {
-                return nil
-            }
-            return PluginVersionChecker(
-                siteID: site.siteID,
-                pluginPath: WooPluginRequirements.pluginPath,
-                minimumVersion: WooPluginRequirements.minimumVersion
-            )
-        }()
 
         self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
             stores: stores,
@@ -232,6 +219,7 @@ final class DashboardViewModel: ObservableObject {
         }
 
         observeStockEligibility()
+        observeStoreSetupEligibility()
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
@@ -253,7 +241,7 @@ final class DashboardViewModel: ObservableObject {
         /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
         /// Here we need to get the updated cards from storage and update the dashboard accordingly.
         await loadDashboardCardsFromStorage()
-        updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
+        updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard && isEligibleForStoreSetup,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
@@ -271,6 +259,14 @@ final class DashboardViewModel: ObservableObject {
 
     func hideWPComConnectionSuggestion() {
         userDefaults.set(true, forKey: .hideWPComConnectionOnDashboard)
+    }
+
+    func onConnectWPComCardAppear() {
+        analytics.track(.pushNotificationsCardView)
+    }
+
+    func onConnectWPComCardTapped() {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .connectWPCom))
     }
 
     @MainActor
@@ -425,7 +421,6 @@ private extension DashboardViewModel {
             }
             group.addTask { [weak self] in
                 await self?.updateSelfDrivenPushRegistrationStatus()
-                await self?.checkWooPluginVersion()
             }
         }
     }
@@ -534,11 +529,11 @@ private extension DashboardViewModel {
             })
             .store(in: &subscriptions)
 
-        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection, $isWooPluginOutdated)
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((cards, showFeedbackCard, suggestWPComConnection, isWooPluginOutdated), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let ((cards, showFeedbackCard, suggestWPComConnection), showNewCardsNotice, hasOrders, isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -558,8 +553,8 @@ private extension DashboardViewModel {
                         allCards.append(DashboardCard.shareStoreCard)
                     }
 
-                    /// Insert card for connecting WPCom or updating plugin at the top if needed
-                    if suggestWPComConnection || isWooPluginOutdated {
+                    /// Insert card for connecting WPCom at the top if needed
+                    if suggestWPComConnection {
                         allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
                     return allCards
@@ -649,7 +644,11 @@ private extension DashboardViewModel {
 // MARK: Private helpers
 private extension DashboardViewModel {
     func observeValuesForDashboardCards() {
-        storeOnboardingViewModel.$canShowInDashboard
+        let canShowOnboarding = storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest($isEligibleForStoreSetup)
+            .map { $0 && $1 }
+
+        canShowOnboarding
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard,
                            $isEligibleForStock)
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
@@ -725,6 +724,26 @@ private extension DashboardViewModel {
                     )
             }
             .assign(to: &$isEligibleForStock)
+    }
+
+    func observeStoreSetupEligibility() {
+        stores.site
+            .removeDuplicates()
+            .map { [weak self] in
+                guard
+                    let self,
+                    let site = $0
+                else {
+                    return false
+                }
+
+                return siteIsCIABEligibilityChecker
+                    .isFeatureSupported(
+                        .storeSetupDashboardCard,
+                        for: site
+                    )
+            }
+            .assign(to: &$isEligibleForStoreSetup)
     }
 
     func configureOrdersResultController() {
@@ -957,21 +976,6 @@ private extension DashboardViewModel {
             featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
     }
 
-    @MainActor
-    func checkWooPluginVersion() async {
-        isWooPluginOutdated = false
-        outdatedPluginVersion = ""
-        guard let pluginVersionChecker else { return }
-        do {
-            let result = try await pluginVersionChecker.checkCompatibility()
-            if case .incompatible(let currentVersion, _) = result {
-                isWooPluginOutdated = true
-                outdatedPluginVersion = currentVersion
-            }
-        } catch {
-            DDLogError("⛔️ Plugin version check failed: \(error)")
-        }
-    }
 }
 
 // MARK: InAppFeedback card

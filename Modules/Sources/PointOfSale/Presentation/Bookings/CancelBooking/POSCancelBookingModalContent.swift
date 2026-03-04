@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSCancelBookingModalContent: View {
@@ -7,6 +8,7 @@ struct POSCancelBookingModalContent: View {
     @Binding var cancelModalState: CancelBookingModalState?
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
 
     var body: some View {
         switch state {
@@ -14,7 +16,7 @@ struct POSCancelBookingModalContent: View {
             POSCancelBookingConfirmationView(
                 bookingNumber: booking.id,
                 serviceName: booking.serviceName,
-                formattedDateTime: formattedCancelDateTime,
+                formattedDateTime: POSBookingDateFormatter.formattedDateTime(for: booking.startDate),
                 customerName: booking.customerName,
                 isProcessing: false,
                 onClose: { cancelModalState = nil },
@@ -30,7 +32,7 @@ struct POSCancelBookingModalContent: View {
             POSCancelBookingConfirmationView(
                 bookingNumber: booking.id,
                 serviceName: booking.serviceName,
-                formattedDateTime: formattedCancelDateTime,
+                formattedDateTime: POSBookingDateFormatter.formattedDateTime(for: booking.startDate),
                 customerName: booking.customerName,
                 isProcessing: true,
                 onClose: {},
@@ -58,30 +60,17 @@ struct POSCancelBookingModalContent: View {
         }
     }
 
-    private var formattedCancelDateTime: String {
-        DateFormatter.dateTimeFormatter.string(from: booking.startDate)
-    }
-
     @MainActor
     private func performCancelBooking() async {
         do {
             try await bookingsModel.bookingsController.cancelBooking(bookingID: booking.id)
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelled())
             cancelModalState = .success
         } catch {
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelFailed(error: error))
             cancelModalState = .error
         }
     }
-}
-
-// MARK: - Date Formatters
-
-private extension DateFormatter {
-    static let dateTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter
-    }()
 }
 
 // MARK: - Localization

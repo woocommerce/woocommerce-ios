@@ -4,6 +4,7 @@ import struct Yosemite.POSBooking
 struct POSBookingsContainerView: View {
     @Binding var isPresented: Bool
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var isSearching: Bool = false
     @State private var searchTerm: String = ""
@@ -27,13 +28,17 @@ struct POSBookingsContainerView: View {
             .environment(bookingsModel)
         } detail: { selection in
             POSBookingDetailView(
-                booking: selection,
+                booking: Binding(
+                    get: { bookingsModel.bookingsController.selectedBooking ?? selection },
+                    set: { bookingsModel.bookingsController.selectBooking($0) }
+                ),
                 onBack: {
                     bookingsModel.bookingsController.selectBooking(nil)
                 }
             )
             .id(selection.id)
             .environment(bookingsModel)
+            .environment(orderListModel)
         } detailPlaceholderView: {
             if bookingsModel.bookingsController.bookingsViewState.isLoading {
                 POSBookingDetailsLoadingView()
@@ -63,7 +68,7 @@ struct POSBookingsContainerView: View {
         }
         .animation(.default, value: bookingsModel.bookingsController.bookingsViewState.bookings.isEmpty)
         .onDisappear {
-            bookingsModel.bookingsController.selectBooking(nil)
+            bookingsModel.bookingsController.reset()
         }
     }
 }

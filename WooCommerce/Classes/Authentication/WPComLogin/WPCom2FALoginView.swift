@@ -57,8 +57,6 @@ struct WPCom2FALoginView: View {
                 switch flow {
                 case .jetpackSetup:
                     JetpackInstallHeaderView()
-                case .notificationSetup:
-                    ConnectWPComHeaderView()
                 }
 
                 // title and description
@@ -168,7 +166,7 @@ private extension WPCom2FALoginView {
 struct WPCom2FALoginView_Previews: PreviewProvider {
     static var previews: some View {
         WPCom2FALoginView(title: "Connect to WordPress.com ",
-                          flow: .notificationSetup,
+                          flow: .jetpackSetup(requiresConnectionOnly: true),
                           viewModel: .init(loginFields: LoginFields(),
                                            onAuthWindowRequest: { UIViewController().view.window! },
                                            onLoginFailure: { _ in },

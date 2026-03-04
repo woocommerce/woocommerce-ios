@@ -1,8 +1,9 @@
 import Foundation
+import Codegen
 import enum Networking.BookingStatus
 import enum Networking.BookingAttendanceStatus
 
-public struct POSBooking: Equatable, Hashable, Identifiable {
+public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
     /// Whether the linked order indicates payment was collected.
     /// Uses `datePaid` rather than order status because the Bookings API
     /// may change the order status when a booking is cancelled,
@@ -12,6 +13,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     }
 
     public let id: Int64
+    public let customerID: Int64
     public let customerName: String?
     public let serviceName: String
     public let startDate: Date
@@ -34,6 +36,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
     public let order: POSOrder
 
     public init(id: Int64,
+                customerID: Int64 = 0,
                 customerName: String?,
                 serviceName: String,
                 startDate: Date,
@@ -55,6 +58,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable {
                 formattedTax: String? = nil,
                 order: POSOrder) {
         self.id = id
+        self.customerID = customerID
         self.customerName = customerName
         self.serviceName = serviceName
         self.startDate = startDate

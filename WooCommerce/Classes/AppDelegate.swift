@@ -444,8 +444,6 @@ extension AppDelegate {
             pendingAuthFlowStorage.clear()
 
             switch flow {
-            case .notificationSetup:
-                return handleAuthenticationUrlForNotificationSetup(url, rootViewController: rootViewController)
             case .jetpackSetup:
                 return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
             case .none:
@@ -454,12 +452,6 @@ extension AppDelegate {
         } else {
             return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
-    }
-
-    func handleAuthenticationUrlForNotificationSetup(_ url: URL, rootViewController: UIViewController) -> Bool {
-        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
-        wooPushNotificationCoordinator = coordinator
-        return coordinator.handleAuthenticationUrl(url)
     }
 
     func handleAuthenticationUrlForJetpackSetup(_ url: URL, rootViewController: UIViewController) -> Bool {

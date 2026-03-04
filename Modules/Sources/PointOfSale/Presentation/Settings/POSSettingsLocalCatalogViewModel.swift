@@ -5,7 +5,6 @@ import Storage
 import WooFoundation
 
 @Observable
-@MainActor
 final class POSSettingsLocalCatalogViewModel {
     private(set) var catalogSize: String = ""
     private(set) var lastFullSyncDate: String = ""
@@ -29,8 +28,9 @@ final class POSSettingsLocalCatalogViewModel {
         return formatter
     }()
 
-    nonisolated(unsafe) private var syncStateObservationTask: Task<Void, Never>?
+    private var syncStateObservationTask: Task<Void, Never>?
 
+    @MainActor
     private var currentSyncState: POSCatalogSyncState {
         syncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
@@ -44,27 +44,25 @@ final class POSSettingsLocalCatalogViewModel {
         }
     }
 
-    nonisolated init(siteID: Int64,
-                     catalogSettingsService: POSCatalogSettingsServiceProtocol,
-                     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol,
-                     siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
+    init(siteID: Int64,
+         catalogSettingsService: POSCatalogSettingsServiceProtocol,
+         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol,
+         siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil) {
         self.siteID = siteID
         self.catalogSettingsService = catalogSettingsService
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.syncStateModel = catalogSyncCoordinator.fullSyncStateModel
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
 
-        // Observe sync state changes to update UI when sync completes in background.
-        // Deferred to a Task because `startObservingSyncState` is MainActor-isolated.
-        Task { @MainActor [self] in
-            self.startObservingSyncState()
-        }
+        // Observe sync state changes to update UI when sync completes in background
+        startObservingSyncState()
     }
 
     deinit {
         syncStateObservationTask?.cancel()
     }
 
+    @MainActor
     func loadCatalogData() async {
         isLoading = true
         defer { isLoading = false }
@@ -82,6 +80,7 @@ final class POSSettingsLocalCatalogViewModel {
         }
     }
 
+    @MainActor
     func refreshCatalog() async {
         isRefreshingCatalog = true
         catalogRefreshError = nil
@@ -99,7 +98,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     /// Starts observing sync state changes to update UI when sync completes in background
     private func startObservingSyncState() {
-        syncStateObservationTask = Task {
+        syncStateObservationTask = Task { @MainActor in
             var previousState = currentSyncState
 
             while !Task.isCancelled {
@@ -133,6 +132,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     /// Waits for the next change to the observed sync state.
     /// Re-registers observation each time it's called.
+    @MainActor
     private func observeNextStateChange() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             withObservationTracking {

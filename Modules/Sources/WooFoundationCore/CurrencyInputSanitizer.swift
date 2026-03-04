@@ -5,21 +5,30 @@ import Foundation
 /// Handles device-to-store separator conversion, character filtering, and fraction digit enforcement.
 ///
 public struct CurrencyInputSanitizer {
-    private let storeDecimalSeparator: String
-    private let fractionDigits: Int
+    private let currencySettings: CurrencySettings
     private let deviceDecimalSeparator: String
     public let currencySymbol: String
-    private let currencyPosition: CurrencySettings.CurrencyPosition
     private let currencyFormatter: CurrencyFormatter
+    private let decimalFormatter: NumberFormatter
+
+    private var storeDecimalSeparator: String { currencySettings.sanitizedDecimalSeparator }
+    private var fractionDigits: Int { currencySettings.fractionDigits }
 
     public init(currencySettings: CurrencySettings,
                 deviceDecimalSeparator: String? = nil) {
-        self.storeDecimalSeparator = currencySettings.sanitizedDecimalSeparator
-        self.fractionDigits = currencySettings.fractionDigits
+        self.currencySettings = currencySettings
         self.currencySymbol = currencySettings.symbol(from: currencySettings.currencyCode)
-        self.currencyPosition = currencySettings.currencyPosition
         self.deviceDecimalSeparator = deviceDecimalSeparator ?? Locale.autoupdatingCurrent.decimalSeparator ?? "."
         self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = false
+        formatter.decimalSeparator = currencySettings.sanitizedDecimalSeparator
+        formatter.minimumFractionDigits = currencySettings.fractionDigits
+        formatter.maximumFractionDigits = currencySettings.fractionDigits
+        formatter.roundingMode = .halfUp
+        self.decimalFormatter = formatter
     }
 
     /// Validates and sanitizes currency input text.
@@ -70,14 +79,7 @@ public struct CurrencyInputSanitizer {
     /// - Parameter value: The decimal value to format
     /// - Returns: Formatted string using the store decimal separator and fraction digits
     public func formatDecimal(_ value: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.usesGroupingSeparator = false
-        formatter.decimalSeparator = storeDecimalSeparator
-        formatter.minimumFractionDigits = fractionDigits
-        formatter.maximumFractionDigits = fractionDigits
-        formatter.roundingMode = .halfUp
-        return formatter.string(from: value as NSDecimalNumber) ?? "0"
+        decimalFormatter.string(from: value as NSDecimalNumber) ?? "0"
     }
 
     /// Adds the currency symbol to an amount string based on the store position settings.
@@ -89,7 +91,7 @@ public struct CurrencyInputSanitizer {
     public func addCurrencySymbol(to amount: String, isNegative: Bool = false) -> String {
         currencyFormatter.formatCurrency(
             using: amount,
-            currencyPosition: currencyPosition,
+            currencyPosition: currencySettings.currencyPosition,
             currencySymbol: currencySymbol,
             isNegative: isNegative
         )

@@ -205,7 +205,7 @@ struct POSBookingDetailView: View {
     private var bookingDetailsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(String(format: Localization.bookingIdTitle, booking.id))
-                .font(.posBodyXLargeRegular)
+                .font(.posBodyXLargeBold)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 

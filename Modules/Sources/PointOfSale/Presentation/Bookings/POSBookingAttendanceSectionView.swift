@@ -86,24 +86,21 @@ struct POSBookingAttendanceSectionView: View {
         }
     }
 
-    @ViewBuilder
     private func attendanceButton(_ title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
-        if isSelected {
-            Button(title, action: action)
-                .buttonStyle(POSFilledAttendanceButtonStyle())
-                .accessibilityAddTraits(.isSelected)
-        } else {
-            Button(title, action: action)
-                .buttonStyle(POSOutlinedButtonStyle(size: .compact))
-                .accessibilityRemoveTraits(.isSelected)
-        }
+        Button(title, action: action)
+            .buttonStyle(POSAttendanceButtonStyle(isSelected: isSelected))
+            .accessibilityAddTraits(isSelected ? .isSelected : [])
+            .accessibilityRemoveTraits(isSelected ? [] : .isSelected)
     }
 }
 
 // MARK: - Attendance Button Style
 
-private struct POSFilledAttendanceButtonStyle: ButtonStyle {
+private struct POSAttendanceButtonStyle: ButtonStyle {
+    let isSelected: Bool
+
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.isEnabled) private var isEnabled
 
     private var fillColor: Color {
         colorScheme == .dark ? .posSecondary : .posPrimaryContainer
@@ -114,9 +111,15 @@ private struct POSFilledAttendanceButtonStyle: ButtonStyle {
             .font(.posBodySmallBold())
             .padding(.vertical, POSPadding.small)
             .padding(.horizontal, POSPadding.medium)
-            .foregroundStyle(Color.posOnInverseSurface)
-            .background(fillColor)
-            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .foregroundStyle(isSelected ? Color.posOnInverseSurface : (isEnabled ? .posOnSurface : .posOnDisabledContainer))
+            .background(isSelected ? fillColor : .clear)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+            .overlay(
+                RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value)
+                    .strokeBorder(isEnabled ? Color.posInverseSurface : .posDisabledContainer,
+                                  lineWidth: 2)
+                    .opacity(isSelected ? 0 : 1)
+            )
             .opacity(configuration.isPressed ? 0.7 : 1.0)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
     }

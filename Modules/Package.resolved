@@ -1,5 +1,5 @@
 {
-  "originHash" : "161005f87acb84affb25028649b70d33d36a1c6f31e638ba26f4168bf1e5830c",
+  "originHash" : "14d11c2f84ee4fbd36ad0a34dd97f48c5ef855f8da0fd97f0323f6c9ad849658",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Automattic/Automattic-Tracks-iOS.git",
       "state" : {
-        "revision" : "9090a31edfc86a294694238e96382498a1eb493f",
-        "version" : "4.2.0"
+        "revision" : "437f586a62c07c6ceec9baf043237b2afe7ea1ac",
+        "version" : "3.5.2"
       }
     },
     {
@@ -238,8 +238,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa",
       "state" : {
-        "revision" : "7e77c22816c024d7385d7ab5fbf4b00130853a43",
-        "version" : "9.5.1"
+        "revision" : "6c81e671154e63464dd6749b7ba3279dd390a146",
+        "version" : "8.50.1"
       }
     },
     {
@@ -328,8 +328,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jedisct1/swift-sodium",
       "state" : {
-        "revision" : "e7e799cd1eaa4d0f6d3eab56832e7f4b377f4a4f",
-        "version" : "0.10.0"
+        "revision" : "4f9164a0a2c9a6a7ff53a2833d54a5c79c957342",
+        "version" : "0.9.1"
       }
     },
     {

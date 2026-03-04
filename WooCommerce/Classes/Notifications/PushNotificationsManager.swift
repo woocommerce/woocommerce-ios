@@ -232,9 +232,6 @@ extension PushNotificationsManager {
     /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
-        guard stores.isAuthenticatedWithoutWPCom == false else {
-            return
-        }
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
         let group = DispatchGroup()
@@ -253,15 +250,17 @@ extension PushNotificationsManager {
             }
         }
 
-        group.enter()
-        unregisterDotcomDeviceIfPossible() { error in
-            if let error = error {
-                DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
-            } else {
-                DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+        if stores.isAuthenticatedWithoutWPCom == false {
+            group.enter()
+            unregisterDotcomDeviceIfPossible() { error in
+                if let error = error {
+                    DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
+                } else {
+                    DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+                }
+                self.registrationState.clearWPComRegistration()
+                group.leave()
             }
-            self.registrationState.clearWPComRegistration()
-            group.leave()
         }
 
         group.notify(queue: .main) {

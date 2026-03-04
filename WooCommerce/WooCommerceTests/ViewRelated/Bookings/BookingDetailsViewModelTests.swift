@@ -344,19 +344,30 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let viewModel = givenViewModel(booking: booking)
 
         // Then
-        let headerSection = viewModel.sections.first { section in
-            if case .header = section.content {
-                return true
-            }
-            return false
-        }
+        let headerContent = headerContent(from: viewModel)
+        XCTAssertEqual(headerContent?.statusBadge.text, "Attended")
+    }
 
-        guard let headerSection = headerSection,
-              case let .header(headerContent) = headerSection.content else {
-            XCTFail("Header section not found")
-            return
-        }
-        XCTAssertEqual(headerContent.statusBadge.text, "Attended")
+    func test_headerContent_when_booking_is_cancelled_then_statusBadge_shows_canceled() {
+        // Given
+        let orderInfo = BookingOrderInfo(statusKey: "processing",
+                                         datePaid: Date(),
+                                         paymentInfo: nil,
+                                         customerInfo: nil,
+                                         productInfo: nil)
+        let booking = Booking.fake().copy(
+            statusKey: "cancelled",
+            attendanceStatusKey: "unattended",
+            orderInfo: orderInfo
+        )
+
+        // When
+        let viewModel = givenViewModel(booking: booking)
+
+        // Then — Canceled badge is the statusBadge (first in the header HStack)
+        let headerContent = headerContent(from: viewModel)
+        XCTAssertEqual(headerContent?.statusBadge.text, "Canceled")
+        XCTAssertEqual(headerContent?.paymentStatusBadge, .paid)
     }
 
     func test_shouldShowAttendanceButton_returns_false_when_booking_is_cancelled() {
@@ -466,6 +477,22 @@ final class BookingDetailsViewModelTests: XCTestCase {
 private extension BookingDetailsViewModelTests {
     func givenViewModel(booking: Booking = Booking.fake()) -> BookingDetailsViewModel {
         return BookingDetailsViewModel(booking: booking, stores: storesManager, analytics: analytics)
+    }
+
+    func headerContent(from viewModel: BookingDetailsViewModel) -> BookingDetailsViewModel.HeaderContent? {
+        let headerSection = viewModel.sections.first { section in
+            if case .header = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let headerSection = headerSection,
+              case let .header(content) = headerSection.content else {
+            XCTFail("Header section not found")
+            return nil
+        }
+        return content
     }
 
     func waitForFirstBookingAction(

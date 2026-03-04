@@ -641,32 +641,38 @@ private struct CopyableRow: View {
     @State private var copyTask: Task<Void, Never>?
 
     var body: some View {
-        HStack {
-            Text(text)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-            Spacer()
-            Button {
-                UIPasteboard.general.string = text
-                copied = true
-                copyTask?.cancel()
-                copyTask = Task {
-                    try? await Task.sleep(for: .seconds(1.5))
-                    guard !Task.isCancelled else { return }
-                    copied = false
-                }
-            } label: {
+        Button {
+            copyToClipboard()
+        } label: {
+            HStack {
+                Text(text)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                Spacer()
                 Image(systemName: copied ? "checkmark" : "doc.on.doc")
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(tintColor)
                     .contentTransition(.symbolEffect(.replace))
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(copyButtonAccessibilityLabel)
             .frame(minHeight: 32)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(rowAccessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint(copyButtonAccessibilityLabel)
+    }
+
+    private func copyToClipboard() {
+        UIPasteboard.general.string = text
+        copied = true
+        copyTask?.cancel()
+        copyTask = Task {
+            try? await Task.sleep(for: .seconds(1.5))
+            guard !Task.isCancelled else { return }
+            copied = false
+        }
     }
 }
 

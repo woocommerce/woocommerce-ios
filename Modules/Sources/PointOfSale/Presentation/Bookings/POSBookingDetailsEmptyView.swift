@@ -1,13 +1,16 @@
 import SwiftUI
 
 struct POSBookingDetailsEmptyView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         VStack(spacing: POSSpacing.large) {
             PointOfSaleAssets.noBookings.decorativeImage
+                .renderingMode(iconRenderingMode)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(.posOnSurface)
+                .foregroundColor(iconTintColor)
 
             Text(Localization.noBookingSelected)
                 .font(.posBodyMediumRegular())
@@ -17,6 +20,14 @@ struct POSBookingDetailsEmptyView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurface)
         .navigationBarHidden(true)
+    }
+
+    private var iconRenderingMode: Image.TemplateRenderingMode {
+        colorScheme == .dark ? .template : .original
+    }
+
+    private var iconTintColor: Color? {
+        colorScheme == .dark ? .posPrimary : nil
     }
 }
 

@@ -34,10 +34,9 @@ struct PointOfSaleCollectCashView: View {
     }
 
     init(orderTotal: String, currencySettings: CurrencySettings) {
-        let helper = CollectCashViewHelper(currencySettings: currencySettings)
-        self.viewHelper = helper
+        self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
         self.currencyInputSanitizer = CurrencyInputSanitizer(currencySettings: currencySettings)
-        self.presetAmount = helper.parseCurrency(orderTotal)
+        self.presetAmount = viewHelper.parseCurrency(orderTotal)
         self.orderTotal = orderTotal
     }
 

@@ -141,6 +141,7 @@ private extension WPComPushNotificationsBenefitsViewModel {
                 analytics.track(event: .WPComPushNotificationsSetup.introductionView(state: .updateRequired))
             } else {
                 error = .noMissingRequirements
+                analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")

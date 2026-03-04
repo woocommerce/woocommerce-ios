@@ -394,12 +394,7 @@ extension BookingDetailsViewModel {
 private extension BookingDetailsViewModel {
     func presentRefundFlow(order: Order, refunds: [Refund]) {
         let refundController = IssueRefundCoordinatingController(order: order, refunds: refunds)
-        let scenes = UIApplication.shared.connectedScenes
-        guard let presenter = scenes
-            .compactMap({ $0 as? UIWindowScene })
-            .flatMap({ $0.windows })
-            .first?
-            .topmostPresentedViewController else {
+        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else {
             return
         }
         refundController.onDismissCallback = { [weak self] in

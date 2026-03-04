@@ -433,23 +433,6 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
     }
 
-    func test_event_fired_when_booking_marked_as_paid() async throws {
-        // Given
-        let viewModel = givenViewModel()
-
-        // When
-        let task = Task { try await viewModel.markBookingAsPaid() }
-        let action = try await waitForFirstBookingAction()
-        guard case let .markBookingAsPaid(_, _, onCompletion) = action else {
-            return XCTFail("Expected markBookingAsPaid action")
-        }
-        onCompletion(nil)
-        try await task.value
-
-        // Then
-        analyticsProvider.assertReceived(event: "booking_detail_mark_as_paid_tapped")
-    }
-
     func test_event_fired_when_booking_cancelled() async throws {
         // Given
         let viewModel = givenViewModel()

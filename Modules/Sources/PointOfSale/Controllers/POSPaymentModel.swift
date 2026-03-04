@@ -256,6 +256,7 @@ extension POSPaymentModel {
             throw POSPaymentError.noOrder
         }
         try await receiptSender.sendReceipt(orderID: order.orderID, recipientEmail: emailAddress)
+        currentOrder = order.copy(billingAddress: order.billingAddress?.copy(email: emailAddress))
     }
 }
 

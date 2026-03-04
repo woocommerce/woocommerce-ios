@@ -432,7 +432,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(.bookingsSelected)
+            ServiceLocator.analytics.track(.mainTabBookingsSelect)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
@@ -453,7 +453,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(.bookingsReselected)
+            ServiceLocator.analytics.track(.mainTabBookingsReselect)
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break

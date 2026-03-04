@@ -21,6 +21,7 @@ protocol POSBookingListControllerProtocol {
     func loadNextBookings() async
     func selectBooking(_ booking: POSBooking?)
     func selectDate(_ date: Date) async
+    func reset()
     func goToPreviousDay() async
     func goToNextDay() async
     func cancelBooking(bookingID: Int64) async throws
@@ -125,6 +126,19 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 
     func selectBooking(_ booking: POSBooking?) {
         selectedBooking = booking
+    }
+
+    func reset() {
+        loadTask?.cancel()
+        loadTask = nil
+        prefetchTasks.values.forEach { $0.cancel() }
+        prefetchTasks.removeAll()
+        selectedDate = Self.todayInUTC()
+        selectedBooking = nil
+        activeSearchTerm = nil
+        bookingsViewState = .loading([])
+        fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: nil)
+        strategyPaginationTracker.removeAll()
     }
 
     func cancelBooking(bookingID: Int64) async throws {

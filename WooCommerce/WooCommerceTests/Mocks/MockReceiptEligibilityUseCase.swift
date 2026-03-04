@@ -1,3 +1,4 @@
+import Foundation
 import enum Yosemite.OrderStatusEnum
 @testable import WooCommerce
 
@@ -25,7 +26,7 @@ final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         onCompletion(isEligibleForFailedPaymentEmailReceipts)
     }
 
-    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, onCompletion: @escaping (Bool) -> Void) {
+    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, datePaid: Date?, onCompletion: @escaping (Bool) -> Void) {
         onCompletion(isEligibleForReceipt)
     }
 }

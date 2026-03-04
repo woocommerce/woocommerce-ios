@@ -27,7 +27,7 @@ import class Yosemite.PaymentCaptureCelebration
     }
 
     @MainActor
-    func updateAfterPayment(bookingID: Int64) async {
+    func updateAfterSuccessfulPayment(bookingID: Int64) async {
         await bookingsController.updateBookingOptimistically(bookingID: bookingID) {
             $0.copy(status: .paid, order: $0.order.copy(datePaid: Date()))
         }

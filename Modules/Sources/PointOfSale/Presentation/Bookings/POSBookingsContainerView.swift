@@ -28,7 +28,10 @@ struct POSBookingsContainerView: View {
             .environment(bookingsModel)
         } detail: { selection in
             POSBookingDetailView(
-                booking: selection,
+                booking: Binding(
+                    get: { bookingsModel.bookingsController.selectedBooking ?? selection },
+                    set: { bookingsModel.bookingsController.selectBooking($0) }
+                ),
                 onBack: {
                     bookingsModel.bookingsController.selectBooking(nil)
                 }
@@ -65,7 +68,7 @@ struct POSBookingsContainerView: View {
         }
         .animation(.default, value: bookingsModel.bookingsController.bookingsViewState.bookings.isEmpty)
         .onDisappear {
-            bookingsModel.bookingsController.selectBooking(nil)
+            bookingsModel.bookingsController.reset()
         }
     }
 }

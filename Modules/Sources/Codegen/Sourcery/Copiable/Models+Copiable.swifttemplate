@@ -120,9 +120,20 @@ let modulesToGenerateImports: [String] = {
         return shouldImportCopiablePropModule ? [copiablePropModule] : []
     }()
 
-    return Array(Set(modulesFromType + modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
+    let allModules = Array(Set(modulesFromType + modulesFromProperties + modulesRequiredByTemplate)).sorted().filter {
         // Ignore modules that belong to the current types we're generating for.
         $0 != matchingTypes.first?.module
+    }
+
+    // Broad imports are plain module names (no space or dot).
+    // Targeted imports like "enum Foo.Bar" are redundant when "Foo" is already imported.
+    let broadModules = Set(allModules.filter { !$0.contains(" ") && !$0.contains(".") })
+
+    return allModules.filter { entry in
+        guard entry.contains(" ") || entry.contains(".") else { return true }
+        let path = entry.contains(" ") ? entry.split(separator: " ").last.map(String.init) ?? entry : entry
+        let baseModule = path.split(separator: ".").first.map(String.init) ?? path
+        return !broadModules.contains(baseModule)
     }
 }()
 

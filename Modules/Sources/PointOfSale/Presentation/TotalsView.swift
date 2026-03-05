@@ -40,10 +40,6 @@ struct TotalsView: View {
                         )
                     }
 
-                    if isShowingPaymentView && isShowingTotalsFields {
-                        Spacer()
-                    }
-
                     if isShowingTotalsFields {
                         TotalsFieldsContent(
                             orderState: posModel.orderState,

@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
 # Sets up the ContextA8C MCP server for Claude Code (CLI).
 # Called by the setup-context-a8c skill when the user selects Claude Code.
 

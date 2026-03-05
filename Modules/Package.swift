@@ -72,6 +72,10 @@ let package = Package(
             targets: ["Yosemite"]
         ),
         .library(
+            name: "NetworkingTestsResponsesFixtures",
+            targets: ["NetworkingTestsResponsesFixtures"]
+        ),
+        .library(
             name: "YosemiteTestHelpers",
             targets: ["YosemiteTestHelpers"]
         ),
@@ -262,6 +266,11 @@ let package = Package(
             ],
             resources: [.process("Resources")]
         ),
+        .target(
+            name: "NetworkingTestsResponsesFixtures",
+            path: "Tests/NetworkingTestsResponsesFixtures",
+            resources: [.process("Responses")]
+        ),
         .testTarget(
             name: "ExperimentsTests",
             dependencies: [
@@ -281,12 +290,12 @@ let package = Package(
                 "Codegen",
                 "Fakes",
                 "Networking",
+                "NetworkingTestsResponsesFixtures",
                 "TestKit",
                 "WooFoundation",
                 "WordPressShared",
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
-            ],
-            resources: [.process("Responses")]
+            ]
         ),
         .testTarget(
             name: "StorageTests",
@@ -318,6 +327,7 @@ let package = Package(
             dependencies: [
                 "Codegen",
                 "Fakes",
+                "NetworkingTestsResponsesFixtures",
                 "TestKit",
                 "WooFoundation",
                 "WordPressShared",
@@ -326,7 +336,6 @@ let package = Package(
             ],
             resources: [
                 .process("Resources"),
-                .process("../NetworkingTests/Responses")
             ]
         ),
         .testTarget(
@@ -460,6 +469,7 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "Fakes",
+                    "NetworkingTestsResponsesFixtures",
                     "TestKit",
                     "WordPressShared",
                     "YosemiteTestHelpers",

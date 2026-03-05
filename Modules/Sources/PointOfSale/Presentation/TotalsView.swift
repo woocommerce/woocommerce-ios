@@ -40,7 +40,7 @@ struct TotalsView: View {
                         )
                     }
 
-                    if isShowingPaymentView && isShowingTotalsFields {
+                    if isShowingPaymentView && isShowingTotalsFields && cardReaderViewLayout.topPadding == nil {
                         Spacer()
                     }
 

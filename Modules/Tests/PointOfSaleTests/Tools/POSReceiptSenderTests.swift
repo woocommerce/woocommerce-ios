@@ -134,7 +134,7 @@ struct POSReceiptSenderTests {
         }
 
         @Test("Auto-template versions omit templateID", arguments: Constants.autoTemplateVersions)
-        func sendReceipt_when_auto_template_version_then_templateID_is_nil(wcPluginVersion: String) async throws {
+        func test_sendReceipt_when_auto_template_version_then_templateID_is_nil(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
             let mockPluginsService = MockPluginsService()
@@ -158,7 +158,7 @@ struct POSReceiptSenderTests {
         }
 
         @Test("Non-auto-template versions include templateID", arguments: Constants.nonAutoTemplateVersions)
-        func sendReceipt_when_non_auto_template_version_then_templateID_is_set(wcPluginVersion: String) async throws {
+        func test_sendReceipt_when_non_auto_template_version_then_templateID_is_set(wcPluginVersion: String) async throws {
             // Given
             let mockReceiptService = MockReceiptService()
             let mockPluginsService = MockPluginsService()
@@ -185,7 +185,7 @@ struct POSReceiptSenderTests {
             static let eligibleWCPluginVersions = ["10.0.0", "10.0.0-dev", "10.0.0-beta", "10.0.1", "10.1"]
             static let ineligibleWCPluginVersions = ["9.9.0", "9.9.9", "9.9.9-beta.9", "9.9.9-dev"]
             static let autoTemplateVersions = ["10.7.0", "10.7.0-dev", "10.7.1", "11.0.0"]
-            static let nonAutoTemplateVersions = ["10.0.0", "10.6.0", "10.6.9"]
+            static let nonAutoTemplateVersions = ["10.0.0", "10.6.0", "10.6.9", "10.6.99"]
         }
     }
 

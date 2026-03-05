@@ -13,6 +13,7 @@ import enum Yosemite.POSCatalogSyncError
 /// Controller that wraps an observable data source for POS items
 /// Uses computed state based on data source observations for automatic UI updates
 @Observable
+@MainActor
 final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProtocol {
     private let dataSource: POSObservableDataSourceProtocol
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol

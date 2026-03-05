@@ -663,7 +663,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(passedSiteID, siteID)
         XCTAssertEqual(passedOrderID, orderID)
-        XCTAssertEqual(passedNote, "Payment link shared via Scan to Pay. Please verify payment and update order status.")
+        XCTAssertEqual(passedNote, "Payment link shared via Scan to Pay. Please verify payment before fulfilling order.")
     }
 
     func test_collect_event_is_tracked_when_collecting_payment() {

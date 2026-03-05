@@ -3,7 +3,7 @@ import Networking
 import struct Combine.AnyPublisher
 
 public protocol POSReceiptServiceProtocol {
-    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws
+    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool, templateID: String?) async throws
 }
 
 public final class POSReceiptService: POSReceiptServiceProtocol {
@@ -31,10 +31,10 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
         self.receiptsRemote = receiptsRemote
     }
 
-    public func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {
+    public func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool, templateID: String?) async throws {
         do {
             if isEligibleForPOSReceipt {
-                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: orderID, emailAddress: recipientEmail)
+                try await receiptsRemote.sendPOSReceipt(siteID: siteID, orderID: orderID, emailAddress: recipientEmail, templateID: templateID)
             } else {
                 try await receiptsRemote.sendReceipt(siteID: siteID, orderID: orderID)
             }

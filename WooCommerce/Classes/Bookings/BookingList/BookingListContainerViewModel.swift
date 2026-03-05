@@ -21,6 +21,8 @@ final class BookingListContainerViewModel: ObservableObject {
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
     @Published var numberOfActiveFilters: Int = 0
+    private var hasUserSwitchedTab = false
+    var hasRestoredFilters = false
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
@@ -148,6 +150,7 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func setSelectedTab(to newTab: BookingListTab) {
+        hasUserSwitchedTab = true
         selectedTab = newTab
         analytics.track(event: .BookingList.tabSelect(newTab))
         // Manually trigger onAppear as we are programaticcaly
@@ -157,10 +160,11 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func onAppear() {
+        guard hasRestoredFilters else { return }
         let tabViewModel = listViewModel(for: selectedTab)
         analytics.track(event: .BookingList.bookingListView(
             tab: selectedTab,
-            isDefaultTab: selectedTab == BookingListContainerViewModel.defaultTab,
+            isDefaultTab: !hasUserSwitchedTab && selectedTab == Self.defaultTab,
             isListEmpty: tabViewModel.bookings.isEmpty,
             isFiltered: tabViewModel.hasFilters
         ))
@@ -201,6 +205,8 @@ private extension BookingListContainerViewModel {
     func restorePersistedFilters() {
         Task { @MainActor in
             guard let storedFilters = await loadPersistedFilters() else {
+                hasRestoredFilters = true
+                onAppear()
                 return
             }
             let filters = BookingFiltersViewModel.Filters(
@@ -212,6 +218,8 @@ private extension BookingListContainerViewModel {
                 numberOfActiveFilters: storedFilters.numberOfActiveFilters
             )
             updateFilters(filters, shouldPersist: false)
+            hasRestoredFilters = true
+            onAppear()
         }
     }
 

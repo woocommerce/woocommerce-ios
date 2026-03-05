@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Find a booted iOS simulator or boot one. Returns the UDID.
 # Usage: find-simulator.sh [iphone|ipad]

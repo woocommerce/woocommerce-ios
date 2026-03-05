@@ -49,12 +49,11 @@ struct BookingListContainerView: View {
             sortingOptions
                 .presentationDetents([.fraction(0.25), .medium, .large])
         }
-        .sheet(isPresented: $showingFilters, onDismiss: {
-            viewModel.onAppear()
-        }) {
+        .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterViewModel) { filters in
                 viewModel.applyFiltersTapped()
                 viewModel.updateFilters(filters)
+                viewModel.onAppear()
             } onClearAction: {
                 // no-op
             } onDismissAction: {

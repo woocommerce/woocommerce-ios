@@ -2,7 +2,7 @@
 name: snapshot
 description: Use swift-snapshot-testing to visually verify SwiftUI views during implementation. Renders views to PNG for comparison against design references. Fast feedback loop (~25s/cycle).
 user-invocable: true
-allowed-tools: "Bash, Read, Write, Edit, Grep, Glob"
+allowed-tools: "Bash, Read, Write, Edit, Grep, Glob, mcp__figma__*"
 argument-hint: "[view-name or test-target]"
 ---
 
@@ -59,6 +59,18 @@ Common test targets in this project:
 
 ## Goal: Collect References
 
+### Option A: Figma MCP (preferred when a Figma link is available)
+
+If you have a Figma URL (from a Linear issue, user message, or PR description):
+
+1. Use the Figma MCP `get_screenshot` tool with the Figma URL to get a visual reference image
+2. Use `get_design_context` to get layout structure, spacing, and style details
+3. Optionally use `get_variable_defs` for design token values (colors, spacing, typography)
+
+See `.claude/rules/figma-design.md` for mapping Figma design values to iOS/SwiftUI code.
+
+### Option B: User-provided images
+
 If the user provides design reference images (Figma exports, screenshots):
 ```bash
 mkdir -p ~/Downloads/snapshot_experiment
@@ -66,7 +78,9 @@ cp ~/path/to/design.png ~/Downloads/snapshot_experiment/design.png
 ```
 Read each reference image to understand the target state before writing code.
 
-If no reference image, the goal is inferred from the user's description of desired UI behavior.
+### Option C: Description-based
+
+If no reference image or Figma link is available, the goal is inferred from the user's description of desired UI behavior.
 
 ## Scaffold: Create Snapshot Test
 

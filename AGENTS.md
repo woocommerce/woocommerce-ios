@@ -2,6 +2,8 @@
 
 WooCommerce iOS is the official mobile client for WooCommerce stores, developed by Automattic. Large-scale Swift app using MVVM + Coordinators, SwiftUI and UIKit, Combine, and a Flux/Redux-inspired business logic layer (Yosemite).
 
+> **Multi-environment support**: These instructions work across Claude Code (CLI), Claude Desktop, Cursor, VS Code, and other AI agents. MCP setup differs by environment — see `.agents/rules/agent-environment-awareness.md`.
+
 ## Repository Layout
 
 ```
@@ -59,7 +61,13 @@ Use the `bootstrap` skill to set up the environment from a clean checkout. It wi
 ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s, Linear, Field Guide, GitHub Enterprise, and other internal resources. It is optional — the agent works without it but provides richer context when available.
 
 - **Setup and usage**: See `.agents/rules/context-a8c.md`
-- **Claude Code setup skill**: `/setup-context-a8c`
+- **Claude Code setup skill**: `/setup-context-a8c` (uses `claude mcp add` internally — requires the `claude` CLI binary; see `.agents/rules/agent-environment-awareness.md` for other environments)
+
+## Design References (Figma MCP)
+
+When working on UI tasks, agents should proactively check for Figma design links — in the Linear issue description, user messages, or PR descriptions. If a Figma link is found, use the Figma MCP to fetch design context before implementing UI. If no link is found but the task involves visible UI changes, ask the user if design references are available.
+
+- **Setup and usage**: See `.agents/rules/figma-design.md`
 
 ## Build Commands
 
@@ -277,6 +285,6 @@ Agents can verify their changes work from a user's perspective using two complem
 - **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
 - **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
 
-**Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
+**Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json` (Claude Code CLI; other environments may need manual MCP config — see `agent-environment-awareness.md`).
 
 See `.claude/rules/verification.md` for full details on tools, mock server setup, and launch arguments.

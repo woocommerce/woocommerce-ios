@@ -21,6 +21,7 @@ public final class CardPresentPaymentStore: Store {
             if paymentGatewayAccount != oldValue {
                 // If we switched accounts, disconnect any connected reader
                 // as its connection token would be tied to the other account
+                commonReaderConfigProvider.resetContext()
                 disconnect(onCompletion: { _ in })
             }
         }

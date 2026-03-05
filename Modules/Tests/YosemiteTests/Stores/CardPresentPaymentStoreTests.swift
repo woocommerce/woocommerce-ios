@@ -847,4 +847,19 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(mockCardReaderService.didHitDisconnect)
     }
+
+    func test_use_paymentGatewayAccount_when_account_changes_then_resets_config_provider() {
+        // Given
+        let accountA = PaymentGatewayAccount.fake().copy(siteID: 111)
+        let accountB = PaymentGatewayAccount.fake().copy(siteID: 222)
+        cardPresentStore.onAction(CardPresentPaymentAction.use(paymentGatewayAccount: accountA))
+        mockCardReaderConfigProvider.setContext(siteID: 111, remote: WCPayRemote(network: network))
+        XCTAssertNotNil(mockCardReaderConfigProvider.currentSiteID)
+
+        // When
+        cardPresentStore.onAction(CardPresentPaymentAction.use(paymentGatewayAccount: accountB))
+
+        // Then
+        XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
+    }
 }

@@ -43,7 +43,7 @@ extension WooAnalyticsEvent {
 
         static func applyFilters(_ filters: BookingFiltersViewModel.Filters) -> WooAnalyticsEvent {
             var appliedFilters = [WooAnalyticsEvent.BookingList.Filter]()
-            if filters.attendanceStatuses.isNotEmpty {
+            if filters.attendanceStatus != nil {
                 appliedFilters.append(.attendanceStatus)
             }
             if filters.bookingFilters.customerIDs.isNotEmpty {

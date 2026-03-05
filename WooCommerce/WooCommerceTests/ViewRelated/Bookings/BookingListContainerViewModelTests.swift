@@ -123,7 +123,7 @@ class BookingListContainerViewModelTests {
         let filters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "")],
             products: [BookingProductFilter(productID: 0, name: "")],
-            attendanceStatuses: [BookingAttendanceStatus.attended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 0, name: "")],
             dateRange: BookingDateRangeFilter(startDate: Date(), endDate: Date()),
             numberOfActiveFilters: 5
@@ -168,7 +168,7 @@ class BookingListContainerViewModelTests {
         let filters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 1, name: "Alice")],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: nil,
             numberOfActiveFilters: 1
@@ -191,7 +191,7 @@ class BookingListContainerViewModelTests {
         let filters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 1, name: "Alice")],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: nil,
             numberOfActiveFilters: 1

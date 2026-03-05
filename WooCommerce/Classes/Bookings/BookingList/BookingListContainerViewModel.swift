@@ -206,7 +206,7 @@ private extension BookingListContainerViewModel {
             let filters = BookingFiltersViewModel.Filters(
                 teamMembers: storedFilters.teamMembers,
                 products: storedFilters.products,
-                attendanceStatuses: storedFilters.attendanceStatuses,
+                attendanceStatus: storedFilters.attendanceStatus,
                 customers: storedFilters.customers,
                 dateRange: storedFilters.dateRange,
                 numberOfActiveFilters: storedFilters.numberOfActiveFilters
@@ -236,7 +236,7 @@ private extension BookingListContainerViewModel {
         let persistedFilters = StoredBookingFilters.Filters(
             teamMembers: filters.teamMembers,
             products: filters.products,
-            attendanceStatuses: filters.attendanceStatuses,
+            attendanceStatus: filters.attendanceStatus,
             customers: filters.customers,
             dateRange: filters.dateRange
         )

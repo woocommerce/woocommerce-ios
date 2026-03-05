@@ -5,6 +5,7 @@
 - [*] Fix issue displaying onboarding tasks when logging in to sites with pretty permalinks using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16731]
 - [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
 - [*] Fix "See Receipt" button not appearing for orders with custom statuses [https://github.com/woocommerce/woocommerce-ios/pull/16673]
+- [*] Fix infinite retries in InfiniteScrollIndicator [https://github.com/woocommerce/woocommerce-ios/pull/16778]
 
 
 24.2

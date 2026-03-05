@@ -154,14 +154,82 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         let viewModel = makeViewModel(analytics: analytics)
 
         // When
-        viewModel.onAppear()
         viewModel.continueTapped()
         viewModel.notNowTapped()
 
         // Then
-        XCTAssertTrue(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
         provider.assertReceived(event: "push_notifications_setup_introduction_button_tap", with: ["button_label": "continue"])
         XCTAssertEqual(provider.receivedEvents.filter { $0 == "push_notifications_setup_introduction_button_tap" }.count, 2)
+    }
+
+    func test_determineSetupVariant_when_jetpack_not_connected_then_tracks_introduction_view_with_not_connected_state() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: false)
+        )
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_view", with: ["state": "not_connected"])
+    }
+
+    func test_determineSetupVariant_when_jetpack_connected_and_plugin_update_needed_then_tracks_introduction_view_with_update_required_state() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_view", with: ["state": "update_required"])
+    }
+
+    func test_determineSetupVariant_when_connection_fails_then_does_not_track_introduction_view() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .failure(NSError(domain: "test", code: 1))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertFalse(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
+    }
+
+    func test_determineSetupVariant_when_plugin_check_fails_then_does_not_track_introduction_view() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .failure(NSError(domain: "test", code: 1))
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertFalse(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
     }
 
     func test_continueTapped_when_pluginUpdate_variant_then_tracks_update_plugin_button_label() async {

@@ -85,9 +85,6 @@ struct WPComPushNotificationsBenefitsView: View {
                     .renderedIf(!dynamicTypeSize.isAccessibilitySize && !viewModel.isCheckingPlugin)
             }
         }
-        .onAppear {
-            viewModel.onAppear()
-        }
         .task {
             await viewModel.determineSetupVariant()
         }

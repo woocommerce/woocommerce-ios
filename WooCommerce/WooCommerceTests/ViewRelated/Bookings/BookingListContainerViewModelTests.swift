@@ -32,7 +32,7 @@ class BookingListContainerViewModelTests {
         #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "today",
-                                            "is_default_tab": true,
+                                            "is_default_tab": false,
                                             "is_list_empty": true,
                                             "is_filtered": false
                                            ]))

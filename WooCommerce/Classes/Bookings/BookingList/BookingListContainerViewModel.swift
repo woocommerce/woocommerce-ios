@@ -21,6 +21,7 @@ final class BookingListContainerViewModel: ObservableObject {
     @Published var searchQuery: String = ""
     @Published var sortBy: BookingListViewModel.SortBy = .newestToOldest
     @Published var numberOfActiveFilters: Int = 0
+    private var hasUserSwitchedTab = false
 
     private let searchQuerySubject = PassthroughSubject<String, Never>()
     private var searchQuerySubscription: AnyCancellable?
@@ -148,6 +149,7 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func setSelectedTab(to newTab: BookingListTab) {
+        hasUserSwitchedTab = true
         selectedTab = newTab
         analytics.track(event: .BookingList.tabSelect(newTab))
         // Manually trigger onAppear as we are programaticcaly
@@ -160,7 +162,7 @@ final class BookingListContainerViewModel: ObservableObject {
         let tabViewModel = listViewModel(for: selectedTab)
         analytics.track(event: .BookingList.bookingListView(
             tab: selectedTab,
-            isDefaultTab: selectedTab == BookingListContainerViewModel.defaultTab,
+            isDefaultTab: !hasUserSwitchedTab && selectedTab == Self.defaultTab,
             isListEmpty: tabViewModel.bookings.isEmpty,
             isFiltered: tabViewModel.hasFilters
         ))

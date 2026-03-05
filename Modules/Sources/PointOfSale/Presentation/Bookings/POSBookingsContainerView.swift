@@ -26,12 +26,13 @@ struct POSBookingsContainerView: View {
                 isPresented = false
             }
             .environment(bookingsModel)
-        } detail: { selection in
+        } detail: { selection, navigationPath in
             POSBookingDetailView(
                 booking: Binding(
                     get: { bookingsModel.bookingsController.selectedBooking ?? selection },
                     set: { bookingsModel.bookingsController.selectBooking($0) }
                 ),
+                navigationPath: navigationPath,
                 onBack: {
                     bookingsModel.bookingsController.selectBooking(nil)
                 }

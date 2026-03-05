@@ -33,7 +33,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Mock Card Reader Service: In memory
     private var mockCardReaderService: MockCardReaderService!
 
-    private var mockCardReaderConfigProvider: CommonReaderConfigProviding!
+    private var mockCardReaderConfigProvider: MockCommonReaderConfigProviding!
 
     private var cardPresentStore: CardPresentPaymentStore!
 
@@ -822,5 +822,45 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         cardPresentStore.onAction(action)
 
         XCTAssertNotNil(mockCardReaderService.spyCheckSupportMinimumOperatingSystemVersionOverride)
+    }
+
+    // MARK: - CardPresentPaymentAction.reset
+
+    func test_reset_clears_config_provider_context() {
+        // Given
+        mockCardReaderConfigProvider.setContext(siteID: sampleSiteID, remote: WCPayRemote(network: network))
+        XCTAssertNotNil(mockCardReaderConfigProvider.currentSiteID)
+
+        // When
+        let action = CardPresentPaymentAction.reset(onCompletion: {})
+        cardPresentStore.onAction(action)
+
+        // Then
+        XCTAssertTrue(mockCardReaderConfigProvider.didResetContext)
+        XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
+    }
+
+    func test_reset_disconnects_card_reader() {
+        // When
+        let action = CardPresentPaymentAction.reset(onCompletion: {})
+        cardPresentStore.onAction(action)
+
+        // Then
+        XCTAssertTrue(mockCardReaderService.didHitDisconnect)
+    }
+
+    func test_use_paymentGatewayAccount_when_account_changes_then_resets_config_provider() {
+        // Given
+        let accountA = PaymentGatewayAccount.fake().copy(siteID: 111)
+        let accountB = PaymentGatewayAccount.fake().copy(siteID: 222)
+        cardPresentStore.onAction(CardPresentPaymentAction.use(paymentGatewayAccount: accountA))
+        mockCardReaderConfigProvider.setContext(siteID: 111, remote: WCPayRemote(network: network))
+        XCTAssertNotNil(mockCardReaderConfigProvider.currentSiteID)
+
+        // When
+        cardPresentStore.onAction(CardPresentPaymentAction.use(paymentGatewayAccount: accountB))
+
+        // Then
+        XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
     }
 }

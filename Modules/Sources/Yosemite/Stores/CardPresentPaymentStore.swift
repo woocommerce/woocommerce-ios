@@ -21,6 +21,7 @@ public final class CardPresentPaymentStore: Store {
             if paymentGatewayAccount != oldValue {
                 // If we switched accounts, disconnect any connected reader
                 // as its connection token would be tied to the other account
+                commonReaderConfigProvider.resetContext()
                 disconnect(onCompletion: { _ in })
             }
         }
@@ -132,8 +133,8 @@ public final class CardPresentPaymentStore: Store {
             observeTapToPayCardReaderAcceptToS(onCompletion: completion)
         case .startCardReaderUpdate:
             startCardReaderUpdate()
-        case .reset:
-            reset()
+        case .reset(let onCompletion):
+            reset(onCompletion: onCompletion)
         case .publishCardReaderConnections(onCompletion: let completion):
             publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
@@ -409,11 +410,14 @@ private extension CardPresentPaymentStore {
         cardReaderService.installUpdate()
     }
 
-    func reset() {
+    func reset(onCompletion: @escaping () -> Void) {
+        commonReaderConfigProvider.resetContext()
+
         cardReaderService.disconnect()
             .subscribe(Subscribers.Sink(
                         receiveCompletion: { [weak self] _ in
                             self?.cardReaderService.clear()
+                            onCompletion()
                         },
                         receiveValue: { _ in }
             ))

@@ -30,6 +30,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     private var syncStateObservationTask: Task<Void, Never>?
 
+    @MainActor
     private var currentSyncState: POSCatalogSyncState {
         syncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
@@ -131,6 +132,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     /// Waits for the next change to the observed sync state.
     /// Re-registers observation each time it's called.
+    @MainActor
     private func observeNextStateChange() async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             withObservationTracking {

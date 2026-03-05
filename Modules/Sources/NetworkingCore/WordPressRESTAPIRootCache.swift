@@ -18,11 +18,11 @@ public final class WordPressRESTAPIRootCache: RESTAPIRootCaching {
     init() {}
 
     public func root(for siteURL: String) -> String? {
-        queue.sync { cache[siteURL.trimSlashes()] }
+        queue.sync { cache[siteURL.trimSlashes().lowercased()] }
     }
 
     public func setRoot(_ root: String, for siteURL: String) {
-        queue.async(flags: .barrier) { self.cache[siteURL.trimSlashes()] = root }
+        queue.async(flags: .barrier) { self.cache[siteURL.trimSlashes().lowercased()] = root }
     }
 
     public func reset() {

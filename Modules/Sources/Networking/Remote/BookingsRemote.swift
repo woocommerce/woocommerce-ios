@@ -39,7 +39,7 @@ public struct BookingFilters {
     public let resourceIDs: [Int64]
     public let startDateBefore: String?
     public let startDateAfter: String?
-    public let attendanceStatuses: [String]
+    public let attendanceStatus: String?
     public let paymentStatuses: [String]
     public let bookingStatusExclude: [String]
 
@@ -49,7 +49,7 @@ public struct BookingFilters {
         resourceIDs: [Int64] = [],
         startDateBefore: String? = nil,
         startDateAfter: String? = nil,
-        attendanceStatuses: [String] = [],
+        attendanceStatus: String? = nil,
         paymentStatuses: [String] = [],
         bookingStatusExclude: [String] = []
     ) {
@@ -58,7 +58,7 @@ public struct BookingFilters {
         self.resourceIDs = resourceIDs
         self.startDateBefore = startDateBefore
         self.startDateAfter = startDateAfter
-        self.attendanceStatuses = attendanceStatuses
+        self.attendanceStatus = attendanceStatus
         self.paymentStatuses = paymentStatuses
         self.bookingStatusExclude = bookingStatusExclude
     }
@@ -77,7 +77,7 @@ public struct BookingFilters {
             startDateAfter: Self.mostRestrictiveDate(date1: startDateAfter,
                                                      date2: userFilters.startDateAfter,
                                                      pickEarlier: false),
-            attendanceStatuses: userFilters.attendanceStatuses,
+            attendanceStatus: userFilters.attendanceStatus,
             bookingStatusExclude: bookingStatusExclude
         )
     }
@@ -156,8 +156,8 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                 parameters[ParameterKey.startDateAfter] = adjustedDate.ISO8601Format()
             }
 
-            if filters.attendanceStatuses.isNotEmpty {
-                parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses
+            if let attendanceStatus = filters.attendanceStatus {
+                parameters[ParameterKey.attendanceStatus] = attendanceStatus
             }
 
             if filters.paymentStatuses.isNotEmpty {

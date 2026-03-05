@@ -70,10 +70,6 @@ final class WPComPushNotificationsBenefitsViewModel {
         self.pushNotificationSetupCoordinator = coordinator
     }
 
-    func onAppear() {
-        analytics.track(.pushNotificationsSetupIntroductionView)
-    }
-
     /// Fetches Jetpack connection data to determine whether the site is connected,
     /// then checks the WooCommerce plugin version if Jetpack is connected.
     func determineSetupVariant() async {
@@ -86,6 +82,7 @@ final class WPComPushNotificationsBenefitsViewModel {
                 await checkWooPluginVersion()
             } else {
                 variant = .connect
+                analytics.track(event: .WPComPushNotificationsSetup.introductionView(state: .notConnected))
             }
         } catch {
             DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
@@ -141,8 +138,10 @@ private extension WPComPushNotificationsBenefitsViewModel {
             let result = try await pluginVersionChecker.checkCompatibility()
             if case .incompatible(let currentVersion, _) = result {
                 variant = .pluginUpdate(currentVersion: currentVersion)
+                analytics.track(event: .WPComPushNotificationsSetup.introductionView(state: .updateRequired))
             } else {
                 error = .noMissingRequirements
+                analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")

@@ -59,8 +59,6 @@ struct WPComPasswordLoginView: View {
                 switch flow {
                 case .jetpackSetup:
                     JetpackInstallHeaderView()
-                case .notificationSetup:
-                    ConnectWPComHeaderView()
                 }
 
                 // Title
@@ -162,7 +160,7 @@ private extension WPComPasswordLoginView {
 struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
         WPComPasswordLoginView(title: "Connect to WordPress.com",
-                               flow: .notificationSetup,
+                               flow: .jetpackSetup(requiresConnectionOnly: true),
                                viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
                                                 onMagicLinkRequest: { _ in },

@@ -6,8 +6,11 @@ import WooFoundation
 ///
 final class WPComPushNotificationsBenefitsHostingController: UIHostingController<WPComPushNotificationsBenefitsView> {
 
+    private let viewModel: WPComPushNotificationsBenefitsViewModel
+
     init(viewModel: WPComPushNotificationsBenefitsViewModel,
          rootViewController: UIViewController) {
+        self.viewModel = viewModel
         super.init(rootView: WPComPushNotificationsBenefitsView(viewModel: viewModel))
         let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
         viewModel.updateCoordinator(coordinator)
@@ -20,13 +23,22 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
+        navigationController?.presentationController?.delegate = self
+    }
+}
+
+extension WPComPushNotificationsBenefitsHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        viewModel.onSwipeDismiss()
     }
 }
 
 struct WPComPushNotificationsBenefitsView: View {
-    private let viewModel: WPComPushNotificationsBenefitsViewModel
+    private var viewModel: WPComPushNotificationsBenefitsViewModel
 
     @State private var safariURL: URL?
+    @State private var showSupport = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(viewModel: WPComPushNotificationsBenefitsViewModel) {
         self.viewModel = viewModel
@@ -35,29 +47,46 @@ struct WPComPushNotificationsBenefitsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                    Spacer()
-                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                        stackedImages
-                        title
-                        detail
+                if let error = viewModel.error {
+                    VStack(spacing: Layout.contentSpacing) {
+                        errorView(with: error)
                     }
-                    Spacer()
+                } else {
+                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                        Spacer()
+                        VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                            stackedImages
+                            title
+                            detail
+                        }
+                        Spacer()
+                    }
+                    .redacted(reason: viewModel.isCheckingPlugin ? .placeholder : [])
+                    .shimmering(active: viewModel.isCheckingPlugin)
+                }
+
+                if dynamicTypeSize.isAccessibilitySize && !viewModel.isCheckingPlugin {
                     footer
                 }
-                .padding([.leading, .bottom, .trailing], Layout.contentPadding)
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button(Localization.cancelButton) {
-                            viewModel.notNowTapped()
-                        }
+            }
+            .padding([.leading, .bottom, .trailing], Layout.contentPadding)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        viewModel.cancelTapped()
                     }
                 }
-                .toolbarBackground(.hidden, for: .navigationBar)
+            }
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .safeAreaInset(edge: .bottom) {
+                footer
+                    .padding(Layout.contentPadding)
+                    .background(Color(uiColor: .systemBackground))
+                    .renderedIf(!dynamicTypeSize.isAccessibilitySize && !viewModel.isCheckingPlugin)
             }
         }
-        .onAppear {
-            viewModel.onAppear()
+        .task {
+            await viewModel.determineSetupVariant()
         }
         .environment(\.openURL, OpenURLAction { [viewModel] url in
             viewModel.whatIsWPComTapped()
@@ -65,6 +94,7 @@ struct WPComPushNotificationsBenefitsView: View {
             return .handled
         })
         .safariSheet(url: $safariURL)
+        .sheet(isPresented: $showSupport, content: { supportForm })
     }
 
     private var stackedImages: some View {
@@ -84,6 +114,7 @@ struct WPComPushNotificationsBenefitsView: View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
             Text(Localization.description)
                 .font(.body)
+                .frame(maxWidth: .infinity, alignment: .leading)
             Text(Localization.subdescription)
                 .font(.body)
             Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
@@ -94,15 +125,67 @@ struct WPComPushNotificationsBenefitsView: View {
 
     private var footer: some View {
         VStack {
-            Button(Localization.continueButton) {
-                viewModel.continueTapped()
+            if viewModel.error != nil {
+                Button(Localization.contactSupport) {
+                    showSupport = true
+                }
+                .buttonStyle(PrimaryButtonStyle())
+            } else {
+                Button(primaryButtonText) {
+                    viewModel.continueTapped()
+                }
+                .buttonStyle(PrimaryButtonStyle())
             }
-            .buttonStyle(PrimaryButtonStyle())
 
             Button(Localization.notNowButton) {
                 viewModel.notNowTapped()
             }
             .buttonStyle(SecondaryButtonStyle())
+
+            if case .connect = viewModel.variant, viewModel.error == nil {
+                Text(viewModel.termsAttributedString)
+            }
+        }
+    }
+
+    private var primaryButtonText: String {
+        switch viewModel.variant {
+        case .connect:
+            return Localization.continueButton
+        case .pluginUpdate:
+            return Localization.updatePluginButton
+        }
+    }
+
+    private func errorView(with error: WPComPushNotificationsBenefitsViewModel.VariantCheckError) -> some View {
+        VStack(spacing: Layout.contentPadding) {
+            Spacer()
+            Image(systemName: "exclamationmark.circle.fill")
+                .font(.largeTitle)
+                .foregroundStyle(Color(.error))
+            Text(Localization.errorTitle)
+                .font(.title)
+            Text(error.message)
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity, alignment: .center)
+            Spacer()
+        }
+    }
+
+    private var supportForm: some View {
+        NavigationStack {
+            SupportForm(
+                isPresented: $showSupport,
+                viewModel: SupportFormViewModel(sourceTag: WPComConnectionSetupViewModel.supportSourceTag)
+            )
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancelButton) {
+                        showSupport = false
+                    }
+                }
+            }
         }
     }
 }
@@ -120,8 +203,8 @@ fileprivate extension WPComPushNotificationsBenefitsView {
                                              comment: "Title of the WordPress.com Push Notifications Benefits View")
 
         static let description = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsView.description",
-            value: "Connect your store to a WordPress.com account to get access to push notifications for new orders, reviews and more.",
+            "wpcomPushNotificationsBenefitsView.mainDescription",
+            value: "Connect your store to WordPress.com to get access to push notifications for new orders, reviews and more.",
             comment: "Main description text of the WordPress.com Push Notifications Benefits View"
         )
 
@@ -154,11 +237,29 @@ fileprivate extension WPComPushNotificationsBenefitsView {
             value: "Cancel",
             comment: "Cancel button title in the WordPress.com Push Notifications Benefits View toolbar"
         )
+
+        static let updatePluginButton = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.updatePluginButton",
+            value: "Update plugin",
+            comment: "Button title to update the WooCommerce plugin in the Push Notifications Benefits View"
+        )
+
+        static let errorTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.errorTitle",
+            value: "Something went wrong",
+            comment: "Title of the error state in the Push Notifications Benefits View"
+        )
+
+        static let contactSupport = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsView.contactSupport",
+            value: "Contact support",
+            comment: "Button title to contact support in the Push Notifications Benefits View"
+        )
     }
 }
 
 #Preview {
     WPComPushNotificationsBenefitsView(
-        viewModel: WPComPushNotificationsBenefitsViewModel(onDismiss: {})
+        viewModel: WPComPushNotificationsBenefitsViewModel(siteID: 0, siteURL: "https://example.com", onDismiss: {})
     )
 }

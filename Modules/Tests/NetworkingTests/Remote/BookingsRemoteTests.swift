@@ -71,6 +71,7 @@ struct BookingsRemoteTests {
         #expect((parameters["start_date_after"] as? String) == "2023-12-31T23:59:59Z")
         #expect((parameters["search"] as? String) == searchQuery)
         #expect((parameters["order"] as? String) == "asc")
+        #expect((parameters["orderby"] as? String) == "start_date")
     }
 
     @Test func test_loadAllBookings_omits_nil_parameters() async throws {
@@ -139,7 +140,7 @@ struct BookingsRemoteTests {
         let booking = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .noShow,
+            attendanceStatus: .attended,
             bookingStatus: nil,
             note: nil
         )
@@ -160,7 +161,7 @@ struct BookingsRemoteTests {
         _ = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .noShow,
+            attendanceStatus: .attended,
             bookingStatus: nil,
             note: nil
         )
@@ -169,7 +170,7 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["attendance_status"] as? String) == "no-show")
+        #expect((parameters["attendance_status"] as? String) == "attended")
         #expect(parameters["status"] == nil)
     }
 
@@ -206,7 +207,7 @@ struct BookingsRemoteTests {
         _ = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .booked,
+            attendanceStatus: .unattended,
             bookingStatus: .paid,
             note: nil
         )
@@ -215,7 +216,7 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["attendance_status"] as? String) == "booked")
+        #expect((parameters["attendance_status"] as? String) == "unattended")
         #expect((parameters["status"] as? String) == "paid")
     }
 

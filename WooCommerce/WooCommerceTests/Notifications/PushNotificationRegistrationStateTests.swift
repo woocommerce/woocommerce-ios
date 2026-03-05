@@ -28,14 +28,14 @@ final class PushNotificationRegistrationStateTests: XCTestCase {
     }
 
     func test_siteIDsRegisteredForWooPNs_parses_ids_from_string() {
-        defaults.set("1,2,3", forKey: .siteIDsRegisteredForWooPushNotifications)
+        defaults.set("1,2,3", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
         state = PushNotificationRegistrationState(defaults: defaults)
 
         XCTAssertEqual(state.siteIDsRegisteredForWooPNs, [1, 2, 3])
     }
 
     func test_hasStoredSiteIDsRegisteredForWooPNs_is_true_when_value_exists() {
-        defaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
+        defaults.set("", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
         state = PushNotificationRegistrationState(defaults: defaults)
 
         XCTAssertTrue(state.hasStoredSiteIDsRegisteredForWooPNs)
@@ -45,7 +45,7 @@ final class PushNotificationRegistrationStateTests: XCTestCase {
         state.markSiteAsRegisteredForWooPNs(5)
         state.markSiteAsRegisteredForWooPNs(9)
 
-        XCTAssertEqual(defaults.string(forKey: UserDefaults.Key.siteIDsRegisteredForWooPushNotifications.rawValue), "5,9")
+        XCTAssertEqual(defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications), "5,9")
     }
 
     func test_markSiteAsRegisteredForWooPNs_adds_site_id_once() {
@@ -57,7 +57,7 @@ final class PushNotificationRegistrationStateTests: XCTestCase {
     }
 
     func test_unmarkSiteAsRegisteredForWooPNs_removes_site_id() {
-        defaults.set("1,2", forKey: .siteIDsRegisteredForWooPushNotifications)
+        defaults.set("1,2", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
         state = PushNotificationRegistrationState(defaults: defaults)
 
         state.unmarkSiteAsRegisteredForWooPNs(1)
@@ -66,18 +66,18 @@ final class PushNotificationRegistrationStateTests: XCTestCase {
     }
 
     func test_unmarkSiteAsRegisteredForWooPNs_initializes_key_when_missing() {
-        XCTAssertFalse(defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications))
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications))
 
         state.unmarkSiteAsRegisteredForWooPNs(123)
 
-        XCTAssertTrue(defaults.containsObject(forKey: .siteIDsRegisteredForWooPushNotifications))
-        XCTAssertEqual(defaults.string(forKey: UserDefaults.Key.siteIDsRegisteredForWooPushNotifications.rawValue), "")
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications))
+        XCTAssertEqual(defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications), "")
     }
 
     func test_applyNewDeviceToken_persists_device_token() {
         state.applyNewDeviceToken("sample-token")
 
         XCTAssertEqual(state.deviceToken, "sample-token")
-        XCTAssertEqual(defaults.string(forKey: UserDefaults.Key.deviceToken.rawValue), "sample-token")
+        XCTAssertEqual(defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken), "sample-token")
     }
 }

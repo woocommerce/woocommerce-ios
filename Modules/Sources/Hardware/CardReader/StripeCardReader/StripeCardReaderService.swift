@@ -573,9 +573,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
-                    if self.connectionAttemptInvalidated {
+                    guard !self.connectionAttemptInvalidated else {
                         _ = self.disconnect()
                         promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
+                        return
                     }
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
@@ -613,9 +614,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
-                    if self.connectionAttemptInvalidated {
+                    guard !self.connectionAttemptInvalidated else {
                         _ = self.disconnect()
                         promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
+                        return
                     }
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()

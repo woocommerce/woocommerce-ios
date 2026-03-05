@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
+    @Environment(POSPaymentModel.self) private var paymentModel
 
     init(messageType: PointOfSaleCardPresentPaymentMessageType) {
         self.messageType = messageType
@@ -24,7 +25,12 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         case .displayReaderMessage(let viewModel):
             PointOfSaleCardPresentPaymentDisplayReaderMessageMessageView(viewModel: viewModel, animation: animation)
         case .paymentSuccess(let viewModel):
-            PointOfSalePaymentSuccessView(viewModel: viewModel)
+            PointOfSalePaymentSuccessView(
+                viewModel: viewModel,
+                customerEmail: paymentModel.customerBillingEmail,
+                onSendReceipt: { email in try await paymentModel.sendReceipt(to: email) },
+                successAction: paymentModel.configuration.successAction,
+                onSuccessScreenBarcodeScanned: paymentModel.configuration.onSuccessScreenBarcodeScanned)
         case .paymentError(let viewModel):
             PointOfSaleCardPresentPaymentErrorMessageView(viewModel: viewModel, animation: animation)
         case .paymentErrorNonRetryable(let viewModel):
@@ -47,10 +53,14 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private var animation: POSCardPresentPaymentInLineMessageAnimation { .init(namespace: namespace) }
 }
 
+#if DEBUG
 #Preview {
+    let model = POSPreviewHelpers.makePreviewAggregateModel()
     PointOfSaleCardPresentPaymentInLineMessage(messageType: .processing(
         viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
+    .environment(model.paymentModel)
 }
+#endif
 
 struct POSCardPresentPaymentInLineMessageAnimation {
     let namespace: Namespace.ID

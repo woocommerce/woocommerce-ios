@@ -2,6 +2,7 @@ import XCTest
 import Storage
 import CoreData
 import Fakes
+import YosemiteTestHelpers
 @testable import Yosemite
 
 final class ResultsController_FilterProductTests: XCTestCase {

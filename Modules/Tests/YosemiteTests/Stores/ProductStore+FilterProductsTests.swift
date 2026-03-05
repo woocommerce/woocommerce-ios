@@ -1,5 +1,6 @@
 import XCTest
 import TestKit
+import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
 @testable import Storage

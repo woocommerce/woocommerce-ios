@@ -39,7 +39,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         let sut = try DefaultApplicationPasswordUseCase(username: username,
                                                         password: "qeWOhQ5RUV8W",
                                                         siteAddress: siteAddress,
-                                                        network: network)
+                                                        network: network,
+                                                        rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
 
         // When
         let password = try await sut.generateNewPassword()
@@ -58,7 +59,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         let sut = try DefaultApplicationPasswordUseCase(username: username,
                                                         password: "qeWOhQ5RUV8W",
                                                         siteAddress: siteAddress,
-                                                        network: network)
+                                                        network: network,
+                                                        rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
 
         // When
         var failure: ApplicationPasswordUseCaseError?
@@ -81,7 +83,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         let sut = try DefaultApplicationPasswordUseCase(username: username,
                                                         password: "qeWOhQ5RUV8W",
                                                         siteAddress: siteAddress,
-                                                        network: network)
+                                                        network: network,
+                                                        rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
 
         // When
         var failure: ApplicationPasswordUseCaseError?

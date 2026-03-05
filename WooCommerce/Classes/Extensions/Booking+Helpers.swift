@@ -13,10 +13,6 @@ extension Booking {
         return name.isEmpty ? Localization.guest : name
     }
 
-    var isEligibleForMarkAsPaid: Bool {
-        bookingStatus == .unpaid
-    }
-
     var hasAssociatedOrder: Bool {
         return orderID > 0
     }

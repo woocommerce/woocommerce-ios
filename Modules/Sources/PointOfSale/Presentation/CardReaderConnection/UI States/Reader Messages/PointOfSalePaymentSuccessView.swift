@@ -2,8 +2,11 @@ import SwiftUI
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
+    let customerEmail: String?
+    let onSendReceipt: (String) async throws -> Void
+    let successAction: PaymentFlowAction
+    let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
-    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isViewLoaded: Bool = false
@@ -12,7 +15,7 @@ struct PointOfSalePaymentSuccessView: View {
         VStack {
             if isShowingSendReceiptView {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingSendReceiptView) { email in
-                    try await posModel.sendReceipt(to: email)
+                    try await onSendReceipt(email)
                 }
                 .transition(.asymmetric(
                     insertion: .move(edge: .trailing).combined(with: .opacity),
@@ -25,11 +28,10 @@ struct PointOfSalePaymentSuccessView: View {
                 }
                 .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
                 .background(Color.posSurfaceBright)
-                .barcodeScanning { barcode in
-                    posModel.startNewCart()
-                    posModel.barcodeScanned(barcode)
-                }
             }
+        }
+        .barcodeScanning(enabled: .constant(onSuccessScreenBarcodeScanned != nil && !isShowingSendReceiptView)) { barcode in
+            onSuccessScreenBarcodeScanned?(barcode)
         }
         .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
@@ -69,9 +71,20 @@ struct PointOfSalePaymentSuccessView: View {
                     }
                 }
 
+                if let customerEmail, customerEmail.isNotEmpty {
+                    Spacer().frame(height: Constants.textSpacing)
+
+                    Text(String(format: Localization.receiptSentFormat, customerEmail))
+                        .font(.posBodyLargeRegular())
+                        .foregroundStyle(Color.posOnSurface)
+                        .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
+                }
+
                 Spacer().frame(height: POSSpacing.xxLarge)
 
-                PaymentsActionButtons(isShowingSendReceiptView: $isShowingSendReceiptView)
+                PaymentsActionButtons(successAction: successAction,
+                                      isShowingSendReceiptView: $isShowingSendReceiptView)
                     .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
@@ -91,14 +104,26 @@ private extension PointOfSalePaymentSuccessView {
         static let textSpacing: CGFloat = POSSpacing.small
         static let animationOffset: CGFloat = 100
     }
+
+    enum Localization {
+        static let receiptSentFormat = NSLocalizedString(
+            "pointOfSale.paymentSuccessful.receiptSent",
+            value: "A receipt has been sent to %1$@.",
+            comment: "Informational message shown on payment success screen when an email receipt is automatically sent. " +
+            "%1$@ is a placeholder for the customer's email address."
+        )
+    }
 }
 
 #if DEBUG
 #Preview {
     PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
-                                                      paymentMethod: .card)
+                                                      paymentMethod: .card),
+        customerEmail: "test@example.com",
+        onSendReceipt: { _ in },
+        successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
+        onSuccessScreenBarcodeScanned: nil
     )
-    .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

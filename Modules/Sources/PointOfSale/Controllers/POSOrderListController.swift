@@ -156,7 +156,7 @@ enum RefundActionAvailability {
     }
 
     private func setLoadingState() {
-        if !fetchStrategy.showsLoadingWithItems {
+        if !fetchStrategy.showsCachedDataWhileLoading {
             ordersViewState = .loading([])
             return
         }
@@ -363,6 +363,7 @@ enum RefundActionAvailability {
             formattedTax: formattedTax,
             formattedRefundTotal: formattedTotal,
             paymentMethodDescription: paymentMethodDescription,
+            customerEmail: order.customerEmail,
             refundReason: nil
         )
     }

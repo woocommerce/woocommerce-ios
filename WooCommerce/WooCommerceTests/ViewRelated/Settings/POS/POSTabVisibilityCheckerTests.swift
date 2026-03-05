@@ -3,6 +3,7 @@ import Foundation
 import Testing
 import WooFoundation
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor
@@ -293,7 +294,7 @@ private extension POSTabVisibilityCheckerTests {
     func accountWhitelistedInBackend(_ isAllowed: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case .isRemoteFeatureFlagEnabled(_, _, completion: let completion):
+            case .isRemoteFeatureFlagEnabled(_, _, _, completion: let completion):
                 completion(isAllowed)
             }
         }

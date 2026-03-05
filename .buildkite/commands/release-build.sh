@@ -4,11 +4,7 @@ echo "--- :arrow_down: Installing Release Dependencies"
 brew install imagemagick
 brew install ghostscript
 
-echo "--- :rubygems: Setting up Gems"
-install_gems
-
-echo "--- :swift: Setting up Swift Packages"
-install_swiftpm_dependencies
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- :closed_lock_with_key: Installing Secrets"
 bundle exec fastlane run configure_apply

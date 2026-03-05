@@ -183,7 +183,7 @@ extension BookingFiltersViewModel.BookingListFilter {
                                        listSelectorConfig: .bookingCustomers(siteID: siteID),
                                        selectedValue: MultipleFilterSelection(items: filters.customers))
         case .attendanceStatus:
-            let options: [BookingAttendanceStatus?] = [.booked, .checkedIn, .noShow, .cancelled]
+            let options: [BookingAttendanceStatus?] = [.attended, .unattended]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .multiSelectStaticOptions(options: options),
                                        selectedValue: MultipleFilterSelection(items: filters.attendanceStatuses))
@@ -206,7 +206,7 @@ extension BookingAttendanceStatus: FilterType {
 
     var isActive: Bool {
         switch self {
-        case .booked, .checkedIn, .cancelled, .noShow:
+        case .attended, .unattended:
             return true
         case .unknown:
             return false
@@ -295,8 +295,8 @@ private extension BookingFiltersViewModel.BookingListFilter {
             comment: "Row title for filtering bookings by team member.")
 
         static let rowTitleProduct = NSLocalizedString(
-            "bookingFilters.rowTitleProduct",
-            value: "Service / Event",
+            "bookingFilters.rowTitleService",
+            value: "Service",
             comment: "Row title for filtering bookings by product.")
 
         static let rowTitleCustomer = NSLocalizedString(

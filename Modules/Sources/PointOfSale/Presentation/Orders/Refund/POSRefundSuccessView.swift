@@ -3,6 +3,7 @@ import SwiftUI
 struct POSRefundSuccessView: View {
     let formattedRefundTotal: String
     let paymentMethodDescription: String
+    let customerEmail: String?
     let onDone: () -> Void
     let onEmailReceipt: () -> Void
     let onClose: () -> Void
@@ -64,6 +65,14 @@ private extension POSRefundSuccessView {
                     .foregroundColor(Color.posOnSurface)
                     .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)
+
+                if let customerEmail, customerEmail.isNotEmpty {
+                    Text(String(format: Localization.receiptSentFormat, customerEmail))
+                        .font(.posBodyLargeRegular())
+                        .foregroundColor(Color.posOnSurface)
+                        .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                        .opacity(isViewLoaded ? 1 : 0)
+                }
             }
             .multilineTextAlignment(.center)
         }
@@ -128,6 +137,13 @@ private extension POSRefundSuccessView {
             value: "Email receipt",
             comment: "Button to email a receipt for the refund"
         )
+
+        static let receiptSentFormat = NSLocalizedString(
+            "pos.refundSuccessView.receiptSent",
+            value: "A receipt has been sent to %1$@.",
+            comment: "Informational message shown on refund success screen when an email receipt is automatically sent. " +
+            "%1$@ is a placeholder for the customer's email address."
+        )
     }
 }
 
@@ -136,6 +152,7 @@ private extension POSRefundSuccessView {
     POSRefundSuccessView(
         formattedRefundTotal: "$132.60",
         paymentMethodDescription: "via payment card ••••1456",
+        customerEmail: "test@example.com",
         onDone: {},
         onEmailReceipt: {},
         onClose: {}

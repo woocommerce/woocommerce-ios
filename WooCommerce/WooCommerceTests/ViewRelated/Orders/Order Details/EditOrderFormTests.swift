@@ -4,6 +4,7 @@ import TestKit
 import Yosemite
 import ViewInspector
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor

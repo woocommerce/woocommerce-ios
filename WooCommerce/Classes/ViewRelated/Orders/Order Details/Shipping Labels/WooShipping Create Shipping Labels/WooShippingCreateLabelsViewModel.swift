@@ -137,6 +137,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
 
+    /// This property can be set to display a notice with the provided label about the destination phone number.
+    @Published var destinationPhoneNumberNoticeLabel: String?
+
     /// View model for address to edit.
     /// Setting this property will navigate to the address edit screen.
     @Published var addressToEdit: WooShippingEditAddressViewModel?
@@ -380,12 +383,27 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch {
-            labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
-                                              message: Localization.LabelPurchaseError.message,
-                                              feedbackType: .error,
-                                              actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
-                Task {
-                    await self?.purchaseLabel(shouldRefreshPackageAndRate: shouldRefreshPackageAndRate)
+            if let phoneMessage = invalidPhoneNumberMessage(from: error) {
+                labelPurchaseErrorNotice = Notice(
+                    title: Localization.PhoneNumberError.title,
+                    message: phoneMessage,
+                    feedbackType: .error,
+                    actionTitle: Localization.PhoneNumberError.editAddress
+                ) { [weak self] in
+                    self?.editDestinationAddress()
+                }
+            } else {
+                labelPurchaseErrorNotice = Notice(
+                    title: Localization.LabelPurchaseError.title,
+                    message: Localization.LabelPurchaseError.message,
+                    feedbackType: .error,
+                    actionTitle: Localization.LabelPurchaseError.retry
+                ) { [weak self] in
+                    Task {
+                        await self?.purchaseLabel(
+                            shouldRefreshPackageAndRate: shouldRefreshPackageAndRate
+                        )
+                    }
                 }
             }
             DDLogError("⛔️ Error purchasing shipping label: \(error)")
@@ -640,6 +658,12 @@ private extension WooShippingCreateLabelsViewModel {
             }
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
+        $destinationAddress
+            .map { [weak self] address -> String? in
+                return self?.destinationPhoneNoticeLabel(for: address)
+            }
+            .assign(to: &$destinationPhoneNumberNoticeLabel)
+
         /// Clear the notice after a delay when the address is verified.
         $shouldShowNotices
             .combineLatest($destinationAddressStatusNoticeLabel)
@@ -649,6 +673,19 @@ private extension WooShippingCreateLabelsViewModel {
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
+    }
+
+    func destinationPhoneNoticeLabel(for address: WooShippingAddress?) -> String? {
+        guard let address else {
+            return nil
+        }
+        if address.phoneDigits.isEmpty {
+            return Localization.DestinationPhoneNumber.missing
+        }
+        if !address.hasValidPhoneNumberForShipping {
+            return Localization.DestinationPhoneNumber.invalid
+        }
+        return nil
     }
 
     /// Ensures that initial notices are only displayed after the view is ready
@@ -796,6 +833,7 @@ private extension WooShippingCreateLabelsViewModel {
 private extension WooShippingCreateLabelsViewModel {
     enum Constants {
         static let missingUPSDAPTermsOfServiceAcceptance = "missing_upsdap_terms_of_service_acceptance"
+        static let serverErrorResponse = "wcc_server_error_response"
     }
     enum Localization {
         enum OriginAddressStatus {
@@ -830,11 +868,57 @@ private extension WooShippingCreateLabelsViewModel {
                                                    comment: "Button to retry label purchase when an error occurs")
         }
 
+        enum DestinationPhoneNumber {
+            static let missing = NSLocalizedString(
+                "wooShipping.createLabels.destinationPhoneNumber.missing",
+                value: "Phone number is required for the destination address.",
+                comment: "Notice when the destination phone number is missing on the shipping label creation screen"
+            )
+            static let invalid = NSLocalizedString(
+                "wooShipping.createLabels.destinationPhoneNumber.invalid",
+                value: "Please enter a valid phone number for the destination address.",
+                comment: "Notice when the destination phone number is invalid"
+            )
+        }
+
+        enum PhoneNumberError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.title",
+                value: "Invalid phone number.",
+                comment: "Title for the notice when the label purchase fails due to an invalid destination phone number"
+            )
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.message",
+                value: "Please enter a valid phone number for the destination address.",
+                comment: "Message for the notice when the label purchase fails due to an invalid destination phone number"
+            )
+            static let editAddress = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.editAddress",
+                value: "Edit address",
+                comment: "Action button title to edit the destination address when phone number is invalid"
+            )
+        }
+
         static let refundNotice = NSLocalizedString(
             "wooShipping.createLabels.refundNotice",
             value: "You have successfully submitted a request for refund. You can purchase a new label.",
             comment: "Notice to display after requesting refund for a shipping label"
         )
+    }
+}
+
+private extension WooShippingCreateLabelsViewModel {
+    func invalidPhoneNumberMessage(from error: Error) -> String? {
+        guard case let DotcomError.unknown(code, message, data) = error,
+              code == Constants.serverErrorResponse else {
+            return nil
+        }
+        let dataMessage = data?["message"]?.value as? String
+        let candidates = [message, dataMessage].compactMap { $0 }
+        guard candidates.contains(where: { $0.range(of: "phone", options: .caseInsensitive) != nil }) else {
+            return nil
+        }
+        return Localization.PhoneNumberError.message
     }
 }
 

@@ -1168,7 +1168,8 @@ private extension POSOrderListControllerTests {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: status == .completed || status == .processing ? Date() : nil
         )
     }
 

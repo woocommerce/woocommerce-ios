@@ -1,1 +1,1 @@
-WooCommerce , WooCommerce 앱, WooCommerce 모바일, woo 앱, WooCommerce 주문 알림, 워드프레스, 전자상거래
+woo,주문,전자상거래,pos,판매 시점,워드프레스,스토어,결제,신용,카드,배송,재고품,재고

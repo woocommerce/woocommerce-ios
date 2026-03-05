@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import protocol Storage.StorageManagerType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class StorePickerViewModelTests: XCTestCase {

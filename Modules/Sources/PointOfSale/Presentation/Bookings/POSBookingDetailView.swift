@@ -99,7 +99,6 @@ struct POSBookingDetailView: View {
                         POSBookingAttendanceSectionView(booking: booking)
                     }
                     customerSection
-                    paymentBreakdownSection
 
                     if shouldShowCollectPayment {
                         collectPaymentButton
@@ -311,23 +310,6 @@ struct POSBookingDetailView: View {
         }
     }
 
-    // MARK: - Payment Breakdown
-
-    private var paymentBreakdownSection: some View {
-        POSTotalsSectionView(
-            sectionTitle: Localization.paymentTitle,
-            subtotalLabel: Localization.serviceLabel,
-            subtotalAmount: booking.formattedSubtotal ?? booking.order.formattedSubtotal,
-            discountAmount: booking.order.formattedDiscountTotal ?? Localization.noDiscountPlaceholder,
-            taxAmount: booking.order.formattedTotalTax,
-            totalAmount: booking.order.formattedTotal,
-            paidAmount: nil,
-            paymentMethodTitle: "",
-            refunds: [],
-            netAmount: nil
-        )
-    }
-
     // MARK: - Payment Action
 
     private func dismissPayment() {
@@ -536,18 +518,6 @@ private enum Localization {
         comment: "Subtitle text below the booking note section explaining the note is private."
     )
 
-    static let paymentTitle = NSLocalizedString(
-        "pos.bookingDetailView.paymentTitle",
-        value: "Payment",
-        comment: "Section title for the payment breakdown in booking details."
-    )
-
-    static let serviceLabel = NSLocalizedString(
-        "pos.bookingDetailView.serviceLabel",
-        value: "Service",
-        comment: "Label for the service cost in booking payment breakdown."
-    )
-
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
         value: "Collect payment",
@@ -609,13 +579,6 @@ private enum Localization {
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
     )
-
-    static let noDiscountPlaceholder = NSLocalizedString(
-        "pos.bookingDetailView.noDiscountPlaceholder",
-        value: "-",
-        comment: "Placeholder shown in the payment breakdown when there is no discount on the booking."
-    )
-
 }
 
 // MARK: - CopyableRow

@@ -22,6 +22,7 @@ class BookingListContainerViewModelTests {
     @Test func event_fire_when_default_tab_selected() {
         // Given
         let viewModel = givenViewModel()
+        viewModel.hasRestoredFilters = true
 
         // When
         viewModel.setSelectedTab(to: .today)
@@ -32,7 +33,7 @@ class BookingListContainerViewModelTests {
         #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "today",
-                                            "is_default_tab": true,
+                                            "is_default_tab": false,
                                             "is_list_empty": true,
                                             "is_filtered": false
                                            ]))
@@ -41,6 +42,7 @@ class BookingListContainerViewModelTests {
     @Test func event_fire_when_nonDefault_tab_selected() {
         // Given
         let viewModel = givenViewModel()
+        viewModel.hasRestoredFilters = true
 
         // When
         viewModel.setSelectedTab(to: .all)
@@ -60,6 +62,7 @@ class BookingListContainerViewModelTests {
     @Test func event_fire_when_onAppear() {
         // Given
         let viewModel = givenViewModel()
+        viewModel.hasRestoredFilters = true
 
         // When
         viewModel.onAppear()

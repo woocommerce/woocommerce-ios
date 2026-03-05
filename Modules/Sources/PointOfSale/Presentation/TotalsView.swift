@@ -26,7 +26,6 @@ struct TotalsView: View {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
                     Spacer()
-                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
                     if isShowingPaymentView {
                         PaymentViewContent(

@@ -54,7 +54,7 @@ final class POSReceiptSender: POSReceiptSending {
                 minimumVersion: POSReceiptEligibilityConstants.wcAutoTemplateSelectionMinimumVersion,
                 siteID: siteID
             )
-            let templateID: String? = supportsAutoTemplateSelection ? nil : "customer_pos_completed_order"
+            let templateID: String? = supportsAutoTemplateSelection ? nil : POSReceiptEligibilityConstants.defaultReceiptTemplateID
 
             try await receiptService.sendReceipt(orderID: orderID,
                                                  recipientEmail: recipientEmail,
@@ -93,5 +93,6 @@ private extension POSReceiptSender {
     enum POSReceiptEligibilityConstants {
         static let wcPluginMinimumVersion = "10.0.0"
         static let wcAutoTemplateSelectionMinimumVersion = "10.7.0-dev"
+        static let defaultReceiptTemplateID = "customer_pos_completed_order"
     }
 }

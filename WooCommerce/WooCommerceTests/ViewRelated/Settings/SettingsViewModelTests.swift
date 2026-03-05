@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageType
 import protocol Storage.StorageManagerType
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class SettingsViewModelTests: XCTestCase {

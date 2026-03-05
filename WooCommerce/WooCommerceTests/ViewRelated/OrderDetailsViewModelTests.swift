@@ -3,6 +3,7 @@ import WooFoundation
 import XCTest
 import Yosemite
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor

@@ -2,6 +2,7 @@ import Experiments
 import TestKit
 import WordPressAuthenticator
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 import protocol Storage.StorageManagerType

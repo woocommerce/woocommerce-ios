@@ -3,7 +3,7 @@ import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
-    let booking: POSBooking
+    @Binding var booking: POSBooking
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -16,8 +16,6 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
-    @State private var emailCopied = false
-    @State private var emailCopiedTask: Task<Void, Never>?
     @State private var inlineButtonMinY: CGFloat = .infinity
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
@@ -257,40 +255,22 @@ struct POSBookingDetailView: View {
             }
 
             if let email = booking.customerEmail {
-                HStack {
-                    Text(email)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posOnSurface)
-                    Spacer()
-                    Button {
-                        UIPasteboard.general.string = email
-                        emailCopied = true
-                        emailCopiedTask?.cancel()
-                        emailCopiedTask = Task {
-                            try? await Task.sleep(for: .seconds(1.5))
-                            guard !Task.isCancelled else { return }
-                            emailCopied = false
-                        }
-                    } label: {
-                        Image(systemName: emailCopied ? "checkmark" : "doc.on.doc")
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(actionTintColor)
-                            .contentTransition(.symbolEffect(.replace))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Localization.copyEmailAccessibilityLabel)
-                    .frame(minHeight: 32)
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(Localization.emailAccessibilityLabel(email))
+                CopyableRow(
+                    text: email,
+                    copyButtonAccessibilityLabel: Localization.copyEmailAccessibilityLabel,
+                    rowAccessibilityLabel: Localization.emailAccessibilityLabel(email),
+                    tintColor: actionTintColor
+                )
             }
 
             if let phone = booking.customerPhone {
                 sectionDivider
-                Text(phone)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurface)
-                    .accessibilityLabel(Localization.phoneAccessibilityLabel(phone))
+                CopyableRow(
+                    text: phone,
+                    copyButtonAccessibilityLabel: Localization.copyPhoneAccessibilityLabel,
+                    rowAccessibilityLabel: Localization.phoneAccessibilityLabel(phone),
+                    tintColor: actionTintColor
+                )
             }
 
             if let note = booking.customerNote {
@@ -365,11 +345,13 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
         paymentModel = nil
+        guard paymentSucceeded else { return }
         Task { @MainActor in
             isDetailsUpdating = true
-            await bookingsModel.updateAfterPayment(bookingID: booking.id)
+            await bookingsModel.updateAfterSuccessfulPayment(bookingID: booking.id)
             isDetailsUpdating = false
         }
     }
@@ -618,6 +600,12 @@ private enum Localization {
         comment: "Accessibility label for the copy email button in booking details."
     )
 
+    static let copyPhoneAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.copyPhone.accessibilityLabel",
+        value: "Copy phone number",
+        comment: "Accessibility label for the copy phone button in booking details."
+    )
+
     static let moreActionsAccessibilityLabel = NSLocalizedString(
         "pos.bookingDetailView.moreActions.accessibilityLabel",
         value: "More actions",
@@ -644,33 +632,80 @@ private enum Localization {
 
 }
 
+// MARK: - CopyableRow
+
+private struct CopyableRow: View {
+    let text: String
+    let copyButtonAccessibilityLabel: String
+    let rowAccessibilityLabel: String
+    let tintColor: Color
+
+    @State private var copied = false
+    @State private var copyTask: Task<Void, Never>?
+
+    var body: some View {
+        Button {
+            copyToClipboard()
+        } label: {
+            HStack {
+                Text(text)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                Spacer()
+                Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(tintColor)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .frame(minHeight: 32)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(rowAccessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint(copyButtonAccessibilityLabel)
+    }
+
+    private func copyToClipboard() {
+        UIPasteboard.general.string = text
+        copied = true
+        copyTask?.cancel()
+        copyTask = Task {
+            try? await Task.sleep(for: .seconds(1.5))
+            guard !Task.isCancelled else { return }
+            copied = false
+        }
+    }
+}
+
 // MARK: - Previews
 
 #if DEBUG
 #Preview("Paid Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewPaidBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewPaidBooking()),
         onBack: {}
     )
 }
 
 #Preview("Unpaid Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewUnpaidBooking()),
         onBack: {}
     )
 }
 
 #Preview("Guest Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewGuestBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewGuestBooking()),
         onBack: {}
     )
 }
 
 #Preview("Cancelled Booking") {
     POSBookingDetailView(
-        booking: POSPreviewHelpers.makePreviewCancelledBooking(),
+        booking: .constant(POSPreviewHelpers.makePreviewCancelledBooking()),
         onBack: {}
     )
 }

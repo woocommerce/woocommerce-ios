@@ -3,6 +3,7 @@ import TestKit
 import Yosemite
 import Fakes
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor
@@ -293,7 +294,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(bookingID, booking.bookingID)
         XCTAssertEqual(status, newStatus)
 
-        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_updated",
+        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_update",
                                          with: ["booking_status": "attended"])
     }
 
@@ -457,7 +458,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         viewModel.notesTapped()
 
         // Then
-        analyticsProvider.assertReceived(event: "booking_detail_add_note_tapped")
+        analyticsProvider.assertReceived(event: "booking_detail_add_note_tap")
     }
 
 

@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import YosemiteTestHelpers
 @testable import Yosemite
 
 struct PointOfSaleSettingsServiceTests {

@@ -2,6 +2,7 @@ import TestKit
 import XCTest
 import Yosemite
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 import WordPressUI
 

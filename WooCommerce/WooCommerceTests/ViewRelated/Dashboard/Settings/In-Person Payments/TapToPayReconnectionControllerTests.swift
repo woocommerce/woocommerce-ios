@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import Hardware
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class TapToPayReconnectionControllerTests: XCTestCase {

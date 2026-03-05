@@ -1,6 +1,7 @@
 import UserNotifications
 import Testing
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 struct NotificationSettingsViewModelTests {

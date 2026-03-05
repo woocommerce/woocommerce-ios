@@ -1,10 +1,10 @@
-import WooFoundation
+import Foundation
 
 /// Sanitize separators that has spaces within it. Example ", " or ". "
 /// Separators with spaces are not supported by native iOS decimal formatters
 /// which causes the issue formatting and converting numbers to and from the decimals
 ///
-extension CurrencySettings {
+public extension CurrencySettings {
     var sanitizedDecimalSeparator: String {
         return decimalSeparator.replacingOccurrences(of: " ", with: "")
     }

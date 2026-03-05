@@ -5,7 +5,9 @@ import CoreData
 
 /// MockStorageManager: InMemory CoreData Stack.
 ///
-public class MockStorageManager: StorageManagerType {
+open class MockStorageManager: StorageManagerType {
+
+    public init() {}
 
     /// DataModel Name
     ///
@@ -28,7 +30,7 @@ public class MockStorageManager: StorageManagerType {
 
     /// Persistent Container: Holds the full CoreData Stack
     ///
-    lazy var persistentContainer: NSPersistentContainer = {
+    public lazy var persistentContainer: NSPersistentContainer = {
         let container = NSPersistentContainer(name: name, managedObjectModel: managedModel)
         container.persistentStoreDescriptions = [storeDescription]
 
@@ -162,7 +164,7 @@ extension MockStorageManager {
     }
 }
 
-extension StorageType {
+public extension StorageType {
     @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
     func saveIfNeeded() {
         let context = self as! NSManagedObjectContext

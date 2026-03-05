@@ -4,6 +4,7 @@ import WooFoundation
 import Yosemite
 import Storage
 import struct SwiftUI.Color
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class ShippingLineSelectionDetailsViewModelTests: XCTestCase {

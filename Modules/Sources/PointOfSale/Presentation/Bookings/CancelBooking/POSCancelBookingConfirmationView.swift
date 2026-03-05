@@ -32,28 +32,32 @@ struct POSCancelBookingConfirmationView: View {
 
 private extension POSCancelBookingConfirmationView {
     var headerView: some View {
-        HStack {
+        VStack(spacing: POSSpacing.medium) {
+            HStack {
+                Spacer()
+                Button {
+                    onClose()
+                } label: {
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
+                .disabled(isProcessing)
+                .opacity(isProcessing ? 0.5 : 1.0)
+            }
+
             Text(isProcessing ? Localization.processingTitle : Localization.title)
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-            .disabled(isProcessing)
-            .opacity(isProcessing ? 0.5 : 1.0)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
         }
         .foregroundColor(Color.posOnSurface)
         .padding(POSPadding.xLarge)
     }
 
     var messageView: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.small) {
+        VStack(spacing: POSSpacing.medium) {
             if isProcessing {
                 Text(Localization.processingMessage)
             } else {
@@ -63,8 +67,8 @@ private extension POSCancelBookingConfirmationView {
         }
         .font(.posBodyLargeRegular())
         .foregroundColor(Color.posOnSurface)
-        .multilineTextAlignment(.leading)
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .multilineTextAlignment(.center)
+        .frame(maxWidth: .infinity)
         .padding(.horizontal, POSPadding.xLarge)
     }
 

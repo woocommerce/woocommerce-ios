@@ -274,9 +274,9 @@ See `Modules/Package.swift` for the definitive list of supported platforms, inte
 
 Agents can verify their changes work from a user's perspective using two complementary loops:
 
-- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
+- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
 - **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
 
-**Prerequisites**: Node.js v22+, Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
+**Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
 
 See `.claude/rules/verification.md` for full details on tools, mock server setup, and launch arguments.

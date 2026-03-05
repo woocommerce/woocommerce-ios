@@ -613,7 +613,7 @@ private extension PaymentMethodsViewModel {
                                                                         comment: "A title for a payment method where customer pays by cash in person")
         static let scanToPayNoteText = NSLocalizedString(
             "paymentMethods.scanToPayNoteText.note",
-            value: "Payment link shared via Scan to Pay. Please verify payment and update order status.",
+            value: "Payment link shared via Scan to Pay. Please verify payment before fulfilling order.",
             comment: "Note added to order when Scan to Pay is used.")
     }
 }

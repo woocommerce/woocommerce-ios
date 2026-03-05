@@ -302,8 +302,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     private func fullSyncInProgress(for siteID: Int64) async -> Bool {
-        let currentState = await MainActor.run { fullSyncStateModel.state[siteID] }
-        switch currentState {
+        switch await fullSyncStateModel.state[siteID] {
         case .syncStarted, .initialSyncStarted:
             return true
         default:
@@ -473,7 +472,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     public func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        if let cached = await MainActor.run(body: { fullSyncStateModel.state[siteID] }) {
+        if let cached = await fullSyncStateModel.state[siteID] {
             return cached
         }
 
@@ -485,7 +484,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             state = .syncCompleted(siteID: siteID)
         }
 
-        await MainActor.run { fullSyncStateModel.state[siteID] = state }
+        await fullSyncStateModel.updateState(state, for: siteID)
         return state
     }
 
@@ -537,8 +536,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Update sync state to reflect that syncs are being stopped
         // This will prevent new syncs from starting for this site
-        let currentState = await MainActor.run { fullSyncStateModel.state[siteID] }
-        if let currentState {
+        if let currentState = await fullSyncStateModel.state[siteID] {
             switch currentState {
             case .initialSyncStarted, .syncStarted:
                 await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
@@ -730,9 +728,7 @@ private extension POSCatalogSyncCoordinator {
             id
         }
 
-        await MainActor.run {
-            fullSyncStateModel.state[siteID] = state
-        }
+        await fullSyncStateModel.updateState(state, for: siteID)
     }
 }
 
@@ -742,6 +738,10 @@ public class POSCatalogSyncStateModel {
     public var state: [Int64: POSCatalogSyncState] = [:]
 
     nonisolated public init() {}
+
+    public func updateState(_ newState: POSCatalogSyncState, for siteID: Int64) {
+        state[siteID] = newState
+    }
 }
 
 

@@ -72,11 +72,15 @@ public class AlamofireNetwork: Network {
     ///   - selectedSite: Publisher for site selection changes.
     ///   This is necessary if you wish to enable network switching to direct requests while authenticated with WPCOM for better performance.
     ///   - sessionManager: Optional pre-configured session manager.
+    ///   - discoveryHandler: Optional override for REST API discovery. When provided, it is always
+    ///   called instead of the default `WordPressAPIDiscovery` (useful for testing). When `nil`,
+    ///   discovery runs only when no `sessionManager` is injected (production mode).
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>?,
                          appPasswordSupportState: AnyPublisher<Bool, Never>?,
                          userDefaults: UserDefaults = .standard,
-                         sessionManager: Alamofire.Session? = nil) {
+                         sessionManager: Alamofire.Session? = nil,
+                         discoveryHandler: ((String) async -> Void)? = nil) {
         self.credentials = credentials
         self.selectedSite = selectedSite
         self.userDefaults = userDefaults
@@ -108,23 +112,30 @@ public class AlamofireNetwork: Network {
             )
         }
 
-        // Eagerly discover the REST API root URL for wporg/applicationPassword sites so that
-        // REST requests made immediately after a relaunch use the correct base path.
-        // Skip when a sessionManager is injected (test mode heuristic).
-        self.discoveryTask = sessionManager == nil ? {
+        // Eagerly discover the REST API root URL so that REST requests made immediately after
+        // a relaunch use the correct base path.
+        // When a discoveryHandler is injected (test mode), always run it so tests can observe
+        // which siteURL was extracted. Otherwise, skip when a sessionManager is injected
+        // (production heuristic — sessionManager injection implies test mode).
+        self.discoveryTask = {
             let siteURL: String? = {
                 switch credentials {
                 case let .wporg(_, _, siteAddress): return siteAddress
                 case let .applicationPassword(_, _, siteAddress): return siteAddress
-                default: return nil
+                case let .wpcom(_, _, siteAddress): return siteAddress
+                case .none: return nil
                 }
             }()
             guard let siteURL else { return nil }
+            if let discoveryHandler {
+                return Task { await discoveryHandler(siteURL) }
+            }
+            guard sessionManager == nil else { return nil }
             return Task {
                 guard WordPressRESTAPIRootCache.shared.root(for: siteURL) == nil else { return }
                 _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteURL)
             }
-        }() : nil
+        }()
 
         let authenticationMode: RequestAuthenticationMode? = {
             switch credentials {

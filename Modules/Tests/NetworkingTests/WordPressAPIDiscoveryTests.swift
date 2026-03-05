@@ -5,17 +5,19 @@ import XCTest
 final class WordPressAPIDiscoveryTests: XCTestCase {
     let sampleSiteURL = "https://example.com"
     var session: MockURLSession!
+    var cache: WordPressRESTAPIRootCache!
     var sut: WordPressAPIDiscovery!
 
     override func setUp() {
         session = MockURLSession()
-        sut = WordPressAPIDiscovery(session: session)
+        cache = WordPressRESTAPIRootCache()
+        sut = WordPressAPIDiscovery(session: session, cache: cache)
     }
 
     override func tearDown() {
         sut = nil
+        cache = nil
         session = nil
-        WordPressRESTAPIRootCache.shared.reset()
         super.tearDown()
     }
 
@@ -121,7 +123,7 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
         _ = await sut.discoverRESTAPIRootURL(for: sampleSiteURL)
 
         // Then
-        XCTAssertEqual(WordPressRESTAPIRootCache.shared.root(for: sampleSiteURL), "https://example.com/wp-json/")
+        XCTAssertEqual(cache.root(for: sampleSiteURL), "https://example.com/wp-json/")
     }
 
     func test_discoverRESTAPIRootURL_when_discovery_fails_then_does_not_populate_cache() async {
@@ -132,7 +134,7 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
         _ = await sut.discoverRESTAPIRootURL(for: sampleSiteURL)
 
         // Then
-        XCTAssertNil(WordPressRESTAPIRootCache.shared.root(for: sampleSiteURL))
+        XCTAssertNil(cache.root(for: sampleSiteURL))
     }
 
     func test_discoverRESTAPIRootURL_sends_head_request() async {
@@ -147,5 +149,63 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
 
         // Then
         XCTAssertEqual(session.lastRequest?.httpMethod, "HEAD")
+    }
+
+    // MARK: - Deduplication Tests
+
+    func test_discoverRESTAPIRootURL_when_concurrent_calls_for_same_url_then_makes_single_request() async {
+        // Given
+        session.simulateResponse(
+            for: sampleSiteURL,
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+
+        // When — two concurrent discoveries for the same URL
+        async let result1 = sut.discoverRESTAPIRootURL(for: sampleSiteURL)
+        async let result2 = sut.discoverRESTAPIRootURL(for: sampleSiteURL)
+        let results = await [result1, result2]
+
+        // Then — both get the same result, but only one HEAD request was made
+        XCTAssertEqual(results[0], "https://example.com/wp-json/")
+        XCTAssertEqual(results[1], "https://example.com/wp-json/")
+        XCTAssertEqual(session.requestCount, 1)
+    }
+
+    func test_discoverRESTAPIRootURL_when_concurrent_calls_with_different_casing_then_makes_single_request() async {
+        // Given — simulate responses for both URL casings
+        session.simulateResponse(
+            for: "https://example.com",
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+        session.simulateResponse(
+            for: "https://Example.COM",
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+
+        // When — two concurrent discoveries with different casing
+        async let result1 = sut.discoverRESTAPIRootURL(for: "https://example.com")
+        async let result2 = sut.discoverRESTAPIRootURL(for: "https://Example.COM")
+        let results = await [result1, result2]
+
+        // Then — both succeed and only one request was made
+        XCTAssertEqual(results[0], "https://example.com/wp-json/")
+        XCTAssertEqual(results[1], "https://example.com/wp-json/")
+        XCTAssertEqual(session.requestCount, 1)
+    }
+
+    func test_discoverRESTAPIRootURL_when_previous_request_completed_then_allows_new_request() async {
+        // Given
+        session.simulateResponse(
+            for: sampleSiteURL,
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
+        )
+
+        // When — sequential discoveries (first completes before second starts)
+        _ = await sut.discoverRESTAPIRootURL(for: sampleSiteURL)
+        cache.reset()
+        _ = await sut.discoverRESTAPIRootURL(for: sampleSiteURL)
+
+        // Then — two separate requests were made
+        XCTAssertEqual(session.requestCount, 2)
     }
 }

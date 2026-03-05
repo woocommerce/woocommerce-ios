@@ -48,6 +48,15 @@ struct WordPressRESTAPIRootCacheTests {
         #expect(sut.root(for: "https://example.com/") == "https://example.com/wp-json/")
     }
 
+    @Test func test_root_is_case_insensitive_for_site_url() {
+        // Given
+        sut.setRoot("https://example.com/wp-json/", for: "https://Example.COM")
+
+        // When / Then — different casing should resolve to the same entry
+        #expect(sut.root(for: "https://example.com") == "https://example.com/wp-json/")
+        #expect(sut.root(for: "https://EXAMPLE.COM") == "https://example.com/wp-json/")
+    }
+
     @Test func test_root_treats_different_site_urls_independently() {
         // Given
         let rootA = "https://site-a.com/wp-json/"

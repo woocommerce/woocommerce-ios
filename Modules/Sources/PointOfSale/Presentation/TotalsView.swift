@@ -40,6 +40,10 @@ struct TotalsView: View {
                         )
                     }
 
+                    if isShowingPaymentView && isShowingTotalsFields {
+                        Spacer()
+                    }
+
                     if isShowingTotalsFields {
                         TotalsFieldsContent(
                             orderState: posModel.orderState,
@@ -51,7 +55,6 @@ struct TotalsView: View {
                     }
 
                     Spacer()
-                        .renderedIf(viewHelper.shouldApplyPadding(paymentState: paymentModel.paymentState))
 
                     CashPaymentButton(
                         orderState: posModel.orderState,

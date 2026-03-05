@@ -1,12 +1,14 @@
 # Agent Verification Rules
 
+> **Environment note**: `.mcp.json` is auto-loaded by Claude Code CLI. If mobile-mcp tools are unavailable, read `.mcp.json` for the server config and help the user configure their environment — see `agent-environment-awareness.md`.
+
 Agents can verify their changes work from a user's perspective using two complementary loops: **snapshot-driven iteration** (fast inner loop) and **simulator-based E2E verification** (slower outer loop).
 
 ## Prerequisites
 - **Node.js** (see `.nvmrc` for version) — required by mobile-mcp for simulator interaction
 - **Java** — required by WireMock mock server (`brew install openjdk` if missing)
 - **Booted iOS simulator** — `xcrun simctl boot <UDID>`
-- **mobile-mcp** — auto-configured via `.mcp.json` (project-scoped, no manual setup needed)
+- **mobile-mcp** — auto-configured via `.mcp.json` in Claude Code CLI (other environments: see `agent-environment-awareness.md`)
 
 ## `/verify` — E2E Simulator Verification
 
@@ -34,7 +36,7 @@ Uses `swift-snapshot-testing` to render SwiftUI views to PNG images. The agent r
 
 ## mobile-mcp Tools
 
-Configured via `.mcp.json` at the project root. Provides:
+Configured via `.mcp.json` at the project root (auto-loaded in Claude Code CLI; other environments may need manual config). Provides:
 - `screenshot` — capture current simulator screen
 - `list_ui_elements` — get accessibility tree with element positions
 - `tap` / `swipe` / `type_text` — interact with UI elements

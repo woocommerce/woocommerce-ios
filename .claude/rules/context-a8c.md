@@ -14,7 +14,8 @@ Visit the ContextA8C setup page on MC (Automatticians: search "ContextA8C" on MC
 
 | Client | Setup |
 |--------|-------|
-| Claude Code | `claude mcp add --transport stdio --scope user context-a8c -- npx -y @automattic/mcp-context-a8c` (or run `/setup-context-a8c` skill) |
+| Claude Code (requires `claude` CLI binary) | `claude mcp add --transport stdio --scope user context-a8c -- npx -y @automattic/mcp-context-a8c` (or run `/setup-context-a8c` skill). For environments without the `claude` binary, add the JSON config below manually — see `agent-environment-awareness.md`. |
+| Claude Desktop | Add manually through Desktop settings: command `npx`, args `-y @automattic/mcp-context-a8c`. Do not edit config files — see `agent-environment-awareness.md`. |
 | Cursor | Add JSON config below to `.cursor/mcp.json` |
 | VS Code | Add JSON config below to `.vscode/mcp.json` |
 | Other MCP clients | Use JSON config below in the client's MCP settings |
@@ -89,6 +90,6 @@ When a ContextA8C call fails, do NOT silently give up. Follow this sequence:
 Do NOT:
 - Silently skip ContextA8C without telling the user what went wrong
 - Tell the user to run agent skills or slash commands — those are for the agent to execute, not the user
-- Assume which client the user is running — ask them. The `claude` CLI binary may exist on the system even when the user is running Claude Desktop. Setup steps differ per client (`claude mcp add` only works for Claude Code CLI, not Claude Desktop)
+- Assume which environment the user is running — ask them (see `agent-environment-awareness.md`). The `claude` CLI binary may exist on the system even when the user is running Claude Desktop. MCP setup steps differ per environment
 - Retry the same failing call more than once in a session
 - Block on ContextA8C — always offer to proceed without it

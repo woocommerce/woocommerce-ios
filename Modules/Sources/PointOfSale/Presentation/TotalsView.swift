@@ -40,7 +40,7 @@ struct TotalsView: View {
                         )
                     }
 
-                    if isShowingPaymentView && isShowingTotalsFields && cardReaderViewLayout.topPadding == nil {
+                    if isShowingPaymentView && isShowingTotalsFields {
                         Spacer()
                     }
 
@@ -185,7 +185,7 @@ private extension TotalsView {
                     .processingPayment:
                 if POSPaymentViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                                     paymentState: paymentModel.paymentState) {
-                    return .outlined
+                    return .primary
                 }
             }
         }

@@ -163,10 +163,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case backgroundProductImageUpload
 
-    /// Allows merchants to use their own API keys for AI-powered features
-    ///
-    case allowMerchantAIAPIKey
-
     /// Enables optimized handling of product images
     ///
     case productImageOptimizedHandling
@@ -196,18 +192,14 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleLocalCatalogi1
 
+    /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
+    /// Only has effect when pointOfSaleLocalCatalogi1 is also enabled.
+    ///
+    case pointOfSaleFTSSearch
+
     /// Enables a new Bookings tab for CIAB sites
     ///
     case ciabBookings
-
-    /// Represents CIAB environment availability overall
-    /// Has same underlying logic as `ciabBookings` flag.
-    ///
-    case ciab
-
-    /// Enables surveys for potential and current POS merchants
-    ///
-    case pointOfSaleSurveys
 
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
@@ -217,11 +209,28 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
-    /// Enables self driven push token registration
+    /// Enables the bookings functionality within POS
     ///
-    case selfDrivenPushToken
+    case pointOfSaleBookings
+
+    /// Enables self driven push token registration for users authenticated with WPCom
+    ///
+    case selfDrivenPushTokenWPCom
+
+    /// Enables self driven push token registration for users authenticated with app passwords
+    ///
+    case selfDrivenPushTokenAppPasswords
 
     /// Enables POS-only products filtering
     ///
     case pointOfSaleOnlyProducts
+
+    /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
+    ///
+    case clientSideDashboardBanner
+
+    /// Enables age range verification features
+    /// https://developer.apple.com/news/?id=2ezb6jhj
+    ///
+    case ageRangeRequirementsCompliance
 }

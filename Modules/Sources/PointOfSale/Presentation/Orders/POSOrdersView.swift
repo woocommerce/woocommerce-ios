@@ -11,11 +11,20 @@ struct POSOrdersView: View {
     @State private var isSearching: Bool = false
     @State private var searchTerm: String = ""
     @State private var showBlog = false
+    @State private var isShowingEmailReceiptView = false
 
     var body: some View {
         contentView
             .task {
                 await orderListModel.ordersController.loadOrders()
+            }
+            .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+                if let order = orderListModel.ordersController.selectedOrder {
+                    POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                        try await orderListModel.sendReceipt(order: order, email: email)
+                    }
+                    .posHeaderBackButtonIcon(systemName: "xmark")
+                }
             }
     }
 
@@ -27,7 +36,7 @@ struct POSOrdersView: View {
         case (.empty, false):
             emptyView()
         default:
-            CustomNavigationSplitView(selection: Binding(
+            POSNavigationSplitView(selection: Binding(
                 get: { orderListModel.ordersController.selectedOrder },
                 set: { orderListModel.ordersController.selectOrder($0) }
             )) { _ in
@@ -40,7 +49,8 @@ struct POSOrdersView: View {
                     order: selection,
                     onBack: {
                         orderListModel.ordersController.selectOrder(nil)
-                    }
+                    },
+                    isShowingEmailReceiptView: $isShowingEmailReceiptView
                 )
                 .id(selection.id)
                 .environment(orderListModel)
@@ -60,6 +70,7 @@ struct POSOrdersView: View {
                 guard horizontalSizeClass == .regular else { return }
 
                 guard let firstOrder = newOrders.first else {
+                    orderListModel.ordersController.selectOrder(nil)
                     return
                 }
 
@@ -131,81 +142,6 @@ struct POSOrdersView: View {
             SafariView(url: POSConstants.URLs.wooCommerceBlog.asURL())
         }
     }
-}
-
-// MARK: - Split View
-/// An alternative split view implementation that gives more control of the split view design, including the sidebar and content arrangement and separator colors
-/// Just as NavigationSplitView, it adapts to a list -> details navigation on smaller screens
-/// It may be used as a common component in the future
-///
-private struct CustomNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: View, SelectionValue: Hashable>: View {
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Binding private var selection: SelectionValue?
-
-    private let sidebar: (Binding<SelectionValue?>) -> Sidebar
-    private let detail: (SelectionValue) -> Detail
-    private let detailPlaceholderView: () -> DetailPlaceholder
-    private let setDefaultValue: (() -> Void)?
-
-    init(
-        selection: Binding<SelectionValue?> = .constant(nil),
-        @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
-        @ViewBuilder detail: @escaping (SelectionValue) -> Detail,
-        @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
-        setDefaultValue: (() -> Void)? = nil
-    ) {
-        self._selection = selection
-        self.sidebar = sidebar
-        self.detail = detail
-        self.detailPlaceholderView = detailPlaceholderView
-        self.setDefaultValue = setDefaultValue
-    }
-
-    var body: some View {
-        switch horizontalSizeClass {
-        case .regular:
-            GeometryReader { geometry in
-                HStack(spacing: 0) {
-                    sidebar($selection)
-                        .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
-
-                    VStack {
-                        if let selection = selection {
-                            detail(selection)
-                                .frame(maxWidth: .infinity)
-                                .transition(.opacity)
-                        } else {
-                            detailPlaceholderView()
-                                .frame(maxWidth: .infinity)
-                                .transition(.opacity)
-                        }
-                    }
-                    .animation(.default, value: selection != nil)
-                }
-            }
-            .onAppear {
-                if selection == nil {
-                    setDefaultValue?()
-                }
-            }
-        default:
-            NavigationStack {
-                sidebar($selection)
-                    .navigationDestination(isPresented: Binding(
-                        get: { selection != nil },
-                        set: { if !$0 { selection = nil } }
-                    )) {
-                        if let selection = selection {
-                            detail(selection)
-                        }
-                    }
-            }
-        }
-    }
-}
-
-private enum Constants {
-    static let sidebarWidthFraction: CGFloat = 0.35
 }
 
 #if DEBUG

@@ -8,7 +8,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         // Given
         let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: false,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: false),
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
                                                  onMagicLinkRequest: { _ in },
@@ -26,7 +26,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         // Given
         let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
                                                  onMagicLinkRequest: { _ in },
@@ -44,7 +44,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         // Given
         let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: false,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: false),
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
                                                  onMagicLinkRequest: { _ in },
@@ -62,7 +62,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         // Given
         let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
                                                  onMagicLinkRequest: { _ in },
@@ -80,7 +80,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         // Given
         let siteURL = "https://example.com"
         let viewModel = WPComEmailLoginViewModel(siteURL: siteURL,
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  onPasswordUIRequest: { _ in },
                                                  onMagicLinkRequest: { _ in },
@@ -88,7 +88,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
                                                  onError: { _ in })
 
         // When
-        let text = viewModel.termsAttributedString.string
+        let text = String(viewModel.termsAttributedString.characters)
 
         // Then
         let expectedString = String(format: WPComEmailLoginViewModel.Localization.termsContent,
@@ -102,7 +102,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         let mockAccountService = MockWordPressComAccountService()
         mockAccountService.shouldReturnPasswordlessAccount = true
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -127,7 +127,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         mockAccountService.passwordlessAccountCheckError = NSError(domain: "Test", code: 401)
         var triggeredOnError = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -147,7 +147,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         mockAccountService.shouldReturnPasswordlessAccount = false
         var triggeredPasswordUIRequest = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in triggeredPasswordUIRequest = true },
@@ -166,7 +166,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         let mockAccountService = MockWordPressComAccountService()
         var triggeredOnMagicLinkUIRequest = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -186,7 +186,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         mockAccountService.authenticationLinkRequestError = NSError(domain: "Test", code: 401)
         var triggeredOnError = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -211,7 +211,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         )
         var triggeredOnMagicLinkUIRequest = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: true,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -237,7 +237,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         )
         var triggeredOnError = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: false,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -263,7 +263,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         )
         var errorMessage: String? = nil
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: true,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },
@@ -289,7 +289,7 @@ final class WPComEmailLoginViewModelTests: XCTestCase {
         )
         var triggeredOnMagicLinkRequest = false
         let viewModel = WPComEmailLoginViewModel(siteURL: "https://example.com",
-                                                 requiresConnectionOnly: true,
+                                                 flow: .jetpackSetup(requiresConnectionOnly: true),
                                                  allowAccountCreation: true,
                                                  accountService: mockAccountService,
                                                  onPasswordUIRequest: { _ in },

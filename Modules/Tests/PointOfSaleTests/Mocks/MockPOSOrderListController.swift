@@ -38,11 +38,14 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func clearSearchOrders() {}
 
-    func startRefundFlow() {
-        guard let order = selectedOrder else { return }
+    var stubStartRefundFlowResult: StartRefundFlowResult = .hasItemsToRefund
+
+    func startRefundFlow() async -> StartRefundFlowResult {
+        guard let order = selectedOrder else { return .failed }
         refundSelectableItems = order.lineItems.map {
             POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
         }
+        return stubStartRefundFlowResult
     }
 
     func toggleRefundItemSelection(at index: Int) {
@@ -74,7 +77,23 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             formattedTax: "$0.00",
             formattedRefundTotal: "$0.00",
             paymentMethodDescription: "Via payment card",
+            customerEmail: nil,
             refundReason: nil
         )
+    }
+
+    // MARK: - Refund Processing
+
+    var processRefundCalled = false
+    var spyProcessRefundReason: String?
+    var shouldThrowProcessRefundError = false
+
+    func processRefund(reason: String?) async throws {
+        processRefundCalled = true
+        spyProcessRefundReason = reason
+
+        if shouldThrowProcessRefundError {
+            throw TestError.updateOrderFailed
+        }
     }
 }

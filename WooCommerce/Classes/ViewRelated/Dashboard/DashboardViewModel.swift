@@ -2,10 +2,13 @@ import Foundation
 import Yosemite
 import Combine
 import enum Networking.DotcomError
+import enum Networking.WooConstants
 import enum Storage.StatsVersion
 import protocol Storage.StorageManagerType
 import protocol Experiments.FeatureFlagService
 import protocol WooFoundation.Analytics
+import struct WooFoundation.WooCommerceComUTMProvider
+import class UIKit.UIDevice
 
 /// Syncs data for dashboard stats UI and determines the state of the dashboard UI based on stats version.
 @MainActor
@@ -72,11 +75,17 @@ final class DashboardViewModel: ObservableObject {
 
     @Published private(set) var isSelfDrivenPushNotificationRegistered = false
 
+    @Published private(set) var shouldSuggestWPComConnection = false
+
+    @Published private(set) var dismissedWPComConnectionSuggestion = false
+
     @Published private var hasOrders = false
 
     @Published private(set) var isEligibleForInbox = false
 
     @Published private(set) var isEligibleForStock = false
+
+    @Published private(set) var isEligibleForStoreSetup = false
 
     @Published var showingCustomization = false
 
@@ -90,14 +99,33 @@ final class DashboardViewModel: ObservableObject {
     private let analytics: Analytics
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let userDefaults: UserDefaults
+    private let pushNotesManager: PushNotesManager
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
+    private let clientSideBannerProvider: ClientSideBannerProvider
 
     private var subscriptions: Set<AnyCancellable> = []
+
+    /// Dedicated cancellable for client-side banner site observation to prevent accumulation
+    private var clientSideBannerObservationCancellable: AnyCancellable?
+
+    /// Subject to receive web view sheet requests from the URL router
+    private let showWebViewSheetSubject = PassthroughSubject<WebViewSheetViewModel?, Never>()
+
+    /// URL router for client-side banners that tries deep links first, then falls back to web view
+    private lazy var clientSideBannerURLRouter: UniversalLinkRouter = {
+        UniversalLinkRouter.justInTimeMessagesUniversalLinkRouter(
+            tabBarController: AppDelegate.shared.tabBarController,
+            urlOpener: JustInTimeMessagesURLOpener(
+                navigationTitle: POSPromoOnPhonesCampaign.Localization.cardButtonTitle,
+                showWebViewSheetSubject: showWebViewSheetSubject
+            )
+        )
+    }()
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -124,19 +152,22 @@ final class DashboardViewModel: ObservableObject {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
-         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer()) {
+         tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
+         clientSideBannerProvider: ClientSideBannerProvider? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
+        self.pushNotesManager = pushNotesManager
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
         self.blazeCampaignDashboardViewModel = .init(siteID: siteID,
@@ -172,6 +203,14 @@ final class DashboardViewModel: ObservableObject {
         self.blazeLocalNotificationScheduler.observeNotificationUserResponse()
 
         self.tapToPayAwarenessMomentDeterminer = tapToPayAwarenessMomentDeterminer
+
+        self.clientSideBannerProvider = clientSideBannerProvider ?? ClientSideBannerProvider(
+            stores: stores,
+            analytics: analytics,
+            featureFlagService: featureFlags,
+            userInterfaceIdiom: UIDevice.current.userInterfaceIdiom
+        )
+
         configureTapToPayAwarnessMomentPresentation()
 
         self.inAppFeedbackCardViewModel.onFeedbackGiven = { [weak self] feedback in
@@ -180,10 +219,12 @@ final class DashboardViewModel: ObservableObject {
         }
 
         observeStockEligibility()
+        observeStoreSetupEligibility()
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
         observeSelfDrivenPushTokenPersistence()
+        bindClientSideBannerWebViewSheet()
     }
 
     /// Must be called by the `View` during the `onAppear()` event. This will
@@ -200,7 +241,7 @@ final class DashboardViewModel: ObservableObject {
         /// we add the Blaze card back in `BlazeCampaignCreationCoordinator`.
         /// Here we need to get the updated cards from storage and update the dashboard accordingly.
         await loadDashboardCardsFromStorage()
-        updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard,
+        updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard && isEligibleForStoreSetup,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
                              canShowInbox: isEligibleForInbox,
@@ -214,6 +255,18 @@ final class DashboardViewModel: ObservableObject {
 
     func handleCustomizationDismissal() {
         configureNewCardsNotice(hasOrders: hasOrders)
+    }
+
+    func hideWPComConnectionSuggestion() {
+        userDefaults.set(true, forKey: .hideWPComConnectionOnDashboard)
+    }
+
+    func onConnectWPComCardAppear() {
+        analytics.track(.pushNotificationsCardView)
+    }
+
+    func onConnectWPComCardTapped() {
+        analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .connectWPCom))
     }
 
     @MainActor
@@ -260,6 +313,31 @@ final class DashboardViewModel: ObservableObject {
                 await syncAnnouncements(for: siteID)
             }
         }
+    }
+
+    /// Handles the CTA tap for client-side promotional banners.
+    /// Uses `UniversalLinkRouter` to first try handling the URL as a deep link,
+    /// falling back to showing a web view if no deep link route matches.
+    func handleClientSideBannerCTATapped() {
+        let utmProvider = WooCommerceComUTMProvider(
+            campaign: "client_side_woo_pos_tablet_promo",
+            source: "my_store",
+            content: "woo_pos_tablet_promo_run_on_tablets",
+            siteID: siteID
+        )
+        guard let url = utmProvider.urlWithUtmParams(string: POSPromoOnPhonesCampaign.ctaURLString) else {
+            return
+        }
+        clientSideBannerURLRouter.handle(url: url)
+    }
+
+    /// Binds the client-side banner web view sheet subject to the published property
+    private func bindClientSideBannerWebViewSheet() {
+        showWebViewSheetSubject
+            .sink { [weak self] webViewSheetViewModel in
+                self?.justInTimeMessagesWebViewModel = webViewSheetViewModel
+            }
+            .store(in: &subscriptions)
     }
 
     func showCustomizationScreen() {
@@ -361,11 +439,65 @@ private extension DashboardViewModel {
         await blazeCampaignDashboardViewModel.reload()
     }
 
-    /// Checks for announcements to show on the dashboard
+    /// Checks for announcements to show on the dashboard.
+    /// For Jetpack-connected stores, attempts to load server-side JITMs.
+    /// For non-Jetpack stores, attempts to load client-side banners.
     ///
     @MainActor
     func syncAnnouncements(for siteID: Int64) async {
-        await syncJustInTimeMessages(for: siteID)
+        let site = stores.sessionManager.defaultSite
+        let connectionType = SiteConnectionType(site: site)
+
+        // For placeholder sites, always observe for updates since Jetpack status
+        // may not be confirmed yet (see restoreWordPressSite flow).
+        let isPlaceholderSite = site?.siteID == Networking.WooConstants.placeholderSiteID
+
+        switch connectionType {
+        case .fullJetpack, .jetpackConnectionPackage:
+            await syncJustInTimeMessages(for: siteID)
+        case .nonJetpack:
+            if isPlaceholderSite {
+                // Wait for site update to confirm Jetpack status
+                observeSiteForClientSideBanner(skipFirst: true)
+            } else if let site, let clientBannerVM = await clientSideBannerProvider.loadBanner(for: site) {
+                announcementViewModel = clientBannerVM
+                modalJustInTimeMessageViewModel = nil
+            }
+        case .unknown:
+            observeSiteForClientSideBanner(skipFirst: false)
+            await syncJustInTimeMessages(for: siteID)
+        }
+    }
+
+    /// Observes the site publisher to load client-side banners when the site becomes non-Jetpack.
+    /// - Parameter skipFirst: If true, skips the first emission (used when current site data may be incomplete).
+    private func observeSiteForClientSideBanner(skipFirst: Bool = false) {
+        clientSideBannerObservationCancellable?.cancel()
+
+        var publisher = stores.sessionManager.defaultSitePublisher
+            .compactMap { $0 }
+            .eraseToAnyPublisher()
+
+        if skipFirst {
+            publisher = publisher
+                .dropFirst()
+                .eraseToAnyPublisher()
+        }
+
+        clientSideBannerObservationCancellable = publisher
+            .filter { site in
+                SiteConnectionType(site: site) == .nonJetpack
+            }
+            .first()
+            .sink { [weak self] site in
+                guard let self else { return }
+                Task { @MainActor in
+                    if let clientBannerVM = await self.clientSideBannerProvider.loadBanner(for: site) {
+                        self.announcementViewModel = clientBannerVM
+                        self.modalJustInTimeMessageViewModel = nil
+                    }
+                }
+            }
     }
 
     func observeDashboardCardsAndReload() {
@@ -397,11 +529,11 @@ private extension DashboardViewModel {
             })
             .store(in: &subscriptions)
 
-        $dashboardCards.combineLatest($isInAppFeedbackCardVisible)
+        $dashboardCards.combineLatest($isInAppFeedbackCardVisible, $shouldSuggestWPComConnection)
             .combineLatest($showNewCardsNotice, $hasOrders, $isReloadingAllData)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
-                let ((cards, showFeedbackCard), showNewCardsNotice, hasOrders, isReloading) = combinedResult
+                let ((cards, showFeedbackCard, suggestWPComConnection), showNewCardsNotice, hasOrders, isReloading) = combinedResult
                 let cardsToShow: [DashboardCard] = {
                     var allCards = cards.filter { $0.availability == .show && $0.enabled }
 
@@ -419,6 +551,11 @@ private extension DashboardViewModel {
 
                     if !hasOrders && !isReloading {
                         allCards.append(DashboardCard.shareStoreCard)
+                    }
+
+                    /// Insert card for connecting WPCom at the top if needed
+                    if suggestWPComConnection {
+                        allCards.insert(DashboardCard.connectWPCom, at: 0)
                     }
                     return allCards
                 }()
@@ -483,7 +620,7 @@ private extension DashboardViewModel {
                     group.addTask { [weak self] in
                         await self?.googleAdsDashboardCardViewModel.reloadCard()
                     }
-                case .inAppFeedback, .newCardsNotice, .shareStore:
+                case .inAppFeedback, .newCardsNotice, .shareStore, .connectWPCom:
                     break // do nothing
                 }
             }
@@ -507,7 +644,11 @@ private extension DashboardViewModel {
 // MARK: Private helpers
 private extension DashboardViewModel {
     func observeValuesForDashboardCards() {
-        storeOnboardingViewModel.$canShowInDashboard
+        let canShowOnboarding = storeOnboardingViewModel.$canShowInDashboard
+            .combineLatest($isEligibleForStoreSetup)
+            .map { $0 && $1 }
+
+        canShowOnboarding
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard,
                            $isEligibleForStock)
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
@@ -534,9 +675,10 @@ private extension DashboardViewModel {
     }
 
     func observeSelfDrivenPushTokenPersistence() {
-        userDefaults.publisher(for: \.wooPushnotificationToken)
+        pushNotesManager.siteIDsRegisteredForWooPNsPublisher
+            .combineLatest(userDefaults.publisher(for: \.hideWPComConnectionOnDashboard))
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in
+            .sink { [weak self] _, _ in
                 guard let self else { return }
                 updateSelfDrivenPushRegistrationStatus()
             }
@@ -582,6 +724,26 @@ private extension DashboardViewModel {
                     )
             }
             .assign(to: &$isEligibleForStock)
+    }
+
+    func observeStoreSetupEligibility() {
+        stores.site
+            .removeDuplicates()
+            .map { [weak self] in
+                guard
+                    let self,
+                    let site = $0
+                else {
+                    return false
+                }
+
+                return siteIsCIABEligibilityChecker
+                    .isFeatureSupported(
+                        .storeSetupDashboardCard,
+                        for: site
+                    )
+            }
+            .assign(to: &$isEligibleForStoreSetup)
     }
 
     func configureOrdersResultController() {
@@ -804,9 +966,16 @@ private extension DashboardViewModel {
     }
 
     func updateSelfDrivenPushRegistrationStatus() {
-        let tokenID = userDefaults.wooPushnotificationToken
-        isSelfDrivenPushNotificationRegistered = (tokenID != nil) && stores.isAuthenticatedWithoutWPCom
+        let registeredSiteIDs = pushNotesManager.siteIDsRegisteredForWooPNs
+        isSelfDrivenPushNotificationRegistered = registeredSiteIDs.contains(siteID) && stores.isAuthenticatedWithoutWPCom
+        dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
+        shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
+            registeredSiteIDs.contains(siteID) == false &&
+            stores.isAuthenticatedWithoutWPCom &&
+            !dismissedWPComConnectionSuggestion &&
+            featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
     }
+
 }
 
 // MARK: InAppFeedback card
@@ -885,5 +1054,11 @@ private extension DashboardViewModel {
         static let orderPageSize = 1
 
         static let m2CardSet: Set<DashboardCard.CardType> = [.inbox, .reviews, .coupons, .stock, .lastOrders]
+    }
+}
+
+extension UserDefaults {
+    @objc dynamic var hideWPComConnectionOnDashboard: Bool {
+        bool(forKey: Key.hideWPComConnectionOnDashboard.rawValue)
     }
 }

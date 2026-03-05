@@ -13,6 +13,7 @@ public enum CIABAffectedFeature: CaseIterable {
     case productsStockDashboardCard
     case pointOfSale
     case cardReader
+    case storeSetupDashboardCard
 }
 
 extension CIABAffectedFeature {
@@ -20,6 +21,7 @@ extension CIABAffectedFeature {
     /// In case if a certain feature is reconsidered and decided to be supported in CIAB
     /// just remove it from the collection
     static var unsupportedFeatures: [CIABAffectedFeature] {
-        return CIABAffectedFeature.allCases
+        /// `.pointOfSale` excluded since POS is revised to be available in CIAB MVP
+        return CIABAffectedFeature.allCases.filter { $0 != .pointOfSale }
     }
 }

@@ -1064,7 +1064,7 @@ extension OrderDetailsViewModel {
     @MainActor
     private func isEligibleForBackendReceipt() async -> Bool {
         return await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.isEligibleForReceipt(order.status) { isEligible in
+            receiptEligibilityUseCase.isEligibleForReceipt(order.status, datePaid: order.datePaid) { isEligible in
                 continuation.resume(returning: isEligible)
             }
         }

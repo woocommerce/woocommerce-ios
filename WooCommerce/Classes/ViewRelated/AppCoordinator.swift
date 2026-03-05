@@ -32,6 +32,9 @@ final class AppCoordinator {
     ///
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
+    /// Handles the age range verification process and corresponding app/UI state behaviour.
+    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()
+
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -90,6 +93,7 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
+                        self.triggerAgeVerification()
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
@@ -433,11 +437,82 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
+    func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
+        ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
+            hostingWindow: window
+        ) { [weak self] appAccessDescision, _ in
+            guard let self else { return }
+            if appAccessDescision == .allow {
+                onAllowed()
+            } else {
+                self.forceLogoutAndShowAgeAlert()
+            }
+
+            //TODO: consider adding analytics event with the result
+        }
+    }
+
+    /// Centralized flow to log out and present the login/onboarding UI.
+    func forceLogoutAndReturnToLogin() {
+        stores.deauthenticate()
+        displayAuthenticatorWithOnboardingIfNeeded()
+    }
+
+    func forceLogoutAndShowAgeAlert() {
+        forceLogoutAndReturnToLogin()
+
+        DispatchQueue.main.async { [weak self] in
+            guard
+                let self,
+                let presenter = self.window.topmostPresentedViewController
+            else { return }
+            let alert = UIAlertController(
+                title: Localization.AgeVerificationAlert.title,
+                message: String(
+                    format: Localization.AgeVerificationAlert.message,
+                    AgeRangeVerificationCoordinator.Constants.minimumTOSRequiredAge
+                ),
+                preferredStyle: .alert
+            )
+            alert.addAction(
+                UIAlertAction(
+                    title: Localization.AgeVerificationAlert.confirmationButton,
+                    style: .default,
+                    handler: nil
+                )
+            )
+            presenter.present(alert, animated: true)
+        }
+    }
+}
+
+private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
     }
 
     enum Localization {
+        enum AgeVerificationAlert {
+            static let title = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.title",
+                value: "Access Restricted",
+                comment: "Alert title displayed when user identified as underage and taken to force logout."
+            )
+
+            static let message = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.message",
+                value: "Your Apple account age is below the minimum required for this app (%1d+).",
+                comment: "Alert message displayed when user identified as underage and taken to force logout." +
+                "The %1d placeholder is the minimum required age."
+            )
+
+            static let confirmationButton = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.confirmationButton",
+                value: "Got it",
+                comment: "Alert confirmation button displayed when user identified as underage and taken to force logout."
+            )
+        }
+
         enum StoreReadyAlert {
             static let title = NSLocalizedString("appCoordinator.storeReadyAlert.title",
                                                  value: "Your new store is ready.",

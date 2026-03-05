@@ -7,7 +7,10 @@ Crea ordini in movimento
 Una volta che hai creato alcuni prodotti, è semplice. Scegli gli elementi dal tuo catalogo, aggiungi la spedizione e, quindi, inserisci i dati del cliente per creare rapidamente un ordine che si sincronizzi con l'inventario.
 
 Ricevi i pagamenti di persona
-Ricevi pagamenti fisici usando WooCommerce In-Person Payments e un lettore di carte (disponibile negli Stati Uniti e in Canada). Inizia un nuovo ordine o trovane uno esistente che abbia il pagamento in sospeso e ricevi il pagamento usando il lettore di carte o un portafoglio digitale, come Apple Pay.
+Ricevi pagamenti fisici usando WooCommerce In-Person Payments e un lettore di carte (disponibile negli Stati Uniti, nel Regno Unito e in Canada), Tocca per pagare su iPhone, o un portafoglio digitale come Apple Pay. Crea un nuovo ordine, o cercane uno esistente in attesa di pagamento, quindi accetta il pagamento in tutta semplicità.
+
+Dall'online al negozio fisico
+Trasforma qualsiasi tablet in un potente punto vendita con WooCommerce POS. Cerca prodotti, scansiona codici a barre, applica codici promozionali e invia ricevute via email, con tutte le vendite online e fisiche sincronizzate in tempo reale. Disponibile negli Stati Uniti e nel Regno Unito.
 
 Ricevi notifiche di ogni vendita
 Ora che vendi attivamente, non perdere mai un ordine o una recensione. Tieniti aggiornato attivando gli avvisi in tempo reale e ascolta il "din din" proveniente da ogni nuova vendita, che dà assuefazione.

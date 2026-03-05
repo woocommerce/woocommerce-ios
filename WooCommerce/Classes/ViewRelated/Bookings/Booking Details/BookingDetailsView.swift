@@ -5,10 +5,9 @@ struct BookingDetailsView: View {
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     @State private var showingOptions = false
-    @State private var showingStatusSheet = false
     @State private var showingCancelAlert = false
     @State private var cancellingBooking = false
-    @State private var markingAsPaid = false
+    @State private var updatingAttendance = false
     @State private var notice: Notice?
 
     @ObservedObject private var viewModel: BookingDetailsViewModel
@@ -17,6 +16,7 @@ struct BookingDetailsView: View {
         static let contentSidePadding: CGFloat = 16
         static let contentVerticalPadding: CGFloat = 16
         static let headerContentVerticalPadding: CGFloat = 2
+        static let headerBadgeSpacing: CGFloat = 8
         static let headerBadgesAdditionalTopPadding: CGFloat = 6
         static let sectionFooterTextVerticalPadding: CGFloat = 8
         static let rowTextVerticalPadding: CGFloat = 11
@@ -62,11 +62,6 @@ struct BookingDetailsView: View {
                     Image(systemName: "ellipsis")
                 }
                 .confirmationDialog("", isPresented: $showingOptions, titleVisibility: .hidden) {
-                    Button(Localization.markAsPaid) {
-                        markBookingAsPaid()
-                    }
-                    .renderedIf(viewModel.shouldShowMarkAsPaid)
-
                     Button(Localization.viewOrder) {
                         viewModel.navigateToOrderDetails()
                     }
@@ -83,14 +78,6 @@ struct BookingDetailsView: View {
             /// Removes back button title for iPhone layout
             /// Applied only for phones because it affects navigation title positioning on tablets
             $0.toolbarRole(.editor)
-        }
-        .sheet(isPresented: $showingStatusSheet) {
-            UpdateAttendanceStatusView(selectedStatus: viewModel.bookingAttendanceStatus) { selectedStatus in
-                viewModel.updateAttendanceStatus(to: selectedStatus)
-            }
-            .padding(.top)
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
         }
         .alert(
             Localization.cancelBookingAlertTitle,
@@ -151,8 +138,6 @@ private extension BookingDetailsView {
             HeaderView(content: content)
         case .appointmentDetails(let content):
             appointmentDetailsView(with: content)
-        case .attendance(let content):
-            attendanceView(with: content)
         case .customer(let content):
             CustomerDetailsView(content: content, showNotice: {
                 notice = $0
@@ -169,17 +154,6 @@ private extension BookingDetailsView {
         }
     }
 
-    func attendanceView(with content: BookingDetailsViewModel.AttendanceContent) -> some View {
-        TitleAndValueRow(
-            title: Localization.statusRowTitle,
-            value: .placeholder(content.value),
-            selectionStyle: .disclosure,
-            horizontalPadding: 0
-        ) {
-            showingStatusSheet = true
-        }
-    }
-
     func appointmentDetailsView(with content: BookingDetailsViewModel.AppointmentDetailsContent)  -> some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(content.rows) { row in
@@ -193,6 +167,15 @@ private extension BookingDetailsView {
                 Divider()
                     .padding(.trailing, -Layout.contentSidePadding)
             }
+
+            Button {
+                updateAttendance()
+            } label: {
+                Text(viewModel.attendanceButtonTitle)
+            }
+            .buttonStyle(SecondaryLoadingButtonStyle(isLoading: updatingAttendance))
+            .padding(.top, Layout.contentVerticalPadding)
+            .renderedIf(viewModel.shouldShowAttendanceButton)
 
             Button {
                 showingCancelAlert = true
@@ -235,9 +218,6 @@ private extension BookingDetailsView {
                             viewModel.navigateToOrderDetails()
                         }
                         .buttonStyle(SecondaryButtonStyle())
-                    case .markAsPaid:
-                        Button(action.buttonTitle, action: markBookingAsPaid)
-                            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: markingAsPaid))
                     }
                 }
             }
@@ -248,6 +228,12 @@ private extension BookingDetailsView {
 }
 
 extension BookingDetailsView {
+    func updateAttendance() {
+        updatingAttendance = true
+        viewModel.updateAttendanceStatus(to: viewModel.targetAttendanceStatus)
+        updatingAttendance = false
+    }
+
     func cancelBooking() {
         Task { @MainActor in
             cancellingBooking = true
@@ -260,26 +246,10 @@ extension BookingDetailsView {
         }
     }
 
-    func markBookingAsPaid() {
-        Task { @MainActor in
-            markingAsPaid = true
-            do {
-                try await viewModel.markBookingAsPaid()
-            } catch {
-                viewModel.displayMarkingAsPaidErrorNotice(onRetry: markBookingAsPaid)
-            }
-            markingAsPaid = false
-        }
-    }
 }
 
 extension BookingDetailsView {
     enum Localization {
-        static let markAsPaid = NSLocalizedString(
-            "BookingDetailsView.options.markAsPaid",
-            value: "Mark as paid",
-            comment: "Action sheet option to mark a booking as paid."
-        )
         static let viewOrder = NSLocalizedString(
             "BookingDetailsView.options.viewOrder",
             value: "View order",
@@ -313,13 +283,6 @@ extension BookingDetailsView {
             "BookingDetailsView.cancelation.alert.cancelAction",
             value: "No, keep it",
             comment: "Cancel button title for the booking cancellation confirmation alert."
-        )
-
-        /// Attendance section
-        static let statusRowTitle = NSLocalizedString(
-            "BookingDetailsView.customer.status.title",
-            value: "Status",
-            comment: "'Status' row title in attendance section in booking details view."
         )
 
         /// Booking notes
@@ -359,7 +322,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             resourceID: 113,
             startDate: now,
             statusKey: "paid",
-            attendanceStatusKey: "booked",
+            attendanceStatusKey: "unattended",
             localTimezone: "America/New_York",
             currency: "USD",
             orderInfo: nil,

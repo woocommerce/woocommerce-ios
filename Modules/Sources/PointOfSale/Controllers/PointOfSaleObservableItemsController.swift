@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import Observation
 import class WooFoundation.CurrencySettings
@@ -70,6 +71,12 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
             }
             dataSource.loadProducts()
             loadingState.productsLoaded = true
+
+            // Start FTS rebuild in background after observation is registered,
+            // so the writer is free for observation setup first.
+            Task {
+                await catalogSyncCoordinator.startBackgroundFTSRebuildIfNeeded(for: siteID)
+            }
 
         case .parent(let parent):
             guard case .variableParentProduct(let parentProduct) = parent else {

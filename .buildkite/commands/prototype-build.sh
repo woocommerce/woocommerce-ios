@@ -4,11 +4,7 @@ if .buildkite/commands/should-skip-job.sh --job-type build; then
   exit 0
 fi
 
-echo "--- :rubygems: Setting up Gems"
-install_gems
-
-echo "--- :swift: Setting up Swift Packages"
-install_swiftpm_dependencies
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- :closed_lock_with_key: Installing Secrets"
 bundle exec fastlane run configure_apply

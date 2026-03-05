@@ -4,6 +4,7 @@ import TestKit
 import Yosemite
 import ViewControllerPresentationSpy
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class OrderDetailsViewControllerTests: XCTestCase {

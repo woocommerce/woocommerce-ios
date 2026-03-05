@@ -1,1 +1,1 @@
-Woocommerce、woocommerce アプリ、woocommerce モバイル、woo アプリ、woocommerce 注文アラート、wordpress、eComm
+woo,注文,eコマース,pos,販売時点管理,wordpress,ストア,支払い,クレジット,カード,配送,ストック,在庫

@@ -166,6 +166,14 @@ public extension PersistedProduct {
     }
 }
 
+// MARK: - FTS Indexing Requests
+extension PersistedProduct {
+    /// Returns all eligible POS products for a site (unordered, for indexing/counting)
+    static func posEligibleProductsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProduct> {
+        baseQuery(siteID: siteID)
+    }
+}
+
 // periphery:ignore - TODO: remove ignore when populating database
 private extension PersistedProduct {
     enum CodingKeys: String, CodingKey {

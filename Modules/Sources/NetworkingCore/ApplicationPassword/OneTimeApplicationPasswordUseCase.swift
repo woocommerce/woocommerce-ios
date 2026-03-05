@@ -16,11 +16,13 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     private let siteAddress: String
     private let session: URLSessionProtocol
     private let storage: ApplicationPasswordStorageType
+    private let discovery: (_ siteURL: String) async -> String?
 
     public init(applicationPassword: ApplicationPassword? = nil,
                 siteAddress: String,
                 injectedStorage: ApplicationPasswordStorageType? = nil,
-                session: URLSessionProtocol = URLSession(configuration: .default)) {
+                session: URLSessionProtocol = URLSession(configuration: .default),
+                discovery: ((_ siteURL: String) async -> String?)? = nil) {
         self.storage = injectedStorage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         if let applicationPassword {
             storage.saveApplicationPassword(applicationPassword)
@@ -28,6 +30,12 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
         self.applicationPassword = storage.applicationPassword
         self.siteAddress = siteAddress
         self.session = session
+        if let discovery {
+            self.discovery = discovery
+        } else {
+            let wordpressDiscovery = WordPressAPIDiscovery()
+            self.discovery = { siteURL in await wordpressDiscovery.discoverRESTAPIRootURL(for: siteURL) }
+        }
     }
 
     public func generateNewPassword() async throws -> ApplicationPassword {
@@ -38,8 +46,9 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
     public func deletePassword(locally: Bool) async throws {
         /// Always fetch UUID because the one in storage was generated locally only.
         /// Check `ApplicationPasswordAuthorizationWebViewController` for more details.
-        guard let uuid = try await fetchApplicationPasswordUUID(),
-              let url = URL(string: siteAddress + Path.applicationPasswords + uuid) else {
+        let discoveredRoot = await discovery(siteAddress)
+        guard let uuid = try await fetchApplicationPasswordUUID(discoveredRoot: discoveredRoot),
+              let url = restAPIURL(for: Path.applicationPasswords + uuid, discoveredRoot: discoveredRoot) else {
             return
         }
 
@@ -55,8 +64,8 @@ final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
 }
 
 private extension OneTimeApplicationPasswordUseCase {
-    func fetchApplicationPasswordUUID() async throws -> String? {
-        guard let url = URL(string: siteAddress + Path.introspect) else {
+    func fetchApplicationPasswordUUID(discoveredRoot: String?) async throws -> String? {
+        guard let url = restAPIURL(for: Path.introspect, discoveredRoot: discoveredRoot) else {
             return nil
         }
 
@@ -75,6 +84,17 @@ private extension OneTimeApplicationPasswordUseCase {
         return password.uuid
     }
 
+    func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
+        let root = discoveredRoot ?? (siteAddress + Path.root)
+        return URL(string: root + path)
+    }
+
+    enum Path {
+        static let root = "/?rest_route=/"
+        static let introspect = "wp/v2/users/me/application-passwords/introspect"
+        static let applicationPasswords = "wp/v2/users/me/application-passwords/"
+    }
+
     func authenticateRequest(request: URLRequest) -> URLRequest {
         guard let applicationPassword else {
             return request
@@ -91,12 +111,5 @@ private extension OneTimeApplicationPasswordUseCase {
         authenticatedRequest.httpShouldHandleCookies = false
 
         return authenticatedRequest
-    }
-}
-
-private extension OneTimeApplicationPasswordUseCase {
-    enum Path {
-        static let applicationPasswords = "/?rest_route=/wp/v2/users/me/application-passwords/"
-        static let introspect = "/?rest_route=/wp/v2/users/me/application-passwords/introspect"
     }
 }

@@ -1,5 +1,5 @@
 import Combine
-import UIKit
+import SwiftUI
 import WordPressAuthenticator
 import protocol WooFoundation.Analytics
 
@@ -18,13 +18,33 @@ extension WordPressComAccountService: WordPressComAccountServiceProtocol {}
 
 /// View model for `WPComEmailLoginView`
 final class WPComEmailLoginViewModel: ObservableObject {
-    let titleString: String
-    let subtitleString: String
+    var titleString: String {
+        switch flow {
+        case .jetpackSetup(let requiresConnectionOnly):
+            requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+        }
+    }
+
+    var subtitleString: String {
+        switch flow {
+        case .jetpackSetup(let requiresConnectionOnly):
+            requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        }
+    }
+
+    var primaryButtonTitle: String {
+        switch flow {
+        case .jetpackSetup:
+            titleString
+        }
+    }
+
+    let flow: WPComLoginFlow
 
     @Published var emailOrUsername: String = ""
     @Published var usernameOnly: Bool = false
 
-    let termsAttributedString: NSAttributedString
+    let termsAttributedString: AttributedString
 
     let allowAccountCreation: Bool
     private let accountService: WordPressComAccountServiceProtocol
@@ -37,7 +57,7 @@ final class WPComEmailLoginViewModel: ObservableObject {
     private var emailFieldSubscription: AnyCancellable?
 
     init(siteURL: String,
-         requiresConnectionOnly: Bool,
+         flow: WPComLoginFlow,
          allowAccountCreation: Bool,
          debounceDuration: Double = Constants.fieldDebounceDuration,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
@@ -53,26 +73,25 @@ final class WPComEmailLoginViewModel: ObservableObject {
         self.onMagicLinkRequest = onMagicLinkRequest
         self.onMagicLinkSent = onMagicLinkSent
         self.onError = onError
-
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
-        self.subtitleString = requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
+        self.flow = flow
         self.termsAttributedString = {
-            let content = String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.alignment = .center
+            let content: String = {
+                switch flow {
+                case .jetpackSetup:
+                    String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
+                }
+            }()
 
-            let mutableAttributedText = NSMutableAttributedString(
-                string: content,
-                attributes: [.font: UIFont.footnote,
-                             .foregroundColor: UIColor.secondaryLabel,
-                             .paragraphStyle: paragraph]
+            let attributedText = AttributedString.withEmbeddedLinks(
+                content: content,
+                links: [
+                    Localization.termsOfService: Constants.jetpackTermsURL + siteURL,
+                    Localization.shareDetails: Constants.jetpackShareDetailsURL + siteURL
+                ],
+                font: .footnote,
+                foregroundColor: .secondary
             )
-
-            mutableAttributedText.setAsLink(textToFind: Localization.termsOfService,
-                                            linkURL: Constants.jetpackTermsURL + siteURL)
-            mutableAttributedText.setAsLink(textToFind: Localization.shareDetails,
-                                            linkURL: Constants.jetpackShareDetailsURL + siteURL)
-            return mutableAttributedText
+            return attributedText
         }()
     }
 

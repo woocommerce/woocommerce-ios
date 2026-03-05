@@ -1,1 +1,1 @@
-Bu güncelleme; ışık hızında barkod taraması, arama ve seçim için yeni bir yerel ürün kataloğu ile daha sorunsuz POS performansı sağlar. Ayrıca captcha kullanan siteler için oturum açma desteğini artırdık, anlık bildirimlerle ilgili sorunları düzelttik ve ürün ve uygulama istikrarını sağladık.
+Bu güncelleme, mağaza kurulum görevlerini daha güvenilir bir şekilde gösterir, Barkod taramanın Satış Noktası'nda kesintisiz çalışmasını sağlar ve ortam kütüphanesinin güvenilirliğini artırır. Daha sorunsuz bir mağaza yönetimi deneyimi için şimdi güncelle!

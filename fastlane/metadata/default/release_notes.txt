@@ -1,1 +1,1 @@
-This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.
+This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!

@@ -65,7 +65,7 @@ final class ApplicationPasswordsExperimentAvailabilityCheckerTests: XCTestCase {
         )
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case .isRemoteFeatureFlagEnabled(_, _, let completion):
+            case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
                 completion(true)
             }
         }
@@ -96,7 +96,7 @@ final class ApplicationPasswordsExperimentAvailabilityCheckerTests: XCTestCase {
         )
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case .isRemoteFeatureFlagEnabled(_, _, let completion):
+            case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
                 completion(false)
             }
         }

@@ -5,6 +5,7 @@ import protocol Storage.StorageType
 import XCTest
 import Yosemite
 import WooFoundation
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class StoreStatsPeriodViewModelTests: XCTestCase {

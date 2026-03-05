@@ -8,11 +8,19 @@ import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
 import struct Yosemite.POSRefundsResult
+import struct Yosemite.POSRefundableItem
+import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSOrderItem
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.CurrencyFormatter
+
+enum StartRefundFlowResult {
+    case hasItemsToRefund
+    case nothingToRefund
+    case failed
+}
 
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
@@ -24,11 +32,12 @@ protocol POSOrderListControllerProtocol {
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
-    func startRefundFlow()
+    func startRefundFlow() async -> StartRefundFlowResult
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
+    func processRefund(reason: String?) async throws
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -57,7 +66,6 @@ enum RefundActionAvailability {
     private(set) var selectedOrder: POSOrder?
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
-    private var refundsTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
@@ -90,18 +98,11 @@ enum RefundActionAvailability {
     @MainActor
     var refundActionAvailability: RefundActionAvailability {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
-              selectedOrder != nil else {
+              let order = selectedOrder,
+              order.status == .completed else {
             return .unavailable
         }
-
-        switch selectedOrderRefundsState {
-        case .idle, .failed:
-            return .unavailable
-        case .loading:
-            return .unknown
-        case .loaded(let result):
-            return result.isFullyRefunded ? .unavailable : .available
-        }
+        return .available
     }
 
     @MainActor
@@ -155,7 +156,7 @@ enum RefundActionAvailability {
     }
 
     private func setLoadingState() {
-        if !fetchStrategy.showsLoadingWithItems {
+        if !fetchStrategy.showsCachedDataWhileLoading {
             ordersViewState = .loading([])
             return
         }
@@ -221,10 +222,6 @@ enum RefundActionAvailability {
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
         selectedOrderRefundsState = .idle
-
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) {
-            fetchRefundsOfSelectedOrder()
-        }
     }
 
     @MainActor
@@ -264,47 +261,52 @@ enum RefundActionAvailability {
         }
     }
 
-    @MainActor
-    private func fetchRefundsOfSelectedOrder() {
-        refundsTask?.cancel()
-        guard let order = selectedOrder else { return }
-
-        selectedOrderRefundsState = .loading
-        let orderID = order.id
-
-        refundsTask = Task { [weak self] in
-            guard let self else { return }
-            do {
-                let result = try await self.refundsService.providePointOfSaleRefunds(for: order)
-                await MainActor.run {
-                    guard self.selectedOrder?.id == orderID else { return }
-                    self.selectedOrderRefundsState = .loaded(result)
-                }
-            }
-            catch is CancellationError {}
-            catch {
-                await MainActor.run {
-                    guard self.selectedOrder?.id == orderID else { return }
-                    self.selectedOrderRefundsState = .failed(error)
-                }
-            }
-        }
-    }
-
     // MARK: - Refund Item Selection
 
     @MainActor
-    func startRefundFlow() {
-        guard let order = selectedOrder else { return }
+    func startRefundFlow() async -> StartRefundFlowResult {
+        guard let order = selectedOrder else { return .failed }
 
+        // Fetch refunds from API
+        let refundsResult: POSRefundsResult
+        do {
+            refundsResult = try await refundsService.providePointOfSaleRefunds(for: order)
+            selectedOrderRefundsState = .loaded(refundsResult)
+        } catch {
+            selectedOrderRefundsState = .failed(error)
+            return .failed
+        }
+
+        // Calculate already refunded quantities per itemID
+        let refundedQuantitiesByItemID = calculateRefundedQuantitiesByItemID(from: refundsResult.refunds)
+
+        // Build selectable items excluding already refunded quantities
         refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
-            let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
-            guard intQuantity > 0 else { return [] }
+            let originalQuantity = NSDecimalNumber(decimal: item.quantity).intValue
+            let refundedQuantity = refundedQuantitiesByItemID[item.itemID] ?? 0
+            let availableQuantity = originalQuantity - refundedQuantity
+            guard availableQuantity > 0 else { return [] }
 
-            return (0..<intQuantity).map { index in
+            return (0..<availableQuantity).map { index in
                 POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
+
+        return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+    }
+
+    /// Calculates the total refunded quantity for each itemID from previous refunds.
+    /// Note: API returns negative quantities for refunds, so we use abs().
+    private func calculateRefundedQuantitiesByItemID(from refunds: [POSRefund]) -> [Int64: Int] {
+        var refundedQuantities: [Int64: Int] = [:]
+        for refund in refunds {
+            for item in refund.items {
+                guard let refundedItemID = item.refundedItemID else { continue }
+                let quantity = NSDecimalNumber(decimal: abs(item.quantity)).intValue
+                refundedQuantities[refundedItemID, default: 0] += quantity
+            }
+        }
+        return refundedQuantities
     }
 
     @MainActor
@@ -336,15 +338,20 @@ enum RefundActionAvailability {
         let selectedItems = refundSelectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else { return nil }
 
-        let itemsSubtotal = selectedItems.reduce(Decimal.zero) { $0 + $1.price }
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                lineItemTotal: item.lineItemTotal,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity
+            )
+        }
 
-        let itemsTax = calculateRefundTax(for: selectedItems)
+        let amounts = refundsService.calculateRefundAmounts(for: refundableItems)
 
-        let refundTotal = itemsSubtotal + itemsTax
-
-        guard let formattedSubtotal = currencyFormatter.formatAmount(itemsSubtotal),
-              let formattedTax = currencyFormatter.formatAmount(itemsTax),
-              let formattedTotal = currencyFormatter.formatAmount(refundTotal) else {
+        guard let formattedSubtotal = currencyFormatter.formatAmount(amounts.subtotal),
+              let formattedTax = currencyFormatter.formatAmount(amounts.tax),
+              let formattedTotal = currencyFormatter.formatAmount(amounts.total) else {
             return nil
         }
 
@@ -356,35 +363,53 @@ enum RefundActionAvailability {
             formattedTax: formattedTax,
             formattedRefundTotal: formattedTotal,
             paymentMethodDescription: paymentMethodDescription,
+            customerEmail: order.customerEmail,
             refundReason: nil
         )
     }
 
-    /// Calculates refund tax by grouping items by itemID.
-    /// For full refunds (all units selected), uses the original totalTax directly to avoid rounding errors.
-    /// For partial refunds, calculates proportionally: (selectedCount / originalQuantity) x totalTax
-    private func calculateRefundTax(for selectedItems: [POSRefundSelectableItem]) -> Decimal {
-        let groupedByItemID = Dictionary(grouping: selectedItems, by: { $0.itemID })
-
-        return groupedByItemID.reduce(Decimal.zero) { total, group in
-            let (_, items) = group
-            guard let firstItem = items.first else { return total }
-
-            let selectedCount = Decimal(items.count)
-            let originalQuantity = firstItem.originalQuantity
-            let totalTax = firstItem.totalTax
-
-            if selectedCount == originalQuantity {
-                return total + totalTax
-            } else {
-                let proportionalTax = (totalTax / originalQuantity) * selectedCount
-                return total + proportionalTax
-            }
-        }
-    }
-
     private func createPaymentMethodDescription(for order: POSOrder) -> String {
         String(format: Localization.viaPaymentMethodFormat, order.paymentMethodTitle)
+    }
+
+    // MARK: - Refund Processing
+
+    @MainActor
+    func processRefund(reason: String?) async throws {
+        guard let order = selectedOrder else {
+            assertionFailure("processRefund called without selected order")
+            return
+        }
+
+        guard case .loaded(let refundsResult) = selectedOrderRefundsState else {
+            assertionFailure("processRefund called without loaded refunds state")
+            return
+        }
+
+        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else {
+            assertionFailure("processRefund called without selected items")
+            return
+        }
+
+        let refundableItems = selectedItems.map { item in
+            POSRefundableItem(
+                itemID: item.itemID,
+                lineItemTotal: item.lineItemTotal,
+                totalTax: item.totalTax,
+                originalQuantity: item.originalQuantity
+            )
+        }
+
+        try await refundsService.createRefund(
+            orderID: order.id,
+            items: refundableItems,
+            reason: reason,
+            isAutomaticRefund: refundsResult.supportsAutomaticRefund
+        )
+
+        clearRefundSelection()
+        try? await updateOrder(orderID: order.id)
     }
 }
 

@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import enum Networking.DotcomError
 import enum Networking.NetworkError
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 

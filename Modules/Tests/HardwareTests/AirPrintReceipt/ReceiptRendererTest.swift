@@ -9,7 +9,7 @@ final class ReceiptRendererTest: XCTestCase {
     let timeZone = TimeZone(secondsFromGMT: 0)!
 
     func test_TextWithoutHtmlSymbols() {
-        let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: 4eaaad801b2e0da0c113fb1db9267197"
+        let expectedResultWithoutHtmlSymbolsMd5Description = "MD5 digest: e5db2e3510e80f8772329ae4d270167a"
         let content = generateReceiptContent()
 
         let renderer = ReceiptRenderer(content: content, locale: locale, timeZone: timeZone)
@@ -21,7 +21,7 @@ final class ReceiptRendererTest: XCTestCase {
     }
 
     func test_TextWithHtmlSymbols() {
-        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: f12cbcee9a7392af17349f86160e44ec"
+        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: f4dd60d176f21a1e85204404ad2a5419"
         let stringWithHtml = "<tt><table></table></footer>"
         let content = generateReceiptContent(stringToAppend: stringWithHtml)
 
@@ -34,7 +34,7 @@ final class ReceiptRendererTest: XCTestCase {
     }
 
     func test_TextWithVariationsSymbols() {
-        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: 1f419943ea59697feb5f92734a91c93b"
+        let expectedResultWithHtmlSymbolsMd5Description = "MD5 digest: 4032bc797249639da424b956a201ef88"
         let attributeOne = ReceiptLineAttribute(name: "name_attr_1", value: "value_attr_1")
         let attributeTwo = ReceiptLineAttribute(name: "name_attr_2", value: "value_attr_2")
         let content = generateReceiptContent(attributes: [attributeOne, attributeTwo])

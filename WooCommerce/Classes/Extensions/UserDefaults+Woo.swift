@@ -16,9 +16,6 @@ extension UserDefaults {
         case defaultStoreCurrencySettings
         case defaultAnonymousID
         case defaultRoles
-        case deviceID
-        case deviceToken
-        case wooPushnotificationToken
         case errorLoginSiteAddress
         case hasFinishedOnboarding
         case installationDate
@@ -77,6 +74,15 @@ extension UserDefaults {
 
         // CIAB Bookings tab availability
         case ciabBookingsTabAvailable
+
+        /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
+        case hideWPComConnectionOnDashboard
+
+        /// Pending flow for magic link: notification setup or Jetpack setup
+        case pendingMagicLinkFlow
+
+        /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
+        case debugMinWooVersionForSelfDrivenPushNotifications
     }
 }
 

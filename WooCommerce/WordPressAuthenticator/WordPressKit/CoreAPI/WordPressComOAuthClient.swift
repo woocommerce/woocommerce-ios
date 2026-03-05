@@ -20,7 +20,8 @@ public struct AuthenticationFailure: LocalizedError {
         "invalid_otp": .invalidOneTimePassword,
         "user_exists": .socialLoginExistingUserUnconnected,
         "invalid_two_step_code": .invalidTwoStepCode,
-        "unknown_user": .unknownUser
+        "unknown_user": .unknownUser,
+        "email_login_not_allowed": .emailLoginNotAllowed
     ]
 
     public enum Kind {
@@ -39,6 +40,7 @@ public struct AuthenticationFailure: LocalizedError {
         /// Supplied MFA code is incorrect
         case invalidTwoStepCode
         case unknownUser
+        case emailLoginNotAllowed
         case unknown
     }
 

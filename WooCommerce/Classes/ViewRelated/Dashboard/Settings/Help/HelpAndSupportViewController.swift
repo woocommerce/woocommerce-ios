@@ -85,6 +85,12 @@ final class HelpAndSupportViewController: UIViewController {
         super.init(coder: coder)
     }
 
+    init?(sourceTag: String, coder: NSCoder) {
+        self.customHelpCenterContent = nil
+        self.sourceTag = sourceTag
+        super.init(coder: coder)
+    }
+
     required init?(coder: NSCoder) {
         self.customHelpCenterContent = nil
         self.sourceTag = nil

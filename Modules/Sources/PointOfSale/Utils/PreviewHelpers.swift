@@ -32,6 +32,13 @@ import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import struct Yosemite.POSBooking
+import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
+import protocol Yosemite.POSBookingServiceProtocol
+import protocol Yosemite.POSBookingListFetchStrategy
+import enum Yosemite.BookingStatus
+import enum Yosemite.BookingAttendanceStatus
+import struct Yosemite.BookingFilters
 import enum Yosemite.POSCatalogSyncState
 import class Yosemite.POSCatalogSyncStateModel
 import protocol Yosemite.POSCatalogSettingsServiceProtocol
@@ -51,6 +58,8 @@ import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
+import struct Yosemite.POSRefundableItem
+import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSItemIdentifier
 
 // MARK: - PreviewProvider helpers
@@ -154,7 +163,7 @@ final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControll
 }
 
 final class PointOfSalePreviewItemActionHandler: POSItemActionHandler {
-    func handleTap(_ item: Yosemite.POSItem) { }
+    func handleTap(_ item: Yosemite.POSItem, position: Int) { }
 }
 
 final class PointOfSalePreviewHistoryService: POSSearchHistoryProviding {
@@ -213,6 +222,7 @@ private var mockVariationItems: [POSItem] {
 }
 
 struct POSPreviewHelpers {
+    @MainActor
     static func makePreviewAggregateModel(
         itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
@@ -225,6 +235,7 @@ struct POSPreviewHelpers {
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
         popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
+        receiptSender: POSReceiptSending = POSReceiptSenderPreview(),
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
@@ -244,6 +255,7 @@ struct POSPreviewHelpers {
             searchHistoryService: searchHistoryService,
             popularPurchasableItemsController: popularItemsController,
             barcodeScanService: barcodeScanService,
+            receiptSender: receiptSender,
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible
@@ -279,12 +291,14 @@ struct POSPreviewHelpers {
             formattedTotal: "$45.75",
             formattedSubtotal: "$41.99",
             customerEmail: "customer@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash on Delivery",
             lineItems: [
                 POSOrderItem(itemID: 1,
                              name: "Premium Coffee Beans",
                              quantity: 2.0,
                              price: 12.50,
+                             total: 25.00,
                              totalTax: 2.50,
                              formattedPrice: "$12.50",
                              formattedTotal: "$25.00",
@@ -295,6 +309,7 @@ struct POSPreviewHelpers {
                     name: "Organic Tea - Earl Grey",
                     quantity: 1.0,
                     price: 15.99,
+                    total: 15.99,
                     totalTax: 1.26,
                     formattedPrice: "$15.99",
                     formattedTotal: "$15.99",
@@ -309,7 +324,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "$0.00",
             formattedTotalTax: "$3.76",
             formattedPaymentTotal: "$45.75",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date()
         )
     }
 
@@ -322,6 +338,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$89.50",
             formattedSubtotal: "$89.96",
             customerEmail: "very.long.customer.email@withverylongdomainname.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "WooCommerce In-Person Payments",
             lineItems: [
                 POSOrderItem(
@@ -329,6 +346,7 @@ struct POSPreviewHelpers {
                     name: "Artisan Chocolate Box",
                     quantity: 3.0,
                     price: 19.99,
+                    total: 59.97,
                     totalTax: 5.99,
                     formattedPrice: "$19.99",
                     formattedTotal: "$59.97",
@@ -340,6 +358,7 @@ struct POSPreviewHelpers {
                     name: "Gourmet Cookie Set - Mixed",
                     quantity: 1.0,
                     price: 29.99,
+                    total: 29.99,
                     totalTax: 2.96,
                     formattedPrice: "$29.99",
                     formattedTotal: "$29.99",
@@ -360,7 +379,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "-$15.00",
             formattedTotalTax: "$8.95",
             formattedPaymentTotal: "$89.50",
-            formattedNetAmount: "$69.51"
+            formattedNetAmount: "$69.51",
+            datePaid: Date().addingTimeInterval(-7200)
         )
     }
 
@@ -373,6 +393,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$129.99",
             formattedSubtotal: "$120.00",
             customerEmail: nil,
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "WooCommerce In-Person Payments",
             lineItems: [
                 POSOrderItem(
@@ -380,6 +401,7 @@ struct POSPreviewHelpers {
                     name: "Wireless Headphones",
                     quantity: 1.0,
                     price: 120.00,
+                    total: 120.00,
                     totalTax: 9.99,
                     formattedPrice: "$120.00",
                     formattedTotal: "$120.00",
@@ -406,6 +428,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$24.99",
             formattedSubtotal: "$22.99",
             customerEmail: nil,
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash on Delivery",
             lineItems: [
                 POSOrderItem(
@@ -413,6 +436,7 @@ struct POSPreviewHelpers {
                     name: "Coffee Mug",
                     quantity: 1.0,
                     price: 22.99,
+                    total: 22.99,
                     totalTax: 2.00,
                     formattedPrice: "$22.99",
                     formattedTotal: "$22.99",
@@ -424,7 +448,8 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "$0.00",
             formattedTotalTax: "$2.00",
             formattedPaymentTotal: "$24.99",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date().addingTimeInterval(-10800)
         )
     }
 
@@ -437,6 +462,7 @@ struct POSPreviewHelpers {
             formattedTotal: "$156.47",
             formattedSubtotal: "$145.00",
             customerEmail: "john.doe@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "WooCommerce In-Person Payments",
             lineItems: [
                 POSOrderItem(
@@ -444,6 +470,7 @@ struct POSPreviewHelpers {
                     name: "Leather Wallet",
                     quantity: 2.0,
                     price: 45.00,
+                    total: 90.00,
                     totalTax: 7.20,
                     formattedPrice: "$45.00",
                     formattedTotal: "$90.00",
@@ -457,6 +484,7 @@ struct POSPreviewHelpers {
                     name: "Sunglasses",
                     quantity: 1.0,
                     price: 55.00,
+                    total: 55.00,
                     totalTax: 4.27,
                     formattedPrice: "$55.00",
                     formattedTotal: "$55.00",
@@ -471,9 +499,330 @@ struct POSPreviewHelpers {
             formattedDiscountTotal: "-$10.00",
             formattedTotalTax: "$11.47",
             formattedPaymentTotal: "$156.47",
-            formattedNetAmount: "$153.50"
+            formattedNetAmount: "$153.50",
+            datePaid: Date().addingTimeInterval(-14400)
         )
     }
+}
+
+// MARK: - Preview Bookings
+
+final class POSBookingListFetchStrategyFactoryPreview: POSBookingListFetchStrategyFactoryProtocol {
+    let bookingService: POSBookingServiceProtocol = POSBookingServicePreview()
+
+    func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
+        POSBookingListFetchStrategyPreview()
+    }
+
+    func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
+        POSBookingListFetchStrategyPreview()
+    }
+}
+
+final class POSBookingServicePreview: POSBookingServiceProtocol {
+    func fetchBookings(siteID: Int64, pageNumber: Int, pageSize: Int, filters: BookingFilters?, searchQuery: String?) async throws -> PagedItems<POSBooking> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+
+    func fetchBooking(bookingID: Int64) async throws -> POSBooking { throw NSError(domain: "Preview", code: 0) }
+
+    func cancelBooking(bookingID: Int64) async throws -> BookingStatus { .cancelled }
+
+    func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus { status }
+
+    func updateBookingNote(bookingID: Int64, note: String) async throws -> String { note }
+}
+
+final class POSBookingListFetchStrategyPreview: POSBookingListFetchStrategy {
+    var showsCachedDataWhileLoading: Bool = false
+    var id: String = "BookingPreview"
+
+    func fetchBookings(pageNumber: Int) async throws -> PagedItems<POSBooking> {
+        PagedItems(items: [], hasMorePages: false, totalItems: nil)
+    }
+
+    @MainActor
+    func fetchLocalBookings() -> [POSBooking] {
+        []
+    }
+}
+
+extension POSPreviewHelpers {
+    static func makePreviewBookingsModel(state: POSBookingListState = .empty) -> POSBookingsModel {
+        let controller = POSConfigurablePreviewBookingListController(state: state)
+        return POSBookingsModel(
+            bookingsController: controller,
+            cardPresentPaymentService: CardPresentPaymentPreviewService(),
+            orderService: POSOrderServicePreview(),
+            receiptSender: POSReceiptSenderPreview(),
+            collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentPreviewAnalytics())
+    }
+
+    static func makePreviewBookings() -> [POSBooking] {
+        [
+            POSBooking(
+                id: 1,
+                customerID: 10,
+                customerName: "Margarita Nikolaevna",
+                serviceName: "Women's Haircut",
+                startDate: Date(),
+                endDate: Date().addingTimeInterval(3600),
+                formattedAmount: "$55.00",
+                status: .confirmed,
+                attendanceStatus: .unattended,
+                orderID: 101,
+                resourceName: "Marianne Renoir",
+                customerEmail: "margarita.n@gmail.com",
+                customerPhone: "+1 742582943798",
+                billingAddress: "742 Evergreen Terrace, Springfield, IL, 62704",
+                customerNote: "Prefers eco-friendly products, shorter length cuts",
+                bookingNote: "Client prefers morning appointments",
+                location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+                duration: "60 min",
+                formattedSubtotal: "$55.00",
+                formattedTax: "$0.00",
+                order: makePreviewOrder()
+            ),
+            POSBooking(
+                id: 2,
+                customerID: 11,
+                customerName: "Jane Doe",
+                serviceName: "Massage",
+                startDate: Date().addingTimeInterval(7200),
+                endDate: Date().addingTimeInterval(10800),
+                formattedAmount: "$90.00",
+                status: .paid,
+                attendanceStatus: .unattended,
+                orderID: 102,
+                resourceName: nil,
+                customerEmail: "jane.doe@email.com",
+                customerPhone: nil,
+                billingAddress: nil,
+                customerNote: nil,
+                location: nil,
+                duration: "60 min",
+                formattedSubtotal: "$90.00",
+                formattedTax: "$0.00",
+                order: makePreviewOrder()
+            ),
+            POSBooking(
+                id: 3,
+                customerID: 12,
+                customerName: "Alex Johnson",
+                serviceName: "Consultation",
+                startDate: Date().addingTimeInterval(-3600),
+                endDate: Date(),
+                formattedAmount: "$25.00",
+                status: .cancelled,
+                attendanceStatus: .unattended,
+                orderID: nil,
+                resourceName: nil,
+                duration: "60 min",
+                order: makePreviewOrder()
+            )
+        ]
+    }
+
+    static func makePreviewPaidBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 333,
+            number: "333",
+            dateCreated: now,
+            status: .completed,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: "margarita.n@gmail.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$55.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 333,
+            customerID: 10,
+            customerName: "Margarita Nikolaevna",
+            serviceName: "Women's Haircut",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .paid,
+            attendanceStatus: .attended,
+            orderID: 333,
+            resourceName: "Marianne Renoir",
+            customerEmail: "margarita.n@gmail.com",
+            customerPhone: "+1 742582943798",
+            billingAddress: "742 Evergreen Terrace, Springfield, IL, 62704",
+            customerNote: "Prefers eco-friendly products, shorter length cuts",
+            bookingNote: "Client prefers morning appointments",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
+
+    static func makePreviewUnpaidBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 334,
+            number: "334",
+            dateCreated: now,
+            status: .pending,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: "margarita.n@gmail.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$55.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 334,
+            customerID: 10,
+            customerName: "Margarita Nikolaevna",
+            serviceName: "Women's Haircut",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .confirmed,
+            attendanceStatus: .attended,
+            orderID: 334,
+            resourceName: "Marianne Renoir",
+            customerEmail: "margarita.n@gmail.com",
+            customerPhone: "+1 742582943798",
+            billingAddress: "742 Evergreen Terrace, Springfield, IL, 62704",
+            customerNote: "Prefers eco-friendly products, shorter length cuts",
+            bookingNote: "Return customer, use usual setup",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
+
+    static func makePreviewGuestBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 10, minute: 30, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 335,
+            number: "335",
+            dateCreated: now,
+            status: .pending,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: nil,
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$0.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 335,
+            customerName: nil,
+            serviceName: "Women's Haircut",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .confirmed,
+            attendanceStatus: .unattended,
+            orderID: 335,
+            resourceName: "Marianne Renoir",
+            bookingNote: "This is a private note. It'll not be shared with the customer.",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
+
+    static func makePreviewCancelledBooking() -> POSBooking {
+        let now = Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: Date()) ?? Date()
+        let end = now.addingTimeInterval(3600)
+        let order = POSOrder(
+            id: 336,
+            number: "336",
+            dateCreated: now,
+            status: .pending,
+            formattedTotal: "$55.00",
+            formattedSubtotal: "$55.00",
+            customerEmail: "alex.j@email.com",
+            paymentMethodID: "woocommerce_payments",
+            paymentMethodTitle: "WooCommerce In-Person Payments",
+            lineItems: [],
+            refunds: [],
+            formattedDiscountTotal: nil,
+            formattedTotalTax: "$0.00",
+            formattedPaymentTotal: "$0.00",
+            formattedNetAmount: nil
+        )
+        return POSBooking(
+            id: 336,
+            customerID: 12,
+            customerName: "Alex Johnson",
+            serviceName: "Consultation",
+            startDate: now,
+            endDate: end,
+            formattedAmount: "$55.00",
+            status: .cancelled,
+            attendanceStatus: .unattended,
+            orderID: 336,
+            resourceName: "Marianne Renoir",
+            customerEmail: "alex.j@email.com",
+            location: "238 Willow Creek Drive, Montgomery, AL, 36109",
+            duration: "60 min",
+            formattedSubtotal: "$55.00",
+            formattedTax: "$0.00",
+            order: order
+        )
+    }
+}
+
+final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
+    let bookingsViewState: POSBookingListState
+    var selectedBooking: POSBooking?
+    var selectedDate: Date = Date()
+
+    init(state: POSBookingListState) {
+        self.bookingsViewState = state
+        self.selectedBooking = state.bookings.first
+    }
+
+    func syncBookings() {}
+    func loadBookings() async {}
+    func refreshBookings() async {}
+    func loadNextBookings() async {}
+    func selectBooking(_ booking: POSBooking?) {
+        selectedBooking = booking
+    }
+    func selectDate(_ date: Date) async { selectedDate = date }
+    func goToPreviousDay() async {}
+    func goToNextDay() async {}
+    func cancelBooking(bookingID: Int64) async throws {}
+    func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws {}
+    func updateBooking(bookingID: Int64) async throws {}
+    func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async {}
+    func updateBookingNote(bookingID: Int64, note: String) async throws {}
+    func reset() { selectedDate = Date(); selectedBooking = nil }
+    func searchBookings(searchTerm: String) async {}
+    func clearSearchBookings() {}
 }
 
 // MARK: - Preview Orders Controller
@@ -499,12 +848,12 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func loadRefunds(of order: POSOrder) async throws {}
-    func startRefundFlow() {}
+    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
+    func processRefund(reason: String?) async throws {}
 }
 
 // MARK: - Barcode Scan Service
@@ -542,6 +891,10 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
         .empty
     }
 
+    func loadOrder(orderID: Int64) async throws -> Order {
+        .empty
+    }
+
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
@@ -549,8 +902,16 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
-        POSRefundsResult(refunds: [], isFullyRefunded: false)
+        POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     }
+
+    func calculateRefundAmounts(for items: [Yosemite.POSRefundableItem]) -> Yosemite.POSRefundAmounts {
+        let subtotal = items.reduce(Decimal.zero) { $0 + $1.lineItemTotal }
+        let tax = items.reduce(Decimal.zero) { $0 + $1.totalTax }
+        return POSRefundAmounts(subtotal: subtotal, tax: tax)
+    }
+
+    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {
@@ -606,7 +967,7 @@ final class POSOrderListFetchStrategyPreview: POSOrderListFetchStrategy {
 
     var supportsCaching: Bool = true
 
-    var showsLoadingWithItems: Bool = false
+    var showsCachedDataWhileLoading: Bool = false
 
     var id: String = ""
 
@@ -698,6 +1059,10 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     }
 
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
+
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
 }

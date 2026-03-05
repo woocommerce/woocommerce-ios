@@ -4,6 +4,7 @@ import Testing
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Networking
 
@@ -26,9 +27,9 @@ class BookingListContainerViewModelTests {
         viewModel.setSelectedTab(to: .today)
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_tab_selected",
+        #expect(analyticsProvider.received(event: "booking_list_tab_select",
                                          with: ["selected_tab": "today"]))
-        #expect(analyticsProvider.received(event: "booking_list_displayed",
+        #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "today",
                                             "is_default_tab": true,
@@ -45,9 +46,9 @@ class BookingListContainerViewModelTests {
         viewModel.setSelectedTab(to: .all)
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_tab_selected",
+        #expect(analyticsProvider.received(event: "booking_list_tab_select",
                                          with: ["selected_tab": "all"]))
-        #expect(analyticsProvider.received(event: "booking_list_displayed",
+        #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "all",
                                             "is_default_tab": false,
@@ -64,7 +65,7 @@ class BookingListContainerViewModelTests {
         viewModel.onAppear()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_displayed",
+        #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "today",
                                             "is_default_tab": true,
@@ -82,7 +83,7 @@ class BookingListContainerViewModelTests {
 
         // Then
         #expect(analyticsProvider.received(
-            event: "booking_list_booking_tapped",
+            event: "booking_list_booking_tap",
             with: [
                 "selected_tab": "today",
                 "is_search_active": false,
@@ -98,7 +99,7 @@ class BookingListContainerViewModelTests {
         viewModel.filtersTapped()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_filters_tapped"))
+        #expect(analyticsProvider.received(event: "booking_list_filters_tap"))
     }
 
     @Test func event_fire_when_applyFiltersTapped() {
@@ -122,7 +123,7 @@ class BookingListContainerViewModelTests {
         let filters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "")],
             products: [BookingProductFilter(productID: 0, name: "")],
-            attendanceStatuses: [BookingAttendanceStatus.booked],
+            attendanceStatuses: [BookingAttendanceStatus.attended],
             customers: [BookingCustomerFilter(customerID: 0, name: "")],
             dateRange: BookingDateRangeFilter(startDate: Date(), endDate: Date()),
             numberOfActiveFilters: 5
@@ -145,7 +146,7 @@ class BookingListContainerViewModelTests {
         viewModel.searchTapped()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_search_tapped"))
+        #expect(analyticsProvider.received(event: "booking_list_search_tap"))
     }
 
     @Test func event_fire_when_sortByTapped() {
@@ -156,7 +157,57 @@ class BookingListContainerViewModelTests {
         viewModel.sortByTapped()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_sort_by_tapped"))
+        #expect(analyticsProvider.received(event: "booking_list_sort_by_tap"))
+    }
+
+    // MARK: - Filter propagation
+
+    @Test func updateFilters_propagates_to_all_tabs() {
+        // Given
+        let viewModel = givenViewModel()
+        let filters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 1, name: "Alice")],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+
+        // When - on Today tab
+        viewModel.setSelectedTab(to: .today)
+        viewModel.updateFilters(filters)
+
+        // Then - should propagate (no guard blocking non-All tabs)
+        #expect(viewModel.numberOfActiveFilters == 1)
+        #expect(viewModel.listViewModel(for: .today).hasFilters == true)
+        #expect(viewModel.listViewModel(for: .upcoming).hasFilters == true)
+        #expect(viewModel.listViewModel(for: .all).hasFilters == true)
+    }
+
+    @Test func clearFilters_works_on_non_all_tabs() {
+        // Given
+        let viewModel = givenViewModel()
+        let filters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 1, name: "Alice")],
+            products: [],
+            attendanceStatuses: [],
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+
+        // Apply filters on Today tab
+        viewModel.setSelectedTab(to: .today)
+        viewModel.updateFilters(filters)
+        #expect(viewModel.numberOfActiveFilters == 1)
+
+        // When - clear filters on Today tab
+        viewModel.clearFilters()
+
+        // Then
+        #expect(viewModel.numberOfActiveFilters == 0)
+        #expect(viewModel.listViewModel(for: .today).hasFilters == false)
     }
 
     @Test func event_fire_when_sortByOptionSelected() {
@@ -167,7 +218,7 @@ class BookingListContainerViewModelTests {
         viewModel.sortByOptionSelected(.newestToOldest)
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_sort_by_option_tapped",
+        #expect(analyticsProvider.received(event: "booking_list_sort_by_option_tap",
                                            with: ["sort_option": "newest_first"]))
     }
 }

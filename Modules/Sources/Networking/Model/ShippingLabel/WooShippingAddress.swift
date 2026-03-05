@@ -10,6 +10,9 @@ public struct WooShippingAddress: Equatable, Hashable, GeneratedFakeable, Genera
     /// The name of the sender/receiver at the address.
     public let name: String
 
+    /// Email of the sender/receiver
+    public let email: String?
+
     /// The contact phone number at the address.
     public let phone: String
 
@@ -33,6 +36,7 @@ public struct WooShippingAddress: Equatable, Hashable, GeneratedFakeable, Genera
 
     public init(company: String,
                 name: String,
+                email: String?,
                 phone: String,
                 country: String,
                 state: String,
@@ -42,6 +46,7 @@ public struct WooShippingAddress: Equatable, Hashable, GeneratedFakeable, Genera
                 postcode: String) {
         self.company = company
         self.name = name
+        self.email = email
         self.phone = phone
         self.country = country
         self.state = state
@@ -59,6 +64,7 @@ extension WooShippingAddress: Codable {
         // If no name is sent to validation address request, no name will be received in response.
         // So make sure to decode it only if it's present.
         let name = try container.decodeIfPresent(String.self, forKey: .name) ?? ""
+        let email = try container.decodeIfPresent(String.self, forKey: .email)
         let company = try container.decodeIfPresent(String.self, forKey: .company) ?? ""
         let phone = try container.decodeIfPresent(String.self, forKey: .phone) ?? ""
         let country = try container.decode(String.self, forKey: .country)
@@ -70,6 +76,7 @@ extension WooShippingAddress: Codable {
 
         self.init(company: company,
                   name: name,
+                  email: email,
                   phone: phone,
                   country: country,
                   state: state,
@@ -89,6 +96,9 @@ extension WooShippingAddress: Codable {
         if !name.isEmpty {
             try container.encode(name, forKey: .name)
         }
+        if let email {
+            try container.encode(email, forKey: .email)
+        }
         try container.encode(phone, forKey: .phone)
         try container.encode(country, forKey: .country)
         try container.encode(state, forKey: .state)
@@ -101,6 +111,7 @@ extension WooShippingAddress: Codable {
     private enum CodingKeys: String, CodingKey {
         case company
         case name
+        case email
         case phone
         case country
         case state
@@ -116,7 +127,7 @@ extension WooShippingAddress {
     /// This empty initializer is used when parsing the API response for shipping labels, because the origin/destination addresses are not available in each
     /// shipping label response and we have to manually populate them later.
     init() {
-        self.init(company: "", name: "", phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")
+        self.init(company: "", name: "", email: nil, phone: "", country: "", state: "", address1: "", address2: "", city: "", postcode: "")
     }
 }
 

@@ -26,6 +26,9 @@ extension NSPredicate {
         let attendanceStatusesPredicate = filters.attendanceStatuses.isNotEmpty ?
         NSPredicate(format: "attendanceStatusKey IN %@", filters.attendanceStatuses) : nil
 
+        let bookingStatusExcludePredicate = filters.bookingStatusExclude.isNotEmpty ?
+        NSPredicate(format: "NOT (statusKey IN %@)", filters.bookingStatusExclude) : nil
+
         let subpredicates = [
             siteIDPredicate,
             productIDsPredicate,
@@ -34,7 +37,8 @@ extension NSPredicate {
             startDateBeforePredicate,
             startDateAfterPredicate,
             paymentStatusesPredicate,
-            attendanceStatusesPredicate
+            attendanceStatusesPredicate,
+            bookingStatusExcludePredicate
         ].compactMap({ $0 })
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)

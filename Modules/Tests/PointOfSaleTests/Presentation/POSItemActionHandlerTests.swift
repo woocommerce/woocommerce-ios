@@ -7,6 +7,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 @testable import PointOfSale
 
+@MainActor
 struct POSItemActionHandlerTests {
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_list_then_does_not_add_it_to_cart() async throws {
         let aggregateModel = makePointOfSaleAggregateModel()
@@ -19,9 +20,9 @@ struct POSItemActionHandlerTests {
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
 
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
 
         #expect(aggregateModel.cart.coupons.count == 1)
     }
@@ -38,9 +39,9 @@ struct POSItemActionHandlerTests {
 
         let coupon = makeCouponItem(code: "DISCOUNT!")
 
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
-        sut.handleTap(coupon)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
+        sut.handleTap(coupon, position: 0)
 
         #expect(aggregateModel.cart.coupons.count == 1)
     }
@@ -56,9 +57,9 @@ struct POSItemActionHandlerTests {
 
         let product = makeProductItem()
 
-        sut.handleTap(product)
-        sut.handleTap(product)
-        sut.handleTap(product)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 0)
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }
@@ -75,9 +76,9 @@ struct POSItemActionHandlerTests {
 
         let product = makeProductItem()
 
-        sut.handleTap(product)
-        sut.handleTap(product)
-        sut.handleTap(product)
+        sut.handleTap(product, position: 0)
+        sut.handleTap(product, position: 1)
+        sut.handleTap(product, position: 2)
 
         #expect(aggregateModel.cart.purchasableItems.count == 3)
     }
@@ -98,6 +99,7 @@ private func makeProductItem() -> POSItem {
                                 stockStatusKey: ""))
 }
 
+@MainActor
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
@@ -127,6 +129,7 @@ private func makePointOfSaleAggregateModel(
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,
         barcodeScanService: barcodeScanService,
+        receiptSender: MockPOSReceiptSender(),
         siteID: 0
     )
 }

@@ -124,6 +124,12 @@ class PasswordViewController: LoginViewController {
     override func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
 
+        if (error as? WordPressComOAuthError)?.authenticationFailureKind == .emailLoginNotAllowed {
+            tracker.track(failure: error.localizedDescription)
+            showMagicLinkRequestScreen()
+            return
+        }
+
         if let source = source, loginFields.meta.userIsDotCom {
             let passwordError = SignInError.invalidWPComPassword(source: source)
             if authenticationDelegate.shouldHandleError(passwordError) {
@@ -544,6 +550,13 @@ private extension PasswordViewController {
 
         vc.loginFields = self.loginFields
         vc.loginFields.restrictToWPCom = true
+        navigationController?.pushViewController(vc, animated: true)
+    }
+
+    func showMagicLinkRequestScreen() {
+        let vc = MagicLinkRequestViewController(fallbackAction: .wpcomUsernamePassword)
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
         navigationController?.pushViewController(vc, animated: true)
     }
 

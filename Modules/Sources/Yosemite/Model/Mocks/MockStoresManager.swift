@@ -165,7 +165,7 @@ public class MockStoresManager: StoresManager {
             couponActionHandler.handle(action: action)
         case let action as FeatureFlagAction:
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
             }
         default:

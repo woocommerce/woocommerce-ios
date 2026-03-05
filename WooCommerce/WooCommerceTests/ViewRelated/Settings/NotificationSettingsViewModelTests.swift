@@ -1,6 +1,7 @@
 import UserNotifications
 import Testing
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 struct NotificationSettingsViewModelTests {
@@ -68,6 +69,23 @@ struct NotificationSettingsViewModelTests {
 
         // Then
         #expect(viewModel.sites == [testSite2, testSite1])
+    }
+
+    @MainActor
+    @Test func sites_excludes_sites_registered_for_woo_pn() async {
+        // Given
+        let storageManager = MockStorageManager()
+        let testSite1 = Site.fake().copy(siteID: 123, name: "Miffy", isWooCommerceActive: true)
+        let testSite2 = Site.fake().copy(siteID: 243, name: "Matsui", isWooCommerceActive: true)
+        storageManager.insertSampleSite(readOnlySite: testSite1)
+        storageManager.insertSampleSite(readOnlySite: testSite2)
+
+        let pushNotificationManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [243])
+        let viewModel = NotificationSettingsViewModel(storageManager: storageManager,
+                                                      pushNotificationManager: pushNotificationManager)
+
+        // Then
+        #expect(viewModel.sites == [testSite1])
     }
 
     @MainActor

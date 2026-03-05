@@ -4,7 +4,8 @@ import Foundation
 import UserNotifications
 import AutomatticTracks
 import Yosemite
-import protocol WooFoundation.Analytics
+import WooFoundation
+import enum NetworkingCore.NetworkError
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
@@ -80,37 +81,26 @@ final class PushNotificationsManager: PushNotesManager {
         return configuration.application.applicationState
     }
 
-    /// Apple's Push Notifications DeviceToken
-    ///
-    private var deviceToken: String? {
-        get {
-            return configuration.defaults.object(forKey: .deviceToken)
-        }
-        set {
-            configuration.defaults.set(newValue, forKey: .deviceToken)
-        }
-    }
+    private let registrationState: PushNotificationRegistrationState
 
     /// WordPress.com Device Identifier
     ///
-    private(set) var deviceID: String? {
-        get {
-            return configuration.defaults.object(forKey: .deviceID)
-        }
-        set {
-            configuration.defaults.set(newValue, forKey: .deviceID)
-        }
+    var deviceID: String? {
+        registrationState.deviceID
     }
 
-    /// Self driven push notificaiton token
+    /// Site IDs registered to Woo PN system.
     ///
-    private var wooPushnotificationToken: String? {
-        get {
-            return configuration.defaults.object(forKey: .wooPushnotificationToken)
-        }
-        set {
-            configuration.defaults.set(newValue, forKey: .wooPushnotificationToken)
-        }
+    var siteIDsRegisteredForWooPNs: [Int64] {
+        registrationState.siteIDsRegisteredForWooPNs
+    }
+
+    var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> {
+        registrationState.siteIDsRegisteredForWooPNsPublisher
+    }
+
+    var hasStoredSiteIDsRegisteredForWooPNs: Bool {
+        registrationState.hasStoredSiteIDsRegisteredForWooPNs
     }
 
     private var siteID: Int64? {
@@ -124,7 +114,13 @@ final class PushNotificationsManager: PushNotesManager {
     private let analytics: Analytics
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
-    private let shouldRegisterSelfDrivenPushNotification: Bool
+    private let selfDriventPNEligiblityChecker: WooPushNotificationEligibilityCheck
+    private var selfDrivenPushNotificationEnabled: Bool?
+    private var pendingTokenData: Data?
+
+    /// Continuation used by `registerDeviceAndWaitForTokenAcceptance()` to wait for the device token
+    /// delivered asynchronously via `registerDeviceToken(with:)`.
+    private var deviceTokenContinuation: CheckedContinuation<String, Error>?
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -133,11 +129,16 @@ final class PushNotificationsManager: PushNotesManager {
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics,
-         shouldRegisterSelfDrivenPushNotification: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
+        self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults, log: { DDLogInfo($0) })
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
-        self.shouldRegisterSelfDrivenPushNotification = shouldRegisterSelfDrivenPushNotification
+        self.selfDriventPNEligiblityChecker = WooPushNotificationEligibilityCheck(
+            featureFlagService: featureFlagService,
+            stores: configuration.storesManager
+        )
+        checkSelfDrivenPushNotificationsEligibility()
     }
 }
 
@@ -178,21 +179,91 @@ extension PushNotificationsManager {
         configuration.application.registerForRemoteNotifications()
     }
 
+    /// Registers for remote notifications, requests authorization, waits for the device token,
+    /// and sends it to the push-tokens endpoint.
+    /// - Returns: The token ID on success.
+    /// - Throws: If any step in the registration pipeline fails.
+    @MainActor
+    func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64 {
+        #if targetEnvironment(simulator)
+        if !isRunningTests {
+            DDLogVerbose("👀 Push Notifications tokens are not supported in the Simulator - mocking success result")
+            let mockTokenID = Int64.random(in: 99...9999)
+            registrationState.setWooPushNotificationTokenID(mockTokenID)
+            if let siteID {
+                registrationState.markSiteAsRegisteredForWooPNs(siteID)
+            }
+            return mockTokenID
+        }
+        #endif
+        // 1. Register with iOS for remote notifications
+        registerForRemoteNotifications()
 
-    /// Unregisters the Application from WordPress.com Push Notifications Service.
+        // 2. Request authorization
+        let _ = await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
+            ensureAuthorizationIsRequested(includesProvisionalAuth: false) { granted in
+                continuation.resume(returning: granted)
+            }
+        }
+
+        // 3. Wait for device token from iOS
+        let deviceToken = try await waitForDeviceToken()
+
+        // 4. Send token to endpoint and wait for acceptance
+        return try await withCheckedThrowingContinuation { continuation in
+            registerSelfDrivenPushNotificationFlow(with: deviceToken) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
+    /// Waits for the device token to arrive via `registerDeviceToken(with:)`.
+    /// Returns immediately if a token is already available.
+    private func waitForDeviceToken() async throws -> String {
+        if let existingToken = registrationState.deviceToken {
+            return existingToken
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            deviceTokenContinuation = continuation
+        }
+    }
+
+
+    /// Unregisters the Application from both Woo and WordPress.com Push Notifications Services.
     ///
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
         DDLogInfo("📱 Unregistering For Remote Notifications...")
 
-        unregisterDotcomDeviceIfPossible() { error in
-            if let error = error {
-                DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
-            } else {
-                DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
-                self.deviceID = nil
-                self.deviceToken = nil
+        let group = DispatchGroup()
+
+        if selfDrivenPushNotificationEnabled == true {
+            group.enter()
+            unregisterFromWooPushNotificationsIfPossible { result in
+                switch result {
+                case .success:
+                    DDLogInfo("📱 Successfully unregistered from Woo Push Notifications!")
+                case .failure(let error):
+                    DDLogError("⛔️ Unable to unregister from Woo Push Notifications: \(error)")
+                }
+                self.registrationState.clearWooRegistration()
+                group.leave()
             }
-            // Always call completion, even on error
+        }
+
+        if stores.isAuthenticatedWithoutWPCom == false {
+            group.enter()
+            unregisterDotcomDeviceIfPossible() { error in
+                if let error = error {
+                    DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
+                } else {
+                    DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+                }
+                self.registrationState.clearWPComRegistration()
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
             onCompletion()
         }
     }
@@ -234,30 +305,24 @@ extension PushNotificationsManager {
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
     func registerDeviceToken(with tokenData: Data) {
+        guard let selfDrivenPushNotificationEnabled else {
+            pendingTokenData = tokenData
+            return
+        }
         let newToken = tokenData.hexString
 
-        if let _ = deviceToken, deviceToken != newToken {
-            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: deviceToken))] NEW: [\(newToken)]")
-        } else {
-            DDLogInfo("📱 Device Token Received: [\(newToken)]")
+        registrationState.applyNewDeviceToken(newToken)
+
+        // Resume any pending continuation waiting for the device token
+        // (from registerDeviceAndWaitForTokenAcceptance). The caller handles
+        // the self-driven registration flow, so we skip the existing path.
+        if let continuation = deviceTokenContinuation {
+            deviceTokenContinuation = nil
+            continuation.resume(returning: newToken)
+            return
         }
 
-        deviceToken = newToken
-
-        if shouldRegisterSelfDrivenPushNotification {
-            DDLogInfo("📱 Self Registering Push Notifications")
-            // We will need to remove the old registartion, this is just for the newly registered stores
-            registerSelfDrivenPushNotificationFlow(with: newToken) { result in
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
-                case .success(let token):
-                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
-                    self.deviceID = "\(token)"
-                }
-            }
-        }
-        else {
+        func registerForWPComPushNotifications() {
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { (device, error) in
                 guard let deviceID = device?.deviceID else {
@@ -266,8 +331,34 @@ extension PushNotificationsManager {
                 }
 
                 DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
-                self.deviceID = deviceID
+                self.registrationState.deviceID = deviceID
+                self.disableWPComPushNotificationsIfNeeded(siteIDs: self.registrationState.siteIDsRegisteredForWooPNs, deviceID: deviceID)
             }
+        }
+
+        if selfDrivenPushNotificationEnabled {
+            DDLogInfo("📱 Self Registering Push Notifications")
+            // We will need to remove the old registartion, this is just for the newly registered stores
+            registerSelfDrivenPushNotificationFlow(with: newToken) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .failure(let error):
+                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
+                    analytics.track(.wooPushTokenRegisterError, withError: error)
+                    if let siteID, case .notFound = error as? NetworkError {
+                        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    }
+                    // Falls back to dotcom PNs if authenticated with WPCom
+                    if !stores.isAuthenticatedWithoutWPCom {
+                        registerForWPComPushNotifications()
+                    }
+                case .success(let token):
+                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
+                    analytics.track(.wooPushTokenRegisterSuccess)
+                }
+            }
+        } else if !stores.isAuthenticatedWithoutWPCom {
+            registerForWPComPushNotifications()
         }
     }
 
@@ -279,6 +370,14 @@ extension PushNotificationsManager {
     ///
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
+
+        // Resume any pending continuation so the awaiting caller gets the error
+        if let continuation = deviceTokenContinuation {
+            deviceTokenContinuation = nil
+            continuation.resume(throwing: error)
+            return
+        }
+
         unregisterForRemoteNotifications {}
     }
 
@@ -290,15 +389,13 @@ extension PushNotificationsManager {
     @MainActor
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {
         let content = notification.request.content
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleSurveys) {
-            // Check if this is a local notification
-            if !content.isRemoteNotification {
-                // Display local notifications with banner and sound when app is in foreground
-                let identifier = notification.request.identifier
-                analytics.track(event: .LocalNotification.displayed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
-                                                                     userInfo: content.userInfo))
-                return [.banner, .sound, .list]
-            }
+        // Check if this is a local notification
+        if !content.isRemoteNotification {
+            // Display local notifications with banner and sound when app is in foreground
+            let identifier = notification.request.identifier
+            analytics.track(event: .LocalNotification.displayed(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
+                                                                userInfo: content.userInfo))
+            return [.banner, .sound, .list]
         }
 
         guard applicationState == .active, content.isRemoteNotification, inAppNotices == true else {
@@ -309,6 +406,11 @@ extension PushNotificationsManager {
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
+            if registrationState.isSiteRegisteredForWooPNs(foregroundNotification.siteID),
+               foregroundNotification.noteID != nil {
+                // Ignore WPCom PNs if site is registered for Woo PNs
+                return []
+            }
             configuration.application
                 .presentInAppNotification(title: foregroundNotification.title,
                                           subtitle: foregroundNotification.subtitle,
@@ -583,6 +685,19 @@ private extension PushNotificationsManager {
 //
 private extension PushNotificationsManager {
 
+    func checkSelfDrivenPushNotificationsEligibility() {
+        Task { @MainActor in
+            let isEnabled = await selfDriventPNEligiblityChecker.checkM1Eligibility()
+            if selfDrivenPushNotificationEnabled != isEnabled {
+                selfDrivenPushNotificationEnabled = isEnabled
+                if let pendingTokenData {
+                    self.pendingTokenData = nil
+                    registerDeviceToken(with: pendingTokenData)
+                }
+            }
+        }
+    }
+
     /// Registers an APNS DeviceToken in the WordPress.com backend.
     ///
     func registerDotcomDevice(with deviceToken: String, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
@@ -606,7 +721,9 @@ private extension PushNotificationsManager {
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
             siteID: siteID,
             device: device,
-            applicationID: WooConstants.pushApplicationID
+            applicationID: WooConstants.pushApplicationID,
+            deviceLocale: Locale.current.languageRegionIdentifier ?? Locale.current.identifier,
+            appVersion: Bundle.main.version
         ) { [weak self] result in
             guard let self = self else { return }
 
@@ -624,33 +741,21 @@ private extension PushNotificationsManager {
     }
 
     func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        wooPushnotificationToken = "\(tokenID)"
-        unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: {
-            onCompletion(.success(tokenID))
-        })
-    }
+        registrationState.setWooPushNotificationTokenID(tokenID)
 
-    func unregisterDotcomDeviceIfNeededThenClearToken(onCompletion: @escaping () -> Void) {
-        guard !stores.isAuthenticatedWithoutWPCom else {
-            onCompletion()
-            return
+        guard let siteID else {
+            return onCompletion(.success(tokenID))
         }
+        registrationState.markSiteAsRegisteredForWooPNs(siteID)
 
-        unregisterDotcomDeviceIfPossible { [weak self] error in
-            if let error {
-                DDLogError("⛔️ Unable to unregister WP.com push token: \(error)")
-            }
-
-            // Remove the WP.com token locally regardless of unregister success.
-            self?.deviceToken = nil
-            onCompletion()
-        }
+        disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: registrationState.deviceID)
+        onCompletion(.success(tokenID))
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.
     ///
     func unregisterDotcomDeviceIfPossible(onCompletion: @escaping (Error?) -> Void) {
-        guard let knownDeviceId = deviceID else {
+        guard let knownDeviceId = registrationState.deviceID else {
             onCompletion(nil)
             return
         }
@@ -663,6 +768,44 @@ private extension PushNotificationsManager {
     func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         configuration.storesManager.dispatch(action)
+    }
+
+    /// Disables mobile push notifications for given site IDs.
+    ///
+    func disableWPComPushNotificationsIfNeeded(siteIDs: [Int64], deviceID: String?) {
+        guard let deviceID, let deviceIDInt = Int64(deviceID),
+              siteIDs.isNotEmpty,
+              !configuration.storesManager.isAuthenticatedWithoutWPCom else {
+            return
+        }
+        let updatedBlogs = siteIDs.map {
+            NotificationSettings.Blog(blogID: $0, devices: [
+                .init(deviceID: deviceIDInt, newComment: false, storeOrder: false)
+            ])
+        }
+        let siteSettings = NotificationSettings(blogs: updatedBlogs)
+        stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: siteSettings, onCompletion: { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                analytics.track(.wpcomDeviceDisablePushNotificationsSuccess)
+            case .failure(let error):
+                analytics.track(.wpcomDeviceDisablePushNotificationsError, withError: error)
+            }
+        }))
+    }
+
+    func unregisterFromWooPushNotificationsIfPossible(completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let siteID,
+              let tokenID = registrationState.wooPushNotificationToken,
+              let tokenIDInt = Int64(tokenID) else {
+            return completion(.success(()))
+        }
+        stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+            siteID: siteID,
+            tokenID: tokenIDInt,
+            onCompletion: completion
+        ))
     }
 }
 
@@ -684,7 +827,7 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.type] = type
         }
 
-        if let theToken = deviceToken {
+        if let theToken = registrationState.deviceToken {
             properties[AnalyticKey.token] = theToken
         }
 
@@ -730,7 +873,7 @@ private extension PushNotificationsManager {
 
 private extension UNNotificationContent {
     var isRemoteNotification: Bool {
-        userInfo[APNSKey.identifier] != nil
+        userInfo[APNSKey.type] != nil
     }
 }
 
@@ -764,15 +907,5 @@ private enum PushType {
 private extension PushNotificationsManager {
     enum Localization {
         static let viewInAppNotification = NSLocalizedString("View", comment: "Action title in an in-app notification to view more details.")
-    }
-}
-
-extension UserDefaults {
-    @objc dynamic var wooPushnotificationToken: String? {
-        string(forKey: Key.wooPushnotificationToken.rawValue)
-    }
-
-    @objc dynamic var deviceToken: String? {
-        string(forKey: Key.deviceToken.rawValue)
     }
 }

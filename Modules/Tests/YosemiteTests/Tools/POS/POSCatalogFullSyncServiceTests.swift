@@ -14,7 +14,7 @@ struct POSCatalogFullSyncServiceTests {
     init() {
         self.mockSyncRemote = MockPOSCatalogSyncRemote()
         self.mockPersistenceService = MockPOSCatalogPersistenceService()
-        self.sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, persistenceService: mockPersistenceService)
+        self.sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, persistenceService: mockPersistenceService, usesCatalogAPI: false)
     }
 
     // MARK: - Full Sync Tests
@@ -123,7 +123,11 @@ struct POSCatalogFullSyncServiceTests {
         // Given
         let expectedError = NSError(domain: "network", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
         mockSyncRemote.setProductResult(pageNumber: 1, result: .failure(expectedError))
-        let sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, retryDelay: 0, persistenceService: mockPersistenceService)
+        let sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
+                                            batchSize: 2,
+                                            retryDelay: 0,
+                                            persistenceService: mockPersistenceService,
+                                            usesCatalogAPI: false)
 
         // When/Then
         await #expect(throws: expectedError) {
@@ -143,7 +147,8 @@ struct POSCatalogFullSyncServiceTests {
             credentials: credentials,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
             appPasswordSupportState: Just(false).eraseToAnyPublisher(),
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            usesCatalogAPI: false
         )
 
         // Then
@@ -159,7 +164,8 @@ struct POSCatalogFullSyncServiceTests {
             credentials: nil,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
             appPasswordSupportState: Just(false).eraseToAnyPublisher(),
-            grdbManager: grdbManager
+            grdbManager: grdbManager,
+            usesCatalogAPI: false
         )
 
         // Then
@@ -173,7 +179,8 @@ struct POSCatalogFullSyncServiceTests {
         // When
         let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
                                                 batchSize: customBatchSize,
-                                                persistenceService: mockPersistenceService)
+                                                persistenceService: mockPersistenceService,
+                                                usesCatalogAPI: false)
         _ = try await service.startFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
@@ -188,7 +195,7 @@ struct POSCatalogFullSyncServiceTests {
         let expectedProduct = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1)
         let expectedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 1)
 
-        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
         mockSyncRemote.catalogDownloadResult = .success(.init(products: [expectedProduct], variations: [expectedVariation]))
 
         let sut = POSCatalogFullSyncService(
@@ -230,7 +237,7 @@ struct POSCatalogFullSyncServiceTests {
     @Test func startFullSync_with_catalog_API_propagates_catalog_download_error() async throws {
         // Given
         let expectedError = NSError(domain: "catalog", code: 404, userInfo: [NSLocalizedDescriptionKey: "Catalog download failed"])
-        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
         mockSyncRemote.catalogDownloadResult = .failure(expectedError)
 
         let sut = POSCatalogFullSyncService(
@@ -249,7 +256,7 @@ struct POSCatalogFullSyncServiceTests {
     @Test func startFullSync_with_catalog_API_propagates_persistence_error() async throws {
         // Given
         let expectedError = NSError(domain: "persistence", code: 1000, userInfo: [NSLocalizedDescriptionKey: "Persistence failed"])
-        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
         mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
         mockPersistenceService.replaceAllCatalogDataError = expectedError
 
@@ -269,7 +276,7 @@ struct POSCatalogFullSyncServiceTests {
     @Test(arguments: [true, false])
     func startFullSync_with_catalog_API_passes_regenerateCatalog_to_remote(regenerateCatalog: Bool) async throws {
         // Given
-        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
         mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
 
         let sut = POSCatalogFullSyncService(
@@ -289,7 +296,7 @@ struct POSCatalogFullSyncServiceTests {
     @Test(arguments: [true, false])
     func startFullSync_with_catalog_API_passes_allowCellular_to_downloadCatalog(allowCellular: Bool) async throws {
         // Given
-        mockSyncRemote.catalogRequestResult = .success(.init(status: .complete, downloadURL: "https://example.com/catalog.json"))
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
         mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
 
         let sut = POSCatalogFullSyncService(

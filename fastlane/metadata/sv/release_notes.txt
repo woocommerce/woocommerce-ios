@@ -1,1 +1,1 @@
-Den här uppdateringen ger smidigare POS-prestanda med en ny lokal produktkatalog för blixtsnabb skanning av streckkoder, sökning och urval. Vi har även förbättrat inloggningssupporten för webbplatser som använder captchas, åtgärdat problem med pushnotiser och säkerställt produkt- och appstabilitet över hela linjen.
+Den här uppdateringen visar butikens installationsuppgifter mer pålitligt, säkerställer att streckkodsskanning fungerar sömlöst i försäljningsstället, och förbättrar mediabibliotekets pålitlighet. Uppdatera nu för en smidigare hantering av butiken!

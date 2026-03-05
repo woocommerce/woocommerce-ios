@@ -5,6 +5,7 @@ public enum POSItem: Equatable, Identifiable, Hashable {
     case simpleProduct(POSSimpleProduct)
     case variableParentProduct(POSVariableParentProduct)
     case variation(POSVariation)
+    case searchResultVariation(POSVariation, parentProduct: POSVariableParentProduct)
     case coupon(POSCoupon)
 
     public var id: POSItemIdentifier {
@@ -14,6 +15,8 @@ public enum POSItem: Equatable, Identifiable, Hashable {
         case .variableParentProduct(let parentProduct):
             return parentProduct.id
         case .variation(let variation):
+            return variation.id
+        case .searchResultVariation(let variation, _):
             return variation.id
         case .coupon(let coupon):
             return coupon.id

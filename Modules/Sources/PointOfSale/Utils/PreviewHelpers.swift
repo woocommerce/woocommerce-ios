@@ -915,7 +915,7 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {
-    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {}
+    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool, templateID: String?) async throws {}
 }
 
 final class PointOfSaleCouponServicePreview: PointOfSaleCouponServiceProtocol {

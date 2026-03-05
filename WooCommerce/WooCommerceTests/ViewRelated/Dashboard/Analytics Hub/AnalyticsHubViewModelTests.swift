@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import WooFoundation
+import YosemiteTestHelpers
 @testable import WooCommerce
 import enum Networking.DotcomError
 

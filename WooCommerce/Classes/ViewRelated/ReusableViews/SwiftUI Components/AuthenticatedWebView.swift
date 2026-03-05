@@ -120,6 +120,7 @@ struct AuthenticatedWebView_Previews: PreviewProvider {
 struct AuthenticatableWebView: View {
     let url: URL
     var title: String = ""
+    var onDismiss: (() -> Void)? = nil
 
     @Environment(\.dismiss) var dismiss
 
@@ -139,6 +140,9 @@ struct AuthenticatableWebView: View {
             } else {
                 SafariSheetView(url: url)
             }
+        }
+        .onDisappear {
+            onDismiss?()
         }
     }
 }

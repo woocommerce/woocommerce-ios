@@ -5,12 +5,10 @@ import WordPressAuthenticator
 import WooFoundation
 
 enum WPComLoginFlow {
-    case notificationSetup
     case jetpackSetup(requiresConnectionOnly: Bool)
 
     var pendingAuthFlow: PendingAuthFlow {
         switch self {
-        case .notificationSetup: .notificationSetup
         case .jetpackSetup: .jetpackSetup
         }
     }

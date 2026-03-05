@@ -3,6 +3,7 @@ import TestKit
 import Yosemite
 import Fakes
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor
@@ -55,6 +56,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         )
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: paymentInfo,
             customerInfo: customerInfo,
             productInfo: productInfo
@@ -66,7 +68,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let viewModel = givenViewModel(booking: booking)
 
         // Then
-        XCTAssertEqual(viewModel.sections.count, 6)
+        XCTAssertEqual(viewModel.sections.count, 5)
 
         // Verify section order
         if case .header = viewModel.sections[0].content {
@@ -87,22 +89,16 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Expected customer section at index 2")
         }
 
-        if case .attendance = viewModel.sections[3].content {
-            // Attendance section exists
-        } else {
-            XCTFail("Expected attendance section at index 3")
-        }
-
-        if case .payment = viewModel.sections[4].content {
+        if case .payment = viewModel.sections[3].content {
             // Payment section exists
         } else {
-            XCTFail("Expected payment section at index 4")
+            XCTFail("Expected payment section at index 3")
         }
 
-        if case .bookingNotes = viewModel.sections[5].content {
+        if case .bookingNotes = viewModel.sections[4].content {
             // Booking notes section exists
         } else {
-            XCTFail("Expected booking notes section at index 5")
+            XCTFail("Expected booking notes section at index 4")
         }
     }
 
@@ -110,6 +106,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: nil,
             productInfo: nil
@@ -120,7 +117,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let viewModel = givenViewModel(booking: booking)
 
         // Then
-        XCTAssertEqual(viewModel.sections.count, 5)
+        XCTAssertEqual(viewModel.sections.count, 4)
 
         // Verify customer section is not present
         let hasCustomerSection = viewModel.sections.contains { section in
@@ -142,6 +139,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let productInfo = BookingProductInfo(name: "Massage Therapy")
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: productInfo
@@ -186,6 +184,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let customerInfo = BookingCustomerInfo(billingAddress: billingAddress)
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: nil
@@ -232,6 +231,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let customerInfo = BookingCustomerInfo(billingAddress: billingAddress, note: note)
         let orderInfo = BookingOrderInfo(
             statusKey: "confirmed",
+            datePaid: nil,
             paymentInfo: nil,
             customerInfo: customerInfo,
             productInfo: nil
@@ -294,7 +294,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(bookingID, booking.bookingID)
         XCTAssertEqual(status, newStatus)
 
-        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_updated",
+        analyticsProvider.assertReceived(event: "booking_detail_attendance_status_update",
                                          with: ["booking_status": "attended"])
     }
 
@@ -357,54 +357,53 @@ final class BookingDetailsViewModelTests: XCTestCase {
             XCTFail("Header section not found")
             return
         }
-        XCTAssertEqual(headerContent.attendanceStatus.localizedTitle, "Attended")
+        XCTAssertEqual(headerContent.statusBadge.text, "Attended")
     }
 
-    func test_init_whenBookingHasAttendanceStatus_updatesAttendanceContentWithCorrectLocalizedString() {
+    func test_shouldShowAttendanceButton_returns_false_when_booking_is_cancelled() {
         // Given
-        let booking = Booking.fake().copy(
-            attendanceStatusKey: "unattended"
-        )
+        let booking = Booking.fake().copy(statusKey: "cancelled")
 
         // When
         let viewModel = givenViewModel(booking: booking)
 
         // Then
-        let attendanceSection = viewModel.sections.first { section in
-            if case .attendance = section.content {
-                return true
-            }
-            return false
-        }
-
-        guard let attendanceSection = attendanceSection,
-              case let .attendance(attendanceContent) = attendanceSection.content else {
-            XCTFail("Attendance section not found")
-            return
-        }
-
-        XCTAssertEqual(attendanceContent.value, "Unattended")
+        XCTAssertFalse(viewModel.shouldShowAttendanceButton)
     }
 
-    func test_attendance_section_is_hidden_when_booking_is_cancelled() {
+    func test_shouldShowAttendanceButton_returns_true_for_non_cancelled_bookings() {
         // Given
-        let booking = Booking.fake().copy(
-            statusKey: "cancelled",
-            attendanceStatusKey: "unattended"
-        )
+        let booking = Booking.fake().copy(statusKey: "paid")
 
         // When
         let viewModel = givenViewModel(booking: booking)
 
         // Then
-        let containsAttendanceSection = viewModel.sections.contains { section in
-            if case .attendance = section.content {
-                return true
-            }
-            return false
-        }
+        XCTAssertTrue(viewModel.shouldShowAttendanceButton)
+    }
 
-        XCTAssertFalse(containsAttendanceSection)
+    func test_attendanceButtonTitle_returns_mark_as_attended_when_not_attended() {
+        // Given
+        let booking = Booking.fake().copy(attendanceStatusKey: "unattended")
+
+        // When
+        let viewModel = givenViewModel(booking: booking)
+
+        // Then
+        XCTAssertEqual(viewModel.attendanceButtonTitle, "Mark as attended")
+        XCTAssertEqual(viewModel.targetAttendanceStatus, .attended)
+    }
+
+    func test_attendanceButtonTitle_returns_mark_as_unattended_when_attended() {
+        // Given
+        let booking = Booking.fake().copy(attendanceStatusKey: "attended")
+
+        // When
+        let viewModel = givenViewModel(booking: booking)
+
+        // Then
+        XCTAssertEqual(viewModel.attendanceButtonTitle, "Mark as unattended")
+        XCTAssertEqual(viewModel.targetAttendanceStatus, .unattended)
     }
 
     func test_view_order_is_hidden_when_booking_order_id_is_invalid() {
@@ -434,23 +433,6 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(paymentContent.actions.contains(.viewOrder))
     }
 
-    func test_event_fired_when_booking_marked_as_paid() async throws {
-        // Given
-        let viewModel = givenViewModel()
-
-        // When
-        let task = Task { try await viewModel.markBookingAsPaid() }
-        let action = try await waitForFirstBookingAction()
-        guard case let .markBookingAsPaid(_, _, onCompletion) = action else {
-            return XCTFail("Expected markBookingAsPaid action")
-        }
-        onCompletion(nil)
-        try await task.value
-
-        // Then
-        analyticsProvider.assertReceived(event: "booking_detail_mark_as_paid_tapped")
-    }
-
     func test_event_fired_when_booking_cancelled() async throws {
         // Given
         let viewModel = givenViewModel()
@@ -476,7 +458,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         viewModel.notesTapped()
 
         // Then
-        analyticsProvider.assertReceived(event: "booking_detail_add_note_tapped")
+        analyticsProvider.assertReceived(event: "booking_detail_add_note_tap")
     }
 
 

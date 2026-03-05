@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class BarcodeScannerItemFinderTests: XCTestCase {

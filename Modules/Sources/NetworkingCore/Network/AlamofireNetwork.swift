@@ -60,6 +60,11 @@ public class AlamofireNetwork: Network {
 
     private var appPasswordSupportSubscription: AnyCancellable?
 
+    /// Background task that discovers the REST API root URL eagerly on init, so REST requests
+    /// made immediately after authentication use the correct base path.
+    ///
+    private let discoveryTask: Task<Void, Never>?
+
     /// Public Initializer
     ///
     /// - Parameters:
@@ -94,8 +99,32 @@ public class AlamofireNetwork: Network {
         if let sessionManager {
             self.alamofireSession = sessionManager
         } else {
-            self.alamofireSession = Alamofire.Session(configuration: .default, interceptor: requestAuthenticator)
+            let delegate = StreamableUploadSessionDelegate()
+            self.alamofireSession = Alamofire.Session(
+                configuration: .default,
+                delegate: delegate,
+                interceptor: requestAuthenticator,
+                eventMonitors: [delegate.uploadStreamProvider]
+            )
         }
+
+        // Eagerly discover the REST API root URL for wporg/applicationPassword sites so that
+        // REST requests made immediately after a relaunch use the correct base path.
+        // Skip when a sessionManager is injected (test mode heuristic).
+        self.discoveryTask = sessionManager == nil ? {
+            let siteURL: String? = {
+                switch credentials {
+                case let .wporg(_, _, siteAddress): return siteAddress
+                case let .applicationPassword(_, _, siteAddress): return siteAddress
+                default: return nil
+                }
+            }()
+            guard let siteURL else { return nil }
+            return Task {
+                guard WordPressRESTAPIRootCache.shared.root(for: siteURL) == nil else { return }
+                _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteURL)
+            }
+        }() : nil
 
         let authenticationMode: RequestAuthenticationMode? = {
             switch credentials {
@@ -130,21 +159,23 @@ public class AlamofireNetwork: Network {
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         let convertedRequest = convertRequestIfNeeded(request)
-        alamofireSession.request(convertedRequest)
-            .validateIfRestRequest(for: convertedRequest)
-            .responseData { [weak self] response in
-                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                    originalRequest: request,
-                    convertedRequest: convertedRequest,
-                    failure: response.networkingError,
-                    onRetry: {
-                        self?.responseData(for: request, completion: completion)
-                    },
-                    onCompletion: {
-                        completion(response.value, response.networkingError)
-                    }
-                )
-            }
+        performAfterDiscovery(for: convertedRequest) { [weak self] in
+            self?.alamofireSession.request(convertedRequest)
+                .validateIfRestRequest(for: convertedRequest)
+                .responseData { [weak self] response in
+                    self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                        originalRequest: request,
+                        convertedRequest: convertedRequest,
+                        failure: response.networkingError,
+                        onRetry: {
+                            self?.responseData(for: request, completion: completion)
+                        },
+                        onCompletion: {
+                            completion(response.value, response.networkingError)
+                        }
+                    )
+                }
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -158,29 +189,32 @@ public class AlamofireNetwork: Network {
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
         let convertedRequest = convertRequestIfNeeded(request)
-        alamofireSession.request(convertedRequest)
-            .validateIfRestRequest(for: convertedRequest)
-            .responseData { [weak self] response in
-                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                    originalRequest: request,
-                    convertedRequest: convertedRequest,
-                    failure: response.networkingError,
-                    onRetry: {
-                        self?.responseData(for: request, completion: completion)
-                    },
-                    onCompletion: {
-                        if let error = response.networkingError {
-                            completion(.failure(error))
-                        } else {
-                            completion(response.result.mapError { $0 })
+        performAfterDiscovery(for: convertedRequest) { [weak self] in
+            self?.alamofireSession.request(convertedRequest)
+                .validateIfRestRequest(for: convertedRequest)
+                .responseData { [weak self] response in
+                    self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                        originalRequest: request,
+                        convertedRequest: convertedRequest,
+                        failure: response.networkingError,
+                        onRetry: {
+                            self?.responseData(for: request, completion: completion)
+                        },
+                        onCompletion: {
+                            if let error = response.networkingError {
+                                completion(.failure(error))
+                            } else {
+                                completion(response.result.mapError { $0 })
+                            }
                         }
-                    }
-                )
-            }
+                    )
+                }
+        }
     }
 
     public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
         let convertedRequest = convertRequestIfNeeded(request)
+        await withDiscoveryIfNeeded(for: convertedRequest)
         let sessionRequest = alamofireSession.request(convertedRequest)
             .validateIfRestRequest(for: convertedRequest)
         let response = await sessionRequest.serializingData().response
@@ -216,30 +250,33 @@ public class AlamofireNetwork: Network {
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
-        return Future() { promise in
+        return Future() { [weak self] promise in
+            guard let self else { return }
             let convertedRequest = self.convertRequestIfNeeded(request)
-            self.alamofireSession
-                .request(convertedRequest)
-                .validateIfRestRequest(for: convertedRequest)
-                .responseData { [weak self] response in
-                    self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                        originalRequest: request,
-                        convertedRequest: convertedRequest,
-                        failure: response.networkingError,
-                        onRetry: {
-                            self?.responseData(for: request) { result in
-                                promise(.success(result))
+            self.performAfterDiscovery(for: convertedRequest) { [weak self] in
+                self?.alamofireSession
+                    .request(convertedRequest)
+                    .validateIfRestRequest(for: convertedRequest)
+                    .responseData { [weak self] response in
+                        self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                            originalRequest: request,
+                            convertedRequest: convertedRequest,
+                            failure: response.networkingError,
+                            onRetry: {
+                                self?.responseData(for: request) { result in
+                                    promise(.success(result))
+                                }
+                            },
+                            onCompletion: {
+                                if let error = response.networkingError {
+                                    promise(.success(.failure(error)))
+                                } else {
+                                    promise(.success(response.result.mapError { $0 }))
+                                }
                             }
-                        },
-                        onCompletion: {
-                            if let error = response.networkingError {
-                                promise(.success(.failure(error)))
-                            } else {
-                                promise(.success(response.result.mapError { $0 }))
-                            }
-                        }
-                    )
-                }
+                        )
+                    }
+            }
         }.eraseToAnyPublisher()
     }
 
@@ -247,21 +284,23 @@ public class AlamofireNetwork: Network {
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
         let convertedRequest = self.convertRequestIfNeeded(request)
-        alamofireSession
-            .upload(multipartFormData: multipartFormData, with: convertedRequest)
-            .responseData { [weak self] response in
-                self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                    originalRequest: request,
-                    convertedRequest: convertedRequest,
-                    failure: response.networkingError,
-                    onRetry: {
-                        self?.uploadMultipartFormData(multipartFormData: multipartFormData, to: request, completion: completion)
-                    },
-                    onCompletion: {
-                        completion(response.value, response.error)
-                    }
-                )
-            }
+        performAfterDiscovery(for: convertedRequest) { [weak self] in
+            self?.alamofireSession
+                .upload(multipartFormData: multipartFormData, with: convertedRequest)
+                .responseData { [weak self] response in
+                    self?.errorHandler.handleFailureForDirectRequestIfNeeded(
+                        originalRequest: request,
+                        convertedRequest: convertedRequest,
+                        failure: response.networkingError,
+                        onRetry: {
+                            self?.uploadMultipartFormData(multipartFormData: multipartFormData, to: request, completion: completion)
+                        },
+                        onCompletion: {
+                            completion(response.value, response.error)
+                        }
+                    )
+                }
+        }
     }
 }
 
@@ -336,6 +375,23 @@ private extension AlamofireNetwork {
         return requestConverter.convert(request)
     }
 
+    /// Waits for REST API discovery to complete before invoking `work` for REST requests.
+    /// For non-REST requests, `work` is called immediately on the current call stack.
+    ///
+    func performAfterDiscovery(for request: URLRequestConvertible, work: @escaping () -> Void) {
+        if request is RESTRequest, let discoveryTask {
+            Task { await discoveryTask.value; work() }
+        } else {
+            work()
+        }
+    }
+
+    /// Awaits REST API discovery for REST requests. No-op for non-REST requests.
+    ///
+    func withDiscoveryIfNeeded(for request: URLRequestConvertible) async {
+        guard request is RESTRequest, let discoveryTask else { return }
+        await discoveryTask.value
+    }
 }
 
 // MARK: `RequestProcessorDelegate` conformance

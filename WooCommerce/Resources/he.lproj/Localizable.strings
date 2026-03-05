@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-04 14:10:11+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:26:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -532,6 +532,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "מוסיף סוג להזמנה.";
 
+/* User's Administrator role. */
+"Administrator" = "מנהל המערכת";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "נדרשת חתימה של אדם מבוגר (+%1$@)";
 
@@ -663,6 +666,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when an order already exists in the backend for a given receipt */
 "An order already exists for this receipt" = "כבר קיימת הזמנה עבור הקבלה הזו";
+
+/* Message presented when an unexpected error occurs with the store's payment gateway. */
+"An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "אירעה שגיאה בלתי צפויה בשער התשלום של החנות בעת לכידה של התשלום עבור ההזמנה";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "אירעה שגיאה לא מזוהה.";
@@ -947,18 +953,6 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "ניתן להזמנה";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "הזמנות שבוצעו";
-
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "בוטל";
-
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "לקוח נכנס לפגישה";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "לקוח לא הגיע";
-
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "לא ידוע";
 
@@ -982,12 +976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "שעה";
-
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "לסמן נוכחות כדי לוודא שהדוחות שלך מדויקים ולאתר מגמות בהזמנות.";
-
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "נוכחות";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "לא ניתן לשנות את סטטוס הנוכחות של הזמנה מס' ⁦%1$d⁩.";
@@ -1040,20 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "הערה";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "סטטוס";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "לא ניתן לסמן את הזמנה מס' ⁦%1$d⁩ כ'שולמה'.";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "הזמנה מס' ⁦%1$d⁩";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "לבטל את ההזמנה";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "לסמן כ'שולמה'";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "להציג את ההזמנה";
@@ -1063,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "תשלום";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "לסמן כ'שולמה'";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "שירות";
@@ -1823,6 +1799,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "להמשיך עם Apple";
+
+/* User's Contributor role. */
+"Contributor" = "משתף";
 
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "שיעור המרה";
@@ -6207,6 +6186,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Display label for the product's tax status setting option */
 "Shipping only" = "משלוח בלבד";
 
+/* User's Shop Manager role. */
+"Shop Manager" = "מנהל החנות";
+
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "חנות ותוצאות חיפוש";
 
@@ -6526,6 +6508,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Button title to submit a support request. */
 "Submit Support Request" = "לשלוח בקשת תמיכה";
+
+/* User's Subscriber role. */
+"Subscriber" = "מנוי";
 
 /* Display label for simple subscription product type. */
 "Subscription" = "מינוי";
@@ -6858,6 +6843,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when the card reader loses its Bluetooth connection to the card reader. */
 "The Bluetooth connection to the card reader disconnected unexpectedly." = "החיבור של Bluetooth לקורא הכרטיסים התנתק באופן בלתי צפוי";
 
+/* Message shown when a GIF failed to load while trying to add it to the Media library. */
+"The GIF could not be added to the Media Library." = "לא ניתן להוסיף את קובץ GIF לספריית המדיה.";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "חשבון ה-Google‏ \"%@\" לא תואם לשום חשבון ב-WordPress.com‏";
 
@@ -6959,6 +6947,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message shown when an image failed to load while trying to add it to the Media library. */
 "The image could not be added to the Media Library." = "לא ניתן להוסיף את התמונה לספריית המדיה.";
+
+/* Message shown when an asset failed to load while trying to add it to the Media library. */
+"The item could not be added to the Media Library." = "לא ניתן להוסיף את הפריט לספריית המדיה.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "השם של החבילה המותאמת החדשה אינו ייחודי.";
@@ -7836,27 +7827,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description of the hub menu settings button */
 "Update your preferences" = "לעדכן את ההעדפות שלך";
-
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "הפגישה מתוזמנת אבל עדיין לא התרחשה.";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "הזמנות שבוצעו";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "הלקוח הגיע והשיחה התקיימה כמתוכנן.";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "לקוח נכנס לפגישה";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "הלקוח החמיץ את הפגישה ללא ביטול מראש.";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "לקוח לא הגיע";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "לעדכן את סטטוס הנוכחות";
 
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "מעדכן את התוכנה";
@@ -8750,6 +8720,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "להתחבר עם חשבון אחר";
 
+/* Message shown when a video failed to load while trying to add it to the Media library. */
+"assetExportError.expectedPHAssetVideoType.message" = "לא ניתן להוסיף את הווידאו לספריית המדיה.";
+
+/* Message shown when a video file failed to export from the local library. */
+"assetExportError.failedToExportVideo.message" = "ייצוא המדיה שנבחרה נכשל.";
+
 /* Label displayed on audio media items. */
 "audio" = "אודיו";
 
@@ -9631,7 +9607,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFilters.rowTitlePaymentStatus" = "מצב התשלום";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "שירות \/ אירוע";
+"bookingFilters.rowTitleService" = "שירות";
 
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "חלק מצוות";
@@ -9711,14 +9687,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "כדאי לשנות את מונח החיפוש כדי להציג תוצאות נוספות";
 
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "לא נמצא שירות או אירוע";
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "לא נמצאה שירות";
 
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "לחפש שירותים \/ אירוע";
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "שירות חיפוש";
 
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "שירות \/ אירוע";
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "שירות";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "בוטל";
@@ -10080,6 +10056,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "פג תוקף מתאריך %@";
+
+/* A default error when coupon application failed. */
+"couponsError.default.title" = "לא ניתן היה להחיל את הקופון עקב שגיאה לא צפויה.";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "כתובת";
@@ -11654,11 +11633,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "סוג פריט לא נתמך";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "התשלום בוטל דרך הקורא";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "לנסות את התשלום שוב";
+/* A placeholder name when we can't determine the name of a variation for an error message */
+"pointOfSale.barcodeScanning.unresolved.variation.name" = "לא ידוע";
 
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "הכרטיס הוכנס";
@@ -12034,6 +12010,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "טוען";
+
+/* Fallback name for a product that couldn't be identified in error handling. */
+"pointOfSale.orderController.unknownProduct" = "מוצר אחד או יותר";
 
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "עריכת הזמנה";
@@ -12584,8 +12563,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "סטטוס ההזמנה: %1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "אין הזמנות להצגה";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "לא נבחרו הזמנות.";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "הזמנה";
@@ -12596,11 +12575,11 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "סך הכול";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "סך כל ההנחה: %1$@";
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "יש לנסות שוב.";
 
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "סך כל ההנחה";
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "נכשלה יצירת ההחזר";
 
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "יש להקיש כדי לשלוח את הקבלה של ההזמנה באמצעות האימייל";
@@ -12620,23 +12599,14 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "נמצאה בעיה";
 
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "יש לנסות שוב.";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "לא ניתן לטעון את פרטי ההחזר הכספי";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "פעולות נוספות";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "תשלום נטו: %1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "תשלום נטו";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "הסכום הכולל ששולם: %1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "אמצעי תשלום: %1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "סך הכול שולם";
 
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "כמות: %1$@ במחיר של %2$@ ליחידה, סך הכול %3$@";
@@ -12649,33 +12619,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
-
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "סיבה: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "החזר כספי שהונפק: %1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "סיבה: %1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "הוחזר";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "סכום ביניים של מוצרים: %1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "מיסים: %1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "מיסים";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "סך כל ההזמנה: %1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "סכום כולל";
 
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "סך הכול";
@@ -12691,6 +12634,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "למידע נוסף";
+
+/* Subtitle appearing when order search returns no results. */
+"pos.orderListView.emptyOrdersSearchSubtitle.2" = "לא הצלחנו למצוא הזמנות בשם זה. כדאי לשנות את המונח לחיפוש.";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "לא נמצאו הזמנות";
@@ -12780,10 +12726,25 @@ which should be translated separately and considered part of this sentence. */
 "pos.refundConfirmationView.confirmButton" = "כן, המשך";
 
 /* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
-"pos.refundConfirmationView.confirmationMessageFormat" = "האם ברצונך לעבד את ההחזר הכספי של %1$@ %2$@? לא ניתן לבטל פעולה זו.";
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "האם ברצונך לקבל החזר כספי %1$@ %2$@? לא ניתן לבטל פעולה זו.";
+
+/* Message shown while the refund is being processed. */
+"pos.refundConfirmationView.processingMessage" = "יש להמתין בזמן שאנחנו מעבדים את ההחזר הכספי.";
+
+/* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.processingTitleFormat" = "מימון מחדש של %@";
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "החזר כספי %@";
+
+/* Button to cancel and dismiss the refund error screen */
+"pos.refundErrorView.cancelButton" = "לבטל";
+
+/* Accessibility label for close button on refund error screen */
+"pos.refundErrorView.closeButton.accessibilityLabel" = "לסגור";
+
+/* Button to retry the refund creation */
+"pos.refundErrorView.retryButton" = "לנסות שוב";
 
 /* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
 "pos.refundItemRow.accessibilityLabelFormat" = "%1$@, %2$@, %3$@";
@@ -12821,6 +12782,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund items selection modal */
 "pos.refundItemsSelectionView.title" = "יש לבחור פריטים להחזר כספי";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "טוען פרטי החזר כספי...";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "לסגור";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "בוצע";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "כל הפריטים בהזמנה זו כבר זוכו.";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "אין פריטים להחזר";
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "להוסיף";
@@ -12876,6 +12852,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the refund review modal */
 "pos.refundReviewView.title" = "החזר כספי על סקירה";
 
+/* Accessibility label for close button on refund success screen */
+"pos.refundSuccessView.closeButton.accessibilityLabel" = "לסגור";
+
+/* Button to dismiss the refund success screen */
+"pos.refundSuccessView.doneButton" = "בוצע";
+
+/* Button to email a receipt for the refund */
+"pos.refundSuccessView.emailReceiptButton" = "לשלוח קבלה באימייל";
+
+/* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundSuccessView.messageFormat" = "קיבלת החזר כספי בסך %1$@ %2$@.";
+
+/* Title shown when a refund has been successfully processed */
+"pos.refundSuccessView.title" = "ההחזר הושלם";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "לנקות את החיפוש";
 
@@ -12903,8 +12894,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "נקודת מכירה";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "הזמנה חדשה";
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "לשלוח קבלה באימייל";
@@ -13272,6 +13263,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "הפעולה סורקת את הברקודים שמשויכים למזהה הגלובלי של המוצר לצורך ניהול המלאי.";
 
+/* Error message when saving an invalid or duplicated product global unique ID */
+"productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID" = "GTIN, ‏UPC, ‏EAN או ISBN לא תקינים או כפולים.";
+
 /* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.placeholder" = "אופציונלי";
 
@@ -13445,6 +13439,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "בהמתנה";
+
+/* The acronym for 'Point of Sale'. */
+"salesChannel.pos.description" = "נקודת מכירה";
+
+/* Orders created through web checkout. */
+"salesChannel.webCheckout.description" = "תשלום בקופה באינטרנט";
+
+/* Orders created through WordPress admin interface. */
+"salesChannel.wpAdmin.description" = "ניהול WP";
 
 /* Description for the Sales channel filter option, when selecting 'Any' order */
 "salesChannelFilter.row.any.description" = "הכול";
@@ -14060,6 +14063,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the UPS Terms and Conditions view */
 "upsTermsView.title" = "תנאים והתניות של UPS®‎";
 
+/* Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +'Roast: Dark, Size: 100g, Origin: Brazil, Any grind' */
+"variationAttributeView.namedAttributeFormat" = "%1$@: %2$@";
+
 /* Label displayed on video media items. */
 "video" = "וידאו";
 
@@ -14131,6 +14137,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "שבועות";
+
+/* Title of the self-driven push notification setup flow */
+"wooPushNotificationSetupCoordinator.flowTitle" = "התחברות אל WordPress.com";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "להוסיף את פרטי החבילה";
@@ -14324,6 +14333,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "סכום כולל";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "יש להזין מספר טלפון תקף עבור כתובת היעד.";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "מספר טלפון נדרש עבור כתובת היעד.";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "להוסיף חברה";
 
@@ -14464,6 +14479,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "משקל משלוח כולל (כולל חבילה)";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "לערוך את הכתובת";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "יש להזין מספר טלפון תקף עבור כתובת היעד.";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "מספר טלפון לא תקין.";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "ללמוד כיצד להדפיס באמצעות המכשיר הנייד שלך";
@@ -15056,6 +15080,39 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "אופס, משהו השתבש. יש לנסות שוב!";
 
+/* Status label shown when a setup step has completed successfully. */
+"wpComConnectionSetupStepView.complete" = "הפעולה השולמה";
+
+/* Status label shown when a setup step is currently running. */
+"wpComConnectionSetupStepView.inProgress" = "בתהליך";
+
+/* Status label shown when a setup step has not been started yet. */
+"wpComConnectionSetupStepView.notStarted" = "לא הותחל";
+
+/* Cancel button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.cancelButton" = "לבטל";
+
+/* Title for the WPCom connection setup screen. */
+"wpComConnectionSetupView.title" = "התחברות אל WordPress.com";
+
+/* Step title for checking plugin compatibility during WPCom connection setup. */
+"wpComConnectionSetupViewModel.checkPluginStep" = "בדיקת תאימות תוסף";
+
+/* Step title for connecting the store to WordPress.com during WPCom connection setup. */
+"wpComConnectionSetupViewModel.connectStoreStep" = "חיבור החנות ל-WordPress.com";
+
+/* Step title for enabling push notifications during WPCom connection setup. */
+"wpComConnectionSetupViewModel.enablePushNotificationsStep" = "הפעל התראות דחיפה";
+
+/* Button title to navigate to the store after successful WPCom connection setup. */
+"wpComConnectionSetupViewModel.goToMyStore" = "מעבר אל 'החנות שלי'";
+
+/* Button title to retry the WPCom connection setup after a failure. */
+"wpComConnectionSetupViewModel.tryAgain" = "יש לנסות שוב";
+
+/* Button title to update the plugin when WPCom connection setup fails due to outdated plugin. */
+"wpComConnectionSetupViewModel.updatePlugin" = "יש לעדכן את התוסף";
+
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "אם אין לך חשבון, אנחנו נשתמש בכתובת האימייל הזאת כדי ליצור אחד.";
 
@@ -15080,18 +15137,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "יש לוודא שכתובת האימייל שלך נכונה ולבדוק שוב את התיבה של דואר הזבל.";
 
-/* Button to submit a WPCom email on the login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle" = "להמשיך";
-
-/* Subtitle for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.subtitle" = "התחבר באמצעות חשבון WordPress.com שלך כדי לחבר את החנות שלך.";
-
-/* Content of the label at the end of the Wrong Account screen. Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com. */
-"wpcomEmailLoginViewModel.connectWPCom.termsContent" = "על ידי המשך השימוש, הנך מסכים ל-%1$@ ול-%2$@ שלנו עם WordPress.com.";
-
-/* Title for the WPCom email login screen for push notification setup */
-"wpcomEmailLoginViewModel.connectWPCom.title" = "התחברות אל WordPress.com";
-
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "נשלח לך באימייל קישור להתחברות מיידית, ללא צורך בסיסמה.";
 
@@ -15115,9 +15160,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "להמשיך";
-
-/* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.description" = "לחבר את החנות שלך לחשבון בWordPress.com כדי לקבל גישה להודעות דחיפה להזמנות חדשות, לביקורות ועוד.";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "לא עכשיו";

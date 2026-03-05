@@ -1,11 +1,16 @@
 import Foundation
 
 struct WPComConnectionSetupStep: Identifiable {
-    enum Status {
+    enum Status: Equatable {
         case notStarted
         case running
         case success
-        case failure(reason: String)
+        case failure(error: ErrorType)
+    }
+
+    enum ErrorType: Equatable {
+        case outdatedPlugin(version: String)
+        case generic(reason: String)
     }
 
     let title: String

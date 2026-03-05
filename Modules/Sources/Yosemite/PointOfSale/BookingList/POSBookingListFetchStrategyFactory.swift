@@ -7,20 +7,24 @@ import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 
 public protocol POSBookingListFetchStrategyFactoryProtocol {
-    func defaultStrategy() -> POSBookingListFetchStrategy
-    func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy
+    func defaultStrategy(filters: BookingFilters?) -> POSBookingListFetchStrategy
+    func searchStrategy(searchTerm: String, filters: BookingFilters?) -> POSBookingListFetchStrategy
+    var bookingService: POSBookingServiceProtocol { get }
 }
 
 public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol {
     private let siteID: Int64
-    private let bookingService: POSBookingServiceProtocol
+    private let store: POSBookingInMemoryStore
+    public let bookingService: POSBookingServiceProtocol
 
     public init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
-                currencyFormatter: CurrencyFormatter) {
+                currencyFormatter: CurrencyFormatter,
+                siteSettings: [SiteSetting] = []) {
         self.siteID = siteID
+        self.store = POSBookingInMemoryStore()
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
@@ -30,15 +34,21 @@ public final class POSBookingListFetchStrategyFactory: POSBookingListFetchStrate
             siteID: siteID,
             bookingsRemote: bookingsRemote,
             ordersRemote: ordersRemote,
-            currencyFormatter: currencyFormatter
+            currencyFormatter: currencyFormatter,
+            siteSettings: siteSettings
         )
     }
 
-    public func defaultStrategy() -> POSBookingListFetchStrategy {
-        POSDefaultBookingListFetchStrategy(bookingService: bookingService, siteID: siteID)
+    public func defaultStrategy(filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
+        POSDefaultBookingListFetchStrategy(
+            bookingService: bookingService,
+            store: store,
+            siteID: siteID,
+            filters: filters
+        )
     }
 
-    public func searchStrategy(searchTerm: String) -> POSBookingListFetchStrategy {
-        POSSearchBookingListFetchStrategy(bookingService: bookingService, siteID: siteID, searchTerm: searchTerm)
+    public func searchStrategy(searchTerm: String, filters: BookingFilters? = nil) -> POSBookingListFetchStrategy {
+        POSSearchBookingListFetchStrategy(bookingService: bookingService, siteID: siteID, searchTerm: searchTerm, filters: filters)
     }
 }

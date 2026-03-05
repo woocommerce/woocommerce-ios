@@ -149,7 +149,7 @@ final class BookingListContainerViewModel: ObservableObject {
 
     func setSelectedTab(to newTab: BookingListTab) {
         selectedTab = newTab
-        analytics.track(event: .BookingList.tabSelected(newTab))
+        analytics.track(event: .BookingList.tabSelect(newTab))
         // Manually trigger onAppear as we are programaticcaly
         // changing the tab which will not trigger
         // onAppear on the View.
@@ -158,7 +158,7 @@ final class BookingListContainerViewModel: ObservableObject {
 
     func onAppear() {
         let tabViewModel = listViewModel(for: selectedTab)
-        analytics.track(event: .BookingList.bookingListDisplayed(
+        analytics.track(event: .BookingList.bookingListView(
             tab: selectedTab,
             isDefaultTab: selectedTab == BookingListContainerViewModel.defaultTab,
             isListEmpty: tabViewModel.bookings.isEmpty,
@@ -169,14 +169,14 @@ final class BookingListContainerViewModel: ObservableObject {
     func selectedBookingChanged() {
         let tabViewModel = listViewModel(for: selectedTab)
         let searchViewModel = searchViewModel(for: selectedTab)
-        analytics.track(event: .BookingList.bookingTapped(
+        analytics.track(event: .BookingList.bookingTap(
             selectedTab: selectedTab,
             isSearchActive: !searchViewModel.currentSearchQuery.isEmpty,
             isFilteringActive: tabViewModel.hasFilters))
     }
 
     func filtersTapped() {
-        analytics.track(event: .BookingList.filtersTapped())
+        analytics.track(event: .BookingList.filtersTap())
     }
 
     func applyFiltersTapped() {
@@ -184,16 +184,16 @@ final class BookingListContainerViewModel: ObservableObject {
     }
 
     func searchTapped() {
-        analytics.track(event: .BookingList.searchTapped())
+        analytics.track(event: .BookingList.searchTap())
     }
 
     func sortByTapped() {
-        analytics.track(event: .BookingList.sortByTapped())
+        analytics.track(event: .BookingList.sortByTap())
     }
 
     func sortByOptionSelected(_ option: BookingListViewModel.SortBy) {
         sortBy = option
-        analytics.track(event: .BookingList.sortByOptionTapped(option))
+        analytics.track(event: .BookingList.sortByOptionTap(option))
     }
 }
 
@@ -307,14 +307,32 @@ enum BookingListTab: Int, CaseIterable {
         }
     }
 
-    func startDateBefore(currentDate: Date) -> Date? {
+    /// Filters sent to the remote API (date range boundaries and status exclusions per tab).
+    func remoteFilters(currentDate: Date) -> BookingFilters {
+        BookingFilters(
+            startDateBefore: startDateBefore(currentDate: currentDate)?.ISO8601Format(),
+            startDateAfter: startDateAfter(currentDate: currentDate)?.ISO8601Format(),
+            bookingStatusExclude: bookingStatusExclude
+        )
+    }
+
+    private var bookingStatusExclude: [String] {
+        switch self {
+        case .today, .upcoming:
+            [BookingStatus.cancelled.rawValue]
+        case .all:
+            []
+        }
+    }
+
+    private func startDateBefore(currentDate: Date) -> Date? {
         switch self {
         case .today: currentDate.endOfDay(timezone: Self.utcTimeZone).addingTimeInterval(1)
         case .upcoming, .all: nil
         }
     }
 
-    func startDateAfter(currentDate: Date) -> Date? {
+    private func startDateAfter(currentDate: Date) -> Date? {
         switch self {
         case .today: currentDate.startOfDay(timezone: Self.utcTimeZone).addingTimeInterval(-1)
         case .upcoming: currentDate.endOfDay(timezone: Self.utcTimeZone)

@@ -1,0 +1,14 @@
+[
+    {
+        "id": 7,
+        "date_gmt": "2025-03-01T10:00:00",
+        "slug": "malformed-media",
+        "title": {
+            "rendered": "malformed media"
+        },
+        "alt_text": "",
+        "mime_type": "image/jpeg",
+        "media_details": [],
+        "source_url": "https://example.com/wp-content/uploads/malformed-media.jpeg"
+    }
+]

@@ -1,32 +1,34 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSBookingDetailView: View {
-    let booking: POSBooking
+    @Binding var booking: POSBooking
     let onBack: () -> Void
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
 
     @State private var navigationPath: [NavigationDestination] = []
+    @State private var cancelModalState: CancelBookingModalState?
+    @State private var showPaymentView = false
+    @State private var paymentModel: POSPaymentModel?
+    @State private var inlineButtonMinY: CGFloat = .infinity
+    @State private var stickyButtonHeight: CGFloat = 0
+    @State private var scrollViewHeight: CGFloat = 0
+    @State private var isDetailsUpdating = false
+    @State private var isShowingNoteView = false
+    @State private var isShowingEmailReceiptView = false
+
+    private var actionTintColor: Color {
+        colorScheme == .dark ? .posSecondary : .posPrimaryContainer
+    }
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
-    }
-
-    private var lifecycleStatus: POSBookingLifecycleStatus {
-        POSBookingLifecycleStatus(bookingStatus: booking.status)
-    }
-
-    private var paymentStatus: POSBookingPaymentStatus {
-        POSBookingPaymentStatus(bookingStatus: booking.status)
-    }
-
-    private var attendanceDisplay: POSBookingAttendanceDisplay {
-        POSBookingAttendanceDisplay(attendanceStatus: booking.attendanceStatus)
-    }
-
-    private var isPaid: Bool {
-        paymentStatus == .paid
     }
 
     var body: some View {
@@ -37,14 +39,49 @@ struct POSBookingDetailView: View {
                     case .orderDetail:
                         POSOrderDetailsView(order: booking.order, onBack: {
                             navigationPath.removeLast()
-                        })
+                        }, isShowingEmailReceiptView: $isShowingEmailReceiptView)
                         // Forces back button to be rendered, otherwise the system assumes that
                         // navigation is handled by the split view's sidebar, not a back button
                         .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
                             navigationPath.removeLast()
                         }))
+                    case .orderDetailRefund:
+                        POSOrderDetailsView(
+                            order: booking.order,
+                            onBack: { navigationPath.removeLast() },
+                            isShowingEmailReceiptView: $isShowingEmailReceiptView,
+                            autoStartRefund: true,
+                            onRefundSuccess: {
+                                Task {
+                                    isDetailsUpdating = true
+                                    await bookingsModel.updateAfterRefund(bookingID: booking.id)
+                                    isDetailsUpdating = false
+                                }
+                            },
+                            onRefundFailure: { error in
+                                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(error: error))
+                            }
+                        )
+                        .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: {
+                            navigationPath.removeLast()
+                        }))
                     }
                 }
+        }
+        .posFullScreenCover(isPresented: $showPaymentView) {
+            if let paymentModel {
+                POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
+            }
+        }
+        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                try await orderListModel.sendReceipt(order: booking.order, email: email)
+            }
+            .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .posFullScreenCover(isPresented: $isShowingNoteView) {
+            POSBookingNoteView(booking: booking, isShowingNoteView: $isShowingNoteView)
+                .posHeaderBackButtonIcon(systemName: "xmark")
         }
     }
 
@@ -52,255 +89,365 @@ struct POSBookingDetailView: View {
     private var bookingDetailContent: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: booking.serviceName.isEmpty ? Localization.bookingTitle : booking.serviceName,
+                title: POSBookingDateFormatter.formattedTimeRange(for: booking),
+                isLoading: isDetailsUpdating,
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
-                    viewOrderMenu
+                    headerTrailingContent
+                },
+                bottomContent: {
+                    POSBookingSummaryView(booking: booking)
+                        .padding(.top, POSPadding.xSmall)
                 }
             )
+            .fixedSize(horizontal: false, vertical: true)
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
             ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    headerSection
+                VStack(alignment: .leading, spacing: POSSpacing.large) {
                     bookingDetailsSection
+                    if booking.lifecycleStatus != .cancelled {
+                        POSBookingAttendanceSectionView(booking: booking)
+                    }
                     customerSection
-                    customerNoteSection
-                    attendanceSection
                     paymentBreakdownSection
-                    paymentActionSection
+
+                    if shouldShowCollectPayment {
+                        collectPaymentButton
+                            .background(
+                                GeometryReader { geo in
+                                    Color.clear.preference(
+                                        key: InlineButtonMinYPreferenceKey.self,
+                                        value: geo.frame(in: .named("bookingDetailScroll")).minY
+                                    )
+                                }
+                            )
+                    }
+
+                    bookingNoteSection
                 }
                 .padding(.top, POSPadding.xSmall)
                 .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.bottom, shouldShowCollectPayment ? stickyButtonHeight + POSPadding.medium : POSPadding.medium)
+            }
+            .coordinateSpace(name: "bookingDetailScroll")
+            .measureHeight { scrollViewHeight = $0 }
+            .onPreferenceChange(InlineButtonMinYPreferenceKey.self) { value in
+                inlineButtonMinY = value
+            }
+            .overlay(alignment: .bottom) {
+                if shouldShowCollectPayment {
+                    stickyPaymentOverlay
+                }
             }
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posModal(item: $cancelModalState) { state in
+            POSCancelBookingModalContent(
+                state: state,
+                booking: booking,
+                cancelModalState: $cancelModalState
+            )
+        }
     }
 
     @ViewBuilder
-    private var viewOrderMenu: some View {
-        Menu {
+    private var headerTrailingContent: some View {
+        HStack(spacing: POSSpacing.small) {
             Button(Localization.viewOrderAction) {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingViewOrderTapped())
                 navigationPath.append(.orderDetail)
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+
+            if hasOverflowMenuActions {
+                overflowMenu
+            }
+        }
+    }
+
+    private var hasOverflowMenuActions: Bool {
+        booking.isPaid || booking.isCancellable
+    }
+
+    @ViewBuilder
+    private var overflowMenu: some View {
+        Menu {
+            if booking.isPaid {
+                Button(Localization.issueRefundAction) {
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingIssueRefundTapped())
+                    orderListModel.ordersController.selectOrder(booking.order)
+                    navigationPath.append(.orderDetailRefund)
+                }
+            }
+            if booking.isCancellable {
+                Button(Localization.cancelBookingAction, role: .destructive) {
+                    cancelModalState = .confirmation
+                }
             }
         } label: {
             Image(systemName: "ellipsis")
                 .font(.posBodyLargeBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .foregroundColor(.posOnSurface)
+                .foregroundColor(.posOnDisabledContainer)
                 .padding(POSPadding.small)
+                .accessibilityLabel(Localization.moreActionsAccessibilityLabel)
         }
         .menuIndicator(.hidden)
     }
 
-    // MARK: - Section 1: Header
+    // MARK: - Booking Details
 
     @ViewBuilder
-    private var headerSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Text(formattedTimeRange)
-                .font(.posBodySmallRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-
-            Text(headerTitle)
-                .font(.posBodySmallBold())
+    private var bookingDetailsSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(String(format: Localization.bookingIdTitle, booking.id))
+                .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
 
-            HStack(spacing: POSSpacing.small) {
-                Text(attendanceDisplay.localizedTitle)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-
-                Text(paymentStatus.localizedTitle)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(paymentStatus.color)
-
-                if lifecycleStatus.shouldShowBadge {
-                    Text(lifecycleStatus.localizedTitle)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(lifecycleStatus.badgeColor)
+            ForEach(Array(bookingDetailRows.enumerated()), id: \.offset) { index, row in
+                if index > 0 {
+                    sectionDivider
                 }
+                detailRow(label: row.label, value: row.value)
+            }
+        }
+        .sectionCard()
+    }
+
+    private var bookingDetailRows: [(label: String, value: String)] {
+        var rows: [(label: String, value: String)] = []
+        if let resourceName = booking.resourceName {
+            rows.append((Localization.teamMemberLabel, resourceName))
+        }
+        if let location = booking.location {
+            rows.append((Localization.locationLabel, location))
+        }
+        if !booking.duration.isEmpty {
+            rows.append((Localization.durationLabel, booking.duration))
+        }
+        return rows
+    }
+
+    // MARK: - Customer
+
+    @ViewBuilder
+    private var customerSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            HStack(spacing: POSSpacing.medium) {
+                Text(Localization.customerTitle)
+                    .font(.posBodyXLargeRegular)
+                    .foregroundStyle(Color.posOnSurface)
+                    .accessibilityAddTraits(.isHeader)
+
+                if booking.isGuest {
+                    POSBookingBadgeView(
+                        title: Localization.guestBadge,
+                        textColor: .posOnDefault,
+                        backgroundColor: .posDefault
+                    )
+                }
+            }
+
+            if let email = booking.customerEmail {
+                CopyableRow(
+                    text: email,
+                    copyButtonAccessibilityLabel: Localization.copyEmailAccessibilityLabel,
+                    rowAccessibilityLabel: Localization.emailAccessibilityLabel(email),
+                    tintColor: actionTintColor
+                )
+            }
+
+            if let phone = booking.customerPhone {
+                sectionDivider
+                CopyableRow(
+                    text: phone,
+                    copyButtonAccessibilityLabel: Localization.copyPhoneAccessibilityLabel,
+                    rowAccessibilityLabel: Localization.phoneAccessibilityLabel(phone),
+                    tintColor: actionTintColor
+                )
+            }
+
+            if let note = booking.customerNote {
+                sectionDivider
+                stackedField(label: Localization.noteLabel, value: note)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .sectionCard()
     }
 
-    private var headerTitle: String {
-        let parts = [booking.serviceName, booking.customerName].compactMap { $0 }.filter { !$0.isEmpty }
-        return parts.joined(separator: " \u{00B7} ")
-    }
-
-    // MARK: - Section 2: Booking Details
-
     @ViewBuilder
-    private var bookingDetailsSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            detailRow(label: Localization.dateLabel, value: formattedDate)
-            detailRow(label: Localization.timeLabel, value: formattedTimeRange)
-
-            if let resourceName = booking.resourceName {
-                detailRow(label: Localization.teamMemberLabel, value: resourceName)
-            }
-
-            if let location = booking.location {
-                detailRow(label: Localization.locationLabel, value: location)
-            }
-
-            if !booking.duration.isEmpty {
-                detailRow(label: Localization.durationLabel, value: booking.duration)
-            }
+    private func stackedField(label: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Text(label)
+                .font(.posCaptionRegular)
+                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            Text(value)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(Color.posOnSurface)
         }
-        .sectionCard()
+        .accessibilityElement(children: .combine)
     }
 
-    // MARK: - Section 3: Customer
+    // MARK: - Booking Note
 
     @ViewBuilder
-    private var customerSection: some View {
-        let hasCustomerDetails = booking.customerName != nil || booking.customerEmail != nil
-            || booking.customerPhone != nil || booking.billingAddress != nil
-        if hasCustomerDetails {
+    private var bookingNoteSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
             VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                if let customerName = booking.customerName {
-                    detailRow(label: Localization.customerLabel, value: customerName)
+                sectionTitleWithAction(title: Localization.bookingNoteLabel) {
+                    Button(noteButtonTitle) {
+                        analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingAddNoteTapped())
+                        isShowingNoteView = true
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .compact))
                 }
 
-                if let email = booking.customerEmail {
-                    detailRow(label: Localization.emailLabel, value: email)
+                if let note = booking.bookingNote {
+                    Text(note)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 }
-
-                if let phone = booking.customerPhone {
-                    detailRow(label: Localization.phoneLabel, value: phone)
-                }
-
-                if let address = booking.billingAddress {
-                    detailRow(label: Localization.billingAddressLabel, value: address)
-                }
-            }
-            .sectionCard()
-        }
-    }
-
-    // MARK: - Section 4: Customer Note
-
-    @ViewBuilder
-    private var customerNoteSection: some View {
-        if let note = booking.customerNote {
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(Localization.customerNoteLabel)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posOnSurface)
-
-                Text(note)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .sectionCard()
-        }
-    }
 
-    // MARK: - Section 5: Attendance Status
-
-    @ViewBuilder
-    private var attendanceSection: some View {
-        HStack {
-            Text(Localization.attendanceLabel)
+            Text(Localization.bookingNoteSubtitle)
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
-
-            Spacer()
-
-            Text(attendanceDisplay.localizedTitle)
-                .font(.posBodySmallBold())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                .padding(.horizontal, POSPadding.xSmall)
         }
-        .sectionCard()
     }
 
-    // MARK: - Section 6: Payment Breakdown
+    // MARK: - Payment Breakdown
 
-    @ViewBuilder
     private var paymentBreakdownSection: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
-            if !booking.serviceName.isEmpty {
-                detailRow(label: booking.serviceName, value: booking.formattedSubtotal ?? booking.formattedAmount)
-            }
-
-            detailRow(label: Localization.taxesLabel, value: booking.formattedTax ?? Localization.taxesZero)
-            detailRow(label: Localization.discountLabel, value: Localization.discountNone)
-
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
-
-            detailRow(label: Localization.totalLabel, value: booking.formattedAmount)
-        }
-        .sectionCard()
+        POSTotalsSectionView(
+            sectionTitle: Localization.paymentTitle,
+            subtotalLabel: Localization.serviceLabel,
+            subtotalAmount: booking.formattedSubtotal ?? booking.order.formattedSubtotal,
+            discountAmount: booking.order.formattedDiscountTotal ?? Localization.noDiscountPlaceholder,
+            taxAmount: booking.order.formattedTotalTax,
+            totalAmount: booking.order.formattedTotal,
+            paidAmount: nil,
+            paymentMethodTitle: "",
+            refunds: [],
+            netAmount: nil
+        )
     }
 
-    // MARK: - Section 7: Payment Action / Status
+    // MARK: - Payment Action
+
+    private func dismissPayment() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
+        showPaymentView = false
+        paymentModel = nil
+        guard paymentSucceeded else { return }
+        Task { @MainActor in
+            isDetailsUpdating = true
+            await bookingsModel.updateAfterSuccessfulPayment(bookingID: booking.id)
+            isDetailsUpdating = false
+        }
+    }
+
+    private func startPaymentCollection() {
+        guard booking.orderID != nil else { return }
+        paymentModel = bookingsModel.makePaymentModel(
+            for: booking, onDismiss: dismissPayment, analytics: analytics)
+        showPaymentView = true
+    }
+
+    private var noteButtonTitle: String {
+        if booking.bookingNote != nil {
+            Localization.editNoteButton
+        } else {
+            Localization.addNoteButton
+        }
+    }
+
+    private var shouldShowCollectPayment: Bool {
+        !booking.isPaid && booking.lifecycleStatus != .cancelled
+    }
+
+    private var collectPaymentButton: some View {
+        Button(action: { startPaymentCollection() }) {
+            Text(Localization.collectPaymentButton)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal))
+    }
 
     @ViewBuilder
-    private var paymentActionSection: some View {
-        if isPaid {
-            HStack {
-                Text(Localization.paidStatusLabel)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posSuccess)
+    private var stickyPaymentOverlay: some View {
+        let stickyButtonY = scrollViewHeight - stickyButtonHeight + POSPadding.medium
+        let isVisible = inlineButtonMinY - stickyButtonY > 0
 
-                Spacer()
+        VStack(spacing: 0) {
+            Divider()
+                .overlay(Color.posOutlineVariant)
 
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.posSuccess)
-            }
-            .sectionCard()
-        } else if lifecycleStatus != .cancelled {
-            Button(action: {
-                // Payment action — wired in a later milestone
-            }) {
-                Text(Localization.collectPaymentButton)
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
+            collectPaymentButton
+                .padding(POSPadding.medium)
+                .background(Color.posSurfaceContainerLowest)
         }
+        .shadow(color: .black.opacity(0.08), radius: 15, x: 0, y: -5)
+        .shadow(color: .black.opacity(0.04), radius: 18, x: 0, y: -15)
+        .opacity(isVisible ? 1 : 0)
+        .allowsHitTesting(isVisible)
+        .measureHeight { stickyButtonHeight = $0 }
     }
 
     // MARK: - Shared Components
+
+    private func sectionTitleWithAction<Action: View>(title: String, @ViewBuilder action: () -> Action) -> some View {
+        HStack(alignment: .top) {
+            Text(title)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+            Spacer()
+            action()
+                .fixedSize(horizontal: true, vertical: false)
+        }
+    }
+
+    private var sectionDivider: some View {
+        Divider()
+            .overlay(Color.posOutlineVariant.opacity(0.5))
+    }
 
     @ViewBuilder
     private func detailRow(label: String, value: String) -> some View {
         HStack {
             Text(label)
-                .font(.posBodySmallRegular())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
 
             Spacer()
 
             Text(value)
-                .font(.posBodySmallBold())
+                .font(.posBodyMediumRegular())
                 .foregroundStyle(Color.posOnSurface)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label) \(value)")
     }
+}
 
-    // MARK: - Formatting
+// MARK: - POSBooking Presentation Helpers
 
-    private var formattedDate: String {
-        DateFormatter.dateOnlyFormatter.string(from: booking.startDate)
-    }
-
-    private var formattedTimeRange: String {
-        let formatter = DateFormatter.timeOnlyFormatter
-        let start = formatter.string(from: booking.startDate)
-        let end = formatter.string(from: booking.endDate)
-        return "\(start) – \(end)"
+private extension POSBooking {
+    var isGuest: Bool {
+        customerID == 0
     }
 }
 
 // MARK: - Section Card Modifier
 
-private struct SectionCardModifier: ViewModifier {
+struct POSBookingSectionCardModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(POSPadding.medium)
@@ -309,55 +456,35 @@ private struct SectionCardModifier: ViewModifier {
     }
 }
 
-private extension View {
+extension View {
     func sectionCard() -> some View {
-        modifier(SectionCardModifier())
+        modifier(POSBookingSectionCardModifier())
     }
 }
 
-// MARK: - Date Formatters
+// MARK: - Preference Keys
 
-private extension DateFormatter {
-    static let dateOnlyFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }()
-
-    static let timeOnlyFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
+private struct InlineButtonMinYPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat = .infinity
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = min(value, nextValue())
+    }
 }
 
 // MARK: - Navigation
 
 private enum NavigationDestination: Hashable {
     case orderDetail
+    case orderDetailRefund
 }
 
 // MARK: - Localization
 
 private enum Localization {
-    static let bookingTitle = NSLocalizedString(
-        "pos.bookingDetailView.bookingTitle",
-        value: "Booking",
-        comment: "Default title for the booking detail view when no service name is available."
-    )
-
-    static let dateLabel = NSLocalizedString(
-        "pos.bookingDetailView.dateLabel",
-        value: "Date",
-        comment: "Label for the date in booking details."
-    )
-
-    static let timeLabel = NSLocalizedString(
-        "pos.bookingDetailView.timeLabel",
-        value: "Time",
-        comment: "Label for the time range in booking details."
+    static let bookingIdTitle = NSLocalizedString(
+        "pos.bookingDetailView.bookingIdTitle",
+        value: "Booking #%lld",
+        comment: "Section title for booking details showing the booking ID number. %lld is the booking ID."
     )
 
     static let teamMemberLabel = NSLocalizedString(
@@ -378,87 +505,205 @@ private enum Localization {
         comment: "Label for the duration in booking details."
     )
 
-    static let customerLabel = NSLocalizedString(
-        "pos.bookingDetailView.customerLabel",
+    static let customerTitle = NSLocalizedString(
+        "pos.bookingDetailView.customerTitle",
         value: "Customer",
-        comment: "Label for the customer name in booking details."
+        comment: "Section title for the customer details in booking details."
     )
 
-    static let emailLabel = NSLocalizedString(
-        "pos.bookingDetailView.emailLabel",
-        value: "Email",
-        comment: "Label for the customer email in booking details."
+    static let guestBadge = NSLocalizedString(
+        "pos.bookingDetailView.guestBadge",
+        value: "Guest",
+        comment: "Badge label shown next to the customer section title when the booking has no associated customer (guest checkout)."
     )
 
-    static let phoneLabel = NSLocalizedString(
-        "pos.bookingDetailView.phoneLabel",
-        value: "Phone",
-        comment: "Label for the customer phone number in booking details."
+    static let noteLabel = NSLocalizedString(
+        "pos.bookingDetailView.noteLabel",
+        value: "Note",
+        comment: "Label for the customer note in booking details."
     )
 
-    static let billingAddressLabel = NSLocalizedString(
-        "pos.bookingDetailView.billingAddressLabel",
-        value: "Billing address",
-        comment: "Label for the billing address in booking details."
+    static let bookingNoteLabel = NSLocalizedString(
+        "pos.bookingDetailView.bookingNoteLabel",
+        value: "Booking note",
+        comment: "Label for the private booking note section in booking details."
     )
 
-    static let customerNoteLabel = NSLocalizedString(
-        "pos.bookingDetailView.customerNoteLabel",
-        value: "Customer note",
-        comment: "Label for the customer note section in booking details."
+    static let addNoteButton = NSLocalizedString(
+        "pos.bookingDetailView.addNoteButton",
+        value: "Add note",
+        comment: "Button to add a private note to a booking."
     )
 
-    static let attendanceLabel = NSLocalizedString(
-        "pos.bookingDetailView.attendanceLabel",
-        value: "Attendance",
-        comment: "Label for the booking attendance status in booking details."
+    static let editNoteButton = NSLocalizedString(
+        "pos.bookingDetailView.editNoteButton",
+        value: "Edit note",
+        comment: "Button to edit an existing private note on a booking."
     )
 
-    static let taxesLabel = NSLocalizedString(
-        "pos.bookingDetailView.taxesLabel",
-        value: "Taxes",
-        comment: "Label for taxes in booking payment breakdown."
+    static let bookingNoteSubtitle = NSLocalizedString(
+        "pos.bookingDetailView.bookingNoteSubtitle",
+        value: "This is a private note. It'll not be shared with the customer.",
+        comment: "Subtitle text below the booking note section explaining the note is private."
     )
 
-    static let taxesZero = NSLocalizedString(
-        "pos.bookingDetailView.taxesZero",
-        value: "$0.00",
-        comment: "Placeholder for zero taxes in booking payment breakdown."
+    static let paymentTitle = NSLocalizedString(
+        "pos.bookingDetailView.paymentTitle",
+        value: "Payment",
+        comment: "Section title for the payment breakdown in booking details."
     )
 
-    static let discountLabel = NSLocalizedString(
-        "pos.bookingDetailView.discountLabel",
-        value: "Discount",
-        comment: "Label for discount in booking payment breakdown."
-    )
-
-    static let discountNone = NSLocalizedString(
-        "pos.bookingDetailView.discountNone",
-        value: "–",
-        comment: "Displayed when there is no discount on a booking."
-    )
-
-    static let totalLabel = NSLocalizedString(
-        "pos.bookingDetailView.totalLabel",
-        value: "Total",
-        comment: "Label for the total amount in booking payment breakdown."
-    )
-
-    static let paidStatusLabel = NSLocalizedString(
-        "pos.bookingDetailView.paidStatusLabel",
-        value: "Paid",
-        comment: "Status label shown when a booking has been paid."
+    static let serviceLabel = NSLocalizedString(
+        "pos.bookingDetailView.serviceLabel",
+        value: "Service",
+        comment: "Label for the service cost in booking payment breakdown."
     )
 
     static let collectPaymentButton = NSLocalizedString(
         "pos.bookingDetailView.collectPaymentButton",
-        value: "Collect Payment",
+        value: "Collect payment",
         comment: "Button to initiate payment collection for a booking."
     )
 
     static let viewOrderAction = NSLocalizedString(
         "pos.bookingDetailView.viewOrderAction",
         value: "View Order",
-        comment: "Menu action to view the linked order from a booking detail."
+        comment: "Button to view the linked order from the booking detail header."
+    )
+
+    // MARK: - Accessibility
+
+    static func emailAccessibilityLabel(_ email: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingDetailView.email.accessibilityLabel",
+            value: "Email: %1$@",
+            comment: "Accessibility label for customer email row in booking details. %1$@ is the email address."
+        )
+        return String(format: format, email)
+    }
+
+    static func phoneAccessibilityLabel(_ phone: String) -> String {
+        let format = NSLocalizedString(
+            "pos.bookingDetailView.phone.accessibilityLabel",
+            value: "Phone: %1$@",
+            comment: "Accessibility label for customer phone row in booking details. %1$@ is the phone number."
+        )
+        return String(format: format, phone)
+    }
+
+    static let copyEmailAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.copyEmail.accessibilityLabel",
+        value: "Copy email address",
+        comment: "Accessibility label for the copy email button in booking details."
+    )
+
+    static let copyPhoneAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.copyPhone.accessibilityLabel",
+        value: "Copy phone number",
+        comment: "Accessibility label for the copy phone button in booking details."
+    )
+
+    static let moreActionsAccessibilityLabel = NSLocalizedString(
+        "pos.bookingDetailView.moreActions.accessibilityLabel",
+        value: "More actions",
+        comment: "Accessibility label for the overflow actions menu button in booking details."
+    )
+
+    static let issueRefundAction = NSLocalizedString(
+        "pos.bookingDetailView.issueRefundAction",
+        value: "Issue Refund",
+        comment: "Menu action to issue a full refund for a booking."
+    )
+
+    static let cancelBookingAction = NSLocalizedString(
+        "pos.bookingDetailView.cancelBookingAction",
+        value: "Cancel Booking",
+        comment: "Menu action to cancel a booking from the POS booking detail view."
+    )
+
+    static let noDiscountPlaceholder = NSLocalizedString(
+        "pos.bookingDetailView.noDiscountPlaceholder",
+        value: "-",
+        comment: "Placeholder shown in the payment breakdown when there is no discount on the booking."
+    )
+
+}
+
+// MARK: - CopyableRow
+
+private struct CopyableRow: View {
+    let text: String
+    let copyButtonAccessibilityLabel: String
+    let rowAccessibilityLabel: String
+    let tintColor: Color
+
+    @State private var copied = false
+    @State private var copyTask: Task<Void, Never>?
+
+    var body: some View {
+        Button {
+            copyToClipboard()
+        } label: {
+            HStack {
+                Text(text)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurface)
+                Spacer()
+                Image(systemName: copied ? "checkmark" : "doc.on.doc")
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(tintColor)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+            .frame(minHeight: 32)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(rowAccessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint(copyButtonAccessibilityLabel)
+    }
+
+    private func copyToClipboard() {
+        UIPasteboard.general.string = text
+        copied = true
+        copyTask?.cancel()
+        copyTask = Task {
+            try? await Task.sleep(for: .seconds(1.5))
+            guard !Task.isCancelled else { return }
+            copied = false
+        }
+    }
+}
+
+// MARK: - Previews
+
+#if DEBUG
+#Preview("Paid Booking") {
+    POSBookingDetailView(
+        booking: .constant(POSPreviewHelpers.makePreviewPaidBooking()),
+        onBack: {}
     )
 }
+
+#Preview("Unpaid Booking") {
+    POSBookingDetailView(
+        booking: .constant(POSPreviewHelpers.makePreviewUnpaidBooking()),
+        onBack: {}
+    )
+}
+
+#Preview("Guest Booking") {
+    POSBookingDetailView(
+        booking: .constant(POSPreviewHelpers.makePreviewGuestBooking()),
+        onBack: {}
+    )
+}
+
+#Preview("Cancelled Booking") {
+    POSBookingDetailView(
+        booking: .constant(POSPreviewHelpers.makePreviewCancelledBooking()),
+        onBack: {}
+    )
+}
+#endif

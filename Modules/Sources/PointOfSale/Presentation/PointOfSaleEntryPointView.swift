@@ -43,6 +43,7 @@ public struct PointOfSaleEntryPointView: View {
     private let searchHistoryService: POSSearchHistoryProviding
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
+    private let receiptSender: POSReceiptSending
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
     private let siteID: Int64
@@ -57,7 +58,7 @@ public struct PointOfSaleEntryPointView: View {
          couponProvider: PointOfSaleCouponServiceProtocol,
          couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryProtocol,
          orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
-         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol?,
+         bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryProtocol,
          isBookingsEligible: Bool,
          orderService: POSOrderServiceProtocol,
          refundsService: POSRefundsServiceProtocol,
@@ -138,6 +139,7 @@ public struct PointOfSaleEntryPointView: View {
             analyticsProvider: services.analytics
         )
         self.barcodeScanService = barcodeScanService
+        self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
@@ -145,9 +147,14 @@ public struct PointOfSaleEntryPointView: View {
                                                       currencySettingsProvider: services.currency,
                                                       currencyFormatter: CurrencyFormatter(currencySettings: services.currency.currencySettings))
         self.orderListModel = POSOrderListModel(ordersController: ordersController, receiptSender: receiptSender)
-        if let bookingListFetchStrategyFactory {
+        if isBookingsEligible && services.featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) {
             let bookingsController = POSBookingListController(bookingListFetchStrategyFactory: bookingListFetchStrategyFactory)
-            self.bookingsModel = POSBookingsModel(bookingsController: bookingsController)
+            self.bookingsModel = POSBookingsModel(
+                bookingsController: bookingsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderService: orderService,
+                receiptSender: receiptSender,
+                collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
         } else {
             self.bookingsModel = nil
         }
@@ -164,6 +171,7 @@ public struct PointOfSaleEntryPointView: View {
             if let posModel {
                 PointOfSaleDashboardView()
                     .environment(posModel)
+                    .environment(posModel.paymentModel)
             } else {
                 PointOfSaleLoadingView()
             }
@@ -186,6 +194,7 @@ public struct PointOfSaleEntryPointView: View {
                 searchHistoryService: searchHistoryService,
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
+                receiptSender: receiptSender,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible)
@@ -226,7 +235,7 @@ public struct PointOfSaleEntryPointView: View {
         couponProvider: PointOfSaleCouponServicePreview(),
         couponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactoryPreview(),
         orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryPreview(),
-        bookingListFetchStrategyFactory: nil,
+        bookingListFetchStrategyFactory: POSBookingListFetchStrategyFactoryPreview(),
         isBookingsEligible: true,
         orderService: POSOrderServicePreview(),
         refundsService: POSRefundsServicePreview(),

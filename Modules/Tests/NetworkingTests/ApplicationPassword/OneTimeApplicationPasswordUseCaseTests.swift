@@ -19,6 +19,7 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
     override func tearDown() {
         mockSession = nil
         storage = nil
+        WordPressRESTAPIRootCache.shared.reset()
         super.tearDown()
     }
 
@@ -107,6 +108,72 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertEqual(mockSession.responses.keys.contains(deleteURL(for: deleteUUID)), true)
     }
 
+    // MARK: - Discovery Tests
+
+    func test_deletePassword_when_discovery_returns_wp_json_root_then_uses_wp_json_url() async throws {
+        // Given
+        let deleteUUID = "fetched-uuid-456"
+        let wpJsonRoot = "https://test.com/wp-json/"
+        let introspectURL = "\(wpJsonRoot)wp/v2/users/me/application-passwords/introspect"
+        let deleteURL = "\(wpJsonRoot)wp/v2/users/me/application-passwords/\(deleteUUID)"
+        let introspectResponse = """
+        {
+            "uuid": "\(deleteUUID)",
+            "name": "test-password"
+        }
+        """.data(using: .utf8)!
+        mockSession.simulateResponse(for: introspectURL, data: introspectResponse)
+        mockSession.simulateResponse(for: deleteURL, data: Data())
+
+        let password = createTestPassword(uuid: "original-uuid")
+        let sut = OneTimeApplicationPasswordUseCase(
+            applicationPassword: password,
+            siteAddress: siteAddress,
+            injectedStorage: storage,
+            session: mockSession,
+            discovery: { _ in wpJsonRoot }
+        )
+
+        // When
+        try await sut.deletePassword(locally: true)
+
+        // Then
+        XCTAssertNil(storage.applicationPassword)
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL)
+    }
+
+    func test_deletePassword_when_discovery_returns_rest_route_root_then_uses_rest_route_url() async throws {
+        // Given
+        let deleteUUID = "fetched-uuid-789"
+        let restRouteRoot = "https://test.com/?rest_route=/"
+        let introspectURL = "https://test.com/?rest_route=/wp/v2/users/me/application-passwords/introspect"
+        let deleteURL = "https://test.com/?rest_route=/wp/v2/users/me/application-passwords/\(deleteUUID)"
+        let introspectResponse = """
+        {
+            "uuid": "\(deleteUUID)",
+            "name": "test-password"
+        }
+        """.data(using: .utf8)!
+        mockSession.simulateResponse(for: introspectURL, data: introspectResponse)
+        mockSession.simulateResponse(for: deleteURL, data: Data())
+
+        let password = createTestPassword(uuid: "original-uuid")
+        let sut = OneTimeApplicationPasswordUseCase(
+            applicationPassword: password,
+            siteAddress: siteAddress,
+            injectedStorage: storage,
+            session: mockSession,
+            discovery: { _ in restRouteRoot }
+        )
+
+        // When
+        try await sut.deletePassword(locally: true)
+
+        // Then
+        XCTAssertNil(storage.applicationPassword)
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL)
+    }
+
     // MARK: - Authentication Header Tests
 
     func test_deletePassword_sets_correct_authorization_header() async throws {
@@ -139,7 +206,8 @@ private extension OneTimeApplicationPasswordUseCaseTests {
             applicationPassword: password,
             siteAddress: siteAddress ?? self.siteAddress,
             injectedStorage: storage,
-            session: mockSession
+            session: mockSession,
+            discovery: { _ in nil }
         )
     }
 

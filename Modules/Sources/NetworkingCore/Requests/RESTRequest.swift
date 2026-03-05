@@ -105,7 +105,12 @@ public struct RESTRequest: Request {
     /// Returns a URLRequest instance representing the current REST API Request.
     ///
     public func asURLRequest() throws -> URLRequest {
-        let components = [siteURL, Settings.basePath, apiVersionPath, path]
+        let rootComponents: [String?] = if let cachedRoot = WordPressRESTAPIRootCache.shared.root(for: siteURL) {
+            [cachedRoot, apiVersionPath, path]
+        } else {
+            [siteURL, Settings.basePath, apiVersionPath, path]
+        }
+        let components = rootComponents
             .compactMap { $0 }
             .map { $0.trimSlashes() }
             .filter { $0.isEmpty == false }

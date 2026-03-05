@@ -181,8 +181,9 @@ private extension BookingListView {
                     .foregroundStyle(Color.secondary)
             }
 
-            HStack {
-                BookingBadgeView(booking.attendanceStatus)
+            HStack(spacing: BookingListViewLayout.bookingSummaryBadgeSpacing) {
+                BookingBadgeView(booking.bookingItemHeaderStatusBadge)
+                BookingBadgeView(booking.paymentStatusBadge)
                 Spacer()
             }
         }

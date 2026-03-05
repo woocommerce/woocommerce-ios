@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import TestKit
 import Combine
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class CreateOrderAddressFormViewModelTests: XCTestCase {

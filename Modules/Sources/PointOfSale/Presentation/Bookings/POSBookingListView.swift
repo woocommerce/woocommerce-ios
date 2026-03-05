@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 import enum Yosemite.SearchDebounceStrategy
 
@@ -8,6 +9,7 @@ struct POSBookingListView: View {
     let onClose: () -> Void
 
     @Environment(POSBookingsModel.self) private var bookingsModel
+    @Environment(\.posAnalytics) private var analytics
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     private var bookingsViewState: POSBookingListState {
@@ -22,7 +24,7 @@ struct POSBookingListView: View {
                     subtitle: nil,
                     isSelected: true,
                     isLoading: isSearching ? false : {
-                        if case .loading(let bookings) = bookingsViewState {
+                        if case .loading(let bookings, _) = bookingsViewState {
                             return !bookings.isEmpty
                         }
                         return false
@@ -36,6 +38,7 @@ struct POSBookingListView: View {
                             backgroundColor: .posSurface,
                             imageColor: .posOnSurface
                         ) {
+                            analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsListSearchButtonTapped())
                             setSearch(true)
                         }
                         .accessibilityLabel(Localization.searchButtonAccessibilityLabel)
@@ -71,21 +74,21 @@ struct POSBookingListView: View {
             )
             .animation(.easeInOut(duration: Constants.animationDuration), value: isSearching)
 
-            if !isSearching {
-                POSBookingDateBarView()
-            }
+            POSBookingDateBarView()
 
             switch (bookingsViewState, isSearching) {
-            case (.empty, true):
+            case (.empty, _):
                 POSListEmptyView(
-                    viewModel: POSBookingListEmptyViewModel(isSearching: true)
-                ) {}
-            case (.error(let errorState), true):
-                POSListErrorView(error: errorState) {
-                    Task { @MainActor in
+                    viewModel: POSBookingListEmptyViewModel(isSearching: isSearching)
+                )
+                .refreshable {
+                    await bookingsModel.bookingsController.refreshBookings()
+                }
+            case (.error(let errorState), _):
+                POSListErrorView(error: errorState)
+                    .refreshable {
                         await bookingsModel.bookingsController.loadBookings()
                     }
-                }
             default:
                 listView
             }
@@ -116,7 +119,6 @@ struct POSBookingListView: View {
             InfiniteScrollView(
                 triggerDeterminer: infiniteScrollTriggerDeterminer,
                 loadMore: {
-                    guard case .loaded(_, let hasMoreItems) = bookingsViewState, hasMoreItems else { return }
                     await bookingsModel.bookingsController.loadNextBookings()
                 },
                 content: {
@@ -124,26 +126,30 @@ struct POSBookingListView: View {
                         headerRows
                             .id(Constants.scrollTopID)
 
-                        let bookings = bookingsViewState.bookings
-                        ForEach(Array(bookings.enumerated()), id: \.element.id) { _, booking in
-                            Button(action: {
-                                bookingsModel.bookingsController.selectBooking(booking)
-                            }) {
-                                POSBookingRowView(booking: booking,
-                                                  isSelected: bookingsModel.bookingsController.selectedBooking?.id == booking.id)
+                        LazyVStack(spacing: POSSpacing.medium) {
+                            let bookings = bookingsViewState.bookings
+                            ForEach(Array(bookings.enumerated()), id: \.element.id) { _, booking in
+                                Button(action: {
+                                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsListBookingTapped())
+                                    bookingsModel.bookingsController.selectBooking(booking)
+                                }) {
+                                    POSBookingRowView(booking: booking,
+                                                      isSelected: bookingsModel.bookingsController.selectedBooking?.id == booking.id)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .accessibilityRemoveTraits(.isButton)
                             }
-                            .buttonStyle(PlainButtonStyle())
-                            .accessibilityRemoveTraits(.isButton)
-                        }
-                        .animation(.default, value: bookings.first?.id)
+                            .animation(.default, value: bookings.first?.id)
 
-                        footerRows
+                            footerRows
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, POSPadding.medium)
+                        .padding(.bottom, POSPadding.medium)
                     }
-                    .padding(.horizontal)
-                    .padding(.top, POSPadding.xSmall)
-                    .padding(.bottom, POSPadding.medium)
                 }
             )
+            .id(bookingsModel.bookingsController.selectedDate)
             .scrollDismissesKeyboard(.immediately)
             .onChange(of: searchTerm) { _, _ in
                 withAnimation {
@@ -156,14 +162,14 @@ struct POSBookingListView: View {
     @ViewBuilder
     private var footerRows: some View {
         switch bookingsViewState {
-        case .loading(let bookings):
+        case .loading(let bookings, _):
             if bookings.isEmpty {
                 ForEach(0..<8, id: \.self) { _ in
                     POSBookingGhostRowView()
                 }
                 .opacity(bookings.isEmpty ? 1 : 0)
                 .animation(.default, value: bookings.isEmpty)
-            } else {
+            } else if bookingsViewState.isPaginating {
                 POSBookingGhostRowView()
             }
         case .inlineError(_, let errorState, .pagination):

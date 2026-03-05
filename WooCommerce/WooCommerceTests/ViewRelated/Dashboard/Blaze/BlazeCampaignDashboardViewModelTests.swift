@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageType
 import WordPressAuthenticator
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 /// Test cases for `BlazeCampaignDashboardViewModel`.

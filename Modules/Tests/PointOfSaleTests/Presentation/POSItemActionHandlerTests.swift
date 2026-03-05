@@ -7,6 +7,7 @@ import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 @testable import PointOfSale
 
+@MainActor
 struct POSItemActionHandlerTests {
     @Test func handleTap_when_attempt_to_add_duplicated_coupons_in_list_then_does_not_add_it_to_cart() async throws {
         let aggregateModel = makePointOfSaleAggregateModel()
@@ -98,6 +99,7 @@ private func makeProductItem() -> POSItem {
                                 stockStatusKey: ""))
 }
 
+@MainActor
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
@@ -127,6 +129,7 @@ private func makePointOfSaleAggregateModel(
         searchHistoryService: searchHistoryService,
         popularPurchasableItemsController: popularPurchasableItemsController,
         barcodeScanService: barcodeScanService,
+        receiptSender: MockPOSReceiptSender(),
         siteID: 0
     )
 }

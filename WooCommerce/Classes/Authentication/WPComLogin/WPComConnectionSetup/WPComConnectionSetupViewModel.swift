@@ -1,9 +1,15 @@
 import Foundation
 import Combine
 import SwiftUI
+import protocol WooFoundation.Analytics
 
 @MainActor
 final class WPComConnectionSetupViewModel: ObservableObject {
+
+    struct WebViewPresentation: Equatable {
+        let url: URL
+        let siteURL: String
+    }
 
     enum CheckPluginError: Equatable {
         case outdated
@@ -17,8 +23,13 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     @Published private(set) var steps: [WPComConnectionSetupStep] = []
+    private var stepIndexMap: [SetupStep: Int] = [:]
     @Published private var setupState: SetupState = .inProgress
+    @Published var isShowingGetHelp = false
 
+    static let supportSourceTag = "origin:woo-push-notifications-setup"
+
+    let title: String
     let subtitleAttributedString: AttributedString
 
     var primaryButtonTitle: String {
@@ -50,26 +61,29 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         Localization.tryAgain
     }
 
-    var isShowingDoneButton: Bool {
-        setupState == .completed
-    }
-
     private let storeName: String
     private let handler: WPComConnectionSetupHandlerProtocol
+    private let analytics: Analytics
     private let onDismiss: () -> Void
     private let onGoToStore: () -> Void
-    private let onUpdatePlugin: () -> Void
+    private let onUpdatePlugin: (@escaping () -> Void) -> Void
+    private var shouldAutoOpenUpdatePlugin = false
 
     init(storeName: String,
+         siteAlreadyConnected: Bool = false,
          handler: WPComConnectionSetupHandlerProtocol,
+         analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void,
          onGoToStore: @escaping () -> Void,
-         onUpdatePlugin: @escaping () -> Void) {
+         onUpdatePlugin: @escaping (@escaping () -> Void) -> Void) {
         self.storeName = storeName
         self.handler = handler
+        self.analytics = analytics
         self.onDismiss = onDismiss
         self.onGoToStore = onGoToStore
         self.onUpdatePlugin = onUpdatePlugin
+
+        self.title = siteAlreadyConnected ? Localization.titleSetUpPushNotifications : Localization.titleConnectToWordPressCom
 
         self.subtitleAttributedString = {
             let content = String.localizedStringWithFormat(Localization.subtitle, storeName)
@@ -84,25 +98,44 @@ final class WPComConnectionSetupViewModel: ObservableObject {
         }()
 
         self.handler.delegate = self
-        setupInitialSteps()
+        setupInitialSteps(siteAlreadyConnected: siteAlreadyConnected)
     }
 
     func onAppear() {
+        if shouldAutoOpenUpdatePlugin {
+            shouldAutoOpenUpdatePlugin = false
+            onUpdatePlugin { [weak self] in
+                self?.retrySetup()
+            }
+            return
+        }
+        guard setupState == .inProgress else { return }
         handler.start()
+    }
+
+    func setPluginOutdatedState(version: String) {
+        stepDidUpdate(.checkPlugin, status: .failure(error: .outdatedPlugin(version: version)))
+        shouldAutoOpenUpdatePlugin = true
     }
 
     func primaryButtonTapped() {
         switch setupState {
         case .completed:
+            analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.goToMyStore))
             onGoToStore()
         case .failed(let step, let checkPluginError):
             switch step {
             case .connect, .enablePush:
+                analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
                 retrySetup()
             case .checkPlugin:
                 if checkPluginError == .outdated {
-                    onUpdatePlugin()
+                    analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.updatePlugin))
+                    onUpdatePlugin { [weak self] in
+                        self?.retrySetup()
+                    }
                 } else {
+                    analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
                     retrySetup()
                 }
             }
@@ -112,36 +145,42 @@ final class WPComConnectionSetupViewModel: ObservableObject {
     }
 
     func secondaryButtonTapped() {
+        analytics.track(event: .WPComPushNotificationsSetup.flowButtonTap(.tryAgain))
         retrySetup()
     }
 
     func cancelTapped() {
-        handler.cancel()
+        analytics.track(.pushNotificationsSetupFlowClose)
         onDismiss()
     }
 
-    func doneTapped() {
-        onDismiss()
+    func getHelpTapped() {
+        isShowingGetHelp = true
     }
 
     private func retrySetup() {
         setupState = .inProgress
+        updateStep(.enablePush, status: .notStarted)
         handler.retry()
     }
 
-    private func setupInitialSteps() {
-        steps = [
-            WPComConnectionSetupStep(title: Localization.connectStoreStep, status: .notStarted),
-            WPComConnectionSetupStep(title: Localization.checkPluginStep, status: .notStarted),
-            WPComConnectionSetupStep(title: Localization.enablePushNotificationsStep, status: .notStarted)
+    private func setupInitialSteps(siteAlreadyConnected: Bool) {
+        var stepsAndTitles: [(SetupStep, String)] = [
+            (.checkPlugin, Localization.checkPluginStep)
         ]
+        if !siteAlreadyConnected {
+            stepsAndTitles.append((.connect, Localization.connectStoreStep))
+        }
+        stepsAndTitles.append((.enablePush, Localization.enablePushNotificationsStep))
+
+        steps = stepsAndTitles.map { WPComConnectionSetupStep(title: $0.1, status: .notStarted) }
+        stepIndexMap = Dictionary(uniqueKeysWithValues: stepsAndTitles.enumerated().map { ($0.element.0, $0.offset) })
     }
 
     private func updateStep(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
-        assert(step.rawValue < steps.count, "SetupStep out of sync with steps array")
-        guard step.rawValue < steps.count else { return }
-        steps[step.rawValue] = WPComConnectionSetupStep(
-            title: steps[step.rawValue].title,
+        guard let index = stepIndexMap[step] else { return }
+        steps[index] = WPComConnectionSetupStep(
+            title: steps[index].title,
             status: status
         )
     }
@@ -151,15 +190,25 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
     func stepDidUpdate(_ step: SetupStep, status: WPComConnectionSetupStep.Status) {
         updateStep(step, status: status)
 
-        if case .failure(let reason) = status {
-            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: reason) : nil
+        switch status {
+        case .success:
+            analytics.track(.pushNotificationsSetupFlowSuccess, withProperties: ["step": step.analyticsKey])
+        case .failure(let error):
+            analytics.track(.pushNotificationsSetupFlowError, properties: ["step": step.analyticsKey], error: error)
+            let checkPluginError: CheckPluginError? = step == .checkPlugin ? checkPluginError(from: error) : nil
             setupState = .failed(step: step, checkPluginError: checkPluginError)
+        case .notStarted, .running:
+            break
         }
     }
 
-    private func checkPluginError(from reason: String) -> CheckPluginError {
-        // TODO: Update condition based on actual error identifier from handler
-        reason.contains("outdated") ? .outdated : .other
+    private func checkPluginError(from error: WPComConnectionSetupStep.ErrorType) -> CheckPluginError {
+        switch error {
+        case .outdatedPlugin:
+            return .outdated
+        case .generic:
+            return .other
+        }
     }
 
     func setupDidComplete() {
@@ -169,10 +218,20 @@ extension WPComConnectionSetupViewModel: WPComConnectionSetupHandlerDelegate {
 
 private extension WPComConnectionSetupViewModel {
     enum Localization {
+        static let titleConnectToWordPressCom = NSLocalizedString(
+            "wpComConnectionSetupViewModel.titleConnectToWordPressCom",
+            value: "Connect to WordPress.com",
+            comment: "Title for the WPCom connection setup screen when the site is not yet connected."
+        )
+        static let titleSetUpPushNotifications = NSLocalizedString(
+            "wpComConnectionSetupViewModel.titleSetUpPushNotifications",
+            value: "Set up push notifications",
+            comment: "Title for the WPCom connection setup screen when the site is already connected to WordPress.com."
+        )
         static let subtitle = NSLocalizedString(
-            "wpComConnectionSetupViewModel.subtitle",
-            value: "Please wait while we finalize connecting your store %@ to your WordPress.com account.",
-            comment: "Subtitle for the WPCom connection setup screen. %@ is the store name."
+            "wpComConnectionSetupViewModel.message",
+            value: "Please wait while we finalize connecting your store %1$@ to WordPress.com.",
+            comment: "Subtitle for the WPCom connection setup screen. %1$@ is the store name."
         )
         static let goToMyStore = NSLocalizedString(
             "wpComConnectionSetupViewModel.goToMyStore",

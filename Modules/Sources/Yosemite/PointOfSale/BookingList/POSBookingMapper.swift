@@ -6,9 +6,11 @@ import struct Networking.BookingResource
 
 struct POSBookingMapper {
     private let currencyFormatter: CurrencyFormatter
+    private let siteSettings: [SiteSetting]
 
-    init(currencyFormatter: CurrencyFormatter) {
+    init(currencyFormatter: CurrencyFormatter, siteSettings: [SiteSetting] = []) {
         self.currencyFormatter = currencyFormatter
+        self.siteSettings = siteSettings
     }
 
     func map(booking: Booking,
@@ -38,7 +40,14 @@ struct POSBookingMapper {
             return parts.isEmpty ? nil : parts.joined(separator: ", ")
         }()
 
-        let location: String? = formattedBillingAddress
+        // TODO: The source for booking location is still undecided.
+        // Using the store address from POS Settings as a temporary placeholder.
+        let location: String? = {
+            let siteAddress = SiteAddress(siteSettings: siteSettings)
+            let parts = [siteAddress.address, siteAddress.city, siteAddress.state, siteAddress.postalCode]
+                .filter { !$0.isEmpty }
+            return parts.isEmpty ? nil : parts.joined(separator: ", ")
+        }()
 
         let duration = Self.formatDuration(from: booking.startDate, to: booking.endDate)
 
@@ -51,6 +60,7 @@ struct POSBookingMapper {
 
         return POSBooking(
             id: booking.bookingID,
+            customerID: booking.customerID,
             customerName: customerName,
             serviceName: serviceName,
             startDate: booking.startDate,
@@ -65,6 +75,7 @@ struct POSBookingMapper {
             customerPhone: billingAddress?.phone?.nilIfEmpty,
             billingAddress: formattedBillingAddress,
             customerNote: orderInfo?.customerInfo?.note?.nilIfEmpty,
+            bookingNote: booking.note.nilIfEmpty,
             location: location,
             duration: duration,
             formattedSubtotal: formattedSubtotal,

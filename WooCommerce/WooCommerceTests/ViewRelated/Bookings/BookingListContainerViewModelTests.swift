@@ -4,6 +4,7 @@ import Testing
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Networking
 
@@ -26,9 +27,9 @@ class BookingListContainerViewModelTests {
         viewModel.setSelectedTab(to: .today)
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_tab_selected",
+        #expect(analyticsProvider.received(event: "booking_list_tab_select",
                                          with: ["selected_tab": "today"]))
-        #expect(analyticsProvider.received(event: "booking_list_displayed",
+        #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "today",
                                             "is_default_tab": true,
@@ -45,9 +46,9 @@ class BookingListContainerViewModelTests {
         viewModel.setSelectedTab(to: .all)
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_tab_selected",
+        #expect(analyticsProvider.received(event: "booking_list_tab_select",
                                          with: ["selected_tab": "all"]))
-        #expect(analyticsProvider.received(event: "booking_list_displayed",
+        #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "all",
                                             "is_default_tab": false,
@@ -64,7 +65,7 @@ class BookingListContainerViewModelTests {
         viewModel.onAppear()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_displayed",
+        #expect(analyticsProvider.received(event: "booking_list_view",
                                            with: [
                                             "selected_tab": "today",
                                             "is_default_tab": true,
@@ -82,7 +83,7 @@ class BookingListContainerViewModelTests {
 
         // Then
         #expect(analyticsProvider.received(
-            event: "booking_list_booking_tapped",
+            event: "booking_list_booking_tap",
             with: [
                 "selected_tab": "today",
                 "is_search_active": false,
@@ -98,7 +99,7 @@ class BookingListContainerViewModelTests {
         viewModel.filtersTapped()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_filters_tapped"))
+        #expect(analyticsProvider.received(event: "booking_list_filters_tap"))
     }
 
     @Test func event_fire_when_applyFiltersTapped() {
@@ -145,7 +146,7 @@ class BookingListContainerViewModelTests {
         viewModel.searchTapped()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_search_tapped"))
+        #expect(analyticsProvider.received(event: "booking_list_search_tap"))
     }
 
     @Test func event_fire_when_sortByTapped() {
@@ -156,7 +157,7 @@ class BookingListContainerViewModelTests {
         viewModel.sortByTapped()
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_sort_by_tapped"))
+        #expect(analyticsProvider.received(event: "booking_list_sort_by_tap"))
     }
 
     // MARK: - Filter propagation
@@ -217,7 +218,7 @@ class BookingListContainerViewModelTests {
         viewModel.sortByOptionSelected(.newestToOldest)
 
         // Then
-        #expect(analyticsProvider.received(event: "booking_list_sort_by_option_tapped",
+        #expect(analyticsProvider.received(event: "booking_list_sort_by_option_tap",
                                            with: ["sort_option": "newest_first"]))
     }
 }

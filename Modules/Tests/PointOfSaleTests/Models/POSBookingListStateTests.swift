@@ -199,7 +199,8 @@ private extension POSBookingListStateTests {
             paymentMethodTitle: "Cash",
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
-            formattedPaymentTotal: "$50.00"
+            formattedPaymentTotal: "$50.00",
+            datePaid: Date()
         )
     }
 }

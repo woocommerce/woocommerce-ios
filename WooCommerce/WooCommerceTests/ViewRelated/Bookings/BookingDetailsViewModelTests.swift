@@ -3,6 +3,7 @@ import TestKit
 import Yosemite
 import Fakes
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor

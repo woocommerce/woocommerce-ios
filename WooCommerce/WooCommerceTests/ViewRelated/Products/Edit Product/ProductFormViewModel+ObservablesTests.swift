@@ -3,6 +3,7 @@ import Photos
 import XCTest
 import Fakes
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Storage
 import Yosemite

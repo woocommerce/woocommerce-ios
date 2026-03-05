@@ -1,8 +1,7 @@
 import XCTest
 import CoreData
 import Yosemite
-
-
+import YosemiteTestHelpers
 
 // MARK: - EntityListener Unit Tests
 //

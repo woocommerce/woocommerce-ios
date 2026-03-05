@@ -41,7 +41,7 @@ struct WPComConnectionSetupView: View {
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
                     ConnectWPComHeaderView()
                     VStack(alignment: .leading, spacing: Constants.headerVerticalSpacing) {
-                        Text(Localization.title)
+                        Text(viewModel.title)
                             .largeTitleStyle()
                             .bold()
                         Text(viewModel.subtitleAttributedString)
@@ -127,11 +127,6 @@ private extension WPComConnectionSetupView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString(
-            "wpComConnectionSetupView.title",
-            value: "Connect to WordPress.com",
-            comment: "Title for the WPCom connection setup screen."
-        )
         static let cancelButton = NSLocalizedString(
             "wpComConnectionSetupView.cancelButton",
             value: "Cancel",

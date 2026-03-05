@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class BlazeCampaignListViewModelTests: XCTestCase {

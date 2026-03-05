@@ -5,6 +5,7 @@ import Yosemite
 import class Storage.ProductSearchResults
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor

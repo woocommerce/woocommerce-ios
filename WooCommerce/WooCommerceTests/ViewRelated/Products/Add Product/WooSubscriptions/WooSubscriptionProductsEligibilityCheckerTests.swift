@@ -2,6 +2,7 @@ import XCTest
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {

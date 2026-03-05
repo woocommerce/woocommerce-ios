@@ -4,6 +4,7 @@ import WooFoundation
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 /// Test cases for `IssueRefundViewModel`

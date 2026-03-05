@@ -4,6 +4,7 @@ import Testing
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Networking
 

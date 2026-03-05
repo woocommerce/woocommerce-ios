@@ -30,6 +30,7 @@ final class WooPushNotificationSetupCoordinator {
         )
         let viewModel = WPComConnectionSetupViewModel(
             storeName: site.name,
+            siteAlreadyConnected: siteAlreadyConnected,
             handler: handler,
             onDismiss: { [weak navigationController] in
                 navigationController?.dismiss(animated: true)

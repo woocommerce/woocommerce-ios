@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import Networking
 import Storage
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class PushNotificationBackgroundSynchronizerTests: XCTestCase {

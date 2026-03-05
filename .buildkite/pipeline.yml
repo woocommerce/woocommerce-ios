@@ -118,6 +118,14 @@ steps:
           - github_commit_status:
               context: Lint Localized Strings Format
 
+      - label: ":swift: Ensure single Package.resolved"
+        command: .buildkite/commands/check-package-resolved.sh
+        agents:
+          queue: default
+        notify:
+          - github_commit_status:
+              context: Check Package.resolved
+
   #################
   # UI Tests
   #################

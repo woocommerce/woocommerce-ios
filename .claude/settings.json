@@ -34,7 +34,8 @@
       "Bash(bundle exec fastlane *)",
       "Bash(./API-Mocks/scripts/start.sh *)",
       "Bash(./API-Mocks/scripts/stop.sh *)",
-      "mcp__mobile-mcp__*"
+      "mcp__mobile-mcp__*",
+      "mcp__figma__*"
     ],
     "deny": [
       "Bash(git push --force *)",

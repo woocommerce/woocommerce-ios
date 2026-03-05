@@ -92,6 +92,6 @@ private extension POSReceiptSender {
 private extension POSReceiptSender {
     enum POSReceiptEligibilityConstants {
         static let wcPluginMinimumVersion = "10.0.0"
-        static let wcAutoTemplateSelectionMinimumVersion = "10.7.0"
+        static let wcAutoTemplateSelectionMinimumVersion = "10.7.0-dev"
     }
 }

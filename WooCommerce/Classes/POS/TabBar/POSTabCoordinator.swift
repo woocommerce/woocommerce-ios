@@ -79,12 +79,15 @@ final class POSTabCoordinator {
     }()
 
     private lazy var posCouponProvider: PointOfSaleCouponServiceProtocol = {
+        let isSiteCIAB = storesManager.sessionManager.defaultSite
+            .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
         return PointOfSaleCouponService(siteID: siteID,
                                         currencySettings: currencySettings,
                                         credentials: credentials,
                                         selectedSite: defaultSitePublisher,
                                         appPasswordSupportState: isAppPasswordSupported,
-                                        storage: storageManager)
+                                        storage: storageManager,
+                                        isSiteCIAB: isSiteCIAB)
     }()
 
     private lazy var posBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory = {

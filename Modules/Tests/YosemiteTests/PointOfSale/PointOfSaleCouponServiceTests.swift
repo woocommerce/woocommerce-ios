@@ -99,6 +99,57 @@ struct PointOfSaleCouponServiceTests {
         }
     }
 
+    // MARK: - CIAB site tests
+
+    @Test func provideLocalPointOfSaleCoupons_when_CIAB_site_then_skips_settings_check_and_returns_coupons() async throws {
+        // Given
+        let ciabSettingStoreMethods = MockSettingStoreMethods()
+        ciabSettingStoreMethods.couponsEnabled = false
+        let ciabStorage = MockStorageManager()
+        let ciabMockStrategy = MockPointOfSaleCouponFetchStrategy()
+        let expectedCoupons = [POSItem.coupon(
+            POSCoupon(id: POSItemIdentifier(underlyingType: .product, itemID: 1), code: "test", summary: "test", dateExpires: nil)
+        )]
+        ciabMockStrategy.fetchLocalCouponsResult = expectedCoupons
+        let ciabSut = PointOfSaleCouponService(siteID: 123,
+                                               currencySettings: CurrencySettings(),
+                                               settingStoreMethods: ciabSettingStoreMethods,
+                                               storage: ciabStorage,
+                                               isSiteCIAB: true)
+
+        // When
+        let coupons = try await ciabSut.provideLocalPointOfSaleCoupons(fetchStrategy: ciabMockStrategy)
+
+        // Then
+        #expect(coupons == expectedCoupons)
+        #expect(ciabSettingStoreMethods.retrieveCouponSettingCalled == false)
+    }
+
+    @Test func providePointOfSaleCoupons_when_CIAB_site_and_fetch_fails_then_throws_loading_error_not_disabled() async throws {
+        // Given
+        let ciabSettingStoreMethods = MockSettingStoreMethods()
+        ciabSettingStoreMethods.couponsEnabled = false
+        let ciabStorage = MockStorageManager()
+        let ciabMockStrategy = MockPointOfSaleCouponFetchStrategy()
+        let underlyingError = NSError(domain: "test", code: 0)
+        ciabMockStrategy.fetchCouponsError = PointOfSaleCouponServiceError.couponsLoadingError(underlyingError: underlyingError)
+        let ciabSut = PointOfSaleCouponService(siteID: 123,
+                                               currencySettings: CurrencySettings(),
+                                               settingStoreMethods: ciabSettingStoreMethods,
+                                               storage: ciabStorage,
+                                               isSiteCIAB: true)
+
+        // When
+        do {
+            _ = try await ciabSut.providePointOfSaleCoupons(pageNumber: 1, fetchStrategy: ciabMockStrategy)
+        } catch {
+            // Then — should be loading error, NOT couponsDisabled
+            let expectedError = error as? PointOfSaleCouponServiceError
+            #expect(expectedError == .couponsLoadingError(underlyingError: underlyingError))
+            #expect(ciabSettingStoreMethods.retrieveCouponSettingCalled == false)
+        }
+    }
+
     @Test func providePointOfSaleCoupons_when_strategy_throws_and_coupons_disabled_then_throws_couponsDisabled() async throws {
         // Given
         settingStoreMethods.couponsEnabled = false

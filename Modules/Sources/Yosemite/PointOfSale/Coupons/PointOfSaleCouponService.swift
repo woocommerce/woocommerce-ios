@@ -19,14 +19,17 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let storage: StorageManagerType
     private let settingsStoreMethods: SettingStoreMethodsProtocol
+    private let isSiteCIAB: Bool
 
     init(siteID: Int64,
          currencySettings: CurrencySettings,
          settingStoreMethods: SettingStoreMethodsProtocol,
-         storage: StorageManagerType) {
+         storage: StorageManagerType,
+         isSiteCIAB: Bool = false) {
         self.siteID = siteID
         self.storage = storage
         self.settingsStoreMethods = settingStoreMethods
+        self.isSiteCIAB = isSiteCIAB
     }
 
     public convenience init(siteID: Int64,
@@ -34,14 +37,16 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,
-                            storage: StorageManagerType) {
+                            storage: StorageManagerType,
+                            isSiteCIAB: Bool = false) {
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
-                  storage: storage)
+                  storage: storage,
+                  isSiteCIAB: isSiteCIAB)
     }
 
     @MainActor
@@ -91,6 +96,9 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 private extension PointOfSaleCouponService {
     @MainActor
     private func checkStoreCouponSettings() async throws -> Bool {
+        if isSiteCIAB {
+            return true
+        }
         let settingID = Constants.enableCouponsSettingID
         let storageSetting = storage.viewStorage.loadSiteSetting(siteID: siteID, settingID: settingID)
 
@@ -103,7 +111,10 @@ private extension PointOfSaleCouponService {
     }
 
     private func checkRemoteStoreCouponSettings() async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
+        if isSiteCIAB {
+            return true
+        }
+        return try await withCheckedThrowingContinuation { continuation in
             settingsStoreMethods.retrieveCouponSetting(siteID: siteID) { result in
                 switch result {
                 case let .success(isEnabled):

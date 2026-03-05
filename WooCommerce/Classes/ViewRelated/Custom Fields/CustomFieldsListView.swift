@@ -6,6 +6,7 @@ final class CustomFieldsListHostingController: UIHostingController<CustomFieldsL
     private let viewModel: CustomFieldsListViewModel
     private let analytics: Analytics
     private var subscriptions: Set<AnyCancellable> = []
+    private var inProgressController: UIViewController?
 
     init(viewModel: CustomFieldsListViewModel, analytics: Analytics = ServiceLocator.analytics) {
         self.viewModel = viewModel
@@ -110,18 +111,20 @@ private extension CustomFieldsListHostingController {
     }
 
     func displayInProgressController() {
-        let inProgressController = InProgressViewController(
+        let controller = InProgressViewController(
             viewProperties: InProgressViewProperties(
                 title: Localization.inProgressTitle,
                 message: Localization.inProgressMessage
             )
         )
-        inProgressController.modalPresentationStyle = .overFullScreen
-        present(inProgressController, animated: true)
+        controller.modalPresentationStyle = .overFullScreen
+        inProgressController = controller
+        present(controller, animated: true)
     }
 
     func dismissInProgressController() {
-        dismiss(animated: true)
+        inProgressController?.dismiss(animated: true)
+        inProgressController = nil
     }
 
     func presentBackNavigationActionSheet() {

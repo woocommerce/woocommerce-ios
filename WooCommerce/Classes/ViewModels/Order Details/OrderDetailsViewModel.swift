@@ -957,7 +957,7 @@ extension OrderDetailsViewModel {
 
     /// Inserts a new note at the top of the collection of existing notes
     ///
-    func insertNote(_ orderNote: OrderNote) {
+    private func insertNote(_ orderNote: OrderNote) {
         orderNotes.insert(orderNote, at: 0)
     }
 

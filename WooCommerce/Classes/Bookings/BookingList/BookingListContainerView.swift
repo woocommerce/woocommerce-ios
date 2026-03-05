@@ -57,7 +57,7 @@ struct BookingListContainerView: View {
             } onClearAction: {
                 // no-op
             } onDismissAction: {
-                // no-op
+                viewModel.onAppear()
             }
         }
         .onAppear {

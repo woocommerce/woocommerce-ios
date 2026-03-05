@@ -6,6 +6,7 @@
 - [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
 - [*] Fix "See Receipt" button not appearing for orders with custom statuses [https://github.com/woocommerce/woocommerce-ios/pull/16673]
 - [*] Fix infinite retries in InfiniteScrollIndicator [https://github.com/woocommerce/woocommerce-ios/pull/16778]
+- [*] Fix attendance status filter in Bookings [https://github.com/woocommerce/woocommerce-ios/pull/16779]
 
 
 24.2

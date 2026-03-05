@@ -64,7 +64,7 @@ private extension ConnectWPComCard {
         )
         static let subtitle = NSLocalizedString(
             "dashboardView.connectWPComCard.subtitle",
-            value: "Connect your store to a WordPress.com account to get alerts for new orders and reviews.",
+            value: "Enable push notifications to stay on top of new orders and reviews.",
             comment: "Subtitle of the Connect WPCom card on My Store screen"
         )
         static let hideButton = NSLocalizedString(

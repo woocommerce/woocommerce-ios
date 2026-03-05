@@ -4,6 +4,7 @@
 -----
 - [*] Fix issue displaying onboarding tasks when logging in to sites with pretty permalinks using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16731]
 - [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
+- [*] POS: Fix bookings/orders/settings dismissal when switching apps [https://github.com/woocommerce/woocommerce-ios/pull/16757]
 - [*] Fix "See Receipt" button not appearing for orders with custom statuses [https://github.com/woocommerce/woocommerce-ios/pull/16673]
 
 
@@ -13,7 +14,6 @@
 - [*] POS: Fix barcode scanning not working after completing a payment [https://github.com/woocommerce/woocommerce-ios/pull/16672]
 - [*] Media library: Fix decoding failure when media details are returned as array [https://github.com/woocommerce/woocommerce-ios/pull/16715]
 - [Internal] Enable Bookings MVP for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16738]
-
 
 24.1
 -----

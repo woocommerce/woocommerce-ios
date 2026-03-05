@@ -76,12 +76,6 @@ struct POSFloatingControlView: View {
                 }
             }
         }
-        .onChange(of: horizontalSizeClass) { _, newSizeClass in
-            guard newSizeClass != .regular else { return }
-            showOrders = false
-            showBookings = false
-            showSettings = false
-        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)

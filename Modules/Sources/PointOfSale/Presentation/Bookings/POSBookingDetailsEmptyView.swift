@@ -3,31 +3,30 @@ import SwiftUI
 struct POSBookingDetailsEmptyView: View {
     @Environment(\.colorScheme) private var colorScheme
 
+    private var iconColor: Color {
+        colorScheme == .dark ? .posPrimary : .posOnSurfaceVariantLowest
+    }
+
+    private var textColor: Color {
+        colorScheme == .dark ? .posOnSurface : .posOnSurfaceVariantLowest
+    }
+
     var body: some View {
         VStack(spacing: POSSpacing.large) {
-            PointOfSaleAssets.noBookings.decorativeImage
-                .renderingMode(iconRenderingMode)
+            Image(systemName: "calendar")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: Constants.iconSize, height: Constants.iconSize)
-                .foregroundColor(iconTintColor)
+                .foregroundColor(iconColor)
 
             Text(Localization.noBookingSelected)
                 .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                .foregroundStyle(textColor)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurface)
         .navigationBarHidden(true)
-    }
-
-    private var iconRenderingMode: Image.TemplateRenderingMode {
-        colorScheme == .dark ? .template : .original
-    }
-
-    private var iconTintColor: Color? {
-        colorScheme == .dark ? .posPrimary : nil
     }
 }
 

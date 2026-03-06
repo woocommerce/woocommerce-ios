@@ -6,6 +6,7 @@ import SwiftUI
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
+    private let storage: StorageManagerType
 
     private var bookingResource: BookingResource?
     private var booking: Booking {
@@ -56,6 +57,7 @@ final class BookingDetailsViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics) {
         self.booking = booking
         self.stores = stores
+        self.storage = storage
         self.analytics = analytics
         self.bookingResource = storage.viewStorage.loadBookingResource(
             siteID: booking.siteID,
@@ -374,6 +376,35 @@ extension BookingDetailsViewModel {
         analytics.track(event: .BookingsDetail.viewLinkedOrderTap())
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
+
+    @MainActor
+    func issueRefund() async {
+        analytics.track(event: .BookingsDetail.refundTap())
+
+        guard let order = storage.viewStorage.loadOrder(siteID: booking.siteID, orderID: booking.orderID)?.toReadOnly() else {
+            DDLogError("⛔️ Order not found in storage for booking \(booking.bookingID)")
+            assertionFailure("Order should be in storage after syncData()")
+            return
+        }
+
+        let refunds = storage.viewStorage.loadRefunds(siteID: booking.siteID, orderID: booking.orderID).map { $0.toReadOnly() }
+        presentRefundFlow(order: order, refunds: refunds)
+    }
+}
+
+private extension BookingDetailsViewModel {
+    func presentRefundFlow(order: Order, refunds: [Refund]) {
+        let refundController = IssueRefundCoordinatingController(order: order, refunds: refunds)
+        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else {
+            return
+        }
+        refundController.onDismissCallback = { [weak self] in
+            Task {
+                await self?.syncData()
+            }
+        }
+        presenter.present(refundController, animated: true)
+    }
 }
 
 private extension BookingDetailsViewModel {
@@ -472,5 +503,6 @@ private extension BookingDetailsViewModel {
             value: "Retry",
             comment: "Retry Action"
         )
+
     }
 }

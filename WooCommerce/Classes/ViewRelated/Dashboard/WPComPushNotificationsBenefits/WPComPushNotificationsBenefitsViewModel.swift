@@ -15,6 +15,20 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     let termsAttributedString: AttributedString
 
+    var title: String {
+        switch variant {
+        case .connect: Localization.connectWPComTitle
+        case .pluginUpdate: Localization.updatePluginTitle
+        }
+    }
+
+    var description: String {
+        switch variant {
+        case .connect: Localization.connectWPComDescription
+        case .pluginUpdate: Localization.updatePluginDescription
+        }
+    }
+
     private(set) var variant: Variant = .connect
     private(set) var isCheckingPlugin: Bool = false
     private(set) var error: VariantCheckError?
@@ -214,6 +228,30 @@ extension WPComPushNotificationsBenefitsViewModel {
             "wpcomPushNotificationsBenefitsViewModel.shareDetails",
             value: "share details",
             comment: "The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View."
+        )
+
+        static let connectWPComTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.title",
+            value: "Unlock push notifications with WordPress.com",
+            comment: "Title of the WordPress.com Push Notifications Benefits View"
+        )
+
+        static let connectWPComDescription = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.mainDescription",
+            value: "Connect your store to WordPress.com to get access to push notifications for new orders, reviews and more.",
+            comment: "Main description text of the WordPress.com Push Notifications Benefits View"
+        )
+
+        static let updatePluginTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.updatePluginTitle",
+            value: "Get push notifications for your store.",
+            comment: "Title of the Push Notifications Benefits View when WooCommerce plugin is outdated"
+        )
+
+        static let updatePluginDescription = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.updatePluginDescription",
+            value: "Your store is already connected to a WordPress.com account, but you’ll need to update WooCommerce plugin to enable push notifications for new orders, reviews, and more.",
+            comment: "Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated"
         )
     }
 }

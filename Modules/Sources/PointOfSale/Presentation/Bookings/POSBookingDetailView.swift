@@ -46,7 +46,8 @@ struct POSBookingDetailView: View {
                     POSOrderDetailsView(
                         order: booking.order,
                         onBack: { navigationPath.removeLast() },
-                        autoStartRefund: true,
+                        flow: .bookings,
+                        autoStartNextRefundFlow: true,
                         onRefundSuccess: {
                             Task {
                                 isDetailsUpdating = true

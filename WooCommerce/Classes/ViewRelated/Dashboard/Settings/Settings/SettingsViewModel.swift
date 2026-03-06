@@ -384,7 +384,7 @@ private extension SettingsViewModel {
     }
 
     func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
-        guard stores.isAuthenticatedWithoutWPCom else {
+        guard stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true else {
             return false
         }
 

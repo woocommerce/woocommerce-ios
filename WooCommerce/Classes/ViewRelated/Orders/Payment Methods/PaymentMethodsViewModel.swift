@@ -34,6 +34,11 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     let paymentLink: URL?
 
+    /// Callback invoked when a note is added to the order (ie: Scan to Pay note).
+    /// Used to immediately update the UI without requiring a remote fetch.
+    ///
+    var onNoteAdded: ((OrderNote) -> Void)?
+
     /// Defines if the view should be disabled to prevent any further action.
     /// Useful to prevent any double tap while a network operation is being performed.
     ///
@@ -328,7 +333,9 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackFlowCompleted(method: .paymentLink, cardReaderType: .none)
     }
 
-    func performScanToPayFinishedTasks() {
+    @MainActor
+    func performScanToPayFinishedTasks() async {
+        await addScanToPayNoteToOrder()
         presentNoticeSubject.send(.created)
         trackFlowCompleted(method: .scanToPay, cardReaderType: .none)
     }
@@ -411,6 +418,26 @@ private extension PaymentMethodsViewModel {
         showLoadingIndicator = false
         presentNoticeSubject.send(.completed)
         trackFlowCompleted(method: .cash, cardReaderType: .none)
+    }
+}
+
+// MARK: - Scan to Pay
+
+private extension PaymentMethodsViewModel {
+    @MainActor
+    func addScanToPayNoteToOrder() async {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(OrderNoteAction.addOrderNote(
+                siteID: siteID,
+                orderID: orderID,
+                isCustomerNote: false,
+                note: Localization.scanToPayNoteText) { [weak self] orderNote, _ in
+                    if let orderNote = orderNote {
+                        self?.onNoteAdded?(orderNote)
+                    }
+                    continuation.resume(returning: ())
+                })
+        }
     }
 }
 
@@ -584,6 +611,10 @@ private extension PaymentMethodsViewModel {
         static let cashOnDeliveryPaymentMethodTitle = NSLocalizedString("paymentMethods.cashOnDelivery.title",
                                                                         value: "Pay in Person",
                                                                         comment: "A title for a payment method where customer pays by cash in person")
+        static let scanToPayNoteText = NSLocalizedString(
+            "paymentMethods.scanToPayNoteText.note",
+            value: "Payment link shared via Scan to Pay. Please verify payment before fulfilling order.",
+            comment: "Note added to order when Scan to Pay is used.")
     }
 }
 

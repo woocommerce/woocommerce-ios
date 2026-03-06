@@ -204,13 +204,17 @@ final class OrderDetailsViewModel {
 
     var paymentMethodsViewModel: PaymentMethodsViewModel {
         let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
-        return PaymentMethodsViewModel(siteID: order.siteID,
-                                       orderID: order.orderID,
-                                       paymentLink: order.paymentURL,
-                                       total: order.total,
-                                       formattedTotal: formattedTotal,
-                                       flow: .orderPayment,
-                                       channel: .storeManagement)
+        let viewModel = PaymentMethodsViewModel(siteID: order.siteID,
+                                                orderID: order.orderID,
+                                                paymentLink: order.paymentURL,
+                                                total: order.total,
+                                                formattedTotal: formattedTotal,
+                                                flow: .orderPayment,
+                                                channel: .storeManagement)
+        viewModel.onNoteAdded = { [weak self] note in
+            self?.insertNote(note)
+        }
+        return viewModel
     }
 
     /// Helpers

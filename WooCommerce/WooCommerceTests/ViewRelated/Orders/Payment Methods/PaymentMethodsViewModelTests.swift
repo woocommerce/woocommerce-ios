@@ -418,11 +418,17 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
-    func test_completed_event_is_tracked_after_scanning_to_pay() {
+    func test_completed_event_is_tracked_after_scanning_to_pay() async {
         // Given
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            if case let .addOrderNote(_, _, _, _, onCompletion) = action {
+                onCompletion(nil, nil)
+            }
+        }
+
         let analytics = MockAnalyticsProvider()
         let orderID: Int64 = 232
-        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
@@ -431,7 +437,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.performScanToPayFinishedTasks()
+        await viewModel.performScanToPayFinishedTasks()
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -626,6 +632,44 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "scan_to_pay")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
+    }
+
+    func test_performScanToPayFinishedTasks_adds_note_to_order() async {
+        // Given
+        let siteID: Int64 = 10
+        let orderID: Int64 = 232
+
+        var passedNote: String?
+        var passedSiteID: Int64?
+        var passedOrderID: Int64?
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            switch action {
+            case let .addOrderNote(siteID, orderID, _, note, onCompletion):
+                passedSiteID = siteID
+                passedOrderID = orderID
+                passedNote = note
+                onCompletion(nil, nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = PaymentMethodsViewModel(siteID: siteID,
+                                                orderID: orderID,
+                                                total: "12",
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        await viewModel.performScanToPayFinishedTasks()
+
+        // Then
+        XCTAssertEqual(passedSiteID, siteID)
+        XCTAssertEqual(passedOrderID, orderID)
+        XCTAssertEqual(passedNote, "Payment link shared via Scan to Pay. Please verify payment before fulfilling order.")
     }
 
     func test_collect_event_is_tracked_when_collecting_payment() {
@@ -868,10 +912,16 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
-    func test_view_model_attempts_created_notice_after_scan_to_pay() {
+    func test_view_model_attempts_created_notice_after_scan_to_pay() async {
         // Given
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            if case let .addOrderNote(_, _, _, _, onCompletion) = action {
+                onCompletion(nil, nil)
+            }
+        }
+
         let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
-        let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -879,7 +929,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let receivedCompleted: Bool = waitFor { promise in
+        let receivedCompleted: Bool = await waitForAsync { promise in
             noticeSubject.sink { intent in
                 switch intent {
                 case .error, .completed:
@@ -889,7 +939,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.performScanToPayFinishedTasks()
+            await viewModel.performScanToPayFinishedTasks()
         }
 
         // Then

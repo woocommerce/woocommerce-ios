@@ -944,7 +944,7 @@ platform :ios do
 
     UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
 
-    puts "Creating screenshots for #{languages} on #{devices}"
+    UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
     rebuild_screenshot_devices
@@ -1143,7 +1143,7 @@ platform :ios do
   end
 
   desc 'Create Promo Screenshots'
-  lane :create_promo_screenshots do |options|
+  lane :create_promo_screenshots do |force: false, commit: false, push: false|
     unless Fastlane::Helper::GitHelper.has_git_lfs?
       UI.user_error!('LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.')
     end
@@ -1188,12 +1188,23 @@ platform :ios do
       UI.message('Done')
     end
 
+    # Remove previously-tracked promo screenshots so that obsolete files
+    # (e.g. dropped device or reduced screenshot count) are captured by the
+    # commit as deletions rather than silently kept around.
+    if commit || push
+      existing_images = Dir.glob(File.join(output_directory, '**', '*.png'))
+      unless existing_images.empty?
+        UI.message('Removing existing promo screenshots before regeneration...')
+        existing_images.each { |f| FileUtils.rm_f(f) }
+      end
+    end
+
     begin
       promo_screenshots(
         orig_folder: original_screenshot_directory,
         metadata_folder: FASTLANE_METADATA_FOLDER,
         output_folder: output_directory,
-        force: options[:force]
+        force: force
       )
     ensure
       next if files_to_copy.empty?
@@ -1202,6 +1213,20 @@ platform :ios do
       files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
       UI.message('Done')
     end
+
+    next unless commit || push
+
+    git_add(
+      path: output_directory,
+      shell_escape: false
+    )
+    git_commit(
+      path: output_directory,
+      message: 'Track new promo screenshots',
+      allow_nothing_to_commit: true
+    )
+
+    push_to_git_remote(tags: false) if push
   end
 
   ########################################################################

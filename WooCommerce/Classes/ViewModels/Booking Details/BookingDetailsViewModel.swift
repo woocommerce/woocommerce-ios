@@ -383,6 +383,7 @@ extension BookingDetailsViewModel {
 
         guard let order = storage.viewStorage.loadOrder(siteID: booking.siteID, orderID: booking.orderID)?.toReadOnly() else {
             DDLogError("⛔️ Order not found in storage for booking \(booking.bookingID)")
+            assertionFailure("Order should be in storage after syncData()")
             return
         }
 

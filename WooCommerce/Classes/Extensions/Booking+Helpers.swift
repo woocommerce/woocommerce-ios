@@ -15,7 +15,7 @@ extension Booking {
     }
 
     var isPaid: Bool {
-        paymentStatusBadge == .paid
+        paymentStatusBadge == .paid || paymentStatusBadge == .partiallyRefunded
     }
 
     var hasAssociatedOrder: Bool {

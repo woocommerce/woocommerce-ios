@@ -48,4 +48,4 @@ xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
    - **Missing @MainActor**: Some tests need MainActor annotation
 6. Propose or apply the fix
 
-If the simulator destination fails, run `xcrun simctl list devices available` to discover available simulators, then re-run with a matching device name.
+If the simulator destination fails, use the `/simulator` skill to discover the available Simulator.

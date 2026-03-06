@@ -41,7 +41,7 @@ NAME=$(echo "$AVAILABLE" | sed -E 's/^[[:space:]]*//' | sed -E 's/ \(.*//')
 
 echo "Booting $NAME ($UDID)..." >&2
 xcrun simctl boot "$UDID"
-sleep 3
+xcrun simctl bootstatus "$UDID" -b >/dev/null 2>&1
 
 echo "$UDID"
 echo "Simulator ready: $NAME ($UDID)" >&2

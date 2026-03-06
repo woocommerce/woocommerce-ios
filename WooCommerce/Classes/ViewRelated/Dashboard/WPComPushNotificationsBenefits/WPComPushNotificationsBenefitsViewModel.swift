@@ -244,13 +244,14 @@ extension WPComPushNotificationsBenefitsViewModel {
 
         static let updatePluginTitle = NSLocalizedString(
             "wpcomPushNotificationsBenefitsViewModel.updatePluginTitle",
-            value: "Get push notifications for your store.",
+            value: "Get push notifications for your store",
             comment: "Title of the Push Notifications Benefits View when WooCommerce plugin is outdated"
         )
 
         static let updatePluginDescription = NSLocalizedString(
             "wpcomPushNotificationsBenefitsViewModel.updatePluginDescription",
-            value: "Your store is already connected to a WordPress.com account, but you’ll need to update WooCommerce plugin to enable push notifications for new orders, reviews, and more.",
+            value: "Your store is already connected to a WordPress.com account, but you’ll need to " +
+            "update WooCommerce plugin to enable push notifications for new orders, reviews, and more.",
             comment: "Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated"
         )
     }

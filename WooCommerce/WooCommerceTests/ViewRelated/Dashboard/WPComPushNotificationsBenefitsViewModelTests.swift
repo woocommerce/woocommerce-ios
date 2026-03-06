@@ -353,18 +353,54 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
+    // MARK: - determineSetupVariant for JCP site
+
+    func test_determineSetupVariant_when_site_is_JCP_skips_jetpack_connection_check_and_sets_pluginUpdate_variant() async {
+        // Given
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+        let viewModel = makeViewModel(isJCPSite: true, pluginVersionChecker: checker)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertEqual(viewModel.variant, .pluginUpdate(currentVersion: "10.0.0"))
+        XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
+    func test_determineSetupVariant_when_site_is_JCP_and_plugin_compatible_then_sets_noMissingRequirements_error() async {
+        // Given
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(isJCPSite: true, pluginVersionChecker: checker)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        guard case .noMissingRequirements = viewModel.error else {
+            return XCTFail("Expected noMissingRequirements error, got \(String(describing: viewModel.error))")
+        }
+        XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
     // MARK: - Helpers
 
     private let sampleSiteID: Int64 = 123
 
     private func makeViewModel(
+        isJCPSite: Bool = false,
         jetpackConnectionService: JetpackConnectionServiceProtocol = MockJetpackConnectionService(),
         pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
         analytics: Analytics = ServiceLocator.analytics
     ) -> WPComPushNotificationsBenefitsViewModel {
-        WPComPushNotificationsBenefitsViewModel(
+        let site = Site.fake().copy(isJetpackThePluginInstalled: !isJCPSite, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        return WPComPushNotificationsBenefitsViewModel(
             siteID: sampleSiteID,
             siteURL: "https://example.com",
+            stores: stores,
             jetpackConnectionService: jetpackConnectionService,
             pluginVersionChecker: pluginVersionChecker,
             analytics: analytics,

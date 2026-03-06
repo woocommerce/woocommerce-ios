@@ -214,8 +214,16 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
+            let previousStatus = self.viewModel.order.status
             self.viewModel.update(order: order)
             self.reloadTableViewSectionsAndData()
+
+            if order.status != previousStatus {
+                Task { @MainActor [weak self] in
+                    await self?.viewModel.refreshReceiptEligibility()
+                    self?.reloadTableViewSectionsAndData()
+                }
+            }
         }
     }
 

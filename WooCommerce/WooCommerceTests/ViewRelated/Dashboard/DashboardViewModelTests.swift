@@ -1127,6 +1127,33 @@ final class DashboardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_JCP_and_not_registered_and_feature_flag_enabled() async {
+        // Given
+        let jcpSite = Site.fake().copy(siteID: sampleSiteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        stores.updateDefaultStore(jcpSite)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
     func test_hideWPComConnectionSuggestion_updates_relevant_properties() async {
         // Given
         mockReloadingData()

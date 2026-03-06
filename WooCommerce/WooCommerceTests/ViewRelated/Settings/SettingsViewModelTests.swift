@@ -343,6 +343,23 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
     }
 
+    func test_sections_contains_enablePushNotifications_row_when_site_is_JCP_and_feature_flag_enabled_and_not_registered() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
+    }
 
     func test_sections_does_not_contain_connectivity_row_for_wpcom_site() {
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: true)

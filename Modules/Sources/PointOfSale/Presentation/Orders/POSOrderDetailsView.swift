@@ -8,7 +8,8 @@ import typealias Yosemite.OrderItemAttribute
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
-    var autoStartRefund: Bool = false
+    var flow: Flow = .orders
+    @State var autoStartNextRefundFlow: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
 
@@ -81,14 +82,14 @@ struct POSOrderDetailsView: View {
                 order: order,
                 onRetryLoading: { initiateRefundFlow() },
                 onRetryPreparation: {
-                    if autoStartRefund {
+                    if flow == .bookings {
                         initiateRefundFlow()
                     } else {
                         refundModalState = .itemSelection
                     }
                 },
-                onEditRefund: autoStartRefund ? nil : { refundModalState = .itemSelection },
-                showsItemSelection: !autoStartRefund,
+                onEditRefund: flow == .bookings ? nil : { refundModalState = .itemSelection },
+                showsItemSelection: flow != .bookings,
                 onRefundSuccess: onRefundSuccess,
                 onRefundFailure: onRefundFailure,
                 errorStrings: .init(
@@ -108,7 +109,8 @@ struct POSOrderDetailsView: View {
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
         .onAppear {
-            if autoStartRefund {
+            if autoStartNextRefundFlow {
+                autoStartNextRefundFlow = false
                 initiateRefundFlow()
             }
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -321,7 +323,7 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            if autoStartRefund {
+            if flow == .bookings {
                 return .init(primary: .issueRefund, secondary: [email])
             }
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
@@ -390,14 +392,14 @@ private extension POSOrderDetailsView {
             let result = await orderListModel.ordersController.startRefundFlow()
             switch result {
             case .hasItemsToRefund:
-                if autoStartRefund {
+                if flow == .bookings {
                     navigateToRefundReview()
                 } else {
                     refundModalState = .itemSelection
                 }
             case .nothingToRefund:
-                if autoStartRefund {
-                    // Temporary log to track "nothing to refund" case for bookings (autoStartRefund == true)
+                if flow == .bookings {
+                    // Temporary log to track "nothing to refund" case for bookings (flow == .bookings == true)
                     // This can be removed once we're sure it works as expected.
                     // Context: p1772005017449939-slack-C070SJRA8DP
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(
@@ -552,6 +554,13 @@ private enum Localization {
         value: "Please try again.",
         comment: "Subtitle shown when refund data preparation fails"
     )
+}
+
+extension POSOrderDetailsView {
+    enum Flow {
+        case orders
+        case bookings
+    }
 }
 
 #if DEBUG

@@ -46,5 +46,16 @@
       "Bash(fastlane release *)",
       "Bash(fastlane deliver *)"
     ]
+  },
+  "extraKnownMarketplaces": {
+    "apps-infra": {
+      "source": {
+        "source": "github",
+        "repo": "Automattic/apps-infra-claude-plugins"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "apple@apps-infra-claude-plugins": true
   }
 }

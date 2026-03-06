@@ -98,6 +98,47 @@ final class JetpackSetupCoordinator {
             showWPComEmailLogin()
         }
     }
+
+    /// Starts the Jetpack setup flow directly, skipping the benefits modal.
+    /// Used when the Woo Push Notifications feature is enabled.
+    ///
+    @MainActor
+    func startSetupDirectly() async {
+        guard site.isNonJetpackSite else {
+            let installController = JCPJetpackInstallHostingController(siteID: site.siteID,
+                                                                       siteURL: site.url,
+                                                                       siteAdminURL: site.adminURL)
+            installController.setDismissAction { [weak self] in
+                self?.rootViewController.dismiss(animated: true, completion: nil)
+            }
+            rootViewController.present(installController, animated: true, completion: nil)
+            return
+        }
+        let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
+        rootViewController.present(progressView, animated: true)
+        do {
+            try await checkJetpackConnectionState()
+            await progressView.dismiss(animated: true)
+            analytics.track(event: .JetpackSetup.connectionCheckCompleted(
+                isAlreadyConnected: jetpackConnectedEmail != nil,
+                requiresConnectionOnly: requiresConnectionOnly
+            ))
+            if let connectedEmail = jetpackConnectedEmail {
+                startAuthentication(with: connectedEmail)
+            } else {
+                showWPComEmailLogin()
+            }
+        } catch JetpackCheckError.missingPermission {
+            await progressView.dismiss(animated: true)
+            displayAdminRoleRequiredError()
+            analytics.track(.jetpackSetupConnectionCheckFailed, withError: JetpackCheckError.missingPermission)
+        } catch {
+            await progressView.dismiss(animated: true)
+            DDLogError("⛔️ Jetpack status fetched error: \(error)")
+            analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
+            showAlert(message: Localization.errorCheckingJetpack)
+        }
+    }
 }
 
 // MARK: - Private helpers
@@ -456,8 +497,12 @@ private extension JetpackSetupCoordinator {
             loginNavigationController.pushViewController(viewController, animated: true)
         } else {
             let loginNavigationController = LoginNavigationController(rootViewController: viewController)
-            rootViewController.dismiss(animated: true) {
-                self.rootViewController.present(loginNavigationController, animated: true)
+            if rootViewController.presentedViewController != nil {
+                rootViewController.dismiss(animated: true) {
+                    self.rootViewController.present(loginNavigationController, animated: true)
+                }
+            } else {
+                rootViewController.present(loginNavigationController, animated: true)
             }
             self.loginNavigationController = loginNavigationController
         }

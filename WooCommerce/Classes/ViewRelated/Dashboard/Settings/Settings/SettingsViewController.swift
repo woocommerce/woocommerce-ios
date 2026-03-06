@@ -408,7 +408,14 @@ private extension SettingsViewController {
             let coordinator = JetpackSetupCoordinator(site: site,
                                                       rootViewController: navigationController)
             self.jetpackSetupCoordinator = coordinator
-            return coordinator.showBenefitModal()
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) {
+                Task { @MainActor in
+                    await coordinator.startSetupDirectly()
+                }
+            } else {
+                coordinator.showBenefitModal()
+            }
+            return
         }
         let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
 

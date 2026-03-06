@@ -420,9 +420,15 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
     func test_completed_event_is_tracked_after_scanning_to_pay() async {
         // Given
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            if case let .addOrderNote(_, _, _, _, onCompletion) = action {
+                onCompletion(nil, nil)
+            }
+        }
+
         let analytics = MockAnalyticsProvider()
         let orderID: Int64 = 232
-        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
@@ -908,8 +914,14 @@ final class PaymentMethodsViewModelTests: XCTestCase {
 
     func test_view_model_attempts_created_notice_after_scan_to_pay() async {
         // Given
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            if case let .addOrderNote(_, _, _, _, onCompletion) = action {
+                onCompletion(nil, nil)
+            }
+        }
+
         let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
-        let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,

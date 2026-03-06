@@ -1,1 +1,9 @@
-This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!
+- [*] Fix issue displaying onboarding tasks when logging in to sites with pretty permalinks using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16731]
+- [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
+- [*] POS: Fix bookings/orders/settings dismissal when switching apps [https://github.com/woocommerce/woocommerce-ios/pull/16757]
+- [*] Fix "See Receipt" button not appearing for orders with custom statuses [https://github.com/woocommerce/woocommerce-ios/pull/16673]
+- [*] Payments: A note is added to the order when Scan to Pay is used [https://github.com/woocommerce/woocommerce-ios/pull/16549]
+- [*] Fix infinite retries in InfiniteScrollIndicator [https://github.com/woocommerce/woocommerce-ios/pull/16778]
+- [*] Fix attendance status filter in Bookings [https://github.com/woocommerce/woocommerce-ios/pull/16779]
+- [*] Fix Custom Fields closing immediately when opened from a product in the Orders tab [https://github.com/woocommerce/woocommerce-ios/pull/16782]
+- [*] Fix See Receipt button missing after collecting payment [https://github.com/woocommerce/woocommerce-ios/pull/16788]

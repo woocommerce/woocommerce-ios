@@ -211,6 +211,71 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         assertEqual(expectedAccount, stores.sessionManager.defaultAccount)
     }
 
+    func test_startSetupDirectly_presents_email_login_directly_for_non_Jetpack_site() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .fetchJetpackConnectionData(completion):
+                completion(.success(JetpackConnectionData.fake()))
+            default:
+                break
+            }
+        }
+        stores.mockJetpackCheck()
+
+        // When
+        let expectation = expectation(description: "Setup completes")
+        Task { @MainActor in
+            await coordinator.startSetupDirectly()
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 5.0)
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is LoginNavigationController
+        }
+        let loginViewController = navigationController.presentedViewController as! LoginNavigationController
+        XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
+    }
+
+    func test_startSetupDirectly_does_not_present_benefit_modal() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .fetchJetpackConnectionData(completion):
+                completion(.success(JetpackConnectionData.fake()))
+            default:
+                break
+            }
+        }
+        stores.mockJetpackCheck()
+
+        // When
+        let expectation = expectation(description: "Setup completes")
+        Task { @MainActor in
+            await coordinator.startSetupDirectly()
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 5.0)
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        XCTAssertFalse(navigationController.presentedViewController is JetpackBenefitsHostingController)
+    }
+
     func test_startAuthentication_proceeds_to_display_email_screen_when_email_is_not_found() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))

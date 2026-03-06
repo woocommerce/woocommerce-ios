@@ -690,6 +690,43 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(isWooShippingSupported)
     }
 
+    // MARK: - `refreshReceiptEligibility`
+
+    func test_refreshReceiptEligibility_when_order_is_eligible_then_updates_dataSource() async {
+        // Given
+        let order = Order.fake().copy(siteID: 123, orderID: 456, status: .completed)
+        let receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
+        receiptEligibilityUseCase.isEligibleForReceipt = true
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              receiptEligibilityUseCase: receiptEligibilityUseCase)
+        XCTAssertFalse(viewModel.dataSource.isEligibleForBackendReceipt)
+
+        // When
+        await viewModel.refreshReceiptEligibility()
+
+        // Then
+        XCTAssertTrue(viewModel.dataSource.isEligibleForBackendReceipt)
+    }
+
+    func test_refreshReceiptEligibility_when_order_is_not_eligible_then_dataSource_remains_false() async {
+        // Given
+        let order = Order.fake().copy(siteID: 123, orderID: 456, status: .pending)
+        let receiptEligibilityUseCase = MockReceiptEligibilityUseCase()
+        receiptEligibilityUseCase.isEligibleForReceipt = false
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              receiptEligibilityUseCase: receiptEligibilityUseCase)
+
+        // When
+        await viewModel.refreshReceiptEligibility()
+
+        // Then
+        XCTAssertFalse(viewModel.dataSource.isEligibleForBackendReceipt)
+    }
+
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_is_not_minimum_version() async {
         // Given
         let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)

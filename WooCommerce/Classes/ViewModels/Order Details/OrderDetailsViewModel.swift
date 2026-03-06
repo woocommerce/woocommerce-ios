@@ -58,6 +58,11 @@ final class OrderDetailsViewModel {
         editNoteViewModel.update(order: order)
     }
 
+    @MainActor
+    func refreshReceiptEligibility() async {
+        dataSource.isEligibleForBackendReceipt = await isEligibleForBackendReceipt()
+    }
+
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")

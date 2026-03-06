@@ -103,7 +103,7 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   --allow-writing-to-package-directory sourcery-command --disableCache && popd
 ```
 
-If the simulator `iPhone 16` is not available, discover what's installed: `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5`
+If the simulator `iPhone 16` is not available, discover what's installed using the `/simulator` skill.
 
 ## Architecture
 

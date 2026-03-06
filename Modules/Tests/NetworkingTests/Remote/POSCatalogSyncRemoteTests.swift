@@ -987,6 +987,8 @@ struct POSCatalogSyncRemoteTests {
     }
 }
 
+import NetworkingTestsResponsesFixtures
+
 private extension POSCatalogSyncRemoteTests {
     func createRemote() -> POSCatalogSyncRemote {
         POSCatalogSyncRemote(network: network, backgroundDownloader: mockBackgroundDownloader, fileManager: mockFileManager)
@@ -994,7 +996,8 @@ private extension POSCatalogSyncRemoteTests {
 
     /// Loads test data from bundle response file.
     func loadMockData(filename: String) -> String {
-        guard let url = Bundle.module.url(forResource: filename, withExtension: "json"),
+        let fixturesBundle = NetworkingTestsResponsesFixtures.bundle
+        guard let url = fixturesBundle.url(forResource: filename, withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let string = String(data: data, encoding: .utf8) else {
             fatalError("Could not load test data from \(filename).json")

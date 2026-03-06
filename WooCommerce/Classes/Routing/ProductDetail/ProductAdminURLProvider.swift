@@ -10,7 +10,7 @@ enum ProductAdminURLProvider {
         var components = URLComponents(url: base, resolvingAgainstBaseURL: false)!
         components.queryItems = [
             URLQueryItem(name: "page", value: "next-admin"),
-            URLQueryItem(name: "p", value: "/woocommerce/products/edit/\(product.productID)")
+            URLQueryItem(name: "p", value: "/woocommerce/services/edit/\(product.productID)")
         ]
 
         return components.url

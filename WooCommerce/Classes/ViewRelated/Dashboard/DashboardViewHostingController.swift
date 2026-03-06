@@ -252,7 +252,13 @@ private extension DashboardViewHostingController {
             let coordinator = JetpackSetupCoordinator(site: site,
                                                       rootViewController: navigationController)
             jetpackSetupCoordinator = coordinator
-            coordinator.showBenefitModal()
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) {
+                Task { @MainActor in
+                    await coordinator.startSetupDirectly()
+                }
+            } else {
+                coordinator.showBenefitModal()
+            }
         }
     }
 }

@@ -6,14 +6,15 @@ import enum Yosemite.BookingStatus
 struct BookingBadgeView: View {
     let text: String
     let textColor: Color
-    let color: Color
+    let backgroundColor: Color
+    let isBordered: Bool
 
     var body: some View {
         BadgeView(text: text,
                   customizations: .init(
                     textColor: textColor,
-                    backgroundColor: color,
-                    bordered: false,
+                    backgroundColor: backgroundColor,
+                    borderColor: isBordered ? BadgeColor.border : nil,
                     bold: false
                   ),
                   backgroundShape: .roundedRectangle(cornerRadius: Layout.cornerRadius))
@@ -30,17 +31,30 @@ protocol BookingBadgeable {
     var text: String { get }
     var textColor: Color { get }
     var badgeColor: Color { get }
+    var isBordered: Bool { get }
+}
+
+extension BookingBadgeable {
+    var isBordered: Bool { false }
 }
 
 extension BookingBadgeView {
     init(_ badgeable: BookingBadgeable) {
-        self.init(text: badgeable.text, textColor: badgeable.textColor, color: badgeable.badgeColor)
+        self.init(text: badgeable.text,
+                  textColor: badgeable.textColor,
+                  backgroundColor: badgeable.badgeColor,
+                  isBordered: badgeable.isBordered)
     }
 }
 
 extension BookingAttendanceStatus: BookingBadgeable {
     var badgeColor: Color {
-        BadgeColor.default
+        switch self {
+        case .attended:
+            return .clear
+        case .unattended, .unknown:
+            return BadgeColor.default
+        }
     }
 
     var text: String {
@@ -50,13 +64,15 @@ extension BookingAttendanceStatus: BookingBadgeable {
     var textColor: Color {
         BadgeColor.defaultText
     }
+
+    var isBordered: Bool {
+        self == .attended
+    }
 }
 
 extension BookingStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
-        case .cancelled:
-            return BadgeColor.cancelledBackground
         case .unpaid:
             return BadgeColor.info
         default:
@@ -69,18 +85,18 @@ extension BookingStatus: BookingBadgeable {
     }
 
     var textColor: Color {
-        switch self {
-        case .cancelled:
-            return BadgeColor.cancelledText
-        default:
-            return BadgeColor.defaultText
-        }
+        BadgeColor.defaultText
     }
 }
 
 extension BookingPaymentStatus: BookingBadgeable {
     var badgeColor: Color {
-        BadgeColor.default
+        switch self {
+        case .paid, .refunded, .partiallyRefunded:
+            return .clear
+        case .unpaid, .failed:
+            return BadgeColor.info
+        }
     }
 
     var text: String {
@@ -100,6 +116,15 @@ extension BookingPaymentStatus: BookingBadgeable {
 
     var textColor: Color {
         BadgeColor.defaultText
+    }
+
+    var isBordered: Bool {
+        switch self {
+        case .paid, .refunded, .partiallyRefunded:
+            return true
+        case .unpaid, .failed:
+            return false
+        }
     }
 
     private enum Localization {
@@ -132,9 +157,8 @@ extension BookingPaymentStatus: BookingBadgeable {
 }
 
 fileprivate enum BadgeColor {
-    static let `default` = Color(uiColor: .systemGray6.resolvedColor(with: .init(userInterfaceStyle: .light)))
+    static let `default` = Color(uiColor: .systemGray6)
     static let info = try! Color(rgbString: "rgba(255, 227, 101, 1)")
-    static let cancelledBackground = try! Color(rgbString: "rgba(225, 236, 248, 1)")
-    static let cancelledText = try! Color(rgbString: "rgba(0, 23, 88, 1)")
-    static let defaultText = Color(UIColor.label.resolvedColor(with: .init(userInterfaceStyle: .light)))
+    static let defaultText = Color(uiColor: .label)
+    static let border = Color(uiColor: .systemGray5)
 }

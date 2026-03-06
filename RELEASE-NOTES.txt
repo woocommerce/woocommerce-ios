@@ -10,6 +10,7 @@
 - [*] Fix infinite retries in InfiniteScrollIndicator [https://github.com/woocommerce/woocommerce-ios/pull/16778]
 - [*] Fix attendance status filter in Bookings [https://github.com/woocommerce/woocommerce-ios/pull/16779]
 - [*] Fix Custom Fields closing immediately when opened from a product in the Orders tab [https://github.com/woocommerce/woocommerce-ios/pull/16782]
+- [*] Fix See Receipt button missing after collecting payment [https://github.com/woocommerce/woocommerce-ios/pull/16788]
 
 
 24.2

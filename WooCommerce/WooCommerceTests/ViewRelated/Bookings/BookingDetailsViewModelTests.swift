@@ -466,7 +466,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
 
 private extension BookingDetailsViewModelTests {
     func givenViewModel(booking: Booking = Booking.fake()) -> BookingDetailsViewModel {
-        return BookingDetailsViewModel(booking: booking, stores: storesManager, analytics: analytics)
+        return BookingDetailsViewModel(booking: booking, stores: storesManager, storage: storageManager, analytics: analytics)
     }
 
     func waitForFirstBookingAction(

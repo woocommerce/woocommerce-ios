@@ -15,10 +15,25 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     let termsAttributedString: AttributedString
 
+    var title: String {
+        switch variant {
+        case .connect: Localization.connectWPComTitle
+        case .pluginUpdate: Localization.updatePluginTitle
+        }
+    }
+
+    var description: String {
+        switch variant {
+        case .connect: Localization.connectWPComDescription
+        case .pluginUpdate: Localization.updatePluginDescription
+        }
+    }
+
     private(set) var variant: Variant = .connect
     private(set) var isCheckingPlugin: Bool = false
     private(set) var error: VariantCheckError?
 
+    private let stores: StoresManager
     private let analytics: Analytics
     private let onDismiss: () -> Void
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
@@ -28,10 +43,12 @@ final class WPComPushNotificationsBenefitsViewModel {
 
     init(siteID: Int64,
          siteURL: String,
+         stores: StoresManager = ServiceLocator.stores,
          jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
+        self.stores = stores
         self.jetpackConnectionService = jetpackConnectionService
         self.analytics = analytics
         self.onDismiss = onDismiss
@@ -74,6 +91,15 @@ final class WPComPushNotificationsBenefitsViewModel {
     /// then checks the WooCommerce plugin version if Jetpack is connected.
     func determineSetupVariant() async {
         isCheckingPlugin = true
+        defer {
+            isCheckingPlugin = false
+        }
+
+        /// Skip Jetpack connection check if site is JCP
+        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
+            return await checkWooPluginVersion()
+        }
+
         do {
             let connectionData = try await jetpackConnectionService.fetchConnectionData()
             /// only site-connection is required for Woo PN
@@ -94,7 +120,6 @@ final class WPComPushNotificationsBenefitsViewModel {
                 analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
             }
         }
-        isCheckingPlugin = false
     }
 
     func continueTapped() {
@@ -203,6 +228,31 @@ extension WPComPushNotificationsBenefitsViewModel {
             "wpcomPushNotificationsBenefitsViewModel.shareDetails",
             value: "share details",
             comment: "The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View."
+        )
+
+        static let connectWPComTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.title",
+            value: "Unlock push notifications with WordPress.com",
+            comment: "Title of the WordPress.com Push Notifications Benefits View"
+        )
+
+        static let connectWPComDescription = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.mainDescription",
+            value: "Connect your store to WordPress.com to get access to push notifications for new orders, reviews and more.",
+            comment: "Main description text of the WordPress.com Push Notifications Benefits View"
+        )
+
+        static let updatePluginTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.updatePluginTitle",
+            value: "Get push notifications for your store",
+            comment: "Title of the Push Notifications Benefits View when WooCommerce plugin is outdated"
+        )
+
+        static let updatePluginDescription = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.updatePluginDescription",
+            value: "Your store is already connected to a WordPress.com account, but you’ll need to " +
+            "update WooCommerce plugin to enable push notifications for new orders, reviews, and more.",
+            comment: "Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated"
         )
     }
 }

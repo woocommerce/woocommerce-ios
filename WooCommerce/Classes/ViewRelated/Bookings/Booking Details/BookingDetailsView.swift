@@ -213,6 +213,13 @@ private extension BookingDetailsView {
             VStack(alignment: .leading, spacing: Layout.contentVerticalPadding) {
                 ForEach(content.actions) { action in
                     switch action {
+                    case .refund:
+                        Button(action.buttonTitle) {
+                            Task {
+                                await viewModel.issueRefund()
+                            }
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
                     case .viewOrder:
                         Button(action.buttonTitle) {
                             viewModel.navigateToOrderDetails()

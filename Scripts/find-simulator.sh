@@ -12,7 +12,7 @@ case "$DEVICE_TYPE" in
     iphone) PATTERN="iPhone" ;;
     ipad)   PATTERN="iPad" ;;
     *)
-        echo "Usage: $0 [iphone|ipad]" >&2
+        echo "Usage: $0 [iphone|ipad] (got '$DEVICE_TYPE')" >&2
         exit 1
         ;;
 esac

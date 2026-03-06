@@ -15,6 +15,8 @@ struct PointOfSaleErrorState: Equatable {
         case couponsRefreshError
         case ordersLoadError
         case ordersNextPageError
+        case bookingsLoadError
+        case bookingsNextPageError
     }
 
     let errorType: ErrorType
@@ -106,6 +108,22 @@ struct PointOfSaleErrorState: Equatable {
         PointOfSaleErrorState(
             errorType: .ordersNextPageError,
             title: Constants.failedToLoadOrdersNextPageTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
+    static func errorOnLoadingBookings(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .bookingsLoadError,
+            title: Constants.failedToLoadBookingsTitle,
+            subtitle: subtitle(for: error),
+            buttonText: Constants.retryButtonTitle)
+    }
+
+    static func errorOnLoadingBookingsNextPage(error: Error? = nil) -> Self {
+        PointOfSaleErrorState(
+            errorType: .bookingsNextPageError,
+            title: Constants.failedToLoadBookingsNextPageTitle,
             subtitle: subtitle(for: error),
             buttonText: Constants.retryButtonTitle)
     }
@@ -228,6 +246,17 @@ struct PointOfSaleErrorState: Equatable {
             value: "Unable to load more orders",
             comment: "Text appearing on the order list screen when there's an error loading a page of orders after " +
             "the first. Shown inline with the previously loaded orders above."
+        )
+        static let failedToLoadBookingsTitle = NSLocalizedString(
+            "pos.bookingList.failedToLoadBookingsTitle",
+            value: "Unable to load bookings",
+            comment: "Text appearing on the booking list screen when there's an error loading bookings."
+        )
+        static let failedToLoadBookingsNextPageTitle = NSLocalizedString(
+            "pos.bookingList.failedToLoadBookingsNextPageTitle",
+            value: "Unable to load more bookings",
+            comment: "Text appearing on the booking list screen when there's an error loading a page of bookings after " +
+            "the first. Shown inline with the previously loaded bookings above."
         )
     }
 }

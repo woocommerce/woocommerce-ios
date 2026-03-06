@@ -55,7 +55,7 @@ extension VariationAttributeViewModel {
         )
 
         static let namedAttributeFormat = NSLocalizedString(
-            "",
+            "variationAttributeView.namedAttributeFormat",
             value: "%1$@: %2$@",
             comment: "Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the " +
             "attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +" +

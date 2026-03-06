@@ -233,9 +233,7 @@ public enum BookingStatus: String, CaseIterable, Codable {
 }
 
 public enum BookingAttendanceStatus: String, CaseIterable, Codable {
-    case booked
-    case checkedIn = "checked-in"
-    case cancelled
-    case noShow = "no-show"
+    case attended
+    case unattended
     case unknown
 }

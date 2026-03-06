@@ -269,26 +269,21 @@ private struct POSOrderRowView: View {
 
 private struct POSGhostOrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
-    @Environment(\.dynamicTypeSize) var dynamicTypeSize
-
-    private var minHeight: CGFloat {
-        min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
-    }
 
     var body: some View {
         GeometryReader { geometry in
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Spacer().frame(minHeight: 0)
+            VStack(alignment: .leading, spacing: POSSpacing.none) {
                 ghostHeaderRow(geometry: geometry)
+                    .padding(.bottom, POSSpacing.xSmall)
                 ghostDetailsColumn(geometry: geometry)
-                Spacer().frame(height: POSSpacing.xSmall)
+                    .padding(.bottom, POSSpacing.xSmall * 3)
                 ghostBadgeRow(geometry: geometry)
-                Spacer().frame(minHeight: 0)
             }
         }
         .padding(.horizontal, POSPadding.medium * (1 / scale))
         .padding(.vertical, POSPadding.medium * (1 / scale))
-        .frame(height: minHeight, alignment: .leading)
+        .frame(height: cardHeight)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
         .geometryGroup()
@@ -300,7 +295,7 @@ private struct POSGhostOrderRowView: View {
         HStack(alignment: .center) {
             Rectangle()
                 .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.25, height: POSPadding.medium)
+                .frame(width: geometry.size.width * 0.25, height: GhostConstants.textLineHeight * scale)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering()
 
@@ -308,31 +303,48 @@ private struct POSGhostOrderRowView: View {
 
             Rectangle()
                 .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.25, height: POSPadding.medium)
+                .frame(width: geometry.size.width * 0.25, height: GhostConstants.textLineHeight * scale)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
                 .shimmering()
         }
+        .frame(maxHeight: .infinity)
     }
 
     @ViewBuilder
     private func ghostDetailsColumn(geometry: GeometryProxy) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: geometry.size.width * 0.4, height: POSPadding.medium)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
-        }
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: geometry.size.width * 0.4, height: GhostConstants.textLineHeight * scale)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
+            .frame(maxHeight: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
     private func ghostBadgeRow(geometry: GeometryProxy) -> some View {
         Rectangle()
             .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: geometry.size.width * 0.28, height: POSPadding.medium)
+            .frame(width: geometry.size.width * 0.28, height: GhostConstants.badgeHeight * scale)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             .shimmering()
+            .frame(maxHeight: .infinity)
     }
+
+    private var cardHeight: CGFloat {
+        let headerHeight = GhostConstants.rowHeight * scale
+        let detailsHeight = GhostConstants.rowHeight * scale
+        let badgeHeight = GhostConstants.badgeRowHeight * scale
+        let fixedSpacing = POSSpacing.xSmall + POSSpacing.xSmall * 3
+        let fixedPadding = POSPadding.medium * (1 / scale) * 2
+        return headerHeight + detailsHeight + badgeHeight + fixedSpacing + fixedPadding
+    }
+}
+
+private enum GhostConstants {
+    static let textLineHeight: CGFloat = 16
+    static let rowHeight: CGFloat = 24
+    static let badgeHeight: CGFloat = 20
+    static let badgeRowHeight: CGFloat = 28
 }
 
 // MARK: - Search

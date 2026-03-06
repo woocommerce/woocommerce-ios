@@ -51,12 +51,15 @@ final class POSTabCoordinator {
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
         let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
+        let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
+                                                   currencySettings: currencySettings,
                                                    isLocalCatalogEnabled: isLocalCatalogEnabled,
+                                                   isFTSSearchEnabled: isFTSSearchEnabled,
                                                    posProductsOnlyEnabled: posProductsOnlyEnabled)
     }
 
@@ -82,6 +85,17 @@ final class POSTabCoordinator {
                                         selectedSite: defaultSitePublisher,
                                         appPasswordSupportState: isAppPasswordSupported,
                                         storage: storageManager)
+    }()
+
+    private lazy var posBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory = {
+        POSBookingListFetchStrategyFactory(
+            siteID: siteID,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+            siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
+        )
     }()
 
     /// Creates the appropriate barcode scan service based on local catalog availability
@@ -237,7 +251,8 @@ private extension POSTabCoordinator {
             let refundsService = POSRefundsService(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
-                                                   appPasswordSupportState: isAppPasswordSupported)
+                                                   appPasswordSupportState: isAppPasswordSupported,
+                                                   currencySettings: currencySettings)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -262,6 +277,9 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                let isBookingsEligible = storesManager.sessionManager.defaultSite
+                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -276,6 +294,8 @@ private extension POSTabCoordinator {
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
+                    bookingListFetchStrategyFactory: posBookingListFetchStrategyFactory,
+                    isBookingsEligible: isBookingsEligible,
                     orderService: orderService,
                     refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

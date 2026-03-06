@@ -136,6 +136,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
         let parameters: [String: Any] = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
+            ParameterKeys.perPage: String(orderIDs.count),
             ParameterKeys.fields: ParameterValues.fieldValues
         ]
 
@@ -657,6 +658,24 @@ public extension OrdersRemote {
                                    availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
 
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    public func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
+        guard !orderIDs.isEmpty else { return [] }
+        let parameters: [String: Any] = [
+            ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
+            ParameterKeys.perPage: String(orderIDs.count),
+            ParameterKeys.fields: ParameterValues.fieldValues
+        ]
+        let path = Constants.ordersPath
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = OrderListMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 }

@@ -137,12 +137,14 @@ private extension DefaultRequestAuthenticator {
     /// To check whether the given URLRequest is a REST API request
     ///
     func isRestAPIRequest(_ urlRequest: URLRequest) -> Bool {
-        guard let siteAddress,
-              let url = urlRequest.url,
-              url.absoluteString.hasPrefix(siteAddress.trimSlashes() + "/" + RESTRequest.Settings.basePath) else {
-            return false
-        }
-        return true
+        guard let siteAddress, let url = urlRequest.url else { return false }
+        let absoluteString = url.absoluteString
+        let siteBase = siteAddress.trimSlashes()
+
+        // Use cached REST API root if available, otherwise fall back to default
+        let restRoot = WordPressRESTAPIRootCache.shared.root(for: siteAddress)
+            ?? (siteBase + "/" + RESTRequest.Settings.basePath)
+        return absoluteString.hasPrefix(restRoot.trimSlashes())
     }
 
     /// Attempts creating a request with WPCOM token if possible.

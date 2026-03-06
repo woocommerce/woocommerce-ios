@@ -394,12 +394,15 @@ final class WooShippingRemoteTests: XCTestCase {
         )
         let markOrderComplete = true
 
+        let originEmail = "origin@example.com"
+        let destinationEmail = "destination@example.com"
+
         // When
         let result: Result<[ShippingLabelPurchase], Error> = waitFor { promise in
             remote.purchaseShippingLabel(siteID: self.sampleSiteID,
                                          orderID: self.sampleOrderID,
-                                         originAddress: WooShippingAddress.fake(),
-                                         destinationAddress: WooShippingAddress.fake(),
+                                         originAddress: WooShippingAddress.fake().copy(email: originEmail),
+                                         destinationAddress: WooShippingAddress.fake().copy(email: destinationEmail),
                                          package: package,
                                          markOrderComplete: markOrderComplete) { result in
                 promise(result)
@@ -442,6 +445,12 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(firstPackage["non_delivery_option"] as? String, "return")
         XCTAssertEqual(firstPackage["restriction_comments"] as? String, "")
         XCTAssertEqual(firstPackage["contents_explanation"] as? String, "")
+
+        let originParam = try XCTUnwrap(request.parameters["origin"] as? [String: Any])
+        XCTAssertEqual(originParam["email"] as? String, originEmail)
+
+        let destinationParam = try XCTUnwrap(request.parameters["destination"] as? [String: Any])
+        XCTAssertEqual(destinationParam["email"] as? String, destinationEmail)
 
         let selectedRateParam = try XCTUnwrap(request.parameters["selected_rate"] as? [String: Any])
         let parentValue = try XCTUnwrap(selectedRateParam["parent"] as? [String: Any])

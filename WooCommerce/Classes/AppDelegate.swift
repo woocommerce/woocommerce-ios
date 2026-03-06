@@ -40,6 +40,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
+    /// Coordinates the setup flow for self-driven push notification system
+    private var wooPushNotificationCoordinator: WooPushNotificationSetupCoordinator?
+
     private(set) lazy var requirementsChecker = RequirementsChecker(baseViewController: tabBarController)
 
     /// Handles events to background refresh the app.
@@ -268,16 +271,12 @@ extension AppDelegate {
     ///
     // periphery: ignore - Fails when build on simulator
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
-        #if targetEnvironment(simulator)
-            DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
-        #else
-            /// We're sending notifications for logged in state only.
-            /// Revisit this check if a local notification in unauthenticated state is needed.
-            guard stores.isAuthenticated else { return }
-            let pushNotesManager = ServiceLocator.pushNotesManager
-            pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
-        #endif
+        /// We're sending notifications for logged in state only.
+        /// Revisit this check if a local notification in unauthenticated state is needed.
+        guard stores.isAuthenticated else { return }
+        let pushNotesManager = ServiceLocator.pushNotesManager
+        pushNotesManager.registerForRemoteNotifications()
+        pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
     }
 
     func setupUserNotificationCenter() {
@@ -439,10 +438,19 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 // MARK: - Magic link
 extension AppDelegate {
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        return if ServiceLocator.stores.isAuthenticated {
-            handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+        if ServiceLocator.stores.isAuthenticated {
+            let pendingAuthFlowStorage = PendingAuthFlowStorage()
+            let flow = pendingAuthFlowStorage.current
+            pendingAuthFlowStorage.clear()
+
+            switch flow {
+            case .jetpackSetup:
+                return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
+            case .none:
+                return false
+            }
         } else {
-            ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+            return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
     }
 

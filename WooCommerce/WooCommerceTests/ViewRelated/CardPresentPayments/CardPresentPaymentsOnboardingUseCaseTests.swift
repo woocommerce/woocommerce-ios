@@ -2,6 +2,7 @@ import XCTest
 import Fakes
 import Yosemite
 import enum Alamofire.AFError
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {

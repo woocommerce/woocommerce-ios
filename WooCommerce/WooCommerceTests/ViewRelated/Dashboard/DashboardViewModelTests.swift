@@ -4,6 +4,7 @@ import Yosemite
 import enum NetworkingCore.DotcomError
 import protocol WooFoundation.Analytics
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -89,7 +90,7 @@ final class DashboardViewModelTests: XCTestCase {
         // FeatureFlagAction - dispatched by child view models checking feature availability
         storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, onCompletion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
             }
         }
@@ -379,7 +380,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
+        defaults[.completedAllStoreOnboardingTasks] = ["0": true]
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            userDefaults: defaults,
@@ -563,7 +564,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() async throws {
         // Given
-        userDefaults[.completedAllStoreOnboardingTasks] = true
+        userDefaults[.completedAllStoreOnboardingTasks] = [String(sampleSiteID): true]
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
@@ -704,6 +705,57 @@ final class DashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.dashboardCards.contains(expectedStockCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_onboarding_card_when_store_is_non_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedOnboardingCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_does_not_contain_onboarding_card_when_store_is_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.dashboardCards.contains(expectedOnboardingCard))
     }
 
     // MARK: Show New Cards Notice
@@ -862,6 +914,7 @@ final class DashboardViewModelTests: XCTestCase {
         mockReloadingData()
 
         // When
+        await viewModel.reloadAllData()
         await viewModel.onViewAppear()
 
         // Then
@@ -914,12 +967,14 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_not_registered_with_Woo_PN() async {
         // Given
-        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -933,13 +988,15 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_isSelfDrivenPushNotificationRegistered_returns_true_when_site_is_registered_and_not_wpcom_login() async {
         // Given
-        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -953,14 +1010,16 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_registered_and_wpcom_login() async {
         // Given
-        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -974,16 +1033,18 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_disabled() async {
         // Given
-        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -997,16 +1058,18 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_enabled() async {
         // Given
-        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            featureFlags: featureFlagService,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -1020,14 +1083,16 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_shouldSuggestWPComConnection_returns_false_when_site_is_registered_with_Woo_PN_and_not_wpcom_login() async {
         // Given
-        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -1041,14 +1106,16 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_wpcom_login() async {
         // Given
-        userDefaults.set("", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -1062,14 +1129,16 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_hideWPComConnectionSuggestion_updates_relevant_properties() async {
         // Given
-        userDefaults.set("\(sampleSiteID)", forKey: .siteIDsRegisteredForWooPushNotifications)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
@@ -1081,6 +1150,7 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
         XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
     }
+
 }
 
 private extension DashboardViewModelTests {
@@ -1129,7 +1199,7 @@ private extension DashboardViewModelTests {
 
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, onCompletion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
             }
         }

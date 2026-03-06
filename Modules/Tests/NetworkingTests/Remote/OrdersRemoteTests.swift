@@ -180,7 +180,7 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertEqual(Set(includedIDs ?? []), Set(["1", "2", "3"])) // check for unique ids
 
         XCTAssertNotNil(parameters["_fields"])
-        XCTAssertNil(parameters["per_page"]) // verify per_page is not sent
+        XCTAssertEqual(parameters["per_page"] as? String, "4") // per_page matches order ID count
     }
 
     func test_loadOrders_by_ids_with_empty_ids_returns_empty_array_and_makes_no_request() async throws {

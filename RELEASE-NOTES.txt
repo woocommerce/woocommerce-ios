@@ -1,12 +1,28 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
-24.1
+24.3
 -----
+- [*] Fix issue displaying onboarding tasks when logging in to sites with pretty permalinks using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16731]
+- [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
+- [*] POS: Fix bookings/orders/settings dismissal when switching apps [https://github.com/woocommerce/woocommerce-ios/pull/16757]
+- [*] Fix "See Receipt" button not appearing for orders with custom statuses [https://github.com/woocommerce/woocommerce-ios/pull/16673]
+- [*] Fix infinite retries in InfiniteScrollIndicator [https://github.com/woocommerce/woocommerce-ios/pull/16778]
+- [*] Fix attendance status filter in Bookings [https://github.com/woocommerce/woocommerce-ios/pull/16779]
 
+
+24.2
+-----
+- [*] Fix onboarding tasks not displayed after switching stores [https://github.com/woocommerce/woocommerce-ios/pull/16740]
+- [*] POS: Fix barcode scanning not working after completing a payment [https://github.com/woocommerce/woocommerce-ios/pull/16672]
+- [*] Media library: Fix decoding failure when media details are returned as array [https://github.com/woocommerce/woocommerce-ios/pull/16715]
+- [Internal] Enable Bookings MVP for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16738]
 
 24.1
 -----
 - [Internal]: Update Stripe SDK to 5.1.1 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
+- [*] Fix product type filters issue when adding a product to order [https://github.com/woocommerce/woocommerce-ios/pull/16580]
+- [**] POS: Full Text Search for both products and variations, when local catalog used. Prefix matching, any word order, relevance scoring. [https://github.com/woocommerce/woocommerce-ios/pull/16626]
+- [*] Make phone number mandatory for shipping destination addresses [https://github.com/woocommerce/woocommerce-ios/pull/16625]
 
 24.0
 -----

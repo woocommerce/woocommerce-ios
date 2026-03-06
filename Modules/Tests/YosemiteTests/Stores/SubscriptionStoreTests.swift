@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import Networking
 import Yosemite
 

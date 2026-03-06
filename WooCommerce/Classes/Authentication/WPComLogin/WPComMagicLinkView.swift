@@ -71,8 +71,6 @@ struct WPComMagicLinkView: View {
                 switch flow {
                 case .jetpackSetup:
                     JetpackInstallHeaderView()
-                case .notificationSetup:
-                    ConnectWPComHeaderView()
                 }
 
                 // title
@@ -149,7 +147,7 @@ private extension WPComMagicLinkView {
 struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
         WPComMagicLinkView(title: "Connect to WordPress.com ",
-                           flow: .notificationSetup,
+                           flow: .jetpackSetup(requiresConnectionOnly: true),
                            isSignup: false,
                            viewModel: .init(email: "test@example.com"))
     }

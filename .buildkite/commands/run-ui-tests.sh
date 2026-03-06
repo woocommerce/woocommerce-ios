@@ -9,23 +9,11 @@ DEVICE=$2
 
 echo "Running $TEST_NAME on $DEVICE"
 
-# Run this at the start to fail early if value not available
-echo '--- :test-analytics: Configuring Test Analytics'
-if [[ $DEVICE =~ ^iPhone ]]; then
-  export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
-else
-  export BUILDKITE_ANALYTICS_TOKEN=$BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
-fi
-
 echo "--- 📦 Downloading Build Artifacts"
 download_artifact build-products.tar
 tar -xf build-products.tar
 
-echo "--- :rubygems: Setting up Gems"
-install_gems
-
-echo "--- :swift: Setting up Swift Packages"
-install_swiftpm_dependencies
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- :keyboard: Connecting Hardware Keyboard"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool true
@@ -67,9 +55,9 @@ else
 fi
 
 if [[ $BUILDKITE_BRANCH == trunk ]] || [[ $BUILDKITE_BRANCH == release/* ]]; then
-    annotate_test_failures "fastlane/test_output/WooCommerce.xml" --slack "build-and-ship"
+    annotate_test_failures "fastlane/test_output/report.junit" --slack "build-and-ship"
 else
-    annotate_test_failures "fastlane/test_output/WooCommerce.xml"
+    annotate_test_failures "fastlane/test_output/report.junit"
 fi
 
 exit $TESTS_EXIT_STATUS

@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 
@@ -110,8 +111,10 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let state = StateOfACountry(code: "NY", name: "New York")
         let countries = [Country(code: "US", name: "United States", states: [state]), Country(code: "CA", name: "Canada", states: [])]
         storageManager.insertSampleCountries(readOnlyCountries: countries)
+        let email = "TEST@EXAMPLE.COM"
         let address = WooShippingAddress(company: "HEADQUARTERS",
                                          name: "JANE DOE",
+                                         email: email,
                                          phone: "223-456-7890",
                                          country: "US",
                                          state: "NY",
@@ -119,7 +122,6 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                          address2: "STE 100",
                                          city: "TICONDEROGA",
                                          postcode: "12883-1487")
-        let email = "TEST@EXAMPLE.COM"
 
         // When
         let viewModel = WooShippingEditAddressViewModel(address: address,
@@ -253,10 +255,11 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.phone.required)
     }
 
-    func test_phone_number_not_required_for_destination_address_when_customs_form_not_required() {
+    func test_phone_number_required_for_destination_address() {
         // Given
         let address = WooShippingAddress(company: "HEADQUARTERS",
                                          name: "JANE DOE",
+                                         email: "",
                                          phone: "223-456-7890",
                                          country: "US",
                                          state: "NY",
@@ -274,13 +277,14 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
                                                         originStateCode: "CA")
 
         // Then
-        XCTAssertFalse(viewModel.phone.required)
+        XCTAssertTrue(viewModel.phone.required)
     }
 
     func test_phone_number_required_for_destination_address_when_customs_form_required() {
         // Given
         let address = WooShippingAddress(company: "HEADQUARTERS",
                                          name: "JANE DOE",
+                                         email: "",
                                          phone: "223-456-7890",
                                          country: "US",
                                          state: "NY",
@@ -780,6 +784,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         // Given
         let expectedAddress = WooShippingAddress(company: "HEADQUARTERS",
                                                  name: "JANE DOE",
+                                                 email: "",
                                                  phone: "1-234-456-7890",
                                                  country: "US",
                                                  state: "NY",
@@ -937,6 +942,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let suggestedAddress = WooShippingNormalizedAddress(company: "HEADQUARTERS",
                                                             firstName: "JANE",
                                                             lastName: "DOE",
+                                                            email: "TEXT@EXAMPLE.COM",
                                                             phone: "123-456-7890",
                                                             country: "US",
                                                             state: "NY",
@@ -1020,6 +1026,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let suggestedAddress = WooShippingNormalizedAddress(company: "HEADQUARTERS",
                                                             firstName: "JANE",
                                                             lastName: "DOE",
+                                                            email: "TEXT@EXAMPLE.COM",
                                                             phone: "123-456-7890",
                                                             country: "US",
                                                             state: "NY",
@@ -1075,6 +1082,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         let sampleOrderID: Int64 = 123
         let normalizedAddress = WooShippingNormalizedAddress.fake().copy(firstName: "JANE",
                                                                          lastName: "DOE",
+                                                                         email: "TEXT@EXAMPLE.COM",
                                                                          phone: "123-456-7890")
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let result: (WooShippingDestinationAddressUpdate, String?) = await waitForAsync { promise in
@@ -1614,6 +1622,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
 
         let testAddress = WooShippingAddress(company: "TEST COMPANY",
                                              name: "TEST NAME",
+                                             email: "test@example.com",
                                              phone: "555-123-4567",
                                              country: "US",
                                              state: "CA",

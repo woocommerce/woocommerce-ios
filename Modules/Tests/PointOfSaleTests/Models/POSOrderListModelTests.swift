@@ -74,13 +74,15 @@ final class POSOrderListModelTests {
             formattedTotal: "$10.00",
             formattedSubtotal: "$10.00",
             customerEmail: email,
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Test Payment",
             lineItems: [],
             refunds: [],
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$10.00",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date()
         )
     }
 }

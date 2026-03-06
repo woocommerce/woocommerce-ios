@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import Hardware
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class TapToPayReconnectionControllerTests: XCTestCase {
@@ -90,6 +91,30 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         XCTAssertEqual(sampleConfiguration, connectionControllerFactory.spyCreateConnectionControllerConfiguration)
         assertEqual(CardReaderConnectionAnalyticsTracker.ConnectionType.automaticReconnection,
                     connectionControllerFactory.spyCreateConnectionControllerAnalyticsTracker?.connectionType)
+    }
+
+    func test_cancelReconnection_resets_isReconnecting() {
+        // Given
+        let supportDeterminer = MockCardReaderSupportDeterminer()
+        supportDeterminer.shouldReturnLocationIsAuthorized = true
+        supportDeterminer.shouldReturnConnectedReader = nil
+        supportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
+        supportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
+        supportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
+
+        waitFor { promise in
+            self.connectionControllerFactory.onSearchAndConnectCalled = {
+                promise(())
+            }
+            self.sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
+        }
+        XCTAssertTrue(sut.isReconnecting)
+
+        // When
+        sut.cancelReconnection()
+
+        // Then
+        XCTAssertFalse(sut.isReconnecting)
     }
 
 }

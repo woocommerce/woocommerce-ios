@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageType
 import protocol Storage.StorageManagerType
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class SettingsViewModelTests: XCTestCase {
@@ -295,12 +296,13 @@ final class SettingsViewModelTests: XCTestCase {
     func test_sections_contains_does_not_contain_notifications_row_for_selfregisteredtoken() {
         // Given
         let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
-        defaults.set("123", forKey: .siteIDsRegisteredForWooPushNotifications)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123], hasStoredSiteIDsRegisteredForWooPNs: true)
         let viewModel = SettingsViewModel(stores: stores,
                                           featureFlagService: featureFlagService,
-                                          defaults: defaults)
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
 
         // When
         viewModel.onViewDidLoad()

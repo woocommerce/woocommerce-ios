@@ -4,6 +4,7 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import XCTest
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class InboxViewModelTests: XCTestCase {

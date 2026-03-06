@@ -39,8 +39,9 @@ public struct BookingFilters {
     public let resourceIDs: [Int64]
     public let startDateBefore: String?
     public let startDateAfter: String?
-    public let attendanceStatuses: [String]
+    public let attendanceStatus: String?
     public let paymentStatuses: [String]
+    public let bookingStatusExclude: [String]
 
     public init(
         productIDs: [Int64] = [],
@@ -48,16 +49,53 @@ public struct BookingFilters {
         resourceIDs: [Int64] = [],
         startDateBefore: String? = nil,
         startDateAfter: String? = nil,
-        attendanceStatuses: [String] = [],
-        paymentStatuses: [String] = []
+        attendanceStatus: String? = nil,
+        paymentStatuses: [String] = [],
+        bookingStatusExclude: [String] = []
     ) {
         self.productIDs = productIDs
         self.customerIDs = customerIDs
         self.resourceIDs = resourceIDs
         self.startDateBefore = startDateBefore
         self.startDateAfter = startDateAfter
-        self.attendanceStatuses = attendanceStatuses
+        self.attendanceStatus = attendanceStatus
         self.paymentStatuses = paymentStatuses
+        self.bookingStatusExclude = bookingStatusExclude
+    }
+
+    /// Returns a new `BookingFilters` by merging user-applied filters with this instance's date constraints.
+    /// Non-date fields come from `userFilters`; date fields are intersected
+    /// (later `startDateAfter`, earlier `startDateBefore`).
+    public func mergingDates(with userFilters: BookingFilters) -> BookingFilters {
+        BookingFilters(
+            productIDs: userFilters.productIDs,
+            customerIDs: userFilters.customerIDs,
+            resourceIDs: userFilters.resourceIDs,
+            startDateBefore: Self.mostRestrictiveDate(date1: startDateBefore,
+                                                      date2: userFilters.startDateBefore,
+                                                      pickEarlier: true),
+            startDateAfter: Self.mostRestrictiveDate(date1: startDateAfter,
+                                                     date2: userFilters.startDateAfter,
+                                                     pickEarlier: false),
+            attendanceStatus: userFilters.attendanceStatus,
+            bookingStatusExclude: bookingStatusExclude
+        )
+    }
+
+    /// Returns the most restrictive of two ISO 8601 date strings.
+    /// - `pickEarlier = true`  → picks `min` (for upper bounds / `startDateBefore`)
+    /// - `pickEarlier = false` → picks `max` (for lower bounds / `startDateAfter`)
+    private static func mostRestrictiveDate(date1: String?, date2: String?, pickEarlier: Bool) -> String? {
+        switch (date1, date2) {
+        case (nil, nil):
+            return nil
+        case (let d, nil):
+            return d
+        case (nil, let d):
+            return d
+        case (let d1?, let d2?):
+            return pickEarlier ? min(d1, d2) : max(d1, d2)
+        }
     }
 }
 
@@ -86,7 +124,8 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         var parameters: [String: Any] = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.order: order.rawValue
+            ParameterKey.order: order.rawValue,
+            ParameterKey.orderBy: OrderBy.startDate.rawValue
         ]
 
         // Apply filters if provided
@@ -117,12 +156,16 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
                 parameters[ParameterKey.startDateAfter] = adjustedDate.ISO8601Format()
             }
 
-            if filters.attendanceStatuses.isNotEmpty {
-                parameters[ParameterKey.attendanceStatus] = filters.attendanceStatuses
+            if let attendanceStatus = filters.attendanceStatus {
+                parameters[ParameterKey.attendanceStatus] = attendanceStatus
             }
 
             if filters.paymentStatuses.isNotEmpty {
                 parameters[ParameterKey.paymentStatus] = filters.paymentStatuses
+            }
+
+            if filters.bookingStatusExclude.isNotEmpty {
+                parameters[ParameterKey.bookingStatusExclude] = filters.bookingStatusExclude
             }
         }
 
@@ -253,6 +296,11 @@ public extension BookingsRemote {
         case descending = "desc"
     }
 
+    enum OrderBy: String {
+        case date
+        case startDate = "start_date"
+    }
+
     private enum Path {
         static let bookings = "bookings"
         static let resources = "resources/team-members"
@@ -265,11 +313,13 @@ public extension BookingsRemote {
         static let startDateAfter: String  = "start_date_after"
         static let search: String          = "search"
         static let order: String           = "order"
+        static let orderBy: String         = "orderby"
         static let product: String         = "product"
         static let customer: String        = "customer"
         static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
+        static let bookingStatusExclude    = "booking_status_exclude"
         static let status: String          = "status"
         static let note: String            = "note"
     }

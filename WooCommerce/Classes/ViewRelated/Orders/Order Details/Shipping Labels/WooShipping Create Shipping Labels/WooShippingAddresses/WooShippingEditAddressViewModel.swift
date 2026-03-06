@@ -4,6 +4,7 @@ import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 import Combine
+import class WordPressShared.EmailFormatValidator
 
 /// View model for editing an address in the Woo Shipping label flow.
 final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
@@ -76,11 +77,11 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     }
 
     /// The origin address country code.
-    /// This is used to determine whether the phone number is required when editing a destination address.
+    /// Reserved for future validation rules.
     private let originCountryCode: String?
 
     /// The origin address state code.
-    /// This is used to determine whether the phone number is required when editing a destination address.
+    /// Reserved for future validation rules.
     private let originStateCode: String?
 
     /// Status of the address, based on local validation and remote verification.
@@ -235,14 +236,9 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
             newPostalCode.isEmpty ? Localization.Validation.postalCode : nil
         })
         self.email = WooShippingAddressField(type: .email, value: email, required: true, validate: { newEmail in
-            newEmail.isEmpty ? Localization.Validation.email : nil
+            (newEmail.isEmpty || !EmailFormatValidator.validate(string: newEmail)) ? Localization.Validation.email : nil
         })
-        let phoneNumberRequired = Self.phoneNumberRequired(addressType: type,
-                                                           selectedCountryCode: country,
-                                                           selectedState: state,
-                                                           originCountryCode: originCountryCode,
-                                                           originStateCode: originStateCode)
-        self.phone = WooShippingAddressField(type: .phone, value: phone, required: phoneNumberRequired, validate: { _ in return nil})
+        self.phone = WooShippingAddressField(type: .phone, value: phone, required: true, validate: { _ in return nil})
         self.isDefaultAddress = isDefaultAddress
         self.showCompanyField = showCompanyField
         self.originalAddressIsVerified = isVerified
@@ -353,6 +349,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     func proceedWithInputAddress() {
         let address = WooShippingAddress(company: company.value,
                                          name: name.value,
+                                         email: email.value,
                                          phone: phone.value,
                                          country: country.value,
                                          state: state.value,
@@ -368,6 +365,7 @@ final class WooShippingEditAddressViewModel: ObservableObject, Identifiable {
     func remotelyValidateAddress() async {
         let addressToValidate = WooShippingAddress(company: company.value,
                                                    name: name.value,
+                                                   email: email.value,
                                                    phone: phone.value,
                                                    country: country.value,
                                                    state: state.value,
@@ -541,51 +539,10 @@ extension WooShippingEditAddressViewModel {
     /// has length 10 with additional "1" area code for US.
     ///
     private var isPhoneNumberValid: Bool {
-        guard phone.value.isNotEmpty else {
-            return !phoneNumberRequired(for: country.value, and: state.value)
-        }
-        guard isUSAddress else {
-            return true
-        }
-        let phoneDigits = phone.value.components(separatedBy: .decimalDigits.inverted).joined()
-        if phoneDigits.hasPrefix("1") {
-            return phoneDigits.count == 11
-        } else {
-            return phoneDigits.count == 10
-        }
-    }
-
-    /// Whether the phone number is required.
-    ///
-    private func phoneNumberRequired(for country: String?, and state: String?) -> Bool {
-        Self.phoneNumberRequired(addressType: addressType,
-                                    selectedCountryCode: country,
-                                    selectedState: state,
-                                    originCountryCode: originCountryCode,
-                                    originStateCode: originStateCode)
-    }
-
-    /// Whether the phone number is required.
-    /// - Parameters:
-    ///   - addressType: Type of address being edited.
-    ///   - selectedCountryCode: Country code of the selected country for the address being edited.
-    ///   - selectedState: Selected state for the address being edited.
-    ///   - originCountryCode: Country code of the origin address.
-    ///   - originStateCode: State code of the origin address.
-    private static func phoneNumberRequired(addressType: AddressType,
-                                            selectedCountryCode: String?,
-                                            selectedState: String?,
-                                            originCountryCode: String?,
-                                            originStateCode: String?) -> Bool {
-        switch addressType {
-        case .origin:
-            return true
-        case .destination:
-            return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originCountryCode,
-                                                                    originState: originStateCode,
-                                                                    destinationCountry: selectedCountryCode,
-                                                                    destinationState: selectedState)
-        }
+        return WooShippingPhoneValidator.isValid(
+            phone: phone.value,
+            country: country.value
+        )
     }
 }
 
@@ -625,7 +582,7 @@ private extension WooShippingEditAddressViewModel {
                 state.required = stateRequired
 
                 // Update phone number requirement based on selected country.
-                phone.required = phoneNumberRequired(for: selectedCountry.code, and: selectedState?.code)
+                phone.required = true
                 phone.validateField()
             }
             .store(in: &cancellables)
@@ -640,7 +597,7 @@ private extension WooShippingEditAddressViewModel {
                 state.setDisplayValue(selectedState?.name ?? "")
 
                 // Update phone number requirement based on selected state.
-                phone.required = phoneNumberRequired(for: country.value, and: selectedState?.code)
+                phone.required = true
                 phone.validateField()
             }
             .store(in: &cancellables)

@@ -3,6 +3,7 @@ import Foundation
 @testable import PointOfSale
 @testable import Yosemite
 
+@MainActor
 final class PointOfSaleObservableItemsControllerTests {
 
     // MARK: - Test Helpers

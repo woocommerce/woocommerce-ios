@@ -16,6 +16,7 @@ import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.CurrencyFormatter
+import CocoaLumberjackSwift
 
 enum StartRefundFlowResult {
     case hasItemsToRefund
@@ -426,7 +427,7 @@ enum RefundActionAvailability {
         do {
             refundedProducts = try await refundsService.loadRefundedProducts(for: order)
         } catch {
-            debugPrint("⛔️ Failed to load refunded products: \(error)")
+            DDLogError("⛔️ Failed to load refunded products: \(error)")
             refundedProducts = []
         }
     }

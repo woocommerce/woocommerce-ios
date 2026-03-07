@@ -27,6 +27,10 @@ struct POSOrderDetailsView: View {
         horizontalSizeClass == .compact
     }
 
+    private var shouldShowDedicatedRefundsSection: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
+    }
+
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter.dateAndTimeFormatter
         formatter.timeZone = siteTimezone
@@ -54,7 +58,7 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
-                    if !orderListModel.ordersController.refundedProducts.isEmpty {
+                    if shouldShowDedicatedRefundsSection && !orderListModel.ordersController.refundedProducts.isEmpty {
                         refundedProductsSection(orderListModel.ordersController.refundedProducts)
                     }
                     POSTotalsSectionView(
@@ -113,6 +117,7 @@ struct POSOrderDetailsView: View {
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
         .task {
+            guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadRefundedProducts()
         }
         .onAppear {

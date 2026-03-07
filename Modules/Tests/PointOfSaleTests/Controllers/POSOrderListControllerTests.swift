@@ -11,6 +11,7 @@ import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
+import struct Yosemite.POSOrderRefund
 @testable import struct Yosemite.POSRefundsResult
 @testable import struct Yosemite.POSRefundableItem
 import class WooFoundation.CurrencySettings
@@ -1133,6 +1134,79 @@ final class POSOrderListControllerTests {
         #expect(orderListService.loadOrderWasCalled == true)
         #expect(orderListService.lastLoadOrderID == order.id)
     }
+
+    @MainActor
+    @Test func test_loadRefundedProducts_when_order_has_refunds_then_populates_refundedProducts() async throws {
+        // Given
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadRefundedProductsResultToReturn = [
+            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00"),
+            POSRefundItem(refundedItemID: 2, quantity: 1, name: "Item B", formattedPrice: "$5.00", formattedTotal: "-$5.00")
+        ]
+
+        // When
+        await sut.loadRefundedProducts()
+
+        // Then
+        #expect(sut.refundedProducts.count == 2)
+    }
+
+    @MainActor
+    @Test func test_loadRefundedProducts_when_no_selected_order_then_refundedProducts_is_empty() async throws {
+        // Given — no order selected
+
+        // When
+        await sut.loadRefundedProducts()
+
+        // Then
+        #expect(sut.refundedProducts.isEmpty)
+    }
+
+    @MainActor
+    @Test func test_loadRefundedProducts_when_order_has_no_refunds_then_refundedProducts_is_empty() async throws {
+        // Given
+        let order = makeOrder(refunds: [])
+        sut.selectOrder(order)
+
+        // When
+        await sut.loadRefundedProducts()
+
+        // Then
+        #expect(sut.refundedProducts.isEmpty)
+    }
+
+    @MainActor
+    @Test func test_loadRefundedProducts_when_service_throws_then_refundedProducts_is_empty() async throws {
+        // Given
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadRefundedProductsErrorToThrow = NSError(domain: "test", code: 1)
+
+        // When
+        await sut.loadRefundedProducts()
+
+        // Then
+        #expect(sut.refundedProducts.isEmpty)
+    }
+
+    @MainActor
+    @Test func test_selectOrder_then_clears_refundedProducts() async throws {
+        // Given: Load some refunded products first
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadRefundedProductsResultToReturn = [
+            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+        ]
+        await sut.loadRefundedProducts()
+        try #require(sut.refundedProducts.count == 1)
+
+        // When
+        sut.selectOrder(makeOrder(id: 2))
+
+        // Then
+        #expect(sut.refundedProducts.isEmpty)
+    }
 }
 
 private extension POSOrderListControllerTests {
@@ -1152,7 +1226,8 @@ private extension POSOrderListControllerTests {
                    status: OrderStatusEnum = .completed,
                    paymentMethodID: String = "woocommerce_payments",
                    paymentMethodTitle: String = "cod",
-                   lineItems: [POSOrderItem] = []) -> POSOrder {
+                   lineItems: [POSOrderItem] = [],
+                   refunds: [POSOrderRefund] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",
@@ -1164,7 +1239,7 @@ private extension POSOrderListControllerTests {
             paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
-            refunds: [],
+            refunds: refunds,
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",

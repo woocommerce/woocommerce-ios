@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundItem
 import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSRefundAmounts
@@ -27,6 +28,7 @@ protocol POSOrderListControllerProtocol {
     var selectedOrder: POSOrder? { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
+    var refundedProducts: [POSRefundItem] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -38,6 +40,7 @@ protocol POSOrderListControllerProtocol {
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
     func processRefund(reason: String?) async throws
+    func loadRefundedProducts() async
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -66,6 +69,7 @@ enum RefundActionAvailability {
     private(set) var selectedOrder: POSOrder?
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
+    private(set) var refundedProducts: [POSRefundItem] = []
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
@@ -222,6 +226,7 @@ enum RefundActionAvailability {
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
         selectedOrderRefundsState = .idle
+        refundedProducts = []
     }
 
     @MainActor
@@ -410,6 +415,19 @@ enum RefundActionAvailability {
 
         clearRefundSelection()
         try? await updateOrder(orderID: order.id)
+    }
+
+    func loadRefundedProducts() async {
+        guard let order = selectedOrder, order.refunds.isNotEmpty else {
+            refundedProducts = []
+            return
+        }
+        do {
+            refundedProducts = try await refundsService.loadRefundedProducts(for: order)
+        } catch {
+            debugPrint("⛔️ Failed to load refunded products: \(error)")
+            refundedProducts = []
+        }
     }
 }
 

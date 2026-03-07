@@ -6,6 +6,7 @@ import struct NetworkingCore.Refund
 import struct NetworkingCore.OrderItemRefund
 import struct NetworkingCore.OrderItemTaxRefund
 import class WooFoundation.CurrencySettings
+import class WooFoundationCore.CurrencyFormatter
 
 public final class POSRefundsService: POSRefundsServiceProtocol {
     private let refundsRemote: POSRefundsRemoteProtocol
@@ -43,6 +44,21 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         self.paymentGatewayRemote = paymentGatewayRemote
         self.refundCalculator = refundCalculator
         self.mapper = POSRefundMapper()
+    }
+
+    public func loadRefundedProducts(for order: POSOrder) async throws -> [POSRefundItem] {
+        let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currency = currencySettings.currencyCode.rawValue
+
+        return refunds.flatMap { refund in
+            mapper.mapWithDisplayData(
+                refund: refund,
+                orderItems: order.lineItems,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            )
+        }
     }
 
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult {

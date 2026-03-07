@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSRefundItem
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -52,6 +53,9 @@ struct POSOrderDetailsView: View {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
+                    }
+                    if !orderListModel.ordersController.refundedProducts.isEmpty {
+                        refundedProductsSection(orderListModel.ordersController.refundedProducts)
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
@@ -108,6 +112,9 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
+        .task {
+            await orderListModel.ordersController.loadRefundedProducts()
+        }
         .onAppear {
             if autoStartNextRefundFlow {
                 autoStartNextRefundFlow = false
@@ -146,6 +153,29 @@ private extension POSOrderDetailsView {
                     productRow(item: item)
 
                     if index < order.lineItems.count - 1 {
+                        divider
+                    }
+                }
+            }
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.refundedProductsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            VStack(spacing: POSSpacing.small) {
+                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                    refundedProductRow(item: item)
+
+                    if index < items.count - 1 {
                         divider
                     }
                 }
@@ -266,6 +296,53 @@ private extension POSOrderDetailsView {
         Text(item.formattedTotal)
             .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurface)
+    }
+}
+
+// MARK: - Refunded Product Components
+
+private extension POSOrderDetailsView {
+    @ViewBuilder
+    func refundedProductRow(item: POSRefundItem) -> some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
+                .frame(width: 56, height: 56)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Text(item.name)
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(Localization.quantityLabel(item.quantity.intValue,
+                                                item.formattedPrice))
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+            }
+
+            Spacer()
+
+            Text(item.formattedTotal)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(Color.posOnSurface)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(refundedProductRowAccessibilityLabel(for: item))
+    }
+
+    private func refundedProductRowAccessibilityLabel(for item: POSRefundItem) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundedProductRow.accessibilityLabel",
+            value: "%1$@, Quantity: %2$@ at %3$@ each, Refunded %4$@",
+            comment: "Accessibility label for refunded product row. " +
+            "%1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total."
+        )
+        return String(format: format,
+                      item.name,
+                      String(item.quantity.intValue),
+                      item.formattedPrice,
+                      item.formattedTotal)
     }
 }
 
@@ -430,6 +507,12 @@ private enum Localization {
         "pos.orderDetailsView.productsTitle",
         value: "Products",
         comment: "Section title for the products list"
+    )
+
+    static let refundedProductsTitle = NSLocalizedString(
+        "pos.orderDetailsView.refundedProductsTitle",
+        value: "Refunded products",
+        comment: "Section title for the refunded products list in order details"
     )
 
     static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {

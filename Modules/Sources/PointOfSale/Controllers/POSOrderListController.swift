@@ -415,6 +415,7 @@ enum RefundActionAvailability {
 
         clearRefundSelection()
         try? await updateOrder(orderID: order.id)
+        await loadRefundedProducts()
     }
 
     func loadRefundedProducts() async {

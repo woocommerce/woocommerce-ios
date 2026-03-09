@@ -213,7 +213,7 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             self = .subscription
         case .variableSubscription:
             self = .variableSubscription
-        case .booking:
+        case .booking, .legacyBooking:
             // We do not yet support product editing or creation for bookable products
             self = .custom("booking")
         case .bundle:

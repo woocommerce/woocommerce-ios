@@ -1191,6 +1191,52 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func test_loadRefundedProducts_when_service_succeeds_then_updates_selectedOrder_refunds_with_enriched_data() async throws {
+        // Given
+        let originalRefund = POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")
+        let order = makeOrder(refunds: [originalRefund])
+        sut.selectOrder(order)
+
+        let enrichedRefund = POSOrderRefund(
+            refundID: 1,
+            formattedTotal: "-$10.00",
+            reason: "Customer request",
+            dateCreated: Date(timeIntervalSince1970: 1000000)
+        )
+        refundsService.loadEnrichedRefundsResultToReturn = [enrichedRefund]
+        refundsService.loadRefundedProductsResultToReturn = [
+            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+        ]
+
+        // When
+        await sut.loadRefundedProducts()
+
+        // Then
+        #expect(sut.selectedOrder?.refunds.first?.dateCreated != nil)
+        #expect(sut.selectedOrder?.refunds.first?.reason == "Customer request")
+    }
+
+    @MainActor
+    @Test func test_loadRefundedProducts_when_enriched_refunds_throws_then_selectedOrder_refunds_unchanged() async throws {
+        // Given
+        let originalRefund = POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")
+        let order = makeOrder(refunds: [originalRefund])
+        sut.selectOrder(order)
+
+        refundsService.loadRefundedProductsResultToReturn = [
+            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+        ]
+        refundsService.loadEnrichedRefundsErrorToThrow = NSError(domain: "test", code: 1)
+
+        // When
+        await sut.loadRefundedProducts()
+
+        // Then: both cleared on error since async let groups fail together
+        #expect(sut.refundedProducts.isEmpty)
+        #expect(sut.selectedOrder?.refunds.first?.dateCreated == nil)
+    }
+
+    @MainActor
     @Test func test_selectOrder_then_clears_refundedProducts() async throws {
         // Given: Load some refunded products first
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])

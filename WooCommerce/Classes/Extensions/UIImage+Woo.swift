@@ -1222,12 +1222,6 @@ extension UIImage {
         return UIImage(named: "puzzle")!
     }
 
-    /// Install WCShip banner Image
-    ///
-    static var installWCShipImage: UIImage {
-        return UIImage(named: "woo-wcship-install-banner")!
-    }
-
     /// Payments Feature Banner
     ///
     static var paymentsFeatureBannerImage: UIImage {

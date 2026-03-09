@@ -3,7 +3,6 @@ import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSRefundItem
-import struct Yosemite.POSOrderRefund
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
@@ -71,7 +70,7 @@ struct POSOrderDetailsView: View {
                         totalAmount: order.formattedTotal,
                         paidAmount: order.formattedPaymentTotal,
                         paymentMethodTitle: order.paymentMethodTitle,
-                        refunds: orderListModel.ordersController.enrichedRefunds,
+                        refunds: order.refunds,
                         netAmount: order.formattedNetAmount,
                         siteTimezone: siteTimezone
                     )

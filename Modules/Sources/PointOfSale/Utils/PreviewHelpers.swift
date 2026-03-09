@@ -830,7 +830,6 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
     var refundSelectableItems: [POSRefundSelectableItem]
     var refundedProducts: [POSRefundItem] = []
-    var enrichedRefunds: [POSOrderRefund] = []
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {

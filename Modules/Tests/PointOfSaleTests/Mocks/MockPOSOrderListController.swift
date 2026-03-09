@@ -2,7 +2,6 @@ import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefundItem
-import struct Yosemite.POSOrderRefund
 
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
@@ -10,7 +9,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
     var refundedProducts: [POSRefundItem] = []
-    var enrichedRefunds: [POSOrderRefund] = []
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false

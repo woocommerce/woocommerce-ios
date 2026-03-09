@@ -58,6 +58,18 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         return loadRefundedProductsResultToReturn
     }
 
+    // MARK: - loadEnrichedRefunds
+
+    var loadEnrichedRefundsResultToReturn: [POSOrderRefund] = []
+    var loadEnrichedRefundsErrorToThrow: Error?
+
+    func loadEnrichedRefunds(for order: Yosemite.POSOrder) async throws -> [POSOrderRefund] {
+        if let error = loadEnrichedRefundsErrorToThrow {
+            throw error
+        }
+        return loadEnrichedRefundsResultToReturn
+    }
+
     // MARK: - createRefund
 
     var createRefundCalled = false

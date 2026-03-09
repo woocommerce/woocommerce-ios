@@ -1138,6 +1138,7 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_loadOrderRefunds_when_order_has_refunds_then_enriches_refunds_with_items() async throws {
         // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
@@ -1206,6 +1207,7 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_selectOrder_then_new_order_has_no_refunded_items() async throws {
         // Given: Load some refunded products first
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
@@ -1231,6 +1233,7 @@ final class POSOrderListControllerTests {
     @MainActor
     @Test func test_loadOrderRefunds_when_selected_order_changes_during_fetch_then_discards_stale_result() async throws {
         // Given: Select Order A and start loading its refunds
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
         let orderA = makeOrder(id: 1, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(orderA)
         refundsService.shouldSuspendLoadOrderRefunds = true

@@ -829,7 +829,6 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
     var refundSelectableItems: [POSRefundSelectableItem]
-    var refundedProducts: [POSRefundItem] = []
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
@@ -856,7 +855,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
     func processRefund(reason: String?) async throws {}
-    func loadRefundedProducts() async {}
+    func loadOrderRefunds() async {}
 }
 
 // MARK: - Barcode Scan Service
@@ -916,7 +915,7 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
 
     func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 
-    func loadRefundedProducts(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSRefundItem] { [] }
+    func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

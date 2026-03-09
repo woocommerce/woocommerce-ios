@@ -58,8 +58,9 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
-                    if shouldShowDedicatedRefundsSection && !orderListModel.ordersController.refundedProducts.isEmpty {
-                        refundedProductsSection(orderListModel.ordersController.refundedProducts)
+                    let refundedItems = order.refunds.flatMap { $0.items }
+                    if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                        refundedProductsSection(refundedItems)
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
@@ -118,7 +119,7 @@ struct POSOrderDetailsView: View {
         }
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
-            await orderListModel.ordersController.loadRefundedProducts()
+            await orderListModel.ordersController.loadOrderRefunds()
         }
         .onAppear {
             if autoStartNextRefundFlow {

@@ -46,17 +46,24 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         self.mapper = POSRefundMapper()
     }
 
-    public func loadRefundedProducts(for order: POSOrder) async throws -> [POSRefundItem] {
+    public func loadOrderRefunds(for order: POSOrder) async throws -> [POSOrderRefund] {
         let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let currency = currencySettings.currencyCode.rawValue
 
-        return refunds.flatMap { refund in
-            mapper.mapWithDisplayData(
+        return refunds.map { refund in
+            let items = mapper.mapWithDisplayData(
                 refund: refund,
                 orderItems: order.lineItems,
                 currencyFormatter: currencyFormatter,
                 currency: currency
+            )
+            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency) ?? ""
+            return POSOrderRefund(
+                refundID: refund.refundID,
+                formattedTotal: formattedTotal,
+                reason: refund.reason.isEmpty ? nil : refund.reason,
+                items: items
             )
         }
     }

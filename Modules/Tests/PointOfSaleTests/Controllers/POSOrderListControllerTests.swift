@@ -1136,76 +1136,81 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func test_loadRefundedProducts_when_order_has_refunds_then_populates_refundedProducts() async throws {
+    @Test func test_loadOrderRefunds_when_order_has_refunds_then_enriches_refunds_with_items() async throws {
         // Given
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
-        refundsService.loadRefundedProductsResultToReturn = [
-            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00"),
-            POSRefundItem(refundedItemID: 2, quantity: 1, name: "Item B", formattedPrice: "$5.00", formattedTotal: "-$5.00")
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$15.00", items: [
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00"),
+                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Item B", formattedPrice: "$5.00", formattedTotal: "-$5.00")
+            ])
         ]
 
         // When
-        await sut.loadRefundedProducts()
+        await sut.loadOrderRefunds()
 
         // Then
-        #expect(sut.refundedProducts.count == 2)
+        let refundedItems = sut.selectedOrder?.refunds.flatMap { $0.items }
+        #expect(refundedItems?.count == 2)
     }
 
     @MainActor
-    @Test func test_loadRefundedProducts_when_no_selected_order_then_refundedProducts_is_empty() async throws {
+    @Test func test_loadOrderRefunds_when_no_selected_order_then_selectedOrder_is_nil() async throws {
         // Given — no order selected
 
         // When
-        await sut.loadRefundedProducts()
+        await sut.loadOrderRefunds()
 
         // Then
-        #expect(sut.refundedProducts.isEmpty)
+        #expect(sut.selectedOrder == nil)
     }
 
     @MainActor
-    @Test func test_loadRefundedProducts_when_order_has_no_refunds_then_refundedProducts_is_empty() async throws {
+    @Test func test_loadOrderRefunds_when_order_has_no_refunds_then_refunds_unchanged() async throws {
         // Given
         let order = makeOrder(refunds: [])
         sut.selectOrder(order)
 
         // When
-        await sut.loadRefundedProducts()
+        await sut.loadOrderRefunds()
 
         // Then
-        #expect(sut.refundedProducts.isEmpty)
+        #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
 
     @MainActor
-    @Test func test_loadRefundedProducts_when_service_throws_then_refundedProducts_is_empty() async throws {
+    @Test func test_loadOrderRefunds_when_service_throws_then_refunds_unchanged() async throws {
         // Given
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
-        refundsService.loadRefundedProductsErrorToThrow = NSError(domain: "test", code: 1)
+        refundsService.loadOrderRefundsErrorToThrow = NSError(domain: "test", code: 1)
 
         // When
-        await sut.loadRefundedProducts()
+        await sut.loadOrderRefunds()
 
         // Then
-        #expect(sut.refundedProducts.isEmpty)
+        #expect(sut.selectedOrder?.refunds.first?.items.isEmpty == true)
     }
 
     @MainActor
-    @Test func test_selectOrder_then_clears_refundedProducts() async throws {
+    @Test func test_selectOrder_then_new_order_has_no_refunded_items() async throws {
         // Given: Load some refunded products first
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
-        refundsService.loadRefundedProductsResultToReturn = [
-            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+            ])
         ]
-        await sut.loadRefundedProducts()
-        try #require(sut.refundedProducts.count == 1)
+        await sut.loadOrderRefunds()
+        try #require(sut.selectedOrder?.refunds.flatMap { $0.items }.count == 1)
 
         // When
         sut.selectOrder(makeOrder(id: 2))
 
         // Then
-        #expect(sut.refundedProducts.isEmpty)
+        #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
 }
 

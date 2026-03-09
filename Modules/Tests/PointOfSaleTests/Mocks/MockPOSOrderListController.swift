@@ -8,7 +8,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var selectedOrder: POSOrder?
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
-    var refundedProducts: [POSRefundItem] = []
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
@@ -84,7 +83,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         )
     }
 
-    func loadRefundedProducts() async {}
+    func loadOrderRefunds() async {}
 
     // MARK: - Refund Processing
 

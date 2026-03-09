@@ -29,7 +29,6 @@ protocol POSOrderListControllerProtocol {
     var selectedOrder: POSOrder? { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
-    var refundedProducts: [POSRefundItem] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -41,7 +40,7 @@ protocol POSOrderListControllerProtocol {
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
     func processRefund(reason: String?) async throws
-    func loadRefundedProducts() async
+    func loadOrderRefunds() async
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -70,7 +69,6 @@ enum RefundActionAvailability {
     private(set) var selectedOrder: POSOrder?
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
-    private(set) var refundedProducts: [POSRefundItem] = []
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
@@ -227,7 +225,6 @@ enum RefundActionAvailability {
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
         selectedOrderRefundsState = .idle
-        refundedProducts = []
     }
 
     @MainActor
@@ -416,19 +413,18 @@ enum RefundActionAvailability {
 
         clearRefundSelection()
         try? await updateOrder(orderID: order.id)
-        await loadRefundedProducts()
+        await loadOrderRefunds()
     }
 
-    func loadRefundedProducts() async {
+    func loadOrderRefunds() async {
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
-            refundedProducts = []
             return
         }
         do {
-            refundedProducts = try await refundsService.loadRefundedProducts(for: order)
+            let refunds = try await refundsService.loadOrderRefunds(for: order)
+            selectedOrder = order.copy(refunds: .some(refunds))
         } catch {
-            DDLogError("⛔️ Failed to load refunded products: \(error)")
-            refundedProducts = []
+            DDLogError("⛔️ Failed to load refund details: \(error)")
         }
     }
 }

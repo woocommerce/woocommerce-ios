@@ -16,6 +16,6 @@ final class ProductAdminURLProviderTests {
 
         // Then
         #expect(url.absoluteString ==
-                "\(storeURL)/wp-admin?page=next-admin&p=/woocommerce/services/edit/\(productID)")
+                "\(storeURL)/wp-admin/admin.php?page=next-admin&p=/woocommerce/services/edit/\(productID)")
     }
 }

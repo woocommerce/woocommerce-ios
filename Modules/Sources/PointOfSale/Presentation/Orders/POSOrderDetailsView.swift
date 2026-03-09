@@ -265,8 +265,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
 
     func productImageView(item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-            .frame(width: 56, height: 56)
+        POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+            .frame(width: Constants.productImageSize, height: Constants.productImageSize)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
@@ -311,8 +311,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundedProductRow(item: POSRefundItem) -> some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-                .frame(width: 56, height: 56)
+            POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
@@ -505,6 +505,12 @@ private extension POSOrderDetailsView {
     }
 }
 
+
+// MARK: - Constants
+
+private enum Constants {
+    static let productImageSize: CGFloat = 56
+}
 
 // MARK: - Localization
 

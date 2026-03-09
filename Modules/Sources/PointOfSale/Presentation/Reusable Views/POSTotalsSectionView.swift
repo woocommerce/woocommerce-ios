@@ -193,8 +193,8 @@ private enum Localization {
     }
 
     static let netPaymentLabel = NSLocalizedString(
-        "pos.totalsSectionView.netPaymentLabel",
-        value: "Net Payment",
+        "pos.totalsSectionView.totalNetPaymentLabel",
+        value: "Total net",
         comment: "Label for net payment amount after refunds."
     )
 

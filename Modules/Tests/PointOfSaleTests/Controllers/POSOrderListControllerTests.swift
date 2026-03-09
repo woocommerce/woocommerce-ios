@@ -1142,8 +1142,18 @@ final class POSOrderListControllerTests {
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$15.00", items: [
-                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00"),
-                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Item B", formattedPrice: "$5.00", formattedTotal: "-$5.00")
+                POSRefundItem(refundedItemID: 1,
+                              quantity: 1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: "some image source"),
+                POSRefundItem(refundedItemID: 2,
+                              quantity: 1,
+                              name: "Item B",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: "some image source")
             ])
         ]
 
@@ -1200,7 +1210,12 @@ final class POSOrderListControllerTests {
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
-                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+                POSRefundItem(refundedItemID: 1,
+                              quantity: 1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: "some image source")
             ])
         ]
         await sut.loadOrderRefunds()

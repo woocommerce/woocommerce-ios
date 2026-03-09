@@ -421,6 +421,7 @@ enum RefundActionAvailability {
         }
         do {
             let refunds = try await refundsService.loadOrderRefunds(for: order)
+            guard selectedOrder?.id == order.id else { return }
             selectedOrder = order.copy(refunds: .some(refunds))
         } catch {
             DDLogError("⛔️ Failed to load refund details: \(error)")

@@ -1,2 +1,1 @@
-Recibe notificaciones de
-todas las ventas
+Haz un seguimiento de los pedidos y consulta los totales en tiempo real

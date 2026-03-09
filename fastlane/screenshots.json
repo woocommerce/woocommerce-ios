@@ -90,25 +90,25 @@
 		/// iPad Pro 13-inch (M5)
 		// Track sales and bestselling products
 		{
-			"device": "iPad Pro 13-inch (M5)",
+			"device": "iPad Pro 13-inch (M5) - landscape",
 			"filename": "iPad Pro 13-inch (M5)-01.png",
-			"background": "appstoreres/assets/ipad-background-1.png",
+			"background": "appstoreres/assets/ipad-background-1-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M5)-1-dark-order-dashboard.png",
 			"text": "metadata/{locale}/app_store_screenshot_1.txt"
 		},
 		// Create orders on the fly
 		{
-			"device": "iPad Pro 13-inch (M5)",
+			"device": "iPad Pro 13-inch (M5) - landscape",
 			"filename": "iPad Pro 13-inch (M5)-02.png",
-			"background": "appstoreres/assets/ipad-background-2.png",
+			"background": "appstoreres/assets/ipad-background-2-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M5)-2-light-order-creation.png",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt"
 		},
 		// Take payments in person
 		{
-			"device": "iPad Pro 13-inch (M5)",
+			"device": "iPad Pro 13-inch (M5) - landscape",
 			"filename": "iPad Pro 13-inch (M5)-03.png",
-			"background": "appstoreres/assets/ipad-background-1.png",
+			"background": "appstoreres/assets/ipad-background-1-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M5)-3-dark-order-payment.png",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt"
 		},
@@ -138,17 +138,17 @@
 		},
 		// Add and edit products with a touch
 		{
-			"device": "iPad Pro 13-inch (M5)",
+			"device": "iPad Pro 13-inch (M5) - landscape",
 			"filename": "iPad Pro 13-inch (M5)-07.png",
-			"background": "appstoreres/assets/ipad-background-1.png",
+			"background": "appstoreres/assets/ipad-background-1-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M5)-7-dark-product-add.png",
 			"text": "metadata/{locale}/app_store_screenshot_7.txt"
 		},
 		// Get notified of every sale
 		{
-			"device": "iPad Pro 13-inch (M5)",
+			"device": "iPad Pro 13-inch (M5) - landscape",
 			"filename": "iPad Pro 13-inch (M5)-08.png",
-			"background": "appstoreres/assets/ipad-background-2.png",
+			"background": "appstoreres/assets/ipad-background-2-landscape.png",
 			"screenshot": "iPad Pro 13-inch (M5)-8-light-order-notification.png",
 			"text": "metadata/{locale}/app_store_screenshot_8.txt"
 		}

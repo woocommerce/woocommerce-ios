@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+import YosemiteTestHelpers
 @testable import Networking
 @testable import Storage
 @testable import Yosemite
@@ -632,11 +633,11 @@ struct BookingStoreTests {
         let booking = Booking.fake().copy(
             siteID: sampleSiteID,
             bookingID: 1,
-            attendanceStatusKey: BookingAttendanceStatus.booked.rawValue
+            attendanceStatusKey: BookingAttendanceStatus.unattended.rawValue
         )
         storeBooking(booking)
 
-        let remoteBooking = booking.copy(attendanceStatusKey: BookingAttendanceStatus.checkedIn.rawValue)
+        let remoteBooking = booking.copy(attendanceStatusKey: BookingAttendanceStatus.attended.rawValue)
         remote.whenUpdatingBooking(thenReturn: .success(remoteBooking))
         let store = BookingStore(dispatcher: Dispatcher(),
                                  storageManager: storageManager,
@@ -650,7 +651,7 @@ struct BookingStoreTests {
                 BookingAction.updateBookingAttendanceStatus(
                     siteID: sampleSiteID,
                     bookingID: 1,
-                    status: .checkedIn,
+                    status: .attended,
                     onCompletion: { error in
                         continuation.resume(returning: error)
                     }
@@ -661,7 +662,7 @@ struct BookingStoreTests {
         // Then
         #expect(error == nil)
         let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
-        #expect(storedBooking.attendanceStatusKey == BookingAttendanceStatus.checkedIn.rawValue)
+        #expect(storedBooking.attendanceStatusKey == BookingAttendanceStatus.attended.rawValue)
     }
 
     @Test func performUpdateBookingAttendanceStatus_keeps_existing_create_and_update_dates() async throws {
@@ -692,7 +693,7 @@ struct BookingStoreTests {
                 BookingAction.updateBookingAttendanceStatus(
                     siteID: sampleSiteID,
                     bookingID: 1,
-                    status: .checkedIn,
+                    status: .attended,
                     onCompletion: { error in
                         continuation.resume(returning: error)
                     }
@@ -712,7 +713,7 @@ struct BookingStoreTests {
         let booking = Booking.fake().copy(
             siteID: sampleSiteID,
             bookingID: 1,
-            attendanceStatusKey: BookingAttendanceStatus.booked.rawValue
+            attendanceStatusKey: BookingAttendanceStatus.unattended.rawValue
         )
         storeBooking(booking)
 
@@ -729,7 +730,7 @@ struct BookingStoreTests {
                 BookingAction.updateBookingAttendanceStatus(
                     siteID: sampleSiteID,
                     bookingID: 1,
-                    status: .checkedIn,
+                    status: .attended,
                     onCompletion: { error in
                         continuation.resume(returning: error)
                     }
@@ -740,7 +741,7 @@ struct BookingStoreTests {
         // Then
         #expect(error != nil)
         let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
-        #expect(storedBooking.attendanceStatusKey == BookingAttendanceStatus.booked.rawValue)
+        #expect(storedBooking.attendanceStatusKey == BookingAttendanceStatus.unattended.rawValue)
     }
 
     // MARK: - cancelBooking

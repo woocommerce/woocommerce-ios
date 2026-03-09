@@ -423,6 +423,7 @@ struct POSRefundsServiceTests {
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$10.00",
             formattedNetAmount: nil,
+            datePaid: Date(),
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }

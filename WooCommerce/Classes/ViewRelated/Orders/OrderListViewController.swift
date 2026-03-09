@@ -817,8 +817,8 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         guard let objectID = dataSource?.itemIdentifier(for: indexPath),
-            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-                return
+              let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return
         }
 
         selectedIndexPath = indexPath

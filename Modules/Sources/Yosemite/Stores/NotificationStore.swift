@@ -56,11 +56,13 @@ public class NotificationStore: Store {
             updateReadStatus(for: noteIDs, read: read, onCompletion: onCompletion)
         case .updateLocalDeletedStatus(let noteID, let deleteInProgress, let onCompletion):
             updateDeletedStatus(noteID: noteID, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
-        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, onCompletion):
+        case let .registerDeviceForSelfDrivenPushNotifications(siteID, device, applicationID, deviceLocale, appVersion, onCompletion):
             registerDeviceForSelfDrivenPushNotifications(
                 siteID: siteID,
                 device: device,
                 applicationID: applicationID,
+                deviceLocale: deviceLocale,
+                appVersion: appVersion,
                 onCompletion: onCompletion
             )
         case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, onCompletion):
@@ -97,13 +99,17 @@ private extension NotificationStore {
     func registerDeviceForSelfDrivenPushNotifications(siteID: Int64,
                                                       device: APNSDevice,
                                                       applicationID: String,
+                                                      deviceLocale: String,
+                                                      appVersion: String,
                                                       onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let tokenID = try await devicesRemote.registerForSelfDrivenPushNotifications(
                     siteID: siteID,
                     device: device,
-                    applicationID: applicationID
+                    applicationID: applicationID,
+                    deviceLocale: deviceLocale,
+                    appVersion: appVersion
                 )
                 onCompletion(.success(tokenID))
             } catch {

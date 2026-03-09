@@ -62,19 +62,15 @@ Carthage/Build
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/#source-control
-
 fastlane/report.xml
 fastlane/Preview.html
-fastlane/screenshots
-fastlane/promo_screenshots
 fastlane/metadata/review_information
-fastlane/test_output
+fastlane/**/test_output
 fastlane/README.md
 fastlane/logs
+# Notice that we ignore the raw screenshots but track (with Git LFS, see .gitattributes)
+# the annotated ones (promo_screenshots)
+fastlane/screenshots
 
 Preview.html
 default.profraw
@@ -105,3 +101,7 @@ Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 
 # Periphery install
 vendor/Periphery/
+
+# AI Agents / Claude Code local config (personal, not shared)
+CLAUDE.local.md
+.claude/settings.local.json

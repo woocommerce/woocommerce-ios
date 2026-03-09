@@ -1,55 +1,8 @@
 import Foundation
-import WooFoundation
 
+/// Cart-specific view helper methods used only by TotalsView.
 struct TotalsViewHelper {
-    func shouldShowTotalsFields(for paymentState: PointOfSalePaymentState) -> Bool {
-        switch paymentState.activePaymentMethod {
-        case .cash:
-            return false
-        case .card:
-            switch paymentState.card {
-            case .idle,
-                    .acceptingCard,
-                    .cardInserted,
-                    .validatingOrder,
-                    .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .preparingReader:
-                return true
-            case .processingPayment,
-                    .paymentError,
-                    .cardPaymentSuccessful:
-                return false
-            }
-        }
-    }
-
-    func shouldShowDisconnectedMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
-                                       paymentState: PointOfSalePaymentState) -> Bool {
-        guard readerConnectionStatus == .disconnected else {
-            return false
-        }
-
-        switch paymentState.activePaymentMethod {
-        case .cash:
-            return false
-        case .card:
-            switch paymentState.card {
-            case .idle,
-                    .acceptingCard,
-                    .preparingReader:
-                return true
-            case .validatingOrder,
-                    .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .processingPayment,
-                    .cardInserted,
-                    .paymentError,
-                    .cardPaymentSuccessful:
-                return false
-            }
-        }
-    }
+    private let paymentViewHelper = POSPaymentViewHelper()
 
     func shouldShowReconnectingMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
                                        paymentState: PointOfSalePaymentState) -> Bool {
@@ -78,6 +31,7 @@ struct TotalsViewHelper {
         }
     }
 
+    /// Cash payment button visibility for the cart flow (adds order state guards on top of the base check).
     func shouldShowCollectCashPaymentButton(orderState: PointOfSaleOrderState,
                                             paymentState: PointOfSalePaymentState,
                                             cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus) -> Bool {
@@ -89,55 +43,15 @@ struct TotalsViewHelper {
             return false
         }
 
-        switch paymentState.activePaymentMethod {
-        case .cash:
-            return false
-        case .card:
-            if case .disconnected = cardReaderConnectionStatus,
-                case .idle = paymentState.card {
-                return true
-            }
-
-            if case let .loaded(totals) = orderState, totals.orderTotalDecimal.isZero {
-                return true
-            }
-
-            switch paymentState.card {
-            case .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .acceptingCard:
-                return true
-            case .idle,
-                    .cardInserted,
-                    .validatingOrder,
-                    .preparingReader,
-                    .processingPayment,
-                    .paymentError,
-                    .cardPaymentSuccessful:
-                return false
-            }
+        let isZeroTotal: Bool = if case let .loaded(totals) = orderState {
+            totals.orderTotalDecimal.isZero
+        } else {
+            false
         }
-    }
 
-    func shouldApplyPadding(paymentState: PointOfSalePaymentState) -> Bool {
-        switch paymentState.activePaymentMethod {
-        case .cash:
-            return false
-        case .card:
-            switch paymentState.card {
-            case .cardPaymentSuccessful, .paymentError:
-                return false
-            case .idle,
-                    .acceptingCard,
-                    .cardInserted,
-                    .validatingOrder,
-                    .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .preparingReader,
-                    .processingPayment:
-                return true
-            }
-        }
+        return paymentViewHelper.shouldShowCashPaymentButton(paymentState: paymentState,
+                                                             cardReaderConnectionStatus: cardReaderConnectionStatus,
+                                                             isZeroTotal: isZeroTotal)
     }
 
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {

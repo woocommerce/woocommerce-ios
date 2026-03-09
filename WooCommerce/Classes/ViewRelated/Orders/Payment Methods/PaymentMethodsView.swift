@@ -130,7 +130,9 @@ struct PaymentMethodsView: View {
         .sheet(isPresented: $showingScanToPayView) {
             ScanToPayView(viewModel: ScanToPayViewModel(paymentURL: viewModel.paymentLink)) {
                 dismiss()
-                viewModel.performScanToPayFinishedTasks()
+                Task { @MainActor in
+                    await viewModel.performScanToPayFinishedTasks()
+                }
             }
                 .background(FullScreenCoverClearBackgroundView())
         }

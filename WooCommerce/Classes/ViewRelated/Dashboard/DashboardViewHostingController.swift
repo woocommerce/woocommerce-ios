@@ -371,12 +371,17 @@ private extension DashboardViewHostingController {
     func configureConnectWPComCard() {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self else { return }
-            let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: {
-                self.dismiss(animated: true)
-            })
+            self.viewModel.onConnectWPComCardTapped()
+            let benefitsViewModel = WPComPushNotificationsBenefitsViewModel(
+                siteID: viewModel.siteID,
+                siteURL: viewModel.stores.sessionManager.defaultSite?.url ?? "",
+                onDismiss: {
+                    self.dismiss(animated: true)
+                }
+            )
             let navigationController = WooNavigationController()
             let hostingController = WPComPushNotificationsBenefitsHostingController(
-                viewModel: viewModel,
+                viewModel: benefitsViewModel,
                 rootViewController: navigationController
             )
             navigationController.viewControllers = [hostingController]

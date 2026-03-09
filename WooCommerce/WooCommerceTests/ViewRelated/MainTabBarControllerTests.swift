@@ -115,6 +115,11 @@ final class MainTabBarControllerTests: XCTestCase {
                 completion()
             }
         }
+        storesManager.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .reset(completion) = action {
+                completion()
+            }
+        }
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)

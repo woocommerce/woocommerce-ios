@@ -1,5 +1,6 @@
 import XCTest
 import CoreData
+import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Storage
 

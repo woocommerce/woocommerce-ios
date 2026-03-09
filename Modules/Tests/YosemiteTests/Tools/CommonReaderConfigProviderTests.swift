@@ -132,4 +132,14 @@ struct CommonReaderConfigProviderTests {
         }
     }
 
+    @Test func resetContext_clears_siteID_and_remote() {
+        let mockRemote = MockCardReaderCapableRemote(resultForDefaultReaderLocation: .success(.fake()))
+        let sut = CommonReaderConfigProvider(siteID: 123, readerConfigRemote: mockRemote)
+
+        sut.resetContext()
+
+        #expect(sut.siteID == nil)
+        #expect(sut.readerConfigRemote == nil)
+    }
+
 }

@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 import protocol Storage.StorageType
@@ -211,18 +212,13 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          blazeEligibilityChecker: blazeEligibilityChecker)
         await sut.scheduleNoCampaignReminder()
 
-        waitForExpectation(timeout: 0.5) { exp in
-            exp.isInverted = true
+        // When
+        insertCampaigns([fakeBlazeCampaign])
 
-            // When
-            insertCampaigns([fakeBlazeCampaign])
-
-            // Then
-            // No local notifications should be requested
-            if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
-                exp.fulfill()
-            }
-        }
+        // Then
+        // No local notifications should be requested
+        try await Task.sleep(nanoseconds: 500_000_000)
+        XCTAssertTrue(pushNotesManager.requestedLocalNotifications.isEmpty)
     }
 
     func test_no_campaign_notification_is_not_scheduled_when_notification_already_has_been_interacted_with() async throws {
@@ -482,6 +478,5 @@ private extension BlazeLocalNotificationSchedulerTests {
             let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
             newCampaign.update(with: campaign)
         }
-        storage.saveIfNeeded()
     }
 }

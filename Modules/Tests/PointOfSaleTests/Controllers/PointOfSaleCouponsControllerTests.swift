@@ -311,6 +311,43 @@ struct PointOfSaleCouponsControllerTests {
         #expect(sut.itemsViewState == expectedViewState)
     }
 
+    @Test func loadItems_when_local_fetch_fails_with_loading_error_then_still_loads_remotely() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        couponProvider.localErrorToThrow = .couponsLoadingError(underlyingError: NSError(domain: "test", code: 0))
+        couponProvider.shouldReturnZeroItems = true
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider,
+                                               fetchStrategyFactory: fetchStrategyFactory,
+                                               analyticsProvider: MockPOSAnalytics())
+
+        let expectedItemStackState = ItemsStackState(root: .empty, itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
+    @Test func loadItems_when_local_fetch_fails_with_couponsDisabled_then_shows_disabled_error() async throws {
+        // Given
+        let couponProvider = MockPointOfSaleCouponService()
+        couponProvider.localErrorToThrow = .couponsDisabled
+        let sut = PointOfSaleCouponsController(itemProvider: couponProvider,
+                                               fetchStrategyFactory: fetchStrategyFactory,
+                                               analyticsProvider: MockPOSAnalytics())
+
+        let expectedItemStackState = ItemsStackState(root: .error(.errorCouponsDisabled), itemStates: [:])
+        let expectedViewState = ItemsViewState(containerState: .content, itemsStack: expectedItemStackState)
+
+        // When
+        await sut.loadItems(base: .root)
+
+        // Then
+        #expect(sut.itemsViewState == expectedViewState)
+    }
+
     @Test func searchItems_when_requestCancelled_then_state_unchanged() async throws {
         // Given
         let couponProvider = MockPointOfSaleCouponService()

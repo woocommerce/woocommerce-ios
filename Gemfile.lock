@@ -402,7 +402,6 @@ DEPENDENCIES
   rubocop (~> 1.65)
   rubocop-rake (~> 0.6)
   xcode-install
-  xcpretty-travis-formatter
 
 BUNDLED WITH
    2.3.23

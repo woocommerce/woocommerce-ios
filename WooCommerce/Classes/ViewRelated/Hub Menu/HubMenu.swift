@@ -143,6 +143,9 @@ private extension HubMenu {
                 couponListView
             case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
+            case .bookings:
+                BookingsTabView(siteID: viewModel.siteID)
+                    .navigationTitle(HubMenuViewModel.Localization.bookings)
             case .reviewDetails(let parcel):
                 reviewDetailView(parcel: parcel)
             case .blazeCampaignDetails(let campaignID):

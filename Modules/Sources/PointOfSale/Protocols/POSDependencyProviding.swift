@@ -48,10 +48,6 @@ public protocol POSExternalNavigationProviding {
 ///
 public protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
-    func createFormattableAmountTextField(preset: Decimal?,
-                                          font: Font,
-                                          onSubmit: @escaping () -> Void,
-                                          onChange: @escaping (String) -> Void) -> AnyView
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,

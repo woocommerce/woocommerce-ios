@@ -431,8 +431,12 @@ private extension SettingsViewController {
     }
 
     func enablePushNotificationsWasPressed() {
+        ServiceLocator.analytics.track(.settingsPushNotificationsButtonTap)
         DDLogInfo("🔔 Settings: Enable Push Notifications tapped")
-        let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: { [weak self] in
+        guard let site = stores.sessionManager.defaultSite else {
+            return DDLogError("⛔️ Cannot find ID for current site to enable push notifications!")
+        }
+        let viewModel = WPComPushNotificationsBenefitsViewModel(siteID: site.siteID, siteURL: site.url, onDismiss: { [weak self] in
             self?.dismiss(animated: true)
         })
         let navigationController = WooNavigationController()

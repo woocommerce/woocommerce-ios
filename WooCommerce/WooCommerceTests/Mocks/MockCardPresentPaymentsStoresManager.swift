@@ -2,6 +2,7 @@ import Combine
 import Fakes
 import Storage
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 /// Allows mocking for `CardPresentPaymentAction`.

@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import enum Networking.DotcomError
 import enum Networking.NetworkError
+import YosemiteTestHelpers
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType

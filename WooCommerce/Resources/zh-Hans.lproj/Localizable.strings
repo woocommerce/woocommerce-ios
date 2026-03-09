@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-01-13 09:54:05+0000 */
+/* Translation-Revision-Date: 2026-02-28 08:26:38+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -57,6 +57,9 @@ which should be translated separately and considered part of this sentence. */
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 对 %2$@ 发表了评论";
 
+/* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
+"%1$@ off · %2$@" = "%2$@ 可享 %1$@ 的优惠";
+
 /* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
 "%1$@ refund requested (%2$@)" = "已申请 %1$@ 退款 (%2$@)";
 
@@ -68,6 +71,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@，通过 %2$@ 支付";
+
+/* Exception rule for a coupon. Reads like: 3 Products · Excl. 1 Category */
+"%1$@ · Excl. %2$@" = "%1$@（%2$@ 除外）";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@ × %2$@" = "%1$@ × %2$@";
@@ -82,11 +88,26 @@ which should be translated separately and considered part of this sentence. */
 /* Card reader battery level as an integer percentage */
 "%1$@%% Battery" = "%1$@%% 电量";
 
+/* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
+"%1$@, %2$@" = "%1$@，%2$@";
+
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
+
+/* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
+"%1$d Categories" = "%1$d 个分类";
+
+/* The number of category allowed for a coupon in singular form. Reads like: 1 Category */
+"%1$d Category" = "%1$d 个分类";
+
+/* The number of products allowed for a coupon in singular form. Reads like: 1 Product */
+"%1$d Product" = "%1$d 个产品";
+
+/* The number of products allowed for a coupon in plural form. Reads like: 10 Products */
+"%1$d Products" = "%1$d 个产品";
 
 /* Title of the action button at the bottom of the Select Products screen when more than 1 item is selected, reads like: 5 Products Selected */
 "%1$d Products Selected" = "已选择 %1$d 个产品";
@@ -242,6 +263,9 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow */
 "A customs form must be printed and included on this international shipment" = "必须打印报关单并随附在此国际配送中";
 
+/* Message when attempting to pay for a test transaction with a live card. */
+"A live card was used on a site in test mode. Use a test card instead." = "在站点处于测试模式下时使用了实际的银行卡， 请改用测试卡。";
+
 /* Error message when there was a network error checking In-Person Payments requirements */
 "A network error occurred. Please check your connection and try again." = "发生网络错误。 请检查您的连接，然后重试。";
 
@@ -263,6 +287,9 @@ which should be translated separately and considered part of this sentence. */
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "添加选项";
 
+/* Reads as 'AID'. Part of the mandatory data in receipts */
+"AID" = "AID";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "关于该应用程序";
 
@@ -276,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
 "Account Settings" = "帐户设置";
+
+/* Reads as 'Account Type'. Part of the mandatory data in receipts */
+"Account Type" = "账户类型";
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "已连接的账户";
@@ -502,11 +532,17 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility hint for selecting a variation in a list of product variations */
 "Adds variation to order." = "将变体添加到订单。";
 
+/* User's Administrator role. */
+"Administrator" = "管理员";
+
 /* Adult signature required in Shipping Labels > Carrier and Rates */
 "Adult signature required (+%1$@)" = "必需由成年人签收 (+%1$@)";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "用于查看应用程序状态的高级工具";
+
+/* Country option for a site address. */
+"Afghanistan" = "阿富汗";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "符合空气条件的乙醇包装 —（获授权的芳香剂及洗手液装运）";
@@ -514,15 +550,25 @@ which should be translated separately and considered part of this sentence. */
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
 
+/* Country option for a site address. */
+"Albania" = "阿尔巴尼亚";
+
 /* Description of albums in the photo libraries */
 "Albums" = "相册";
+
+/* Country option for a site address. */
+"Algeria" = "阿尔及利亚";
 
 /* Header bar label on top of order list when no filters are applied */
 "All Orders" = "所有订单";
 
 /* Button indicating that coupon can be applied to all products in the view for adding or editing a coupon.
+   Text indicating that there's no limit to the number of products that a coupon can be applied for. Displayed on coupon list items and details screen
    Title of the product search filter to search for all products. */
 "All Products" = "全部产品";
+
+/* Exception rule for a coupon. Reads like: All Products · Excl. 2 Products */
+"All Products · Excl. %1$@" = "所有产品（%1$@ 除外）";
 
 /* Value for the limit usage to X items row in Coupon Usage Restrictions screen when no limit is set */
 "All Qualifying" = "均符合条件";
@@ -539,6 +585,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the notice when there were no variations to generate */
 "All variations are already generated." = "所有变体都已生成。";
 
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "允许";
+
 /* Title of alert that links to settings for camera access. */
 "Allow camera access" = "允许访问相机";
 
@@ -548,6 +597,9 @@ which should be translated separately and considered part of this sentence. */
 /* Analytics toggle description in the privacy screen.
    Description for the analytics toggle in the privacy banner */
 "Allow us to optimize performance by collecting information on how users interact with our mobile apps." = "让我们能够收集有关用户与我们移动应用程序互动情况的信息，来优化性能。";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "允许，但通知客户";
 
 /* Title for the allowed email row in coupon usage restrictions screen.
    Title for the Allowed Emails screen */
@@ -565,6 +617,9 @@ which should be translated separately and considered part of this sentence. */
 /* String displayed before offering alternative login methods */
 "Alternatively:" = "其他方式：";
 
+/* Country option for a site address. */
+"American Samoa" = "美属萨摩亚";
+
 /* Title above the amount field on the add custom amount view in orders.
    Title of the Amount label on Coupon Details screen */
 "Amount" = "金额";
@@ -578,6 +633,10 @@ which should be translated separately and considered part of this sentence. */
 /* Title of shipping label eligible refund amount in Refund Shipping Label screen */
 "Amount Eligible For Refund" = "符合退款条件的金额";
 
+/* Line description for 'Amount Paid' cart total on the receipt
+   Title of 'Amount Paid' section in the receipt */
+"Amount Paid" = "已付金额";
+
 /* A failure reason for when an error HTTP status code was returned from the site, with the specific error code. */
 "An HTTP error code %i was returned." = "返回了 HTTP 错误代码 %i。";
 
@@ -587,11 +646,29 @@ which should be translated separately and considered part of this sentence. */
 /* Default error message displayed when unable to close user account. */
 "An error occured while closing account." = "关闭账户时发生错误";
 
+/* Error message when Bluetooth is not enabled for this application. */
+"An error occurred accessing Bluetooth - please enable Bluetooth and try again." = "连接蓝牙时出现错误，请启用蓝牙并重试";
+
+/* Message when it looks like a duplicate transaction is being attempted. */
+"An identical transaction was submitted recently. If you wish to continue, try another means of payment." = "近期提交过一笔相同的交易。 如果您想继续，请尝试其他付款方式";
+
 /* Title of the notice about an image upload failure in the background. */
 "An image failed to upload" = "图像上传失败";
 
+/* Message when an incorrect PIN has been entered too many times. */
+"An incorrect PIN has been entered too many times. Try another means of payment." = "输入错误 PIN 次数过多。 请尝试其他付款方式";
+
+/* Message when an incorrect PIN has been entered. */
+"An incorrect PIN has been entered. Try again, or use another means of payment." = "输入的 PIN 错误。 再次尝试，或使用另一种付款方式";
+
 /* Footer text in Product Purchase Note screen */
 "An optional note to send the customer after purchase" = "在顾客购买后发给他们的可选备注";
+
+/* Error message when an order already exists in the backend for a given receipt */
+"An order already exists for this receipt" = "此收据的订单已存在";
+
+/* Message presented when an unexpected error occurs with the store's payment gateway. */
+"An unexpected error occurred with the store's payment gateway when capturing payment for the order" = "在捕获订单付款时，商店的付款网关发生了意外错误";
 
 /* A failure reason for when the error that occured wasn't able to be determined. */
 "An unknown error occurred." = "发生未知错误。";
@@ -605,6 +682,21 @@ which should be translated separately and considered part of this sentence. */
 /* Message when enabling analytics succeeds */
 "Analytics enabled successfully." = "已成功启用分析。";
 
+/* Country option for a site address. */
+"Andorra" = "安道尔";
+
+/* Country option for a site address. */
+"Angola" = "安哥拉";
+
+/* Country option for a site address. */
+"Anguilla" = "安圭拉";
+
+/* Country option for a site address. */
+"Antarctica" = "南极洲";
+
+/* Country option for a site address. */
+"Antigua and Barbuda" = "安提瓜和巴布达";
+
 /* Case Any in Order Filters for Order Statuses
    Display label for all order statuses selected in Order Filters
    Label for one of the filters in order date range
@@ -612,7 +704,8 @@ which should be translated separately and considered part of this sentence. */
    Title when there is no filter set. */
 "Any" = "任何";
 
-/* Product variation attribute description where the attribute is set to any value. */
+/* Format of a product variation attribute description where the attribute is set to any value.
+   Product variation attribute description where the attribute is set to any value. */
 "Any %1$@" = "任何 %1$@";
 
 /* My Store > Settings > App (Application) settings section title */
@@ -623,6 +716,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "应用程序日志";
+
+/* Reads as 'Application name'. Part of the mandatory data in receipts */
+"Application Name" = "应用程序名称";
 
 /* Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
@@ -643,7 +739,8 @@ which should be translated separately and considered part of this sentence. */
 /* Approve a comment */
 "Approve" = "批准";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "已批准";
 
 /* Approves a comment. Spoken Hint. */
@@ -688,6 +785,15 @@ which should be translated separately and considered part of this sentence. */
 /* Message displayed in the alert for dismissing all the inbox notes. */
 "Are you sure? Inbox messages will be dismissed forever." = "是否确定？ 收件箱中的消息将被永久删除。";
 
+/* Country option for a site address. */
+"Argentina" = "阿根廷";
+
+/* Country option for a site address. */
+"Armenia" = "亚美尼亚";
+
+/* Country option for a site address. */
+"Aruba" = "阿鲁巴";
+
 /* Placeholder in the Attribute Name row on Rename Attributes screen. */
 "Attribute name" = "属性名";
 
@@ -701,6 +807,12 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for audio items in the media collection view. The parameter is the creation date of the audio. */
 "Audio, %@" = "音频，%@";
 
+/* Country option for a site address. */
+"Australia" = "澳大利亚";
+
+/* Country option for a site address. */
+"Austria" = "奥地利";
+
 /* No comment provided by engineer. */
 "Authenticating" = "正在验证";
 
@@ -710,6 +822,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "需要对主机进行验证：%@";
+
+/* User's Author role. */
+"Author" = "作者";
 
 /* Title for the bottom sheet when there is a tax rate stored */
 "Automatically adding tax rate" = "自动添加税率";
@@ -735,6 +850,9 @@ which should be translated separately and considered part of this sentence. */
 /* The title on the payment row of the Order Details screenwhen the payment for a specific payment method is still pending.Reads like: Awaiting payment via Stripe. */
 "Awaiting payment via %@" = "等待通过 %@ 支付";
 
+/* Country option for a site address. */
+"Azerbaijan" = "阿塞拜疆";
+
 /* Accessibility label for Back button in the navigation bar
    Alert button title - dismisses alert, which cancels the log out attempt
    Previous web page */
@@ -759,11 +877,44 @@ which should be translated separately and considered part of this sentence. */
    Title of the cell in Product Inventory Settings > Backorders */
 "Backorders" = "缺货";
 
+/* Country option for a site address. */
+"Bahamas" = "巴哈马";
+
+/* Country option for a site address. */
+"Bahrain" = "巴林";
+
+/* Country option for a site address. */
+"Bangladesh" = "孟加拉国";
+
+/* Country option for a site address. */
+"Barbados" = "巴巴多斯";
+
 /* Title for the instructions on the Woo payments setup instructions screen. */
 "Before you start setup" = "在开始设置前";
 
 /* Title on the action button on the Woo payments setup instructions screen. */
 "Begin Setup" = "开始设置";
+
+/* Country option for a site address. */
+"Belarus" = "白俄罗斯";
+
+/* Country option for a site address. */
+"Belau" = "贝劳";
+
+/* Country option for a site address. */
+"Belgium" = "比利时";
+
+/* Country option for a site address. */
+"Belize" = "伯利兹";
+
+/* Country option for a site address. */
+"Benin" = "贝宁";
+
+/* Country option for a site address. */
+"Bermuda" = "百慕大";
+
+/* Country option for a site address. */
+"Bhutan" = "不丹";
 
 /* Section header title for billing address in billing information
    Title for the Billing Address section in order customer data */
@@ -793,17 +944,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for bold button on formatting toolbar. */
 "Bold" = "粗体";
 
-/* Title for 'Booked' booking attendance status. */
-"BookingAttendanceStatus.booked" = "已预订";
+/* Country option for a site address. */
+"Bolivia" = "玻利维亚";
 
-/* Title for 'Cancelled' booking attendance status. */
-"BookingAttendanceStatus.canceled" = "已取消";
+/* Country option for a site address. */
+"Bonaire, Saint Eustatius and Saba" = "博内尔岛，圣尤斯特修斯和萨巴";
 
-/* Title for 'Checked In' booking attendance status. */
-"BookingAttendanceStatus.checkedIn" = "已签到";
-
-/* Title for 'No Show' booking attendance status. */
-"BookingAttendanceStatus.noShow" = "失约";
+/* Display label for bookable product type. */
+"Bookable" = "可预订";
 
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "未知";
@@ -828,12 +976,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "时间";
-
-/* Footer text for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.footerText" = "标记出席情况，以确保报告准确性并发现预约趋势。";
-
-/* Header title for the 'Attendance' section in the booking details screen. */
-"BookingDetailsView.attendance.headerTitle" = "出席情况";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "无法更改预订 #%1$d 的出勤状态。";
@@ -886,20 +1028,11 @@ which should be translated separately and considered part of this sentence. */
 /* Customer note row title in customer section in booking details view. */
 "BookingDetailsView.customer.note.title" = "注意";
 
-/* 'Status' row title in attendance section in booking details view. */
-"BookingDetailsView.customer.status.title" = "状态";
-
-/* Content of error presented when cancelling a Booking fails. It reads: Unable to mark Booking #{Booking number} as paid. Parameters: %1$d - Booking number */
-"BookingDetailsView.markAsPaid.failureMessage" = "无法将预订 #%1$d 标记为已支付。";
-
 /* Booking Details screen nav bar title. %1$d is a placeholder for the booking ID. */
 "BookingDetailsView.navTitle" = "预订编号：%1$d";
 
 /* Action sheet option to cancel a booking. */
 "BookingDetailsView.options.cancelBooking" = "取消预订";
-
-/* Action sheet option to mark a booking as paid. */
-"BookingDetailsView.options.markAsPaid" = "标记为已付款";
 
 /* Action sheet option to view the order for a booking. */
 "BookingDetailsView.options.viewOrder" = "查看订单";
@@ -909,9 +1042,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "付款";
-
-/* Title for 'Mark as paid' button in payment section in booking details view. */
-"BookingDetailsView.payment.markAsPaid.title" = "标记为已付款";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "服务";
@@ -949,8 +1079,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Linked Products announcement banner */
 "Boost your sales with linked products" = "借助链接的产品提高您的销售额";
 
+/* Country option for a site address. */
+"Bosnia and Herzegovina" = "波斯尼亚和黑塞哥维那";
+
+/* Country option for a site address. */
+"Botswana" = "博茨瓦纳";
+
+/* Country option for a site address. */
+"Bouvet Island" = "布维岛";
+
 /* Box package type, used to create a custom package in the Shipping Label flow */
 "Box" = "包装箱";
+
+/* Country option for a site address. */
+"Brazil" = "巴西";
+
+/* Country option for a site address. */
+"British Indian Ocean Territory" = "英属印度洋领地";
+
+/* Country option for a site address. */
+"British Virgin Islands" = "英属维尔京群岛";
+
+/* Country option for a site address. */
+"Brunei" = "文莱";
+
+/* Country option for a site address. */
+"Bulgaria" = "保加利亚";
 
 /* Button title in the action sheet of product variatiosns that shows the bulk update
    Title that appears on top of the bulk update of product variations screen */
@@ -958,6 +1112,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button that presents a menu with possible products bulk update options */
 "Bulk update" = "批量更新";
+
+/* Display label for bundle product type. */
+"Bundle" = "捆绑";
 
 /* Title for the bundled products screen */
 "Bundled Products" = "捆绑产品";
@@ -970,6 +1127,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the bundles sold column on the product bundles card on the analytics hub screen. */
 "Bundles Sold" = "已售捆绑";
+
+/* Country option for a site address. */
+"Burkina Faso" = "布基纳法索";
+
+/* Country option for a site address. */
+"Burundi" = "布隆迪";
 
 /* Title of the text field for editing the button text for an external/affiliate product */
 "Button Text" = "按钮文本";
@@ -1005,6 +1168,9 @@ which should be translated separately and considered part of this sentence. */
 /* Call phone number button title */
 "Call" = "致电";
 
+/* Country option for a site address. */
+"Cambodia" = "柬埔寨";
+
 /* Accessibility label for the camera tile in the collection view */
 "Camera" = "照相机";
 
@@ -1020,6 +1186,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the action sheet button that links to settings for camera access */
 "Camera permissions" = "相机权限";
 
+/* Country option for a site address. */
+"Cameroon" = "喀麦隆";
+
 /* Title of the Blaze campaign details view. */
 "Campaign Details" = "广告活动详细信息";
 
@@ -1031,6 +1200,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* The plural total limit where the same coupon can be applied for everyone, reads like: Can be used 10 times */
 "Can be used %1$d times" = "可使用 %1$d 次";
+
+/* Country option for a site address. */
+"Canada" = "加拿大";
 
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
@@ -1098,12 +1270,12 @@ which should be translated separately and considered part of this sentence. */
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
    Text for the cancel button in the Select Products screen
-   The title for a button that dismisses the crash debug menu
    The title of the button to cancel issuing a refund.
    Title for canceling the edit attribute action sheet.
    Title for the button to cancel the payment methods screen
    Title of an option to dismiss the bulk edit action sheet
    Title of dismiss button presented when site credential login fails
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen.
    Title of the dismiss button on the store onboarding payments setup screen. */
 "Cancel" = "取消";
 
@@ -1131,13 +1303,21 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "无法添加包裹";
 
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "订单无法使用礼品卡";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "订单无法使用礼品卡的错误：%1$@";
+
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "无法复制产品";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "无法找到有关您站点 WP-Admin 的信息。 请重试。";
 
-/* The title of the alert when there is an error updating the product */
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
+   The title of the alert when there is an error updating the product */
 "Cannot update product" = "无法更新产品";
 
 /* Title of the notice when there is an error updating selected products */
@@ -1151,6 +1331,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "无法验证您站点的 WooCommerce 安装信息。";
+
+/* Country option for a site address. */
+"Cape Verde" = "佛得角";
 
 /* Detailed message shown in the Reviews tab if the list is empty
    Detailed message shown on the Product Reviews screen if the list is empty */
@@ -1170,6 +1353,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "读卡器手册";
+
+/* Error message when a card is left in the reader and another transaction started. */
+"Card was left in reader - please remove and reinsert card." = "银行留在读卡器中，请取出并重新插入卡";
+
+/* Error message when the card is removed from the reader prematurely. */
+"Card was removed too soon - please try transaction again." = "银行卡取出速度过快，请重新尝试交易";
 
 /* Label for a cancel button when an optional software update is happening */
 "CardPresentModalUpdateProgress.button.cancelOptionalButtonText" = "取消";
@@ -1200,11 +1389,20 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "分类";
 
+/* Country option for a site address. */
+"Cayman Islands" = "开曼群岛";
+
+/* Country option for a site address. */
+"Central African Republic" = "中非共和国";
+
 /* Error message when local validation fails in Shipping Label Address Validation */
 "Certain required fields need attention." = "需要注意某些必填字段。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "证书错误";
+
+/* Country option for a site address. */
+"Chad" = "乍得";
 
 /* Message title of bottom sheet for selecting a product type */
 "Change product type" = "更改产品类型";
@@ -1237,6 +1435,12 @@ which should be translated separately and considered part of this sentence. */
 /* Bottom title of the alert presented with a spinner while the order is being validated */
 "Checking order" = "检查订单";
 
+/* Country option for a site address. */
+"Chile" = "智利";
+
+/* Country option for a site address. */
+"China" = "中国";
+
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "选择纸张尺寸";
 
@@ -1263,6 +1467,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "选择付款方式";
+
+/* Country option for a site address. */
+"Christmas Island" = "圣诞岛";
 
 /* Text field city in Edit Address Form
    Text field city in Shipping Label Address Validation */
@@ -1348,6 +1555,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Close Account in-progress view. */
 "Closing account..." = "正在关闭账户…";
 
+/* Country option for a site address. */
+"Cocos (Keeling) Islands" = "科科斯（基林）群岛";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "已折叠";
 
@@ -1391,8 +1601,14 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Payments' screen - used for spotlight indexing on iOS. */
 "Collect payments, setup Tap to Pay, order card readers and more." = "收款、设置点按付款、订单读卡器等。";
 
+/* Country option for a site address. */
+"Colombia" = "哥伦比亚";
+
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "稍后回来获取更多关于发展您商店的贴士和数据分析";
+
+/* Country option for a site address. */
+"Comoros" = "科摩罗";
 
 /* Text field company in Edit Address Form
    Text field company in Shipping Label Address Validation */
@@ -1417,6 +1633,9 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
 "Composes a new order note." = "撰写新的订单备注。";
 
+/* Display label for composite product type. */
+"Composite" = "组合";
+
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "配置已更新";
 
@@ -1432,6 +1651,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "确认付款方式";
+
+/* Country option for a site address. */
+"Congo (Brazzaville)" = "刚果（布）";
+
+/* Country option for a site address. */
+"Congo (Kinshasa)" = "刚果（金）";
 
 /* Title displayed if there are no inbox notes in the inbox screen. */
 "Congrats, you’ve read everything!" = "恭喜您，已全部阅读！";
@@ -1500,6 +1725,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label for modal dialog that appears when connecting to a card reader */
 "Connecting to reader" = "正在连接阅读器";
+
+/* Error message when establishing a connection to the card reader times out. */
+"Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "连接读卡器时超时，请确保读卡器位于附近并且电量充足，然后重试";
 
 /* Title when checking if WooCommerce Payments is supported */
 "Connecting to your account" = "连接到您的帐户";
@@ -1572,8 +1800,14 @@ which should be translated separately and considered part of this sentence. */
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
 "Continuing with Apple" = "继续使用 Apple";
 
+/* User's Contributor role. */
+"Contributor" = "贡献者";
+
 /* Label for the conversion rate (orders per visitor) in the Analytics Hub */
 "Conversion Rate" = "转化率";
+
+/* Country option for a site address. */
+"Cook Islands" = "库克群岛";
 
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookie 政策";
@@ -1596,6 +1830,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Copy tracking number of a shipping label from the shipping label tracking more menu action sheet */
 "Copy tracking number" = "复制跟踪编号";
+
+/* Country option for a site address. */
+"Costa Rica" = "哥斯达黎加";
+
+/* Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Could not launch your store" = "无法启动您的商店";
 
 /* Error message shown a URL points to a valid site but not a WordPress site. */
 "Couldn't connect to the WordPress site. There is no valid WordPress site at this address. Check the site address (URL) you entered." = "无法连接到 WordPress 站点。此地址下没有任何有效的 WordPress 站点。请检查您输入的站点地址 (URL)。";
@@ -1659,9 +1899,6 @@ which should be translated separately and considered part of this sentence. */
 /* Coupon management coupon list screen title
    Title of the Coupons menu in the hub menu */
 "Coupons" = "优惠券";
-
-/* The title for a button that causes the app to deliberately crash for debugging purposes */
-"Crash Immediately" = "立即崩溃";
 
 /* Action for creating a Coupon remotely
    Button to create an order on the Order screen
@@ -1732,9 +1969,18 @@ which should be translated separately and considered part of this sentence. */
 /* Footer for list of payment methods in Payment Method screen. %1$@ is a placeholder for the WordPress.com username. %2$@ is a placeholder for the WordPress.com email address. */
 "Credits cards are retrieved from the following WordPress.com account: %1$@ <%2$@>" = "从以下 WordPress.com 帐户检索信用卡：%1$@ <%2$@>";
 
+/* Country option for a site address. */
+"Croatia" = "克罗地亚";
+
 /* Cell title for Cross-sells products in Linked Products Settings screen
    Navigation bar title for editing linked products for cross-sell products */
 "Cross-sells" = "交叉销售";
+
+/* Country option for a site address. */
+"Cuba" = "古巴";
+
+/* Country option for a site address. */
+"Curacao" = "库拉索";
 
 /* Cell title: the current date. */
 "Current" = "当前";
@@ -1754,7 +2000,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error description for when there are too many variations to generate. */
 "Currently creation is supported for 100 variations maximum. Generating variations for this product would create %d variations." = "目前最多支持创建 100 个变体。 为此产品生成变体会创建 %d 个变体。";
 
-/* Name of the section for custom shipment tracking carriers
+/* Name of the group of tracking providers created manually by users
+   Name of the section for custom shipment tracking carriers
    Title of the Analytics Hub Custom selection range */
 "Custom" = "自定义";
 
@@ -1792,7 +2039,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Customer info section title
    Customer info section title in Review Order screen
-   Title text of the section that shows Customer details when creating a new order */
+   Title text of the section that shows Customer details when creating a new order
+   User's Customer role. */
 "Customer" = "客户";
 
 /* Title text of the section that shows the Order customer note when creating a new order */
@@ -1823,6 +2071,12 @@ which should be translated separately and considered part of this sentence. */
 /* Main message on the Print Customs Invoice screen of Shipping Label flow for multiple invoices */
 "Customs forms must be printed and included on these international shipments" = "必须打印报关单并将其随附在这些国际配送中";
 
+/* Country option for a site address. */
+"Cyprus" = "塞浦路斯";
+
+/* Country option for a site address. */
+"Czech Republic" = "捷克共和国";
+
 /* Details section title in the Edit Address Form */
 "DETAILS" = "详细信息";
 
@@ -1833,6 +2087,9 @@ which should be translated separately and considered part of this sentence. */
    Title describing the possible date range selections of the Analytics Hub
    Title of the range selection list */
 "Date Range" = "日期范围";
+
+/* Title of 'Date Paid' section in the receipt */
+"Date paid" = "付款日期";
 
 /* Add / Edit shipping carrier. Title of cell date shipped */
 "Date shipped" = "配送日期";
@@ -1862,6 +2119,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Delete tracking button title */
 "Delete Tracking" = "删除跟踪信息";
+
+/* Country option for a site address. */
+"Denmark" = "丹麦";
 
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "描述您的产品";
@@ -1910,6 +2170,9 @@ which should be translated separately and considered part of this sentence. */
    Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation */
 "Discount" = "折扣";
+
+/* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
+"Discount %1$@" = "折扣 %1$@";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -1974,6 +2237,12 @@ which should be translated separately and considered part of this sentence. */
 /* A hazardous material description stating when a package can fit into this category */
 "Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "类别 6.2 — 危险物质 — 生物材料（如实验室检测试剂盒、获授权的 COVID 检测试剂盒返回包）";
 
+/* Country option for a site address. */
+"Djibouti" = "吉布提";
+
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "不允许";
+
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay in Person payment gateway. */
 "Do you want to add Pay in Person to your web checkout?" = "您想在结账页面中添加现场付款功能吗？";
 
@@ -1992,11 +2261,16 @@ which should be translated separately and considered part of this sentence. */
 /* Type Documents of content to be declared for the customs form in Shipping Label flow */
 "Documents" = "文档";
 
+/* Country option for a site address. */
+"Dominica" = "多米尼加";
+
+/* Country option for a site address. */
+"Dominican Republic" = "多米尼加共和国";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "还没有帐户？_注册_";
 
-/* Alert button text on a feature announcement which prevents the banner being shown again
-   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
+/* Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "不再显示";
 
 /* Action title to select products to add to a grouped product from search results
@@ -2034,6 +2308,33 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "不知道如何通过移动设备打印？";
+
+/* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"Dotcom Error: [%1$@] %2$@" = "Dotcom 错误：[%1$@] %2$@";
+
+/* WordPress.com error thrown when the the request REST API url is invalid. */
+"Dotcom Invalid REST Route" = "Dotcom 无效 REST 路由";
+
+/* WordPress.com Missing Token */
+"Dotcom Missing Token" = "Dotcom 缺少令牌";
+
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "网站没有统计权限";
+
+/* WordPress.com Request Failure */
+"Dotcom Request Failed" = "Dotcom 请求失败";
+
+/* WordPress.com error thrown when a requested resource does not exist remotely. */
+"Dotcom Resource does not exist" = "Dotcom 资源不存在";
+
+/* WordPress.com Error thrown when the response body is empty */
+"Dotcom Response Empty" = "Dotcom 响应为空";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "已禁用网站统计数据模块";
+
+/* WordPress.com Invalid Token */
+"Dotcom Token Invalid" = "Dotcom 令牌无效";
 
 /* Voiceover accessibility hint informing the user they can double tap a modal alert to dismiss it */
 "Double tap to dismiss" = "轻点两次即可退出";
@@ -2073,6 +2374,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the product form bottom sheet action for editing downloadable files. */
 "Downloadable files" = "可下载文件";
 
+/* Display label for the product's draft status */
+"Draft" = "草稿";
+
 /* Subtitle of the empty state of the Blaze campaign list view */
 "Drive more sales to your store with Blaze." = "通过 Blaze 提高您商店的销售额";
 
@@ -2084,6 +2388,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代码轻松识别您的产品";
+
+/* Country option for a site address. */
+"Ecuador" = "厄瓜多尔";
 
 /* Button to edit a product category
    Button to edit an order on Order Details screen
@@ -2141,6 +2448,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "一次编辑多个商品的状态或价格";
+
+/* User's Editor role. */
+"Editor" = "编辑器";
+
+/* Country option for a site address. */
+"Egypt" = "埃及";
+
+/* Country option for a site address. */
+"El Salvador" = "萨尔瓦多";
 
 /* Carrier eligible for free pickup in Shipping Labels > Carrier and Rates */
 "Eligible for free pickup" = "适用于免费自提";
@@ -2269,9 +2585,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "输入描述";
 
-/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
-"Enter email or username" = "输入电子邮箱或用户名";
-
 /* Title of the downloadable file bottom sheet action for adding file from an URL. */
 "Enter file URL" = "输入文件 URL";
 
@@ -2279,8 +2592,7 @@ which should be translated separately and considered part of this sentence. */
 "Enter number (Optional)" = "输入数字（可选）";
 
 /* Enter password placeholder in Product Visibility
-   Placeholder for the password field on the site credential login screen
-   Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
+   Placeholder for the password field on the site credential login screen */
 "Enter password" = "输入密码";
 
 /* Text for the input textfield placeholder when no value has been added yet */
@@ -2317,9 +2629,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder for the username field on the site credential login screen */
 "Enter username" = "输入用户名";
 
-/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
-"Enter your WordPress.com password" = "输入您的 WordPress.com 密码";
-
 /* Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site. */
 "Enter your account information for %@." = "输入您的 %@ 帐户信息。";
 
@@ -2347,6 +2656,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "信封";
+
+/* Country option for a site address. */
+"Equatorial Guinea" = "赤道几内亚";
+
+/* Country option for a site address. */
+"Eritrea" = "厄立特里亚";
 
 /* Title indicating a failed step in Jetpack installation. */
 "Error" = "错误";
@@ -2410,6 +2725,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "预计设置时间";
+
+/* Country option for a site address. */
+"Estonia" = "爱沙尼亚";
+
+/* Country option for a site address. */
+"Ethiopia" = "埃塞俄比亚";
 
 /* The title on the placeholder overlay on the coupon list screen when coupons are disabled for the store.
    The title on the placeholder overlay when there are no coupons on the coupon list screen and creating a coupon is possible. */
@@ -2489,6 +2810,9 @@ which should be translated separately and considered part of this sentence. */
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales." = "探索如何提高您的店铺销售额";
 
+/* Display label for affiliate product type. */
+"External\/Affiliate" = "外部\/关联";
+
 /* Error message on the Coupon Details screen when deleting coupon fails */
 "Failed to delete coupon. Please try again." = "优惠券删除失败。 请重试。";
 
@@ -2519,6 +2843,12 @@ which should be translated separately and considered part of this sentence. */
 /* Content of error presented when undo of Mark Order Completed failed. It reads: Failed to undo fulfillment of order #{order number}. Parameters: %1$d - order number */
 "Failed to undo fulfillment of order #%1$d" = "未能撤销订单 #%1$d 的履约";
 
+/* Country option for a site address. */
+"Falkland Islands" = "福克兰群岛";
+
+/* Country option for a site address. */
+"Faroe Islands" = "法罗群岛";
+
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
 
@@ -2531,8 +2861,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "反馈已发送！";
 
+/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
+"Fees" = "费用";
+
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "正在获取变体…";
+
+/* Country option for a site address. */
+"Fiji" = "斐济";
 
 /* Placeholder of the cell text field in Product Downloadable File
    Title of the cell in Product Downloadable File > File Name */
@@ -2587,6 +2923,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the error screen when an in-person payments plugin is active but not set up. %1$@ contains the plugin name. */
 "Finish setup for %1$@ in your store admin" = "在您的商店管理中完成 %1$@ 设置";
 
+/* Country option for a site address. */
+"Finland" = "芬兰";
+
 /* Text field name in Edit Address Form */
 "First name" = "名字";
 
@@ -2617,8 +2956,20 @@ which should be translated separately and considered part of this sentence. */
 /* Next web page */
 "Forward" = "转发";
 
+/* Country option for a site address. */
+"France" = "法国";
+
 /* Plan name for an active free trial */
 "Free Trial" = "免费试用版";
+
+/* Country option for a site address. */
+"French Guiana" = "法属圭亚那";
+
+/* Country option for a site address. */
+"French Polynesia" = "法属波利尼西亚";
+
+/* Country option for a site address. */
+"French Southern Territories" = "法国南部领土";
 
 /* Title of the cell in Product Price Settings > Schedule sale from a certain date */
 "From" = "开始日期";
@@ -2637,6 +2988,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the Global Unique Identifier on the Inventory Settings row */
 "GTIN, UPC, EAN, ISBN: %@" = "GTIN、UPC、EAN、ISBN：%@";
+
+/* Country option for a site address. */
+"Gabon" = "加蓬";
+
+/* Country option for a site address. */
+"Gambia" = "冈比亚";
 
 /* General section title in the hub menu */
 "General" = "常规";
@@ -2664,6 +3021,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error title for when there are too many variations to generate. */
 "Generation limit exceeded" = "超出了生成限制";
+
+/* Country option for a site address. */
+"Georgia" = "格鲁吉亚";
+
+/* Country option for a site address. */
+"Germany" = "德国";
 
 /* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
@@ -2710,6 +3073,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert presented with a spinner while the reader is being prepared */
 "Getting ready to collect payment" = "准备收款";
 
+/* Country option for a site address. */
+"Ghana" = "加纳";
+
+/* Country option for a site address. */
+"Gibraltar" = "直布罗陀";
+
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "礼品";
 
@@ -2722,6 +3091,13 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header of the gift card code text field in the order form. */
 "Gift card code" = "礼品卡代码";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "礼品卡无效";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "未应用礼品卡";
 
 /* The title of the button to give feedback about products beta features on the banner on the products tab
    Title of the button to give feedback about the add-ons feature
@@ -2754,6 +3130,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title in AI product description celebration screen. */
 "Great start!" = "不错的开局！";
 
+/* Country option for a site address. */
+"Greece" = "希腊";
+
+/* Country option for a site address. */
+"Greenland" = "格陵兰";
+
+/* Country option for a site address. */
+"Grenada" = "格林纳达";
+
 /* A hazardous material description stating when a package can fit into this category */
 "Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "仅适用于基础包装的危险物质（仅适用于未列出但仅限用于表面的物品)";
 
@@ -2763,11 +3148,35 @@ which should be translated separately and considered part of this sentence. */
 /* Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row */
 "Group of: %@" = "组数：%@";
 
+/* Display label for grouped product type. */
+"Grouped" = "已分组";
+
 /* Navigation bar title for editing linked products for a grouped product */
 "Grouped Products" = "分组产品";
 
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "分组产品";
+
+/* Country option for a site address. */
+"Guadeloupe" = "瓜德罗普岛";
+
+/* Country option for a site address. */
+"Guam" = "关岛";
+
+/* Country option for a site address. */
+"Guatemala" = "危地马拉";
+
+/* Country option for a site address. */
+"Guernsey" = "根西岛";
+
+/* Country option for a site address. */
+"Guinea" = "几内亚";
+
+/* Country option for a site address. */
+"Guinea-Bissau" = "几内亚比绍";
+
+/* Country option for a site address. */
+"Guyana" = "圭亚那";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "您希望我们如何为您提供帮助？";
@@ -2783,6 +3192,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Post HTML content */
 "HTML Content" = "HTML 内容";
+
+/* Country option for a site address. */
+"Haiti" = "海地";
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "准备好您的商店凭据。";
@@ -2826,6 +3238,9 @@ which should be translated separately and considered part of this sentence. */
 /* H6 Aztec Style */
 "Heading 6" = "六级标题";
 
+/* Country option for a site address. */
+"Heard Island and McDonald Islands" = "赫德岛和麦克唐纳群岛";
+
 /* Title for the row to enter the package height on the Add New Custom Package screen in Shipping Label flow
    Title of the cell in Product Shipping Settings > Height */
 "Height" = "高度";
@@ -2852,7 +3267,8 @@ which should be translated separately and considered part of this sentence. */
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "您好！ 这是下载 WooCommerce 应用程序的链接。我非常喜欢这个应用，希望您也喜欢。";
 
-/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks). */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Display label for the product's catalog visibility */
 "Hidden" = "已隐藏";
 
 /* Title of the Hide store setup list button in the action sheet. */
@@ -2861,8 +3277,17 @@ which should be translated separately and considered part of this sentence. */
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "通过关键字突出显示产品的独特特点和受众，以便提供量身定制的描述。";
 
+/* Country option for a site address. */
+"Honduras" = "洪都拉斯";
+
+/* Country option for a site address. */
+"Hong Kong" = "中国香港";
+
 /* Title on the navigation bar for the in-app feedback survey */
 "How can we improve?" = "我们应该如何改善？";
+
+/* Country option for a site address. */
+"Hungary" = "匈牙利";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "我需要帮助";
@@ -2881,6 +3306,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message for missing ITN for tariff number valued over $2,500 inCustoms screen of Shipping Label flow */
 "ITN is required for shipping items valued over $2,500 per tariff number" = "运输每个关税编号价值超过 2500 美元的物品需要 ITN";
+
+/* Country option for a site address. */
+"Iceland" = "冰岛";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
@@ -2918,7 +3346,11 @@ which should be translated separately and considered part of this sentence. */
 /* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
 "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "在 %1$@，使用“点按付款”功能的银行卡付款仅可用于金额不超过非接触式付款限额的交易。";
 
-/* Display label for the bundle item's inventory stock status */
+/* Accessibility label for an indeterminate loading indicator */
+"In progress" = "进行中";
+
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "In stock" = "有货";
 
 /* Long descriptions of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
@@ -2953,6 +3385,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "通过追加销售和交叉销售增加销售额";
 
+/* Country option for a site address. */
+"India" = "印度";
+
 /* Title for the individual use only row in coupon usage restrictions screen. */
 "Individual Use Only" = "仅限单独使用";
 
@@ -2962,14 +3397,23 @@ which should be translated separately and considered part of this sentence. */
 /* Description for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Individually shipped item" = "单独发运的商品";
 
+/* Country option for a site address. */
+"Indonesia" = "印度尼西亚";
+
 /* Label action for inserting a link on the editor */
 "Insert" = "插入";
+
+/* Message from the in-person payment card reader prompting user to insert their card */
+"Insert Card" = "插卡";
 
 /* Accessibility label for insert horizontal ruler button on formatting toolbar. */
 "Insert Horizontal Ruler" = "插入水平标尺";
 
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "插入链接";
+
+/* Message from the in-person payment card reader prompting user to insert or swipe their card */
+"Insert Or Swipe Card" = "插卡或刷卡";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Insert card to pay" = "插卡以付款";
@@ -3011,6 +3455,9 @@ which should be translated separately and considered part of this sentence. */
    Title for the Jetpack setup screen when installation is required */
 "Installing Jetpack" = "正在安装 Jetpack";
 
+/* Display label for the product's inventory stock status */
+"Insufficient stock" = "库存不足";
+
 /* Includes insurance of a specific carrier in Shipping Labels > Carrier and Rates. Placeholder is a literal, e.g \"limited\" */
 "Insurance (%1$@)" = "保险 (%1$@)";
 
@@ -3026,6 +3473,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error when an empty Identifier is returned from the barcode scanner */
 "Invalid Identifier" = "无效标识符";
 
+/* The title of the alert when there is an error with the package name */
+"Invalid Package Name" = "包裹名称无效";
+
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "无效的产品 SKU";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "无效站点地址";
 
@@ -3040,6 +3493,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message shown when the input URL is invalid. */
 "Invalid URL. Please double-check and try again." = "URL 无效。 请仔细检查，然后重试。";
+
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "礼品卡无效的错误：%1$@";
 
 /* No comment provided by engineer. */
 "Invalid username" = "无效用户名";
@@ -3074,11 +3530,26 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "In‑Person Payments isn't available for this store" = "此商店不支持现场付款";
 
+/* Country option for a site address. */
+"Iran" = "伊朗";
+
+/* Country option for a site address. */
+"Iraq" = "伊拉克";
+
+/* Country option for a site address. */
+"Ireland" = "爱尔兰";
+
 /* Question to ask for feedback for the AI-generated content on the product description AI generator screen. */
 "Is the generated description helpful?" = "生成的描述对您是否有用？";
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "生成的信息对您是否有用？";
+
+/* Country option for a site address. */
+"Isle of Man" = "马恩岛";
+
+/* Country option for a site address. */
+"Israel" = "以色列";
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "发放退款";
@@ -3117,6 +3588,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for italic button on formatting toolbar. */
 "Italic" = "斜体";
 
+/* Country option for a site address. */
+"Italy" = "意大利";
+
 /* Error message for missing value in Description row in Customs screen of Shipping Label flow */
 "Item description is required" = "项目描述是必填项";
 
@@ -3133,6 +3607,21 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title for the products card at the top of the top performers section in dashboard stats. */
 "Items Sold" = "已售项目";
 
+/* Country option for a site address. */
+"Ivory Coast" = "象牙海岸";
+
+/* Country option for a site address. */
+"Jamaica" = "牙买加";
+
+/* Country option for a site address. */
+"Japan" = "日本";
+
+/* Country option for a site address. */
+"Jersey" = "泽西岛";
+
+/* WordPress.com error thrown when Jetpack is not connected. */
+"Jetpack Not Connected" = "未连接 Jetpack";
+
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack 设置";
 
@@ -3145,6 +3634,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "随时随地加入";
 
+/* Country option for a site address. */
+"Jordan" = "约旦";
+
+/* Country option for a site address. */
+"Kazakhstan" = "哈萨克斯坦";
+
 /* Alert button title - which keeps the user on the Product Visibility screen */
 "Keep Editing" = "继续编辑";
 
@@ -3154,11 +3649,26 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Information text when the survey is completed */
 "Keep in mind that this is not a support ticket and we won’t be able to address individual feedback" = "请注意，这不是支持请求，我们将无法处理个人反馈";
 
+/* Country option for a site address. */
+"Kenya" = "肯尼亚";
+
+/* Country option for a site address. */
+"Kiribati" = "基里巴斯";
+
+/* Country option for a site address. */
+"Kuwait" = "科威特";
+
+/* Country option for a site address. */
+"Kyrgyzstan" = "吉尔吉斯斯坦";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "标签（4 x 6 英寸）";
 
 /* Navigation bar title of shipping label paper size options screen */
 "Label Format Options" = "标签格式选项";
+
+/* Country option for a site address. */
+"Laos" = "老挝";
 
 /* Label for one of the filters in order date range */
 "Last 2 Days" = "最近 2 天";
@@ -3197,6 +3707,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Text field name in Edit Address Form */
 "Last name" = "姓氏";
+
+/* Country option for a site address. */
+"Latvia" = "拉脱维亚";
 
 /* Title of the store onboarding task to launch the store. */
 "Launch your store" = "开启您的商店";
@@ -3237,6 +3750,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "详细了解我们收集的有关您商店的数据，以及您用于控制此数据共享的选项。";
 
+/* Country option for a site address. */
+"Lebanon" = "黎巴嫩";
+
 /* Title of legal paper size option for printing a shipping label */
 "Legal (8.5 x 14 in)" = "Legal（8.5 x 14 英寸）";
 
@@ -3247,11 +3763,23 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the cell in Product Shipping Settings > Length */
 "Length" = "长度";
 
+/* Country option for a site address. */
+"Lesotho" = "莱索托";
+
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Letter（8.5 x 11 英寸）";
 
 /* Title to let the user know what do we want on the support screen. */
 "Let’s get this sorted" = "我们来把一切准备就绪";
+
+/* Country option for a site address. */
+"Liberia" = "利比里亚";
+
+/* Country option for a site address. */
+"Libya" = "利比亚";
+
+/* Country option for a site address. */
+"Liechtenstein" = "列支敦士登";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Lighters Package - Authorized Lighters" = "打火机包装 — 获授权的打火机";
@@ -3287,6 +3815,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* VoiceOver accessibility hint, informing the user about the image section header of a product in product detail screen. */
 "List of images of the product" = "产品图片列表";
+
+/* Country option for a site address. */
+"Lithuania" = "立陶宛";
 
 /* Accessibility label for loading indicator (spinner) at the bottom of a list */
 "Loading" = "正在加载";
@@ -3388,6 +3919,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of a button. */
 "Lost your password?" = "忘记密码？";
 
+/* Country option for a site address. */
+"Luxembourg" = "卢森堡";
+
+/* Country option for a site address. */
+"Macao S.A.R., China" = "中国澳门";
+
+/* Country option for a site address. */
+"Macedonia" = "马其顿";
+
+/* Country option for a site address. */
+"Madagascar" = "马达加斯加";
+
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
 "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Automattic 用爱心打造。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我们正在招贤纳士！<\/a>";
 
@@ -3402,6 +3945,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the product form bottom sheet action for editing tags. */
 "Make your products easier to find with tags" = "通过标签让您的产品更容易查找";
+
+/* Country option for a site address. */
+"Malawi" = "马拉维";
+
+/* Country option for a site address. */
+"Malaysia" = "马来西亚";
+
+/* Country option for a site address. */
+"Maldives" = "马尔代夫";
+
+/* Country option for a site address. */
+"Mali" = "马里";
+
+/* Country option for a site address. */
+"Malta" = "马耳他";
 
 /* Card reader settings screen title
    Settings > Manage Card Reader > Title for the no-reader-connected screen in settings.
@@ -3457,6 +4015,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Create Shipping Label form -> Mark order as complete label */
 "Mark this order as complete and notify the customer" = "将订单标注为已完成并通知客户";
 
+/* Country option for a site address. */
+"Marshall Islands" = "马绍尔群岛";
+
+/* Country option for a site address. */
+"Martinique" = "马提尼克";
+
+/* Country option for a site address. */
+"Mauritania" = "毛里塔尼亚";
+
+/* Country option for a site address. */
+"Mauritius" = "毛里求斯";
+
 /* Title for the maximum spend row on coupon usage restrictions screen with currency symbol within the brackets. Reads like: Max. Spend ($) */
 "Max. Spend (%1$@)" = "最高 消费 (%1$@)";
 
@@ -3471,6 +4041,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dismiss button title for modally presented Just in Time Messages */
 "Maybe Later" = "稍后再说";
+
+/* Country option for a site address. */
+"Mayotte" = "马约特岛";
 
 /* Title for alert when access to media capture is not granted */
 "Media Capture" = "媒体捕获";
@@ -3502,6 +4075,12 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message phone number button title */
 "Message" = "邮件";
 
+/* Country option for a site address. */
+"Mexico" = "墨西哥";
+
+/* Country option for a site address. */
+"Micronesia" = "密克罗尼西亚";
+
 /* Option to select the Microsft Outlook app when logging in with magic links */
 "Microsoft Outlook" = "Microsoft Outlook";
 
@@ -3523,8 +4102,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the mobile app support area option */
 "Mobile App" = "移动应用程序";
 
+/* Country option for a site address. */
+"Moldova" = "摩尔多瓦";
+
+/* Country option for a site address. */
+"Monaco" = "摩纳哥";
+
+/* Country option for a site address. */
+"Mongolia" = "蒙古";
+
+/* Country option for a site address. */
+"Montenegro" = "黑山共和国";
+
 /* Title of the Analytics Hub Month to Date selection range */
 "Month to Date" = "月初至今";
+
+/* Country option for a site address. */
+"Montserrat" = "蒙特塞拉特";
 
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
@@ -3546,6 +4140,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* More Privacy toggle section in the privacy screen. */
 "More privacy options available for woocommerce.com users. Check here to learn more." = "WooCommerce.com 用户可获得更多隐私选项。 点击此处了解更多详情。";
 
+/* Country option for a site address. */
+"Morocco" = "摩洛哥";
+
 /* Button on each order item of the Package Details screen in Shipping Labels flow. */
 "Move" = "移动";
 
@@ -3561,6 +4158,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Trash Action Spoken hint */
 "Moves the comment to Trash" = "将评论移动至回收站";
 
+/* Country option for a site address. */
+"Mozambique" = "莫桑比克";
+
 /* Cancel button title for the discard changes confirmation dialog in the multiline text editor. */
 "MultilineEditableTextDetailView.discardChanges.alert.cancelAction" = "取消";
 
@@ -3573,13 +4173,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "完成";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"Multiple Contactless Cards Detected" = "检测到多张非接触式卡";
+
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "多个商店";
 
-/* Placeholder store name on a notification
-   Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "我的商店";
+
+/* Country option for a site address. */
+"Myanmar" = "缅甸";
 
 /* String used when there's no date available for a payout type on the WooPayments Payouts View. */
 "N\/A" = "不适用";
@@ -3592,6 +4197,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "缺少名称";
+
+/* Country option for a site address. */
+"Namibia" = "纳米比亚";
+
+/* Country option for a site address. */
+"Nauru" = "瑙鲁";
 
 /* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
 "Need a shipping label?" = "是否需要货运标签？";
@@ -3616,6 +4227,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message format on enable analytics screen for support. The %@ placeholder is a URL with more information. */
 "Need some help? %1$@" = "需要帮助？%1$@";
 
+/* Country option for a site address. */
+"Nepal" = "尼泊尔";
+
 /* The title for the net amount paid cell */
 "Net Payment" = "净付款";
 
@@ -3624,6 +4238,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Label for the total sales of a product in the Analytics Hub */
 "Net sales: %@" = "净销售额：%@";
+
+/* Country option for a site address. */
+"Netherlands" = "荷兰";
+
+/* Error message when session cookie has expired. */
+"NetworkError.invalidCookieNonce" = "抱歉，您的会话已过期。 请重新登录。";
+
+/* Error message when the URL is invalid. */
+"NetworkError.invalidURL" = "抱歉，URL 无效。 请重试。";
+
+/* Error message when we receive not found error */
+"NetworkError.notFound" = "抱歉，我们未能找到您要查找的内容。 请重试。 响应：%1$@";
+
+/* Error message when a request times out. */
+"NetworkError.timeout" = "抱歉，请求处理时间过长。 请稍后重试。 响应：%1$@";
+
+/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
+"NetworkError.unacceptableStatusCode" = "抱歉，服务器出现问题。 请稍后重试。 （错误代码：%1$d）。 响应：%2$@";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "永不过期";
@@ -3634,8 +4266,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Add Product Attribute. Placeholder of cell presenting the title of the new attribute. */
 "New Attribute Name" = "新属性名称";
 
+/* Country option for a site address. */
+"New Caledonia" = "新喀里多尼亚";
+
 /* Title for the order creation screen */
 "New Order" = "新订单";
+
+/* Country option for a site address. */
+"New Zealand" = "新西兰";
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新的分析视图，让您可查看访客、报告等。";
@@ -3658,6 +4296,18 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the next button in the issue refund screen */
 "Next" = "下一步";
 
+/* Country option for a site address. */
+"Nicaragua" = "尼加拉瓜";
+
+/* Country option for a site address. */
+"Niger" = "尼日尔";
+
+/* Country option for a site address. */
+"Nigeria" = "尼日利亚";
+
+/* Country option for a site address. */
+"Niue" = "纽埃";
+
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "没有（已批准的）评论";
 
@@ -3678,11 +4328,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the empty state of the Blaze campaign list view */
 "No campaigns yet" = "尚无广告活动";
 
+/* Error message when a card reader was expected to already have been connected. */
+"No card reader is connected - connect a reader and try again." = "未连接读卡器，请连接读卡器并重试";
+
 /* Placeholder of the Product Categories row on Product main screen */
 "No category selected" = "未选择分类";
 
 /* Title for the error screen when there was a network error checking In-Person Payments requirements. */
 "No connection" = "没有连接";
+
+/* Error message when there is no connection to the Internet. */
+"No connection to the Internet - please connect to the Internet and try again." = "未连接互联网，请连接到互联网并重试";
 
 /* The title on the placeholder overlay when there are no coupons on the coupon list screen. */
 "No coupons found" = "没有找到优惠券";
@@ -3765,11 +4421,25 @@ If your translation of that term also happens to contains a hyphen, please be su
 "No variations to generate" = "没有要生成的变体";
 
 /* Coupon expiry date placeholder in the view for adding or editing a coupon
+   Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option
    Label when there is no default option for a component in a composite product
    Restriction type None for contents declared in the customs form for Shipping Label flow
    The description in product variations bulk update, of a value, that is missing from all variations
    Value for fields in Coupon Usage Restrictions screen when no value is set */
 "None" = "无";
+
+/* Country option for a site address. */
+"Norfolk Island" = "诺福克岛";
+
+/* Country option for a site address. */
+"North Korea" = "朝鲜";
+
+/* Country option for a site address. */
+"Northern Mariana Islands" = "北马里亚纳群岛";
+
+/* Country option for a site address. */
+"Norway" = "挪威";
 
 /* Description when no 'group of' quantity is set in quantity rules. */
 "Not grouped" = "未分组";
@@ -3787,6 +4457,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "给客户的备注";
+
+/* Title of order note section in the receipt, commonly used for Quick Orders. */
+"Notes" = "笔记";
 
 /* Default message for empty media picker */
 "Nothing to show" = "没有可显示的内容";
@@ -3808,7 +4481,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Dismiss button on the alert when there is an error uploading image(s)
    Dismisses the alert
    Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information. */
+   Submit button on prompt for user information.
+   Title of the alert dismiss action when the site cannot be launched from store onboarding > launch store screen. */
 "OK" = "确定";
 
 /* Header of selected attribute options section in Add Attribute Options screen */
@@ -3833,10 +4507,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Weeks Section Header */
 "Older than a Week" = "超过 1 周";
 
+/* Country option for a site address. */
+"Oman" = "阿曼";
+
 /* Display label for the subscription status type */
 "On Hold" = "保留";
 
-/* Display label for the bundle item's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "On back order" = "延迟交货";
 
 /* Helper text above photo list in Product images screen */
@@ -3847,6 +4525,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "只有站点所有者可以管理配送标签付款方式。 请联系 %1$@ (%2$@)，来管理付款方式。";
+
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"Oops, some unexpected errors happened." = "糟糕，发生意外错误。";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "打开设备设置";
@@ -3909,9 +4590,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "或";
-
-/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
-"Or Continue using Magic Link" = "或者继续使用魔术链接";
 
 /* Instruction text for other forms of two-factor auth methods. */
 "Or choose another form of authentication." = "或者选择另一种身份验证形式。";
@@ -4041,7 +4719,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "其他站点";
 
-/* Display label for the bundle item's inventory stock status */
+/* Display label for the bundle item's inventory stock status
+   Display label for the product's inventory stock status */
 "Out of stock" = "缺货";
 
 /* Header section package details in Shipping Label Package Detail */
@@ -4089,8 +4768,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Rich order notification text, will read as: Paid with Visa credit card */
 "Paid with %@" = "通过 %@ 付款";
 
+/* Country option for a site address. */
+"Pakistan" = "巴基斯坦";
+
+/* Country option for a site address. */
+"Palestinian Territory" = "巴勒斯坦领土";
+
+/* Country option for a site address. */
+"Panama" = "巴拿马";
+
 /* Title of the paper size selector row for printing a shipping label */
 "Paper Size" = "纸张尺寸";
+
+/* Country option for a site address. */
+"Papua New Guinea" = "巴布亚新几内亚";
+
+/* Country option for a site address. */
+"Paraguay" = "巴拉圭";
 
 /* Add Product Category. Title of cell presenting the parent category. */
 "Parent Category" = "父级分类目录";
@@ -4137,10 +4831,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Payment section title */
 "Payment Totals" = "付款总额";
 
+/* Message when the presented card remaining credit or balance is insufficient for the purchase. */
+"Payment declined due to insufficient funds. Try another means of payment." = "付款因余额不足被拒。 请尝试其他付款方式";
+
 /* Error message. Presented to users after collecting a payment fails */
 "Payment failed" = "付款失败";
 
-/* Title of the webview of adding a payment method in Shipping Labels */
+/* Title of 'Payment method' section in the receipt
+   Title of the webview of adding a payment method in Shipping Labels */
 "Payment method" = "付款方式";
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
@@ -4149,13 +4847,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "付款成功";
 
+/* Message when we don't know exactly why the payment was declined. */
+"Payment was declined for an unknown reason. Try another means of payment." = "付款因未知原因被拒。 请尝试其他付款方式";
+
+/* Message when payment is declined for a non specific reason. */
+"Payment was declined for an unspecified reason. Try another means of payment." = "付款因不明原因被拒。 请尝试其他付款方式";
+
 /* Title for the Payments settings screen
    Title of the 'Payments' screen - used for spotlight indexing on iOS.
    Title of the hub menu payments button
    Title of the webview for payments setup from onboarding. */
 "Payments" = "付款";
 
-/* Display label for the subscription status type */
+/* Display label for the review's pending status
+   Display label for the subscription status type */
 "Pending" = "待审";
 
 /* Display label for the subscription status type */
@@ -4163,6 +4868,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "待审核";
+
+/* Display label for the product's pending status */
+"Pending review" = "待审核";
 
 /* Name of percentage discount type */
 "Percentage Discount" = "百分比折扣";
@@ -4178,6 +4886,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Close Account button title - confirms and closes user's WordPress.com account. */
 "Permanently Close Account" = "永久关闭账户";
+
+/* Country option for a site address. */
+"Peru" = "秘鲁";
+
+/* Country option for a site address. */
+"Philippines" = "菲律宾";
 
 /* Text field phone in Edit Address Form
    Text field phone in Shipping Label Address Validation */
@@ -4201,17 +4915,32 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Pick up an order, then just pay, print, package, and post." = "选择订单，然后只需付款，打印，包装和邮寄。";
 
+/* Country option for a site address. */
+"Pitcairn" = "皮特凯恩";
+
 /* Title of the in-progress UI while deleting the Product remotely */
 "Placing your product in the trash..." = "将产品放入回收站...";
 
 /* Title of the alert presented when an update fails because the reader is low on battery. */
 "Please charge reader" = "请为读卡器充电";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.7 or above. Contact support if this error shows on a supported device." = "请检查您的手机是否符合以下要求：运行 iOS 16.7 或以上版本的 iPhone XS 或更新机型。 如果支持的设备上出现此错误，请联系支持人员。";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "请检查礼品卡的余额。";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
+"Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service." = "请检查您的 Apple ID 是否有效，然后重试。 接受 Apple 的服务条款时需要使用一个有效的 Apple ID";
+
 /* Suggestion to be displayed when the user encounters an error during the connection step of Jetpack setup */
 "Please connect Jetpack through your admin page on a browser or contact support." = "请在浏览器中通过管理页面连接 Jetpack，或联系支持人员。";
 
 /* Error message on the Jetpack setup required screen when Jetpack connection is missing. */
 "Please connect your store to Jetpack to access it on this app." = "请将您的商店连接到 Jetpack，以便在此应用程序上访问商店。";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is an issue with the merchant account or device. */
+"Please contact support – there was an issue starting Tap to Pay on iPhone" = "请联系支持人员 – 在 iPhone 上启动“点按付款”时出现问题";
 
 /* Description of alert for suggestion on how to connect to a WP.com sitePresented when a user logs in with an email that does not have access to a WP.com site */
 "Please contact the site owner for an invitation to the site as a shop manager or administrator to use the app." = "请联系站点所有者，以商店经理或管理员的身份邀请站点使用该应用程序。";
@@ -4300,6 +5029,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "请选择包裹";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
+"Please sign in to iCloud on this device to use Tap to Pay on iPhone." = "请在此设备上登录 iCloud，以便在 iPhone 上使用“点按付款”";
+
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "请稍后再试或与我们联系，我们很乐意为您提供帮助！";
 
@@ -4311,6 +5043,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Body text for the default store picker error screen */
 "Please try again or reach out to us and we'll be happy to assist you!" = "请重试或与我们联系，我们很乐意为您提供帮助！";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the merchant cancelled or did not complete the Terms of Service acceptance flow */
+"Please try again, and accept Apple's Terms of Service, so you can use Tap to Pay on iPhone." = "请重试，并接受 Apple 的服务条款，以便您可以在 iPhone 上使用“点按付款”";
 
 /* Account creation error when an unexpected error occurs. */
 "Please try again." = "请重试。";
@@ -4396,8 +5131,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation title for the help settings list. */
 "PointOfSaleSettingsHelpDetailView.help.title" = "帮助";
 
+/* Country option for a site address. */
+"Poland" = "波兰";
+
 /* Section title for popular products on the Select Product screen. */
 "Popular" = "热门";
+
+/* Country option for a site address. */
+"Portugal" = "葡萄牙";
 
 /* Text field postcode in Edit Address Form
    Text field postcode in Shipping Label Address Validation */
@@ -4512,7 +5253,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Privacy settings screen title */
 "Privacy Settings" = "隐私设置";
 
-/* One of the possible options in Product Visibility */
+/* Display label for the product's private status
+   One of the possible options in Product Visibility */
 "Private" = "非公开";
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -4651,8 +5393,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle of the store onboarding task to launch the store. */
 "Publish your site to the world anytime you want!" = "随时随地发布您的站点！";
 
+/* Display label for the product's published status */
+"Published" = "已发布";
+
 /* Title of the in-progress UI while updating the Product remotely */
 "Publishing your product..." = "正在发布您的产品…";
+
+/* Country option for a site address. */
+"Puerto Rico" = "波多黎各";
 
 /* Title of shipping label purchase date in Refund Shipping Label screen */
 "Purchase Date" = "购买日期";
@@ -4675,6 +5423,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
+
+/* Country option for a site address. */
+"Qatar" = "卡塔尔";
 
 /* Quantity abbreviation for section title */
 "Qty" = "数量";
@@ -4727,8 +5478,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A placeholder for the text field that the user can edit to indicate why they are issuing a refund. */
 "Reason for refunding order" = "订单退款原因";
 
-/* The title of the view containing a receipt preview */
+/* The title of the view containing a receipt preview
+   Title of receipt. */
 "Receipt" = "收据";
+
+/* Title of receipt. Reads like Receipt from WooCommerce, Inc. */
+"Receipt from %1$@" = "来自 %1$@ 的收据";
 
 /* Button label to refresh a web page
    Button to refresh the state of the in-person payments setup
@@ -4809,8 +5564,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "正常价格：%@";
 
-/* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
-   Title of the button shown when the In-Person Payments feedback banner is dismissed. */
+/* Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "稍后提醒我";
 
 /* Add asset to media picker list
@@ -4821,6 +5575,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Confirmation title before removing an attribute from a variation. */
 "Remove Attribute" = "删除属性";
+
+/* Message from the in-person payment card reader prompting user to remove their card */
+"Remove Card" = "移除银行卡";
 
 /* Text for button to remove a discount in the discounts details screen
    Title for the Remove button in Details screen during order creation */
@@ -4892,9 +5649,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重置活动日志";
 
-/* The title for a menu to reset the privacy choice banner presentation */
-"Reset Privacy Choice Banner State" = "重置隐私选项横幅状态";
-
 /* Button to reset password on the site credential login screen
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
@@ -4943,11 +5697,17 @@ If your translation of that term also happens to contains a hyphen, please be su
    Button to try again after connecting to a specific reader fails due to postal code problems. Intended for use after the merchant corrects the postal code in the store admin pages. */
 "Retry After Updating" = "请更新后再试";
 
+/* Message from the in-person payment card reader prompting user to retry payment with their card */
+"Retry Card" = "重试银行卡";
+
 /* Action button to check site's connection again. */
 "Retry Connection" = "重试连接";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "如果包裹无法送达，请退回给寄件人";
+
+/* Country option for a site address. */
+"Reunion" = "留尼旺岛";
 
 /* Title of Review Order screen */
 "Review Order" = "检查订单";
@@ -4966,8 +5726,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Post Rich content */
 "Rich Content" = "丰富的内容";
 
+/* Country option for a site address. */
+"Romania" = "罗马尼亚";
+
 /* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "运行测试订单，确保您的 WooCommerce 流程提供无缝的客户体验。";
+
+/* Country option for a site address. */
+"Russia" = "俄罗斯";
+
+/* Country option for a site address. */
+"Rwanda" = "卢旺达";
 
 /* Title for sessions section in the Analytics Hub */
 "SESSIONS" = "会话";
@@ -4975,6 +5744,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the cell in Product Inventory Settings > SKU
    Title of the product search filter to search for products that match the SKU. */
 "SKU" = "SKU";
+
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "SKU 已用于其他产品";
 
 /* Label about the SKU of a product in the product list. Reads, `SKU: productSku`
    SKU label for a product in the bundled products screen. The variable shows the SKU of the product.
@@ -4990,6 +5762,30 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button label to open web page in Safari */
 "Safari" = "Safari";
 
+/* Country option for a site address. */
+"Saint Barthélemy" = "圣巴泰勒米";
+
+/* Country option for a site address. */
+"Saint Helena" = "圣赫勒拿";
+
+/* Country option for a site address. */
+"Saint Kitts and Nevis" = "圣基茨和尼维斯";
+
+/* Country option for a site address. */
+"Saint Lucia" = "圣卢西亚";
+
+/* Country option for a site address. */
+"Saint Martin (Dutch part)" = "圣马丁（荷兰部分）";
+
+/* Country option for a site address. */
+"Saint Martin (French part)" = "圣马丁（法国部分）";
+
+/* Country option for a site address. */
+"Saint Pierre and Miquelon" = "圣皮埃尔和密克隆";
+
+/* Country option for a site address. */
+"Saint Vincent and the Grenadines" = "圣文森特和格林纳丁斯";
+
 /* Format of the sale period on the Price Settings row */
 "Sale dates: %@" = "促销日期：%@";
 
@@ -5002,11 +5798,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "促销价格：%@";
 
+/* Country option for a site address. */
+"Samoa" = "萨摩亚";
+
 /* Type Sample of content to be declared for the customs form in Shipping Label flow */
 "Sample" = "样品";
 
+/* Country option for a site address. */
+"San Marino" = "圣马力诺";
+
 /* Restriction type Sanitary / Phytosanitary Inspection for contents declared in the customs form for Shipping Label flow */
 "Sanitary \/ Phytosanitary Inspection" = "卫生\/植物检疫检查";
+
+/* Country option for a site address. */
+"Saudi Arabia" = "沙特阿拉伯";
 
 /* Action for saving a Coupon remotely
    Action for saving a Product remotely
@@ -5102,6 +5907,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Products Search Placeholder
    Search Products */
 "Search products" = "搜索产品";
+
+/* Display label for the product's catalog visibility */
+"Search results only" = "仅在搜索结果中显示";
 
 /* Action button linking to a list of connected stores. Presented when logging in with a store address that does not have WooCommerce.
    Action button linking to a list of connected stores.Presented when logging in with a store address that does not match the account entered */
@@ -5216,6 +6024,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title. Sends a email verification link (Magin link) for signing in. */
 "Send email verification link" = "发送电子邮件验证链接";
 
+/* Country option for a site address. */
+"Senegal" = "塞内加尔";
+
+/* Country option for a site address. */
+"Serbia" = "塞尔维亚";
+
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "服务包";
 
@@ -5267,6 +6081,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of a modal presenting a list of readers to choose from. */
 "Several readers found" = "找到多个读卡器";
+
+/* Country option for a site address. */
+"Seychelles" = "塞舌尔";
 
 /* Action button to share the generated message on the product sharing message generation screen
    Action for sharing a product from the product details screen
@@ -5321,7 +6138,8 @@ If your translation of that term also happens to contains a hyphen, please be su
    Date an item was shipped */
 "Shipped %@" = "配送日期：%@";
 
-/* Product Shipping Settings navigation title
+/* Line description for 'Shipping' cart total on the receipt. Only shown when non-zero
+   Product Shipping Settings navigation title
    Shipping label for payment view
    Title of the product form bottom sheet action for editing shipping settings.
    Title of the Shipping Settings row on Product main screen */
@@ -5365,6 +6183,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Header text when printing multiple newly purchased shipping labels */
 "Shipping labels purchased!" = "已购买配送标签！";
 
+/* Display label for the product's tax status setting option */
+"Shipping only" = "仅限运费";
+
+/* User's Shop Manager role. */
+"Shop Manager" = "商店管理员";
+
+/* Display label for the product's catalog visibility */
+"Shop and search results" = "在店铺和搜索结果中显示";
+
+/* Display label for the product's catalog visibility */
+"Shop only" = "仅在店铺中显示";
+
 /* The navigation bar title of the edit short description screen.
    Title of the product form bottom sheet action for editing short description.
    Title of the Short Description row on Product main screen */
@@ -5404,6 +6234,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "显示更多选项。";
 
+/* Country option for a site address. */
+"Sierra Leone" = "塞拉利昂";
+
 /* View title during the sign up process. */
 "Sign Up" = "注册";
 
@@ -5428,6 +6261,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "登录用户为 @%1$@";
 
+/* Display label for simple product type. */
+"Simple" = "简单";
+
+/* Country option for a site address. */
+"Singapore" = "新加坡";
+
 /* Site Address title on the support form */
 "Site Address" = "站点地址";
 
@@ -5447,6 +6286,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the button to skip the onboarding step encoraging the merchant to enable thePay in Person payment gateway */
 "Skip for now" = "暂时跳过";
 
+/* Country option for a site address. */
+"Slovakia" = "斯洛伐克";
+
+/* Country option for a site address. */
+"Slovenia" = "斯洛文尼亚";
+
 /* Placeholder in the Product Slug row on Edit Product Slug screen.
    Product Slug navigation title
    Slug label in Product Settings */
@@ -5457,6 +6302,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Dialog title that displays when a software update just finished installing */
 "Software updated" = "软件已更新";
+
+/* Country option for a site address. */
+"Solomon Islands" = "所罗门群岛";
+
+/* Country option for a site address. */
+"Somalia" = "索马里";
 
 /* Error message when at least an address on the Coupon Allowed Emails screen is not valid. */
 "Some email address is not valid." = "某些电子邮件地址无效。";
@@ -5482,6 +6333,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "对不起，您的用户名中包含非法短语 %@.";
+
+/* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7 */
+"Sorry, image removal on product variations is supported in WooCommerce 4.7 or greater, please update your site." = "抱歉，WooCommerce 4.7 或高更版本支持删除产品变体的图片，请更新您的网站。";
 
 /* No comment provided by engineer. */
 "Sorry, site addresses can only contain lowercase letters (a-z) and numbers." = "抱歉，站点地址只能使用小写字母和数字。";
@@ -5526,6 +6380,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Sorry, this payment couldn’t be processed" = "抱歉，我们无法处理本次付款";
 
 /* Error message when the card reader service experiences an unexpected internal service error. */
+"Sorry, this payment couldn’t be processed." = "很抱歉，我们无法处理这笔付款。";
+
+/* Error message shown when a refund could not be canceled (likely because it had already completed) */
+"Sorry, this refund could not be canceled." = "抱歉，此退款无法取消";
+
+/* Error message when the card reader service experiences an unexpected internal service error. */
 "Sorry, this refund couldn’t be processed" = "抱歉，无法处理本次退款";
 
 /* No comment provided by engineer. */
@@ -5537,6 +6397,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Sorry, usernames must have letters (a-z) too!" = "抱歉，用户名只能包含字母（a-z）！";
 
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "很抱歉，由于未找到有效付款，我们无法完成此操作。";
+
+/* Error message shown when an in-progress connection is cancelled by the system */
+"Sorry, we could not connect to the reader. Please try again." = "抱歉，我们无法连接到阅读器。 请重试。";
+
 /* Error message when Tap to Pay on iPhone connection experiences an unexpected internal service error. */
 "Sorry, we could not start Tap to Pay on iPhone. Please check your connection and try again." = "抱歉，我们无法在 iPhone 上启用“点按付款”功能。 请检查您的连接，然后重试。";
 
@@ -5547,11 +6413,30 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the toolbar button to sort products in different ways. */
 "Sort by" = "排序方式";
 
-/* Verb, spam a comment */
+/* Country option for a site address. */
+"South Africa" = "南非";
+
+/* Country option for a site address. */
+"South Georgia\/Sandwich Islands" = "南乔治亚\/南桑威奇群岛";
+
+/* Country option for a site address. */
+"South Korea" = "韩国";
+
+/* Country option for a site address. */
+"South Sudan" = "南苏丹";
+
+/* Country option for a site address. */
+"Spain" = "西班牙";
+
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "发表垃圾评论";
 
 /* Option to select the Spark email app when logging in with magic links */
 "Spark" = "Spark";
+
+/* Country option for a site address. */
+"Sri Lanka" = "斯里兰卡";
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "标准税率";
@@ -5624,10 +6509,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button title to submit a support request. */
 "Submit Support Request" = "提交支持请求";
 
+/* User's Subscriber role. */
+"Subscriber" = "订阅者";
+
+/* Display label for simple subscription product type. */
+"Subscription" = "订阅";
+
 /* Subscriptions section title */
 "Subscriptions" = "订阅";
 
 /* Create Shipping Label form -> Subtotal label
+   Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
    Subtotal label for a refund details view
    Title on the refund screen that lists the fees subtotal cost
    Title on the refund screen that lists the products refund subtotal cost
@@ -5638,11 +6530,35 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice text after updating the order successfully */
 "Successfully updated" = "更新成功";
 
+/* Country option for a site address. */
+"Sudan" = "苏丹";
+
 /* Title of the footer in Shipping Label Package Detail screen */
 "Sum of products and package weight" = "产品和包裹的总重量";
 
+/* Title of 'Summary' section in the receipt when the order number is unknown */
+"Summary" = "摘要";
+
+/* Title of 'Summary' section in the receipt. %1$@ is the order number, e.g. 4920 */
+"Summary: Order #%1$@" = "摘要：订单 #%1$@";
+
 /* In Order Details, the name of the billed person when there are no name and last name. */
 "SummaryTableViewCellViewModel.guestName" = "访客";
+
+/* Country option for a site address. */
+"Suriname" = "苏里南";
+
+/* Country option for a site address. */
+"Svalbard and Jan Mayen" = "斯瓦尔巴岛和扬马延岛";
+
+/* Country option for a site address. */
+"Swaziland" = "斯威士兰";
+
+/* Country option for a site address. */
+"Sweden" = "瑞典";
+
+/* Message from the in-person payment card reader prompting user to swipe their card */
+"Swipe Card" = "刷卡";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "切换商店";
@@ -5671,8 +6587,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切换为默认字体大小";
 
+/* Country option for a site address. */
+"Switzerland" = "瑞士";
+
 /* Message on the loading view displayed when the data is being synced after Jetpack setup completes */
 "Syncing data" = "正在同步数据";
+
+/* Country option for a site address. */
+"Syria" = "叙利亚";
 
 /* View system status report cell title on Help screen */
 "System Status Report" = "系统状态报告";
@@ -5680,10 +6602,22 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Toast message showing up when tapping Copy button on System Status Report screen. */
 "System status report copied to clipboard" = "已将系统状态报告复制到剪贴板";
 
+/* Message when attempting to pay for a live transaction with a test card. */
+"System test cards are not permitted for payment. Try another means of payment." = "不允许使用系统测试卡付款。 请尝试其他付款方式";
+
+/* Country option for a site address. */
+"São Tomé and Príncipe" = "圣多美和普林西比";
+
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
    Title of the Tags row on Product main screen */
 "Tags" = "标签";
+
+/* Country option for a site address. */
+"Taiwan" = "中国台湾";
+
+/* Country option for a site address. */
+"Tajikistan" = "塔吉克斯坦";
 
 /* Title for the simple payments screen */
 "Take Payment" = "收款";
@@ -5700,6 +6634,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "返回收取付款";
+
+/* Country option for a site address. */
+"Tanzania" = "坦桑尼亚";
 
 /* Label asking users to present a card. Presented to users when a payment is going to be collected */
 "Tap card to pay" = "点击卡以付款";
@@ -5722,6 +6659,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "点击以在 iPhone 上付款";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because there is a call in progress */
+"Tap to Pay on iPhone cannot be used during a phone call. Please try again after you finish your call." = "通话期间无法在 iPhone 上使用“点按付款”。 请在结束通话后重试。";
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "iPhone 上的“点按付款”功能已就绪";
@@ -5817,7 +6757,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "税状态";
 
-/* Taxes label for payment view */
+/* Display label for the order fee's tax status setting option
+   Display label for the product's tax status setting option */
+"Taxable" = "应纳税";
+
+/* Line description for tax charged on the whole cart. Only shown when non-zero
+   Taxes label for payment view */
 "Taxes" = "税费";
 
 /* Title for the tax educational dialog */
@@ -5849,6 +6794,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* The button's title text to send a 2FA code via SMS text message. */
 "Text me a code via SMS" = "通过短信将代码发送给我";
+
+/* Country option for a site address. */
+"Thailand" = "泰国";
 
 /* Text thanking the user when the survey is completed */
 "Thank you for sharing your thoughts with us" = "感谢您与我们分享您的想法";
@@ -5892,11 +6840,23 @@ The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "The %1$@ extension is installed on your store, but needs to be updated for In‑Person Payments. Please update it to the most recent version." = "您的商店中已安装 %1$@ 扩展程序，但需要更新才能支持现场付款。 请将其更新至最新版本。";
 
+/* Error message when the card reader loses its Bluetooth connection to the card reader. */
+"The Bluetooth connection to the card reader disconnected unexpectedly." = "与读卡器的蓝牙连接意外断开";
+
+/* Message shown when a GIF failed to load while trying to add it to the Media library. */
+"The GIF could not be added to the Media Library." = "该 GIF 无法添加到媒体库。";
+
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "Google 帐户“%@”与 WordPress.com 上的任何帐户均不匹配";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "无法加载命令！";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
+"The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device's NFC chipset has been disabled by a device management policy. */
+"The app could not enable Tap to Pay on iPhone, because the NFC chip is disabled. Please contact support for more details." = "此应用无法启用 iPhone 上的“点按付款”，因为已禁用 NFC 芯片。 请联系支持团队以了解详情。";
 
 /* Error title when trying to remove an attribute remotely. */
 "The attribute couldn't be removed." = "无法删除属性。";
@@ -5904,20 +6864,62 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error title when trying to update or create an attribute remotely. */
 "The attribute couldn't be saved." = "无法保存属性。";
 
+/* Message when the card presented does not support the order currency. */
+"The card does not support this currency. Try another means of payment." = "银行卡不支持当前币种。 请尝试其他付款方式";
+
+/* Message when the card presented does not allow this type of purchase. */
+"The card does not support this type of purchase. Try another means of payment." = "银行卡不支持用于当前购买类型。 请尝试其他付款方式";
+
+/* Message when the presented card is past its expiration date. */
+"The card has expired. Try another means of payment." = "银行卡已过期。 请尝试其他付款方式";
+
+/* Message when payment is declined for a non specific reason. */
+"The card or card account is invalid. Try another means of payment." = "银行卡或银行卡账户无效。 请尝试其他付款方式";
+
+/* Error message when the card reader is busy executing another command. */
+"The card reader is busy executing another command - please try again." = "读卡器正在处理其他命令，请重试";
+
+/* Error message when the card reader is incompatible with the application. */
+"The card reader is not compatible with this application - please try updating the application or using a different reader." = "读卡器不兼容此应用程序，请尝试更新应用程序或使用其他读卡器";
+
+/* Error message when the card reader session has timed out. */
+"The card reader session has expired - please disconnect and reconnect the card reader and then try again." = "读卡器会话已过期，请断开连接并重新连接读卡器，然后重试";
+
 /* Error message when the card reader software is too far out of date to process payments. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process payments" = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理付款";
+
+/* Error message when the card reader software is too far out of date to process payments. */
+"The card reader software is out-of-date - please update the card reader software before attempting to process payments." = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理付款。";
 
 /* Error message when the card reader software is too far out of date to process in-person refunds. */
 "The card reader software is out-of-date - please update the card reader software before attempting to process refunds" = "读卡器软件已过时，请更新读卡器软件，然后再尝试处理退款";
 
+/* Error message when the card reader software update fails due to a communication error. */
+"The card reader software update failed due to a communication error - please try again." = "由于通信错误，读卡器软件更新失败，请重试";
+
+/* Error message when the card reader software update fails due to a problem with the update server. */
+"The card reader software update failed due to a problem with the update server - please try again." = "由于更新服务器出现问题，读卡器软件更新失败，请重试";
+
+/* Error message when the card reader software update fails unexpectedly. */
+"The card reader software update failed unexpectedly - please try again." = "读卡器软件更新出现意外故障，请重试";
+
+/* Error message when the card reader software update is interrupted. */
+"The card reader software update was interrupted before it could complete - please try again." = "读卡器软件更新在完成前中断，请重试";
+
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of payment" = "读卡器已拒绝该卡，请尝试其他付款方式";
+
+/* Error message when the card reader itself declines the card. */
+"The card was declined by the card reader - please try another means of payment." = "读卡器已拒绝该卡，请尝试其他付款方式。";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the card reader - please try another means of refund" = "读卡器已拒绝该卡，请尝试其他退款方式";
 
 /* Error message when the card reader itself declines the card. */
 "The card was declined by the iPhone card reader - please try another means of payment" = "iPhone 读卡器已拒绝该卡 - 请尝试其他付款方式";
+
+/* Error message when the card processor declines the payment. */
+"The card was declined by the payment processor - please try another means of payment." = "付款处理器已拒绝该卡，请尝试其他付款方式。";
 
 /* Message for when the certificate for the server is invalid. The %@ placeholder will be replaced the a host name, received from the API. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此服务器的证书无效。您所连接的服务器伪装成了“%@”，这可能会给您的凭证信息带来危险。\n\n仍然信任此证书吗？";
@@ -5931,17 +6933,47 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Add Edit Coupon screen when the coupon code is empty. */
 "The coupon code couldn't be empty" = "优惠券代码不能为空";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because the currency for payment is not supported for Tap to Pay on iPhone. */
+"The currency is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该币种 – 请尝试使用硬件读卡器或换一种付款方式。";
+
 /* Message at the bottom of Review Order screen to inform of emailing the customer upon completing order */
 "The customer will receive an email once order is completed" = "订单完成后，客户将收到一封电子邮件";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "第一次在 iPhone 上使用“点按付款”功能时，系统可能会提醒您接受 Apple 的服务条款。";
 
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "未应用该礼品卡。";
+
+/* Message shown when an image failed to load while trying to add it to the Media library. */
+"The image could not be added to the Media Library." = "无法将图片添加到媒体库。";
+
+/* Message shown when an asset failed to load while trying to add it to the Media library. */
+"The item could not be added to the Media Library." = "该项目无法添加到媒体库。";
+
+/* The message of the alert when another custom package has the same name */
+"The new custom package name is not unique." = "新定制包裹名称不唯一。";
+
+/* The message of the alert when another service package has the same name */
+"The new service package name is not unique." = "新服务包裹名称不唯一。";
+
+/* Message when the presented card does not allow the purchase amount. */
+"The payment amount is not allowed for the card presented. Try another means of payment." = "当前银行卡不支持该付款金额。 请尝试其他付款方式。";
+
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "付款处理器无法处理该付款。";
 
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "支付卡移除过早，请重试。";
+
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "此付款方式不支持自动退款。 通过手动向客户转账的方式完成退款。";
+
+/* Error message when the cancel button on the reader is used. */
+"The payment was canceled on the reader." = "已在阅读器上取消付款";
+
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "付款已取消。";
 
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "付款被中断且无法继续。请从订单屏幕中重试付款。";
@@ -5969,6 +7001,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message when the in-person refund can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The refund can not be processed by the payment processor." = "付款处理器无法处理该退款。";
+
+/* Error message when a request times out. */
+"The request timed out - please try again." = "请求超时，请重试";
 
 /* Message to display when the generating application password fails with unauthorized error */
 "The request to generate application password is not authorized." = "生成应用密码的请求未获得授权。";
@@ -6009,8 +7044,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* VoiceOver accessibility hint, informing the user that the cell shows the stock quantity information for this product. */
 "The stock quantity for this product. Editable." = "该产品的库存数量。可编辑。";
 
+/* Error message when there is an issue with the store address preventing an action (e.g. reader connection.) */
+"The store address is incomplete or missing, please update it before continuing." = "商店地址不完整或缺失，请更新后再继续。";
+
+/* Error message when there is an issue with the store postal code preventing an action (e.g. reader connection.) */
+"The store postal code is invalid or missing, please update it before continuing." = "商店邮政编码无效或缺失，请更新后再继续。";
+
+/* Error message when the system cancels a command. */
+"The system canceled the command unexpectedly - please try again." = "系统意外取消了命令，请重试";
+
+/* Error message when the card reader service experiences an unexpected software error. */
+"The system experienced an unexpected software error." = "系统遇到了意外软件错误";
+
 /* Message for the error alert when fetching system status report fails */
 "The system status report for your site cannot be fetched at the moment. Please try again." = "目前无法获取您站点的系统状态报告。 请重试。";
+
+/* Message when the presented card postal code doesn't match the order postal code. */
+"The transaction postal code and card postal code do not match. Try another means of payment." = "交易邮政编码与卡片邮政编码不匹配。 请尝试其他付款方式";
 
 /* Error notice shown when the try a payment option in Set up Tap to Pay on iPhone fails. */
 "The trial payment could not be started, please try again, or contact support if this problem persists." = "无法开始试用付款，请重试，如果此问题仍然存在，请联系支持部门。";
@@ -6094,12 +7144,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Text when there is an unknown error while trying to collect payments */
 "There was an error while trying to collect the payment." = "收款时出错。";
 
+/* Error message shown when Tap to Pay on iPhone cannot be used because there was some issue with the connection. Retryable. */
+"There was an issue preparing to use Tap to Pay on iPhone – please try again." = "准备在 iPhone 上使用“点按付款”时出现问题 – 请重试。";
+
 /* Software Licenses (information page title)
    Title of button that displays information about the third party software libraries used in the creation of this app */
 "Third Party Licenses" = "第三方许可证";
 
 /* Tab selector title that shows the statistics for this month */
 "This Month" = "本月";
+
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "此 SKU 已用于其他产品或无效。";
 
 /* Tab selector title that shows the statistics for this week */
 "This Week" = "本周";
@@ -6118,6 +7174,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message explaining more detail on why the user's role is incorrect. */
 "This app supports only Administrator and Shop Manager user roles. Please contact your store owner to upgrade your role." = "此应用程序仅支持管理员和商店经理用户角色。 请联系商店所有者，升级角色。";
+
+/* Message when a card requires a PIN code and we have no means of entering such a code. */
+"This card requires a PIN code and thus cannot be processed. Try another means of payment." = "此卡需要 PIN 码，因此无法处理。 请尝试其他付款方式";
 
 /* Reason for why the user could not login tin the application password tutorial screen */
 "This could be because your store has some extra security steps in place." = "这可能是因为您的商店采取了一些额外的安全措施。";
@@ -6149,11 +7208,17 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "此商品当前包含在包裹 %1$d：%2$@ 中。 您想要将它移到哪里？";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "此付款已完成 — 请查看订单详细信息。";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "无法加载此产品";
 
 /* Message displayed when loading a specific product fails because product was deleted */
 "This product has been deleted and is no longer visible" = "此产品已被删除，不再可见";
+
+/* Error message when an unsupported receipt type is sent - [%1$@] will be replaced with details */
+"This receipt's transaction type is not expected from the app [%1$@]" = "该收据的交易类型不受 [%1$@] 应用支持";
 
 /* Footer text in Product Catalog Visibility */
 "This setting determines which shop pages products will be listed on." = "此设置决定产品将在哪个店铺页面上列出。";
@@ -6175,6 +7240,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error when the uses takes more than 1 minute to submit a security key. */
 "Time's up, but don't worry, your security is our priority. Please try again!" = "时间到了，请别担心，我们会优先保证您的安全。 请重试！";
+
+/* Country option for a site address. */
+"Timor-Leste" = "东帝汶";
 
 /* Title of the badge shown when promoting an existing feature */
 "Tip" = "提示";
@@ -6256,6 +7324,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility Identifier for the Aztec Unordered List Style */
 "Toggles the unordered list style" = "切换无序的列表样式";
 
+/* Country option for a site address. */
+"Togo" = "多哥";
+
+/* Country option for a site address. */
+"Tokelau" = "托克劳";
+
+/* Country option for a site address. */
+"Tonga" = "汤加";
+
 /* Label for total number of orders in the Analytics Hub */
 "Total Orders" = "订单总数";
 
@@ -6292,8 +7369,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "跟踪编号 %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "移到回收站";
+
+/* Country option for a site address. */
+"Trinidad and Tobago" = "特里尼达和多巴哥";
 
 /* The title of the button to get troubleshooting information in the Error Loading Data banner */
 "Troubleshoot" = "故障排除";
@@ -6319,6 +7400,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button that will restart the login flow.Presented when logging in with an email address that does not match a WordPress.com account */
 "Try Another Address" = "尝试其他地址";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different card */
+"Try Another Card" = "请尝试使用其他卡";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using a different method, e.g. swipe, tap, insert */
+"Try Another Read Method" = "请尝试其他读取方式";
 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "再次尝试授权";
@@ -6348,11 +7435,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Try a test order" = "体验测试订单";
 
 /* Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
-   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue. */
+   Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This allows the search to continue.
+   Title of the try again action when the site cannot be launched from store onboarding > launch store screen. */
 "Try again" = "请重试";
 
 /* Title of the action button to log in with WP-Admin page in a web view, presented when site credential login fails */
 "Try again with WP-Admin page" = "使用 WP-Admin 页面重试";
+
+/* Message when a lost or stolen card is presented for payment. Do NOT disclose fraud. */
+"Try another means of payment." = "请尝试其他付款方式";
 
 /* Message on the Jetpack setup interrupted screen */
 "Try connecting again to access your store." = "请尝试再次连接以访问您的商店。";
@@ -6366,6 +7457,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "试试站点地址";
 
+/* Message when a card is declined due to a potentially temporary problem. */
+"Trying again may succeed, or try another means of payment." = "重试可能会成功，或者您可以使用其他付款方式";
+
+/* Country option for a site address. */
+"Tunisia" = "突尼斯";
+
+/* Country option for a site address. */
+"Turkey" = "土耳其";
+
+/* Country option for a site address. */
+"Turkmenistan" = "土库曼斯坦";
+
+/* Country option for a site address. */
+"Turks and Caicos Islands" = "特克斯和凯科斯群岛";
+
 /* Settings > Manage Card Reader > Connect > Hint to power on reader */
 "Turn card reader on and place it next to mobile device" = "打开读卡器并将其放在移动设备旁边";
 
@@ -6377,6 +7483,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "如果优惠券不适用于促销商品，请开启此选项。 基于商品应用的优惠券仅在该商品不促销时可用。 基于购物车应用的优惠券仅在购物车内无促销商品时可用。";
+
+/* Country option for a site address. */
+"Tuvalu" = "图瓦卢";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
 "Type of contents" = "内容类型";
@@ -6391,8 +7500,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* A clickable text link that willredirect the user to a website */
 "USPS HAZMAT Search Tool" = "USPS 危险品搜索工具";
 
+/* Country option for a site address. */
+"Uganda" = "乌干达";
+
+/* Country option for a site address. */
+"Ukraine" = "乌克兰";
+
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "无法连接";
+
+/* Error message when Bluetooth is not enabled or available. */
+"Unable to access Bluetooth - please enable Bluetooth and try again." = "无法访问蓝牙，请启用蓝牙并重试";
+
+/* Error message when location services is not enabled for this application. */
+"Unable to access Location Services - please enable Location Services and try again." = "无法访问位置服务，请启用位置服务并重试";
 
 /* Info message when the user tries to add a couponthat is not applicated to the products */
 "Unable to add coupon." = "无法添加优惠券。";
@@ -6405,6 +7526,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}. Parameters: %1$d - order number */
 "Unable to change status of order #%1$d" = "无法更改订单号 %1$d 的状态";
+
+/* Error message when communication with the card reader is disrupted. */
+"Unable to communicate with reader - please try again." = "无法与读卡器通信，请重试";
+
+/* Error message when attempting to connect to a card reader which is already in use. */
+"Unable to connect to card reader - the card reader is already in use." = "无法连接到读卡器，读卡器已在使用中";
+
+/* Error message when a card reader is already connected and we were not expecting one. */
+"Unable to connect to reader - another reader is already connected." = "无法连接到读卡器，已连接另一个读卡器";
+
+/* Error message the card reader battery level is too low to connect to the phone or tablet. */
+"Unable to connect to reader - the reader has a critically low battery - charge the reader and try again." = "无法连接到读卡器，读卡器电量过低，请为读卡器充电并重试。";
 
 /* Notice displayed when order creation fails */
 "Unable to create new order" = "无法创建新订单";
@@ -6481,14 +7614,44 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message explaining login failure due to blocked wp-login.php */
 "Unable to login because we cannot identify your store's login URL." = "由于我们无法识别您商店的登录 URL，无法登录。";
 
-/* Error message explaining login failure due to unexpected response. */
-"Unable to login due to an unexpected response from your site. We are working on fixing this issue." = "由于您的站点出现意外响应，无法登录。 我们正在努力修复此问题。";
-
 /* Error message explaining login failure due to unacceptable status code. */
 "Unable to login with response status code %1$d." = "无法使用响应状态代码 %1$d 登录。";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
 "Unable to mark review as %@" = "无法将评论标记为%@";
+
+/* Error message when the card reader cannot be used to perform the requested task. */
+"Unable to perform request with the connected reader - unsupported feature - please try again with another reader." = "无法执行已连接读卡器的请求，不支持的功能，请使用其他读卡器重试";
+
+/* Error message when the application is so out of date that the backend refuses to work with it. */
+"Unable to perform software request - please update this application and try again." = "无法执行软件请求，请更新此应用程序并重试";
+
+/* Error message when the payment intent is invalid. */
+"Unable to process payment due to invalid data - please try again." = "由于数据无效，无法处理支付，请重试";
+
+/* Error message when the order amount is below the minimum amount allowed. */
+"Unable to process payment. Order total amount is below the minimum amount you can charge, which is %1$@" = "无法处理付款。 订单总金额低于您可以收取的最低金额，即 %1$@";
+
+/* Error message when the order amount is not valid. */
+"Unable to process payment. Order total amount is not valid." = "无法处理付款。 订单总额无效。";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "无法处理付款。 此订单已付款，继续付款将导致客户订单重复收费。";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "无法处理付款。 无法连接到付款系统。 如果此错误仍然存在，请联系支持人员。";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "无法处理付款。 无法获取最新订单详细信息。 请检查您的网络连接，然后重试。 潜在错误：%1$@";
+
+/* Error message when the card reader times out while reading a card. */
+"Unable to read card - the system timed out - please try again." = "无法读取卡，系统超时，请重试";
+
+/* Error message when the card reader is unable to read any chip on the inserted card. */
+"Unable to read inserted card - please try removing and inserting card again." = "无法读取插入的卡，请尝试移除卡并重新插入";
+
+/* Error message when the card reader is unable to read a swiped card. */
+"Unable to read swiped card - please try swiping again." = "无法读取所刷的卡，请尝试重新刷卡";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need more help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。 轻点“需要更多帮助？”可查看常见问题解答。";
@@ -6512,11 +7675,20 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Notice displayed when data cannot be synced for edited order */
 "Unable to save changes. Please try again." = "无法保存更改。 请重试。";
 
+/* Error message when Bluetooth Low Energy is not supported on the user device. */
+"Unable to search for card readers - Bluetooth Low Energy is not supported on this device - please use a different device." = "搜索不到读卡器，此设备不支持蓝牙低能耗模式，请使用其他设备";
+
+/* Error message when Bluetooth scan times out during reader discovery. */
+"Unable to search for card readers - Bluetooth timed out - please try again." = "无法搜索读卡器，蓝牙超时，请重试";
+
 /* Error notice title when we fail to update an address when creating or editing an order. */
 "Unable to set customer details." = "无法设置客户详细信息。";
 
 /* Error notice title when we fail to update an address in the edit address screen. */
 "Unable to update address." = "无法更新地址。";
+
+/* Error message when the card reader battery level is too low to safely perform a software update. */
+"Unable to update card reader software - the reader battery is too low." = "无法更新读卡器软件 - 读卡器电量过低";
 
 /* Notice title when unable to bulk update price of the variations */
 "Unable to update price" = "无法更新价格";
@@ -6538,8 +7710,24 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Undo Action */
 "Undo" = "撤消";
 
-/* The message of the alert when there is an unexpected error adding the package */
+/* The message of the alert when there is an unexpected error adding the package
+   Title of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Unexpected error" = "意外错误";
+
+/* Country option for a site address. */
+"United Arab Emirates" = "阿拉伯联合酋长国";
+
+/* Country option for a site address. */
+"United Kingdom" = "英国";
+
+/* Country option for a site address. */
+"United States" = "美国";
+
+/* Country option for a site address. */
+"United States Minor Outlying Islands" = "美国本土外小岛屿";
+
+/* Country option for a site address. */
+"United States Virgin Islands" = "美属维尔京群岛";
 
 /* Unknown Application State
    Unknown product name, displayed in a review */
@@ -6550,6 +7738,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "未知软件版本";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "未知国家";
 
 /* Label to use when creation date from media asset is not know. */
 "Unknown creation date" = "创建日期未知";
@@ -6569,8 +7760,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "无序列表";
 
+/* Display label for the review's unspam status */
+"Unspam" = "不标记为垃圾评论";
+
 /* Title for the error screen when the installed version of a Card Present Payments extension is unsupported */
 "Unsupported %1$@ version" = "不受支持的 %1$@ 版本";
+
+/* Display label for the review's untrash status */
+"Untrash" = "还原";
 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Up to date" = "最新";
@@ -6631,27 +7828,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the hub menu settings button */
 "Update your preferences" = "更新您的偏好设置";
 
-/* Description for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.description" = "预约已排定，但尚未进行。";
-
-/* Title for the 'Booked' attendance status. */
-"UpdateAttendanceStatusView.booked.title" = "已预订";
-
-/* Description for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.description" = "客户已到达，会议按计划举行。";
-
-/* Title for the 'Checked-in' attendance status. */
-"UpdateAttendanceStatusView.checkedIn.title" = "已签到";
-
-/* Description for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.description" = "客户未提前取消就错过了预约。";
-
-/* Title for the 'No-show' attendance status. */
-"UpdateAttendanceStatusView.noShow.title" = "失约";
-
-/* Title of the update attendance status bottom sheet. */
-"UpdateAttendanceStatusView.title" = "更新出席状态";
-
 /* Dialog title that displays when a software update is being installed */
 "Updating software" = "正在更新软件";
 
@@ -6667,6 +7843,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Cell title for Upsells products in Linked Products Settings screen
    Navigation bar title for editing linked products for upsell products */
 "Upsells" = "追加销售";
+
+/* Country option for a site address. */
+"Uruguay" = "乌拉圭";
 
 /* Header of the section usage details in the view for adding or editing a coupon. */
 "Usage Details" = "使用详情";
@@ -6727,11 +7906,23 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "用户名至少要求4位。";
 
+/* Country option for a site address. */
+"Uzbekistan" = "乌兹别克斯坦";
+
 /* Message to be displayed when a Jetpack connection is being authorized */
 "Validating" = "正在验证";
 
 /* Title for the Value row in item details in Customs screen of Shipping Label flow */
 "Value (%1$@ per unit)" = "值（每单位 %1$@）";
+
+/* Country option for a site address. */
+"Vanuatu" = "瓦努阿图";
+
+/* Display label for variable product type. */
+"Variable" = "变量";
+
+/* Display label for variable subscription product type. */
+"Variable Subscription" = "可变订阅";
 
 /* Navigation bar title for variation. Parameters: %1$@ - Product variation ID */
 "Variation #%1$@" = "变体 #%1$@";
@@ -6753,6 +7944,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Description of the system status report on Help screen */
 "Various system information about your site" = "有关您站点的各种系统信息";
 
+/* Country option for a site address. */
+"Vatican" = "梵蒂冈";
+
+/* Country option for a site address. */
+"Venezuela" = "委内瑞拉";
+
 /* two factor code placeholder */
 "Verification code" = "验证码";
 
@@ -6770,6 +7967,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for video thumbnails in the media collection view. The parameter is the creation date of the video. */
 "Video, %@" = "视频，%@";
+
+/* Country option for a site address. */
+"Vietnam" = "越南";
 
 /* Action title in an in-app notification to view more details.
    Title of the action to view product details from a notice about an image upload failure in the background. */
@@ -6848,6 +8048,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* View title during the Google auth process. */
 "Waiting..." = "正在等待…";
 
+/* Country option for a site address. */
+"Wallis and Futuna" = "瓦利斯群岛和富图纳群岛";
+
 /* Error message when the merchant's payment account has been rejected
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
@@ -6910,6 +8113,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message displayed in the error prompt when loading total discounted amount in Coupon Details screen fails */
 "We encountered a problem loading analytics" = "加载分析时遇到了问题";
 
+/* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
+"We found that the store has already launched." = "我们发现此商店已发布。";
+
 /* Message on the expired WPCom plan alert */
 "We have paused your store. You can purchase another plan by logging in to WordPress.com on your browser." = "我们已暂停您的商店。 您可以通过浏览器登录 WordPress.com，购买其他套餐。";
 
@@ -6942,6 +8148,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "我们无法自动验证配送地址。 请在 Apple Maps 上查看，以确保地址正确。";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "无法重试付款 — 请重新开始。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "此时，我们无法向您发送电子邮件。请稍后重试。";
@@ -6998,6 +8207,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Format of the weight on the Shipping Settings row - weight[unit] */
 "Weight: %1$@%2$@" = "重量：%1$@%2$@";
+
+/* Country option for a site address. */
+"Western Sahara" = "西撒哈拉";
 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "我们将使用此信息抢先开始设置运费、税费和付款。";
@@ -7080,6 +8292,9 @@ If your translation of that term also happens to contains a hyphen, please be su
    Title of the webview for WCPay setup from onboarding. */
 "WooPayments" = "WooPayments";
 
+/* WordPress API (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
+"WordPress API Error: [%1$@] %2$@" = "WordPress API 错误：[%1$@] %2$@";
+
 /* Menu option for selecting media from the site's media library.
    Navigation bar title for WordPress Media Library image picker */
 "WordPress Media Library" = "WordPress 媒体库";
@@ -7116,6 +8331,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the Analytics Hub Year to Date selection range */
 "Year to Date" = "年初至今";
+
+/* Country option for a site address. */
+"Yemen" = "也门";
 
 /* Confirmation button on the alert when the user is changing product type */
 "Yes, change" = "是的，更改";
@@ -7182,6 +8400,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Alert message to confirm the user wants to discard changes in Product Visibility */
 "You need to add a password to make your product password-protected" = "您需要添加密码，以便通过密码保护产品";
+
+/* Error message shown when Tap to Pay on iPhone cannot be used because the device does not have a passcode set. */
+"You need to set a lock screen passcode to use Tap to Pay on iPhone." = "您需要设置锁屏密码，才能在 iPhone 上使用“点按付款”";
 
 /* Error messaged show when a mobile plugin is redirecting traffict to their site, DudaMobile in particular */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "您似乎安装了来自 DudaMobile 的移动插件，该插件会阻止应用程序连接到您的博客";
@@ -7267,6 +8488,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You’re almost there! Please finish setting up %1$@ to start accepting In‑Person Payments." = "您即将大功告成！ 请完成 %1$@ 设置，然后才能进行现场付款。";
+
+/* Country option for a site address. */
+"Zambia" = "赞比亚";
+
+/* Country option for a site address. */
+"Zimbabwe" = "津巴布韦";
 
 /* Text for the 'Cancel' button that appears in the navigation bar, and closes the view */
 "adaptiveModalContainer.views.cancelButtonText" = "取消";
@@ -7451,6 +8678,15 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Label for the selected metric on an analytics card in the Analytics Hub. */
 "analyticsHub.statSelectionBar.metricLabel" = "指标";
 
+/* Alert confirmation button displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.confirmationButton" = "知道了";
+
+/* Alert message displayed when user identified as underage and taken to force logout.The %1d placeholder is the minimum required age. */
+"appCoordinator.ineligibleAgeRangeAlert.message" = "您的 Apple 账户使用年限低于此应用程序的最低使用年限要求 (%1d+)。";
+
+/* Alert title displayed when user identified as underage and taken to force logout. */
+"appCoordinator.ineligibleAgeRangeAlert.title" = "访问受限";
+
 /* Button to dismiss the alert asking for confirmation to switch store. */
 "appCoordinator.storeReadyAlert.cancelButton" = "取消";
 
@@ -7483,6 +8719,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Action button that will restart the login flow.Presented when the user tries to log in to the app with site credentials but has application password disabled. */
 "applicationPasswordDisabled.secondaryButtonTitle" = "使用其他账户登录";
+
+/* Message shown when a video failed to load while trying to add it to the Media library. */
+"assetExportError.expectedPHAssetVideoType.message" = "该视频无法添加到媒体库。";
+
+/* Message shown when a video file failed to export from the local library. */
+"assetExportError.failedToExportVideo.message" = "导出所选媒体失败。";
 
 /* Label displayed on audio media items. */
 "audio" = "音频";
@@ -8365,7 +9607,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 "bookingFilters.rowTitlePaymentStatus" = "付款状态";
 
 /* Row title for filtering bookings by product. */
-"bookingFilters.rowTitleProduct" = "服务\/事件";
+"bookingFilters.rowTitleService" = "服务";
 
 /* Row title for filtering bookings by team member. */
 "bookingFilters.rowTitleTeamMember" = "团队成员";
@@ -8445,14 +9687,14 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "尝试调整您的搜索字词，以查看更多结果";
 
-/* Text on the empty view of the booking service/event selector view */
-"bookingServiceEventSelectorView.noMembersFound" = "未找到服务或事件";
+/* Text on the empty view of the booking service selector view */
+"bookingServiceSelectorView.noMembersFound" = "没有找到服务";
 
-/* Prompt in the search bar of the booking service/event selector view */
-"bookingServiceEventSelectorView.searchPrompt" = "搜索服务\/事件";
+/* Prompt in the search bar of the booking service selector view */
+"bookingServiceSelectorView.searchPrompt" = "搜索服务";
 
-/* Title of the booking service/event selector view */
-"bookingServiceEventSelectorView.title" = "服务\/事件";
+/* Title of the booking service selector view */
+"bookingServiceSelectorView.title" = "服务";
 
 /* Status of a canceled booking */
 "bookingStatus.title.canceled" = "已取消";
@@ -8665,6 +9907,9 @@ which should be translated separately and considered part of this sentence. */
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "collapsibleProductCardPriceSummaryViewModel.priceQuantityLine" = "%1$@ × %2$@";
 
+/* Error message when collecting an In-Person Payment and the order total has changed remotely. */
+"collectOrderPaymentUseCase.error.message.orderTotalChanged" = "开始付款后，订单总额已发生变化。 请返回检查订单正确与否，然后再次尝试付款。";
+
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "找零：%1$@";
 
@@ -8811,6 +10056,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "到期日期：%@";
+
+/* A default error when coupon application failed. */
+"couponsError.default.title" = "由于出现意外错误，无法使用该优惠券。";
 
 /* Details section title in the Edit Address Form */
 "createOrderAddressFormViewModel.addressSection" = "地址";
@@ -9109,6 +10357,15 @@ which should be translated separately and considered part of this sentence. */
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "不可用";
 
+/* Button to hide the Connect WPCom card from the My Store screen */
+"dashboardView.connectWPComCard.hideButton" = "隐藏此内容";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"dashboardView.connectWPComCard.subtitle" = "将您的商店关联到 WordPress.com 账户，以便接收关于新订单和评论的提醒。";
+
+/* Title of the Connect WPCom card on My Store screen */
+"dashboardView.connectWPComCard.title" = "不错过任何新订单";
+
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "编辑";
 
@@ -9311,6 +10568,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the filter used to show only favorite products. */
 "favoriteProductsFilter.favoriteProducts" = "收藏产品";
 
+/* Menu item to dismiss a feature announcement card */
+"featureAnnouncementCardView.hideContent" = "隐藏此内容";
+
 /* Apply button on the Filter History view */
 "filterHistoryView.apply" = "应用";
 
@@ -9416,6 +10676,135 @@ which should be translated separately and considered part of this sentence. */
 /* Button to navigate to the Google Ads campaign dashboard. */
 "googleAdsDashboardCard.viewAll" = "查看所有广告活动";
 
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.cardReaderServiceError.bluetoothDenied" = "该应用程序需要访问蓝牙的权限，以便连接您的读卡器。 您可以在系统的“设置”应用程序中的“Woo”部分授予权限。";
+
+/* Error message when Bluetooth is already paired with another device. */
+"hardware.cardReader.underlyingError.bluetoothAlreadyPairedWithAnotherDevice" = "蓝牙读卡器已与另一台设备配对。 读卡器必须重置配对才能连接到该设备。";
+
+/* Error message when the Bluetooth connection has an invalid location ID parameter. */
+"hardware.cardReader.underlyingError.bluetoothConnectionInvalidLocationIdParameter" = "蓝牙连接的位置 ID 无效。";
+
+/* Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions */
+"hardware.cardReader.underlyingError.bluetoothDenied" = "该应用程序需要访问蓝牙的权限，以便连接您的读卡器。 您可以在系统的“设置”应用程序中的“Woo”部分授予权限。";
+
+/* Error message when the Bluetooth peer removed pairing information. */
+"hardware.cardReader.underlyingError.bluetoothPeerRemovedPairingInformation" = "读卡器已删除此设备的配对信息。 尝试在 iOS 设置中清除读卡器的连接信息。";
+
+/* Error message when Bluetooth reconnect has started. */
+"hardware.cardReader.underlyingError.bluetoothReconnectStarted" = "蓝牙读卡器已断开连接，我们正在尝试重新连接。";
+
+/* Error message when an operation cannot be canceled because it is already completed. */
+"hardware.cardReader.underlyingError.cancelFailedAlreadyCompleted" = "此操作已经完成，无法取消。";
+
+/* Error message when card swipe functionality is unavailable. */
+"hardware.cardReader.underlyingError.cardSwipeNotAvailable" = "刷卡功能不可用。";
+
+/* Error message when the command is not allowed. */
+"hardware.cardReader.underlyingError.commandNotAllowed" = "请联系支持人员 - 操作系统不允许执行该命令。";
+
+/* Error message when the command requires cardholder consent. */
+"hardware.cardReader.underlyingError.commandRequiresCardholderConsent" = "持卡人必须同意，系统才能成功执行此操作。";
+
+/* Error message when the connection token provider finishes with an error. */
+"hardware.cardReader.underlyingError.connectionTokenProviderCompletedWithError" = "获取连接令牌时出现错误。";
+
+/* Error message when the connection token provider operation times out. */
+"hardware.cardReader.underlyingError.connectionTokenProviderTimedOut" = "连接令牌请求超时。";
+
+/* Error message when a feature is unavailable. */
+"hardware.cardReader.underlyingError.featureNotAvailable" = "请联系支持人员 - 该功能不可用。";
+
+/* Error message when forwarding a live mode payment in test mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingLiveModePaymentInTestMode" = "禁止在测试模式下转发实时模式付款。";
+
+/* Error message when forwarding a test mode payment in live mode is prohibited. */
+"hardware.cardReader.underlyingError.forwardingTestModePaymentInLiveMode" = "禁止在实时模式下转发测试模式付款。";
+
+/* Error message when Interac is not supported in offline mode. */
+"hardware.cardReader.underlyingError.interacNotSupportedOffline" = "离线模式下不支持 Interac。";
+
+/* Error message when an internal network error occurs. */
+"hardware.cardReader.underlyingError.internalNetworkError" = "发生未知网络错误。";
+
+/* Error message when the internet connection operation timed out. */
+"hardware.cardReader.underlyingError.internetConnectTimeOut" = "通过互联网连接读卡器超时。 确保您的设备和读卡器使用的是同一个 Wifi 网络，且读卡器已连接到 Wifi 网络。";
+
+/* Error message when the client secret is invalid. */
+"hardware.cardReader.underlyingError.invalidClientSecret" = "请联系支持人员 - 客户端密钥无效。";
+
+/* Error message when the discovery configuration is invalid. */
+"hardware.cardReader.underlyingError.invalidDiscoveryConfiguration" = "请联系支持人员 - 发现配置无效。";
+
+/* Error message when the location ID parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidLocationIdParameter" = "位置 ID 无效。";
+
+/* Error message when the reader for update is invalid. */
+"hardware.cardReader.underlyingError.invalidReaderForUpdate" = "用于更新的读卡器无效。";
+
+/* Error message when the refund parameters are invalid. */
+"hardware.cardReader.underlyingError.invalidRefundParameters" = "请联系支持人员 - 退款参数无效。";
+
+/* Error message when a required parameter is invalid. */
+"hardware.cardReader.underlyingError.invalidRequiredParameter" = "请联系支持人员 - 必填参数无效。";
+
+/* Error message when EMV data is missing. */
+"hardware.cardReader.underlyingError.missingEMVData" = "读卡器无法读取所用付款方式的数据。 如果您反复遇到此错误，则表明读卡器可能有故障，请联系支持人员。";
+
+/* Error message when the payment intent is missing. */
+"hardware.cardReader.underlyingError.nilPaymentIntent" = "请联系支持人员 - 缺少付款意图。";
+
+/* Error message when the refund payment method is missing. */
+"hardware.cardReader.underlyingError.nilRefundPaymentMethod" = "请联系支持人员 - 缺少退款付款方式。";
+
+/* Error message when the setup intent is missing. */
+"hardware.cardReader.underlyingError.nilSetupIntent" = "请联系支持人员 - 缺少设置意图。";
+
+/* Error message when the card is expired and offline mode is active. */
+"hardware.cardReader.underlyingError.offlineAndCardExpired" = "在离线状态下确认付款，银行卡经识别已过期。";
+
+/* Error message when there is a mismatch between offline collect and confirm. */
+"hardware.cardReader.underlyingError.offlineCollectAndConfirmMismatch" = "请确保收款和确认时的网络连接稳定。";
+
+/* Error message when a test card is used in live mode while offline. */
+"hardware.cardReader.underlyingError.offlineTestCardInLivemode" = "测试卡在离线状态下用于实时模式。";
+
+/* Error message when the offline transaction was declined. */
+"hardware.cardReader.underlyingError.offlineTransactionDeclined" = "在离线状态下确认付款，银行卡验证失败。";
+
+/* Error message when online PIN is not supported in offline mode. */
+"hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "离线模式下不支持在线 PIN。 请使用另一张银行卡重新尝试付款。";
+
+/* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
+"hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "未在规定时间内出示卡片。";
+
+/* Error message when the reader connection configuration is invalid. */
+"hardware.cardReader.underlyingError.readerConnectionConfigurationInvalid" = "读卡器连接配置无效。";
+
+/* Error message when the reader is missing encryption keys. */
+"hardware.cardReader.underlyingError.readerMissingEncryptionKeys" = "读卡器缺少接收付款所需的加密密钥，已断开连接并重新启动。 重新连接读卡器，尝试重新安装密钥。 如果错误仍然存在，请联系支持人员。";
+
+/* Error message when the reader software update fails due to an expired update. */
+"hardware.cardReader.underlyingError.readerSoftwareUpdateFailedExpiredUpdate" = "由于更新已过期，读卡器软件更新失败。 请断开并重新连接读卡器，以检索新的更新。";
+
+/* Error message when the reader tipping parameter is invalid. */
+"hardware.cardReader.underlyingError.readerTippingParameterInvalid" = "请联系支持人员 - 读卡器临界参数无效。";
+
+/* Error message when the refund operation failed. */
+"hardware.cardReader.underlyingError.refundFailed" = "退款失败。 客户的银行或发卡机构无法正确处理（如银行账户关闭或银行卡有问题）。";
+
+/* Error message when there is an error decoding the Stripe API response. */
+"hardware.cardReader.underlyingError.stripeAPIResponseDecodingError" = "请联系支持人员 - 解码 Stripe API 响应时出现错误。";
+
+/* Error message when the Apple built-in reader account is deactivated. */
+"hardware.cardReader.underlyingError.tapToPayReaderAccountDeactivated" = "关联的 Apple ID 账户已停用。";
+
+/* Error message when an unexpected error occurs with the reader. */
+"hardware.cardReader.underlyingError.unexpectedReaderError" = "读卡器出现意外错误。";
+
+/* Error message when the reader's IP address is unknown. */
+"hardware.cardReader.underlyingError.unknownReaderIpAddress" = "在发现过程中找到的读卡器没有 IP 地址，无法连接。";
+
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "优惠券";
 
@@ -9430,12 +10819,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view containing Reviews list */
 "hubMenu.reviewsList" = "评论";
-
-/* Title of the hub menu AI settings button */
-"hubMenuViewModel.aiSettings" = "AI 设置";
-
-/* Description of the hub menu AI settings button */
-"hubMenuViewModel.aiSettingsDescription" = "管理 AI 驱动的商店功能";
 
 /* Title of the hub menu Google Ads button */
 "hubMenuViewModel.googleAds" = "Google for WooCommerce";
@@ -10109,6 +11492,30 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the row showing the taxes in the order */
 "orderPaymentSection.taxes" = "税费";
 
+/* Display label for auto-draft order status. */
+"orderStatusEnum.localizedName.autoDraft" = "草稿";
+
+/* Display label for cancelled order status. */
+"orderStatusEnum.localizedName.cancelled" = "已取消";
+
+/* Display label for completed order status. */
+"orderStatusEnum.localizedName.completed" = "已完成";
+
+/* Display label for failed order status. */
+"orderStatusEnum.localizedName.failed" = "失败";
+
+/* Display label for on hold order status. */
+"orderStatusEnum.localizedName.onHold" = "保留";
+
+/* Display label for pending order status. */
+"orderStatusEnum.localizedName.pending" = "待付款";
+
+/* Display label for processing order status. */
+"orderStatusEnum.localizedName.processing" = "正在处理";
+
+/* Display label for refunded order status. */
+"orderStatusEnum.localizedName.refunded" = "已退款";
+
 /* In Order List, the pattern to show the order number. For example, “#123456”. The %@ placeholder is the order number. */
 "orderlistcellviewmodel.cell.title" = "#%1$@ %2$@";
 
@@ -10226,11 +11633,8 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when a scanned item is of an unsupported type. */
 "pointOfSale.barcodeScan.error.unsupportedProductType" = "不支持的商品类型";
 
-/* Indicates the status of a card reader. Presented to users when payment collection starts */
-"pointOfSale.cardPresent.cancelledOnReader.title" = "读卡器付款已取消";
-
-/* Button to try to collect a payment again. Presented to users after card reader cancelled on the Point of Sale Checkout */
-"pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title" = "再次尝试付款";
+/* A placeholder name when we can't determine the name of a variation for an error message */
+"pointOfSale.barcodeScanning.unresolved.variation.name" = "未知";
 
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "卡片已插入";
@@ -10607,6 +12011,9 @@ which should be translated separately and considered part of this sentence. */
 /* Loading item accessibility label in POS */
 "pointOfSale.itemListCard.loadingItemAccessibilityLabel" = "正在加载";
 
+/* Fallback name for a product that couldn't be identified in error handling. */
+"pointOfSale.orderController.unknownProduct" = "一个或多个产品";
+
 /* Button to come back to order editing when coupon validation fails. */
 "pointOfSale.orderSync.couponsError.editOrder" = "编辑订单";
 
@@ -10681,6 +12088,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to dismiss the support form from the POS dashboard. */
 "pointOfSaleDashboard.support.cancel" = "取消";
+
+/* Title for the payment method used when collecting cash payment in Point of Sale. */
+"pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "现场付款";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -11012,6 +12422,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title appearing in a modal when there's an error refreshing the catalog. */
 "pos.catalog.refreshFailedTitle" = "无法刷新目录";
 
+/* Accessibility label for a selected checkbox */
+"pos.checkbox.selected.accessibilityLabel" = "已选中";
+
+/* Accessibility label for an unselected checkbox */
+"pos.checkbox.unselected.accessibilityLabel" = "未选中";
+
 /* Title shown on a toast view that appears when there's no internet connection */
 "pos.connectivity.title" = "未连接互联网";
 
@@ -11147,8 +12563,8 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for order status badge. %1$@ is the status name (e.g., Completed, Failed, Processing). */
 "pos.orderBadgeView.accessibilityLabel" = "订单状态：%1$@";
 
-/* Text appearing in the order details pane when there are no orders available. */
-"pos.orderDetailsEmptyView.noOrderToDisplay" = "没有要显示的订单";
+/* Text appearing in the order details pane when no order is selected. */
+"pos.orderDetailsEmptyView.noOrderSelected" = "未选择任何订单。";
 
 /* Title at the header for the Order Details empty view. */
 "pos.orderDetailsEmptyView.ordersTitle" = "订单";
@@ -11159,11 +12575,11 @@ which should be translated separately and considered part of this sentence. */
 /* Section title for the order totals breakdown */
 "pos.orderDetailsLoadingView.totalsTitle" = "总计";
 
-/* Accessibility label for discount total. %1$@ is the discount amount. */
-"pos.orderDetailsView.discount.accessibilityLabel" = "折扣总额：%1$@";
+/* Subtitle shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.subtitle" = "请重试。";
 
-/* Label for discount total in the totals section */
-"pos.orderDetailsView.discountTotalLabel" = "折扣总额";
+/* Title shown when a refund creation has failed */
+"pos.orderDetailsView.createRefundError.title" = "退款创建失败";
 
 /* Accessibility hint for email receipt button on order details view */
 "pos.orderDetailsView.emailReceiptAction.accessibilityHint" = "轻点以通过电子邮件发送订单收据";
@@ -11183,23 +12599,14 @@ which should be translated separately and considered part of this sentence. */
 /* Primary action button to start issuing a refund on the order details view */
 "pos.orderDetailsView.issueRefundAction.title" = "发放退款";
 
+/* Subtitle shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.subtitle" = "请重试。";
+
+/* Title shown when loading refund information has failed */
+"pos.orderDetailsView.loadRefundError.title" = "无法加载退款详情";
+
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "更多操作";
-
-/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
-"pos.orderDetailsView.netPayment.accessibilityLabel" = "净付款：%1$@";
-
-/* Label for net payment amount after refunds */
-"pos.orderDetailsView.netPaymentLabel" = "净付款";
-
-/* Accessibility label for total paid. %1$@ is the paid amount. */
-"pos.orderDetailsView.paid.accessibilityLabel" = "实收总额：%1$@";
-
-/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
-"pos.orderDetailsView.paid.accessibilityLabel.method" = "付款方式：%1$@";
-
-/* Label for the paid amount */
-"pos.orderDetailsView.paidLabel2" = "实收总额";
 
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "数量：%1$@，每个 %2$@，总计 %3$@";
@@ -11213,33 +12620,6 @@ which should be translated separately and considered part of this sentence. */
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.orderDetailsView.reasonLabel" = "原因：%1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.orderDetailsView.refund.accessibilityLabel" = "已退款：%1$@";
-
-/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
-"pos.orderDetailsView.refund.accessibilityLabel.reason" = "原因：%1$@";
-
-/* Label for a refund entry. %1$lld is the refund ID. */
-"pos.orderDetailsView.refundLabel" = "已退款";
-
-/* Accessibility label for products subtotal. %1$@ is the subtotal amount. */
-"pos.orderDetailsView.subtotal.accessibilityLabel" = "产品小计：%1$@";
-
-/* Accessibility label for taxes. %1$@ is the tax amount. */
-"pos.orderDetailsView.tax.accessibilityLabel" = "税费：%1$@";
-
-/* Label for taxes in the totals section */
-"pos.orderDetailsView.taxesLabel" = "税费";
-
-/* Accessibility label for order total. %1$@ is the total amount. */
-"pos.orderDetailsView.total.accessibilityLabel" = "订单总计：%1$@";
-
-/* Label for the order total */
-"pos.orderDetailsView.totalLabel" = "总计";
-
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "总计";
 
@@ -11249,14 +12629,14 @@ which should be translated separately and considered part of this sentence. */
 /* Text appearing on the order list screen when there's an error loading orders. */
 "pos.orderList.failedToLoadOrdersTitle" = "无法加载订单";
 
+/* Description for refund via a specific payment method. %@ is the payment method name */
+"pos.orderListController.refund.viaPaymentMethodFormat" = "通过 %@";
+
 /* Button text for opening an information view when orders when list is empty. */
 "pos.orderListView.emptyOrdersButtonTitle2" = "了解更多";
 
-/* Hint text suggesting to modify search terms when no orders are found. */
-"pos.orderListView.emptyOrdersSearchHint" = "尝试调整您的搜索字词。";
-
 /* Subtitle appearing when order search returns no results. */
-"pos.orderListView.emptyOrdersSearchSubtitle.1" = "我们找不到以该名称下达的任何订单。";
+"pos.orderListView.emptyOrdersSearchSubtitle.2" = "我们找不到以该名称下达的任何订单。 尝试调整您的搜索字词。";
 
 /* Title appearing when order search returns no results. */
 "pos.orderListView.emptyOrdersSearchTitle" = "没有找到订单";
@@ -11336,6 +12716,157 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the OK button on the pos information modal */
 "pos.posInformationModal.ok.button.title" = "确定";
 
+/* Button to go back to the previous screen */
+"pos.refundConfirmationView.backButton" = "返回";
+
+/* Accessibility label for close button on refund confirmation modal */
+"pos.refundConfirmationView.closeButton.accessibilityLabel" = "关闭";
+
+/* Button to confirm and process the refund */
+"pos.refundConfirmationView.confirmButton" = "是，继续";
+
+/* Confirmation message for the refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundConfirmationView.confirmationMessageFormat.1" = "您是否确定要退款 %1$@ %2$@？ 此操作无法撤销。";
+
+/* Message shown while the refund is being processed. */
+"pos.refundConfirmationView.processingMessage" = "我们正在处理该退款，请稍候。";
+
+/* Title for the refund confirmation modal while processing. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.processingTitleFormat" = "退款 %@";
+
+/* Title for the refund confirmation modal. %@ is the formatted refund amount. */
+"pos.refundConfirmationView.titleFormat" = "退款 %@";
+
+/* Button to cancel and dismiss the refund error screen */
+"pos.refundErrorView.cancelButton" = "取消";
+
+/* Accessibility label for close button on refund error screen */
+"pos.refundErrorView.closeButton.accessibilityLabel" = "关闭";
+
+/* Button to retry the refund creation */
+"pos.refundErrorView.retryButton" = "重试";
+
+/* Accessibility label format for refund item without attributes. %1$@ is the product name, %2$@ is the price, %3$@ is the selection state */
+"pos.refundItemRow.accessibilityLabelFormat" = "%1$@，%2$@，%3$@";
+
+/* Accessibility label format for refund item with attributes.
+%1$@ is the product name.
+%2$@ is the attributes list.
+%3$@ is the price.
+%4$@ is the selection state. */
+"pos.refundItemRow.accessibilityLabelWithAttributesFormat" = "%1$@，%2$@，%3$@，%4$@";
+
+/* Format for a single attribute in accessibility label. %1$@ is the attribute name, %2$@ is the attribute value. Example: 'Size: Medium' */
+"pos.refundItemRow.attributeFormat" = "%1$@：%2$@";
+
+/* Accessibility state when item is selected for refund */
+"pos.refundItemRow.selectedState" = "已被选中进行退款";
+
+/* Accessibility state when item is not selected for refund */
+"pos.refundItemRow.unselectedState" = "未被选中进行退款";
+
+/* Accessibility label for close button on refund items selection modal */
+"pos.refundItemsSelectionView.closeButton.accessibilityLabel" = "关闭";
+
+/* Button to continue with selected items for refund */
+"pos.refundItemsSelectionView.continueButton" = "继续";
+
+/* Header label for items in the refund items selection modal */
+"pos.refundItemsSelectionView.itemsHeaderTitle" = "选择所有商品";
+
+/* Label showing number of selected items in the refund items selection modal */
+"pos.refundItemsSelectionView.itemsSelectedCountFormat" = "（已选 %d 个）";
+
+/* Accessibility label for the select-all checkbox in the refund items selection modal */
+"pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "选择或取消选择所有商品";
+
+/* Title for the refund items selection modal */
+"pos.refundItemsSelectionView.title" = "选择要退款的商品";
+
+/* Message shown while loading refund information */
+"pos.refundLoadingView.loadingMessage" = "正在加载退款详情…";
+
+/* Accessibility label for close button on nothing to refund modal */
+"pos.refundNothingToRefundView.closeButton.accessibilityLabel" = "关闭";
+
+/* Button to dismiss the nothing to refund screen */
+"pos.refundNothingToRefundView.doneButton" = "完成";
+
+/* Message explaining why there are no items to refund */
+"pos.refundNothingToRefundView.message" = "此订单中的所有项目均已退款。";
+
+/* Title shown when there are no items available to refund */
+"pos.refundNothingToRefundView.title" = "无可退款项";
+
+/* Button to add the refund reason */
+"pos.refundReasonView.addButton" = "添加";
+
+/* Accessibility label for back button on refund reason screen */
+"pos.refundReasonView.backButton.accessibilityLabel" = "返回";
+
+/* Accessibility label for close button on refund reason screen */
+"pos.refundReasonView.closeButton.accessibilityLabel" = "关闭";
+
+/* Placeholder text for the refund reason text field */
+"pos.refundReasonView.placeholder" = "订单退款原因";
+
+/* Title for the refund reason input screen */
+"pos.refundReasonView.title" = "退款原因";
+
+/* Accessibility label for add reason button in refund review */
+"pos.refundReviewView.addReason.accessibilityLabel" = "添加退款原因";
+
+/* Button to add a reason for the refund */
+"pos.refundReviewView.addReasonButton" = "添加原因";
+
+/* Accessibility label for close button on refund review modal */
+"pos.refundReviewView.closeButton.accessibilityLabel" = "关闭";
+
+/* Button to continue with the refund */
+"pos.refundReviewView.continueButton" = "继续";
+
+/* Accessibility label for edit reason button in refund review */
+"pos.refundReviewView.editReason.accessibilityLabel" = "编辑退款原因";
+
+/* Button to edit an existing refund reason */
+"pos.refundReviewView.editReasonButton" = "编辑原因";
+
+/* Button to go back and edit the refund items */
+"pos.refundReviewView.editRefundButton" = "编辑退款";
+
+/* Label for items subtotal row in refund review. %d is the number of items. */
+"pos.refundReviewView.itemsSubtotalFormat" = "商品小计（共 %d 件商品）";
+
+/* Placeholder text when no refund reason has been added */
+"pos.refundReviewView.reasonPlaceholder" = "订单退款原因";
+
+/* Label for refund reason section in refund review */
+"pos.refundReviewView.refundReasonLabel" = "退款原因";
+
+/* Label for refund total row in refund review */
+"pos.refundReviewView.refundTotalLabel" = "退款总计";
+
+/* Label for tax row in refund review */
+"pos.refundReviewView.taxLabel" = "税费";
+
+/* Title for the refund review modal */
+"pos.refundReviewView.title" = "审核退款";
+
+/* Accessibility label for close button on refund success screen */
+"pos.refundSuccessView.closeButton.accessibilityLabel" = "关闭";
+
+/* Button to dismiss the refund success screen */
+"pos.refundSuccessView.doneButton" = "完成";
+
+/* Button to email a receipt for the refund */
+"pos.refundSuccessView.emailReceiptButton" = "电子邮件收据";
+
+/* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
+"pos.refundSuccessView.messageFormat" = "您已退款 %1$@ %2$@。";
+
+/* Title shown when a refund has been successfully processed */
+"pos.refundSuccessView.title" = "退款完成";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "清除搜索";
 
@@ -11363,8 +12894,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "销售点";
 
-/* Button title for new order button */
-"pos.totalsView.button.newOrder" = "新订单";
+/* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
+"pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "电子邮件收据";
@@ -11389,6 +12920,39 @@ which should be translated separately and considered part of this sentence. */
 
 /* An error shown when the Point of Sale is used in iOS split view, but with not enough horizontal space. */
 "pos.unsupportedWidth.title" = "此屏幕宽度不支持销售点模式。";
+
+/* Button title for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.buttonTitle" = "了解更多";
+
+/* Message for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.message" = "使用 WooCommerce POS 现场收款。 在平板电脑上进行设置，立即开始销售。";
+
+/* Title for the POS promotional banner on the dashboard */
+"posPromoOnPhonesCampaign.title" = "在您的平板电脑上运行 WooCommerce POS";
+
+/* Button to open the POS learn more page in Safari (final step of POS promotion modal) */
+"posPromotion.button.explorePOS" = "探索 WooCommerce POS";
+
+/* Button to go to the next step in the POS promotion modal */
+"posPromotion.button.next" = "下一步";
+
+/* Description for the first step of the POS promotion modal */
+"posPromotion.step1.description" = "只需使用 WooCommerce 移动应用程序即可现场收款并将所有交易数据同步回您的商店。";
+
+/* Description for the second step of the POS promotion modal */
+"posPromotion.step2.description" = "在线商店与 POS 间的库存、客户和订单数据实时同步。";
+
+/* Description for the third step of the POS promotion modal */
+"posPromotion.step3.description" = "简单快速，轻松上手。";
+
+/* Description for the fourth step of the POS promotion modal */
+"posPromotion.step4.description" = "直接内置于 WooCommerce 移动应用程序中，无需第三方集成。";
+
+/* Description for the fifth step of the POS promotion modal */
+"posPromotion.step5.description" = "与 WooPayments 或 Stripe 付款网关配合使用。";
+
+/* Title for the POS promotion modal (shown on all steps) */
+"posPromotion.title" = "WooCommerce 销售点";
 
 /* Label for allow sync on cellular data toggle in Point of Sale settings. */
 "posSettingsLocalCatalogDetailView.allowSyncOnCellular.2" = "允许使用移动数据同步";
@@ -11699,11 +13263,17 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver accessibility hint, informing the user the button can be used to scan products. */
 "productInventorySettings.GlobalUniqueIdentifier.ScanButton" = "扫描与产品全局唯一标识符关联的条形码，进行库存管理。";
 
+/* Error message when saving an invalid or duplicated product global unique ID */
+"productInventorySettings.error.invalidOrDuplicatedGlobalUniqueID" = "无效或重复的 GTIN、UPC、EAN 或 ISBN。";
+
 /* Placeholder of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.placeholder" = "可选";
 
 /* Title of the cell in Product Inventory Settings > GTIN, UPC, EAN, or ISBN */
 "productInventorySettings.globalUniqueIdentifier.title" = "GTIN、UPC、EAN、ISBN";
+
+/* The message of the alert when there is an error updating the product global unique identifier */
+"productInventorySettings.invalidGlobalUniqueIdentifier.error" = "请仅输入数字和连字符 (-)。";
 
 /* Title of the billing interval row on the Product Price screen */
 "productPriceSettingsViewController.billingIntervalRowTitle" = "计费间隔";
@@ -11870,6 +13440,15 @@ which should be translated separately and considered part of this sentence. */
 /* Status label on the Reviews card's filter area. */
 "reviewsDashboardCardViewModel.filterHold" = "保留";
 
+/* The acronym for 'Point of Sale'. */
+"salesChannel.pos.description" = "销售点";
+
+/* Orders created through web checkout. */
+"salesChannel.webCheckout.description" = "Web 结账";
+
+/* Orders created through WordPress admin interface. */
+"salesChannel.wpAdmin.description" = "WP-Admin";
+
 /* Description for the Sales channel filter option, when selecting 'Any' order */
 "salesChannelFilter.row.any.description" = "任何";
 
@@ -11893,6 +13472,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
 "setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "付款完成";
+
+/* Settings > Store Settings row that starts the flow to enable push notifications. */
+"settings.enablePushNotifications" = "启用推送通知";
 
 /* Navigates to connectivity test screen. */
 "settingsViewController.connectivity" = "排查连接故障";
@@ -11969,6 +13551,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d 件 %2$@";
+
+/* Error message explaining login failure due to an unexpected authentication challenge. */
+"siteCredentialLoginError.failedAuthenticationChallenge.message" = "由于您的商店实施了意外的安全措施，无法登录。 请联系支持人员进行故障排除。";
+
+/* Error message explaining login failure due to unexpected response. */
+"siteCredentialLoginError.invalidLoginResponse.message" = "由于您的站点出现意外响应，无法登录。";
 
 /* Button to dismiss the site notification settings view */
 "siteNotificationSettingsView.cancel" = "取消";
@@ -12475,6 +14063,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the UPS Terms and Conditions view */
 "upsTermsView.title" = "UPS® 条款和条件";
 
+/* Format of a named variation attribute description. %1$@ is the attribute name, and %2$@ is the attribute value. Displayed in a whole variation of a Coffee beans/grounds product, it could look like: +'Roast: Dark, Size: 100g, Origin: Brazil, Any grind' */
+"variationAttributeView.namedAttributeFormat" = "%1$@：%2$@";
+
 /* Label displayed on video media items. */
 "video" = "视频";
 
@@ -12546,6 +14137,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for a product's subscription period, e.g. '4 weeks'. */
 "weeks" = "周";
+
+/* Title of the self-driven push notification setup flow */
+"wooPushNotificationSetupCoordinator.flowTitle" = "连接到 WordPress.com";
 
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "添加包裹详细信息";
@@ -12739,6 +14333,12 @@ which should be translated separately and considered part of this sentence. */
 /* Label for row showing the total for shipment costs on the shipping label creation screen */
 "wooShipping.createLabels.bottomSheet.total" = "总计";
 
+/* Notice when the destination phone number is invalid */
+"wooShipping.createLabels.destinationPhoneNumber.invalid" = "请为目标地址输入有效的电话号码。";
+
+/* Notice when the destination phone number is missing on the shipping label creation screen */
+"wooShipping.createLabels.destinationPhoneNumber.missing" = "必须为目标地址提供电话号码。";
+
 /* Button to add a company field when editing an address in the Woo Shipping label creation flow */
 "wooShipping.createLabels.editAddress.addCompany" = "添加公司";
 
@@ -12879,6 +14479,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total shipment weight input field in the shipping label creation screen. */
 "wooShipping.createLabels.package.totalWeight" = "货物总重量（含包裹）";
+
+/* Action button title to edit the destination address when phone number is invalid */
+"wooShipping.createLabels.phoneNumberError.editAddress" = "编辑地址";
+
+/* Message for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.message" = "请为目标地址输入有效的电话号码。";
+
+/* Title for the notice when the label purchase fails due to an invalid destination phone number */
+"wooShipping.createLabels.phoneNumberError.title" = "电话号码无效。";
 
 /* Link for more information about how to print a purchased shipping label on the shipping label screen */
 "wooShipping.createLabels.postPurchase.info" = "了解如何从您的移动设备打印";
@@ -13444,6 +15053,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message to show to user when the app can't find WordPress.org REST API URL. */
 "wordpresskit.org-rest-api.not-found" = "无法找到您站点的 REST API URL。 应用程序需要由此与您的站点通信。 请联系您的托管服务提供商以解决此问题。";
 
+/* Text to suggest another form of 2FA authentication */
+"wpCom2FALoginView.anotherFormText" = "或者选择另一种身份验证形式。";
+
 /* Button to enter security key on the WPCom 2FA login screen */
 "wpCom2FALoginView.securityKeyButton" = "使用安全密钥";
 
@@ -13468,8 +15080,44 @@ which should be translated separately and considered part of this sentence. */
 /* Generic error on the 2FA login screen */
 "wpCom2FALoginViewModel.unknownError" = "糟糕，出错了。 请重试！";
 
+/* Status label shown when a setup step has completed successfully. */
+"wpComConnectionSetupStepView.complete" = "完成";
+
+/* Status label shown when a setup step is currently running. */
+"wpComConnectionSetupStepView.inProgress" = "进行中";
+
+/* Status label shown when a setup step has not been started yet. */
+"wpComConnectionSetupStepView.notStarted" = "未开始";
+
+/* Cancel button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.cancelButton" = "取消";
+
+/* Title for the WPCom connection setup screen. */
+"wpComConnectionSetupView.title" = "连接到 WordPress.com";
+
+/* Step title for checking plugin compatibility during WPCom connection setup. */
+"wpComConnectionSetupViewModel.checkPluginStep" = "检查插件兼容性";
+
+/* Step title for connecting the store to WordPress.com during WPCom connection setup. */
+"wpComConnectionSetupViewModel.connectStoreStep" = "将商店连接到 WordPress.com";
+
+/* Step title for enabling push notifications during WPCom connection setup. */
+"wpComConnectionSetupViewModel.enablePushNotificationsStep" = "启用推送通知";
+
+/* Button title to navigate to the store after successful WPCom connection setup. */
+"wpComConnectionSetupViewModel.goToMyStore" = "前往“我的商店”";
+
+/* Button title to retry the WPCom connection setup after a failure. */
+"wpComConnectionSetupViewModel.tryAgain" = "重试";
+
+/* Button title to update the plugin when WPCom connection setup fails due to outdated plugin. */
+"wpComConnectionSetupViewModel.updatePlugin" = "更新插件";
+
 /* Text hinting that an account will be created if the email is not associated with an existing account. */
 "wpComEmailLoginView.accountCreationHint" = "如果您没有账户，我们将使用此电子邮件地址创建一个。";
+
+/* Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow. */
+"wpComEmailLoginView.enterEmail" = "输入电子邮件地址或用户名";
 
 /* Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow. */
 "wpComEmailLoginView.enterUsername" = "输入用户名";
@@ -13498,6 +15146,33 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for the action of signing in using WordPress.com username and password. */
 "wpcomMagicLinkRequestView.useUsernamePassword" = "使用用户名和密码";
 
+/* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.password" = "密码";
+
+/* Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.passwordPlaceholder" = "为您的账户输入密码";
+
+/* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
+"wpcomPasswordLoginView.secondaryAction" = "或继续使用免密登录链接";
+
+/* Cancel button title in the WordPress.com Push Notifications Benefits View toolbar */
+"wpcomPushNotificationsBenefitsView.cancelButton" = "取消";
+
+/* Continue button title in the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.continueButton" = "继续";
+
+/* Not now button title in the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.notNowButton" = "稍后再说";
+
+/* Secondary description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.subdescription" = "这只需一分钟。";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.title" = "通过 WordPress.com 解锁推送通知功能";
+
+/* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.whatIsWPCom" = "什么是 WordPress.com？";
+
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
@@ -13513,6 +15188,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using Google. The {G} will be replaced with the Google logo. */
 "{G} Log in with Google." = "{G} 使用 Google 登录。";
+
+/* Country option for a site address. */
+"Åland Islands" = "奥兰群岛";
 
 /* Message when a tax rate is set */
 "🎉 New tax rate set" = "🎉 新税率已设置";

@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class ProductFormRemoteActionUseCaseTests: XCTestCase {

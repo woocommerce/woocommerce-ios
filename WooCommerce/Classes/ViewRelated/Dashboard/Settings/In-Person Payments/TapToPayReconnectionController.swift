@@ -106,6 +106,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     ///   - alertsPresenter: The alerts presenter which can show the connection alerts.
     ///   It will be immediately called with the most recent alert
     ///   - onCompletion: A completion handler for the automatic reconnection, with success or an error.
+    func cancelReconnection() {
+        reset()
+    }
+
     func showAlertsForReconnection(from alertsPresenter: AlertPresenter,
                                    onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         guard isReconnecting else {

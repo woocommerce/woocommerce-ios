@@ -416,6 +416,7 @@ enum RefundActionAvailability {
     }
 
     func loadOrderRefunds() async {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
             return
         }

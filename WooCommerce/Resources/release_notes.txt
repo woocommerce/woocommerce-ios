@@ -1,1 +1,1 @@
-This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
+Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.

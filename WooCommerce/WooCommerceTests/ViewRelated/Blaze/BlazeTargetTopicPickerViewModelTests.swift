@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor

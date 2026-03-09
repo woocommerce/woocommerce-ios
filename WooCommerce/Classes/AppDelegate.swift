@@ -271,16 +271,12 @@ extension AppDelegate {
     ///
     // periphery: ignore - Fails when build on simulator
     func setupPushNotificationsManagerIfPossible(_ pushNotesManager: PushNotesManager, stores: StoresManager) {
-        #if targetEnvironment(simulator)
-            DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
-        #else
-            /// We're sending notifications for logged in state only.
-            /// Revisit this check if a local notification in unauthenticated state is needed.
-            guard stores.isAuthenticated else { return }
-            let pushNotesManager = ServiceLocator.pushNotesManager
-            pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
-        #endif
+        /// We're sending notifications for logged in state only.
+        /// Revisit this check if a local notification in unauthenticated state is needed.
+        guard stores.isAuthenticated else { return }
+        let pushNotesManager = ServiceLocator.pushNotesManager
+        pushNotesManager.registerForRemoteNotifications()
+        pushNotesManager.ensureAuthorizationIsRequested(includesProvisionalAuth: false, onCompletion: nil)
     }
 
     func setupUserNotificationCenter() {
@@ -448,8 +444,6 @@ extension AppDelegate {
             pendingAuthFlowStorage.clear()
 
             switch flow {
-            case .notificationSetup:
-                return handleAuthenticationUrlForNotificationSetup(url, rootViewController: rootViewController)
             case .jetpackSetup:
                 return handleAuthenticationUrlForJetpackSetup(url, rootViewController: rootViewController)
             case .none:
@@ -458,12 +452,6 @@ extension AppDelegate {
         } else {
             return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
         }
-    }
-
-    func handleAuthenticationUrlForNotificationSetup(_ url: URL, rootViewController: UIViewController) -> Bool {
-        let coordinator = WooPushNotificationSetupCoordinator(rootViewController: rootViewController)
-        wooPushNotificationCoordinator = coordinator
-        return coordinator.handleAuthenticationUrl(url)
     }
 
     func handleAuthenticationUrlForJetpackSetup(_ url: URL, rootViewController: UIViewController) -> Bool {

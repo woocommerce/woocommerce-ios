@@ -5,6 +5,8 @@ struct DebugPanelView: View {
     @State private var announcementToPresent: Announcement?
     @State private var announcementError: String?
 
+    @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
+
     var body: some View {
         List {
             Button {
@@ -37,6 +39,36 @@ struct DebugPanelView: View {
                 Section {
                     Text(error)
                         .foregroundStyle(.red)
+                }
+            }
+
+            VStack(alignment: .leading) {
+                Text("Minimum Woo Version for self-driven push notifications")
+                    .frame(maxWidth: .infinity)
+                TextField("e.g. 10.5.3", text: $minimumWooVersionOverride)
+                    .textFieldStyle(.roundedBorder)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .onChange(of: minimumWooVersionOverride) { _, newValue in
+                        let trimmed = newValue.trimmingCharacters(in: .whitespaces)
+                        UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] = trimmed.isEmpty ? nil : trimmed
+                    }
+            }
+
+            if let site = ServiceLocator.stores.sessionManager.defaultSite {
+                DebugSheetPresenter("Present WPComConnectionSetupView") { dismiss in
+                    let viewModel = WPComConnectionSetupViewModel(
+                        storeName: "nicestore.com",
+                        handler: WPComConnectionSetupHandler(
+                            siteID: site.siteID,
+                            siteURL: site.url,
+                            siteAlreadyConnected: false
+                        ),
+                        onDismiss: dismiss,
+                        onGoToStore: dismiss,
+                        onUpdatePlugin: { _ in }
+                    )
+                    WPComConnectionSetupView(viewModel: viewModel)
                 }
             }
         }

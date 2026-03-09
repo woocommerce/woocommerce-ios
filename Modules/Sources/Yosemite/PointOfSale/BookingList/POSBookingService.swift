@@ -1,0 +1,214 @@
+import Foundation
+import CocoaLumberjack
+import enum Alamofire.AFError
+import struct NetworkingCore.PagedItems
+import struct NetworkingCore.Order
+import protocol Networking.BookingsRemoteProtocol
+import struct Networking.Booking
+import struct Networking.BookingOrderInfo
+import struct Networking.BookingResource
+import protocol NetworkingCore.POSOrdersRemoteProtocol
+import class WooFoundationCore.CurrencyFormatter
+
+public final class POSBookingService: POSBookingServiceProtocol {
+    private let siteID: Int64
+    private let bookingsRemote: BookingsRemoteProtocol
+    private let ordersRemote: POSOrdersRemoteProtocol
+    private let mapper: POSBookingMapper
+    private let orderMapper: POSOrderMapper
+    private let resourceCache = BookingResourceCache()
+
+    public init(siteID: Int64,
+                bookingsRemote: BookingsRemoteProtocol,
+                ordersRemote: POSOrdersRemoteProtocol,
+                currencyFormatter: CurrencyFormatter,
+                siteSettings: [SiteSetting] = []) {
+        self.siteID = siteID
+        self.bookingsRemote = bookingsRemote
+        self.ordersRemote = ordersRemote
+        self.mapper = POSBookingMapper(currencyFormatter: currencyFormatter, siteSettings: siteSettings)
+        self.orderMapper = POSOrderMapper(currencyFormatter: currencyFormatter)
+    }
+
+    public func fetchBookings(siteID: Int64,
+                              pageNumber: Int,
+                              pageSize: Int,
+                              filters: BookingFilters?,
+                              searchQuery: String?) async throws -> PagedItems<POSBooking> {
+        do {
+            let bookings = try await bookingsRemote.loadAllBookings(
+                for: siteID,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                filters: filters,
+                searchQuery: searchQuery,
+                order: .ascending
+            )
+
+            if pageNumber == 1 {
+                await resourceCache.clear()
+            }
+
+            if pageNumber != 1 && bookings.isEmpty {
+                return PagedItems(items: [], hasMorePages: false, totalItems: nil)
+            }
+
+            let orderIDs = Set(bookings.compactMap { $0.orderID != 0 ? $0.orderID : nil })
+            let resourceIDs = Set(bookings.compactMap { $0.resourceID != 0 ? $0.resourceID : nil })
+
+            async let ordersTask = fetchOrders(orderIDs: Array(orderIDs))
+            async let resourcesTask = fetchResources(resourceIDs: Array(resourceIDs))
+            let (orders, resources) = await (ordersTask, resourcesTask)
+
+            let posBookings = bookings.compactMap { booking -> POSBooking? in
+                let order = orders[booking.orderID]
+                let orderInfo: BookingOrderInfo? = order.map { BookingOrderInfo(booking: booking, order: $0) }
+                let resource = resources[booking.resourceID]
+                guard let posOrder = order.flatMap({ try? orderMapper.map(order: $0) }) else {
+                    return nil
+                }
+                return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
+            }
+
+            let hasMorePages = bookings.count == pageSize
+
+            return PagedItems(items: posBookings, hasMorePages: hasMorePages, totalItems: nil)
+        } catch AFError.explicitlyCancelled, is CancellationError {
+            throw POSBookingServiceError.requestCancelled
+        } catch is POSBookingServiceError {
+            throw POSBookingServiceError.requestCancelled
+        } catch {
+            throw POSBookingServiceError.requestFailed
+        }
+    }
+
+    public func fetchBooking(bookingID: Int64) async throws -> POSBooking {
+        guard let booking = try await bookingsRemote.loadBooking(bookingID: bookingID, siteID: siteID) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        let orderIDs = booking.orderID != 0 ? [booking.orderID] : []
+        let resourceIDs = booking.resourceID != 0 ? [booking.resourceID] : []
+
+        async let orderTask = fetchOrders(orderIDs: orderIDs)
+        async let resourceTask = fetchResources(resourceIDs: resourceIDs)
+        let (orders, resources) = await (orderTask, resourceTask)
+
+        let order = orders[booking.orderID]
+        let orderInfo: BookingOrderInfo? = order.map { BookingOrderInfo(booking: booking, order: $0) }
+        let resource = resources[booking.resourceID]
+
+        guard let posOrder = order.flatMap({ try? orderMapper.map(order: $0) }) else {
+            throw POSBookingServiceError.requestFailed
+        }
+
+        return mapper.map(booking: booking, orderInfo: orderInfo, resource: resource, order: posOrder)
+    }
+
+    @discardableResult
+    public func cancelBooking(bookingID: Int64) async throws -> BookingStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
+            from: siteID,
+            bookingID: bookingID,
+            attendanceStatus: nil,
+            bookingStatus: .cancelled,
+            note: nil
+        ) else {
+            throw POSBookingServiceError.requestFailed
+        }
+        return booking.bookingStatus
+    }
+
+    @discardableResult
+    public func updateAttendanceStatus(bookingID: Int64, status: BookingAttendanceStatus) async throws -> BookingAttendanceStatus {
+        guard let booking = try await bookingsRemote.updateBooking(
+            from: siteID,
+            bookingID: bookingID,
+            attendanceStatus: status,
+            bookingStatus: nil,
+            note: nil
+        ) else {
+            throw POSBookingServiceError.requestFailed
+        }
+        return booking.attendanceStatus
+    }
+
+    @discardableResult
+    public func updateBookingNote(bookingID: Int64, note: String) async throws -> String {
+        guard let booking = try await bookingsRemote.updateBooking(
+            from: siteID,
+            bookingID: bookingID,
+            attendanceStatus: nil,
+            bookingStatus: nil,
+            note: note
+        ) else {
+            throw POSBookingServiceError.requestFailed
+        }
+        return booking.note
+    }
+}
+
+private extension POSBookingService {
+    func fetchOrders(orderIDs: [Int64]) async -> [Int64: Order] {
+        guard !orderIDs.isEmpty else { return [:] }
+        do {
+            let orders = try await ordersRemote.loadPOSOrders(siteID: siteID, orderIDs: Array(Set(orderIDs)))
+            return Dictionary(uniqueKeysWithValues: orders.map { ($0.orderID, $0) })
+        } catch {
+            DDLogError("⛔️ POSBookingService: Failed to batch-load orders for IDs \(orderIDs): \(error)")
+            return [:]
+        }
+    }
+
+    func fetchResources(resourceIDs: [Int64]) async -> [Int64: BookingResource] {
+        guard !resourceIDs.isEmpty else { return [:] }
+        var result: [Int64: BookingResource] = [:]
+        var uncachedIDs: [Int64] = []
+        for id in resourceIDs {
+            if let cached = await resourceCache.resource(for: id) {
+                result[id] = cached
+            } else {
+                uncachedIDs.append(id)
+            }
+        }
+        guard !uncachedIDs.isEmpty else { return result }
+        await withTaskGroup(of: (Int64, BookingResource?).self) { group in
+            for resourceID in uncachedIDs {
+                group.addTask { [weak self] in
+                    guard let self else { return (resourceID, nil) }
+                    let resource = try? await self.bookingsRemote.fetchResource(resourceID: resourceID, siteID: self.siteID)
+                    return (resourceID, resource)
+                }
+            }
+            for await (resourceID, resource) in group {
+                if let resource {
+                    result[resourceID] = resource
+                }
+            }
+        }
+        await resourceCache.store(result)
+        return result
+    }
+}
+
+// MARK: - BookingResourceCache
+// Caches booking resources across pages to avoid redundant network requests,
+// since multiple bookings often share the same resource. Cleared on page 1 reload.
+
+private actor BookingResourceCache {
+    private var cache: [Int64: BookingResource] = [:]
+
+    func resource(for id: Int64) -> BookingResource? {
+        cache[id]
+    }
+
+    func store(_ resources: [Int64: BookingResource]) {
+        for (id, resource) in resources {
+            cache[id] = resource
+        }
+    }
+
+    func clear() {
+        cache.removeAll()
+    }
+}

@@ -12,11 +12,15 @@ import protocol Yosemite.PointOfSaleCouponFetchStrategy
 final class MockPointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     var shouldReturnZeroItems = false
     var errorToThrow: PointOfSaleCouponServiceError?
+    var localErrorToThrow: PointOfSaleCouponServiceError?
     var shouldSimulateTwoPages = false
     var shouldSimulateMorePages = false
 
     func provideLocalPointOfSaleCoupons(fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> [Yosemite.POSItem] {
-        []
+        if let error = localErrorToThrow {
+            throw error
+        }
+        return []
     }
 
     func providePointOfSaleCoupons(pageNumber: Int, fetchStrategy: PointOfSaleCouponFetchStrategy) async throws -> PagedItems<POSItem> {

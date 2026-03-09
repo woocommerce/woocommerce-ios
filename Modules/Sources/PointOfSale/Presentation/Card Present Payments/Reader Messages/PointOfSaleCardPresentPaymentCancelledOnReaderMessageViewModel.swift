@@ -13,16 +13,16 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel: Equatable
 private extension PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel {
     enum Localization {
         static let cancelledOnReader = NSLocalizedString(
-            "pointOfSale.cardPresent.cancelledOnReader.title",
-            value: "Payment cancelled on reader",
+            "pointOfSale.cardPresent.canceledOnReader.title",
+            value: "Payment canceled on reader",
             comment: "Indicates the status of a card reader. Presented to users when payment collection starts"
         )
 
         static let tryPaymentAgain =  NSLocalizedString(
-            "pointOfSale.cardPresent.cancelledOnReader.tryPaymentAgain.button.title",
+            "pointOfSale.cardPresent.canceledOnReader.tryPaymentAgain.button.title",
             value: "Try payment again",
             comment: "Button to try to collect a payment again. Presented to users after " +
-            "card reader cancelled on the Point of Sale Checkout"
+            "card reader canceled on the Point of Sale Checkout"
         )
     }
 }

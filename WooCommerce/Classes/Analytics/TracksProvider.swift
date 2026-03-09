@@ -179,6 +179,24 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
 
+            // Bookings
+            WooAnalyticsStat.pointOfSaleBookingsMenuItemTapped,
+            WooAnalyticsStat.pointOfSaleBookingsListSearchButtonTapped,
+            WooAnalyticsStat.pointOfSaleBookingsListBookingTapped,
+            WooAnalyticsStat.pointOfSaleBookingCancelled,
+            WooAnalyticsStat.pointOfSaleBookingAddNoteTapped,
+            WooAnalyticsStat.pointOfSaleBookingIssueRefundTapped,
+            WooAnalyticsStat.pointOfSaleBookingViewOrderTapped,
+            WooAnalyticsStat.pointOfSaleBookingAttendanceChanged,
+            WooAnalyticsStat.pointOfSaleBookingNoteAdded,
+            WooAnalyticsStat.pointOfSaleBookingCancelFailed,
+            WooAnalyticsStat.pointOfSaleBookingAttendanceChangeFailed,
+            WooAnalyticsStat.pointOfSaleBookingNoteAddFailed,
+            WooAnalyticsStat.pointOfSaleBookingRefundFailed,
+            WooAnalyticsStat.pointOfSaleBookingDatePreviousTapped,
+            WooAnalyticsStat.pointOfSaleBookingDateNextTapped,
+            WooAnalyticsStat.pointOfSaleBookingDateCalendarSelected,
+
             // Order
             WooAnalyticsStat.ordersListLoaded,
             WooAnalyticsStat.orderCreationSuccess,

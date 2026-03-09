@@ -1,17 +1,17 @@
 extension WooAnalyticsEvent {
     enum BookingList {
-        static func tabSelected(_ tab: BookingListTab) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListTabSelected,
+        static func tabSelect(_ tab: BookingListTab) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListTabSelect,
                               properties: [Properties.selectedTab: tab.analyticsName])
         }
 
-        static func bookingListDisplayed(
+        static func bookingListView(
             tab: BookingListTab,
             isDefaultTab: Bool,
             isListEmpty: Bool,
             isFiltered: Bool
         ) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListDisplayed,
+            WooAnalyticsEvent(statName: .bookingListView,
                               properties: [
                                 Properties.selectedTab: tab.analyticsName,
                                 Properties.isDefaultTab: isDefaultTab,
@@ -26,10 +26,10 @@ extension WooAnalyticsEvent {
 
         }
 
-        static func bookingTapped(selectedTab: BookingListTab,
-                                  isSearchActive: Bool,
-                                  isFilteringActive: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListBookingTapped,
+        static func bookingTap(selectedTab: BookingListTab,
+                                isSearchActive: Bool,
+                                isFilteringActive: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListBookingTap,
                               properties: [
                                 Properties.selectedTab: selectedTab.analyticsName,
                                 Properties.isSearchActive: isSearchActive,
@@ -37,13 +37,13 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func filtersTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListFiltersTapped)
+        static func filtersTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListFiltersTap)
         }
 
         static func applyFilters(_ filters: BookingFiltersViewModel.Filters) -> WooAnalyticsEvent {
             var appliedFilters = [WooAnalyticsEvent.BookingList.Filter]()
-            if filters.attendanceStatuses.isNotEmpty {
+            if filters.attendanceStatus != nil {
                 appliedFilters.append(.attendanceStatus)
             }
             if filters.bookingFilters.customerIDs.isNotEmpty {
@@ -65,16 +65,16 @@ extension WooAnalyticsEvent {
                                      properties: properties)
         }
 
-        static func searchTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListSearchTapped)
+        static func searchTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListSearchTap)
         }
 
-        static func sortByTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListSortByTapped)
+        static func sortByTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListSortByTap)
         }
 
-        static func sortByOptionTapped(_ option: BookingListViewModel.SortBy) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingListSortByOptionTapped,
+        static func sortByOptionTap(_ option: BookingListViewModel.SortBy) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingListSortByOptionTap,
                               properties: [Properties.sortOption: option.analyticsName])
         }
     }

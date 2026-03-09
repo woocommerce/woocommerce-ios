@@ -180,6 +180,66 @@ struct POSRefundsServiceTests {
         #expect(result.supportsAutomaticRefund == true)
     }
 
+    // MARK: - isFullyRefunded Tests
+
+    @Test func providePointOfSaleRefunds_when_all_items_refunded_with_negative_quantities_then_isFullyRefunded_is_true() async throws {
+        // Given: Order has 2 units of product 111
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+
+        // API returns negative quantities for refunds (-2 means 2 items refunded)
+        let refundItem = MockRefunds.sampleRefundItem(productID: 111, variationID: 0, quantity: -2)
+        let refund = MockRefunds.sampleRefund(items: [refundItem])
+        remote.result = .success([refund])
+
+        let order = makeOrder(lineItemQuantitiesByProductOrVariationID: [111: 2])
+
+        // When
+        let result = try await sut.providePointOfSaleRefunds(for: order)
+
+        // Then
+        #expect(result.isFullyRefunded == true)
+    }
+
+    @Test func providePointOfSaleRefunds_when_partial_items_refunded_then_isFullyRefunded_is_false() async throws {
+        // Given: Order has 3 units of product 111
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+
+        // Only 2 items refunded (negative quantity from API)
+        let refundItem = MockRefunds.sampleRefundItem(productID: 111, variationID: 0, quantity: -2)
+        let refund = MockRefunds.sampleRefund(items: [refundItem])
+        remote.result = .success([refund])
+
+        let order = makeOrder(lineItemQuantitiesByProductOrVariationID: [111: 3])
+
+        // When
+        let result = try await sut.providePointOfSaleRefunds(for: order)
+
+        // Then
+        #expect(result.isFullyRefunded == false)
+    }
+
+    @Test func providePointOfSaleRefunds_when_variation_fully_refunded_then_isFullyRefunded_is_true() async throws {
+        // Given: Order has 1 unit of variation 222 (of product 111)
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+
+        // Variation refunded (negative quantity from API)
+        let refundItem = MockRefunds.sampleRefundItem(productID: 111, variationID: 222, quantity: -1)
+        let refund = MockRefunds.sampleRefund(items: [refundItem])
+        remote.result = .success([refund])
+
+        // Key is variationID when variation exists
+        let order = makeOrder(lineItemQuantitiesByProductOrVariationID: [222: 1])
+
+        // When
+        let result = try await sut.providePointOfSaleRefunds(for: order)
+
+        // Then
+        #expect(result.isFullyRefunded == true)
+    }
+
     // MARK: - createRefund Tests
 
     @Test func createRefund_then_calls_calculator_with_correct_parameters() async throws {
@@ -341,7 +401,12 @@ struct POSRefundsServiceTests {
         }
     }
 
-    private func makeOrder(id: Int64 = 1, paymentMethodID: String = "woocommerce_payments", refunds: [POSOrderRefund] = []) -> POSOrder {
+    private func makeOrder(
+        id: Int64 = 1,
+        paymentMethodID: String = "woocommerce_payments",
+        refunds: [POSOrderRefund] = [],
+        lineItemQuantitiesByProductOrVariationID: [Int64: Decimal] = [:]
+    ) -> POSOrder {
         POSOrder(
             id: id,
             number: "1001",
@@ -357,7 +422,9 @@ struct POSRefundsServiceTests {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$10.00",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: Date(),
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 }

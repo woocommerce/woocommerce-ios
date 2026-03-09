@@ -170,11 +170,12 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         refunds: [Refund]
     ) -> Bool {
         // Aggregate refunded quantities by product/variation ID
+        // Note: API returns negative quantities for refunds, so we use abs()
         var refundedQuantities: [Int64: Decimal] = [:]
         for refund in refunds {
             for item in refund.items {
                 let id = item.variationID != 0 ? item.variationID : item.productID
-                refundedQuantities[id, default: 0] += item.quantity
+                refundedQuantities[id, default: 0] += abs(item.quantity)
             }
         }
 

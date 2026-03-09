@@ -1,77 +1,90 @@
 import UIKit
+import SwiftUI
 import Yosemite
 
 /// Coordinator for the setup of self-driven push notifications for ineligible sites
+@MainActor
 final class WooPushNotificationSetupCoordinator {
     // Controller to handle navigation between the auth flow and setup steps.
     let rootViewController: UIViewController
 
-    private var loginCoordinator: WPComLoginCoordinator?
+    private let stores: StoresManager
 
     init(rootViewController: UIViewController,
          stores: StoresManager = ServiceLocator.stores) {
         self.rootViewController = rootViewController
-        self.loginCoordinator = {
-            if stores.sessionManager.defaultSite?.isJetpackConnected == true {
-                return nil // no need to connect WPCom
+        self.stores = stores
+    }
+
+    /// Presents navigation stack with a handler, view model, and hosting controller.
+    func startSetup(siteAlreadyConnected: Bool,
+                    pluginOutdatedVersion: String? = nil) {
+        guard let site = stores.sessionManager.defaultSite else {
+            fatalError("❌ No default site found for Woo push notification setup!")
+        }
+        let navigationController = WooNavigationController()
+        let handler = WPComConnectionSetupHandler(
+            siteID: site.siteID,
+            siteURL: site.url,
+            siteAlreadyConnected: siteAlreadyConnected
+        )
+        let viewModel = WPComConnectionSetupViewModel(
+            storeName: site.name,
+            siteAlreadyConnected: siteAlreadyConnected,
+            handler: handler,
+            onDismiss: { [weak navigationController] in
+                navigationController?.dismiss(animated: true)
+            },
+            onGoToStore: { [weak navigationController] in
+                navigationController?.dismiss(animated: true)
+            },
+            onUpdatePlugin: { [weak navigationController, stores] onDismissed in
+                guard let navigationController,
+                      let site = stores.sessionManager.defaultSite,
+                      let url = URL(string: site.adminURL + Constants.wooCommercePluginUpdatePath) else { return }
+                let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce, onDismiss: onDismissed)
+                let vc = UIHostingController(rootView: webView)
+                vc.modalPresentationStyle = .formSheet
+                navigationController.present(vc, animated: true)
             }
-            return WPComLoginCoordinator(
-                title: Localization.flowTitle,
-                flow: .notificationSetup,
-                navigationController: UINavigationController(),
-                completionHandler: { credentials in
-                    // TODO: use credentials for Jetpack connection flow.
-                    // Consider reusing JetpackSetupViewModel
-                    // Also check JetpackSetupHostingController for more details on what the credentials are for.
-                    DDLogDebug("📱 Authentication complete, proceed with Jetpack connection")
-            })
-        }()
-    }
-
-    func start() {
-        guard let loginCoordinator else {
-            // TODO: start plugin check
-            DDLogDebug("📱 Site is connected to Jetpack, now checking plugin version...")
-            return
+        )
+        if let pluginOutdatedVersion {
+            viewModel.setPluginOutdatedState(version: pluginOutdatedVersion)
         }
-        rootViewController.dismiss(animated: true) {
-            self.rootViewController.present(loginCoordinator.navigationController, animated: true)
-            loginCoordinator.startWithoutEmail()
+        let connectionSetupController = WPComConnectionSetupHostingController(viewModel: viewModel)
+        navigationController.viewControllers = [connectionSetupController]
+
+        // Dismiss current modal and present connection setup
+        if let presenter = rootViewController.presentingViewController {
+            rootViewController.dismiss(animated: true) {
+                presenter.present(navigationController, animated: true)
+            }
+        } else {
+            rootViewController.present(navigationController, animated: true)
         }
     }
+}
 
-    func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
-        let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
-        guard url.absoluteString.hasPrefix(expectedPrefix) else {
-            return false
-        }
-
-        guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
-            DDLogError("⛔️ Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
-            return false
-        }
-
-        guard let authToken = queryDictionary.string(forKey: "token") else {
-            DDLogError("⛔️ Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
-            return false
-        }
-
-        // TODO: start Jetpack connection flow with the retrieved authToken.
-        DDLogDebug("📱 Magic link success, now proceed with Jetpack connection")
-        return true
-    }
+enum WooPluginRequirements {
+    static let pluginPath = "woocommerce/woocommerce.php"
+    static let minimumVersion = "10.5.3" // This is for testing
 }
 
 private extension WooPushNotificationSetupCoordinator {
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
     }
-
     enum Localization {
         static let flowTitle = NSLocalizedString(
             "wooPushNotificationSetupCoordinator.flowTitle",
             value: "Connect to WordPress.com",
             comment: "Title of the self-driven push notification setup flow"
+        )
+        static let updateWooCommerce = NSLocalizedString(
+            "wooPushNotificationSetupCoordinator.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin during push notification setup"
         )
     }
 }

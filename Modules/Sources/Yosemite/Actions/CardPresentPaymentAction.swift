@@ -94,7 +94,7 @@ public enum CardPresentPaymentAction: Action {
     /// 1. Disconnect from a connected reader
     /// 2. Clear all credentials, cached data
     /// 3. Reset all status indicators
-    case reset
+    case reset(onCompletion: () -> Void)
 
     /// Provides a publisher for card reader connections
     case publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)

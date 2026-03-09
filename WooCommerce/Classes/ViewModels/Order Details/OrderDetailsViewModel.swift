@@ -58,6 +58,11 @@ final class OrderDetailsViewModel {
         editNoteViewModel.update(order: order)
     }
 
+    @MainActor
+    func refreshReceiptEligibility() async {
+        dataSource.isEligibleForBackendReceipt = await isEligibleForBackendReceipt()
+    }
+
     let productLeftTitle = NSLocalizedString("PRODUCT", comment: "Product section title")
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
@@ -204,13 +209,17 @@ final class OrderDetailsViewModel {
 
     var paymentMethodsViewModel: PaymentMethodsViewModel {
         let formattedTotal = currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
-        return PaymentMethodsViewModel(siteID: order.siteID,
-                                       orderID: order.orderID,
-                                       paymentLink: order.paymentURL,
-                                       total: order.total,
-                                       formattedTotal: formattedTotal,
-                                       flow: .orderPayment,
-                                       channel: .storeManagement)
+        let viewModel = PaymentMethodsViewModel(siteID: order.siteID,
+                                                orderID: order.orderID,
+                                                paymentLink: order.paymentURL,
+                                                total: order.total,
+                                                formattedTotal: formattedTotal,
+                                                flow: .orderPayment,
+                                                channel: .storeManagement)
+        viewModel.onNoteAdded = { [weak self] note in
+            self?.insertNote(note)
+        }
+        return viewModel
     }
 
     /// Helpers
@@ -1060,7 +1069,7 @@ extension OrderDetailsViewModel {
     @MainActor
     private func isEligibleForBackendReceipt() async -> Bool {
         return await withCheckedContinuation { continuation in
-            receiptEligibilityUseCase.isEligibleForReceipt(order.status) { isEligible in
+            receiptEligibilityUseCase.isEligibleForReceipt(order.status, datePaid: order.datePaid) { isEligible in
                 continuation.resume(returning: isEligible)
             }
         }

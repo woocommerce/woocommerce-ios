@@ -3,6 +3,7 @@ import TestKit
 import CoreData
 import Combine
 
+import YosemiteTestHelpers
 @testable import Yosemite
 import Storage
 

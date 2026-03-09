@@ -23,8 +23,12 @@ extension NSPredicate {
         // TODO: update `statusKey` to paymentStatusKey once available
         let paymentStatusesPredicate = filters.paymentStatuses.isNotEmpty ? NSPredicate(format: "statusKey IN %@", filters.paymentStatuses) : nil
 
-        let attendanceStatusesPredicate = filters.attendanceStatuses.isNotEmpty ?
-        NSPredicate(format: "attendanceStatusKey IN %@", filters.attendanceStatuses) : nil
+        let attendanceStatusPredicate = filters.attendanceStatus.map {
+            NSPredicate(format: "attendanceStatusKey == %@", $0)
+        }
+
+        let bookingStatusExcludePredicate = filters.bookingStatusExclude.isNotEmpty ?
+        NSPredicate(format: "NOT (statusKey IN %@)", filters.bookingStatusExclude) : nil
 
         let subpredicates = [
             siteIDPredicate,
@@ -34,7 +38,8 @@ extension NSPredicate {
             startDateBeforePredicate,
             startDateAfterPredicate,
             paymentStatusesPredicate,
-            attendanceStatusesPredicate
+            attendanceStatusPredicate,
+            bookingStatusExcludePredicate
         ].compactMap({ $0 })
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: subpredicates)

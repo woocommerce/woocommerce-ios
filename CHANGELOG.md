@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.3
+Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.
+
+## 24.2
+This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!
+
 ## 24.0
 This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
 

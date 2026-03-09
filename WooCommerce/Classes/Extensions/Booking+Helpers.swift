@@ -1,5 +1,6 @@
 import Foundation
 import struct Yosemite.Booking
+import enum Yosemite.BookingPaymentStatus
 
 extension Booking {
     var productName: String? {
@@ -13,8 +14,8 @@ extension Booking {
         return name.isEmpty ? Localization.guest : name
     }
 
-    var isEligibleForMarkAsPaid: Bool {
-        bookingStatus == .unpaid
+    var isPaid: Bool {
+        paymentStatusBadge == .paid || paymentStatusBadge == .partiallyRefunded
     }
 
     var hasAssociatedOrder: Bool {

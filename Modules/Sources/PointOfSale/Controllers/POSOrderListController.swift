@@ -16,6 +16,12 @@ import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.CurrencyFormatter
 
+enum StartRefundFlowResult {
+    case hasItemsToRefund
+    case nothingToRefund
+    case failed
+}
+
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
@@ -26,7 +32,7 @@ protocol POSOrderListControllerProtocol {
     func loadNextOrders() async
     func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
-    func startRefundFlow()
+    func startRefundFlow() async -> StartRefundFlowResult
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
@@ -60,7 +66,6 @@ enum RefundActionAvailability {
     private(set) var selectedOrder: POSOrder?
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
-    private var refundsTask: Task<Void, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
@@ -93,18 +98,11 @@ enum RefundActionAvailability {
     @MainActor
     var refundActionAvailability: RefundActionAvailability {
         guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
-              selectedOrder != nil else {
+              let order = selectedOrder,
+              order.status == .completed else {
             return .unavailable
         }
-
-        switch selectedOrderRefundsState {
-        case .idle, .failed:
-            return .unavailable
-        case .loading:
-            return .unknown
-        case .loaded(let result):
-            return result.isFullyRefunded ? .unavailable : .available
-        }
+        return .available
     }
 
     @MainActor
@@ -158,7 +156,7 @@ enum RefundActionAvailability {
     }
 
     private func setLoadingState() {
-        if !fetchStrategy.showsLoadingWithItems {
+        if !fetchStrategy.showsCachedDataWhileLoading {
             ordersViewState = .loading([])
             return
         }
@@ -224,10 +222,6 @@ enum RefundActionAvailability {
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
         selectedOrderRefundsState = .idle
-
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) {
-            fetchRefundsOfSelectedOrder()
-        }
     }
 
     @MainActor
@@ -267,47 +261,52 @@ enum RefundActionAvailability {
         }
     }
 
-    @MainActor
-    private func fetchRefundsOfSelectedOrder() {
-        refundsTask?.cancel()
-        guard let order = selectedOrder else { return }
-
-        selectedOrderRefundsState = .loading
-        let orderID = order.id
-
-        refundsTask = Task { [weak self] in
-            guard let self else { return }
-            do {
-                let result = try await self.refundsService.providePointOfSaleRefunds(for: order)
-                await MainActor.run {
-                    guard self.selectedOrder?.id == orderID else { return }
-                    self.selectedOrderRefundsState = .loaded(result)
-                }
-            }
-            catch is CancellationError {}
-            catch {
-                await MainActor.run {
-                    guard self.selectedOrder?.id == orderID else { return }
-                    self.selectedOrderRefundsState = .failed(error)
-                }
-            }
-        }
-    }
-
     // MARK: - Refund Item Selection
 
     @MainActor
-    func startRefundFlow() {
-        guard let order = selectedOrder else { return }
+    func startRefundFlow() async -> StartRefundFlowResult {
+        guard let order = selectedOrder else { return .failed }
 
+        // Fetch refunds from API
+        let refundsResult: POSRefundsResult
+        do {
+            refundsResult = try await refundsService.providePointOfSaleRefunds(for: order)
+            selectedOrderRefundsState = .loaded(refundsResult)
+        } catch {
+            selectedOrderRefundsState = .failed(error)
+            return .failed
+        }
+
+        // Calculate already refunded quantities per itemID
+        let refundedQuantitiesByItemID = calculateRefundedQuantitiesByItemID(from: refundsResult.refunds)
+
+        // Build selectable items excluding already refunded quantities
         refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
-            let intQuantity = NSDecimalNumber(decimal: item.quantity).intValue
-            guard intQuantity > 0 else { return [] }
+            let originalQuantity = NSDecimalNumber(decimal: item.quantity).intValue
+            let refundedQuantity = refundedQuantitiesByItemID[item.itemID] ?? 0
+            let availableQuantity = originalQuantity - refundedQuantity
+            guard availableQuantity > 0 else { return [] }
 
-            return (0..<intQuantity).map { index in
+            return (0..<availableQuantity).map { index in
                 POSRefundSelectableItem(from: item, isSelected: true, index: index)
             }
         }
+
+        return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+    }
+
+    /// Calculates the total refunded quantity for each itemID from previous refunds.
+    /// Note: API returns negative quantities for refunds, so we use abs().
+    private func calculateRefundedQuantitiesByItemID(from refunds: [POSRefund]) -> [Int64: Int] {
+        var refundedQuantities: [Int64: Int] = [:]
+        for refund in refunds {
+            for item in refund.items {
+                guard let refundedItemID = item.refundedItemID else { continue }
+                let quantity = NSDecimalNumber(decimal: abs(item.quantity)).intValue
+                refundedQuantities[refundedItemID, default: 0] += quantity
+            }
+        }
+        return refundedQuantities
     }
 
     @MainActor
@@ -364,6 +363,7 @@ enum RefundActionAvailability {
             formattedTax: formattedTax,
             formattedRefundTotal: formattedTotal,
             paymentMethodDescription: paymentMethodDescription,
+            customerEmail: order.customerEmail,
             refundReason: nil
         )
     }

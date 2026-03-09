@@ -181,7 +181,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate
         )
 
         let order2 = POSOrder(
@@ -212,7 +213,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$15.50",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate.addingTimeInterval(3600)
         )
 
         return [order1, order2]
@@ -261,7 +263,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$42.75",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate.addingTimeInterval(7200)
         )
 
         let order4 = POSOrder(
@@ -294,7 +297,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$12.00",
-            formattedNetAmount: "$0.00"
+            formattedNetAmount: "$0.00",
+            datePaid: baseDate.addingTimeInterval(10800)
         )
 
         return [order3, order4]
@@ -331,7 +335,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$18.50",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate.addingTimeInterval(14400)
         )
 
         return [searchOrder]

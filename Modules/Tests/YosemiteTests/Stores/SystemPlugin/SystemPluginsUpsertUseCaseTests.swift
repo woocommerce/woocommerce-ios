@@ -3,6 +3,7 @@ import Testing
 
 import Fakes
 import Storage
+import YosemiteTestHelpers
 @testable import Networking
 @testable import Yosemite
 

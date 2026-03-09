@@ -12,6 +12,7 @@ public protocol POSOrderServiceProtocol {
     ///   - cart: Cart with different types of items and quantities.
     /// - Returns: Order from the remote sync.
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order
+    func loadOrder(orderID: Int64) async throws -> Order
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws
     func markOrderAsCompletedWithCashPayment(order: Order, changeDueAmount: String?) async throws
 }
@@ -42,6 +43,14 @@ public final class POSOrderService: POSOrderServiceProtocol {
     }
 
     // MARK: - Protocol conformance
+
+    public func loadOrder(orderID: Int64) async throws -> Order {
+        do {
+            return try await ordersRemote.loadPOSOrder(siteID: siteID, orderID: orderID)
+        } catch {
+            throw POSOrderServiceError.updateOrderFailed
+        }
+    }
 
     public func syncOrder(cart: POSCart,
                           currency: CurrencyCode) async throws -> Order {

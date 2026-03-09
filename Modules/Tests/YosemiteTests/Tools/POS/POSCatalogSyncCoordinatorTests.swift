@@ -564,7 +564,8 @@ struct POSCatalogSyncCoordinatorTests {
         try await sut.performFullSync(for: sampleSiteID)
 
         // Then - should emit syncStarted and syncCompleted with correct siteID
-        #expect(sut.fullSyncStateModel.state[sampleSiteID] == .syncCompleted(siteID: sampleSiteID))
+        let finalState = await sut.fullSyncStateModel.state[sampleSiteID]
+        #expect(finalState == .syncCompleted(siteID: sampleSiteID))
     }
 
     // MARK: - Helper Methods
@@ -1491,6 +1492,58 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(syncSkipped != nil)
         #expect(syncSkipped?.properties?["reason"] as? String == "pos_not_opened_30_days")
         #expect(syncSkipped?.properties?["sync_type"] as? String == "incremental")
+    }
+}
+
+// MARK: - FTS Rebuild Tests
+
+extension POSCatalogSyncCoordinatorTests {
+    private func createSyncCoordinator() -> POSCatalogSyncCoordinator {
+        POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings
+        )
+    }
+
+    @Test("startBackgroundFTSRebuildIfNeeded starts rebuild when index empty but products exist")
+    func test_startBackgroundFTSRebuildIfNeeded_starts_rebuild_when_needed() async throws {
+        // Given: Products exist but FTS index is empty
+        try await grdbManager.databaseConnection.write { db in
+            try PersistedSite(id: sampleSiteID).insert(db)
+            let product = PersistedProduct(
+                id: 100,
+                siteID: sampleSiteID,
+                name: "Test Product",
+                productTypeKey: "simple",
+                fullDescription: nil,
+                shortDescription: nil,
+                sku: nil,
+                globalUniqueID: nil,
+                price: "10.00",
+                downloadable: false,
+                parentID: 0,
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock",
+                statusKey: "publish"
+            )
+            try product.insert(db)
+        }
+
+        let sut = createSyncCoordinator()
+
+        // When: Start background rebuild and wait for completion
+        await sut.startBackgroundFTSRebuildIfNeeded(for: sampleSiteID)
+        await sut.awaitBackgroundFTSRebuild(for: sampleSiteID)
+
+        // Then: FTS index is populated
+        let results = try await grdbManager.databaseConnection.read { db in
+            try POSSearchIndexBuilder.search(siteID: sampleSiteID, term: "Test", in: db)
+        }
+        #expect(results.count == 1)
     }
 }
 

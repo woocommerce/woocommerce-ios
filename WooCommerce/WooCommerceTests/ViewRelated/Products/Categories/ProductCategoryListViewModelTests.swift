@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 @testable import Networking

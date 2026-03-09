@@ -1,10 +1,20 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
+@testable import Yosemite
 
 
 /// Date+Woo: Unit Tests
 ///
 final class DateWooTests: XCTestCase {
+
+    private let originalStores: StoresManager = ServiceLocator.stores
+
+    override func tearDown() {
+        ServiceLocator.setStores(originalStores)
+        ServiceLocator.stores.removeDefaultStore()
+        super.tearDown()
+    }
 
     func testIsSameYearReturnsTrueIfTheDatesAreFromTheSameYear() {
         let calendar = Calendar.current
@@ -109,8 +119,9 @@ final class DateWooTests: XCTestCase {
         // Given
         // GMT: Monday, December 25, 2023 3:23:31 AM
         let date = Date(timeIntervalSince1970: 1703474611)
-        ServiceLocator.stores.updateDefaultStore(storeID: 1)
-        ServiceLocator.stores.updateDefaultStore(.fake().copy(siteID: 1, gmtOffset: -12))
+        let site = Site.fake().copy(siteID: 1, gmtOffset: -12)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        ServiceLocator.setStores(stores)
         let locale = Locale(identifier: "en_US")
 
         // When

@@ -75,7 +75,10 @@ class AuthenticatedState: StoresManagerState {
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            FeatureFlagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            FeatureFlagStore(dispatcher: dispatcher,
+                            storageManager: storageManager,
+                            network: network,
+                            overrideStore: ServiceLocator.remoteFeatureFlagOverrideStore),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -86,13 +89,6 @@ class AuthenticatedState: StoresManagerState {
                 dispatcher: dispatcher,
                 storageManager: storageManager,
                 network: network,
-                crashLogger: ServiceLocator.crashLogging,
-                isCIABEnvironmentSupported: {
-                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciab)
-                },
-                currentSite: {
-                    sessionManager.defaultSite
-                }
             ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Networking
 import WooFoundation
@@ -62,6 +63,26 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isPurchaseButtonEnabled)
+    }
+
+    func test_isPurchaseButtonEnabled_false_when_destination_phone_is_invalid() throws {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA", phone: "123-4567")
+        )
+
+        // When
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+
+        // Then
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
     }
 
     func test_selecting_standard_shipping_rate_sets_expected_shippingRates() throws {
@@ -1002,11 +1023,11 @@ private extension WooShippingShipmentDetailsViewModelTests {
         )
     }
 
-    func sampleDestinationAddress(country: String, state: String) -> WooShippingAddress {
+    func sampleDestinationAddress(country: String, state: String, phone: String = "234-567-8901") -> WooShippingAddress {
         WooShippingAddress(company: "",
                            name: "",
                            email: nil,
-                           phone: "",
+                           phone: phone,
                            country: country,
                            state: state,
                            address1: "1 Main Street",

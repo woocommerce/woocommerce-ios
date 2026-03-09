@@ -72,6 +72,7 @@ struct POSOrderDetailsView: View {
                         paymentMethodTitle: order.paymentMethodTitle,
                         refunds: order.refunds,
                         netAmount: order.formattedNetAmount,
+                        paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
                         siteTimezone: siteTimezone
                     )
                 }
@@ -541,6 +542,15 @@ private enum Localization {
         value: "Products",
         comment: "Label for products subtotal in the totals section"
     )
+
+    static func viaPaymentMethod(_ method: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.viaPaymentMethod",
+            value: "Via %1$@",
+            comment: "Payment method description shown in refund detail dialog. %1$@ is the payment method name."
+        )
+        return String(format: format, method)
+    }
 
     static let emailReceiptActionTitle = NSLocalizedString(
         "pos.orderDetailsView.emailReceiptAction.title",

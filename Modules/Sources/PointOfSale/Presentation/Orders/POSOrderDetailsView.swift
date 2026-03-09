@@ -178,10 +178,10 @@ private extension POSOrderDetailsView {
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                ForEach(items) { item in
                     refundedProductRow(item: item)
 
-                    if index < items.count - 1 {
+                    if item.id != items.last?.id {
                         divider
                     }
                 }

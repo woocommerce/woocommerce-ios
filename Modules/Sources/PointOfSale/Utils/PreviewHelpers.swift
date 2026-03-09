@@ -29,6 +29,7 @@ import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
 import struct Yosemite.POSRefundItem
 import struct Yosemite.POSRefundsResult
+import struct Yosemite.POSRefundData
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory
@@ -916,9 +917,9 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
 
     func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 
-    func loadRefundedProducts(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSRefundItem] { [] }
-
-    func loadEnrichedRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
+    func loadRefundData(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundData {
+        POSRefundData(refundedProducts: [], refunds: [])
+    }
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

@@ -48,26 +48,16 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         return calculator.calculateRefundAmounts(for: items, numberOfDecimals: 2)
     }
 
-    var loadRefundedProductsResultToReturn: [POSRefundItem] = []
-    var loadRefundedProductsErrorToThrow: Error?
+    // MARK: - loadRefundData
 
-    func loadRefundedProducts(for order: Yosemite.POSOrder) async throws -> [POSRefundItem] {
-        if let error = loadRefundedProductsErrorToThrow {
+    var loadRefundDataResultToReturn: POSRefundData = POSRefundData(refundedProducts: [], refunds: [])
+    var loadRefundDataErrorToThrow: Error?
+
+    func loadRefundData(for order: Yosemite.POSOrder) async throws -> POSRefundData {
+        if let error = loadRefundDataErrorToThrow {
             throw error
         }
-        return loadRefundedProductsResultToReturn
-    }
-
-    // MARK: - loadEnrichedRefunds
-
-    var loadEnrichedRefundsResultToReturn: [POSOrderRefund] = []
-    var loadEnrichedRefundsErrorToThrow: Error?
-
-    func loadEnrichedRefunds(for order: Yosemite.POSOrder) async throws -> [POSOrderRefund] {
-        if let error = loadEnrichedRefundsErrorToThrow {
-            throw error
-        }
-        return loadEnrichedRefundsResultToReturn
+        return loadRefundDataResultToReturn
     }
 
     // MARK: - createRefund

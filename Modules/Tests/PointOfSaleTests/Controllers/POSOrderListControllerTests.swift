@@ -12,6 +12,7 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
 import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSRefundData
 @testable import struct Yosemite.POSRefundsResult
 @testable import struct Yosemite.POSRefundableItem
 import class WooFoundation.CurrencySettings
@@ -1140,10 +1141,13 @@ final class POSOrderListControllerTests {
         // Given
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
-        refundsService.loadRefundedProductsResultToReturn = [
-            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00"),
-            POSRefundItem(refundedItemID: 2, quantity: 1, name: "Item B", formattedPrice: "$5.00", formattedTotal: "-$5.00")
-        ]
+        refundsService.loadRefundDataResultToReturn = POSRefundData(
+            refundedProducts: [
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00"),
+                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Item B", formattedPrice: "$5.00", formattedTotal: "-$5.00")
+            ],
+            refunds: []
+        )
 
         // When
         await sut.loadRefundedProducts()
@@ -1181,7 +1185,7 @@ final class POSOrderListControllerTests {
         // Given
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
-        refundsService.loadRefundedProductsErrorToThrow = NSError(domain: "test", code: 1)
+        refundsService.loadRefundDataErrorToThrow = NSError(domain: "test", code: 1)
 
         // When
         await sut.loadRefundedProducts()
@@ -1203,10 +1207,12 @@ final class POSOrderListControllerTests {
             reason: "Customer request",
             dateCreated: Date(timeIntervalSince1970: 1000000)
         )
-        refundsService.loadEnrichedRefundsResultToReturn = [enrichedRefund]
-        refundsService.loadRefundedProductsResultToReturn = [
-            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
-        ]
+        refundsService.loadRefundDataResultToReturn = POSRefundData(
+            refundedProducts: [
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+            ],
+            refunds: [enrichedRefund]
+        )
 
         // When
         await sut.loadRefundedProducts()
@@ -1217,21 +1223,18 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func test_loadRefundedProducts_when_enriched_refunds_throws_then_selectedOrder_refunds_unchanged() async throws {
+    @Test func test_loadRefundedProducts_when_service_throws_then_selectedOrder_refunds_unchanged() async throws {
         // Given
         let originalRefund = POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")
         let order = makeOrder(refunds: [originalRefund])
         sut.selectOrder(order)
 
-        refundsService.loadRefundedProductsResultToReturn = [
-            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
-        ]
-        refundsService.loadEnrichedRefundsErrorToThrow = NSError(domain: "test", code: 1)
+        refundsService.loadRefundDataErrorToThrow = NSError(domain: "test", code: 1)
 
         // When
         await sut.loadRefundedProducts()
 
-        // Then: both cleared on error since async let groups fail together
+        // Then
         #expect(sut.refundedProducts.isEmpty)
         #expect(sut.selectedOrder?.refunds.first?.dateCreated == nil)
     }
@@ -1241,9 +1244,12 @@ final class POSOrderListControllerTests {
         // Given: Load some refunded products first
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
-        refundsService.loadRefundedProductsResultToReturn = [
-            POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
-        ]
+        refundsService.loadRefundDataResultToReturn = POSRefundData(
+            refundedProducts: [
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Item A", formattedPrice: "$10.00", formattedTotal: "-$10.00")
+            ],
+            refunds: []
+        )
         await sut.loadRefundedProducts()
         try #require(sut.refundedProducts.count == 1)
 

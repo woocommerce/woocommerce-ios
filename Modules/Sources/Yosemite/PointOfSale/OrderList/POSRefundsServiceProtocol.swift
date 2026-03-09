@@ -40,10 +40,19 @@ public struct POSRefundRequestItem {
     }
 }
 
+public struct POSRefundData {
+    public let refundedProducts: [POSRefundItem]
+    public let refunds: [POSOrderRefund]
+
+    public init(refundedProducts: [POSRefundItem], refunds: [POSOrderRefund]) {
+        self.refundedProducts = refundedProducts
+        self.refunds = refunds
+    }
+}
+
 public protocol POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult
     func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts
     func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws
-    func loadRefundedProducts(for order: POSOrder) async throws -> [POSRefundItem]
-    func loadEnrichedRefunds(for order: POSOrder) async throws -> [POSOrderRefund]
+    func loadRefundData(for order: POSOrder) async throws -> POSRefundData
 }

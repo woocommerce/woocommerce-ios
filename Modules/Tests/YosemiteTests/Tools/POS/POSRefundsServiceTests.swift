@@ -240,9 +240,9 @@ struct POSRefundsServiceTests {
         #expect(result.isFullyRefunded == true)
     }
 
-    // MARK: - loadEnrichedRefunds Tests
+    // MARK: - loadRefundData Tests
 
-    @Test func loadEnrichedRefunds_then_calls_remote_with_expected_params() async throws {
+    @Test func loadRefundData_then_calls_remote_with_expected_params() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let siteID: Int64 = 123
@@ -254,7 +254,7 @@ struct POSRefundsServiceTests {
         let order = makeOrder(id: 1, refunds: orderRefunds)
 
         // When
-        _ = try await sut.loadEnrichedRefunds(for: order)
+        _ = try await sut.loadRefundData(for: order)
 
         // Then
         #expect(remote.spySiteID == siteID)
@@ -262,7 +262,7 @@ struct POSRefundsServiceTests {
         #expect(remote.spyRefundIDs == [10, 20])
     }
 
-    @Test func loadEnrichedRefunds_when_remote_fails_then_propagates_error() async throws {
+    @Test func loadRefundData_when_remote_fails_then_propagates_error() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         struct TestError: Error {}
@@ -272,14 +272,14 @@ struct POSRefundsServiceTests {
 
         // Then
         do {
-            _ = try await sut.loadEnrichedRefunds(for: order)
+            _ = try await sut.loadRefundData(for: order)
             Issue.record("Expected error to be thrown")
         } catch {
             #expect(error is TestError)
         }
     }
 
-    @Test func loadEnrichedRefunds_when_remote_succeeds_then_maps_dateCreated() async throws {
+    @Test func loadRefundData_then_maps_refunds_with_dateCreated() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let sut = makeSUT(remote: remote)
@@ -289,16 +289,16 @@ struct POSRefundsServiceTests {
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 10, formattedTotal: "-$25.50")])
 
         // When
-        let result = try await sut.loadEnrichedRefunds(for: order)
+        let result = try await sut.loadRefundData(for: order)
 
         // Then
-        #expect(result.count == 1)
-        #expect(result[0].refundID == 10)
-        #expect(result[0].dateCreated == expectedDate)
-        #expect(result[0].reason == "Customer request")
+        #expect(result.refunds.count == 1)
+        #expect(result.refunds[0].refundID == 10)
+        #expect(result.refunds[0].dateCreated == expectedDate)
+        #expect(result.refunds[0].reason == "Customer request")
     }
 
-    @Test func loadEnrichedRefunds_then_formats_amount_as_negative() async throws {
+    @Test func loadRefundData_then_formats_enrichedRefund_amount_as_negative() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let sut = makeSUT(remote: remote)
@@ -307,14 +307,14 @@ struct POSRefundsServiceTests {
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$42.99")])
 
         // When
-        let result = try await sut.loadEnrichedRefunds(for: order)
+        let result = try await sut.loadRefundData(for: order)
 
         // Then
-        #expect(result[0].formattedTotal.contains("-"))
-        #expect(result[0].formattedTotal.contains("42.99"))
+        #expect(result.refunds[0].formattedTotal.contains("-"))
+        #expect(result.refunds[0].formattedTotal.contains("42.99"))
     }
 
-    @Test func loadEnrichedRefunds_when_reason_is_empty_then_reason_is_nil() async throws {
+    @Test func loadRefundData_when_reason_is_empty_then_enrichedRefund_reason_is_nil() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let sut = makeSUT(remote: remote)
@@ -323,10 +323,10 @@ struct POSRefundsServiceTests {
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10")])
 
         // When
-        let result = try await sut.loadEnrichedRefunds(for: order)
+        let result = try await sut.loadRefundData(for: order)
 
         // Then
-        #expect(result[0].reason == nil)
+        #expect(result.refunds[0].reason == nil)
     }
 
     // MARK: - createRefund Tests

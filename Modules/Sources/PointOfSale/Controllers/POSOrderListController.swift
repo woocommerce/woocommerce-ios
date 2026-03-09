@@ -426,11 +426,9 @@ enum RefundActionAvailability {
             return
         }
         do {
-            async let productsTask = refundsService.loadRefundedProducts(for: order)
-            async let refundsTask = refundsService.loadEnrichedRefunds(for: order)
-            refundedProducts = try await productsTask
-            let enrichedRefunds = try await refundsTask
-            selectedOrder = order.copy(refunds: enrichedRefunds)
+            let refundData = try await refundsService.loadRefundData(for: order)
+            refundedProducts = refundData.refundedProducts
+            selectedOrder = order.copy(refunds: refundData.refunds)
         } catch {
             DDLogError("⛔️ Failed to load refunded products: \(error)")
             refundedProducts = []

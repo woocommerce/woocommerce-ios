@@ -46,12 +46,12 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         self.mapper = POSRefundMapper()
     }
 
-    public func loadRefundedProducts(for order: POSOrder) async throws -> [POSRefundItem] {
+    public func loadRefundData(for order: POSOrder) async throws -> POSRefundData {
         let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let currency = currencySettings.currencyCode.rawValue
 
-        return refunds.flatMap { refund in
+        let refundedProducts = refunds.flatMap { refund in
             mapper.mapWithDisplayData(
                 refund: refund,
                 orderItems: order.lineItems,
@@ -59,14 +59,8 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 currency: currency
             )
         }
-    }
 
-    public func loadEnrichedRefunds(for order: POSOrder) async throws -> [POSOrderRefund] {
-        let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
-        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        let currency = currencySettings.currencyCode.rawValue
-
-        return refunds.map { refund in
+        let mappedRefunds = refunds.map { refund in
             let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency, isNegative: true) ?? ""
             return POSOrderRefund(
                 refundID: refund.refundID,
@@ -75,6 +69,8 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 dateCreated: refund.dateCreated
             )
         }
+
+        return POSRefundData(refundedProducts: refundedProducts, refunds: mappedRefunds)
     }
 
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult {

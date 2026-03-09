@@ -471,6 +471,7 @@ private extension POSOrderDetailsView {
 
 private extension POSOrderDetailsView {
     func initiateRefundFlow() {
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowStarted())
         refundModalState = .loading
         Task { @MainActor in
             let result = await orderListModel.ordersController.startRefundFlow()

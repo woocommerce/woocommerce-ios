@@ -80,7 +80,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             formattedRefundTotal: "$0.00",
             paymentMethodDescription: "Via payment card",
             customerEmail: nil,
-            refundReason: nil
+            refundReason: nil,
+            isFullRefund: selectedItems.count == refundSelectableItems.count
         )
     }
 

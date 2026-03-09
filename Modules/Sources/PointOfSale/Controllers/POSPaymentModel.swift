@@ -170,6 +170,10 @@ extension POSPaymentModel {
     }
 
     func cancelThenCollectPayment() async {
+        if case .reconnecting = cardReaderConnectionStatus {
+            await cardPresentPaymentService.cancelReconnection()
+        }
+
         try? await cardPresentPaymentService.cancelPayment()
         await collectCardPayment()
     }

@@ -50,8 +50,30 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
 
     var loadOrderRefundsResultToReturn: [POSOrderRefund] = []
     var loadOrderRefundsErrorToThrow: Error?
+    var shouldSuspendLoadOrderRefunds = false
+    private var loadOrderRefundsContinuation: CheckedContinuation<Void, Never>?
+    private var loadOrderRefundsCallContinuation: CheckedContinuation<Void, Never>?
+
+    func awaitLoadOrderRefundsCall() async {
+        await withCheckedContinuation { continuation in
+            loadOrderRefundsCallContinuation = continuation
+        }
+    }
+
+    func resumeLoadOrderRefunds() {
+        loadOrderRefundsContinuation?.resume()
+        loadOrderRefundsContinuation = nil
+    }
 
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [POSOrderRefund] {
+        loadOrderRefundsCallContinuation?.resume()
+        loadOrderRefundsCallContinuation = nil
+
+        if shouldSuspendLoadOrderRefunds {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                loadOrderRefundsContinuation = continuation
+            }
+        }
         if let error = loadOrderRefundsErrorToThrow {
             throw error
         }

@@ -1227,6 +1227,42 @@ final class POSOrderListControllerTests {
         // Then
         #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
+
+    @MainActor
+    @Test func test_loadOrderRefunds_when_selected_order_changes_during_fetch_then_discards_stale_result() async throws {
+        // Given: Select Order A and start loading its refunds
+        let orderA = makeOrder(id: 1, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(orderA)
+        refundsService.shouldSuspendLoadOrderRefunds = true
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: 1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+
+        // Start the fetch. Await until mock confirms it's been called and is suspended
+        let loadTask = Task { @MainActor in
+            await sut.loadOrderRefunds()
+        }
+        await refundsService.awaitLoadOrderRefundsCall()
+
+        // When: Switch to Order B while fetch is genuinely in-flight
+        let orderB = makeOrder(id: 2, refunds: [POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")])
+        sut.selectOrder(orderB)
+
+        // Resume Order A's fetch — it should complete but discard the result
+        refundsService.resumeLoadOrderRefunds()
+        await loadTask.value
+
+        // Then: selectedOrder should still be Order B, not overwritten by Order A's result
+        #expect(sut.selectedOrder?.id == 2)
+        #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
+    }
 }
 
 private extension POSOrderListControllerTests {

@@ -3,20 +3,7 @@ import struct NetworkingCore.Refund
 import class WooFoundationCore.CurrencyFormatter
 
 struct POSRefundMapper {
-    func map(refund: NetworkingCore.Refund) -> POSRefund {
-        let refundItems = refund.items.map { item in
-            let refundedItemID = item.refundedItemID.flatMap { Int64($0) }
-            return POSRefundItem(refundedItemID: refundedItemID,
-                                 quantity: item.quantity,
-                                 name: item.name,
-                                 formattedPrice: "",
-                                 formattedTotal: "",
-                                 imageSrc: nil)
-        }
-        return POSRefund(items: refundItems)
-    }
-
-    func mapWithDisplayData(refund: NetworkingCore.Refund,
+    func map(refund: NetworkingCore.Refund,
                             orderItems: [POSOrderItem],
                             currencyFormatter: CurrencyFormatter,
                             currency: String) -> [POSRefundItem] {

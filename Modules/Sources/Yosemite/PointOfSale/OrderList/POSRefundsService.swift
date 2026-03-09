@@ -52,7 +52,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         let currency = currencySettings.currencyCode.rawValue
 
         return refunds.map { refund in
-            let items = mapper.mapWithDisplayData(
+            let items = mapper.map(
                 refund: refund,
                 orderItems: order.lineItems,
                 currencyFormatter: currencyFormatter,
@@ -75,7 +75,16 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         let refunds = try await refundsTask
         let gateways = await gatewaysTask
 
-        let mappedRefunds = refunds.map { mapper.map(refund: $0) }
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currency = currencySettings.currencyCode.rawValue
+        let mappedRefunds = refunds.map { refund in
+            POSRefund(items: mapper.map(
+                refund: refund,
+                orderItems: order.lineItems,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            ))
+        }
         let isFullyRefunded = areAllProductsFullyRefunded(
             orderedQuantities: order.lineItemQuantitiesByProductOrVariationID,
             refunds: refunds

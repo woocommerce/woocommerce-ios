@@ -8,6 +8,7 @@ import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
 import struct Yosemite.POSRefundItem
+import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSRefundAmounts
@@ -30,6 +31,7 @@ protocol POSOrderListControllerProtocol {
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
     var refundedProducts: [POSRefundItem] { get }
+    var enrichedRefunds: [POSOrderRefund] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -71,6 +73,7 @@ enum RefundActionAvailability {
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private(set) var refundedProducts: [POSRefundItem] = []
+    private(set) var enrichedRefunds: [POSOrderRefund] = []
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
@@ -228,6 +231,7 @@ enum RefundActionAvailability {
         selectedOrder = order
         selectedOrderRefundsState = .idle
         refundedProducts = []
+        enrichedRefunds = []
     }
 
     @MainActor
@@ -422,13 +426,18 @@ enum RefundActionAvailability {
     func loadRefundedProducts() async {
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
             refundedProducts = []
+            enrichedRefunds = []
             return
         }
         do {
-            refundedProducts = try await refundsService.loadRefundedProducts(for: order)
+            async let productsTask = refundsService.loadRefundedProducts(for: order)
+            async let refundsTask = refundsService.loadEnrichedRefunds(for: order)
+            refundedProducts = try await productsTask
+            enrichedRefunds = try await refundsTask
         } catch {
             DDLogError("⛔️ Failed to load refunded products: \(error)")
             refundedProducts = []
+            enrichedRefunds = []
         }
     }
 }

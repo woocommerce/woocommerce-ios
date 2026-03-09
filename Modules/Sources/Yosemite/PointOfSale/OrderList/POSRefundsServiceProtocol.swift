@@ -45,4 +45,5 @@ public protocol POSRefundsServiceProtocol {
     func calculateRefundAmounts(for items: [POSRefundableItem]) -> POSRefundAmounts
     func createRefund(orderID: Int64, items: [POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws
     func loadRefundedProducts(for order: POSOrder) async throws -> [POSRefundItem]
+    func loadEnrichedRefunds(for order: POSOrder) async throws -> [POSOrderRefund]
 }

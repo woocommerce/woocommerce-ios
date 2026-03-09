@@ -61,6 +61,22 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         }
     }
 
+    public func loadEnrichedRefunds(for order: POSOrder) async throws -> [POSOrderRefund] {
+        let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currency = currencySettings.currencyCode.rawValue
+
+        return refunds.map { refund in
+            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency, isNegative: true) ?? ""
+            return POSOrderRefund(
+                refundID: refund.refundID,
+                formattedTotal: formattedTotal,
+                reason: refund.reason.isEmpty ? nil : refund.reason,
+                dateCreated: refund.dateCreated
+            )
+        }
+    }
+
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult {
         async let refundsTask = refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
         async let gatewaysTask = fetchPaymentGateways()

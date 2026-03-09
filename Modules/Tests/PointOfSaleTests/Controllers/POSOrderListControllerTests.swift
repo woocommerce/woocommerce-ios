@@ -482,7 +482,7 @@ final class POSOrderListControllerTests {
         // Given: Order has 3 units of item, 1 was previously refunded
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1)])],
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
             isFullyRefunded: false,
             supportsAutomaticRefund: true
         )
@@ -504,7 +504,7 @@ final class POSOrderListControllerTests {
         // Given: Order has 2 units of item, both were previously refunded
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2)])],
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
             isFullyRefunded: false,
             supportsAutomaticRefund: true
         )
@@ -529,8 +529,8 @@ final class POSOrderListControllerTests {
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [
-                POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2)]),
-                POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2)])
+                POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)]),
+                POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])
             ],
             isFullyRefunded: false,
             supportsAutomaticRefund: true

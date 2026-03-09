@@ -14,10 +14,10 @@ public struct POSRefundItem: Identifiable, Equatable, Hashable {
 
     public init(refundedItemID: Int64?,
                 quantity: Decimal,
-                name: String = "",
-                formattedPrice: String = "",
-                formattedTotal: String = "",
-                imageSrc: String? = nil,
+                name: String,
+                formattedPrice: String,
+                formattedTotal: String,
+                imageSrc: String?,
                 id: UUID = UUID()) {
         self.id = id
         self.refundedItemID = refundedItemID

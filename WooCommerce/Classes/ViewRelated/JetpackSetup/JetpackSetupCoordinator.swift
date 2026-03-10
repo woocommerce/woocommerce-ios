@@ -59,13 +59,17 @@ final class JetpackSetupCoordinator {
         self.featureFlagService = featureFlagService
     }
 
-    func showBenefitModal() {
-        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
-            await self?.handleBenefitModalCTA()
-        }, onDismiss: { [weak self] in
-            self?.rootViewController.dismiss(animated: true, completion: nil)
-        })
-        rootViewController.present(benefitsController, animated: true, completion: nil)
+    /// Single entry point for starting Jetpack setup.
+    /// Skips the benefits modal when the self-driven push notifications feature flag is enabled.
+    ///
+    func startSetup() {
+        if featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) {
+            Task { @MainActor in
+                await startSetupDirectly()
+            }
+        } else {
+            showBenefitModal()
+        }
     }
 
     func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
@@ -99,8 +103,22 @@ final class JetpackSetupCoordinator {
         }
     }
 
+}
+
+// MARK: - Private helpers
+//
+private extension JetpackSetupCoordinator {
+    func showBenefitModal() {
+        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
+            await self?.handleBenefitModalCTA()
+        }, onDismiss: { [weak self] in
+            self?.rootViewController.dismiss(animated: true, completion: nil)
+        })
+        rootViewController.present(benefitsController, animated: true, completion: nil)
+    }
+
     /// Starts the Jetpack setup flow directly, skipping the benefits modal.
-    /// Used when the Woo Push Notifications feature is enabled.
+    /// Used when the self-driven push notifications feature is enabled.
     ///
     @MainActor
     func startSetupDirectly() async {
@@ -116,41 +134,25 @@ final class JetpackSetupCoordinator {
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.present(progressView, animated: true)
-        do {
-            try await checkJetpackConnectionState()
-            await progressView.dismiss(animated: true)
-            analytics.track(event: .JetpackSetup.connectionCheckCompleted(
-                isAlreadyConnected: jetpackConnectedEmail != nil,
-                requiresConnectionOnly: requiresConnectionOnly
-            ))
-            if let connectedEmail = jetpackConnectedEmail {
-                startAuthentication(with: connectedEmail)
-            } else {
-                showWPComEmailLogin()
-            }
-        } catch JetpackCheckError.missingPermission {
-            await progressView.dismiss(animated: true)
-            displayAdminRoleRequiredError()
-            analytics.track(.jetpackSetupConnectionCheckFailed, withError: JetpackCheckError.missingPermission)
-        } catch {
-            await progressView.dismiss(animated: true)
-            DDLogError("⛔️ Jetpack status fetched error: \(error)")
-            analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
-            showAlert(message: Localization.errorCheckingJetpack)
-        }
+        await checkConnectionAndAuthenticate(dismissing: progressView)
     }
-}
 
-// MARK: - Private helpers
-//
-private extension JetpackSetupCoordinator {
     @MainActor
     func handleBenefitModalCTA() async {
         guard site.isNonJetpackSite else {
             return presentJCPJetpackInstallFlow()
         }
+        await checkConnectionAndAuthenticate()
+    }
+
+    /// Checks Jetpack connection state, tracks analytics, and starts authentication.
+    /// Optionally dismisses a presented view controller (e.g. a loading indicator) on completion.
+    ///
+    @MainActor
+    func checkConnectionAndAuthenticate(dismissing viewController: UIViewController? = nil) async {
         do {
             try await checkJetpackConnectionState()
+            await viewController?.dismiss(animated: true)
             analytics.track(event: .JetpackSetup.connectionCheckCompleted(
                 isAlreadyConnected: jetpackConnectedEmail != nil,
                 requiresConnectionOnly: requiresConnectionOnly
@@ -161,9 +163,11 @@ private extension JetpackSetupCoordinator {
                 showWPComEmailLogin()
             }
         } catch JetpackCheckError.missingPermission {
+            await viewController?.dismiss(animated: true)
             displayAdminRoleRequiredError()
             analytics.track(.jetpackSetupConnectionCheckFailed, withError: JetpackCheckError.missingPermission)
         } catch {
+            await viewController?.dismiss(animated: true)
             DDLogError("⛔️ Jetpack status fetched error: \(error)")
             analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
             showAlert(message: Localization.errorCheckingJetpack)

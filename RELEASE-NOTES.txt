@@ -4,7 +4,6 @@
 -----
 - [Internal] Skip Jetpack benefits screen during setup when self driven push notifications feature is enabled [https://github.com/woocommerce/woocommerce-ios/pull/16791]
 
-
 24.3
 -----
 - [*] Fix issue displaying onboarding tasks when logging in to sites with pretty permalinks using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16731]

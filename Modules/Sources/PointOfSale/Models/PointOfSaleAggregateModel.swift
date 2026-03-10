@@ -375,10 +375,9 @@ extension PointOfSaleAggregateModel {
         paymentModel.connectCardReader()
     }
 
+    @MainActor
     func cancelReconnection() {
-        Task { @MainActor [weak self] in
-            await self?.cardPresentPaymentService.cancelReconnection()
-        }
+        paymentModel.cancelReconnection()
     }
 
     @MainActor

@@ -92,6 +92,7 @@ struct POSPaymentContentView: View {
                 paymentState: paymentModel.paymentState,
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                 connectCardReaderAction: paymentModel.connectCardReader,
+                cancelReconnectionAction: paymentModel.cancelReconnection,
                 showLoadingWhenIdle: !paymentModel.isZeroTotal)
         }
     }

@@ -175,6 +175,10 @@ extension POSPaymentModel {
         }
 
         try? await cardPresentPaymentService.cancelPayment()
+
+        guard case .connected = cardReaderConnectionStatus else {
+            return
+        }
         await collectCardPayment()
     }
 
@@ -182,6 +186,12 @@ extension POSPaymentModel {
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor [weak self] in
             _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+        }
+    }
+
+    func cancelReconnection() {
+        Task { @MainActor [weak self] in
+            await self?.cardPresentPaymentService.cancelReconnection()
         }
     }
 

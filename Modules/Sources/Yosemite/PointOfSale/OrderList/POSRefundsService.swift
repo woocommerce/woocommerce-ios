@@ -58,7 +58,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 currencyFormatter: currencyFormatter,
                 currency: currency
             )
-            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency) ?? ""
+            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency, isNegative: true) ?? ""
             return POSOrderRefund(
                 refundID: refund.refundID,
                 formattedTotal: formattedTotal,

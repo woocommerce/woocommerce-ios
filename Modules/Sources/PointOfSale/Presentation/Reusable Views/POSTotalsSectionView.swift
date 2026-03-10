@@ -123,8 +123,8 @@ struct POSTotalsSectionView: View {
             }
 
             if isLoadingRefundDetails {
-                shimmeringRow
-                shimmeringRow
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
             } else {
                 if let dateCreated = refund.dateCreated {
                     Text(refundDateFormatter.string(from: dateCreated))
@@ -152,11 +152,10 @@ struct POSTotalsSectionView: View {
         ))
     }
 
-    @ViewBuilder
-    private var shimmeringRow: some View {
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
         Rectangle()
             .fill(Color.posOnSurfaceVariantLowest)
-            .frame(width: RefundShimmerConstants.rowWidth, height: POSPadding.medium)
+            .frame(width: width, height: height)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
             .shimmering()
     }
@@ -299,6 +298,8 @@ private enum Localization {
     }
 }
 
-private enum RefundShimmerConstants {
-    static let rowWidth: CGFloat = 120
+private enum Constants {
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let rowHeight: CGFloat = 16
 }

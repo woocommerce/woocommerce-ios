@@ -58,7 +58,7 @@ struct POSOrderDetailsView: View {
                         productsSection(order)
                     }
                     if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
-                        shimmeringRefundedProductsSection
+                        ghostRefundedProductsSection
                     }
                     let refundedItems = order.refunds.flatMap { $0.items }
                     if shouldShowDedicatedRefundsSection
@@ -176,51 +176,43 @@ private extension POSOrderDetailsView {
     }
 
     @ViewBuilder
-    var shimmeringRefundedProductsSection: some View {
+    var ghostRefundedProductsSection: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.refundedProductsTitle)
                 .font(.posBodyXLargeRegular)
                 .foregroundStyle(Color.posOnSurface)
                 .accessibilityAddTraits(.isHeader)
 
-            shimmeringRefundedProductRow
+            ghostRefundedProductRow
         }
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder
-    private var shimmeringRefundedProductRow: some View {
+    private var ghostRefundedProductRow: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
+            ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 120, height: POSPadding.medium)
-                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                    .shimmering()
-
-                Rectangle()
-                    .fill(Color.posOnSurfaceVariantLowest)
-                    .frame(width: 80, height: POSPadding.medium)
-                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                    .shimmering()
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
             }
 
             Spacer()
 
-            Rectangle()
-                .fill(Color.posOnSurfaceVariantLowest)
-                .frame(width: 60, height: POSPadding.medium)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-                .shimmering()
+            ghostLine(width: Constants.extraShortWidth, height: Constants.rowHeight)
         }
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 
     @ViewBuilder
@@ -564,6 +556,10 @@ private extension POSOrderDetailsView {
 
 private enum Constants {
     static let productImageSize: CGFloat = 56
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let extraShortWidth: CGFloat = 60
+    static let rowHeight: CGFloat = 16
 }
 
 // MARK: - Localization

@@ -72,6 +72,10 @@ private extension OrderStatusFilterViewController {
         rows = [.any]
         for status in allowedStatuses {
             switch status.status {
+            case .autoDraft:
+                rows.append(.autoDraft)
+            case .checkoutDraft:
+                rows.append(.checkoutDraft)
             case .pending:
                 rows.append(.pending)
             case .processing:
@@ -88,8 +92,6 @@ private extension OrderStatusFilterViewController {
                 rows.append(.refunded)
             case .custom:
                 rows.append(Row.custom(status))
-            default:
-                break
             }
         }
     }
@@ -153,6 +155,8 @@ private extension OrderStatusFilterViewController {
         // The order of the statuses declaration is according to the Order's lifecycle
         // and it is used to determine the user facing display order using the synthesized allCases
         case any
+        case autoDraft
+        case checkoutDraft
         case pending
         case processing
         case onHold
@@ -166,6 +170,10 @@ private extension OrderStatusFilterViewController {
             switch self {
             case .any:
                 return nil
+            case .autoDraft:
+                return .autoDraft
+            case .checkoutDraft:
+                return .checkoutDraft
             case .pending:
                 return .pending
             case .processing:

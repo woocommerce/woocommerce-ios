@@ -209,6 +209,32 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.orderIDs(from: snapshot), visibleOrders.orderIDs)
     }
 
+    func test_given_explicit_checkout_draft_filter_it_shows_checkout_draft_orders() throws {
+        // Given
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.checkoutDraft],
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: nil,
+                                                       numberOfActiveFilters: 1)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           filters: filters)
+
+        let draftOrders = [
+            insertOrder(id: 1, status: .checkoutDraft),
+            insertOrder(id: 2, status: .checkoutDraft),
+        ]
+        _ = insertOrder(id: 100, status: .processing)
+
+        // When
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
+
+        // Then
+        XCTAssertEqual(snapshot.numberOfItems, draftOrders.count)
+        XCTAssertEqual(viewModel.orderIDs(from: snapshot), draftOrders.orderIDs)
+    }
+
     // MARK: - App Activation
 
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {

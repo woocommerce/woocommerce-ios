@@ -85,7 +85,7 @@ public extension OrderStatusEnum {
 
     /// Statuses that represent internal/transient states and should not appear
     /// in the main order list (e.g., incomplete checkout sessions, app drafts).
-    static var statusesHiddenFromOrderList: [OrderStatusEnum] {
+    static var statusesHiddenFromOrderListByDefault: [OrderStatusEnum] {
         [.autoDraft, .checkoutDraft]
     }
 }

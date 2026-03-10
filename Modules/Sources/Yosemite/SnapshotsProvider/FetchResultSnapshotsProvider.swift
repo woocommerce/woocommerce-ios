@@ -107,8 +107,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
     private let storageManager: StorageManagerType
     /// The conditions to use when fetching the results.
     ///
-    /// In the future, we can allow this to be mutable if necessary.
-    private let query: Query
+    private var query: Query
 
     /// The NotificationCenter to use for observing notifications.
     private let notificationCenter: NotificationCenter
@@ -149,6 +148,24 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
 
         startObservingStorageManagerDidResetNotifications()
         startObservingObjectsDidChangeNotifications()
+    }
+
+    /// Updates the query and restarts fetching with the new conditions.
+    ///
+    /// If the provider was previously started via `start()`, the fetch will be
+    /// restarted immediately with the new query. Otherwise, the new query will
+    /// be used the next time `start()` is called.
+    public func updateQuery(_ newQuery: Query) {
+        let wasActive = fetchedResultsControllerIsActive
+        query = newQuery
+        fetchedResultsController = createFetchedResultsController(query: newQuery)
+
+        guard wasActive else { return }
+        do {
+            try activateFetchedResultsController()
+        } catch {
+            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with updated query: \(error)")
+        }
     }
 
     /// Retrieve the immutable type pointed to by `objectID`.

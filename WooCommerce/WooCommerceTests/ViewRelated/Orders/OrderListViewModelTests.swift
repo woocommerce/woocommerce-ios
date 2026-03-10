@@ -247,6 +247,10 @@ final class OrderListViewModelTests: XCTestCase {
         let initialSnapshot = try activateAndRetrieveSnapshot(of: viewModel)
         XCTAssertEqual(initialSnapshot.numberOfItems, 1, "Only processing order should be visible initially")
 
+        // Cancel the subscription from activateAndRetrieveSnapshot so it
+        // doesn't re-fulfill the old expectation when new snapshots arrive.
+        subscriptions.removeAll()
+
         // When — apply checkout-draft filter
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.checkoutDraft],
                                                        dateRange: nil,
@@ -256,7 +260,7 @@ final class OrderListViewModelTests: XCTestCase {
                                                        numberOfActiveFilters: 1)
 
         let updatedSnapshot: FetchResultSnapshot = waitFor { promise in
-            viewModel.snapshot.dropFirst().first().sink { snapshot in
+            viewModel.snapshot.dropFirst().sink { snapshot in
                 promise(snapshot)
             }.store(in: &self.subscriptions)
 

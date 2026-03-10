@@ -76,9 +76,6 @@ struct POSSettingsControllerTests {
         #expect(sut.connectedCardReader?.name == "WisePad 3")
         #expect(sut.connectedCardReader?.batteryLevel == 0.75)
     }
-
-
-
 }
 
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

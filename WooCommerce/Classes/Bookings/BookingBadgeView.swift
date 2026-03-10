@@ -7,114 +7,103 @@ struct BookingBadgeView: View {
     let text: String
     let textColor: Color
     let backgroundColor: Color
-    let isBordered: Bool
+    let borderColor: Color?
 
     var body: some View {
         BadgeView(text: text,
                   customizations: .init(
                     textColor: textColor,
                     backgroundColor: backgroundColor,
-                    borderColor: isBordered ? BadgeColor.border : nil,
+                    borderColor: borderColor,
                     bold: false
                   ),
                   backgroundShape: .roundedRectangle(cornerRadius: Layout.cornerRadius))
     }
 }
 
-private extension BookingBadgeView {
-    enum Layout {
-        static let cornerRadius: CGFloat = 4
+// MARK: - Badge Styles
+
+extension BookingBadgeView {
+static func `default`(text: String) -> BookingBadgeView {
+        BookingBadgeView(text: text,
+                         textColor: BadgeStyle.lightText,
+                         backgroundColor: BadgeStyle.defaultBackground,
+                         borderColor: BadgeStyle.border)
+    }
+
+static func info(text: String) -> BookingBadgeView {
+        BookingBadgeView(text: text,
+                         textColor: BadgeStyle.cancelledText,
+                         backgroundColor: BadgeStyle.cancelled,
+                         borderColor: nil)
+    }
+
+static func warning(text: String) -> BookingBadgeView {
+        BookingBadgeView(text: text,
+                         textColor: BadgeStyle.lightText,
+                         backgroundColor: BadgeStyle.warning,
+                         borderColor: nil)
+    }
+
+static func muted(text: String) -> BookingBadgeView {
+        BookingBadgeView(text: text,
+                         textColor: BadgeStyle.lightText,
+                         backgroundColor: BadgeStyle.muted,
+                         borderColor: nil)
     }
 }
 
-protocol BookingBadgeable {
-    var text: String { get }
-    var textColor: Color { get }
-    var badgeColor: Color { get }
-    var isBordered: Bool { get }
-}
+// MARK: - BookingBadgeable
 
-extension BookingBadgeable {
-    var isBordered: Bool { false }
+protocol BookingBadgeable {
+    var bookingBadge: BookingBadgeView { get }
 }
 
 extension BookingBadgeView {
     init(_ badgeable: BookingBadgeable) {
-        self.init(text: badgeable.text,
-                  textColor: badgeable.textColor,
-                  backgroundColor: badgeable.badgeColor,
-                  isBordered: badgeable.isBordered)
+        self = badgeable.bookingBadge
     }
 }
+
+// MARK: - BookingAttendanceStatus
 
 extension BookingAttendanceStatus: BookingBadgeable {
-    var badgeColor: Color {
+    var bookingBadge: BookingBadgeView {
         switch self {
         case .attended:
-            return BadgeColor.defaultBackground
+            return .default(text: localizedTitle)
         case .unattended, .unknown:
-            return BadgeColor.muted
+            return .muted(text: localizedTitle)
         }
-    }
-
-    var text: String {
-        self.localizedTitle
-    }
-
-    var textColor: Color {
-        switch self {
-        case .attended:
-            return BadgeColor.lightText
-        case .unattended, .unknown:
-            return BadgeColor.lightText
-        }
-    }
-
-    var isBordered: Bool {
-        self == .attended
     }
 }
+
+// MARK: - BookingStatus
 
 extension BookingStatus: BookingBadgeable {
-    var badgeColor: Color {
+    var bookingBadge: BookingBadgeView {
         switch self {
         case .cancelled:
-            return BadgeColor.cancelled
+            return .info(text: localizedTitle)
         default:
-            return BadgeColor.defaultBackground
+            return .default(text: localizedTitle)
         }
-    }
-
-    var text: String {
-        self.localizedTitle
-    }
-
-    var textColor: Color {
-        switch self {
-        case .cancelled:
-            return BadgeColor.cancelledText
-        default:
-            return BadgeColor.lightText
-        }
-    }
-
-    var isBordered: Bool {
-        self != .cancelled
     }
 }
 
+// MARK: - BookingPaymentStatus
 
 extension BookingPaymentStatus: BookingBadgeable {
-    var badgeColor: Color {
+    var bookingBadge: BookingBadgeView {
         switch self {
         case .paid, .refunded, .partiallyRefunded:
-            return BadgeColor.defaultBackground
+            return .default(text: text)
         case .unpaid, .failed:
-            return BadgeColor.info
+            return .warning(text: text)
         }
     }
 
-    var text: String {
+    private var text: String {
         switch self {
         case .paid:
             return Localization.paid
@@ -126,24 +115,6 @@ extension BookingPaymentStatus: BookingBadgeable {
             return Localization.refunded
         case .partiallyRefunded:
             return Localization.partiallyRefunded
-        }
-    }
-
-    var textColor: Color {
-        switch self {
-        case .paid, .refunded, .partiallyRefunded:
-            return BadgeColor.lightText
-        case .unpaid, .failed:
-            return BadgeColor.lightText
-        }
-    }
-
-    var isBordered: Bool {
-        switch self {
-        case .paid, .refunded, .partiallyRefunded:
-            return true
-        case .unpaid, .failed:
-            return false
         }
     }
 
@@ -176,17 +147,24 @@ extension BookingPaymentStatus: BookingBadgeable {
     }
 }
 
-fileprivate enum BadgeColor {
+// MARK: - Layout & Colors
+
+private extension BookingBadgeView {
+    enum Layout {
+        static let cornerRadius: CGFloat = 4
+    }
+}
+
+private enum BadgeStyle {
     static let lightGray6 = UIColor.systemGray6.resolvedColor(with: .init(userInterfaceStyle: .light))
 
-    /// Clear in light mode, light-mode systemGray6 in dark mode.
-    static let defaultBackground = Color(uiColor: UIColor { traits in
+static let defaultBackground = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark ? lightGray6 : .clear
     })
     static let muted = Color(uiColor: lightGray6)
     static let cancelled = Color(UIColor(red: 225/255, green: 236/255, blue: 248/255, alpha: 1))
     static let cancelledText = Color(UIColor(red: 0/255, green: 23/255, blue: 88/255, alpha: 1))
-    static let info = try! Color(rgbString: "rgba(255, 227, 101, 1)")
+    static let warning = try! Color(rgbString: "rgba(255, 227, 101, 1)")
     static let lightText = Color(UIColor.label.resolvedColor(with: .init(userInterfaceStyle: .light)))
     static let border = Color(uiColor: .systemGray5)
 }

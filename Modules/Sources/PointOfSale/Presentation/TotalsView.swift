@@ -5,6 +5,7 @@ struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(POSPaymentModel.self) private var paymentModel
     private let viewHelper = POSPaymentViewHelper()
+    private let totalsViewHelper = TotalsViewHelper()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -154,10 +155,9 @@ private extension TotalsView {
             case .cash:
                 return true
             case .card:
-                let viewHelper = TotalsViewHelper()
                 return paymentModel.cardPresentPaymentInlineMessage != nil ||
-                       viewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                                paymentState: paymentModel.paymentState)
+                       totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                                      paymentState: paymentModel.paymentState)
             }
         case .disconnected:
             // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
@@ -194,13 +194,12 @@ private extension TotalsView {
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:
-                let viewHelper = TotalsViewHelper()
-                if viewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                            paymentState: paymentModel.paymentState) {
+                if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                                paymentState: paymentModel.paymentState) {
                     return .primary
                 }
-                if POSPaymentViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                                    paymentState: paymentModel.paymentState) {
+                if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                          paymentState: paymentModel.paymentState) {
                     return .outlined
                 }
             }

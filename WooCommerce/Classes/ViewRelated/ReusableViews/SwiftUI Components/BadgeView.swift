@@ -107,18 +107,18 @@ private extension BadgeView {
         case .circle:
             Circle()
                 .fill(customizations.backgroundColor)
-                .overlay {
-                    if let borderColor = customizations.borderColor {
-                        Circle().stroke(borderColor, lineWidth: Layout.borderLineWidth)
+                .if(customizations.borderColor != nil) { view in
+                    view.overlay {
+                        Circle().stroke(customizations.borderColor ?? .clear, lineWidth: Layout.borderLineWidth)
                     }
                 }
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(customizations.backgroundColor)
-                .overlay {
-                    if let borderColor = customizations.borderColor {
+                .if(customizations.borderColor != nil) { view in
+                    view.overlay {
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(borderColor, lineWidth: Layout.borderLineWidth)
+                            .stroke(customizations.borderColor ?? .clear, lineWidth: Layout.borderLineWidth)
                     }
                 }
         }

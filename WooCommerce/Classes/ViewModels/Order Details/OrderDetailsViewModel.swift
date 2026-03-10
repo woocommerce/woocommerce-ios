@@ -453,7 +453,6 @@ extension OrderDetailsViewModel {
             ButtonTableViewCell.self,
             IssueRefundTableViewCell.self,
             ImageAndTitleAndTextTableViewCell.self,
-            WCShipInstallTableViewCell.self,
             OrderSubscriptionTableViewCell.self,
             TitleAndValueTableViewCell.self
         ]
@@ -614,10 +613,6 @@ extension OrderDetailsViewModel {
             let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
-        case .installWCShip:
-            //TODO: add analytics
-            let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
-            viewController.present(wcShipInstallationFlowVC, animated: true)
         case .trashOrder:
             onCellAction?(.trashOrder, indexPath)
         default:

@@ -6,7 +6,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isInboxOn: Bool
     var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
-    var shippingLabelsOnboardingM1: Bool
     var isSupportRequestEnabled: Bool
     var jetpackSetupWithApplicationPassword: Bool
     var betterCustomerSelectionInOrder: Bool
@@ -30,7 +29,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     init(isInboxOn: Bool = false,
          isShowInboxCTAEnabled: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
-         shippingLabelsOnboardingM1: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
@@ -52,7 +50,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.isInboxOn = isInboxOn
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
-        self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
@@ -87,8 +84,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isShowInboxCTAEnabled
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
-        case .shippingLabelsOnboardingM1:
-            return shippingLabelsOnboardingM1
         case .supportRequests:
             return isSupportRequestEnabled
         case .jetpackSetupWithApplicationPassword:

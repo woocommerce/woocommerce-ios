@@ -8,6 +8,7 @@ import Codegen
 ///
 public enum OrderStatusEnum: Codable, Hashable, Comparable, Sendable, GeneratedFakeable {
     case autoDraft
+    case checkoutDraft
     case pending
     case processing
     case onHold
@@ -28,6 +29,12 @@ public extension OrderStatusEnum {
                 "orderStatusEnum.localizedName.autoDraft",
                 value: "Draft",
                 comment: "Display label for auto-draft order status."
+            )
+        case .checkoutDraft:
+            return NSLocalizedString(
+                "orderStatusEnum.localizedName.checkoutDraft",
+                value: "Checkout Draft",
+                comment: "Display label for checkout-draft order status."
             )
         case .pending:
             return NSLocalizedString(
@@ -75,6 +82,12 @@ public extension OrderStatusEnum {
             return payload // unable to localize at runtime.
         }
     }
+
+    /// Statuses that represent internal/transient states and should not appear
+    /// in the main order list (e.g., incomplete checkout sessions, app drafts).
+    static var statusesHiddenFromOrderList: [OrderStatusEnum] {
+        [.autoDraft, .checkoutDraft]
+    }
 }
 
 /// RawRepresentable Conformance
@@ -87,6 +100,8 @@ extension OrderStatusEnum: RawRepresentable {
         switch rawValue {
         case Keys.autoDraft:
             self = .autoDraft
+        case Keys.checkoutDraft:
+            self = .checkoutDraft
         case Keys.pending:
             self = .pending
         case Keys.processing:
@@ -111,6 +126,7 @@ extension OrderStatusEnum: RawRepresentable {
     public var rawValue: String {
         switch self {
         case .autoDraft:            return Keys.autoDraft
+        case .checkoutDraft:        return Keys.checkoutDraft
         case .pending:              return Keys.pending
         case .processing:           return Keys.processing
         case .onHold:               return Keys.onHold
@@ -127,7 +143,8 @@ extension OrderStatusEnum: RawRepresentable {
 /// Enum containing the 'Known' OrderStatus Keys
 ///
 private enum Keys {
-    static let autoDraft    = "auto-draft"
+    static let autoDraft      = "auto-draft"
+    static let checkoutDraft  = "checkout-draft"
     static let pending      = "pending"
     static let processing   = "processing"
     static let onHold       = "on-hold"

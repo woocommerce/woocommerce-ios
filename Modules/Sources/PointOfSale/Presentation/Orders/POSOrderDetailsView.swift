@@ -32,9 +32,7 @@ struct POSOrderDetailsView: View {
     }
 
     private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     var body: some View {
@@ -58,8 +56,13 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
+                    if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
+                        ghostRefundedProductsSection
+                    }
                     let refundedItems = order.refunds.flatMap { $0.items }
-                    if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                    if shouldShowDedicatedRefundsSection
+                        && !orderListModel.ordersController.isLoadingOrderRefunds
+                        && !refundedItems.isEmpty {
                         refundedProductsSection(refundedItems)
                     }
                     POSTotalsSectionView(
@@ -72,7 +75,9 @@ struct POSOrderDetailsView: View {
                         paidAmount: order.formattedPaymentTotal,
                         paymentMethodTitle: order.paymentMethodTitle,
                         refunds: order.refunds,
-                        netAmount: order.formattedNetAmount
+                        netAmount: order.formattedNetAmount,
+                        siteTimezone: siteTimezone,
+                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds
                     )
                 }
                 .padding(.top, POSPadding.xSmall)
@@ -167,6 +172,46 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    var ghostRefundedProductsSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.refundedProductsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            ghostRefundedProductRow
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var ghostRefundedProductRow: some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
+
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            }
+
+            Spacer()
+
+            ghostLine(width: Constants.extraShortWidth, height: Constants.rowHeight)
+        }
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 
     @ViewBuilder
@@ -510,6 +555,10 @@ private extension POSOrderDetailsView {
 
 private enum Constants {
     static let productImageSize: CGFloat = 56
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let extraShortWidth: CGFloat = 60
+    static let rowHeight: CGFloat = 16
 }
 
 // MARK: - Localization

@@ -16,6 +16,8 @@ struct POSTotalsSectionView: View {
     let paymentMethodTitle: String
     let refunds: [POSOrderRefund]
     let netAmount: String?
+    var siteTimezone: TimeZone = .current
+    var isLoadingRefundDetails: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -85,8 +87,9 @@ struct POSTotalsSectionView: View {
 
     @ViewBuilder
     private var refundsContent: some View {
-        ForEach(refunds.sorted(by: { $0.refundID < $1.refundID }), id: \.refundID) { refund in
-            refundRow(refund: refund)
+        let sortedRefunds = refunds.sorted(by: { $0.refundID < $1.refundID })
+        ForEach(Array(sortedRefunds.enumerated()), id: \.element.refundID) { index, refund in
+            refundRow(refund: refund, index: index)
             sectionDivider
         }
 
@@ -101,24 +104,59 @@ struct POSTotalsSectionView: View {
         }
     }
 
-    @ViewBuilder
-    private func refundRow(refund: POSOrderRefund) -> some View {
-        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            totalsRow(
-                title: Localization.refundLabel,
-                amount: refund.formattedTotal,
-                titleColor: .posOnSurface,
-                titleFont: .posBodyLargeBold
-            )
+    private var refundDateFormatter: DateFormatter {
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
+    }
 
-            if let reason = refund.reason, !reason.isEmpty {
-                Text(Localization.reasonLabel(reason))
+    @ViewBuilder
+    private func refundRow(refund: POSOrderRefund, index: Int) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            HStack {
+                Text(Localization.refundTitle(index + 1))
+                    .font(.posBodyLargeBold)
+                    .foregroundStyle(Color.posOnSurface)
+                Spacer()
+                Text(refund.formattedTotal)
                     .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                    .foregroundStyle(Color.posError)
+            }
+
+            if isLoadingRefundDetails {
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            } else {
+                if let dateCreated = refund.dateCreated {
+                    Text(refundDateFormatter.string(from: dateCreated))
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
+
+                if let reason = refund.reason, !reason.isEmpty {
+                    Text(reason)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
+
+                Text(Localization.viewDetailsLabel)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posPrimary)
+                    .underline()
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(Localization.refundAccessibilityLabel(amount: refund.formattedTotal, reason: refund.reason))
+        .accessibilityLabel(Localization.refundAccessibilityLabel(
+            index: index + 1,
+            amount: refund.formattedTotal,
+            reason: refund.reason
+        ))
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 
     // MARK: - Generic Row
@@ -177,24 +215,24 @@ private enum Localization {
         comment: "Label for the paid amount in the totals breakdown."
     )
 
-    static let refundLabel = NSLocalizedString(
-        "pos.totalsSectionView.refundLabel",
-        value: "Refunded",
-        comment: "Label for a refund entry in the totals breakdown."
-    )
-
-    static func reasonLabel(_ reason: String) -> String {
+    static func refundTitle(_ number: Int) -> String {
         let format = NSLocalizedString(
-            "pos.totalsSectionView.reasonLabel",
-            value: "Reason: %1$@",
-            comment: "Label for refund reason. %1$@ is the reason text."
+            "pos.totalsSectionView.refundTitle",
+            value: "Refund #%1$d",
+            comment: "Title for a refund entry in the totals breakdown. %1$d is the refund number."
         )
-        return String(format: format, reason)
+        return String(format: format, number)
     }
 
+    static let viewDetailsLabel = NSLocalizedString(
+        "pos.totalsSectionView.viewDetailsLabel",
+        value: "View details",
+        comment: "Link label to view refund details in the totals breakdown."
+    )
+
     static let netPaymentLabel = NSLocalizedString(
-        "pos.totalsSectionView.netPaymentLabel",
-        value: "Net Payment",
+        "pos.totalsSectionView.totalNetPaymentLabel",
+        value: "Total net",
         comment: "Label for net payment amount after refunds."
     )
 
@@ -220,13 +258,13 @@ private enum Localization {
         return label
     }
 
-    static func refundAccessibilityLabel(amount: String, reason: String?) -> String {
+    static func refundAccessibilityLabel(index: Int, amount: String, reason: String?) -> String {
         let baseFormat = NSLocalizedString(
-            "pos.totalsSectionView.refund.accessibilityLabel",
-            value: "Refunded: %1$@",
-            comment: "Accessibility label for refunded amount. %1$@ is the refund amount."
+            "pos.totalsSectionView.refund.accessibilityLabel.v2",
+            value: "Refund number %1$d: %2$@",
+            comment: "Accessibility label for refund entry. %1$d is the refund number, %2$@ is the refund amount."
         )
-        var label = String(format: baseFormat, amount)
+        var label = String(format: baseFormat, index, amount)
 
         if let reason = reason, !reason.isEmpty {
             let reasonFormat = NSLocalizedString(
@@ -257,4 +295,10 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
+}
+
+private enum Constants {
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let rowHeight: CGFloat = 16
 }

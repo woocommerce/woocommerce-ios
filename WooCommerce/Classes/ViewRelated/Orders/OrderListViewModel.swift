@@ -229,9 +229,13 @@ final class OrderListViewModel {
     private static func createQuery(siteID: Int64, filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
+            let excludeHiddenStatuses = NSPredicate(
+                format: "NOT (statusKey IN %@)",
+                OrderStatusEnum.statusesHiddenFromOrderList.map { $0.rawValue }
+            )
             let excludeNonMatchingStatus = filters?.orderStatus.map { NSPredicate(format: "statusKey IN %@", $0.map { $0.rawValue }) }
 
-            let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
+            let predicates = [excludeSearchCache, excludeHiddenStatuses, excludeNonMatchingStatus].compactMap { $0 }
             return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         }()
 

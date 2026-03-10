@@ -1,1 +1,0 @@
-Cette mise à jour affiche les tâches de configuration de la boutique de manière plus fiable, garantit que le scan des codes-barres fonctionne sans accroc dans le Point de Vente, et améliore la fiabilité de la médiathèque. Mettez à jour maintenant pour une expérience de gestion de boutique plus fluide !

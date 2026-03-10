@@ -1,1 +1,0 @@
-Esta actualización muestra las tareas de configuración de la tienda de manera más fiable, asegura que la exploración de códigos de barras funcione sin problemas en el Punto de Venta, y mejora la fiabilidad de la biblioteca de medios. ¡Actualiza ahora para una experiencia de gestión de tienda más fluida!

@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 import struct Yosemite.POSOrderRefund
 
 /// A reusable totals breakdown card used by both order details and booking details.
@@ -17,6 +18,7 @@ struct POSTotalsSectionView: View {
     let refunds: [POSOrderRefund]
     let netAmount: String?
     var siteTimezone: TimeZone = .current
+    var isLoadingRefundDetails: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -120,22 +122,27 @@ struct POSTotalsSectionView: View {
                     .foregroundStyle(Color.posError)
             }
 
-            if let dateCreated = refund.dateCreated {
-                Text(refundDateFormatter.string(from: dateCreated))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
+            if isLoadingRefundDetails {
+                shimmeringRow
+                shimmeringRow
+            } else {
+                if let dateCreated = refund.dateCreated {
+                    Text(refundDateFormatter.string(from: dateCreated))
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
 
-            if let reason = refund.reason, !reason.isEmpty {
-                Text(reason)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
+                if let reason = refund.reason, !reason.isEmpty {
+                    Text(reason)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
 
-            Text(Localization.viewDetailsLabel)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posPrimary)
-                .underline()
+                Text(Localization.viewDetailsLabel)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posPrimary)
+                    .underline()
+            }
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(Localization.refundAccessibilityLabel(
@@ -143,6 +150,15 @@ struct POSTotalsSectionView: View {
             amount: refund.formattedTotal,
             reason: refund.reason
         ))
+    }
+
+    @ViewBuilder
+    private var shimmeringRow: some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: RefundShimmerConstants.rowWidth, height: POSPadding.medium)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 
     // MARK: - Generic Row
@@ -281,4 +297,8 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
+}
+
+private enum RefundShimmerConstants {
+    static let rowWidth: CGFloat = 120
 }

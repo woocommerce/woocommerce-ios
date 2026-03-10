@@ -1,4 +1,5 @@
 import SwiftUI
+import Shimmer
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
@@ -56,8 +57,13 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
+                    if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
+                        shimmeringRefundedProductsSection
+                    }
                     let refundedItems = order.refunds.flatMap { $0.items }
-                    if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                    if shouldShowDedicatedRefundsSection
+                        && !orderListModel.ordersController.isLoadingOrderRefunds
+                        && !refundedItems.isEmpty {
                         refundedProductsSection(refundedItems)
                     }
                     POSTotalsSectionView(
@@ -71,7 +77,8 @@ struct POSOrderDetailsView: View {
                         paymentMethodTitle: order.paymentMethodTitle,
                         refunds: order.refunds,
                         netAmount: order.formattedNetAmount,
-                        siteTimezone: siteTimezone
+                        siteTimezone: siteTimezone,
+                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds
                     )
                 }
                 .padding(.top, POSPadding.xSmall)
@@ -166,6 +173,54 @@ private extension POSOrderDetailsView {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    var shimmeringRefundedProductsSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.refundedProductsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            shimmeringRefundedProductRow
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    private var shimmeringRefundedProductRow: some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: 120, height: POSPadding.medium)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                    .shimmering()
+
+                Rectangle()
+                    .fill(Color.posOnSurfaceVariantLowest)
+                    .frame(width: 80, height: POSPadding.medium)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                    .shimmering()
+            }
+
+            Spacer()
+
+            Rectangle()
+                .fill(Color.posOnSurfaceVariantLowest)
+                .frame(width: 60, height: POSPadding.medium)
+                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+                .shimmering()
+        }
     }
 
     @ViewBuilder

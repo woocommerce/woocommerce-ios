@@ -63,7 +63,8 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 refundID: refund.refundID,
                 formattedTotal: formattedTotal,
                 reason: refund.reason.isEmpty ? nil : refund.reason,
-                items: items
+                items: items,
+                dateCreated: refund.dateCreated
             )
         }
     }

@@ -24,28 +24,28 @@ struct BookingBadgeView: View {
 // MARK: - Badge Styles
 
 extension BookingBadgeView {
-static func `default`(text: String) -> BookingBadgeView {
+    static func `default`(text: String) -> BookingBadgeView {
         BookingBadgeView(text: text,
                          textColor: BadgeStyle.lightText,
                          backgroundColor: BadgeStyle.defaultBackground,
                          borderColor: BadgeStyle.border)
     }
 
-static func info(text: String) -> BookingBadgeView {
+    static func info(text: String) -> BookingBadgeView {
         BookingBadgeView(text: text,
                          textColor: BadgeStyle.cancelledText,
                          backgroundColor: BadgeStyle.cancelled,
                          borderColor: nil)
     }
 
-static func warning(text: String) -> BookingBadgeView {
+    static func warning(text: String) -> BookingBadgeView {
         BookingBadgeView(text: text,
                          textColor: BadgeStyle.lightText,
                          backgroundColor: BadgeStyle.warning,
                          borderColor: nil)
     }
 
-static func muted(text: String) -> BookingBadgeView {
+    static func muted(text: String) -> BookingBadgeView {
         BookingBadgeView(text: text,
                          textColor: BadgeStyle.lightText,
                          backgroundColor: BadgeStyle.muted,
@@ -158,7 +158,7 @@ private extension BookingBadgeView {
 private enum BadgeStyle {
     static let lightGray6 = UIColor.systemGray6.resolvedColor(with: .init(userInterfaceStyle: .light))
 
-static let defaultBackground = Color(uiColor: UIColor { traits in
+    static let defaultBackground = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark ? lightGray6 : .clear
     })
     static let muted = Color(uiColor: lightGray6)

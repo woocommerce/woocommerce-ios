@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.4
 -----
+- [*] Hide checkout draft orders from the order list [https://github.com/woocommerce/woocommerce-ios/pull/16803]
 
 
 24.3

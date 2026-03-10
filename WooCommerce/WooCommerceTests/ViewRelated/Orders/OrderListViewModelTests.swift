@@ -235,6 +235,39 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.orderIDs(from: snapshot), draftOrders.orderIDs)
     }
 
+    func test_when_filter_changes_to_checkoutDraft_then_query_is_rebuilt_and_drafts_appear() throws {
+        // Given — start with no filter (drafts hidden by default)
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           storageManager: storageManager,
+                                           filters: nil)
+
+        let draftOrder = insertOrder(id: 1, status: .checkoutDraft)
+        _ = insertOrder(id: 2, status: .processing)
+
+        let initialSnapshot = try activateAndRetrieveSnapshot(of: viewModel)
+        XCTAssertEqual(initialSnapshot.numberOfItems, 1, "Only processing order should be visible initially")
+
+        // When — apply checkout-draft filter
+        let filters = FilterOrderListViewModel.Filters(orderStatus: [.checkoutDraft],
+                                                       dateRange: nil,
+                                                       product: nil,
+                                                       customer: nil,
+                                                       salesChannel: nil,
+                                                       numberOfActiveFilters: 1)
+
+        let updatedSnapshot: FetchResultSnapshot = waitFor { promise in
+            viewModel.snapshot.dropFirst().first().sink { snapshot in
+                promise(snapshot)
+            }.store(in: &self.subscriptions)
+
+            viewModel.updateFilters(filters: filters)
+        }
+
+        // Then
+        XCTAssertEqual(updatedSnapshot.numberOfItems, 1)
+        XCTAssertEqual(viewModel.orderIDs(from: updatedSnapshot), [draftOrder].orderIDs)
+    }
+
     // MARK: - App Activation
 
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {

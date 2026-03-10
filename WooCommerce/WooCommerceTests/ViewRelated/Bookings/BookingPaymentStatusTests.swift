@@ -54,8 +54,8 @@ struct BookingPaymentStatusTests {
         #expect(status == .partiallyRefunded)
     }
 
-    @Test("BookingPaymentStatus text values")
-    func test_text_values() {
+    @Test("BookingPaymentStatus conforms to BookingBadgeable")
+    func test_bookingBadgeable_conformance() {
         #expect(BookingPaymentStatus.paid.text == "Paid")
         #expect(BookingPaymentStatus.unpaid.text == "Unpaid")
         #expect(BookingPaymentStatus.failed.text == "Failed")

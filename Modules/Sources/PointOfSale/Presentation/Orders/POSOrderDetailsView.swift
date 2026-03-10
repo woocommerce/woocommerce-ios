@@ -32,9 +32,7 @@ struct POSOrderDetailsView: View {
     }
 
     private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     var body: some View {
@@ -58,8 +56,14 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
-                    if shouldShowDedicatedRefundsSection && !orderListModel.ordersController.refundedProducts.isEmpty {
-                        refundedProductsSection(orderListModel.ordersController.refundedProducts)
+                    if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
+                        ghostRefundedProductsSection
+                    }
+                    let refundedItems = order.refunds.flatMap { $0.items }
+                    if shouldShowDedicatedRefundsSection
+                        && !orderListModel.ordersController.isLoadingOrderRefunds
+                        && !refundedItems.isEmpty {
+                        refundedProductsSection(refundedItems)
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
@@ -73,7 +77,8 @@ struct POSOrderDetailsView: View {
                         refunds: order.refunds,
                         netAmount: order.formattedNetAmount,
                         paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
-                        siteTimezone: siteTimezone
+                        siteTimezone: siteTimezone,
+                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds
                     )
                 }
                 .padding(.top, POSPadding.xSmall)
@@ -120,7 +125,7 @@ struct POSOrderDetailsView: View {
         }
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
-            await orderListModel.ordersController.loadRefundedProducts()
+            await orderListModel.ordersController.loadOrderRefunds()
         }
         .onAppear {
             if autoStartNextRefundFlow {
@@ -171,6 +176,46 @@ private extension POSOrderDetailsView {
     }
 
     @ViewBuilder
+    var ghostRefundedProductsSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.refundedProductsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            ghostRefundedProductRow
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var ghostRefundedProductRow: some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
+
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            }
+
+            Spacer()
+
+            ghostLine(width: Constants.extraShortWidth, height: Constants.rowHeight)
+        }
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
+    }
+
+    @ViewBuilder
     func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.refundedProductsTitle)
@@ -179,10 +224,10 @@ private extension POSOrderDetailsView {
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                ForEach(items) { item in
                     refundedProductRow(item: item)
 
-                    if index < items.count - 1 {
+                    if item.id != items.last?.id {
                         divider
                     }
                 }
@@ -266,8 +311,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
 
     func productImageView(item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-            .frame(width: 56, height: 56)
+        POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+            .frame(width: Constants.productImageSize, height: Constants.productImageSize)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
@@ -312,8 +357,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundedProductRow(item: POSRefundItem) -> some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-                .frame(width: 56, height: 56)
+            POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
@@ -506,6 +551,16 @@ private extension POSOrderDetailsView {
     }
 }
 
+
+// MARK: - Constants
+
+private enum Constants {
+    static let productImageSize: CGFloat = 56
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let extraShortWidth: CGFloat = 60
+    static let rowHeight: CGFloat = 16
+}
 
 // MARK: - Localization
 

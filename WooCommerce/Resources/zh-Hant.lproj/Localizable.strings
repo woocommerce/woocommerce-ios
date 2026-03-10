@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-28 08:27:15+0000 */
+/* Translation-Revision-Date: 2026-03-03 09:54:32+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -953,6 +953,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "可預訂";
 
+/* Title for 'Attended' booking attendance status. */
+"BookingAttendanceStatus.attended" = "已出席";
+
+/* Title for 'Unattended' booking attendance status. */
+"BookingAttendanceStatus.unattended" = "未出席";
+
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "不明";
 
@@ -976,6 +982,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "時間";
+
+/* Button title to mark a booking's attendance as attended. */
+"BookingDetailsView.attendance.markAsAttended" = "標示為已出席";
+
+/* Button title to mark a booking's attendance as unattended. */
+"BookingDetailsView.attendance.markAsUnattended" = "標示為未出席";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "無法變更預訂編號 %1$d 的出席狀態。";
@@ -9681,6 +9693,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "預訂";
 
+/* Badge label for a booking with a failed payment. */
+"bookingPaymentStatus.failed" = "失敗";
+
+/* Badge label for a paid booking in the Store Management booking list. */
+"bookingPaymentStatus.paid" = "已付費";
+
+/* Badge label for a partially refunded booking. */
+"bookingPaymentStatus.partiallyRefunded" = "已退還部分款項";
+
+/* Badge label for a refunded booking. */
+"bookingPaymentStatus.refunded" = "已退款";
+
+/* Badge label for an unpaid booking in the Store Management booking list. */
+"bookingPaymentStatus.unpaid" = "未付款";
+
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "請嘗試調整搜尋字詞以查看更多結果";
 
@@ -10354,15 +10381,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "無法使用";
 
-/* Button to hide the Connect WPCom card from the My Store screen */
-"dashboardView.connectWPComCard.hideButton" = "隱藏此內容";
-
-/* Subtitle of the Connect WPCom card on My Store screen */
-"dashboardView.connectWPComCard.subtitle" = "將你的商店連結至 WordPress.com 帳號，以取得新訂單和評論的提醒。";
-
-/* Title of the Connect WPCom card on My Store screen */
-"dashboardView.connectWPComCard.title" = "絕不錯過新訂單";
-
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "編輯";
 
@@ -10801,6 +10819,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "探索程序所回傳的讀卡機沒有 IP 位址，故無法連結。";
+
+/* Title of the Bookings menu in the hub menu */
+"hubMenu.bookings" = "預訂";
+
+/* Description of the Bookings menu in the hub menu */
+"hubMenu.bookingsDescription" = "管理客戶預約";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "折價券";
@@ -11633,6 +11657,12 @@ which should be translated separately and considered part of this sentence. */
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "不明";
 
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.canceledOnReader.title" = "讀卡機付款取消";
+
+/* Button to try to collect a payment again. Presented to users after card reader canceled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.canceledOnReader.tryPaymentAgain.button.title" = "再次嘗試付款";
+
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "卡片已插入";
 
@@ -11978,6 +12008,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "未套用優惠券";
 
+/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.bookings.button.title" = "預訂";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "請稍候";
 
@@ -12056,11 +12089,47 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "一或多項商品";
 
+/* Message shown while loading the order for a payment in Point of Sale */
+"pointOfSale.payment.loading.message" = "正在載入訂單";
+
+/* Title shown while loading the order for a payment in Point of Sale */
+"pointOfSale.payment.loading.title" = "準備中";
+
+/* Button to start a cash payment in the payment flow */
+"pointOfSale.paymentContent.cashPaymentButton" = "現金付款";
+
+/* Label for the subtotal amount in the payment content view */
+"pointOfSale.paymentContent.subtotal" = "小計";
+
+/* Label for the taxes amount in the payment content view */
+"pointOfSale.paymentContent.taxes" = "稅金";
+
+/* Label for the total amount in the payment content view */
+"pointOfSale.paymentContent.total" = "總計";
+
+/* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
+"pointOfSale.paymentError.noOrder" = "尚未載入訂單。 請先開始付款，再傳送收據。";
+
+/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "返回預訂";
+
+/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "完成";
+
+/* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
+"pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "編輯訂單";
+
+/* Button title on the payment success and capture error screens in the Point of Sale checkout to start a new order */
+"pointOfSale.paymentFlowConfiguration.cart.newOrder.button.title" = "新訂單";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "已成功支付「%1$@」的卡片款項。";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "已成功支付「%1$@」的現金款項。";
+
+/* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
+"pointOfSale.paymentSuccessful.receiptSent" = "收據已傳送至 %1$@。";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "付款成功";
@@ -12401,6 +12470,216 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "測試掃描器";
 
+/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
+"pos.booking.durationHours" = "%d 小時";
+
+/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
+"pos.booking.durationHoursAndMinutes" = "%1$d 小時 %2$d 分";
+
+/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
+"pos.booking.durationMinutes" = "%d 分";
+
+/* POS booking attendance status label when the customer attended. */
+"pos.bookingAttendanceDisplay.attended" = "已出席";
+
+/* POS booking attendance status label when the customer has not attended. */
+"pos.bookingAttendanceDisplay.unattended" = "未出席";
+
+/* Accessibility label for the next day button in the bookings date bar. */
+"pos.bookingDateBar.nextDay" = "隔天";
+
+/* Accessibility label for the previous day button in the bookings date bar. */
+"pos.bookingDateBar.previousDay" = "前一天";
+
+/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
+"pos.bookingDateBar.selectedDate" = "點選 %1$@ 以開啟月曆";
+
+/* Button to add a private note to a booking. */
+"pos.bookingDetailView.addNoteButton" = "新增備註";
+
+/* Section title for the attendance status in booking details. */
+"pos.bookingDetailView.attendanceStatusTitle" = "出席狀態";
+
+/* Subtitle text below the attendance section explaining why marking attendance matters. */
+"pos.bookingDetailView.attendanceSubtitle" = "標示出席狀況，讓報告保持準確並掌握預訂趨勢。";
+
+/* Error message shown below attendance section when updating attendance status fails. */
+"pos.bookingDetailView.attendanceUpdateError" = "無法更新出席狀態。 請再試一次。";
+
+/* Label for the attended pill button in booking attendance section. */
+"pos.bookingDetailView.attendedPill" = "已出席";
+
+/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
+"pos.bookingDetailView.bookingIdTitle" = "預訂 #%lld";
+
+/* Label for the private booking note section in booking details. */
+"pos.bookingDetailView.bookingNoteLabel" = "預訂備註";
+
+/* Subtitle text below the booking note section explaining the note is private. */
+"pos.bookingDetailView.bookingNoteSubtitle" = "這是私人備註。 不會與顧客分享。";
+
+/* Menu action to cancel a booking from the POS booking detail view. */
+"pos.bookingDetailView.cancelBookingAction" = "取消預訂";
+
+/* Subtitle shown when cancelling a booking from POS has failed. */
+"pos.bookingDetailView.cancelBookingError.subtitle" = "請再試一次。";
+
+/* Title shown when cancelling a booking from POS has failed. */
+"pos.bookingDetailView.cancelBookingError.title" = "無法取消預訂";
+
+/* Button to initiate payment collection for a booking. */
+"pos.bookingDetailView.collectPaymentButton" = "收取付款";
+
+/* Accessibility label for the copy email button in booking details. */
+"pos.bookingDetailView.copyEmail.accessibilityLabel" = "複製電子郵件地址";
+
+/* Section title for the customer details in booking details. */
+"pos.bookingDetailView.customerTitle" = "顧客";
+
+/* Label for the duration in booking details. */
+"pos.bookingDetailView.durationLabel" = "時間長度";
+
+/* Button to edit an existing private note on a booking. */
+"pos.bookingDetailView.editNoteButton" = "編輯備註";
+
+/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
+"pos.bookingDetailView.email.accessibilityLabel" = "電子郵件地址：%1$@";
+
+/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
+"pos.bookingDetailView.guestBadge" = "訪客";
+
+/* Menu action to issue a full refund for a booking. */
+"pos.bookingDetailView.issueRefundAction" = "核發退款";
+
+/* Label for the location in booking details. */
+"pos.bookingDetailView.locationLabel" = "地點";
+
+/* Accessibility label for the overflow actions menu button in booking details. */
+"pos.bookingDetailView.moreActions.accessibilityLabel" = "更多動作";
+
+/* Label for the customer note in booking details. */
+"pos.bookingDetailView.noteLabel" = "備註";
+
+/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
+"pos.bookingDetailView.phone.accessibilityLabel" = "電話：%1$@";
+
+/* Label for the team member / staff resource in booking details. */
+"pos.bookingDetailView.teamMemberLabel" = "團隊成員";
+
+/* Label for the unattended pill button in booking attendance section. */
+"pos.bookingDetailView.unattendedPill" = "未出席";
+
+/* Button to view the linked order from the booking detail header. */
+"pos.bookingDetailView.viewOrderAction" = "檢視訂單";
+
+/* Text appearing in the booking details pane when no booking is selected. */
+"pos.bookingDetailsEmptyView.description" = "點選預訂以檢視其詳細資料";
+
+/* POS booking lifecycle status label for active bookings. */
+"pos.bookingLifecycleStatus.booked" = "已預訂";
+
+/* POS booking lifecycle status label for canceled bookings. */
+"pos.bookingLifecycleStatus.canceled" = "已取消";
+
+/* POS booking lifecycle status label for completed bookings. */
+"pos.bookingLifecycleStatus.completed" = "已完成";
+
+/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
+"pos.bookingList.failedToLoadBookingsNextPageTitle" = "無法載入更多預訂";
+
+/* Text appearing on the booking list screen when there's an error loading bookings. */
+"pos.bookingList.failedToLoadBookingsTitle" = "無法載入預訂";
+
+/* Title at the header for the Bookings view. */
+"pos.bookingListView.bookingsTitle" = "預訂";
+
+/* Subtitle appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchSubtitle" = "我們找不到任何符合搜尋條件的預訂。 請嘗試調整搜尋字詞。";
+
+/* Title appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchTitle" = "找不到預訂";
+
+/* Subtitle appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsSubtitle.2" = "此日期的排程的任何預訂皆會顯示於此處。";
+
+/* Title appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsTitle.2" = "這一天沒有預訂";
+
+/* Accessibility label for the search button in bookings list. */
+"pos.bookingListView.searchButton.accessibilityLabel" = "搜尋預訂";
+
+/* Placeholder for a search field in the Bookings view. */
+"pos.bookingListView.searchFieldPlaceholder" = "搜尋預訂";
+
+/* Button label shown when no changes have been made to the booking note yet. */
+"pos.bookingNoteView.addButton" = "新增";
+
+/* Title shown at the top of the booking note editor screen when adding a new note. */
+"pos.bookingNoteView.addTitle" = "新增備註";
+
+/* Title shown at the top of the booking note editor screen when editing an existing note. */
+"pos.bookingNoteView.editTitle" = "編輯備註";
+
+/* Placeholder text shown in the booking note text field when empty. */
+"pos.bookingNoteView.placeholder" = "輸入備註";
+
+/* Button to save the booking note. */
+"pos.bookingNoteView.saveButton" = "儲存";
+
+/* Error message shown when saving a booking note fails. */
+"pos.bookingNoteView.saveError" = "無法儲存備註。 請再試一次。";
+
+/* POS booking payment status label when the booking order payment failed. */
+"pos.bookingPaymentStatus.failed" = "失敗";
+
+/* POS booking payment status label when the booking is paid. */
+"pos.bookingPaymentStatus.paid" = "已付費";
+
+/* POS booking payment status label when the booking order has been refunded. */
+"pos.bookingPaymentStatus.refunded" = "已退款";
+
+/* POS booking payment status label when the booking is unpaid. */
+"pos.bookingPaymentStatus.unpaid" = "未付款";
+
+/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
+"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%3$@ 的 %2$@ 預訂 #%1$@ 將取消。";
+
+/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
+"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "%4$@ 於 %3$@ 的 %2$@ 預訂 #%1$@ 將取消。";
+
+/* Title shown while a booking cancellation is being processed in POS. */
+"pos.cancelBookingConfirmation.canceling.processingTitle" = "正在取消預訂…";
+
+/* Accessibility label for close button on cancel booking confirmation modal. */
+"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "關閉";
+
+/* Button to confirm and proceed with booking cancellation. */
+"pos.cancelBookingConfirmation.confirmButton" = "是，取消預訂";
+
+/* Secondary message informing that the customer will receive an email notification about the cancellation. */
+"pos.cancelBookingConfirmation.customerNotificationMessage" = "顧客將會收到電子郵件通知。";
+
+/* Button to dismiss the cancel booking confirmation and keep the booking. */
+"pos.cancelBookingConfirmation.keepButton" = "否，保留預訂";
+
+/* Message shown while the booking cancellation is being processed. */
+"pos.cancelBookingConfirmation.processingMessage" = "請稍候，我們正在取消預訂。";
+
+/* Title for the cancel booking confirmation modal in POS. */
+"pos.cancelBookingConfirmation.title" = "要取消此預訂嗎？";
+
+/* Message shown after a booking is successfully canceled in POS. */
+"pos.cancelBookingSuccess.canceled.message" = "預訂已成功取消。";
+
+/* Title shown when a booking has been successfully canceled in POS. */
+"pos.cancelBookingSuccess.canceled.title" = "預訂已取消";
+
+/* Accessibility label for close button on cancel booking success screen. */
+"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "關閉";
+
+/* Button to dismiss the cancel booking success screen in POS. */
+"pos.cancelBookingSuccess.doneButton" = "完成";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "點選商品即可\n 將其新增至購物車，或 ";
 
@@ -12604,6 +12883,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "更多動作";
+
+/* Subtitle shown when refund data preparation fails */
+"pos.orderDetailsView.prepareRefundError.subtitle" = "請再試一次。";
+
+/* Title shown when refund data preparation fails */
+"pos.orderDetailsView.prepareRefundError.title" = "無法準備退款";
 
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "數量：%1$@，每個 %2$@，總金額 %3$@";
@@ -12861,6 +13146,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
 "pos.refundSuccessView.messageFormat" = "你已退還 %1$@ %2$@。";
 
+/* Informational message shown on refund success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
+"pos.refundSuccessView.receiptSent" = "收據已傳送至 %1$@。";
+
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "退款完成";
 
@@ -12891,8 +13179,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
+/* Label for discount in the totals breakdown. */
+"pos.totalsSectionView.discountLabel.v2" = "折扣";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.totalsSectionView.netPayment.accessibilityLabel" = "付款淨額：%1$@";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.netPaymentLabel" = "付款淨額";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.totalsSectionView.paid.accessibilityLabel" = "總付款金額：%1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.totalsSectionView.paid.accessibilityLabel.method" = "付款方式：%1$@";
+
+/* Label for the paid amount in the totals breakdown. */
+"pos.totalsSectionView.paidLabel" = "總付款金額";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.totalsSectionView.reasonLabel" = "原因：%1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel" = "已退款：%1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.totalsSectionView.refund.accessibilityLabel.reason" = "原因：%1$@";
+
+/* Label for a refund entry in the totals breakdown. */
+"pos.totalsSectionView.refundLabel" = "已退款";
+
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
+
+/* Label for taxes in the totals breakdown. */
+"pos.totalsSectionView.taxesLabel" = "稅金";
+
+/* Label for the total amount in the totals breakdown. */
+"pos.totalsSectionView.totalLabel" = "總計";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "電子郵件收據";
@@ -14138,6 +14462,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the self-driven push notification setup flow */
 "wooPushNotificationSetupCoordinator.flowTitle" = "連結至 WordPress.com";
 
+/* Title of the web view to update WooCommerce plugin during push notification setup */
+"wooPushNotificationSetupCoordinator.updateWooCommerce" = "更新 WooCommerce";
+
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "新增包裹詳細資料";
 
@@ -15086,11 +15413,14 @@ which should be translated separately and considered part of this sentence. */
 /* Status label shown when a setup step has not been started yet. */
 "wpComConnectionSetupStepView.notStarted" = "未開始";
 
+/* Error message when the WooCommerce plugin version is outdated. %@ is the current plugin version. */
+"wpComConnectionSetupStepView.outdatedPlugin" = "目前的 WooCommerce 外掛程式 %1$@ 版需要更新，才能將你的商店完全連結至 WordPress.com 。";
+
 /* Cancel button title in the WPCom connection setup screen toolbar. */
 "wpComConnectionSetupView.cancelButton" = "取消";
 
-/* Title for the WPCom connection setup screen. */
-"wpComConnectionSetupView.title" = "連結至 WordPress.com";
+/* Get help button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.getHelpButton" = "取得協助";
 
 /* Step title for checking plugin compatibility during WPCom connection setup. */
 "wpComConnectionSetupViewModel.checkPluginStep" = "檢查外掛程式相容性";
@@ -15103,6 +15433,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to navigate to the store after successful WPCom connection setup. */
 "wpComConnectionSetupViewModel.goToMyStore" = "前往商店";
+
+/* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
+"wpComConnectionSetupViewModel.message" = "請稍候，我們正在完成將你的商店 %1$@ 連結至 WordPress.com。";
 
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "再試一次";
@@ -15134,6 +15467,18 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "請確定電子郵件地址是否正確，並再次查看垃圾郵件資料夾。";
 
+/* Error message when the connection step is canceled during push notification setup */
+"wpcomConnectionSetupHandler.ConnectionStep.canceled" = "已取消連結。";
+
+/* Generic error message when the connection step fails during push notification setup */
+"wpcomConnectionSetupHandler.ConnectionStep.genericError" = "處理你的要求時發生錯誤。 請再試一次；如果持續發生此錯誤，請聯絡支援團隊。";
+
+/* Generic error message when the plugin check step fails during push notification setup */
+"wpcomConnectionSetupHandler.PluginCheckStep.genericError" = "檢查商店的 WooCommerce 外掛程式版本時發生錯誤。 請再試一次；如果持續發生此錯誤，請聯絡支援團隊。";
+
+/* Error message when push notification registration fails during setup */
+"wpcomConnectionSetupHandler.PushStep.genericError" = "啟用推播通知時發生錯誤。 請再試一次；如果持續發生此錯誤，請聯絡支援團隊。";
+
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "我們會以電子郵件傳送一個連結給你，讓你馬上就能登入，無須輸入密碼。";
 
@@ -15155,8 +15500,14 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title in the WordPress.com Push Notifications Benefits View toolbar */
 "wpcomPushNotificationsBenefitsView.cancelButton" = "取消";
 
+/* Button title to contact support in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.contactSupport" = "聯絡支援團隊";
+
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "繼續";
+
+/* Title of the error state in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.errorTitle" = "發生錯誤";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "先不要";
@@ -15164,11 +15515,26 @@ which should be translated separately and considered part of this sentence. */
 /* Secondary description text of the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.subdescription" = "這只需要一分鐘。";
 
-/* Title of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.title" = "透過 WordPress.com 解鎖推播通知";
+/* Button title to update the WooCommerce plugin in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.updatePluginButton" = "更新外掛程式";
 
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "什麼是 WordPress.com？";
+
+/* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
+"wpcomPushNotificationsBenefitsViewModel.shareDetails" = "分享詳細資料";
+
+/* Content of the label at the end of the Wrong Account screen. Reads like: By continuing, you agree to our Terms of Service and to share details with WordPress.com. */
+"wpcomPushNotificationsBenefitsViewModel.termsContent" = "繼續即表示你同意我們的%1$@，並同意與 WordPress.com %2$@。";
+
+/* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
+"wpcomPushNotificationsBenefitsViewModel.termsOfService" = "服務條款";
+
+/* Generic error message in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "我們無法完成推播通知設定。 請聯絡支援團隊取得協助。";
+
+/* Error message in the Push Notifications Benefits View for users without admin role */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "你的帳號沒有完成推播通知設定的權限。 請要求商店管理員處理此問題。";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

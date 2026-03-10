@@ -1,14 +1,13 @@
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSOrder
-import struct Yosemite.POSRefundItem
 
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
+    var isLoadingOrderRefunds = false
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
-    var refundedProducts: [POSRefundItem] = []
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
@@ -84,7 +83,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         )
     }
 
-    func loadRefundedProducts() async {}
+    func loadOrderRefunds() async {}
 
     // MARK: - Refund Processing
 

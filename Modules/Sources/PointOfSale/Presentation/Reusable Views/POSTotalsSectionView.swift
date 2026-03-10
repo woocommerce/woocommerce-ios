@@ -19,6 +19,7 @@ struct POSTotalsSectionView: View {
     let netAmount: String?
     var paymentMethodDescription: String = ""
     var siteTimezone: TimeZone = .current
+    var isLoadingRefundDetails: Bool = false
 
     @State private var selectedRefundForDetail: POSOrderRefund?
 
@@ -118,9 +119,7 @@ struct POSTotalsSectionView: View {
     }
 
     private var refundDateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     @ViewBuilder
@@ -136,25 +135,30 @@ struct POSTotalsSectionView: View {
                     .foregroundStyle(Color.posError)
             }
 
-            if let dateCreated = refund.dateCreated {
-                Text(refundDateFormatter.string(from: dateCreated))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
+            if isLoadingRefundDetails {
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            } else {
+                if let dateCreated = refund.dateCreated {
+                    Text(refundDateFormatter.string(from: dateCreated))
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
 
-            if let reason = refund.reason, !reason.isEmpty {
-                Text(reason)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
+                if let reason = refund.reason, !reason.isEmpty {
+                    Text(reason)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
 
-            Button {
-                selectedRefundForDetail = refund
-            } label: {
-                Text(Localization.viewDetailsLabel)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posPrimary)
-                    .underline()
+                Button {
+                    selectedRefundForDetail = refund
+                } label: {
+                    Text(Localization.viewDetailsLabel)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posPrimary)
+                        .underline()
+                }
             }
         }
         .accessibilityElement(children: .combine)
@@ -163,6 +167,14 @@ struct POSTotalsSectionView: View {
             amount: refund.formattedTotal,
             reason: refund.reason
         ))
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 
     // MARK: - Generic Row
@@ -301,4 +313,10 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
+}
+
+private enum Constants {
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let rowHeight: CGFloat = 16
 }

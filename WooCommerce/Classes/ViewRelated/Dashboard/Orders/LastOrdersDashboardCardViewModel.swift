@@ -10,6 +10,7 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
     enum OrderStatusRow: Identifiable {
         case any
         case autoDraft
+        case checkoutDraft
         case pending
         case processing
         case onHold
@@ -28,6 +29,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             switch status {
             case .autoDraft:
                 self = .autoDraft
+            case .checkoutDraft:
+                self = .checkoutDraft
             case .pending:
                 self = .pending
             case .processing:
@@ -51,6 +54,8 @@ final class LastOrdersDashboardCardViewModel: ObservableObject {
             switch self {
             case .autoDraft:
                 return .autoDraft
+            case .checkoutDraft:
+                return .checkoutDraft
             case .any:
                 return nil
             case .pending:

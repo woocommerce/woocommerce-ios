@@ -4,7 +4,7 @@ import enum Yosemite.OrderStatusEnum
 extension OrderStatusEnum {
     var backgroundColor: UIColor {
         switch self {
-        case .autoDraft, .pending, .cancelled, .refunded, .custom:
+        case .autoDraft, .checkoutDraft, .pending, .cancelled, .refunded, .custom:
                 .gray(.shade5)
         case .onHold:
                 .withColorStudio(.orange, shade: .shade5)

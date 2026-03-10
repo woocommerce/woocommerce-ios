@@ -226,7 +226,7 @@ struct POSCardPaymentContentView: View {
     let paymentState: PointOfSalePaymentState
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
-    var cancelReconnectionAction: (() -> Void)?
+    let cancelReconnectionAction: () -> Void
     var showLoadingWhenIdle: Bool = false
 
     private let viewHelper = POSPaymentViewHelper()
@@ -237,7 +237,7 @@ struct POSCardPaymentContentView: View {
         if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                           paymentState: paymentState) {
             PointOfSaleCardPresentPaymentReconnectingMessageView {
-                cancelReconnectionAction?()
+                cancelReconnectionAction()
             }
         } else if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {

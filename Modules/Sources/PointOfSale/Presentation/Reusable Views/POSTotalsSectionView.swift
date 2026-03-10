@@ -1,5 +1,4 @@
 import SwiftUI
-import Shimmer
 import struct Yosemite.POSOrderRefund
 
 /// A reusable totals breakdown card used by both order details and booking details.

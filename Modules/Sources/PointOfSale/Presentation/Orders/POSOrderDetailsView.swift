@@ -1,5 +1,4 @@
 import SwiftUI
-import Shimmer
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem

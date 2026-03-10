@@ -10,9 +10,12 @@ final class ProductAdminURLProviderTests {
     private lazy var aSite = Site.fake().copy(url: storeURL)
 
     @Test
-    private func validateEditAdminURL() async throws {
+    func test_editURL_uses_services_path() throws {
+        // Given / When
         let url = try #require(ProductAdminURLProvider.editURL(for: aProduct, site: aSite))
+
+        // Then
         #expect(url.absoluteString ==
-                "\(storeURL)/wp-admin?page=next-admin&p=/woocommerce/products/edit/\(productID)")
+                "\(storeURL)/wp-admin/admin.php?page=next-admin&p=/woocommerce/services/edit/\(productID)")
     }
 }

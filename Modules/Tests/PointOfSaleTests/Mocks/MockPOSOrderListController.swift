@@ -82,6 +82,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         )
     }
 
+    func loadOrderRefunds() async {}
+
     // MARK: - Refund Processing
 
     var processRefundCalled = false

@@ -15,6 +15,7 @@ import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.CurrencyFormatter
+import CocoaLumberjackSwift
 
 enum StartRefundFlowResult {
     case hasItemsToRefund
@@ -38,6 +39,7 @@ protocol POSOrderListControllerProtocol {
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
     func processRefund(reason: String?) async throws
+    func loadOrderRefunds() async
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -410,6 +412,21 @@ enum RefundActionAvailability {
 
         clearRefundSelection()
         try? await updateOrder(orderID: order.id)
+        await loadOrderRefunds()
+    }
+
+    func loadOrderRefunds() async {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
+        guard let order = selectedOrder, order.refunds.isNotEmpty else {
+            return
+        }
+        do {
+            let refunds = try await refundsService.loadOrderRefunds(for: order)
+            guard selectedOrder?.id == order.id else { return }
+            selectedOrder = order.copy(refunds: .some(refunds))
+        } catch {
+            DDLogError("⛔️ Failed to load refund details: \(error)")
+        }
     }
 }
 

@@ -777,17 +777,12 @@ struct PointOfSaleAggregateModelTests {
         @Test func cancelThenCollectPayment_does_not_cancel_reconnection_when_not_reconnecting() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .connected(reader)
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-
-            // Set connection status to connected (not reconnecting)
-            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
-            cardPresentPaymentService.connectionStatus = .connected(reader)
-
-            // Wait for the status to propagate
-            try await Task.sleep(nanoseconds: 100_000_000)
 
             // When
             await sut.cancelThenCollectPayment()

@@ -103,7 +103,7 @@ extension BookingPaymentStatus: BookingBadgeable {
         }
     }
 
-    private var text: String {
+    var text: String {
         switch self {
         case .paid:
             return Localization.paid

@@ -1058,7 +1058,9 @@ extension StripeCardReaderService: MobileReaderDelegate {
     }
 
     public func readerDidFailReconnect(_ reader: Reader) {
-        DDLogError("💳 Reader auto-reconnection failed")
+        if reconnectionCancelable != nil {
+            DDLogError("💳 Reader auto-reconnection failed")
+        }
         reconnectionCancelable = nil
         let cardReader = CardReader(reader: reader)
         reconnectionStateSubject.send(.failed(reader: cardReader))

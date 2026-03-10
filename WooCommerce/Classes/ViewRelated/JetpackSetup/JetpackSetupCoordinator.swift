@@ -123,13 +123,7 @@ private extension JetpackSetupCoordinator {
     @MainActor
     func startSetupDirectly() async {
         guard site.isNonJetpackSite else {
-            let installController = JCPJetpackInstallHostingController(siteID: site.siteID,
-                                                                       siteURL: site.url,
-                                                                       siteAdminURL: site.adminURL)
-            installController.setDismissAction { [weak self] in
-                self?.rootViewController.dismiss(animated: true, completion: nil)
-            }
-            rootViewController.present(installController, animated: true, completion: nil)
+            presentJCPJetpackInstallFlow()
             return
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
@@ -175,18 +169,23 @@ private extension JetpackSetupCoordinator {
     }
 
     /// Navigates to the Jetpack installation flow for JCP sites.
+    /// Dismisses any currently presented view controller first, then presents the install flow.
     func presentJCPJetpackInstallFlow() {
-        rootViewController.dismiss(animated: true, completion: { [weak self] in
+        let presentInstallFlow = { [weak self] in
             guard let self else { return }
             let installController = JCPJetpackInstallHostingController(siteID: self.site.siteID,
                                                                        siteURL: self.site.url,
                                                                        siteAdminURL: self.site.adminURL)
-
             installController.setDismissAction { [weak self] in
                 self?.rootViewController.dismiss(animated: true, completion: nil)
             }
             self.rootViewController.present(installController, animated: true, completion: nil)
-        })
+        }
+        if rootViewController.presentedViewController != nil {
+            rootViewController.dismiss(animated: true, completion: presentInstallFlow)
+        } else {
+            presentInstallFlow()
+        }
     }
 
     /// Checks the Jetpack connection status for non-Jetpack sites to save the status and connected email locally if available.

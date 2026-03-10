@@ -118,7 +118,7 @@ public struct NoOpCardReaderService: CardReaderService {
     /// Cancels an in-progress auto-reconnection attempt.
     public func cancelReconnection() -> Future<Void, Error> {
         return Future() { promise in
-            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+            promise(.success(()))
         }
     }
 }

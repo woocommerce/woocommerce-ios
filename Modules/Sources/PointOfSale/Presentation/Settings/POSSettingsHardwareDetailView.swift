@@ -198,7 +198,7 @@ private extension POSSettingsHardwareDetailView {
             )
         }
         .disabled(isCancellingReconnection)
-        .onAppear {
+        .onChange(of: posModel.cardReaderConnectionStatus) {
             isCancellingReconnection = false
         }
     }

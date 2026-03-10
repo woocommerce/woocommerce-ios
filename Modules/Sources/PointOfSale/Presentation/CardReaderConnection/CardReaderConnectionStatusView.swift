@@ -84,7 +84,7 @@ struct CardReaderConnectionStatusView: View {
             }
         }
         .font(Constants.font)
-        .onAppear {
+        .onChange(of: posModel.cardReaderConnectionStatus) {
             isCancellingReconnection = false
         }
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)

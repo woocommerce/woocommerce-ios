@@ -27,7 +27,6 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
-import struct Yosemite.POSRefundItem
 import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundData
 import typealias Yosemite.OrderItemAttribute
@@ -830,7 +829,6 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
     var refundSelectableItems: [POSRefundSelectableItem]
-    var refundedProducts: [POSRefundItem] = []
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
@@ -857,7 +855,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func toggleAllRefundItemsSelection() {}
     func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
     func processRefund(reason: String?) async throws {}
-    func loadRefundedProducts() async {}
+    func loadOrderRefunds() async {}
 }
 
 // MARK: - Barcode Scan Service
@@ -917,9 +915,7 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
 
     func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 
-    func loadRefundData(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundData {
-        POSRefundData(refundedProducts: [], refunds: [])
-    }
+    func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {

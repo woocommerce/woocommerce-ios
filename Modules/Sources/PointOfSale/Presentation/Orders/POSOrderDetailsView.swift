@@ -58,8 +58,9 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
-                    if shouldShowDedicatedRefundsSection && !orderListModel.ordersController.refundedProducts.isEmpty {
-                        refundedProductsSection(orderListModel.ordersController.refundedProducts)
+                    let refundedItems = order.refunds.flatMap { $0.items }
+                    if shouldShowDedicatedRefundsSection && !refundedItems.isEmpty {
+                        refundedProductsSection(refundedItems)
                     }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
@@ -119,7 +120,7 @@ struct POSOrderDetailsView: View {
         }
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
-            await orderListModel.ordersController.loadRefundedProducts()
+            await orderListModel.ordersController.loadOrderRefunds()
         }
         .onAppear {
             if autoStartNextRefundFlow {
@@ -178,10 +179,10 @@ private extension POSOrderDetailsView {
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(Array(items.enumerated()), id: \.offset) { index, item in
+                ForEach(items) { item in
                     refundedProductRow(item: item)
 
-                    if index < items.count - 1 {
+                    if item.id != items.last?.id {
                         divider
                     }
                 }
@@ -265,8 +266,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
 
     func productImageView(item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-            .frame(width: 56, height: 56)
+        POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+            .frame(width: Constants.productImageSize, height: Constants.productImageSize)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
@@ -311,8 +312,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
     func refundedProductRow(item: POSRefundItem) -> some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-                .frame(width: 56, height: 56)
+            POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
 
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
@@ -505,6 +506,12 @@ private extension POSOrderDetailsView {
     }
 }
 
+
+// MARK: - Constants
+
+private enum Constants {
+    static let productImageSize: CGFloat = 56
+}
 
 // MARK: - Localization
 

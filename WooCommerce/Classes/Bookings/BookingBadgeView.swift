@@ -51,9 +51,9 @@ extension BookingAttendanceStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
         case .attended:
-            return .clear
+            return BadgeColor.defaultBackground
         case .unattended, .unknown:
-            return BadgeColor.default
+            return BadgeColor.muted
         }
     }
 
@@ -62,7 +62,12 @@ extension BookingAttendanceStatus: BookingBadgeable {
     }
 
     var textColor: Color {
-        BadgeColor.defaultText
+        switch self {
+        case .attended:
+            return BadgeColor.lightText
+        case .unattended, .unknown:
+            return BadgeColor.lightText
+        }
     }
 
     var isBordered: Bool {
@@ -73,10 +78,10 @@ extension BookingAttendanceStatus: BookingBadgeable {
 extension BookingStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
-        case .unpaid:
-            return BadgeColor.info
+        case .cancelled:
+            return BadgeColor.cancelled
         default:
-            return BadgeColor.default
+            return BadgeColor.defaultBackground
         }
     }
 
@@ -85,15 +90,25 @@ extension BookingStatus: BookingBadgeable {
     }
 
     var textColor: Color {
-        BadgeColor.defaultText
+        switch self {
+        case .cancelled:
+            return BadgeColor.cancelledText
+        default:
+            return BadgeColor.lightText
+        }
+    }
+
+    var isBordered: Bool {
+        self != .cancelled
     }
 }
+
 
 extension BookingPaymentStatus: BookingBadgeable {
     var badgeColor: Color {
         switch self {
         case .paid, .refunded, .partiallyRefunded:
-            return .clear
+            return BadgeColor.defaultBackground
         case .unpaid, .failed:
             return BadgeColor.info
         }
@@ -115,7 +130,12 @@ extension BookingPaymentStatus: BookingBadgeable {
     }
 
     var textColor: Color {
-        BadgeColor.defaultText
+        switch self {
+        case .paid, .refunded, .partiallyRefunded:
+            return BadgeColor.lightText
+        case .unpaid, .failed:
+            return BadgeColor.lightText
+        }
     }
 
     var isBordered: Bool {
@@ -157,8 +177,16 @@ extension BookingPaymentStatus: BookingBadgeable {
 }
 
 fileprivate enum BadgeColor {
-    static let `default` = Color(uiColor: .systemGray6)
+    static let lightGray6 = UIColor.systemGray6.resolvedColor(with: .init(userInterfaceStyle: .light))
+
+    /// Clear in light mode, light-mode systemGray6 in dark mode.
+    static let defaultBackground = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark ? lightGray6 : .clear
+    })
+    static let muted = Color(uiColor: lightGray6)
+    static let cancelled = Color(UIColor(red: 225/255, green: 236/255, blue: 248/255, alpha: 1))
+    static let cancelledText = Color(UIColor(red: 0/255, green: 23/255, blue: 88/255, alpha: 1))
     static let info = try! Color(rgbString: "rgba(255, 227, 101, 1)")
-    static let defaultText = Color(uiColor: .label)
+    static let lightText = Color(UIColor.label.resolvedColor(with: .init(userInterfaceStyle: .light)))
     static let border = Color(uiColor: .systemGray5)
 }

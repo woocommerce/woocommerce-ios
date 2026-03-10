@@ -237,7 +237,7 @@ final class OrderListViewModel {
             // Only exclude hidden statuses (drafts) when no explicit status filter is selected.
             // When the user picks specific statuses, respect their choice.
             let excludeHiddenStatuses: NSPredicate? = {
-                guard filters?.orderStatus == nil else {
+                guard filters?.orderStatus?.isEmpty != false else {
                     return nil
                 }
                 return NSPredicate(

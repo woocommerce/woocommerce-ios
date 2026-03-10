@@ -32,9 +32,7 @@ struct POSOrderDetailsView: View {
     }
 
     private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     var body: some View {

@@ -104,9 +104,7 @@ struct POSTotalsSectionView: View {
     }
 
     private var refundDateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     @ViewBuilder

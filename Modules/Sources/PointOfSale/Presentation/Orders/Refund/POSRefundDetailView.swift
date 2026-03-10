@@ -198,7 +198,7 @@ private extension POSRefundDetailView {
             reason: "Customer request",
             dateCreated: Date(),
             items: [
-                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00")
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00", imageSrc: nil)
             ],
             formattedItemsSubtotal: "$18.00",
             formattedTax: "$3.60",
@@ -219,8 +219,8 @@ private extension POSRefundDetailView {
             reason: nil,
             dateCreated: Date(),
             items: [
-                POSRefundItem(refundedItemID: 1, quantity: 2, name: "Hario V60 Dripper", formattedPrice: "$12.00", formattedTotal: "$24.00"),
-                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00")
+                POSRefundItem(refundedItemID: 1, quantity: 2, name: "Hario V60 Dripper", formattedPrice: "$12.00", formattedTotal: "$24.00", imageSrc: nil),
+                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00", imageSrc: nil)
             ],
             formattedItemsSubtotal: "$42.00",
             formattedTax: "$3.00",

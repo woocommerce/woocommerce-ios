@@ -28,7 +28,6 @@ import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefund
 import struct Yosemite.POSRefundsResult
-import struct Yosemite.POSRefundData
 import typealias Yosemite.OrderItemAttribute
 import class Yosemite.POSOrderListService
 import class Yosemite.POSOrderListFetchStrategyFactory

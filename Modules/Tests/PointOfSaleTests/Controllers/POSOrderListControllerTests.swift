@@ -12,7 +12,6 @@ import typealias Yosemite.OrderItemAttribute
 @testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
 import struct Yosemite.POSOrderRefund
-import struct Yosemite.POSRefundData
 @testable import struct Yosemite.POSRefundsResult
 @testable import struct Yosemite.POSRefundableItem
 import class WooFoundation.CurrencySettings

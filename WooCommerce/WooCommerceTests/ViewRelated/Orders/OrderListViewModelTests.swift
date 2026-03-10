@@ -172,6 +172,43 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(snapshot.numberOfItems(inSection: sectionID), expectedOrders.future.count)
     }
 
+    // MARK: - Hidden Statuses
+
+    func test_given_no_filter_it_excludes_checkout_draft_orders_from_the_list() throws {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
+
+        let visibleOrders = [
+            insertOrder(id: 1, status: .processing),
+            insertOrder(id: 2, status: .completed),
+        ]
+        _ = insertOrder(id: 100, status: .checkoutDraft)
+
+        // When
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
+
+        // Then
+        XCTAssertEqual(snapshot.numberOfItems, visibleOrders.count)
+        XCTAssertEqual(viewModel.orderIDs(from: snapshot), visibleOrders.orderIDs)
+    }
+
+    func test_given_no_filter_it_excludes_auto_draft_orders_from_the_list() throws {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
+
+        let visibleOrders = [
+            insertOrder(id: 1, status: .processing),
+        ]
+        _ = insertOrder(id: 100, status: .autoDraft)
+
+        // When
+        let snapshot = try activateAndRetrieveSnapshot(of: viewModel)
+
+        // Then
+        XCTAssertEqual(snapshot.numberOfItems, visibleOrders.count)
+        XCTAssertEqual(viewModel.orderIDs(from: snapshot), visibleOrders.orderIDs)
+    }
+
     // MARK: - App Activation
 
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {

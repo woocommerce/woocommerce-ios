@@ -161,11 +161,7 @@ public final class FetchResultSnapshotsProvider<MutableType: FetchResultSnapshot
         fetchedResultsController = createFetchedResultsController(query: newQuery)
 
         guard wasActive else { return }
-        do {
-            try activateFetchedResultsController()
-        } catch {
-            DDLogError("⛔️ FetchResultSnapshotsProvider: Failed to restart with updated query: \(error)")
-        }
+        performFetchLoggingErrors()
     }
 
     /// Retrieve the immutable type pointed to by `objectID`.
@@ -244,7 +240,10 @@ private extension FetchResultSnapshotsProvider {
         guard fetchedResultsControllerIsActive else {
             return
         }
+        performFetchLoggingErrors()
+    }
 
+    func performFetchLoggingErrors() {
         do {
             try activateFetchedResultsController()
         } catch {

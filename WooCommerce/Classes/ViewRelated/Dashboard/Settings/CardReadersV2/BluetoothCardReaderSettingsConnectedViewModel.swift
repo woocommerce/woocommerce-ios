@@ -269,7 +269,14 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         readerReconnectionCancellationInProgress = true
         didUpdate?()
 
-        let action = CardPresentPaymentAction.cancelReconnection { _ in }
+        let action = CardPresentPaymentAction.cancelReconnection { [weak self] result in
+            guard let self else { return }
+            if case .failure(let error) = result {
+                DDLogError("Failed to cancel reader reconnection: \(error)")
+                self.readerReconnectionCancellationInProgress = false
+                self.didUpdate?()
+            }
+        }
         ServiceLocator.stores.dispatch(action)
     }
 

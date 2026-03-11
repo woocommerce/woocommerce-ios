@@ -125,7 +125,7 @@ public class BottomSheetViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if initialPosition != .collapsed {
-            presentedVC?.transition(to: initialPosition)
+            presentedVC?.transition(to: initialPosition, animated: false)
         }
     }
 

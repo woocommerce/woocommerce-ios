@@ -182,7 +182,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
     /// Animates between the drawer positions
     /// - Parameter position: The position to animate to
-    public func transition(to position: DrawerPosition) {
+    public func transition(to position: DrawerPosition, animated: Bool = true) {
         currentPosition = position
 
         if position == .closed {
@@ -206,7 +206,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
             margin = 0
         }
 
-        setTopMargin(margin)
+        setTopMargin(margin, animated: animated)
     }
 
     @objc func dismiss() {

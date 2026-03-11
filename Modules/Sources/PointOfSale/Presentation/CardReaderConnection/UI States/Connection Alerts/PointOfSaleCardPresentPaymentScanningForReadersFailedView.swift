@@ -28,6 +28,7 @@ struct PointOfSaleCardPresentPaymentScanningForReadersFailedView: View {
                     .matchedGeometryEffect(id: animation.contentTransitionId, in: animation.namespace, properties: .position)
             }
         }
+        .scrollVerticallyIfNeeded()
         .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler,
                              accessibilityLabel: viewModel.buttonViewModel.title)
         .multilineTextAlignment(.center)

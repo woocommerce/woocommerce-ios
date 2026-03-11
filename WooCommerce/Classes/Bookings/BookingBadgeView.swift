@@ -96,9 +96,9 @@ extension BookingStatus: BookingBadgeable {
 extension BookingPaymentStatus: BookingBadgeable {
     var bookingBadge: BookingBadgeView {
         switch self {
-        case .paid, .refunded, .partiallyRefunded:
+        case .paid, .refunded, .partiallyRefunded, .authorizationVoided:
             return .default(text: text)
-        case .unpaid, .failed:
+        case .unpaid, .failed, .authorized:
             return .warning(text: text)
         }
     }

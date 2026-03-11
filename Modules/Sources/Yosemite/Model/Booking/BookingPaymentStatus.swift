@@ -1,19 +1,10 @@
 import Foundation
 import enum NetworkingCore.OrderStatusEnum
 
-/// Payment status resolved from order data associated with a booking.
+/// Payment status resolved from the `_payment_status` order metadata.
 ///
-/// Matches the Android `WooPosPaymentStatusResolver` logic.
-/// Both POS and Store Management booking screens use this type,
-/// passing whichever order fields they have available.
-///
-/// Priority:
-/// 1. refundTotal > 0 && refundTotal >= total → refunded
-/// 2. refundTotal > 0 → partiallyRefunded
-/// 3. orderStatus == .refunded → refunded (fallback when refund amounts unavailable)
-/// 4. datePaid != nil → paid
-/// 5. orderStatus == .failed || .cancelled → failed
-/// 6. else → unpaid
+/// Matches the web dashboard behavior which uses this metadata to determine payment status badges.
+/// When the metadata is missing, defaults to `.unpaid`.
 ///
 public enum BookingPaymentStatus: Equatable, Sendable {
     case paid
@@ -21,8 +12,38 @@ public enum BookingPaymentStatus: Equatable, Sendable {
     case failed
     case refunded
     case partiallyRefunded
+    case authorized
+    case authorizationVoided
 
-    /// Resolves payment status from raw order fields.
+    /// Resolves payment status from the `_payment_status` order metadata value.
+    ///
+    /// - Parameter paymentStatusMetadata: The raw string value from `_payment_status` metadata.
+    ///   When `nil` or unrecognized, defaults to `.unpaid` (matching web behavior).
+    public init(paymentStatusMetadata: String?) {
+        switch paymentStatusMetadata {
+        case "paid":
+            self = .paid
+        case "unpaid":
+            self = .unpaid
+        case "failed":
+            self = .failed
+        case "refunded":
+            self = .refunded
+        case "partially_refunded":
+            self = .partiallyRefunded
+        case "authorized":
+            self = .authorized
+        case "authorization_voided":
+            self = .authorizationVoided
+        default:
+            self = .unpaid
+        }
+    }
+
+    /// Legacy initializer that resolves payment status from raw order fields.
+    ///
+    /// Kept for backward compatibility. Prefer `init(paymentStatusMetadata:)` when the
+    /// `_payment_status` metadata is available.
     ///
     /// - Parameters:
     ///   - orderStatusKey: The raw order status string (e.g. "processing", "refunded").

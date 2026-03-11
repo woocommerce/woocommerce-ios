@@ -95,6 +95,10 @@ extension BookingPaymentStatus: BookingBadgeable {
             return Localization.refunded
         case .partiallyRefunded:
             return Localization.partiallyRefunded
+        case .authorized:
+            return Localization.authorized
+        case .authorizationVoided:
+            return Localization.authorizationVoided
         }
     }
 
@@ -127,6 +131,16 @@ extension BookingPaymentStatus: BookingBadgeable {
             "bookingPaymentStatus.partiallyRefunded",
             value: "Partially Refunded",
             comment: "Badge label for a partially refunded booking."
+        )
+        static let authorized = NSLocalizedString(
+            "bookingPaymentStatus.authorized",
+            value: "Authorized",
+            comment: "Badge label for a booking with an authorized but not yet captured payment."
+        )
+        static let authorizationVoided = NSLocalizedString(
+            "bookingPaymentStatus.authorizationVoided",
+            value: "Authorization Voided",
+            comment: "Badge label for a booking where the payment authorization has been voided."
         )
     }
 }

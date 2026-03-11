@@ -329,6 +329,28 @@ struct POSRefundsServiceTests {
         #expect(result[0].reason == nil)
     }
 
+    @Test func loadOrderRefunds_then_refunds_contain_items_and_subtotal_and_tax() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+        let items = [
+            MockRefunds.sampleRefundItem(name: "Cup", quantity: -1, price: 18.00, total: "-18.00", totalTax: "-3.60"),
+            MockRefunds.sampleRefundItem(itemID: 2, name: "Mug", refundedItemID: "2", quantity: -2, price: 5.00, total: "-10.00", totalTax: "-2.00")
+        ]
+        let refund = MockRefunds.sampleRefund(refundID: 1, amount: "33.60", items: items)
+        remote.result = .success([refund])
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$33.60")])
+
+        // When
+        let result = try await sut.loadOrderRefunds(for: order)
+
+        // Then
+        #expect(result[0].items.count == 2)
+        #expect(result[0].itemCount == 2)
+        #expect(result[0].formattedItemsSubtotal.contains("28.00"))
+        #expect(result[0].formattedTax.contains("5.60"))
+    }
+
     // MARK: - createRefund Tests
 
     @Test func createRefund_then_calls_calculator_with_correct_parameters() async throws {

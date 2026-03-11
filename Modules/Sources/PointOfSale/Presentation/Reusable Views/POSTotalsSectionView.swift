@@ -18,6 +18,7 @@ struct POSTotalsSectionView: View {
     let netAmount: String?
     var siteTimezone: TimeZone = .current
     var isLoadingRefundDetails: Bool = false
+    @Binding var selectedRefundForDetail: POSOrderRefund?
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -137,10 +138,14 @@ struct POSTotalsSectionView: View {
                         .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 }
 
-                Text(Localization.viewDetailsLabel)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posPrimary)
-                    .underline()
+                Button {
+                    selectedRefundForDetail = refund
+                } label: {
+                    Text(Localization.viewDetailsLabel)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posPrimary)
+                        .underline()
+                }
             }
         }
         .accessibilityElement(children: .combine)
@@ -183,8 +188,7 @@ struct POSTotalsSectionView: View {
     }
 
     private var sectionDivider: some View {
-        Divider()
-            .overlay(Color.posOutlineVariant.opacity(0.5))
+        POSDivider()
     }
 }
 

@@ -2,14 +2,16 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
+import struct Yosemite.POSRefundItem
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
-    @Binding var isShowingEmailReceiptView: Bool
-    var autoStartRefund: Bool = false
+    var flow: Flow = .orders
+    @State var autoStartNextRefundFlow: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
     var onRefundFailure: ((Error) -> Void)? = nil
 
@@ -19,16 +21,20 @@ struct POSOrderDetailsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
+    @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
+    @State private var selectedRefundForDetail: POSOrderRefund?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
     }
 
+    private var shouldShowDedicatedRefundsSection: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1)
+    }
+
     private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     var body: some View {
@@ -52,6 +58,15 @@ struct POSOrderDetailsView: View {
                     if !order.lineItems.isEmpty {
                         productsSection(order)
                     }
+                    if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
+                        ghostRefundedProductsSection
+                    }
+                    let refundedItems = order.refunds.flatMap { $0.items }
+                    if shouldShowDedicatedRefundsSection
+                        && !orderListModel.ordersController.isLoadingOrderRefunds
+                        && !refundedItems.isEmpty {
+                        refundedProductsSection(refundedItems)
+                    }
                     POSTotalsSectionView(
                         sectionTitle: Localization.totalsTitle,
                         subtotalLabel: Localization.productsLabel,
@@ -62,7 +77,10 @@ struct POSOrderDetailsView: View {
                         paidAmount: order.formattedPaymentTotal,
                         paymentMethodTitle: order.paymentMethodTitle,
                         refunds: order.refunds,
-                        netAmount: order.formattedNetAmount
+                        netAmount: order.formattedNetAmount,
+                        siteTimezone: siteTimezone,
+                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds,
+                        selectedRefundForDetail: $selectedRefundForDetail
                     )
                 }
                 .padding(.top, POSPadding.xSmall)
@@ -72,23 +90,33 @@ struct POSOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posModal(item: $selectedRefundForDetail) { refund in
+            let sortedRefunds = order.refunds.sorted(by: { $0.refundID < $1.refundID })
+            let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
+            POSRefundDetailView(
+                refund: refund,
+                title: Localization.refundTitle(index),
+                paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
+                onClose: { selectedRefundForDetail = nil }
+            )
+        }
         .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
         }) { state in
             POSRefundModalContentView(
                 state: state,
                 modalState: $refundModalState,
-                onEmailReceipt: { isShowingEmailReceiptView = true },
+                order: order,
                 onRetryLoading: { initiateRefundFlow() },
                 onRetryPreparation: {
-                    if autoStartRefund {
+                    if flow == .bookings {
                         initiateRefundFlow()
                     } else {
                         refundModalState = .itemSelection
                     }
                 },
-                onEditRefund: autoStartRefund ? nil : { refundModalState = .itemSelection },
-                showsItemSelection: !autoStartRefund,
+                onEditRefund: flow == .bookings ? nil : { refundModalState = .itemSelection },
+                showsItemSelection: flow != .bookings,
                 onRefundSuccess: onRefundSuccess,
                 onRefundFailure: onRefundFailure,
                 errorStrings: .init(
@@ -101,8 +129,19 @@ struct POSOrderDetailsView: View {
                 )
             )
         }
+        .posFullScreenCover(isPresented: $isShowingEmailReceiptView) {
+            POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
+                try await orderListModel.sendReceipt(order: order, email: email)
+            }
+            .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .task {
+            guard shouldShowDedicatedRefundsSection else { return }
+            await orderListModel.ordersController.loadOrderRefunds()
+        }
         .onAppear {
-            if autoStartRefund {
+            if autoStartNextRefundFlow {
+                autoStartNextRefundFlow = false
                 initiateRefundFlow()
             }
             analytics.track(event: WooAnalyticsEvent.PointOfSale.orderDetailsLoaded(
@@ -138,6 +177,69 @@ private extension POSOrderDetailsView {
                     productRow(item: item)
 
                     if index < order.lineItems.count - 1 {
+                        divider
+                    }
+                }
+            }
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+    }
+
+    @ViewBuilder
+    var ghostRefundedProductsSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.refundedProductsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            ghostRefundedProductRow
+        }
+        .padding(POSPadding.medium)
+        .background(Color.posSurfaceContainerLowest)
+        .posItemCardBorderStyles()
+        .accessibilityHidden(true)
+    }
+
+    @ViewBuilder
+    private var ghostRefundedProductRow: some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
+
+            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            }
+
+            Spacer()
+
+            ghostLine(width: Constants.extraShortWidth, height: Constants.rowHeight)
+        }
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
+    }
+
+    @ViewBuilder
+    func refundedProductsSection(_ items: [POSRefundItem]) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+            Text(Localization.refundedProductsTitle)
+                .font(.posBodyXLargeRegular)
+                .foregroundStyle(Color.posOnSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            VStack(spacing: POSSpacing.small) {
+                ForEach(items) { item in
+                    refundedProductRow(item: item)
+
+                    if item.id != items.last?.id {
                         divider
                     }
                 }
@@ -221,8 +323,8 @@ private extension POSOrderDetailsView {
     @ViewBuilder
 
     func productImageView(item: POSOrderItem) -> some View {
-        POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-            .frame(width: 56, height: 56)
+        POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
+            .frame(width: Constants.productImageSize, height: Constants.productImageSize)
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
@@ -258,6 +360,14 @@ private extension POSOrderDetailsView {
         Text(item.formattedTotal)
             .font(.posBodyMediumRegular())
             .foregroundStyle(Color.posOnSurface)
+    }
+}
+
+// MARK: - Refunded Product Components
+
+private extension POSOrderDetailsView {
+    func refundedProductRow(item: POSRefundItem) -> some View {
+        POSRefundedProductRowView(item: item)
     }
 }
 
@@ -315,7 +425,7 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            if autoStartRefund {
+            if flow == .bookings {
                 return .init(primary: .issueRefund, secondary: [email])
             }
             guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else {
@@ -369,8 +479,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     var divider: some View {
-        Divider()
-            .overlay(Color.posOutlineVariant.opacity(0.5))
+        POSDivider()
             .padding(.vertical, POSSpacing.small)
     }
 }
@@ -384,14 +493,14 @@ private extension POSOrderDetailsView {
             let result = await orderListModel.ordersController.startRefundFlow()
             switch result {
             case .hasItemsToRefund:
-                if autoStartRefund {
+                if flow == .bookings {
                     navigateToRefundReview()
                 } else {
                     refundModalState = .itemSelection
                 }
             case .nothingToRefund:
-                if autoStartRefund {
-                    // Temporary log to track "nothing to refund" case for bookings (autoStartRefund == true)
+                if flow == .bookings {
+                    // Temporary log to track "nothing to refund" case for bookings (flow == .bookings == true)
                     // This can be removed once we're sure it works as expected.
                     // Context: p1772005017449939-slack-C070SJRA8DP
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingRefundFailed(
@@ -415,6 +524,16 @@ private extension POSOrderDetailsView {
 }
 
 
+// MARK: - Constants
+
+private enum Constants {
+    static let productImageSize: CGFloat = 56
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let extraShortWidth: CGFloat = 60
+    static let rowHeight: CGFloat = 16
+}
+
 // MARK: - Localization
 
 private enum Localization {
@@ -423,6 +542,21 @@ private enum Localization {
         value: "Products",
         comment: "Section title for the products list"
     )
+
+    static let refundedProductsTitle = NSLocalizedString(
+        "pos.orderDetailsView.refundedProductsTitle",
+        value: "Refunded products",
+        comment: "Section title for the refunded products list in order details"
+    )
+
+    static func refundTitle(_ number: Int) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundTitle",
+            value: "Refund #%1$d",
+            comment: "Title for refund detail dialog header. %1$d is the refund number."
+        )
+        return String(format: format, number)
+    }
 
     static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {
         let format = NSLocalizedString(
@@ -444,6 +578,15 @@ private enum Localization {
         value: "Products",
         comment: "Label for products subtotal in the totals section"
     )
+
+    static func viaPaymentMethod(_ method: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.viaPaymentMethod",
+            value: "Via %1$@",
+            comment: "Payment method description shown in refund detail dialog. %1$@ is the payment method name."
+        )
+        return String(format: format, method)
+    }
 
     static let emailReceiptActionTitle = NSLocalizedString(
         "pos.orderDetailsView.emailReceiptAction.title",
@@ -548,12 +691,18 @@ private enum Localization {
     )
 }
 
+extension POSOrderDetailsView {
+    enum Flow {
+        case orders
+        case bookings
+    }
+}
+
 #if DEBUG
 #Preview("Order Details - Completed") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrder(),
-        onBack: {},
-        isShowingEmailReceiptView: .constant(false)
+        onBack: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -561,8 +710,7 @@ private enum Localization {
 #Preview("Order Details - Refunded") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithRefund(),
-        onBack: {},
-        isShowingEmailReceiptView: .constant(false)
+        onBack: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -570,8 +718,7 @@ private enum Localization {
 #Preview("Order Details - Failed") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewFailedOrder(),
-        onBack: {},
-        isShowingEmailReceiptView: .constant(false)
+        onBack: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -579,8 +726,7 @@ private enum Localization {
 #Preview("Order Details - Without Email") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithoutEmail(),
-        onBack: {},
-        isShowingEmailReceiptView: .constant(false)
+        onBack: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }
@@ -588,8 +734,7 @@ private enum Localization {
 #Preview("Order Details - With Net Payment") {
     POSOrderDetailsView(
         order: POSPreviewHelpers.makePreviewOrderWithNetPayment(),
-        onBack: {},
-        isShowingEmailReceiptView: .constant(false)
+        onBack: {}
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: .empty))
 }

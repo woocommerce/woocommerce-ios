@@ -7,7 +7,7 @@ import struct NetworkingCore.MetaData
 import enum NetworkingCore.OrderStatusEnum
 import struct NetworkingCore.Order
 
-public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
+public struct POSOrder: Equatable, Hashable, Identifiable, GeneratedCopiable {
     public let id: Int64
     public let number: String
     public let dateCreated: Date

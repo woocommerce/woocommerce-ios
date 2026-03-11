@@ -6,6 +6,7 @@ import class Networking.UserAgent
 import Experiments
 import protocol WooFoundation.Analytics
 import class WooFoundation.VersionHelpers
+import enum WooFoundation.BuildConfiguration
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
@@ -341,12 +342,10 @@ private extension SettingsViewModel {
 
         // Other
         let otherSection: Section = {
-            let rows: [Row]
-#if DEBUG
-            rows = [.deviceSettings, .wormholy]
-#else
-            rows = [.deviceSettings]
-#endif
+            var rows: [Row] = [.deviceSettings]
+            if !BuildConfiguration.current.isProduction {
+                rows.append(contentsOf: [.wormholy, .debugPanel])
+            }
 
             return Section(title: Localization.otherTitle,
                            rows: rows,
@@ -384,7 +383,7 @@ private extension SettingsViewModel {
     }
 
     func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
-        guard stores.isAuthenticatedWithoutWPCom else {
+        guard stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true else {
             return false
         }
 

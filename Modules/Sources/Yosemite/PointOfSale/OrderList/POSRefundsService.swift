@@ -6,6 +6,7 @@ import struct NetworkingCore.Refund
 import struct NetworkingCore.OrderItemRefund
 import struct NetworkingCore.OrderItemTaxRefund
 import class WooFoundation.CurrencySettings
+import class WooFoundationCore.CurrencyFormatter
 
 public final class POSRefundsService: POSRefundsServiceProtocol {
     private let refundsRemote: POSRefundsRemoteProtocol
@@ -45,6 +46,37 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         self.mapper = POSRefundMapper()
     }
 
+    public func loadOrderRefunds(for order: POSOrder) async throws -> [POSOrderRefund] {
+        let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currency = currencySettings.currencyCode.rawValue
+
+        return refunds.map { refund in
+            let items = mapper.map(
+                refund: refund,
+                orderItems: order.lineItems,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            )
+            let (formattedSubtotal, formattedTax) = mapper.mapSubtotalAndTax(
+                refund: refund,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            )
+            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency, isNegative: true) ?? ""
+            return POSOrderRefund(
+                refundID: refund.refundID,
+                formattedTotal: formattedTotal,
+                reason: refund.reason.isEmpty ? nil : refund.reason,
+                dateCreated: refund.dateCreated,
+                items: items,
+                formattedItemsSubtotal: formattedSubtotal,
+                formattedTax: formattedTax,
+                itemCount: items.count
+            )
+        }
+    }
+
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult {
         async let refundsTask = refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
         async let gatewaysTask = fetchPaymentGateways()
@@ -52,7 +84,16 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         let refunds = try await refundsTask
         let gateways = await gatewaysTask
 
-        let mappedRefunds = refunds.map { mapper.map(refund: $0) }
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currency = currencySettings.currencyCode.rawValue
+        let mappedRefunds = refunds.map { refund in
+            POSRefund(items: mapper.map(
+                refund: refund,
+                orderItems: order.lineItems,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            ))
+        }
         let isFullyRefunded = areAllProductsFullyRefunded(
             orderedQuantities: order.lineItemQuantitiesByProductOrVariationID,
             refunds: refunds

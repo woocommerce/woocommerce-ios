@@ -27,6 +27,7 @@ extension BookingDetailsViewModel {
             ]
 
             actions = [
+                booking.isPaid && booking.hasAssociatedOrder ? .refund : nil,
                 booking.hasAssociatedOrder ? .viewOrder : nil
             ].compactMap { $0 }
         }
@@ -81,6 +82,7 @@ extension BookingDetailsViewModel.PaymentContent.Amount.AmountType {
 
 extension BookingDetailsViewModel.PaymentContent {
     enum Action: String, Identifiable {
+        case refund
         case viewOrder
 
         var id: String {
@@ -92,6 +94,8 @@ extension BookingDetailsViewModel.PaymentContent {
 extension BookingDetailsViewModel.PaymentContent.Action {
     var buttonTitle: String {
         switch self {
+        case .refund:
+            return Localization.paymentRefundButtonTitle
         case .viewOrder:
             return Localization.paymentViewOrderButtonTitle
         }
@@ -121,6 +125,12 @@ private enum Localization {
         "BookingDetailsView.payment.totalRow.title",
         value: "Total",
         comment: "Total row title in payment section in booking details view."
+    )
+
+    static let paymentRefundButtonTitle = NSLocalizedString(
+        "BookingDetailsView.payment.refund.title",
+        value: "Refund",
+        comment: "Title for 'Refund' button in payment section in booking details view."
     )
 
     static let paymentViewOrderButtonTitle = NSLocalizedString(

@@ -58,17 +58,17 @@ private extension ConnectWPComCard {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "dashboardView.connectWPComCard.title",
+            "connectWPComCard.title",
             value: "Never miss a new order",
             comment: "Title of the Connect WPCom card on My Store screen"
         )
         static let subtitle = NSLocalizedString(
-            "dashboardView.connectWPComCard.subtitle",
-            value: "Connect your store to a WordPress.com account to get alerts for new orders and reviews.",
+            "connectWPComCard.subtitle",
+            value: "Enable push notifications to stay on top of new orders and reviews.",
             comment: "Subtitle of the Connect WPCom card on My Store screen"
         )
         static let hideButton = NSLocalizedString(
-            "dashboardView.connectWPComCard.hideButton",
+            "connectWPComCard.hideButton",
             value: "Hide this content",
             comment: "Button to hide the Connect WPCom card from the My Store screen"
         )

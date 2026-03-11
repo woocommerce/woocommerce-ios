@@ -56,7 +56,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
-            attendanceStatuses: [.attended, .unattended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -96,7 +96,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters1 = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
-            attendanceStatuses: [.attended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -104,7 +104,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters2 = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 200, name: "Team Member 2")],
             products: [BookingProductFilter(productID: 2, name: "Product 2")],
-            attendanceStatuses: [.unattended],
+            attendanceStatus: .unattended,
             customers: [],
             dateRange: nil
         )
@@ -159,7 +159,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let initialFilters = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [BookingProductFilter(productID: 1, name: "Product 1")],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [BookingCustomerFilter(customerID: 10, name: "Customer 1")],
             dateRange: nil
         )
@@ -167,7 +167,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let updatedFilters = StoredBookingFilters.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [.attended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 20, name: "Customer 2")],
             dateRange: nil
         )
@@ -216,7 +216,7 @@ struct AppSettingsStoreTests_BookingFilters {
         let filters = StoredBookingFilters.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 100, name: "Team Member 1")],
             products: [],
-            attendanceStatuses: [.attended],
+            attendanceStatus: .attended,
             customers: [],
             dateRange: nil
         )

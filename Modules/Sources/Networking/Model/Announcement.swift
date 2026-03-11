@@ -100,3 +100,9 @@ public struct FeatureIcon: Decodable, GeneratedCopiable, GeneratedFakeable {
         self.iconType = iconType
     }
 }
+
+extension Announcement: Identifiable {
+    public var id: String {
+        "\(appVersionName)-\(announcementVersion)"
+    }
+}

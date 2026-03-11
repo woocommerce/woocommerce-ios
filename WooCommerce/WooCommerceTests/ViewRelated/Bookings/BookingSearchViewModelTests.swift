@@ -353,7 +353,7 @@ struct BookingSearchViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(
                 startDate: Date(timeIntervalSince1970: 1609416000), // 2020-12-31T12:00:00Z
@@ -400,7 +400,7 @@ struct BookingSearchViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(
                 startDate: Date(timeIntervalSince1970: 1609632000), // 2021-01-03T00:00:00Z
@@ -449,7 +449,7 @@ struct BookingSearchViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(startDate: userStartDate, endDate: userEndDate),
             numberOfActiveFilters: 1
@@ -491,7 +491,7 @@ struct BookingSearchViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [BookingProductFilter(productID: 100, name: "Massage")],
-            attendanceStatuses: [.attended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
             dateRange: nil,
             numberOfActiveFilters: 4
@@ -505,7 +505,7 @@ struct BookingSearchViewModelTests {
         // Then
         #expect(capturedFilters?.resourceIDs == [42])
         #expect(capturedFilters?.productIDs == [100])
-        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.attended.rawValue])
+        #expect(capturedFilters?.attendanceStatus == BookingAttendanceStatus.attended.rawValue)
         #expect(capturedFilters?.customerIDs == [7])
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")

@@ -1093,6 +1093,7 @@ public enum WooAnalyticsStat: String {
     case bookingDetailAttendanceStatusUpdate = "booking_detail_attendance_status_update"
     case bookingDetailAddNoteTap = "booking_detail_add_note_tap"
     case bookingDetailViewLinkedOrderTap = "booking_detail_view_linked_order_tap"
+    case bookingDetailRefundTap = "booking_detail_refund_tap"
     case bookingListTabSelect = "booking_list_tab_select"
     case bookingListView = "booking_list_view"
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"

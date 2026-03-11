@@ -650,7 +650,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "Any")],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: nil,
             numberOfActiveFilters: 1
@@ -684,7 +684,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(
                 startDate: Date(timeIntervalSince1970: 1609416000), // 2020-12-31T12:00:00Z
@@ -729,7 +729,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(
                 startDate: Date(timeIntervalSince1970: 1609632000), // 2021-01-03T00:00:00Z
@@ -773,7 +773,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(startDate: userStartDate, endDate: userEndDate),
             numberOfActiveFilters: 1
@@ -806,7 +806,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [BookingProductFilter(productID: 100, name: "Massage")],
-            attendanceStatuses: [.attended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
             dateRange: nil,
             numberOfActiveFilters: 4
@@ -819,7 +819,7 @@ class BookingListViewModelTests {
         // Then - non-date filters should pass through
         #expect(capturedFilters?.resourceIDs == [42])
         #expect(capturedFilters?.productIDs == [100])
-        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.attended.rawValue])
+        #expect(capturedFilters?.attendanceStatus == BookingAttendanceStatus.attended.rawValue)
         #expect(capturedFilters?.customerIDs == [7])
         // Tab date constraints should still be applied
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
@@ -847,7 +847,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: nil,
             numberOfActiveFilters: 1
@@ -864,7 +864,7 @@ class BookingListViewModelTests {
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")
         #expect(capturedFilters?.resourceIDs == [])
         #expect(capturedFilters?.productIDs == [])
-        #expect(capturedFilters?.attendanceStatuses == [])
+        #expect(capturedFilters?.attendanceStatus == nil)
         #expect(capturedFilters?.customerIDs == [])
         #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue])
     }

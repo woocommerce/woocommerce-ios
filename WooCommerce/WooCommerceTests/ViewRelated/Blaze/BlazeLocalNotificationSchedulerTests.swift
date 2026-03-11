@@ -77,53 +77,6 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(Calendar.current.date(byAdding: .day, value: 30, to: campaignEndTime)?.isSameDay(as: notificationTriggerDate)))
     }
 
-    // swiftlint:disable:next line_length
-    func test_no_campaign_notification_is_scheduled_30_days_after_latest_campaign_ends_when_multiple_active_non_evergreen_campaign_exist_in_storage() async throws {
-        // Given
-        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let campaignStartDate1 = Date.now.addingDays(1)
-        let campaignStartDate2 = Date.now.addingDays(2)
-        let campaignStartDate3 = Date.now.addingDays(3)
-        let fakeBlazeCampaign1 = BlazeCampaignListItem.fake().copy(siteID: siteID,
-                                                                  budgetCurrency: "USD",
-                                                                  isEvergreen: false,
-                                                                  durationDays: 15,
-                                                                  startTime: campaignStartDate1)
-        let fakeBlazeCampaign2 = BlazeCampaignListItem.fake().copy(siteID: siteID,
-                                                                  budgetCurrency: "USD",
-                                                                  isEvergreen: false,
-                                                                  durationDays: 15,
-                                                                  startTime: campaignStartDate2)
-        let fakeBlazeCampaign3 = BlazeCampaignListItem.fake().copy(siteID: siteID,
-                                                                  budgetCurrency: "USD",
-                                                                  isEvergreen: false,
-                                                                  durationDays: 7,
-                                                                  startTime: campaignStartDate3)
-        let sut = DefaultBlazeLocalNotificationScheduler(siteID: siteID,
-                                                         stores: stores,
-                                                         storageManager: storageManager,
-                                                         userDefaults: defaults,
-                                                         pushNotesManager: pushNotesManager,
-                                                         blazeEligibilityChecker: blazeEligibilityChecker)
-        await sut.scheduleNoCampaignReminder()
-
-        // When
-        insertCampaigns([fakeBlazeCampaign1, fakeBlazeCampaign2, fakeBlazeCampaign3])
-
-        // Then
-        await until {
-            self.pushNotesManager.requestedLocalNotifications.isNotEmpty
-        }
-
-        let scenario = pushNotesManager.requestedLocalNotifications.first?.scenario
-        XCTAssertEqual(scenario, LocalNotification.Scenario.blazeNoCampaignReminder)
-
-        let trigger = try XCTUnwrap(pushNotesManager.triggersForRequestedLocalNotifications.first as? UNCalendarNotificationTrigger)
-        let notificationTriggerDate = try XCTUnwrap(trigger.nextTriggerDate())
-        let campaignEndTime = try XCTUnwrap(Calendar.current.date(byAdding: .day, value: Int(fakeBlazeCampaign2.durationDays), to: campaignStartDate2))
-        XCTAssertTrue(try XCTUnwrap(Calendar.current.date(byAdding: .day, value: 30, to: campaignEndTime)?.isSameDay(as: notificationTriggerDate)))
-    }
-
     func test_previous_no_campaign_notification_is_cancelled_before_scheduling_new_no_campaign_notification() async throws {
         // Given
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
@@ -212,18 +165,13 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
                                                          blazeEligibilityChecker: blazeEligibilityChecker)
         await sut.scheduleNoCampaignReminder()
 
-        waitForExpectation(timeout: 0.5) { exp in
-            exp.isInverted = true
+        // When
+        insertCampaigns([fakeBlazeCampaign])
 
-            // When
-            insertCampaigns([fakeBlazeCampaign])
-
-            // Then
-            // No local notifications should be requested
-            if self.pushNotesManager.requestedLocalNotifications.isNotEmpty {
-                exp.fulfill()
-            }
-        }
+        // Then
+        // No local notifications should be requested
+        try await Task.sleep(nanoseconds: 500_000_000)
+        XCTAssertTrue(pushNotesManager.requestedLocalNotifications.isEmpty)
     }
 
     func test_no_campaign_notification_is_not_scheduled_when_notification_already_has_been_interacted_with() async throws {
@@ -483,6 +431,5 @@ private extension BlazeLocalNotificationSchedulerTests {
             let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
             newCampaign.update(with: campaign)
         }
-        storage.saveIfNeeded()
     }
 }

@@ -5,6 +5,10 @@ import XCTest
 
 class WooCommerceScreenshots: XCTestCase {
 
+    private var screenshotOrientation: UIDeviceOrientation {
+        UIDevice.current.userInterfaceIdiom == .pad ? .landscapeLeft : .portrait
+    }
+
     override func setUpWithError() throws {
         super.setUp()
         continueAfterFailure = false
@@ -55,13 +59,13 @@ class WooCommerceScreenshots: XCTestCase {
         try TabNavComponent()
             .goToMyStoreScreen()
             .dismissTopBannerIfNeeded()
-            .thenTakeScreenshot(named: "order-dashboard")
+            .thenTakeScreenshot(named: "order-dashboard", orientation: screenshotOrientation)
 
         // Orders
         try TabNavComponent()
         .goToOrdersScreen()
         .startOrderCreation()
-        .thenTakeScreenshot(named: "order-creation")
+        .thenTakeScreenshot(named: "order-creation", orientation: screenshotOrientation)
         .cancelOrderCreation()
 
         // Collect payment
@@ -69,7 +73,7 @@ class WooCommerceScreenshots: XCTestCase {
         .tapCollectPaymentButton()
 
         .tapCardPresentPayment()
-        .thenTakeScreenshot(named: "order-payment")
+        .thenTakeScreenshot(named: "order-payment", orientation: screenshotOrientation)
 
         .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
@@ -101,10 +105,10 @@ class WooCommerceScreenshots: XCTestCase {
         try TabNavComponent()
         .goToProductsScreen()
         .tapAddProduct()
-        .thenTakeScreenshot(named: "product-add")
+        .thenTakeScreenshot(named: "product-add", orientation: screenshotOrientation)
 
         .lockScreenForNotificationScreenshot()
-        .thenTakeScreenshot(named: "order-notification")
+        .thenTakeScreenshot(named: "order-notification", orientation: screenshotOrientation)
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())

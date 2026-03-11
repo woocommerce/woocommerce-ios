@@ -169,6 +169,28 @@ private extension POSRefundMapperTests {
                         totalTax: "0.00")
     }
 
+    func makeRefundItemWithTax(name: String = "Item",
+                               refundedItemID: String? = "1",
+                               quantity: Decimal = -1,
+                               price: NSDecimalNumber = 10.00,
+                               total: String = "-10.00",
+                               totalTax: String = "-2.00") -> OrderItemRefund {
+        OrderItemRefund(itemID: 0,
+                        name: name,
+                        productID: 0,
+                        variationID: 0,
+                        refundedItemID: refundedItemID,
+                        quantity: quantity,
+                        price: price,
+                        sku: nil,
+                        subtotal: total,
+                        subtotalTax: "0.00",
+                        taxClass: "",
+                        taxes: [],
+                        total: total,
+                        totalTax: totalTax)
+    }
+
     func makeOrderItem(itemID: Int64, imageSrc: String?) -> POSOrderItem {
         POSOrderItem(itemID: itemID,
                      name: "Order Item",
@@ -180,5 +202,41 @@ private extension POSRefundMapperTests {
                      formattedTotal: "$10.00",
                      imageSrc: imageSrc,
                      attributes: [])
+    }
+}
+
+// MARK: - mapSubtotalAndTax Tests
+
+extension POSRefundMapperTests {
+    @Test func mapSubtotalAndTax_then_returns_formatted_absolute_subtotal_and_tax() {
+        // Given
+        let sut = POSRefundMapper()
+        let items = [
+            makeRefundItemWithTax(total: "-18.00", totalTax: "-3.60"),
+            makeRefundItemWithTax(total: "-10.00", totalTax: "-2.00")
+        ]
+        let refund = makeRefund(items: items)
+        let formatter = CurrencyFormatter(currencySettings: .init())
+
+        // When
+        let result = sut.mapSubtotalAndTax(refund: refund, currencyFormatter: formatter, currency: "USD")
+
+        // Then
+        #expect(result.formattedSubtotal.contains("28.00"))
+        #expect(result.formattedTax.contains("5.60"))
+    }
+
+    @Test func mapSubtotalAndTax_when_no_items_then_returns_zero_amounts() {
+        // Given
+        let sut = POSRefundMapper()
+        let refund = makeRefund(items: [])
+        let formatter = CurrencyFormatter(currencySettings: .init())
+
+        // When
+        let result = sut.mapSubtotalAndTax(refund: refund, currencyFormatter: formatter, currency: "USD")
+
+        // Then
+        #expect(result.formattedSubtotal.contains("0.00"))
+        #expect(result.formattedTax.contains("0.00"))
     }
 }

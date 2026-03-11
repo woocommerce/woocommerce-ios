@@ -26,6 +26,7 @@ enum StartRefundFlowResult {
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
+    var isLoadingOrderRefunds: Bool { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
@@ -66,6 +67,7 @@ enum RefundActionAvailability {
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    private(set) var isLoadingOrderRefunds = false
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
@@ -223,6 +225,7 @@ enum RefundActionAvailability {
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+        isLoadingOrderRefunds = false
         selectedOrderRefundsState = .idle
     }
 
@@ -420,6 +423,7 @@ enum RefundActionAvailability {
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
             return
         }
+        isLoadingOrderRefunds = true
         do {
             let refunds = try await refundsService.loadOrderRefunds(for: order)
             guard selectedOrder?.id == order.id else { return }
@@ -427,6 +431,7 @@ enum RefundActionAvailability {
         } catch {
             DDLogError("⛔️ Failed to load refund details: \(error)")
         }
+        isLoadingOrderRefunds = false
     }
 }
 

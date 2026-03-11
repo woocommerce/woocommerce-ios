@@ -58,12 +58,21 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 currencyFormatter: currencyFormatter,
                 currency: currency
             )
-            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency) ?? ""
+            let (formattedSubtotal, formattedTax) = mapper.mapSubtotalAndTax(
+                refund: refund,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            )
+            let formattedTotal = currencyFormatter.formatAmount(refund.amount, with: currency, isNegative: true) ?? ""
             return POSOrderRefund(
                 refundID: refund.refundID,
                 formattedTotal: formattedTotal,
                 reason: refund.reason.isEmpty ? nil : refund.reason,
-                items: items
+                dateCreated: refund.dateCreated,
+                items: items,
+                formattedItemsSubtotal: formattedSubtotal,
+                formattedTax: formattedTax,
+                itemCount: items.count
             )
         }
     }

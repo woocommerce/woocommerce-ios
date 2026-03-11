@@ -114,8 +114,6 @@ private extension SettingsViewController {
         footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
-        footerView.icon.addGestureRecognizer(hiddenSettingsGestureRecognizer)
-        footerView.icon.isUserInteractionEnabled = true
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
@@ -169,6 +167,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
+        case let cell as BasicTableViewCell where row == .debugPanel:
+            configureDebugPanel(cell: cell)
         case let cell as BasicTableViewCell where row == .accountSettings:
             configureAccountSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
@@ -279,6 +279,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = "Launch Wormholy Debug"
+    }
+
+    func configureDebugPanel(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = "Debug Panel"
     }
 
     func configureWhatsNew(cell: BasicTableViewCell) {
@@ -523,6 +529,11 @@ private extension SettingsViewController {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 
+    func debugPanelWasPressed() {
+        let hostingController = UIHostingController(rootView: DebugPanelView())
+        navigationController?.pushViewController(hostingController, animated: true)
+    }
+
     func whatsNewWasPressed() {
         ServiceLocator.analytics.track(event: .featureAnnouncementShown(source: .appSettings))
         guard let announcement = viewModel.announcement else { return }
@@ -541,24 +552,6 @@ private extension SettingsViewController {
         ServiceLocator.analytics.track(.settingsWereHiringTapped)
 
         WebviewHelper.launch(url, with: self)
-    }
-}
-
-
-// MARK: - Hidden Settings Debug Menu
-//
-private extension SettingsViewController {
-
-    var hiddenSettingsGestureRecognizer: UITapGestureRecognizer {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeHiddenSettings))
-        gestureRecognizer.numberOfTapsRequired = 2
-        gestureRecognizer.isEnabled = !BuildConfiguration.current.isProduction
-        return gestureRecognizer
-    }
-
-    @objc func didInvokeHiddenSettings(_ sender: UITapGestureRecognizer? = nil) {
-        let hostingController = UIHostingController(rootView: DebugPanelView())
-        self.navigationController?.pushViewController(hostingController, animated: true)
     }
 }
 
@@ -659,6 +652,8 @@ extension SettingsViewController: UITableViewDelegate {
             deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
+        case .debugPanel:
+            debugPanelWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
         case .accountSettings:
@@ -748,6 +743,7 @@ extension SettingsViewController {
         // Other
         case deviceSettings
         case wormholy
+        case debugPanel
 
         // Account settings
         case accountSettings
@@ -795,6 +791,8 @@ extension SettingsViewController {
             case .deviceSettings:
                 return BasicTableViewCell.self
             case .wormholy:
+                return BasicTableViewCell.self
+            case .debugPanel:
                 return BasicTableViewCell.self
             case .whatsNew:
                 return BasicTableViewCell.self

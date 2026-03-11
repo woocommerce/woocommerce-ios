@@ -15,8 +15,10 @@ struct POSRefundDetailView: View {
             headerView
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    productRows
-                    POSDivider()
+                    if !refund.items.isEmpty {
+                        productRows
+                        POSDivider()
+                    }
                     summaryRows
                     POSDivider()
                     refundTotalSection

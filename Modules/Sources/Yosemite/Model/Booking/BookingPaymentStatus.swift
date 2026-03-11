@@ -39,35 +39,4 @@ public enum BookingPaymentStatus: Equatable, Sendable {
             self = .unpaid
         }
     }
-
-    /// Legacy initializer that resolves payment status from raw order fields.
-    ///
-    /// Kept for backward compatibility. Prefer `init(paymentStatusMetadata:)` when the
-    /// `_payment_status` metadata is available.
-    ///
-    /// - Parameters:
-    ///   - orderStatusKey: The raw order status string (e.g. "processing", "refunded").
-    ///   - datePaid: When the order was paid, if ever.
-    ///   - refundTotal: Total amount refunded. Defaults to 0 when unavailable.
-    ///   - total: Order total. Defaults to 0 when unavailable.
-    public init(orderStatusKey: String,
-                datePaid: Date?,
-                refundTotal: Decimal = 0,
-                total: Decimal = 0) {
-        let orderStatus = OrderStatusEnum(rawValue: orderStatusKey)
-
-        if refundTotal > 0, refundTotal >= total {
-            self = .refunded
-        } else if refundTotal > 0 {
-            self = .partiallyRefunded
-        } else if orderStatus == .refunded {
-            self = .refunded
-        } else if datePaid != nil {
-            self = .paid
-        } else if orderStatus == .failed || orderStatus == .cancelled {
-            self = .failed
-        } else {
-            self = .unpaid
-        }
-    }
 }

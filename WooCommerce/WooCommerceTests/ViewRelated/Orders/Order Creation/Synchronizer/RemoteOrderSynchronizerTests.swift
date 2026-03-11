@@ -1236,7 +1236,8 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                                       .fees,
                                       .shippingLines,
                                       .couponLines,
-                                      .items])
+                                      .items,
+                                      .customerID])
     }
 
     func test_order_update_in_edit_flow_is_sent_with_all_order_fields() {
@@ -1522,6 +1523,75 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // Then
         wait(for: [exp], timeout: 1.0)
+    }
+
+    func test_order_sync_preserves_customerID_from_local_order_when_remote_returns_zero() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
+        let expectedCustomerID: Int64 = 123
+
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .createOrder(_, _, _, let completion):
+                // Simulate API returning customerID = 0 (guest)
+                completion(.success(.fake().copy(orderID: self.sampleOrderID, customerID: 0)))
+            case .updateOrder(_, _, _, _, let completion):
+                // Simulate API returning customerID = 0 (guest)
+                completion(.success(.fake().copy(orderID: self.sampleOrderID, customerID: 0)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        // First create the order
+        let input = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 1, discount: 0)
+        createOrder(on: synchronizer, input: input)
+
+        // Set customer ID
+        synchronizer.setCustomerID.send(expectedCustomerID)
+
+        // Trigger an update (which would normally overwrite customerID with API response)
+        let input2 = OrderSyncProductInput(id: sampleInputID, product: .product(product), quantity: 2, discount: 0)
+        synchronizer.setProduct.send(input2)
+
+        // Wait for sync to complete
+        waitUntil {
+            synchronizer.state == .synced
+        }
+
+        // Then - customerID should be preserved from local order, not overwritten by API response
+        XCTAssertEqual(synchronizer.order.customerID, expectedCustomerID)
+    }
+
+    func test_order_creation_includes_customerID_when_set_before_sync() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores, debounceDuration: 0.0)
+        let expectedCustomerID: Int64 = 456
+
+        // When
+        let createdOrder: Order = waitFor { promise in
+            stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case .createOrder(_, let order, _, let completion):
+                    completion(.success(order.copy(orderID: self.sampleOrderID)))
+                    promise(order)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+                }
+            }
+
+            // Set customer ID before triggering sync
+            synchronizer.setCustomerID.send(expectedCustomerID)
+            // Trigger order creation via address input
+            synchronizer.setAddresses.send(.init(billing: .fake(), shipping: .fake()))
+        }
+
+        // Then - the order sent to API should include the customerID
+        XCTAssertEqual(createdOrder.customerID, expectedCustomerID)
     }
 }
 

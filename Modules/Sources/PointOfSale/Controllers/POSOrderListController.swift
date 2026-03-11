@@ -7,8 +7,6 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
-import struct Yosemite.POSRefundItem
-import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSRefundAmounts
@@ -28,9 +26,9 @@ enum StartRefundFlowResult {
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
+    var isLoadingOrderRefunds: Bool { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
-    var refundedProducts: [POSRefundItem] { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
@@ -42,7 +40,7 @@ protocol POSOrderListControllerProtocol {
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
     func processRefund(reason: String?) async throws
-    func loadRefundedProducts() async
+    func loadOrderRefunds() async
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -69,9 +67,9 @@ enum RefundActionAvailability {
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    private(set) var isLoadingOrderRefunds = false
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
-    private(set) var refundedProducts: [POSRefundItem] = []
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let featureFlags: POSFeatureFlagProviding
@@ -227,8 +225,8 @@ enum RefundActionAvailability {
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+        isLoadingOrderRefunds = false
         selectedOrderRefundsState = .idle
-        refundedProducts = []
     }
 
     @MainActor
@@ -418,22 +416,23 @@ enum RefundActionAvailability {
 
         clearRefundSelection()
         try? await updateOrder(orderID: order.id)
-        await loadRefundedProducts()
+        await loadOrderRefunds()
     }
 
-    func loadRefundedProducts() async {
+    func loadOrderRefunds() async {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
-            refundedProducts = []
             return
         }
+        isLoadingOrderRefunds = true
         do {
-            let refundData = try await refundsService.loadRefundData(for: order)
-            refundedProducts = refundData.refundedProducts
-            selectedOrder = order.copy(refunds: refundData.refunds)
+            let refunds = try await refundsService.loadOrderRefunds(for: order)
+            guard selectedOrder?.id == order.id else { return }
+            selectedOrder = order.copy(refunds: .some(refunds))
         } catch {
-            DDLogError("⛔️ Failed to load refunded products: \(error)")
-            refundedProducts = []
+            DDLogError("⛔️ Failed to load refund details: \(error)")
         }
+        isLoadingOrderRefunds = false
     }
 }
 

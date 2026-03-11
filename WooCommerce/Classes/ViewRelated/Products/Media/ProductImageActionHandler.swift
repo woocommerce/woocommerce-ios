@@ -255,15 +255,20 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
     ///
     func updateProductID(_ remoteProductID: ProductOrVariationID) {
-        self.productOrVariationID = remoteProductID
-        self.productImageStatuses = self.productImageStatuses.map { status in
-            switch status {
-            case .uploading(let asset, let siteID, _):
-                return .uploading(asset: asset, siteID: siteID, productID: remoteProductID)
-            case .uploadFailure(let asset, let error, let siteID, _):
-                return .uploadFailure(asset: asset, error: error, siteID: siteID, productID: remoteProductID)
-            default:
-                return status
+        queue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.productOrVariationID = remoteProductID
+            self.productImageStatuses = self.productImageStatuses.map { status in
+                switch status {
+                case .uploading(let asset, let siteID, _):
+                    return .uploading(asset: asset, siteID: siteID, productID: remoteProductID)
+                case .uploadFailure(let asset, let error, let siteID, _):
+                    return .uploadFailure(asset: asset, error: error, siteID: siteID, productID: remoteProductID)
+                default:
+                    return status
+                }
             }
         }
     }

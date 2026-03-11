@@ -1,6 +1,5 @@
 import SwiftUI
 import struct Yosemite.POSOrderRefund
-import struct Yosemite.POSRefundItem
 
 /// A reusable totals breakdown card used by both order details and booking details.
 ///
@@ -17,10 +16,9 @@ struct POSTotalsSectionView: View {
     let paymentMethodTitle: String
     let refunds: [POSOrderRefund]
     let netAmount: String?
-    var paymentMethodDescription: String = ""
     var siteTimezone: TimeZone = .current
-
-    @State private var selectedRefundForDetail: POSOrderRefund?
+    var isLoadingRefundDetails: Bool = false
+    @Binding var selectedRefundForDetail: POSOrderRefund?
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -61,16 +59,6 @@ struct POSTotalsSectionView: View {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .posModal(item: $selectedRefundForDetail) { refund in
-            let sortedRefunds = refunds.sorted(by: { $0.refundID < $1.refundID })
-            let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
-            POSRefundDetailView(
-                refund: refund,
-                index: index,
-                paymentMethodDescription: paymentMethodDescription,
-                onClose: { selectedRefundForDetail = nil }
-            )
-        }
     }
 
     // MARK: - Paid Row
@@ -118,9 +106,7 @@ struct POSTotalsSectionView: View {
     }
 
     private var refundDateFormatter: DateFormatter {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = siteTimezone
-        return formatter
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
     }
 
     @ViewBuilder
@@ -136,25 +122,30 @@ struct POSTotalsSectionView: View {
                     .foregroundStyle(Color.posError)
             }
 
-            if let dateCreated = refund.dateCreated {
-                Text(refundDateFormatter.string(from: dateCreated))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
+            if isLoadingRefundDetails {
+                ghostLine(width: Constants.longWidth, height: Constants.rowHeight)
+                ghostLine(width: Constants.shortWidth, height: Constants.rowHeight)
+            } else {
+                if let dateCreated = refund.dateCreated {
+                    Text(refundDateFormatter.string(from: dateCreated))
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
 
-            if let reason = refund.reason, !reason.isEmpty {
-                Text(reason)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
+                if let reason = refund.reason, !reason.isEmpty {
+                    Text(reason)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                }
 
-            Button {
-                selectedRefundForDetail = refund
-            } label: {
-                Text(Localization.viewDetailsLabel)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posPrimary)
-                    .underline()
+                Button {
+                    selectedRefundForDetail = refund
+                } label: {
+                    Text(Localization.viewDetailsLabel)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(Color.posPrimary)
+                        .underline()
+                }
             }
         }
         .accessibilityElement(children: .combine)
@@ -163,6 +154,14 @@ struct POSTotalsSectionView: View {
             amount: refund.formattedTotal,
             reason: refund.reason
         ))
+    }
+
+    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+        Rectangle()
+            .fill(Color.posOnSurfaceVariantLowest)
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            .shimmering()
     }
 
     // MARK: - Generic Row
@@ -189,8 +188,7 @@ struct POSTotalsSectionView: View {
     }
 
     private var sectionDivider: some View {
-        Divider()
-            .overlay(Color.posOutlineVariant.opacity(0.5))
+        POSDivider()
     }
 }
 
@@ -301,4 +299,10 @@ private enum Localization {
         )
         return String(format: format, amount)
     }
+}
+
+private enum Constants {
+    static let longWidth: CGFloat = 120
+    static let shortWidth: CGFloat = 80
+    static let rowHeight: CGFloat = 16
 }

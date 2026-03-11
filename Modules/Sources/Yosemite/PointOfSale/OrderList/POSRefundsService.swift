@@ -46,13 +46,13 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         self.mapper = POSRefundMapper()
     }
 
-    public func loadRefundData(for order: POSOrder) async throws -> POSRefundData {
+    public func loadOrderRefunds(for order: POSOrder) async throws -> [POSOrderRefund] {
         let refunds = try await refundsRemote.loadRefunds(for: siteID, by: order.id, with: order.refunds.map { $0.refundID })
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let currency = currencySettings.currencyCode.rawValue
 
-        let mappedRefunds = refunds.map { refund in
-            let items = mapper.mapWithDisplayData(
+        return refunds.map { refund in
+            let items = mapper.map(
                 refund: refund,
                 orderItems: order.lineItems,
                 currencyFormatter: currencyFormatter,
@@ -75,9 +75,6 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
                 itemCount: items.count
             )
         }
-
-        let refundedProducts = mappedRefunds.flatMap { $0.items }
-        return POSRefundData(refundedProducts: refundedProducts, refunds: mappedRefunds)
     }
 
     public func providePointOfSaleRefunds(for order: POSOrder) async throws -> POSRefundsResult {
@@ -87,7 +84,16 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
         let refunds = try await refundsTask
         let gateways = await gatewaysTask
 
-        let mappedRefunds = refunds.map { mapper.map(refund: $0) }
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let currency = currencySettings.currencyCode.rawValue
+        let mappedRefunds = refunds.map { refund in
+            POSRefund(items: mapper.map(
+                refund: refund,
+                orderItems: order.lineItems,
+                currencyFormatter: currencyFormatter,
+                currency: currency
+            ))
+        }
         let isFullyRefunded = areAllProductsFullyRefunded(
             orderedQuantities: order.lineItemQuantitiesByProductOrVariationID,
             refunds: refunds

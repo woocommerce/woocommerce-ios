@@ -10,12 +10,12 @@ struct POSRefundMapperTests {
     private let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
     private let currency = CurrencySettings().currencyCode.rawValue
 
-    @Test func test_mapWithDisplayData_then_maps_name_from_refund_item() {
+    @Test func test_map_then_maps_name_from_refund_item() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(name: "Coffee Mug")])
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
+        let result = sut.map(refund: refund,
                                             orderItems: [],
                                             currencyFormatter: currencyFormatter,
                                             currency: currency)
@@ -24,96 +24,96 @@ struct POSRefundMapperTests {
         #expect(result.first?.name == "Coffee Mug")
     }
 
-    @Test func test_mapWithDisplayData_then_converts_quantity_to_absolute_value() {
+    @Test func test_map_then_converts_quantity_to_absolute_value() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(quantity: -2)])
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
-                                            orderItems: [],
-                                            currencyFormatter: currencyFormatter,
-                                            currency: currency)
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
 
         // Then
         #expect(result.first?.quantity == 2)
     }
 
-    @Test func test_mapWithDisplayData_then_formats_price_as_positive() {
+    @Test func test_map_then_formats_price_as_positive() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(price: NSDecimalNumber(value: -14.99))])
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
-                                            orderItems: [],
-                                            currencyFormatter: currencyFormatter,
-                                            currency: currency)
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
 
         // Then
         #expect(result.first?.formattedPrice.contains("-") == false)
         #expect(result.first?.formattedPrice.contains("14.99") == true)
     }
 
-    @Test func test_mapWithDisplayData_then_formats_total_as_negative() {
+    @Test func test_map_then_formats_total_as_negative() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(total: "-14.99")])
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
-                                            orderItems: [],
-                                            currencyFormatter: currencyFormatter,
-                                            currency: currency)
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
 
         // Then
         #expect(result.first?.formattedTotal.contains("-") == true)
         #expect(result.first?.formattedTotal.contains("14.99") == true)
     }
 
-    @Test func test_mapWithDisplayData_when_order_item_matches_then_resolves_image() {
+    @Test func test_map_when_order_item_matches_then_resolves_image() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(refundedItemID: "42")])
         let orderItem = makeOrderItem(itemID: 42, imageSrc: "https://example.com/img.jpg")
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
-                                            orderItems: [orderItem],
-                                            currencyFormatter: currencyFormatter,
-                                            currency: currency)
+        let result = sut.map(refund: refund,
+                             orderItems: [orderItem],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
 
         // Then
         #expect(result.first?.imageSrc == "https://example.com/img.jpg")
     }
 
-    @Test func test_mapWithDisplayData_when_no_matching_order_item_then_image_is_nil() {
+    @Test func test_map_when_no_matching_order_item_then_image_is_nil() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(refundedItemID: "42")])
         let orderItem = makeOrderItem(itemID: 99, imageSrc: "https://example.com/img.jpg")
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
-                                            orderItems: [orderItem],
-                                            currencyFormatter: currencyFormatter,
-                                            currency: currency)
+        let result = sut.map(refund: refund,
+                             orderItems: [orderItem],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
 
         // Then
         #expect(result.first?.imageSrc == nil)
     }
 
-    @Test func test_mapWithDisplayData_when_refundedItemID_is_nil_then_image_is_nil() {
+    @Test func test_map_when_refundedItemID_is_nil_then_image_is_nil() {
         // Given
         let refund = makeRefund(items: [makeRefundItem(name: "Deleted Product", refundedItemID: nil)])
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
-                                            orderItems: [],
-                                            currencyFormatter: currencyFormatter,
-                                            currency: currency)
+        let result = sut.map(refund: refund,
+                             orderItems: [],
+                             currencyFormatter: currencyFormatter,
+                             currency: currency)
 
         // Then
         #expect(result.first?.imageSrc == nil)
         #expect(result.first?.name == "Deleted Product")
     }
 
-    @Test func test_mapWithDisplayData_with_multiple_items_then_returns_all() {
+    @Test func test_map_with_multiple_items_then_returns_all() {
         // Given
         let refund = makeRefund(items: [
             makeRefundItem(name: "Item A"),
@@ -122,7 +122,7 @@ struct POSRefundMapperTests {
         ])
 
         // When
-        let result = sut.mapWithDisplayData(refund: refund,
+        let result = sut.map(refund: refund,
                                             orderItems: [],
                                             currencyFormatter: currencyFormatter,
                                             currency: currency)

@@ -59,6 +59,12 @@ public class AnnouncementsStore: Store {
 
         case .markSavedAnnouncementAsDisplayed(let onCompletion):
             markSavedAnnouncementAsDisplayed(onCompletion: onCompletion)
+
+        case .synchronizeAnnouncementsForDebug(let appVersion, let onCompletion):
+            synchronizeAnnouncementsForDebug(appVersion: appVersion, onCompletion: onCompletion)
+
+        case .deleteSavedAnnouncement(let onCompletion):
+            deleteSavedAnnouncement(onCompletion: onCompletion)
         }
     }
 }
@@ -66,8 +72,12 @@ public class AnnouncementsStore: Store {
 // MARK: - Action Handlers
 private extension AnnouncementsStore {
     /// Get Announcements from Announcements API and persist this information on disk.
-    func synchronizeAnnouncements(onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
-        remote.loadAnnouncements(appVersion: appVersion,
+    /// - Parameters:
+    ///   - appVersion: Optional app version to use for the API call. If nil, uses the current app version.
+    ///   - onCompletion: Completion handler with the result.
+    func synchronizeAnnouncements(appVersion: String? = nil, onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
+        let version = appVersion ?? self.appVersion
+        remote.loadAnnouncements(appVersion: version,
                                  locale: Locale.current.identifier) { [weak self] result in
             switch result {
             case .success(let announcements):
@@ -107,6 +117,42 @@ private extension AnnouncementsStore {
         }
         catch {
             onCompletion(.failure(AnnouncementsStorageError.unableToSaveAnnouncement))
+        }
+    }
+
+    /// Delete saved announcement from disk.
+    func deleteSavedAnnouncement(onCompletion: (Result<Void, Error>) -> Void) {
+        guard let fileURL = featureAnnouncementsFileURL else {
+            onCompletion(.failure(AnnouncementsStorageError.unableToFindFileURL))
+            return
+        }
+        do {
+            try FileManager.default.removeItem(at: fileURL)
+            onCompletion(.success(()))
+        } catch {
+            onCompletion(.failure(error))
+        }
+    }
+
+    /// Fetches announcements for debugging, always overwriting any existing saved announcement.
+    func synchronizeAnnouncementsForDebug(appVersion: String, onCompletion: @escaping (Result<Announcement, Error>) -> Void) {
+        remote.loadAnnouncements(appVersion: appVersion,
+                                 locale: Locale.current.identifier) { [weak self] result in
+            switch result {
+            case .success(let announcements):
+                guard let self = self, let announcement = announcements.first else {
+                    return onCompletion(.failure(AnnouncementsError.announcementNotFound))
+                }
+                do {
+                    let mappedAnnouncement = self.mapAnnouncementToStorageModel(announcement)
+                    try self.saveOnDisk(mappedAnnouncement)
+                    onCompletion(.success(announcement))
+                } catch {
+                    return onCompletion(.failure(error))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
         }
     }
 }

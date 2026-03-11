@@ -547,14 +547,15 @@ private extension RemoteOrderSynchronizer {
     ///
     func orderUpdateFields(for type: OperationType) -> [OrderUpdateField] {
         switch type {
-        case .sync:  // We only sync addresses, items, fees, shipping and coupon lines.
+        case .sync:  // We do not sync all fields: Only sync customerID, addresses, items, fees, shipping and coupon lines.
             return [
                 .shippingAddress,
                 .billingAddress,
                 .fees,
                 .shippingLines,
                 .couponLines,
-                .items
+                .items,
+                .customerID
             ]
         case .commit:
             return OrderUpdateField.allCases // When committing changes, we update everything.
@@ -563,7 +564,7 @@ private extension RemoteOrderSynchronizer {
 
     /// Return the targeted order with the current selected state.
     func updateOrderWithLocalState(targetOrder: Order, localOrder: Order) -> Order {
-        targetOrder.copy(status: localOrder.status, customerNote: localOrder.customerNote)
+        targetOrder.copy(customerID: localOrder.customerID, status: localOrder.status, customerNote: localOrder.customerNote)
     }
 }
 

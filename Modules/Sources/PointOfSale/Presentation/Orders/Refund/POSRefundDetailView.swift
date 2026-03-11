@@ -4,7 +4,7 @@ import struct Yosemite.POSRefundItem
 
 struct POSRefundDetailView: View {
     let refund: POSOrderRefund
-    let index: Int
+    let title: String
     let paymentMethodDescription: String
     let onClose: () -> Void
 
@@ -15,12 +15,12 @@ struct POSRefundDetailView: View {
             headerView
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    productRows
-                    Divider()
-                        .overlay(Color.posOutlineVariant.opacity(0.5))
+                    if !refund.items.isEmpty {
+                        productRows
+                        POSDivider()
+                    }
                     summaryRows
-                    Divider()
-                        .overlay(Color.posOutlineVariant.opacity(0.5))
+                    POSDivider()
                     refundTotalSection
                 }
                 .padding(.horizontal, POSPadding.xLarge)
@@ -38,7 +38,7 @@ struct POSRefundDetailView: View {
 private extension POSRefundDetailView {
     var headerView: some View {
         HStack {
-            Text(Localization.refundTitle(index))
+            Text(title)
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
@@ -57,12 +57,11 @@ private extension POSRefundDetailView {
 
     var productRows: some View {
         VStack(spacing: POSSpacing.none) {
-            ForEach(Array(refund.items.enumerated()), id: \.offset) { index, item in
+            ForEach(refund.items) { item in
                 productRow(item: item)
 
-                if index < refund.items.count - 1 {
-                    Divider()
-                        .overlay(Color.posOutlineVariant.opacity(0.5))
+                if item.id != refund.items.last?.id {
+                    POSDivider()
                         .padding(.vertical, POSSpacing.small)
                 }
             }
@@ -70,29 +69,7 @@ private extension POSRefundDetailView {
     }
 
     func productRow(item: POSRefundItem) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-                .frame(width: 56, height: 56)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(item.name)
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
-
-            Spacer()
-
-            Text(item.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-        }
-        .accessibilityElement(children: .combine)
+        POSRefundedProductRowView(item: item)
     }
 
     var summaryRows: some View {
@@ -142,37 +119,24 @@ private extension POSRefundDetailView {
 
 private extension POSRefundDetailView {
     enum Localization {
-        static func refundTitle(_ index: Int) -> String {
-            let format = NSLocalizedString(
-                "pos.refundDetailView.refundTitle",
-                value: "Refund #%1$d",
-                comment: "Title for refund detail dialog. %1$d is the refund number."
-            )
-            return String(format: format, index)
-        }
-
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundDetailView.closeButton.accessibilityLabel",
             value: "Close",
             comment: "Accessibility label for close button on refund detail dialog"
         )
 
-        static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {
-            let format = NSLocalizedString(
-                "pos.refundDetailView.quantityLabel",
-                value: "%1$d × %2$@",
-                comment: "Product quantity and price label. %1$d is the quantity, %2$@ is the unit price."
-            )
-            return String(format: format, quantity, unitPrice)
-        }
-
         static func itemsSubtotalLabel(_ count: Int) -> String {
-            let format = NSLocalizedString(
-                "pos.refundDetailView.itemsSubtotalFormat",
-                value: "Items subtotal (%1$d items)",
-                comment: "Label for items subtotal row in refund detail. %1$d is the number of items."
+            let singular = NSLocalizedString(
+                "pos.refundDetailView.itemsSubtotalFormat.singular",
+                value: "Items subtotal (%1$d item)",
+                comment: "Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items."
             )
-            return String(format: format, count)
+            let plural = NSLocalizedString(
+                "pos.refundDetailView.itemsSubtotalFormat.plural",
+                value: "Items subtotal (%1$d items)",
+                comment: "Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items."
+            )
+            return String.pluralize(count, singular: singular, plural: plural)
         }
 
         static let taxLabel = NSLocalizedString(
@@ -198,13 +162,13 @@ private extension POSRefundDetailView {
             reason: "Customer request",
             dateCreated: Date(),
             items: [
-                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00")
+                POSRefundItem(refundedItemID: 1, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00", imageSrc: nil)
             ],
             formattedItemsSubtotal: "$18.00",
             formattedTax: "$3.60",
             itemCount: 1
         ),
-        index: 1,
+        title: "Refund #1",
         paymentMethodDescription: "Via WooCommerce In-Person Payments",
         onClose: {}
     )
@@ -219,14 +183,14 @@ private extension POSRefundDetailView {
             reason: nil,
             dateCreated: Date(),
             items: [
-                POSRefundItem(refundedItemID: 1, quantity: 2, name: "Hario V60 Dripper", formattedPrice: "$12.00", formattedTotal: "$24.00"),
-                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00")
+                POSRefundItem(refundedItemID: 1, quantity: 2, name: "Hario V60 Dripper", formattedPrice: "$12.00", formattedTotal: "$24.00", imageSrc: nil),
+                POSRefundItem(refundedItemID: 2, quantity: 1, name: "Cup", formattedPrice: "$18.00", formattedTotal: "$18.00", imageSrc: nil)
             ],
             formattedItemsSubtotal: "$42.00",
             formattedTax: "$3.00",
             itemCount: 3
         ),
-        index: 2,
+        title: "Refund #2",
         paymentMethodDescription: "Via WooCommerce In-Person Payments",
         onClose: {}
     )

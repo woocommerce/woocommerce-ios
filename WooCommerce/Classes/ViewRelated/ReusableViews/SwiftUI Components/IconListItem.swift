@@ -89,12 +89,18 @@ private extension IconListItem {
 
 // MARK: - Preview
 struct IconListItem_Previews: PreviewProvider {
+    static let sampleIconURL = URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!
+
     static var previews: some View {
         IconListItem(title: "Title",
                      subtitle: "Subtitle",
-                     icon: .remote(URL(string: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")!))
+                     icon: .remote(sampleIconURL))
             .previewLayout(.fixed(width: 375, height: 100))
-            .previewDisplayName("Regular Icon List Item")
-            .environment(\.layoutDirection, .leftToRight)
+
+        IconListItem(title: "Point of Sale",
+                     subtitle: "Sell in person with the new Point of Sale feature. Accept payments, manage inventory, and more.",
+                     icon: .remote(sampleIconURL))
+            .previewLayout(.fixed(width: 375, height: 120))
+            .previewDisplayName("Longer subtitle")
     }
 }

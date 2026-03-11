@@ -48,16 +48,36 @@ final class MockPOSRefundsService: POSRefundsServiceProtocol {
         return calculator.calculateRefundAmounts(for: items, numberOfDecimals: 2)
     }
 
-    // MARK: - loadRefundData
+    var loadOrderRefundsResultToReturn: [POSOrderRefund] = []
+    var loadOrderRefundsErrorToThrow: Error?
+    var shouldSuspendLoadOrderRefunds = false
+    private var loadOrderRefundsContinuation: CheckedContinuation<Void, Never>?
+    private var loadOrderRefundsCallContinuation: CheckedContinuation<Void, Never>?
 
-    var loadRefundDataResultToReturn: POSRefundData = POSRefundData(refundedProducts: [], refunds: [])
-    var loadRefundDataErrorToThrow: Error?
+    func awaitLoadOrderRefundsCall() async {
+        await withCheckedContinuation { continuation in
+            loadOrderRefundsCallContinuation = continuation
+        }
+    }
 
-    func loadRefundData(for order: Yosemite.POSOrder) async throws -> POSRefundData {
-        if let error = loadRefundDataErrorToThrow {
+    func resumeLoadOrderRefunds() {
+        loadOrderRefundsContinuation?.resume()
+        loadOrderRefundsContinuation = nil
+    }
+
+    func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [POSOrderRefund] {
+        loadOrderRefundsCallContinuation?.resume()
+        loadOrderRefundsCallContinuation = nil
+
+        if shouldSuspendLoadOrderRefunds {
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                loadOrderRefundsContinuation = continuation
+            }
+        }
+        if let error = loadOrderRefundsErrorToThrow {
             throw error
         }
-        return loadRefundDataResultToReturn
+        return loadOrderRefundsResultToReturn
     }
 
     // MARK: - createRefund

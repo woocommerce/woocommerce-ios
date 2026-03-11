@@ -16,11 +16,9 @@ struct POSRefundDetailView: View {
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
                     productRows
-                    Divider()
-                        .overlay(Color.posOutlineVariant.opacity(0.5))
+                    POSDivider()
                     summaryRows
-                    Divider()
-                        .overlay(Color.posOutlineVariant.opacity(0.5))
+                    POSDivider()
                     refundTotalSection
                 }
                 .padding(.horizontal, POSPadding.xLarge)
@@ -61,8 +59,7 @@ private extension POSRefundDetailView {
                 productRow(item: item)
 
                 if item.id != refund.items.last?.id {
-                    Divider()
-                        .overlay(Color.posOutlineVariant.opacity(0.5))
+                    POSDivider()
                         .padding(.vertical, POSSpacing.small)
                 }
             }

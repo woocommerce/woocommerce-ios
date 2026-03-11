@@ -188,8 +188,7 @@ struct POSTotalsSectionView: View {
     }
 
     private var sectionDivider: some View {
-        Divider()
-            .overlay(Color.posOutlineVariant.opacity(0.5))
+        POSDivider()
     }
 }
 

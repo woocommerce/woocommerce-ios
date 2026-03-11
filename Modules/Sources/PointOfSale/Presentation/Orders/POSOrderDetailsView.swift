@@ -518,8 +518,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     @ViewBuilder
     var divider: some View {
-        Divider()
-            .overlay(Color.posOutlineVariant.opacity(0.5))
+        POSDivider()
             .padding(.vertical, POSSpacing.small)
     }
 }

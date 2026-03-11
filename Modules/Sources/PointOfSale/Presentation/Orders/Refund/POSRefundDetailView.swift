@@ -4,7 +4,7 @@ import struct Yosemite.POSRefundItem
 
 struct POSRefundDetailView: View {
     let refund: POSOrderRefund
-    let index: Int
+    let title: String
     let paymentMethodDescription: String
     let onClose: () -> Void
 
@@ -38,7 +38,7 @@ struct POSRefundDetailView: View {
 private extension POSRefundDetailView {
     var headerView: some View {
         HStack {
-            Text(Localization.refundTitle(index))
+            Text(title)
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .lineLimit(1)
@@ -142,15 +142,6 @@ private extension POSRefundDetailView {
 
 private extension POSRefundDetailView {
     enum Localization {
-        static func refundTitle(_ index: Int) -> String {
-            let format = NSLocalizedString(
-                "pos.refundDetailView.refundTitle",
-                value: "Refund #%1$d",
-                comment: "Title for refund detail dialog. %1$d is the refund number."
-            )
-            return String(format: format, index)
-        }
-
         static let closeButtonAccessibilityLabel = NSLocalizedString(
             "pos.refundDetailView.closeButton.accessibilityLabel",
             value: "Close",
@@ -204,7 +195,7 @@ private extension POSRefundDetailView {
             formattedTax: "$3.60",
             itemCount: 1
         ),
-        index: 1,
+        title: "Refund #1",
         paymentMethodDescription: "Via WooCommerce In-Person Payments",
         onClose: {}
     )
@@ -226,7 +217,7 @@ private extension POSRefundDetailView {
             formattedTax: "$3.00",
             itemCount: 3
         ),
-        index: 2,
+        title: "Refund #2",
         paymentMethodDescription: "Via WooCommerce In-Person Payments",
         onClose: {}
     )

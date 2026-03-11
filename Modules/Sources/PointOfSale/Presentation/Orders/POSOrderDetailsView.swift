@@ -95,7 +95,7 @@ struct POSOrderDetailsView: View {
             let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
             POSRefundDetailView(
                 refund: refund,
-                index: index,
+                title: Localization.refundTitle(index),
                 paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
                 onClose: { selectedRefundForDetail = nil }
             )
@@ -588,6 +588,15 @@ private enum Localization {
         value: "Refunded products",
         comment: "Section title for the refunded products list in order details"
     )
+
+    static func refundTitle(_ number: Int) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.refundTitle",
+            value: "Refund #%1$d",
+            comment: "Title for refund detail dialog header. %1$d is the refund number."
+        )
+        return String(format: format, number)
+    }
 
     static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {
         let format = NSLocalizedString(

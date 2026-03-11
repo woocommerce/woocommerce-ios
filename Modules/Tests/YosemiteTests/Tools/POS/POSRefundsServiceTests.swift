@@ -329,7 +329,7 @@ struct POSRefundsServiceTests {
         #expect(result[0].reason == nil)
     }
 
-    @Test func loadRefundData_then_refunds_contain_items_and_subtotal_and_tax() async throws {
+    @Test func loadOrderRefunds_then_refunds_contain_items_and_subtotal_and_tax() async throws {
         // Given
         let remote = MockPOSRefundsRemote()
         let sut = makeSUT(remote: remote)
@@ -342,39 +342,13 @@ struct POSRefundsServiceTests {
         let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$33.60")])
 
         // When
-        let result = try await sut.loadRefundData(for: order)
+        let result = try await sut.loadOrderRefunds(for: order)
 
         // Then
-        #expect(result.refunds[0].items.count == 2)
-        #expect(result.refunds[0].itemCount == 2)
-        #expect(result.refunds[0].formattedItemsSubtotal.contains("28.00"))
-        #expect(result.refunds[0].formattedTax.contains("5.60"))
-    }
-
-    @Test func loadRefundData_then_refundedProducts_equals_flattened_refund_items() async throws {
-        // Given
-        let remote = MockPOSRefundsRemote()
-        let sut = makeSUT(remote: remote)
-        let refund1 = MockRefunds.sampleRefund(refundID: 1, items: [
-            MockRefunds.sampleRefundItem(name: "Cup", quantity: -1, price: 18.00, total: "-18.00", totalTax: "-3.60")
-        ])
-        let refund2 = MockRefunds.sampleRefund(refundID: 2, items: [
-            MockRefunds.sampleRefundItem(itemID: 2, name: "Mug", refundedItemID: "2", quantity: -1, price: 5.00, total: "-5.00", totalTax: "-1.00")
-        ])
-        remote.result = .success([refund1, refund2])
-        let order = makeOrder(refunds: [
-            POSOrderRefund(refundID: 1, formattedTotal: "-$21.60"),
-            POSOrderRefund(refundID: 2, formattedTotal: "-$6.00")
-        ])
-
-        // When
-        let result = try await sut.loadRefundData(for: order)
-
-        // Then
-        #expect(result.refunds.count == 2)
-        #expect(result.refundedProducts.count == 2)
-        #expect(result.refundedProducts[0].name == "Cup")
-        #expect(result.refundedProducts[1].name == "Mug")
+        #expect(result[0].items.count == 2)
+        #expect(result[0].itemCount == 2)
+        #expect(result[0].formattedItemsSubtotal.contains("28.00"))
+        #expect(result[0].formattedTax.contains("5.60"))
     }
 
     // MARK: - createRefund Tests

@@ -69,29 +69,7 @@ private extension POSRefundDetailView {
     }
 
     func productRow(item: POSRefundItem) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: 56, scale: 1)
-                .frame(width: 56, height: 56)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(item.name)
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(Localization.quantityLabel(item.quantity.intValue, item.formattedPrice))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
-
-            Spacer()
-
-            Text(item.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-        }
-        .accessibilityElement(children: .combine)
+        POSRefundedProductRowView(item: item)
     }
 
     var summaryRows: some View {
@@ -146,15 +124,6 @@ private extension POSRefundDetailView {
             value: "Close",
             comment: "Accessibility label for close button on refund detail dialog"
         )
-
-        static func quantityLabel(_ quantity: Int, _ unitPrice: String) -> String {
-            let format = NSLocalizedString(
-                "pos.refundDetailView.quantityLabel",
-                value: "%1$d × %2$@",
-                comment: "Product quantity and price label. %1$d is the quantity, %2$@ is the unit price."
-            )
-            return String(format: format, quantity, unitPrice)
-        }
 
         static func itemsSubtotalLabel(_ count: Int) -> String {
             let singular = NSLocalizedString(

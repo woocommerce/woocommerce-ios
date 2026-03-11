@@ -366,47 +366,8 @@ private extension POSOrderDetailsView {
 // MARK: - Refunded Product Components
 
 private extension POSOrderDetailsView {
-    @ViewBuilder
     func refundedProductRow(item: POSRefundItem) -> some View {
-        HStack(alignment: .center, spacing: POSSpacing.medium) {
-            POSItemImageView(imageSource: item.imageSrc, imageSize: Constants.productImageSize, scale: 1)
-                .frame(width: Constants.productImageSize, height: Constants.productImageSize)
-                .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                Text(item.name)
-                    .font(.posBodyLargeBold)
-                    .foregroundStyle(Color.posOnSurface)
-                    .fixedSize(horizontal: false, vertical: true)
-
-                Text(Localization.quantityLabel(item.quantity.intValue,
-                                                item.formattedPrice))
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            }
-
-            Spacer()
-
-            Text(item.formattedTotal)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(refundedProductRowAccessibilityLabel(for: item))
-    }
-
-    private func refundedProductRowAccessibilityLabel(for item: POSRefundItem) -> String {
-        let format = NSLocalizedString(
-            "pos.orderDetailsView.refundedProductRow.accessibilityLabel",
-            value: "%1$@, Quantity: %2$@ at %3$@ each, Refunded %4$@",
-            comment: "Accessibility label for refunded product row. " +
-            "%1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total."
-        )
-        return String(format: format,
-                      item.name,
-                      String(item.quantity.intValue),
-                      item.formattedPrice,
-                      item.formattedTotal)
+        POSRefundedProductRowView(item: item)
     }
 }
 

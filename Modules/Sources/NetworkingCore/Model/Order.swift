@@ -38,6 +38,10 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let paymentURL: URL?
     public let chargeID: String?
 
+    /// Payment status metadata from the `_payment_status` order metadata key.
+    /// Used by the Bookings feature to determine payment status badges.
+    public let paymentStatusMetadata: String?
+
     public let items: [OrderItem]
     public let billingAddress: Address?
     public let shippingAddress: Address?
@@ -102,6 +106,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 paymentMethodTitle: String,
                 paymentURL: URL?,
                 chargeID: String?,
+                paymentStatusMetadata: String? = nil,
                 items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
@@ -146,6 +151,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.paymentMethodTitle = paymentMethodTitle
         self.paymentURL = paymentURL
         self.chargeID = chargeID
+        self.paymentStatusMetadata = paymentStatusMetadata
 
         self.items = items
         self.billingAddress = billingAddress
@@ -207,6 +213,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         }()
         var chargeID: String? = nil
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value.stringValue
+
+        let paymentStatusMetadata = allOrderMetaData?.first(where: { $0.key == "_payment_status" })?.value.stringValue
 
         let items = try container.decode([OrderItem].self, forKey: .items)
 
@@ -293,6 +301,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   paymentMethodTitle: paymentMethodTitle,
                   paymentURL: paymentURL,
                   chargeID: chargeID,
+                  paymentStatusMetadata: paymentStatusMetadata,
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,
@@ -336,6 +345,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   paymentMethodTitle: "",
                   paymentURL: nil,
                   chargeID: nil,
+                  paymentStatusMetadata: nil,
                   items: [],
                   billingAddress: nil,
                   shippingAddress: nil,

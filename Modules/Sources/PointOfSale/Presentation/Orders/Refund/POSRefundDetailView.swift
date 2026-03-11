@@ -57,10 +57,10 @@ private extension POSRefundDetailView {
 
     var productRows: some View {
         VStack(spacing: POSSpacing.none) {
-            ForEach(Array(refund.items.enumerated()), id: \.offset) { index, item in
+            ForEach(refund.items) { item in
                 productRow(item: item)
 
-                if index < refund.items.count - 1 {
+                if item.id != refund.items.last?.id {
                     Divider()
                         .overlay(Color.posOutlineVariant.opacity(0.5))
                         .padding(.vertical, POSSpacing.small)

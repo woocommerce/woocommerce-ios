@@ -1,52 +1,17 @@
 import SwiftUI
 
-/// Preference key for communicating sizes
-public struct SizePreferenceKey: PreferenceKey {
-    public static var defaultValue: CGSize? = nil
-
-    public static func reduce(value: inout CGSize?, nextValue: () -> CGSize?) {
-        // Take the response of the first child which updates the key. Disallow further updates from its children.
-        value = value ?? nextValue()
-    }
-}
-
-/// View modifier that conditionally wraps the `content` in a `ScrollView` if the `content` height exceeds the view height.
+/// View modifier that wraps content in a vertical `ScrollView` that only scrolls when content exceeds the available height.
+/// Content that fits within the viewport fills the space normally (Spacers expand, no bounce).
 ///
 public struct ConditionalVerticalScrollModifier: ViewModifier {
-    /// Defines if the content should scroll or not.
-    @State private var shouldScroll: Bool = false
-
     public func body(content: Content) -> some View {
         GeometryReader { parentGeometry in
-            Group {
-                if shouldScroll {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        contentGeometryListener(content: content)
-                    }
-                } else {
-                    contentGeometryListener(content: content)
-                }
+            ScrollView(.vertical, showsIndicators: false) {
+                content
+                    .frame(minHeight: parentGeometry.size.height)
             }
-            .onPreferenceChange(SizePreferenceKey.self) { contentSize in
-                /// Using `onPreferenceChange` avoid changing state (`shouldScroll`) during a layout pass.
-                /// Changing state that's used to layout the view during layout can cause an infinite loop and make the screen unresponsive.
-                if let contentSize = contentSize {
-                    shouldScroll = contentSize.height > parentGeometry.size.height
-                }
-            }
+            .scrollBounceBehavior(.basedOnSize)
         }
-    }
-
-    /// Updates the `SizePreferenceKey` by adding a clear background to the `content` that has a `GeometryReader` attached to it.
-    /// This is used in the parent to update the `shouldScroll` property when the content vertical geometry is greater than the parent vertical geometry.
-    ///
-    private func contentGeometryListener(content: Content) -> some View {
-        content
-            .background(
-                GeometryReader { geometry in
-                    Color.clear
-                        .preference(key: SizePreferenceKey.self, value: geometry.size)
-                })
     }
 }
 

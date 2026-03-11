@@ -289,6 +289,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 exists: site.exists,
                 hasWordPress: site.isWP,
                 isWPCom: site.isWPCom,
+                isCommerceGarden: site.isCommerceGarden,
                 isJetpackInstalled: site.hasJetpack,
                 isJetpackActive: site.isJetpackActive,
                 isJetpackConnected: site.isJetpackConnected,
@@ -308,7 +309,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        if site.isWPCom || site.isJetpackConnected {
+        if site.isWPCom || site.isCommerceGarden || site.isJetpackConnected {
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
             onCompletion(authenticationResult)
         } else {
@@ -323,6 +324,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
                                                          isWPCom: siteInfo?.isWPCom ?? false,
+                                                         isCommerceGarden: siteInfo?.isCommerceGarden ?? false,
                                                          isJetpackInstalled: siteInfo?.hasJetpack ?? false,
                                                          isJetpackActive: siteInfo?.isJetpackActive ?? false,
                                                          isJetpackConnected: siteInfo?.isJetpackConnected ?? false))

@@ -191,6 +191,30 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    func test_it_presents_email_controller_for_commerce_garden_site() {
+        // Given
+        let manager = AuthenticationManager()
+        let siteInfo = siteInfo(exists: true,
+                                hasWordPress: true,
+                                isWordPressCom: false,
+                                isCommerceGarden: true,
+                                hasJetpack: true,
+                                isJetpackActive: true,
+                                isJetpackConnected: false)
+        var result: WordPressAuthenticatorResult?
+        let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
+            result = completionResult
+        }
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: completionHandler)
+
+        // Then
+        guard case .presentEmailController = result else {
+            return XCTFail("Expected presentEmailController for Commerce Garden site")
+        }
+    }
+
     func test_it_presents_username_and_password_controller_for_non_wpcom_site_without_jetpack_site() {
         // Given
         let manager = AuthenticationManager()
@@ -594,6 +618,7 @@ private extension AuthenticationManagerTests {
                   exists: Bool = false,
                   hasWordPress: Bool = false,
                   isWordPressCom: Bool = false,
+                  isCommerceGarden: Bool = false,
                   hasJetpack: Bool = false,
                   isJetpackActive: Bool = false,
                   isJetpackConnected: Bool = false) -> WordPressComSiteInfo {
@@ -603,6 +628,7 @@ private extension AuthenticationManagerTests {
                                       "hasJetpack": hasJetpack,
                                       "isJetpackActive": isJetpackActive,
                                       "isJetpackConnected": isJetpackConnected,
-                                      "isWordPressDotCom": isWordPressCom])
+                                      "isWordPressDotCom": isWordPressCom,
+                                      "isCommerceGarden": isCommerceGarden])
     }
 }

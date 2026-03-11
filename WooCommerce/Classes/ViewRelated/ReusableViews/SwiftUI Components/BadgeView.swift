@@ -35,16 +35,17 @@ struct BadgeView: View {
     struct Customizations {
         let textColor: Color
         let backgroundColor: Color
-        let bordered: Bool
+        /// Border color for the badge. When `nil`, no border is drawn.
+        let borderColor: Color?
         let bold: Bool
 
         init(textColor: Color = Color(.textBrand),
              backgroundColor: Color = Color(.wooCommercePurple(.shade0)),
-             bordered: Bool = true,
+             borderColor: Color? = .white,
              bold: Bool = true) {
             self.textColor = textColor
             self.backgroundColor = backgroundColor
-            self.bordered = bordered
+            self.borderColor = borderColor
             self.bold = bold
         }
     }
@@ -106,18 +107,18 @@ private extension BadgeView {
         case .circle:
             Circle()
                 .fill(customizations.backgroundColor)
-                .if(customizations.bordered) { view in
+                .if(customizations.borderColor != nil) { view in
                     view.overlay {
-                        Circle().stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                        Circle().stroke(customizations.borderColor ?? .clear, lineWidth: Layout.borderLineWidth)
                     }
                 }
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(customizations.backgroundColor)
-                .if(customizations.bordered) { view in
+                .if(customizations.borderColor != nil) { view in
                     view.overlay {
                         RoundedRectangle(cornerRadius: cornerRadius)
-                            .stroke(Color.white, lineWidth: Layout.borderLineWidth)
+                            .stroke(customizations.borderColor ?? .clear, lineWidth: Layout.borderLineWidth)
                     }
                 }
         }

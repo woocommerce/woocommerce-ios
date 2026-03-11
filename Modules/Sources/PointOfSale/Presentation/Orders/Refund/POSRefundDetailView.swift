@@ -158,12 +158,17 @@ private extension POSRefundDetailView {
         }
 
         static func itemsSubtotalLabel(_ count: Int) -> String {
-            let format = NSLocalizedString(
-                "pos.refundDetailView.itemsSubtotalFormat",
-                value: "Items subtotal (%1$d items)",
-                comment: "Label for items subtotal row in refund detail. %1$d is the number of items."
+            let singular = NSLocalizedString(
+                "pos.refundDetailView.itemsSubtotalFormat.singular",
+                value: "Items subtotal (%1$d item)",
+                comment: "Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items."
             )
-            return String(format: format, count)
+            let plural = NSLocalizedString(
+                "pos.refundDetailView.itemsSubtotalFormat.plural",
+                value: "Items subtotal (%1$d items)",
+                comment: "Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items."
+            )
+            return String.pluralize(count, singular: singular, plural: plural)
         }
 
         static let taxLabel = NSLocalizedString(

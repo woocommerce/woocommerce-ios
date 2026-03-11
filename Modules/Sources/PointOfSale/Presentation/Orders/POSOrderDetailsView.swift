@@ -2,6 +2,7 @@ import SwiftUI
 import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
@@ -22,6 +23,7 @@ struct POSOrderDetailsView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
+    @State private var selectedRefundForDetail: POSOrderRefund?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -76,9 +78,9 @@ struct POSOrderDetailsView: View {
                         paymentMethodTitle: order.paymentMethodTitle,
                         refunds: order.refunds,
                         netAmount: order.formattedNetAmount,
-                        paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
                         siteTimezone: siteTimezone,
-                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds
+                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds,
+                        selectedRefundForDetail: $selectedRefundForDetail
                     )
                 }
                 .padding(.top, POSPadding.xSmall)
@@ -88,6 +90,16 @@ struct POSOrderDetailsView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
+        .posModal(item: $selectedRefundForDetail) { refund in
+            let sortedRefunds = order.refunds.sorted(by: { $0.refundID < $1.refundID })
+            let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
+            POSRefundDetailView(
+                refund: refund,
+                index: index,
+                paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
+                onClose: { selectedRefundForDetail = nil }
+            )
+        }
         .posModal(item: $refundModalState, onDismiss: {
             orderListModel.ordersController.clearRefundSelection()
         }) { state in

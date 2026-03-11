@@ -1,6 +1,5 @@
 import SwiftUI
 import struct Yosemite.POSOrderRefund
-import struct Yosemite.POSRefundItem
 
 /// A reusable totals breakdown card used by both order details and booking details.
 ///
@@ -17,11 +16,9 @@ struct POSTotalsSectionView: View {
     let paymentMethodTitle: String
     let refunds: [POSOrderRefund]
     let netAmount: String?
-    var paymentMethodDescription: String = ""
     var siteTimezone: TimeZone = .current
     var isLoadingRefundDetails: Bool = false
-
-    @State private var selectedRefundForDetail: POSOrderRefund?
+    @Binding var selectedRefundForDetail: POSOrderRefund?
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -62,16 +59,6 @@ struct POSTotalsSectionView: View {
         .padding(POSPadding.medium)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .posModal(item: $selectedRefundForDetail) { refund in
-            let sortedRefunds = refunds.sorted(by: { $0.refundID < $1.refundID })
-            let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
-            POSRefundDetailView(
-                refund: refund,
-                index: index,
-                paymentMethodDescription: paymentMethodDescription,
-                onClose: { selectedRefundForDetail = nil }
-            )
-        }
     }
 
     // MARK: - Paid Row

@@ -33,6 +33,20 @@ enum RefundModalState: Identifiable, Equatable {
         case .error: return "error"
         }
     }
+
+    /// Returns the analytics step name for abort tracking
+    var abortStep: String? {
+        switch self {
+        case .itemSelection:
+            return "select_items"
+        case .review, .reasonInput:
+            return "review_refund"
+        case .confirmation:
+            return "confirm_refund"
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - Error Strings
@@ -107,7 +121,6 @@ struct POSRefundModalContentView: View {
             if showsItemSelection {
                 POSRefundItemsSelectionView(
                     onClose: {
-                        analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: "select_items"))
                         dismissModal?()
                     },
                     onContinue: { navigateToRefundReview() }
@@ -118,7 +131,6 @@ struct POSRefundModalContentView: View {
         case .review(let reviewData):
             POSRefundReviewView(
                 onClose: {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: "review_refund"))
                     dismissModal?()
                 },
                 itemsCount: reviewData.itemsCount,
@@ -141,7 +153,6 @@ struct POSRefundModalContentView: View {
                 },
                 onBack: { modalState = .review(reviewData) },
                 onClose: {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: "review_refund"))
                     dismissModal?()
                 }
             )
@@ -151,7 +162,6 @@ struct POSRefundModalContentView: View {
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 isProcessing: false,
                 onClose: {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: "confirm_refund"))
                     dismissModal?()
                 },
                 onConfirm: {

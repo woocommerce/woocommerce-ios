@@ -101,6 +101,9 @@ struct POSOrderDetailsView: View {
             )
         }
         .posModal(item: $refundModalState, onDismiss: {
+            if let step = refundModalState?.abortStep {
+                analytics.track(event: WooAnalyticsEvent.PointOfSale.refundFlowAborted(step: step))
+            }
             orderListModel.ordersController.clearRefundSelection()
         }) { state in
             POSRefundModalContentView(

@@ -8,7 +8,7 @@ These instructions are shared across multiple environments. Most instructions (b
 
 `.mcp.json` in the project root is the **single source of truth** for MCP servers (Figma, mobile-mcp, etc.).
 
-- **Claude Code (CLI)** auto-loads `.mcp.json` — no action needed.
+- **Claude Code (CLI)** auto-loads `.mcp.json`. If authentication is required, ask the user to type `/mcp`, select their MCP of choice and proceed with authentication manually.
 - **Other environments** (Claude Desktop, Cursor, VS Code, etc.) may not read `.mcp.json`. If expected MCP tools are missing, the agent should:
   1. Read `.mcp.json` to identify the needed servers
   2. Ask the user which environment they're in (don't guess)

@@ -99,9 +99,9 @@ URLs without a `node-id` parameter return data for the entire page (noisy). Pref
 | Auto Layout (vertical) | `VStack(spacing:)` |
 | Padding | `.padding()` modifiers |
 | Fill container | `.frame(maxWidth: .infinity)` |
-| Fixed size | `.frame(width:height:)` |
+| Fixed size | `.frame(width:height:)` — use `@ScaledMetric` to make sizes scalable for accessibility |
 | Border radius | `.clipShape(RoundedRectangle(cornerRadius:))` |
-| Text styles | `.font()` modifier |
+| Text styles | `.font()` modifier — find the closest system font matching the Figma style. Leave a `// TODO:` warning if no exact match exists for the developer to double-check |
 | Opacity | `.opacity()` |
 | Shadow | `.shadow()` |
 
@@ -113,6 +113,6 @@ Map Figma values to POS design tokens — do NOT use hardcoded values:
 - **Colors** → `Color+POSColorPalette` (`.posPrimary`, `.posSurface`, `.posError`, etc.)
 
 ### Main App Views
-- Use existing color assets from the project's asset catalog
-- Use system fonts with appropriate text styles
+- Use existing color assets from the project's asset catalog. Leave a `// TODO:` warning if no matching color asset is found
+- Use system fonts with appropriate text styles. Leave a `// TODO:` warning if no matching system font is found
 - Follow spacing patterns in nearby existing code

@@ -173,9 +173,7 @@ struct POSPaymentContentView: View {
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
             isZeroTotal: paymentModel.isZeroTotal) {
             Button(action: {
-                Task { @MainActor in
-                    await paymentModel.startCashPayment()
-                }
+                paymentModel.startCashPayment()
             }) {
                 Text(Localization.cashPaymentButton)
                     .font(POSFontStyle.posBodyLargeBold)

@@ -31,7 +31,6 @@ public class BottomSheetViewController: UIViewController {
 
     private var customHeaderSpacing: CGFloat?
 
-    /// The position the drawer should open to after presentation.
     private let initialPosition: DrawerPosition
 
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -119,14 +118,6 @@ public class BottomSheetViewController: UIViewController {
 
     @objc func buttonPressed() {
         dismiss(animated: true, completion: nil)
-    }
-
-    override public func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        if initialPosition != .collapsed {
-            presentedVC?.transition(to: initialPosition, animated: false)
-        }
     }
 
     override public func viewDidLoad() {
@@ -244,7 +235,9 @@ extension BottomSheetViewController: UIViewControllerTransitioningDelegate {
     }
 
     public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return DrawerPresentationController(presentedViewController: presented, presenting: presenting)
+        let controller = DrawerPresentationController(presentedViewController: presented, presenting: presenting)
+        controller.currentPosition = initialPosition
+        return controller
     }
 }
 

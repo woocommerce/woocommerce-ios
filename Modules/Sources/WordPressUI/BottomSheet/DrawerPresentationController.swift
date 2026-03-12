@@ -138,7 +138,12 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         }
 
         var frame = containerView.frame
-        let y = collapsedYPosition
+        let y: CGFloat
+        if currentPosition == .expanded {
+            y = max(collapsedYPosition - containerView.safeAreaInsets.bottom, containerView.safeAreaInsets.top)
+        } else {
+            y = collapsedYPosition
+        }
         var width: CGFloat = containerView.bounds.width - (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)
 
         frame.origin.y = y

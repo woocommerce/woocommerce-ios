@@ -36,7 +36,7 @@ struct POSBookingOrderItemsView: View {
                 ScrollView {
                     VStack(spacing: Constants.cartItemSpacing) {
                         ForEach(lineItems, id: \.itemID) { item in
-                            BookingOrderItemRowView(item: item, booking: booking)
+                            BookingOrderItemRowView(item: item)
                         }
                     }
                     .padding(.bottom, Constants.cartLastItemBottomPadding)
@@ -61,7 +61,6 @@ struct POSBookingOrderItemsView: View {
 /// A single read-only order item row, styled to match the cart's `ItemRowView`.
 private struct BookingOrderItemRowView: View {
     let item: POSOrderItem
-    let booking: POSBooking
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -70,6 +69,13 @@ private struct BookingOrderItemRowView: View {
     }
 
     var body: some View {
+        productRow
+            .padding(.horizontal, Constants.horizontalPadding)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(accessibilityLabel)
+    }
+
+    private var productRow: some View {
         HStack(spacing: Constants.horizontalElementSpacing) {
             POSItemImageView(imageSource: item.imageSrc,
                              imageSize: dimension,
@@ -81,10 +87,6 @@ private struct BookingOrderItemRowView: View {
                 Text(item.name)
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
-
-                Text(bookingTimeRange)
-                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
-                    .font(Constants.itemSubtitleFont)
 
                 if !item.attributes.isEmpty {
                     Text(item.attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", "))
@@ -102,16 +104,9 @@ private struct BookingOrderItemRowView: View {
             .padding(.vertical, Constants.verticalPadding * (1 / scale))
         }
         .padding(.trailing, Constants.cardContentHorizontalPadding)
-        .padding(.horizontal, Constants.horizontalPadding)
         .frame(maxWidth: .infinity, minHeight: dimension, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
-    }
-
-    private var bookingTimeRange: String {
-        POSBookingDateFormatter.formattedTimeRange(for: booking)
     }
 
     private var priceLabel: String {
@@ -123,7 +118,7 @@ private struct BookingOrderItemRowView: View {
     }
 
     private var accessibilityLabel: String {
-        [item.name, bookingTimeRange, priceLabel]
+        [item.name, priceLabel]
             .joined(separator: ", ")
     }
 }

@@ -616,7 +616,7 @@ private extension SiteAddressViewController {
 
                 self.showWPUsernamePassword()
             case .presentEmailController:
-                self.showGetStarted(forWPComSite: false)
+                self.showGetStarted(forWPComSite: siteInfo?.isCommerceGarden == true)
             case let .injectViewController(customUI):
                 self.pushCustomUI(customUI)
             }

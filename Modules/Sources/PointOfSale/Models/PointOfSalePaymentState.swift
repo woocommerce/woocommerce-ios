@@ -39,6 +39,16 @@ struct PointOfSalePaymentState: Equatable {
             return false
         }
     }
+
+    var allowsCashPayment: Bool {
+        switch card {
+        case .idle, .validatingOrderError, .paymentIntentCreationError, .acceptingCard:
+            return true
+        case .validatingOrder, .preparingReader, .cardInserted, .processingPayment,
+             .paymentError, .cardPaymentSuccessful:
+            return false
+        }
+    }
 }
 
 enum PointOfSaleCardPaymentState: Equatable {

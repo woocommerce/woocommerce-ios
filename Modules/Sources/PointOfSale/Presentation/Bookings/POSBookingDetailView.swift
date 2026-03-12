@@ -13,8 +13,6 @@ struct POSBookingDetailView: View {
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
     @State private var showCancelModal = false
-    @State private var showCancelSuccessNotice = false
-    @State private var cancelSuccessTask: Task<Void, Never>?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
     @State private var inlineButtonMinY: CGFloat = .infinity
@@ -140,30 +138,10 @@ struct POSBookingDetailView: View {
                 showCancelModal: $showCancelModal,
                 onSuccess: {
                     showCancelModal = false
-                    showCancelSuccessNotice(afterDelay: Constants.cancelSuccessNoticeDuration)
+                    bookingsModel.showCancelSuccessNotice()
                 }
             )
         }
-        .overlay(alignment: .bottom) {
-            if showCancelSuccessNotice {
-                HStack(spacing: POSSpacing.medium) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.posButtonSymbolXSmall)
-                        .foregroundColor(.green)
-                    Text(Localization.cancelBookingSuccessNotice)
-                        .font(.posBodyMediumRegular())
-                        .foregroundColor(.white)
-                }
-                .padding(.vertical, POSPadding.medium)
-                .padding(.horizontal, POSPadding.large)
-                .background(Color.posOnSurface)
-                .cornerRadius(POSCornerRadiusStyle.medium.value)
-                .posShadow(.medium, cornerRadius: POSCornerRadiusStyle.medium.value)
-                .padding(.bottom, POSPadding.large)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-            }
-        }
-        .animation(.easeInOut, value: showCancelSuccessNotice)
     }
 
     @ViewBuilder
@@ -338,20 +316,6 @@ struct POSBookingDetailView: View {
 
     // MARK: - Payment Action
 
-    private func showCancelSuccessNotice(afterDelay seconds: TimeInterval) {
-        withAnimation {
-            showCancelSuccessNotice = true
-        }
-        cancelSuccessTask?.cancel()
-        cancelSuccessTask = Task {
-            try? await Task.sleep(for: .seconds(seconds))
-            guard !Task.isCancelled else { return }
-            withAnimation {
-                showCancelSuccessNotice = false
-            }
-        }
-    }
-
     private func dismissPayment() {
         let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
@@ -491,9 +455,6 @@ private enum NavigationDestination: Hashable {
 
 // MARK: - Constants
 
-private enum Constants {
-    static let cancelSuccessNoticeDuration: TimeInterval = 3
-}
 
 // MARK: - Localization
 
@@ -626,11 +587,6 @@ private enum Localization {
         comment: "Menu action to cancel a booking from the POS booking detail view."
     )
 
-    static let cancelBookingSuccessNotice = NSLocalizedString(
-        "pos.bookingDetailView.cancelBookingSuccess.notice",
-        value: "Booking cancelled successfully.",
-        comment: "Success notice shown at the bottom of the screen after a booking is cancelled in POS."
-    )
 }
 
 // MARK: - CopyableRow

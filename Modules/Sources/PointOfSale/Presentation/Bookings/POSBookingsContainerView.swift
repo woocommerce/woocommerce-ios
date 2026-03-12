@@ -11,9 +11,34 @@ struct POSBookingsContainerView: View {
 
     var body: some View {
         contentView
+            .overlay(alignment: .bottom) {
+                cancelSuccessSnackbar
+            }
+            .animation(.easeInOut, value: bookingsModel.showCancelSuccessNotice)
             .task {
                 await bookingsModel.bookingsController.loadBookings()
             }
+    }
+
+    @ViewBuilder
+    private var cancelSuccessSnackbar: some View {
+        if bookingsModel.showCancelSuccessNotice {
+            HStack(spacing: POSSpacing.medium) {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.posButtonSymbolXSmall)
+                    .foregroundColor(.posSuccess)
+                Text(Localization.cancelBookingSuccessNotice)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(.posSurface)
+            }
+            .padding(.vertical, POSPadding.medium)
+            .padding(.horizontal, POSPadding.large)
+            .background(Color.posOnSurface)
+            .cornerRadius(POSCornerRadiusStyle.medium.value)
+            .posShadow(.medium, cornerRadius: POSCornerRadiusStyle.medium.value)
+            .padding(.bottom, POSPadding.large)
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
     }
 
     @ViewBuilder
@@ -72,6 +97,16 @@ struct POSBookingsContainerView: View {
             bookingsModel.bookingsController.reset()
         }
     }
+}
+
+// MARK: - Localization
+
+private enum Localization {
+    static let cancelBookingSuccessNotice = NSLocalizedString(
+        "pos.bookingsContainer.cancelBookingSuccess.notice",
+        value: "Booking cancelled successfully.",
+        comment: "Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS."
+    )
 }
 
 // MARK: - Previews

@@ -14,6 +14,9 @@ import class Yosemite.PaymentCaptureCelebration
     private let receiptSender: POSReceiptSending
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
+    var showCancelSuccessNotice = false
+    private var cancelSuccessTask: Task<Void, Never>?
+
     init(bookingsController: POSSearchingBookingListControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,
@@ -37,6 +40,17 @@ import class Yosemite.PaymentCaptureCelebration
     func updateAfterRefund(bookingID: Int64) async {
         await bookingsController.updateBookingOptimistically(bookingID: bookingID) {
             $0.copy(order: $0.order.copy(status: .refunded))
+        }
+    }
+
+    @MainActor
+    func showCancelSuccessNotice(afterDelay seconds: TimeInterval = 3) {
+        showCancelSuccessNotice = true
+        cancelSuccessTask?.cancel()
+        cancelSuccessTask = Task {
+            try? await Task.sleep(for: .seconds(seconds))
+            guard !Task.isCancelled else { return }
+            showCancelSuccessNotice = false
         }
     }
 

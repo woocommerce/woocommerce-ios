@@ -13,13 +13,8 @@ struct POSBookingPaymentView: View {
         GeometryReader { geometry in
             HStack(spacing: POSSpacing.none) {
                 if !paymentModel.paymentState.shownFullScreen {
-                    POSBookingOrderItemsView(
-                        lineItems: booking.order.lineItems,
-                        formattedSubtotal: booking.order.formattedSubtotal,
-                        formattedTax: booking.order.formattedTotalTax,
-                        formattedTotal: booking.order.formattedTotal
-                    )
-                    .frame(width: geometry.size.width * Constants.itemsWidth)
+                    POSBookingOrderItemsView(booking: booking)
+                        .frame(width: geometry.size.width * Constants.itemsWidth)
                 }
 
                 POSPaymentContentView(

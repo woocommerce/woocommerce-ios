@@ -1,125 +1,108 @@
 import SwiftUI
+import struct Yosemite.POSBooking
 import struct Yosemite.POSOrderItem
 import struct Yosemite.OrderItemAttribute
 
 /// Read-only list of order line items shown alongside the payment view during booking checkout.
 /// Mirrors the cart panel layout used in the regular POS checkout flow.
 struct POSBookingOrderItemsView: View {
-    let lineItems: [POSOrderItem]
-    let formattedSubtotal: String
-    let formattedTax: String
-    let formattedTotal: String
+    let booking: POSBooking
+
+    private var lineItems: [POSOrderItem] {
+        booking.order.lineItems
+    }
+
+    private var itemCount: Int {
+        lineItems.count
+    }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(title: Localization.orderItemsTitle)
+        VStack(spacing: 0) {
+            POSPageHeaderView(title: Localization.cartTitle,
+                              trailingContent: {
+                if let itemsLabel = itemsInCartLabel {
+                    Text(itemsLabel)
+                        .font(Constants.itemsFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
+            })
 
             if lineItems.isEmpty {
                 Spacer()
             } else {
                 ScrollView {
-                    VStack(spacing: POSSpacing.medium) {
+                    VStack(spacing: Constants.cartItemSpacing) {
                         ForEach(lineItems, id: \.itemID) { item in
-                            BookingOrderItemRowView(item: item)
+                            BookingOrderItemRowView(item: item, booking: booking)
                         }
                     }
-                    .padding(.bottom, POSPadding.large)
+                    .padding(.bottom, Constants.cartLastItemBottomPadding)
                 }
-
-                totalsSection
             }
         }
         .frame(maxWidth: .infinity)
         .background(Color.posSurfaceBright.ignoresSafeArea(.all))
+        .accessibilityElement(children: .contain)
     }
 
-    // MARK: - Totals
-
-    private var totalsSection: some View {
-        VStack(spacing: POSSpacing.small) {
-            Divider()
-                .overlay(Color.posOutlineVariant)
-
-            VStack(spacing: POSSpacing.xSmall) {
-                totalsRow(label: Localization.subtotal, value: formattedSubtotal)
-                totalsRow(label: Localization.taxes, value: formattedTax)
-            }
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.vertical, POSPadding.small)
-
-            Divider()
-                .overlay(Color.posOutlineVariant)
-
-            HStack {
-                Text(Localization.total)
-                    .font(.posBodyLargeBold)
-                Spacer()
-                Text(formattedTotal)
-                    .font(.posBodyLargeBold)
-            }
-            .foregroundStyle(Color.posOnSurface)
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.vertical, POSPadding.small)
-        }
-        .accessibilityElement(children: .combine)
-    }
-
-    private func totalsRow(label: String, value: String) -> some View {
-        HStack {
-            Text(label)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantHighest)
-            Spacer()
-            Text(value)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-        }
-        .accessibilityElement(children: .combine)
+    private var itemsInCartLabel: String? {
+        guard itemCount > 0 else { return nil }
+        return String.pluralize(itemCount,
+                                singular: Localization.itemCountSingular,
+                                plural: Localization.itemCountPlural)
     }
 }
 
 // MARK: - Item Row
 
-/// A single read-only order item row, styled to match the cart's item cards.
+/// A single read-only order item row, styled to match the cart's `ItemRowView`.
 private struct BookingOrderItemRowView: View {
     let item: POSOrderItem
+    let booking: POSBooking
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private var dimension: CGFloat {
-        min(Constants.imageSize * scale, Constants.maximumImageSize)
+        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
     var body: some View {
-        HStack(spacing: POSSpacing.medium) {
+        HStack(spacing: Constants.horizontalElementSpacing) {
             POSItemImageView(imageSource: item.imageSrc,
                              imageSize: dimension,
                              scale: 1)
                 .frame(width: dimension)
                 .frame(minHeight: dimension)
 
-            VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: Constants.itemTitleAndPriceSpacing * (1 / scale)) {
                 Text(item.name)
-                    .font(.posBodySmallBold())
-                    .foregroundStyle(Color.posOnSurface)
+                    .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
+                    .font(Constants.itemTitleFont)
+
+                Text(bookingTimeRange)
+                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                    .font(Constants.itemSubtitleFont)
 
                 if !item.attributes.isEmpty {
                     Text(item.attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", "))
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemSubtitleFont)
                 }
 
-                Text(quantityLabel)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantHighest)
+                Text(priceLabel)
+                    .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                    .font(Constants.itemPriceFont)
             }
             .multilineTextAlignment(.leading)
-            .lineLimit(4)
+            .lineLimit(Constants.titleSubtitleLineLimit)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, POSPadding.small)
+            .padding(.vertical, Constants.verticalPadding * (1 / scale))
         }
-        .padding(.trailing, POSPadding.medium)
-        .padding(.horizontal, POSPadding.medium)
+        .padding(.trailing, Constants.cardContentHorizontalPadding)
+        .padding(.horizontal, Constants.horizontalPadding)
         .frame(maxWidth: .infinity, minHeight: dimension, alignment: .leading)
         .background(Color.posSurfaceContainerLowest)
         .posItemCardBorderStyles()
@@ -127,7 +110,11 @@ private struct BookingOrderItemRowView: View {
         .accessibilityLabel(accessibilityLabel)
     }
 
-    private var quantityLabel: String {
+    private var bookingTimeRange: String {
+        POSBookingDateFormatter.formattedTimeRange(for: booking)
+    }
+
+    private var priceLabel: String {
         let quantity = item.quantity.intValue
         if quantity > 1 {
             return String(format: Localization.quantityAndPrice, quantity, item.formattedPrice)
@@ -136,86 +123,67 @@ private struct BookingOrderItemRowView: View {
     }
 
     private var accessibilityLabel: String {
-        [item.name, quantityLabel, item.formattedTotal]
+        [item.name, bookingTimeRange, priceLabel]
             .joined(separator: ", ")
     }
+}
 
-    private enum Constants {
-        static let imageSize: CGFloat = 96
-        static let maximumImageSize: CGFloat = 144
-    }
+// MARK: - Constants
 
-    private enum Localization {
-        static let quantityAndPrice = NSLocalizedString(
-            "pos.bookingOrderItems.quantityAndPrice",
-            value: "%1$d × %2$@",
-            comment: "Quantity and unit price for an order item in the booking payment view. %1$d is the quantity, %2$@ is the formatted unit price."
-        )
-    }
+/// Matches the constants used by `CartView` and `ItemRowView` for consistent styling.
+private enum Constants {
+    static let itemsFont: POSFontStyle = .posBodySmallRegular()
+    static let cartItemSpacing: CGFloat = POSSpacing.medium
+    static let cartLastItemBottomPadding: CGFloat = POSPadding.large
+
+    // ItemRowView constants
+    static let productCardSize: CGFloat = 96
+    static let maximumProductCardSize: CGFloat = productCardSize * 1.5
+    static let horizontalPadding: CGFloat = POSPadding.medium
+    static let verticalPadding: CGFloat = POSPadding.small
+    static let horizontalElementSpacing: CGFloat = POSSpacing.medium
+    static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
+    static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall
+    static let itemTitleFont: POSFontStyle = .posBodySmallBold()
+    static let itemSubtitleFont: POSFontStyle = .posBodySmallRegular()
+    static let itemPriceFont: POSFontStyle = .posBodySmallRegular()
+    static let titleSubtitleLineLimit: Int = 4
 }
 
 // MARK: - Localization
 
-private extension POSBookingOrderItemsView {
-    enum Localization {
-        static let orderItemsTitle = NSLocalizedString(
-            "pos.bookingOrderItems.title",
-            value: "Order items",
-            comment: "Title for the order items panel shown during booking payment."
-        )
+private enum Localization {
+    static let cartTitle = NSLocalizedString(
+        "pos.bookingOrderItems.cartTitle",
+        value: "Cart",
+        comment: "Title at the header for the order items panel during booking payment."
+    )
 
-        static let subtotal = NSLocalizedString(
-            "pos.bookingOrderItems.subtotal",
-            value: "Subtotal",
-            comment: "Label for the subtotal row in the booking payment order items panel."
-        )
+    static let itemCountSingular = NSLocalizedString(
+        "pos.bookingOrderItems.itemCount.singular",
+        value: "%1$d item",
+        comment: "Singular item count shown in the header of the booking payment order items panel. %1$d is the number of items."
+    )
 
-        static let taxes = NSLocalizedString(
-            "pos.bookingOrderItems.taxes",
-            value: "Taxes",
-            comment: "Label for the taxes row in the booking payment order items panel."
-        )
+    static let itemCountPlural = NSLocalizedString(
+        "pos.bookingOrderItems.itemCount.plural",
+        value: "%1$d items",
+        comment: "Plural item count shown in the header of the booking payment order items panel. %1$d is the number of items."
+    )
 
-        static let total = NSLocalizedString(
-            "pos.bookingOrderItems.total",
-            value: "Total",
-            comment: "Label for the total row in the booking payment order items panel."
-        )
-    }
+    static let quantityAndPrice = NSLocalizedString(
+        "pos.bookingOrderItems.quantityAndPrice",
+        value: "%1$d × %2$@",
+        comment: "Quantity and unit price for an order item in the booking payment view. %1$d is the quantity, %2$@ is the formatted unit price."
+    )
 }
 
 // MARK: - Previews
 
 #if DEBUG
-import struct Yosemite.POSOrder
-
 #Preview("Booking Order Items") {
     POSBookingOrderItemsView(
-        lineItems: [
-            POSOrderItem(itemID: 1,
-                         name: "Premium Coffee Beans",
-                         quantity: 2,
-                         price: 15.00,
-                         total: 30.00,
-                         totalTax: 2.40,
-                         formattedPrice: "$15.00",
-                         formattedTotal: "$30.00",
-                         imageSrc: nil,
-                         attributes: []),
-            POSOrderItem(itemID: 2,
-                         name: "Organic Earl Grey Tea",
-                         quantity: 1,
-                         price: 12.50,
-                         total: 12.50,
-                         totalTax: 1.00,
-                         formattedPrice: "$12.50",
-                         formattedTotal: "$12.50",
-                         imageSrc: nil,
-                         attributes: [OrderItemAttribute(metaID: 1, name: "Size", value: "Large")])
-        ],
-        formattedSubtotal: "$42.50",
-        formattedTax: "$3.40",
-        formattedTotal: "$45.90"
+        booking: POSPreviewHelpers.makePreviewUnpaidBooking()
     )
     .frame(width: 400)
 }

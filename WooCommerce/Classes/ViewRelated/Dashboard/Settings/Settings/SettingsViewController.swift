@@ -414,7 +414,8 @@ private extension SettingsViewController {
             let coordinator = JetpackSetupCoordinator(site: site,
                                                       rootViewController: navigationController)
             self.jetpackSetupCoordinator = coordinator
-            return coordinator.showBenefitModal()
+            coordinator.startSetup()
+            return
         }
         let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
 

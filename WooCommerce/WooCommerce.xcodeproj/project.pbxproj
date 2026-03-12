@@ -1070,6 +1070,7 @@
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */,
 				3FECBF8E2F341CDC000990D8 /* WPComLogin */,
 				3FECBFA52F341CDE000990D8 /* Application Password */,
 				3FECBFB22F341CE0000990D8 /* Jetpack Setup */,
@@ -1234,7 +1235,6 @@
 				016582EC2E7897B3001DBB6F /* String+Helpers.swift */,
 				2D88C1102DF883BD00A6FB2C /* AttributedString+Helpers.swift */,
 				2004E2DB2C08E95B00D62521 /* ViewControllerPresenting.swift */,
-				DE50294828BEF4CF00551736 /* WordPressOrgCredentials+Authenticator.swift */,
 				EE3D1E932B8EC1E00016B132 /* BlazeCampaignListItem+Customizations.swift */,
 				B59C09D82188CBB100AB41D6 /* Array+Notes.swift */,
 				45EF7983244F26BB00B22BA2 /* Array+IndexPath.swift */,

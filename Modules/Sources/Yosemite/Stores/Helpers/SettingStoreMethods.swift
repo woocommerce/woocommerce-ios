@@ -11,6 +11,7 @@ internal protocol SettingStoreMethodsProtocol {
     func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void)
     // periphery:ignore
     func retrievePointOfSaleSettings(siteID: Int64) async throws -> [SiteSetting]
+    func updatePointOfSaleSetting(siteID: Int64, settingID: String, value: String) async throws -> SiteSetting
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
     func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
@@ -74,6 +75,12 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     // periphery:ignore
     func retrievePointOfSaleSettings(siteID: Int64) async throws -> [SiteSetting] {
         return try await siteSettingsRemote.loadPointOfSaleSettings(for: siteID)
+    }
+
+    /// Updates a single Point of Sale setting
+    ///
+    func updatePointOfSaleSetting(siteID: Int64, settingID: String, value: String) async throws -> SiteSetting {
+        return try await siteSettingsRemote.updatePointOfSaleSetting(for: siteID, settingID: settingID, value: value)
     }
 
     /// Retrieves the setting for whether coupons are enabled for the specified store

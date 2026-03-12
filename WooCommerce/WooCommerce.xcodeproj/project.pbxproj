@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */; };
 		260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260837082AA66E4A0004A12B /* UserNotifications.framework */; };
 		2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */; };
 		260837152AA66E4B0004A12B /* NotificationExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 260837072AA66E4A0004A12B /* NotificationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -58,10 +57,6 @@
 		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
-		CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */; };
-		D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */; };
-		D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */; };
-		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
 		DE158D252F31BC8200161712 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DE158D1E2F31BC8200161712 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -216,7 +211,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDetailsCellViewModel+AddOns.swift"; sourceTree = "<group>"; };
 		200B84AD2BEB99AC00EAAB23 /* WooCommercePOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooCommercePOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		260837072AA66E4A0004A12B /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		260837082AA66E4A0004A12B /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
@@ -254,10 +248,6 @@
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
 		B5A8F8A820B84D3F00D211DE /* InfoPlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfoPlist.h; path = DerivedSources/InfoPlist.h; sourceTree = SOURCE_ROOT; };
 		CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsCellViewModel.swift; sourceTree = "<group>"; };
-		D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewModel.swift; sourceTree = "<group>"; };
-		D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewModel.swift; sourceTree = "<group>"; };
-		D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
 		DE158D1E2F31BC8200161712 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -612,6 +602,7 @@
 		3F39DE652F6243E900B68326 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F39DED42F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DED52F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DED62F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
 		3F39DF262F62443800B68326 /* Tools */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F39DF6B2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6C2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6D2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6E2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6F2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Tools; sourceTree = "<group>"; };
 		3F39DF712F62444900B68326 /* Environment Keys */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Environment Keys"; sourceTree = "<group>"; };
+		3F39DFF12F62494600B68326 /* ViewModels */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModels; sourceTree = "<group>"; };
 		3F64CB3C2F593477002672A3 /* WooCommerceTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F64CE0E2F593478002672A3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceTests; sourceTree = "<group>"; };
 		3F985FAD2F29AFD400924231 /* WatchWidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FB12F29AFD400924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgetsExtension; sourceTree = "<group>"; };
 		3F985FBB2F29B00D00924231 /* NotificationExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FC72F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC82F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC92F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationExtension; sourceTree = "<group>"; };
@@ -639,12 +630,6 @@
 		3FECBF3B2F341CA8000990D8 /* View Modifiers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "View Modifiers"; sourceTree = "<group>"; };
 		3FECBF4A2F341CC5000990D8 /* Yosemite */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Yosemite; sourceTree = "<group>"; };
 		3FECBF672F341CC7000990D8 /* POS */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = POS; sourceTree = "<group>"; };
-		3FECC0942F341CFF000990D8 /* Feature Announcement Cards */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Feature Announcement Cards"; sourceTree = "<group>"; };
-		3FECC09B2F341CFF000990D8 /* WhatsNew */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = WhatsNew; sourceTree = "<group>"; };
-		3FECC0CE2F341CFF000990D8 /* Order Details */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Order Details"; sourceTree = "<group>"; };
-		3FECC0F92F341CFF000990D8 /* Authentication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Authentication; sourceTree = "<group>"; };
-		3FECC1072F341CFF000990D8 /* Booking Details */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Booking Details"; sourceTree = "<group>"; };
-		3FECC1442F341CFF000990D8 /* CardPresentPayments */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CardPresentPayments; sourceTree = "<group>"; };
 		646A2C682E9FCD7E003A32A1 /* Routing */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Routing; sourceTree = "<group>"; };
 		DE158D1F2F31BC8200161712 /* NotificationServiceExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DE158D2A2F31BC8200161712 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationServiceExtension; sourceTree = "<group>"; };
 		DEDB5D342E7A68950022E5A1 /* Bookings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Bookings; sourceTree = "<group>"; };
@@ -874,7 +859,7 @@
 				3F39DF262F62443800B68326 /* Tools */,
 				3F39DF712F62444900B68326 /* Environment Keys */,
 				3FECBF3B2F341CA8000990D8 /* View Modifiers */,
-				CE85535B209B5B6A00938BDC /* ViewModels */,
+				3F39DFF12F62494600B68326 /* ViewModels */,
 				3FDE02832F61245F004CA65D /* ViewRelated */,
 				3FECBF4A2F341CC5000990D8 /* Yosemite */,
 				3FECBF672F341CC7000990D8 /* POS */,
@@ -890,24 +875,6 @@
 				B5A8F8A820B84D3F00D211DE /* InfoPlist.h */,
 			);
 			path = DerivedSources;
-			sourceTree = "<group>";
-		};
-		CE85535B209B5B6A00938BDC /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				3FECC1072F341CFF000990D8 /* Booking Details */,
-				3FECC0F92F341CFF000990D8 /* Authentication */,
-				3FECC09B2F341CFF000990D8 /* WhatsNew */,
-				3FECC1442F341CFF000990D8 /* CardPresentPayments */,
-				3FECC0CE2F341CFF000990D8 /* Order Details */,
-				3FECC0942F341CFF000990D8 /* Feature Announcement Cards */,
-				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
-				CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */,
-				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
-				D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */,
-				028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */,
-			);
-			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1079,6 +1046,7 @@
 				3F39DE652F6243E900B68326 /* Extensions */,
 				3F39DF262F62443800B68326 /* Tools */,
 				3F39DF712F62444900B68326 /* Environment Keys */,
+				3F39DFF12F62494600B68326 /* ViewModels */,
 				3FDE02832F61245F004CA65D /* ViewRelated */,
 				3FECBE072F341C52000990D8 /* CIAB */,
 				3FECBE0C2F341C55000990D8 /* GoogleAds */,
@@ -1098,12 +1066,6 @@
 				3FECBF3B2F341CA8000990D8 /* View Modifiers */,
 				3FECBF4A2F341CC5000990D8 /* Yosemite */,
 				3FECBF672F341CC7000990D8 /* POS */,
-				3FECC0942F341CFF000990D8 /* Feature Announcement Cards */,
-				3FECC09B2F341CFF000990D8 /* WhatsNew */,
-				3FECC0CE2F341CFF000990D8 /* Order Details */,
-				3FECC0F92F341CFF000990D8 /* Authentication */,
-				3FECC1072F341CFF000990D8 /* Booking Details */,
-				3FECC1442F341CFF000990D8 /* CardPresentPayments */,
 				646A2C682E9FCD7E003A32A1 /* Routing */,
 				DEDB5D342E7A68950022E5A1 /* Bookings */,
 			);
@@ -1523,13 +1485,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
-				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
-				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
-				028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */,
-				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
-				D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

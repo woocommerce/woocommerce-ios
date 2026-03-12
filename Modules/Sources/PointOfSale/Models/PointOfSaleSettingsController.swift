@@ -6,6 +6,7 @@ import struct Yosemite.SystemPlugin
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.POSReceiptInformation
+import enum Yosemite.POSReceiptField
 import Observation
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
@@ -94,6 +95,10 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        return .empty
+    }
+
+    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
         return .empty
     }
 }

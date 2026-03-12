@@ -3,7 +3,7 @@ import SwiftUI
 struct POSSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
 
-    let viewModel: POSSettingsStoreViewModel
+    @ObservedObject var viewModel: POSSettingsStoreViewModel
 
     init(viewModel: POSSettingsStoreViewModel) {
         self.viewModel = viewModel
@@ -61,20 +61,95 @@ struct POSSettingsStoreDetailView: View {
     private var receiptInformationView: some View {
         POSInformationCard {
             VStack(spacing: POSSpacing.none) {
-                sectionHeaderView(title: Localization.receiptInformation)
+                receiptSectionHeaderView
 
-                VStack(spacing: POSSpacing.medium) {
-                    receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
-                    receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
-                    receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
-                    receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
-                    receiptFieldRowView(label: Localization.refundReturnsPolicy,
-                                        value: viewModel.receiptInformation.refundReturnsPolicy,
-                                        showSeparator: false)
+                if viewModel.isEditing {
+                    editableReceiptFieldsView
+                } else {
+                    readOnlyReceiptFieldsView
                 }
-                .padding(.bottom, POSPadding.medium)
+
+                if let error = viewModel.saveError {
+                    Text(error)
+                        .font(.posBodySmallRegular())
+                        .foregroundColor(.posError)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.vertical, POSPadding.small)
+                }
             }
         }
+    }
+
+    @ViewBuilder
+    private var receiptSectionHeaderView: some View {
+        ZStack {
+            cardBackgroundColor
+            HStack {
+                Text(Localization.receiptInformation)
+                    .font(.posBodyLargeBold)
+                    .foregroundColor(.posOnSurface)
+
+                Spacer()
+
+                if viewModel.isEditing {
+                    HStack(spacing: POSSpacing.small) {
+                        Button(Localization.cancel) {
+                            viewModel.cancelEditing()
+                        }
+                        .font(.posBodyMediumRegular())
+
+                        Button {
+                            Task {
+                                await viewModel.saveReceiptInformation()
+                            }
+                        } label: {
+                            if viewModel.isSaving {
+                                ProgressView()
+                            } else {
+                                Text(Localization.save)
+                            }
+                        }
+                        .font(.posBodyMediumBold)
+                        .disabled(!viewModel.hasChanges || viewModel.isSaving)
+                    }
+                } else if !isLoading {
+                    Button(Localization.edit) {
+                        viewModel.startEditing()
+                    }
+                    .font(.posBodyMediumRegular())
+                }
+            }
+            .padding(.vertical, POSPadding.small)
+        }
+    }
+
+    @ViewBuilder
+    private var readOnlyReceiptFieldsView: some View {
+        VStack(spacing: POSSpacing.medium) {
+            receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+            receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+            receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+            receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+            receiptFieldRowView(label: Localization.refundReturnsPolicy,
+                                value: viewModel.receiptInformation.refundReturnsPolicy,
+                                showSeparator: false)
+        }
+        .padding(.bottom, POSPadding.medium)
+    }
+
+    @ViewBuilder
+    private var editableReceiptFieldsView: some View {
+        VStack(spacing: POSSpacing.medium) {
+            editableFieldView(label: Localization.receiptStoreName, text: $viewModel.editableStoreName)
+            editableFieldView(label: Localization.physicalAddress, text: $viewModel.editableStoreAddress)
+            editableFieldView(label: Localization.phoneNumber, text: $viewModel.editablePhone)
+            editableFieldView(label: Localization.email, text: $viewModel.editableEmail)
+            editableFieldView(label: Localization.refundReturnsPolicy,
+                              text: $viewModel.editableRefundReturnsPolicy,
+                              isMultiline: true,
+                              showSeparator: false)
+        }
+        .padding(.bottom, POSPadding.medium)
     }
 
     @ViewBuilder
@@ -105,6 +180,36 @@ struct POSSettingsStoreDetailView: View {
     }
 
     @ViewBuilder
+    private func editableFieldView(label: String,
+                                   text: Binding<String>,
+                                   isMultiline: Bool = false,
+                                   showSeparator: Bool = true) -> some View {
+        VStack(alignment: .leading, spacing: POSPadding.small) {
+            Text(label)
+                .font(.posBodyMediumRegular())
+
+            if isMultiline {
+                TextEditor(text: text)
+                    .font(.posBodyMediumRegular())
+                    .frame(minHeight: Constants.multilineFieldMinHeight)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.posSurfaceContainerLow)
+                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
+            } else {
+                TextField(Localization.notSet, text: text)
+                    .font(.posBodyMediumRegular())
+                    .textFieldStyle(.roundedBorder)
+            }
+
+            if showSeparator {
+                Divider()
+                    .padding(.top, POSPadding.small)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
         if isLoading {
             Rectangle()
@@ -124,6 +229,7 @@ private extension POSSettingsStoreDetailView {
     enum Constants {
         static let shimmeringTextWidth: CGFloat = 70
         static let shimmeringTextHeight: CGFloat = 16
+        static let multilineFieldMinHeight: CGFloat = 80
     }
 
     enum Localization {
@@ -191,6 +297,24 @@ private extension POSSettingsStoreDetailView {
             "pointOfSaleSettingsStoreDetailView.refundReturnsPolicy",
             value: "Refund & Returns Policy",
             comment: "Label for refund and returns policy field in Point of Sale settings."
+        )
+
+        static let edit = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.edit",
+            value: "Edit",
+            comment: "Button to start editing receipt information in Point of Sale settings."
+        )
+
+        static let save = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.save",
+            value: "Save",
+            comment: "Button to save receipt information changes in Point of Sale settings."
+        )
+
+        static let cancel = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.cancel",
+            value: "Cancel",
+            comment: "Button to cancel editing receipt information in Point of Sale settings."
         )
     }
 }

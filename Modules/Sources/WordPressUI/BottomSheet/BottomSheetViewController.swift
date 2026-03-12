@@ -87,13 +87,13 @@ public class BottomSheetViewController: UIViewController {
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom
-        }
-        // When opening in a non-collapsed position, force the child view to lay out
-        // so content-based heights (e.g. table view contentSize) are accurate
-        // before the presentation controller computes the drawer frame.
-        if initialPosition != .collapsed {
-            childViewController?.loadViewIfNeeded()
-            childViewController?.view.layoutIfNeeded()
+            // When opening in a non-collapsed position, force the child view to lay out
+            // so content-based heights (e.g. table view contentSize) are accurate
+            // before the presentation controller computes the drawer frame.
+            if initialPosition != .collapsed {
+                childViewController?.loadViewIfNeeded()
+                childViewController?.view.layoutIfNeeded()
+            }
         }
 
         presenting.present(self, animated: true)

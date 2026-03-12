@@ -3,61 +3,34 @@ import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSBooking
 
 struct POSCancelBookingModalContent: View {
-    let state: CancelBookingModalState
     let booking: POSBooking
     @Binding var cancelModalState: CancelBookingModalState?
+    let onSuccess: () -> Void
 
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
 
+    @State private var isProcessing = false
+    @State private var errorMessage: String?
+
     var body: some View {
-        switch state {
-        case .confirmation:
-            POSCancelBookingConfirmationView(
-                bookingNumber: booking.id,
-                serviceName: booking.serviceName,
-                formattedDateTime: POSBookingDateFormatter.formattedDateTime(for: booking.startDate),
-                customerName: booking.customerName,
-                isProcessing: false,
-                onClose: { cancelModalState = nil },
-                onConfirm: {
-                    cancelModalState = .processing
-                    Task { @MainActor in
-                        await performCancelBooking()
-                    }
-                },
-                onBack: { cancelModalState = nil }
-            )
-        case .processing:
-            POSCancelBookingConfirmationView(
-                bookingNumber: booking.id,
-                serviceName: booking.serviceName,
-                formattedDateTime: POSBookingDateFormatter.formattedDateTime(for: booking.startDate),
-                customerName: booking.customerName,
-                isProcessing: true,
-                onClose: {},
-                onConfirm: {},
-                onBack: {}
-            )
-        case .success:
-            POSCancelBookingSuccessView(
-                onDone: { cancelModalState = nil },
-                onClose: { cancelModalState = nil }
-            )
-        case .error:
-            POSRefundErrorView(
-                title: Localization.cancelBookingErrorTitle,
-                subtitle: Localization.cancelBookingErrorSubtitle,
-                onRetry: {
-                    cancelModalState = .processing
-                    Task { @MainActor in
-                        await performCancelBooking()
-                    }
-                },
-                onCancel: { cancelModalState = nil },
-                onClose: { cancelModalState = nil }
-            )
-        }
+        POSCancelBookingConfirmationView(
+            bookingNumber: booking.id,
+            serviceName: booking.serviceName,
+            formattedDateTime: POSBookingDateFormatter.formattedDateTime(for: booking.startDate),
+            customerName: booking.customerName,
+            isProcessing: isProcessing,
+            errorMessage: errorMessage,
+            onClose: { cancelModalState = nil },
+            onConfirm: {
+                isProcessing = true
+                errorMessage = nil
+                Task { @MainActor in
+                    await performCancelBooking()
+                }
+            },
+            onBack: { cancelModalState = nil }
+        )
     }
 
     @MainActor
@@ -65,10 +38,11 @@ struct POSCancelBookingModalContent: View {
         do {
             try await bookingsModel.bookingsController.cancelBooking(bookingID: booking.id)
             analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelled())
-            cancelModalState = .success
+            onSuccess()
         } catch {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingCancelFailed(error: error))
-            cancelModalState = .error
+            errorMessage = Localization.cancelBookingInlineError
+            isProcessing = false
         }
     }
 }
@@ -76,15 +50,9 @@ struct POSCancelBookingModalContent: View {
 // MARK: - Localization
 
 private enum Localization {
-    static let cancelBookingErrorTitle = NSLocalizedString(
-        "pos.bookingDetailView.cancelBookingError.title",
-        value: "Failed to cancel booking",
-        comment: "Title shown when cancelling a booking from POS has failed."
-    )
-
-    static let cancelBookingErrorSubtitle = NSLocalizedString(
-        "pos.bookingDetailView.cancelBookingError.subtitle",
-        value: "Please try again.",
-        comment: "Subtitle shown when cancelling a booking from POS has failed."
+    static let cancelBookingInlineError = NSLocalizedString(
+        "pos.cancelBookingConfirmation.inlineErrorMessage",
+        value: "Unable to cancel the booking. Please try again.",
+        comment: "Error message shown inline in the cancel booking confirmation modal when cancellation fails."
     )
 }

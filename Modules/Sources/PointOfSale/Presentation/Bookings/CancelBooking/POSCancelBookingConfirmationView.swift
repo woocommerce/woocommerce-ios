@@ -6,6 +6,7 @@ struct POSCancelBookingConfirmationView: View {
     let formattedDateTime: String
     let customerName: String?
     let isProcessing: Bool
+    let errorMessage: String?
     let onClose: () -> Void
     let onConfirm: () -> Void
     let onBack: () -> Void
@@ -16,11 +17,7 @@ struct POSCancelBookingConfirmationView: View {
         VStack(spacing: POSSpacing.none) {
             headerView
             messageView
-            if isProcessing {
-                loadingSection
-            } else {
-                buttonsSection
-            }
+            buttonsSection
         }
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
@@ -46,7 +43,7 @@ private extension POSCancelBookingConfirmationView {
                 .opacity(isProcessing ? 0.5 : 1.0)
             }
 
-            Text(isProcessing ? Localization.processingTitle : Localization.title)
+            Text(Localization.title)
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .multilineTextAlignment(.center)
@@ -58,12 +55,8 @@ private extension POSCancelBookingConfirmationView {
 
     var messageView: some View {
         VStack(spacing: POSSpacing.medium) {
-            if isProcessing {
-                Text(Localization.processingMessage)
-            } else {
-                Text(bookingDescription)
-                Text(Localization.customerNotificationMessage)
-            }
+            Text(bookingDescription)
+            Text(Localization.customerNotificationMessage)
         }
         .font(.posBodyLargeRegular())
         .foregroundColor(Color.posOnSurface)
@@ -87,22 +80,24 @@ private extension POSCancelBookingConfirmationView {
         }
     }
 
-    var loadingSection: some View {
-        VStack {
-            ProgressView()
-                .progressViewStyle(POSRefundModalLayout.progressViewStyle)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(POSPadding.xLarge)
-    }
-
     var buttonsSection: some View {
         VStack(spacing: POSSpacing.medium) {
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.posBodyMediumRegular())
+                    .foregroundColor(Color.posError)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, POSPadding.xLarge)
+            }
+
             Button(Localization.confirmButton, action: onConfirm)
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isProcessing))
+                .disabled(isProcessing)
 
             Button(Localization.keepButton, action: onBack)
                 .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                .disabled(isProcessing)
         }
         .padding(POSPadding.xLarge)
     }
@@ -116,12 +111,6 @@ private extension POSCancelBookingConfirmationView {
             "pos.cancelBookingConfirmation.title",
             value: "Cancel this booking?",
             comment: "Title for the cancel booking confirmation modal in POS."
-        )
-
-        static let processingTitle = NSLocalizedString(
-            "pos.cancelBookingConfirmation.canceling.processingTitle",
-            value: "Canceling booking...",
-            comment: "Title shown while a booking cancellation is being processed in POS."
         )
 
         static let closeButtonAccessibilityLabel = NSLocalizedString(
@@ -150,12 +139,6 @@ private extension POSCancelBookingConfirmationView {
             comment: "Secondary message informing that the customer will receive an email notification about the cancellation."
         )
 
-        static let processingMessage = NSLocalizedString(
-            "pos.cancelBookingConfirmation.processingMessage",
-            value: "Please wait while we cancel the booking.",
-            comment: "Message shown while the booking cancellation is being processed."
-        )
-
         static let confirmButton = NSLocalizedString(
             "pos.cancelBookingConfirmation.confirmButton",
             value: "Yes, cancel booking",
@@ -178,6 +161,7 @@ private extension POSCancelBookingConfirmationView {
         formattedDateTime: "Jan 15, 2026 at 2:00 PM",
         customerName: "John Smith",
         isProcessing: false,
+        errorMessage: nil,
         onClose: {},
         onConfirm: {},
         onBack: {}
@@ -192,6 +176,7 @@ private extension POSCancelBookingConfirmationView {
         formattedDateTime: "Feb 10, 2026 at 10:00 AM",
         customerName: nil,
         isProcessing: false,
+        errorMessage: nil,
         onClose: {},
         onConfirm: {},
         onBack: {}
@@ -206,6 +191,22 @@ private extension POSCancelBookingConfirmationView {
         formattedDateTime: "Jan 15, 2026 at 2:00 PM",
         customerName: "John Smith",
         isProcessing: true,
+        errorMessage: nil,
+        onClose: {},
+        onConfirm: {},
+        onBack: {}
+    )
+    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+}
+
+#Preview("POSCancelBookingConfirmationView - Error") {
+    POSCancelBookingConfirmationView(
+        bookingNumber: 333,
+        serviceName: "Women's Haircut",
+        formattedDateTime: "Sep 2, 2026 at 10:30 AM",
+        customerName: "Margarita Nikolaevna",
+        isProcessing: false,
+        errorMessage: "Unable to cancel the booking. Please try again.",
         onClose: {},
         onConfirm: {},
         onBack: {}

@@ -16,7 +16,7 @@ enum WooShippingCarrier: String, Comparable, CaseIterable {
         case .usps:
             return UIImage(named: "shipping-label-usps-logo")
         case .fedex:
-            return nil // TODO: Add FedEx logo asset
+            return UIImage(named: "shipping-label-fedex-logo")
         case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
             return UIImage(named: "shipping-label-dhl-logo")
         }

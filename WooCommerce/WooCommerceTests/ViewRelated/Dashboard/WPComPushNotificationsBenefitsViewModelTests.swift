@@ -85,7 +85,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_error_is_noMissingRequirements_when_jetpack_connected_and_plugin_compatible() async {
+    func test_variant_is_setup_when_jetpack_connected_and_plugin_compatible() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
@@ -99,9 +99,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        guard case .noMissingRequirements = viewModel.error else {
-            return XCTFail("Expected noMissingRequirements error, got \(String(describing: viewModel.error))")
-        }
+        XCTAssertEqual(viewModel.variant, .setup)
+        XCTAssertNil(viewModel.error)
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
@@ -211,6 +210,47 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
+    }
+
+    func test_determineSetupVariant_when_jetpack_connected_and_plugin_compatible_then_tracks_introduction_view_with_connected_state() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_view", with: ["state": "connected"])
+    }
+
+    func test_continueTapped_when_setup_variant_then_tracks_continue_button_label() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService,
+                                      pluginVersionChecker: checker,
+                                      analytics: analytics)
+        await viewModel.determineSetupVariant()
+
+        // When
+        viewModel.continueTapped()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_button_tap", with: ["button_label": "continue"])
     }
 
     func test_determineSetupVariant_when_plugin_check_fails_then_does_not_track_introduction_view() async {
@@ -369,7 +409,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_determineSetupVariant_when_site_is_JCP_and_plugin_compatible_then_sets_noMissingRequirements_error() async {
+    func test_determineSetupVariant_when_site_is_JCP_and_plugin_compatible_then_sets_setup_variant() async {
         // Given
         let checker = MockPluginVersionChecker()
         checker.result = .success(.compatible)
@@ -379,9 +419,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        guard case .noMissingRequirements = viewModel.error else {
-            return XCTFail("Expected noMissingRequirements error, got \(String(describing: viewModel.error))")
-        }
+        XCTAssertEqual(viewModel.variant, .setup)
+        XCTAssertNil(viewModel.error)
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 

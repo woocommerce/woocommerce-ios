@@ -11,6 +11,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     enum Variant: Equatable {
         case connect
         case pluginUpdate(currentVersion: String)
+        case setup
     }
 
     let termsAttributedString: AttributedString
@@ -18,7 +19,7 @@ final class WPComPushNotificationsBenefitsViewModel {
     var title: String {
         switch variant {
         case .connect: Localization.connectWPComTitle
-        case .pluginUpdate: Localization.updatePluginTitle
+        case .pluginUpdate, .setup: Localization.setupTitle
         }
     }
 
@@ -26,6 +27,7 @@ final class WPComPushNotificationsBenefitsViewModel {
         switch variant {
         case .connect: Localization.connectWPComDescription
         case .pluginUpdate: Localization.updatePluginDescription
+        case .setup: Localization.setupDescription
         }
     }
 
@@ -133,6 +135,9 @@ final class WPComPushNotificationsBenefitsViewModel {
                 siteAlreadyConnected: true,
                 pluginOutdatedVersion: currentVersion
             )
+        case .setup:
+            analytics.track(event: .WPComPushNotificationsSetup.introductionButtonTap(.continue))
+            pushNotificationSetupCoordinator?.startSetup(siteAlreadyConnected: true)
         }
     }
 
@@ -165,8 +170,8 @@ private extension WPComPushNotificationsBenefitsViewModel {
                 variant = .pluginUpdate(currentVersion: currentVersion)
                 analytics.track(event: .WPComPushNotificationsSetup.introductionView(state: .updateRequired))
             } else {
-                error = .noMissingRequirements
-                analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
+                variant = .setup
+                analytics.track(event: .WPComPushNotificationsSetup.introductionView(state: .connected))
             }
         } catch {
             DDLogError("⛔️ Plugin version check failed: \(error)")
@@ -179,14 +184,13 @@ private extension WPComPushNotificationsBenefitsViewModel {
 extension WPComPushNotificationsBenefitsViewModel {
     enum VariantCheckError: Error {
         case noPermission
-        case noMissingRequirements
         case generic(underlyingError: Error)
 
         var message: String {
             switch self {
             case .noPermission:
                 Localization.noPermission
-            case .noMissingRequirements, .generic:
+            case .generic:
                 Localization.generic
             }
         }
@@ -242,10 +246,10 @@ extension WPComPushNotificationsBenefitsViewModel {
             comment: "Main description text of the WordPress.com Push Notifications Benefits View"
         )
 
-        static let updatePluginTitle = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsViewModel.updatePluginTitle",
+        static let setupTitle = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.setupTitle",
             value: "Get push notifications for your store",
-            comment: "Title of the Push Notifications Benefits View when WooCommerce plugin is outdated"
+            comment: "Title of the Push Notifications Benefits View when the site is already connected"
         )
 
         static let updatePluginDescription = NSLocalizedString(
@@ -253,6 +257,12 @@ extension WPComPushNotificationsBenefitsViewModel {
             value: "Your store is already connected to a WordPress.com account, but you’ll need to " +
             "update WooCommerce plugin to enable push notifications for new orders, reviews, and more.",
             comment: "Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated"
+        )
+
+        static let setupDescription = NSLocalizedString(
+            "wpcomPushNotificationsBenefitsViewModel.setupDescription",
+            value: "You’re one step away from getting notifications for new orders, reviews and more.",
+            comment: "Description text on the Push Notifications Benefits View when the site is connected and plugin is up to date"
         )
     }
 }

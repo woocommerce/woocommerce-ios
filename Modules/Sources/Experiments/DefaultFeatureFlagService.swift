@@ -19,9 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .shippingLabelsOnboardingM1:
-            // We need to adapt this functionality to the new Woo Shipping plugin before enabling it
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
         case .performanceMonitoring,

@@ -26,35 +26,35 @@ struct TotalsView: View {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
                     Spacer()
-                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
-                    VStack(alignment: .center, spacing: 0) {
-                        if isShowingPaymentView {
-                            PaymentViewContent(
-                                paymentState: paymentModel.paymentState,
-                                cardReaderViewLayout: cardReaderViewLayout,
-                                isShowingTotalsFields: isShowingTotalsFields,
-                                backgroundColor: backgroundColor,
-                                orderState: posModel.orderState,
-                                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                                connectCardReaderAction: paymentModel.connectCardReader
-                            )
-                        }
+                    if isShowingPaymentView {
+                        PaymentViewContent(
+                            paymentState: paymentModel.paymentState,
+                            cardReaderViewLayout: cardReaderViewLayout,
+                            isShowingTotalsFields: isShowingTotalsFields,
+                            backgroundColor: backgroundColor,
+                            orderState: posModel.orderState,
+                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                            connectCardReaderAction: paymentModel.connectCardReader
+                        )
+                    }
 
-                        if isShowingTotalsFields {
-                            TotalsFieldsContent(
-                                orderState: posModel.orderState,
-                                paymentState: paymentModel.paymentState,
-                                cart: posModel.cart,
-                                totalsFieldAnimation: totalsFieldAnimation
-                            )
-                            .opacity(shouldShowTotalsFields ? 1 : 0)
-                        }
+                    if isShowingPaymentView && isShowingTotalsFields {
+                        Spacer()
+                    }
+
+                    if isShowingTotalsFields {
+                        TotalsFieldsContent(
+                            orderState: posModel.orderState,
+                            paymentState: paymentModel.paymentState,
+                            cart: posModel.cart,
+                            totalsFieldAnimation: totalsFieldAnimation
+                        )
+                        .opacity(shouldShowTotalsFields ? 1 : 0)
                     }
 
                     Spacer()
-                        .renderedIf(viewHelper.shouldApplyPadding(paymentState: paymentModel.paymentState))
 
                     CashPaymentButton(
                         orderState: posModel.orderState,
@@ -185,7 +185,7 @@ private extension TotalsView {
                     .processingPayment:
                 if POSPaymentViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                                     paymentState: paymentModel.paymentState) {
-                    return .outlined
+                    return .primary
                 }
             }
         }

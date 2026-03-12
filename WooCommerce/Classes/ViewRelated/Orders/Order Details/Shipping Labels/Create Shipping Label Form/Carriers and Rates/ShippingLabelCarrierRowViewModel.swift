@@ -160,6 +160,7 @@ private extension ShippingLabelCarrierRowViewModel {
     enum CarrierLogo: String {
         case ups
         case usps
+        case fedex
         case dhlExpress = "dhlexpress"
         case dhlEcommerce = "dhlecommerce"
         case dhlEcommerceAsia = "dhlecommerceasia"
@@ -170,6 +171,8 @@ private extension ShippingLabelCarrierRowViewModel {
                 return UIImage(named: "shipping-label-ups-logo")
             case .usps:
                 return UIImage(named: "shipping-label-usps-logo")
+            case .fedex:
+                return nil // TODO: Add FedEx logo asset
             case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
                 return UIImage(named: "shipping-label-dhl-logo")
             }

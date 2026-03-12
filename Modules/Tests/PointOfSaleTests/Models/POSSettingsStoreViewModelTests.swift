@@ -258,4 +258,19 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
             throw error
         }
     }
+
+    var updatePointOfSaleSettingsWasCalled = false
+    var updatePointOfSaleSettingsChanges: [POSReceiptField: String]?
+    var updatePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
+
+    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
+        updatePointOfSaleSettingsWasCalled = true
+        updatePointOfSaleSettingsChanges = changes
+        switch updatePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
+        }
+    }
 }

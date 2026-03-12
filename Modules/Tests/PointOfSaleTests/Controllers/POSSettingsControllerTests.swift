@@ -73,6 +73,17 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
             throw error
         }
     }
+
+    var updatePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
+
+    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
+        switch updatePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
+        }
+    }
 }
 
 final class MockPOSSettingsController: POSSettingsControllerProtocol {

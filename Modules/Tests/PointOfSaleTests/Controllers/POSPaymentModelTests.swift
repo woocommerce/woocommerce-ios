@@ -68,28 +68,188 @@ struct POSPaymentModelTests {
 
     // MARK: - Cash Payment
 
-    @Test("startCashPayment cancels card payment and transitions to cash")
+    @Test("startCashPayment transitions to cash immediately and cancels card payment in background")
     @MainActor
     func startCashPayment_cancelsCardAndTransitionsToCash() async {
         let service = MockCardPresentPaymentService()
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        await sut.startCashPayment()
+        await withCheckedContinuation { continuation in
+            service.onCancelPaymentCalled = {
+                continuation.resume()
+            }
+            sut.startCashPayment()
 
+            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
+        }
         #expect(service.cancelPaymentCalled == true)
-        #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
+    }
+
+    @Test("idle card event is dropped during cash flow")
+    @MainActor
+    func cardIdleEvent_during_cashFlow_isDropped() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+        #expect(sut.paymentState.card == .acceptingCard)
+
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // When
+        service.paymentEvent = .idle
+
+        // Then
+        #expect(sut.paymentState.cash == .collectingCash)
+        #expect(sut.paymentState.card == .acceptingCard)
+    }
+
+    @Test("active card event during cash flow transitions back to card view")
+    @MainActor
+    func activeCardEvent_during_cashFlow_transitionsBackToCard() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // When
+        service.paymentEvent = .show(eventDetails: .processing)
+
+        // Then
+        #expect(sut.paymentState.cash == .idle)
+        #expect(sut.paymentState.card == .processingPayment)
+    }
+
+    @Test("card payment success during cash flow transitions to card success")
+    @MainActor
+    func cardPaymentSuccess_during_cashFlow_transitionsToCardSuccess() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // When
+        service.paymentEvent = .show(eventDetails: .paymentSuccess(done: {}))
+
+        // Then
+        #expect(sut.paymentState.cash == .idle)
+        #expect(sut.paymentState.card == .cardPaymentSuccessful)
+    }
+
+    @Test("startCashPayment is blocked during ineligible card states")
+    @MainActor
+    func startCashPayment_when_processingPayment_then_blocked() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider,
+            paymentState: PointOfSalePaymentState(card: .processingPayment, cash: .idle))
+
+        // When
+        sut.startCashPayment()
+
+        // Then
+        #expect(sut.paymentState.cash == .idle)
     }
 
     @Test("cancelCashPayment resets to idle")
     @MainActor
     func cancelCashPayment_resetsToIdle() async {
+        // Given
         let sut = makePaymentController()
 
-        await sut.startCashPayment()
+        sut.startCashPayment()
         #expect(sut.paymentState.cash == .collectingCash)
 
+        // When
         await sut.cancelCashPayment()
+
+        // Then
         #expect(sut.paymentState.cash == .idle)
+    }
+
+    @Test("cancelCashPayment with connected reader calls startPayment")
+    @MainActor
+    func cancelCashPayment_when_readerConnected_then_callsStartPayment() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+        service.cancelPaymentCalled = false
+        service.collectPaymentWasCalled = false
+
+        // When
+        await sut.cancelCashPayment()
+
+        // Then
+        #expect(sut.paymentState.cash == .idle)
+        #expect(service.cancelPaymentCalled == true)
+        #expect(service.collectPaymentWasCalled == true)
+        #expect(sut.isActive == true)
     }
 
     @Test("collectCashPayment calls handler and transitions to success")
@@ -432,6 +592,42 @@ struct POSPaymentModelTests {
 
         // Alerts are always-on, so this should still be delivered
         #expect(sut.cardPresentPaymentAlertViewModel != nil)
+    }
+
+    @Test("subsequent card events are processed after transitioning back from cash flow")
+    @MainActor
+    func subsequentCardEvents_processed_afterCashFlowTransition() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+        #expect(sut.paymentState.card == .acceptingCard)
+
+        // Enter cash flow
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // When: non-idle card event transitions back to card view
+        service.paymentEvent = .show(eventDetails: .processing)
+        #expect(sut.paymentState.cash == .idle)
+        #expect(sut.paymentState.card == .processingPayment)
+
+        // Then: subsequent card events continue to update card state naturally
+        service.paymentEvent = .idle
+        #expect(sut.paymentState.card == .idle)
+        #expect(sut.isActive == true)
     }
 
     @Test("connection success alert is filtered when waiting to start payment on connect")

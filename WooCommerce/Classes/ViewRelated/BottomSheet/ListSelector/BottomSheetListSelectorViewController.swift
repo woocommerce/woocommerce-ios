@@ -41,11 +41,6 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
         configureMainView()
         configureTableView()
-
-        // Force table view to compute accurate multiline cell heights
-        // so contentSize is correct for drawer height calculation.
-        tableView.reloadData()
-        tableView.layoutIfNeeded()
     }
 
     override func viewDidLayoutSubviews() {

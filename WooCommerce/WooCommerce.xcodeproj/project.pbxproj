@@ -49,13 +49,11 @@
 		3F2B4AEC2DDC319800E5E49C /* XcodeTarget_WooCommerceTests in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AEB2DDC319800E5E49C /* XcodeTarget_WooCommerceTests */; };
 		3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */; };
 		5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
 		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
 		B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAE20A0BF8F00836CD4 /* LICENSE */; };
 		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
-		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		DE158D252F31BC8200161712 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DE158D1E2F31BC8200161712 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -230,7 +228,6 @@
 		3F64F76C2C06A3A50085DEEF /* WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		3FF314EF26FC784A0012E68E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = ../Pods/Sodium/Clibsodium.xcframework; sourceTree = "<group>"; };
 		8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.debug.xcconfig; path = ../config/WooCommerce.debug.xcconfig; sourceTree = "<group>"; };
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
@@ -243,7 +240,6 @@
 		B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = replace_secrets.rb; sourceTree = "<group>"; };
 		B55D4C1920B6193000D7A50F /* InfoPlist.tpl */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = InfoPlist.tpl; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
 		B5A8F8A820B84D3F00D211DE /* InfoPlist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfoPlist.h; path = DerivedSources/InfoPlist.h; sourceTree = SOURCE_ROOT; };
@@ -299,67 +295,73 @@
 			);
 			target = 3F0904002D26A40700D8ACCE /* WordPressAuthenticator */;
 		};
-		3F39DED42F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F39F0C82F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"UserDefaults+Woo.swift",
-			);
-			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
-		};
-		3F39DED52F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Dictionary+Woo.swift",
-			);
-			target = 260837062AA66E4A0004A12B /* NotificationExtension */;
-		};
-		3F39DED62F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"CNContact+Helpers.swift",
-				"Date+Woo.swift",
-				"DateFormatter+Helpers.swift",
-				"Dictionary+Woo.swift",
-				"TimeZone+Woo.swift",
-				"UserDefaults+Woo.swift",
-			);
-			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
-		};
-		3F39DF6B2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				AppLocalizedString.swift,
+				Model/MarkOrderAsReadUseCase.swift,
+				"Model/MarkOrderAsReadUseCase+Woo.swift",
+				ServiceLocator/PushNotification.swift,
+				System/WooConstants.swift,
+				Tools/AppLocalizedString.swift,
 			);
 			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
 		};
-		3F39DF6C2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F39F0C92F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AppLocalizedString.swift,
+				"Extensions/UserDefaults+Woo.swift",
+				System/WooConstants.swift,
+				Tools/AppLocalizedString.swift,
 			);
 			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
 		};
-		3F39DF6D2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F39F0CA2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AppLocalizedString.swift,
+				"Extensions/Dictionary+Woo.swift",
+				Model/MarkOrderAsReadUseCase.swift,
+				ServiceLocator/PushNotification.swift,
+				System/WooConstants.swift,
+				Tools/AppLocalizedString.swift,
 			);
 			target = 260837062AA66E4A0004A12B /* NotificationExtension */;
 		};
-		3F39DF6E2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F39F0CB2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AppLocalizedString.swift,
-				Logging/Logging.swift,
+				"Extensions/CNContact+Helpers.swift",
+				"Extensions/Date+Woo.swift",
+				"Extensions/DateFormatter+Helpers.swift",
+				"Extensions/Dictionary+Woo.swift",
+				"Extensions/TimeZone+Woo.swift",
+				"Extensions/UserDefaults+Woo.swift",
+				"Model/Address+Shared.swift",
+				Model/MarkOrderAsReadUseCase.swift,
+				ServiceLocator/CrashLoggingStack.swift,
+				ServiceLocator/PushNotification.swift,
+				System/WatchDependencies.swift,
+				System/WooConstants.swift,
+				Tools/AppLocalizedString.swift,
+				Tools/Logging/Logging.swift,
+				"ViewRelated/Orders/Cells/OrderListCellViewModel+Localizations.swift",
 			);
 			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
 		};
-		3F39DF6F2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		3F39F0CC2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				AppLocalizedString.swift,
+				System/WooConstants.swift,
+				Tools/AppLocalizedString.swift,
 			);
 			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtension */;
+		};
+		3F39F0CD2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Notifications/PushNotificationRegistrationState.swift,
+				Notifications/PushNotificationSharedConstants.swift,
+			);
+			target = DE158D1D2F31BC8200161712 /* NotificationServiceExtension */;
 		};
 		3F64CE0E2F593478002672A3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -489,102 +491,6 @@
 			);
 			target = F997170123DBB97500592D8E /* WooCommerceScreenshots */;
 		};
-		3FDE07CA2F61245F004CA65D /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Orders/Cells/OrderListCellViewModel+Localizations.swift",
-			);
-			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
-		};
-		3FECBE832F341C7C000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				MarkOrderAsReadUseCase.swift,
-				"MarkOrderAsReadUseCase+Woo.swift",
-			);
-			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
-		};
-		3FECBE842F341C7C000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				MarkOrderAsReadUseCase.swift,
-			);
-			target = 260837062AA66E4A0004A12B /* NotificationExtension */;
-		};
-		3FECBE852F341C7C000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Address+Shared.swift",
-				MarkOrderAsReadUseCase.swift,
-			);
-			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
-		};
-		3FECBE9F2F341C7E000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				PushNotification.swift,
-			);
-			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
-		};
-		3FECBEA02F341C7E000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				PushNotification.swift,
-			);
-			target = 260837062AA66E4A0004A12B /* NotificationExtension */;
-		};
-		3FECBEA12F341C7E000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				CrashLoggingStack.swift,
-				PushNotification.swift,
-			);
-			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
-		};
-		3FECBF092F341C8F000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				PushNotificationRegistrationState.swift,
-				PushNotificationSharedConstants.swift,
-			);
-			target = DE158D1D2F31BC8200161712 /* NotificationServiceExtension */;
-		};
-		3FECBF2B2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				WooConstants.swift,
-			);
-			target = B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */;
-		};
-		3FECBF2C2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				WooConstants.swift,
-			);
-			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
-		};
-		3FECBF2D2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				WooConstants.swift,
-			);
-			target = 260837062AA66E4A0004A12B /* NotificationExtension */;
-		};
-		3FECBF2E2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				WatchDependencies.swift,
-				WooConstants.swift,
-			);
-			target = 26F81B142BE433A2009EC58E /* Woo Watch App */;
-		};
-		3FECBF2F2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				WooConstants.swift,
-			);
-			target = 267A04842C051C5100C91CB4 /* WatchWidgetsExtension */;
-		};
 		DE158D2A2F31BC8200161712 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -598,11 +504,7 @@
 		3F065E5C2F29B41D00881B6E /* Woo Watch App */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F065E742F29B41D00881B6E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = "Woo Watch App"; sourceTree = "<group>"; };
 		3F0904022D26A40800D8ACCE /* WordPressAuthenticator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F09041C2D26A40800D8ACCE /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticator; sourceTree = "<group>"; };
 		3F09040E2D26A40800D8ACCE /* WordPressAuthenticatorTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD28D5E2D271391002EBB3D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WordPressAuthenticatorTests; sourceTree = "<group>"; };
-		3F39DDA22F62434A00B68326 /* Authentication */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Authentication; sourceTree = "<group>"; };
-		3F39DE652F6243E900B68326 /* Extensions */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F39DED42F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DED52F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DED62F6243E900B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Extensions; sourceTree = "<group>"; };
-		3F39DF262F62443800B68326 /* Tools */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F39DF6B2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6C2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6D2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6E2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39DF6F2F62443800B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Tools; sourceTree = "<group>"; };
-		3F39DF712F62444900B68326 /* Environment Keys */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Environment Keys"; sourceTree = "<group>"; };
-		3F39DFF12F62494600B68326 /* ViewModels */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ViewModels; sourceTree = "<group>"; };
+		3F39E9372F624A4A00B68326 /* Classes */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F39F0C82F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39F0C92F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39F0CA2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39F0CB2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39F0CC2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F39F0CD2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Classes; sourceTree = "<group>"; };
 		3F64CB3C2F593477002672A3 /* WooCommerceTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F64CE0E2F593478002672A3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceTests; sourceTree = "<group>"; };
 		3F985FAD2F29AFD400924231 /* WatchWidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FB12F29AFD400924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgetsExtension; sourceTree = "<group>"; };
 		3F985FBB2F29B00D00924231 /* NotificationExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FC72F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC82F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC92F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationExtension; sourceTree = "<group>"; };
@@ -611,28 +513,7 @@
 		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
 		3FDA4E362F440D3900CC3259 /* docs */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); name = docs; path = ../docs; sourceTree = "<group>"; };
-		3FDE02832F61245F004CA65D /* ViewRelated */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FDE07CA2F61245F004CA65D /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ViewRelated; sourceTree = "<group>"; };
-		3FECBE072F341C52000990D8 /* CIAB */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CIAB; sourceTree = "<group>"; };
-		3FECBE0C2F341C55000990D8 /* GoogleAds */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GoogleAds; sourceTree = "<group>"; };
-		3FECBE142F341C59000990D8 /* Destinations */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Destinations; sourceTree = "<group>"; };
-		3FECBE1B2F341C6D000990D8 /* App Intents */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "App Intents"; sourceTree = "<group>"; };
-		3FECBE202F341C73000990D8 /* Spotlight */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Spotlight; sourceTree = "<group>"; };
-		3FECBE262F341C75000990D8 /* Blaze */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Blaze; sourceTree = "<group>"; };
-		3FECBE2C2F341C78000990D8 /* JustInTimeMessages */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = JustInTimeMessages; sourceTree = "<group>"; };
-		3FECBE392F341C7A000990D8 /* Universal Links */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Universal Links"; sourceTree = "<group>"; };
-		3FECBE602F341C7C000990D8 /* Model */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FECBE832F341C7C000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBE842F341C7C000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBE852F341C7C000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Model; sourceTree = "<group>"; };
-		3FECBE902F341C7E000990D8 /* ServiceLocator */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FECBE9F2F341C7E000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBEA02F341C7E000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBEA12F341C7E000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ServiceLocator; sourceTree = "<group>"; };
-		3FECBEC72F341C80000990D8 /* Analytics */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Analytics; sourceTree = "<group>"; };
-		3FECBEEE2F341C88000990D8 /* Copiable */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Copiable; sourceTree = "<group>"; };
-		3FECBEFB2F341C8F000990D8 /* Notifications */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FECBF092F341C8F000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Notifications; sourceTree = "<group>"; };
-		3FECBF0C2F341C91000990D8 /* Styles */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Styles; sourceTree = "<group>"; };
-		3FECBF1A2F341C93000990D8 /* System */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FECBF2B2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBF2C2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBF2D2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBF2E2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FECBF2F2F341C93000990D8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = System; sourceTree = "<group>"; };
-		3FECBF3B2F341CA8000990D8 /* View Modifiers */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "View Modifiers"; sourceTree = "<group>"; };
-		3FECBF4A2F341CC5000990D8 /* Yosemite */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Yosemite; sourceTree = "<group>"; };
-		3FECBF672F341CC7000990D8 /* POS */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = POS; sourceTree = "<group>"; };
-		646A2C682E9FCD7E003A32A1 /* Routing */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Routing; sourceTree = "<group>"; };
 		DE158D1F2F31BC8200161712 /* NotificationServiceExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (DE158D2A2F31BC8200161712 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationServiceExtension; sourceTree = "<group>"; };
-		DEDB5D342E7A68950022E5A1 /* Bookings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Bookings; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -794,7 +675,7 @@
 				8CA4F6DC220B24EB00A47B5D /* config */,
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
-				B56DB3F12049C0B800D4AA8E /* Classes */,
+				3F39E9372F624A4A00B68326 /* Classes */,
 				3FA6FD902F2C941500F48C4E /* Resources */,
 				3F64CB3C2F593477002672A3 /* WooCommerceTests */,
 				3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */,
@@ -831,41 +712,6 @@
 				DE158D1E2F31BC8200161712 /* NotificationServiceExtension.appex */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		B56DB3F12049C0B800D4AA8E /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				646A2C682E9FCD7E003A32A1 /* Routing */,
-				640DA3472E97DE4F00317FB2 /* SceneDelegate.swift */,
-				DEDB5D342E7A68950022E5A1 /* Bookings */,
-				3FECBE072F341C52000990D8 /* CIAB */,
-				3FECBE0C2F341C55000990D8 /* GoogleAds */,
-				3FECBE142F341C59000990D8 /* Destinations */,
-				3FECBE1B2F341C6D000990D8 /* App Intents */,
-				3FECBE262F341C75000990D8 /* Blaze */,
-				3FECBE202F341C73000990D8 /* Spotlight */,
-				3FECBE2C2F341C78000990D8 /* JustInTimeMessages */,
-				3FECBE392F341C7A000990D8 /* Universal Links */,
-				3FECBE602F341C7C000990D8 /* Model */,
-				3FECBE902F341C7E000990D8 /* ServiceLocator */,
-				3FECBEC72F341C80000990D8 /* Analytics */,
-				3F39DDA22F62434A00B68326 /* Authentication */,
-				3FECBEEE2F341C88000990D8 /* Copiable */,
-				3F39DE652F6243E900B68326 /* Extensions */,
-				3FECBEFB2F341C8F000990D8 /* Notifications */,
-				3FECBF0C2F341C91000990D8 /* Styles */,
-				3FECBF1A2F341C93000990D8 /* System */,
-				3F39DF262F62443800B68326 /* Tools */,
-				3F39DF712F62444900B68326 /* Environment Keys */,
-				3FECBF3B2F341CA8000990D8 /* View Modifiers */,
-				3F39DFF12F62494600B68326 /* ViewModels */,
-				3FDE02832F61245F004CA65D /* ViewRelated */,
-				3FECBF4A2F341CC5000990D8 /* Yosemite */,
-				3FECBF672F341CC7000990D8 /* POS */,
-				B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */,
-			);
-			path = Classes;
 			sourceTree = "<group>";
 		};
 		B5A8F8A620B84CF600D211DE /* DerivedSources */ = {
@@ -1042,32 +888,7 @@
 				DE158D242F31BC8200161712 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				3F39DDA22F62434A00B68326 /* Authentication */,
-				3F39DE652F6243E900B68326 /* Extensions */,
-				3F39DF262F62443800B68326 /* Tools */,
-				3F39DF712F62444900B68326 /* Environment Keys */,
-				3F39DFF12F62494600B68326 /* ViewModels */,
-				3FDE02832F61245F004CA65D /* ViewRelated */,
-				3FECBE072F341C52000990D8 /* CIAB */,
-				3FECBE0C2F341C55000990D8 /* GoogleAds */,
-				3FECBE142F341C59000990D8 /* Destinations */,
-				3FECBE1B2F341C6D000990D8 /* App Intents */,
-				3FECBE202F341C73000990D8 /* Spotlight */,
-				3FECBE262F341C75000990D8 /* Blaze */,
-				3FECBE2C2F341C78000990D8 /* JustInTimeMessages */,
-				3FECBE392F341C7A000990D8 /* Universal Links */,
-				3FECBE602F341C7C000990D8 /* Model */,
-				3FECBE902F341C7E000990D8 /* ServiceLocator */,
-				3FECBEC72F341C80000990D8 /* Analytics */,
-				3FECBEEE2F341C88000990D8 /* Copiable */,
-				3FECBEFB2F341C8F000990D8 /* Notifications */,
-				3FECBF0C2F341C91000990D8 /* Styles */,
-				3FECBF1A2F341C93000990D8 /* System */,
-				3FECBF3B2F341CA8000990D8 /* View Modifiers */,
-				3FECBF4A2F341CC5000990D8 /* Yosemite */,
-				3FECBF672F341CC7000990D8 /* POS */,
-				646A2C682E9FCD7E003A32A1 /* Routing */,
-				DEDB5D342E7A68950022E5A1 /* Bookings */,
+				3F39E9372F624A4A00B68326 /* Classes */,
 			);
 			name = WooCommerce;
 			packageProductDependencies = (
@@ -1485,8 +1306,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
-				640DA3482E97DE4F00317FB2 /* SceneDelegate.swift in Sources */,
-				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -146,15 +146,20 @@ struct POSBookingDetailView: View {
         }
         .overlay(alignment: .bottom) {
             if showCancelSuccessNotice {
-                POSNoticeView<EmptyView>(
-                    title: Localization.cancelBookingSuccessNotice,
-                    icon: Image(systemName: "checkmark.circle.fill"),
-                    onDismiss: {
-                        dismissCancelSuccessNotice()
-                    }
-                )
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                HStack(spacing: POSSpacing.medium) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.posButtonSymbolXSmall)
+                        .foregroundColor(.green)
+                    Text(Localization.cancelBookingSuccessNotice)
+                        .font(.posBodyMediumRegular())
+                        .foregroundColor(.white)
+                }
+                .padding(.vertical, POSPadding.medium)
+                .padding(.horizontal, POSPadding.large)
+                .background(Color.posOnSurface)
+                .cornerRadius(POSCornerRadiusStyle.medium.value)
+                .posShadow(.medium, cornerRadius: POSCornerRadiusStyle.medium.value)
+                .padding(.bottom, POSPadding.large)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
@@ -344,13 +349,6 @@ struct POSBookingDetailView: View {
             withAnimation {
                 showCancelSuccessNotice = false
             }
-        }
-    }
-
-    private func dismissCancelSuccessNotice() {
-        cancelSuccessTask?.cancel()
-        withAnimation {
-            showCancelSuccessNotice = false
         }
     }
 

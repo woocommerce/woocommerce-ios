@@ -4,7 +4,7 @@ import struct Yosemite.POSBooking
 
 struct POSCancelBookingModalContent: View {
     let booking: POSBooking
-    @Binding var cancelModalState: CancelBookingModalState?
+    @Binding var showCancelModal: Bool
     let onSuccess: () -> Void
 
     @Environment(POSBookingsModel.self) private var bookingsModel
@@ -21,7 +21,7 @@ struct POSCancelBookingModalContent: View {
             customerName: booking.customerName,
             isProcessing: isProcessing,
             errorMessage: errorMessage,
-            onClose: { cancelModalState = nil },
+            onClose: { showCancelModal = false },
             onConfirm: {
                 isProcessing = true
                 errorMessage = nil
@@ -29,7 +29,7 @@ struct POSCancelBookingModalContent: View {
                     await performCancelBooking()
                 }
             },
-            onBack: { cancelModalState = nil }
+            onBack: { showCancelModal = false }
         )
     }
 

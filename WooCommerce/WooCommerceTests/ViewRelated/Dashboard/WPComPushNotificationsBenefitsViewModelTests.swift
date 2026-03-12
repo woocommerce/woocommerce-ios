@@ -244,7 +244,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         let viewModel = makeViewModel(jetpackConnectionService: connectionService,
                                       pluginVersionChecker: checker,
                                       analytics: analytics)
-        await viewModel.determineSetupVariant()
+        await viewModel.determineSetupVariant() // Precondition: set variant to .setup
 
         // When
         viewModel.continueTapped()

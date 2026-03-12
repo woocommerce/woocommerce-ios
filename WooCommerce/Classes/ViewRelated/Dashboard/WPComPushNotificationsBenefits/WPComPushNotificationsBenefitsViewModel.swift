@@ -247,7 +247,7 @@ extension WPComPushNotificationsBenefitsViewModel {
         )
 
         static let setupTitle = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsViewModel.setupTitle",
+            "wpcomPushNotificationsBenefitsViewModel.updatePluginTitle",
             value: "Get push notifications for your store",
             comment: "Title of the Push Notifications Benefits View when the site is already connected"
         )

@@ -139,7 +139,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
         var frame = containerView.frame
         let y: CGFloat
-        if currentPosition == .expanded {
+        if currentPosition != .collapsed {
             y = max(collapsedYPosition - containerView.safeAreaInsets.bottom, containerView.safeAreaInsets.top)
         } else {
             y = collapsedYPosition
@@ -187,7 +187,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
     /// Animates between the drawer positions
     /// - Parameter position: The position to animate to
-    public func transition(to position: DrawerPosition, animated: Bool = true) {
+    public func transition(to position: DrawerPosition) {
         currentPosition = position
 
         if position == .closed {
@@ -211,7 +211,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
             margin = 0
         }
 
-        setTopMargin(margin, animated: animated)
+        setTopMargin(margin)
     }
 
     @objc func dismiss() {

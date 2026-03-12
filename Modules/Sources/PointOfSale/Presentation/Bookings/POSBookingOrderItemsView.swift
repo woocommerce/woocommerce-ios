@@ -7,6 +7,7 @@ import struct Yosemite.OrderItemAttribute
 /// Mirrors the cart panel layout used in the regular POS checkout flow.
 struct POSBookingOrderItemsView: View {
     let booking: POSBooking
+    let bookingsByOrderItemID: [Int64: POSBooking]
 
     private var lineItems: [POSOrderItem] {
         booking.order.lineItems
@@ -36,7 +37,10 @@ struct POSBookingOrderItemsView: View {
                 ScrollView {
                     VStack(spacing: Constants.cartItemSpacing) {
                         ForEach(lineItems, id: \.itemID) { item in
-                            BookingOrderItemRowView(item: item)
+                            BookingOrderItemRowView(
+                                item: item,
+                                booking: bookingsByOrderItemID[item.itemID]
+                            )
                         }
                     }
                     .padding(.bottom, Constants.cartLastItemBottomPadding)
@@ -59,8 +63,10 @@ struct POSBookingOrderItemsView: View {
 // MARK: - Item Row
 
 /// A single read-only order item row, styled to match the cart's `ItemRowView`.
+/// Shows the booking date/time range when the item corresponds to a booking.
 private struct BookingOrderItemRowView: View {
     let item: POSOrderItem
+    let booking: POSBooking?
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -88,6 +94,12 @@ private struct BookingOrderItemRowView: View {
                     .foregroundColor(PointOfSaleItemListCardConstants.titleColor)
                     .font(Constants.itemTitleFont)
 
+                if let timeRange = bookingTimeRange {
+                    Text(timeRange)
+                        .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
+                        .font(Constants.itemSubtitleFont)
+                }
+
                 if !item.attributes.isEmpty {
                     Text(item.attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", "))
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
@@ -109,6 +121,11 @@ private struct BookingOrderItemRowView: View {
         .posItemCardBorderStyles()
     }
 
+    private var bookingTimeRange: String? {
+        guard let booking else { return nil }
+        return POSBookingDateFormatter.formattedTimeRange(for: booking)
+    }
+
     private var priceLabel: String {
         let quantity = item.quantity.intValue
         if quantity > 1 {
@@ -118,7 +135,8 @@ private struct BookingOrderItemRowView: View {
     }
 
     private var accessibilityLabel: String {
-        [item.name, priceLabel]
+        [item.name, bookingTimeRange, priceLabel]
+            .compactMap { $0 }
             .joined(separator: ", ")
     }
 }
@@ -178,7 +196,8 @@ private enum Localization {
 #if DEBUG
 #Preview("Booking Order Items") {
     POSBookingOrderItemsView(
-        booking: POSPreviewHelpers.makePreviewUnpaidBooking()
+        booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
+        bookingsByOrderItemID: [:]
     )
     .frame(width: 400)
 }

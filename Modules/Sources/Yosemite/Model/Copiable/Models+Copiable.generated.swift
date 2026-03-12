@@ -70,6 +70,7 @@ extension Yosemite.POSBooking {
         status: CopiableProp<BookingStatus> = .copy,
         attendanceStatus: CopiableProp<BookingAttendanceStatus> = .copy,
         orderID: NullableCopiableProp<Int64> = .copy,
+        orderItemID: NullableCopiableProp<Int64> = .copy,
         resourceName: NullableCopiableProp<String> = .copy,
         resourceImageURL: NullableCopiableProp<String> = .copy,
         customerEmail: NullableCopiableProp<String> = .copy,
@@ -93,6 +94,7 @@ extension Yosemite.POSBooking {
         let status = status ?? self.status
         let attendanceStatus = attendanceStatus ?? self.attendanceStatus
         let orderID = orderID ?? self.orderID
+        let orderItemID = orderItemID ?? self.orderItemID
         let resourceName = resourceName ?? self.resourceName
         let resourceImageURL = resourceImageURL ?? self.resourceImageURL
         let customerEmail = customerEmail ?? self.customerEmail
@@ -117,6 +119,7 @@ extension Yosemite.POSBooking {
             status: status,
             attendanceStatus: attendanceStatus,
             orderID: orderID,
+            orderItemID: orderItemID,
             resourceName: resourceName,
             resourceImageURL: resourceImageURL,
             customerEmail: customerEmail,

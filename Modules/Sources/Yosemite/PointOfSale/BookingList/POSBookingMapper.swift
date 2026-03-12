@@ -32,6 +32,7 @@ struct POSBookingMapper {
         let formattedAmount = currencyFormatter.formatAmount(booking.cost, with: booking.currency) ?? booking.cost
 
         let orderID: Int64? = booking.orderID != 0 ? booking.orderID : nil
+        let orderItemID: Int64? = booking.orderItemID != 0 ? booking.orderItemID : nil
 
         let formattedBillingAddress: String? = {
             guard let billingAddress else { return nil }
@@ -69,6 +70,7 @@ struct POSBookingMapper {
             status: booking.bookingStatus,
             attendanceStatus: booking.attendanceStatus,
             orderID: orderID,
+            orderItemID: orderItemID,
             resourceName: resource?.name,
             resourceImageURL: resource?.imageURL,
             customerEmail: billingAddress?.email?.nilIfEmpty,

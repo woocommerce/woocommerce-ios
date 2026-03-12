@@ -22,6 +22,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
     public let status: BookingStatus
     public let attendanceStatus: BookingAttendanceStatus
     public let orderID: Int64?
+    public let orderItemID: Int64?
     public let resourceName: String?
     public let resourceImageURL: String?
     public let customerEmail: String?
@@ -45,6 +46,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
                 status: BookingStatus,
                 attendanceStatus: BookingAttendanceStatus,
                 orderID: Int64?,
+                orderItemID: Int64? = nil,
                 resourceName: String?,
                 resourceImageURL: String? = nil,
                 customerEmail: String? = nil,
@@ -67,6 +69,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
         self.status = status
         self.attendanceStatus = attendanceStatus
         self.orderID = orderID
+        self.orderItemID = orderItemID
         self.resourceName = resourceName
         self.resourceImageURL = resourceImageURL
         self.customerEmail = customerEmail

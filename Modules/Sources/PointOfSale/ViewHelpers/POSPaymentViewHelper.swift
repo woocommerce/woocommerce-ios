@@ -38,14 +38,7 @@ struct POSPaymentViewHelper {
                case .idle = paymentState.card {
                 return true
             }
-            switch paymentState.card {
-            case .validatingOrderError,
-                    .paymentIntentCreationError,
-                    .acceptingCard:
-                return true
-            default:
-                return false
-            }
+            return paymentState.allowsCashPayment && paymentState.card != .idle
         }
     }
 

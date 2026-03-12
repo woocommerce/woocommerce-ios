@@ -745,7 +745,7 @@ private extension AuthenticationManager {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        guard !site.isWPCom else {
+        guard !site.isWPCom && !site.isCommerceGarden else {
             // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
         }

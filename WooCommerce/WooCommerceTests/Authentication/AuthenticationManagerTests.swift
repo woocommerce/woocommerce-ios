@@ -495,6 +495,25 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
 
+    func test_troubleshootSite_displays_account_mismatch_error_if_site_is_commerce_garden() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, isCommerceGarden: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty &&
+            navigationController.topViewController != nil
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULAccountMismatchViewController)
+    }
+
     func test_troubleshootSite_tracks_site_discovery_event() throws {
         // Given
         let navigationController = UINavigationController()

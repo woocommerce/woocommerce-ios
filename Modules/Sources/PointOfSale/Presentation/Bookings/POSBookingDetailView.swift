@@ -331,10 +331,13 @@ struct POSBookingDetailView: View {
 
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
-        bookingsByID = bookingsModel.bookingsByID()
-        paymentModel = bookingsModel.makePaymentModel(
-            for: booking, onDismiss: dismissPayment, analytics: analytics)
-        showPaymentView = true
+        Task { @MainActor in
+            let bookingIDs = booking.order.lineItems.compactMap(\.bookingID)
+            bookingsByID = await bookingsModel.bookingsByID(for: bookingIDs)
+            paymentModel = bookingsModel.makePaymentModel(
+                for: booking, onDismiss: dismissPayment, analytics: analytics)
+            showPaymentView = true
+        }
     }
 
     private var noteButtonTitle: String {

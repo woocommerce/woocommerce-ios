@@ -40,16 +40,13 @@ import class Yosemite.PaymentCaptureCelebration
         }
     }
 
-    /// Returns all loaded bookings keyed by booking ID.
+    /// Returns bookings keyed by ID for the given booking IDs.
+    /// Checks already-loaded bookings first and fetches any missing ones from the service.
     /// Used to show per-item booking dates in the payment view by matching
     /// each order item's `bookingID` (from `_booking_id` meta_data) to a booking.
     @MainActor
-    func bookingsByID() -> [Int64: POSBooking] {
-        var result: [Int64: POSBooking] = [:]
-        for booking in bookingsController.bookingsViewState.bookings {
-            result[booking.id] = booking
-        }
-        return result
+    func bookingsByID(for bookingIDs: [Int64]) async -> [Int64: POSBooking] {
+        await bookingsController.fetchBookingsByIDs(bookingIDs)
     }
 
     @MainActor

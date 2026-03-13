@@ -611,7 +611,7 @@ extension WooAnalyticsEvent {
         static func refundConfirmTapped(refundType: String, hasReason: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleRefundConfirmTapped, properties: [
                 Key.refundType: refundType,
-                Key.hasReason: "\(hasReason)"
+                Key.hasReason: hasReason
             ])
         }
 

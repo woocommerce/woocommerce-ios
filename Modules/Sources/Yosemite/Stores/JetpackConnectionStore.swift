@@ -16,9 +16,9 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         super.init(dispatcher: dispatcher)
     }
 
-    public convenience init(dispatcher: Dispatcher, network: Network, siteURL: String) {
+    public convenience init(dispatcher: Dispatcher, network: Network, siteURL: String, siteID: Int64) {
         self.init(dispatcher: dispatcher)
-        updateRemote(with: siteURL, network: network)
+        updateRemote(with: siteURL, siteID: siteID, network: network)
     }
 
     public override func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -33,8 +33,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
             return
         }
         switch action {
-        case .authenticate(let siteURL, let network):
-            updateRemote(with: siteURL, network: network)
+        case .authenticate(let siteURL, let siteID, let network):
+            updateRemote(with: siteURL, siteID: siteID, network: network)
         case .retrieveJetpackPluginDetails(let completion):
             retrieveJetpackPluginDetails(completion: completion)
         case .installJetpackPlugin(let completion):
@@ -59,8 +59,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
 }
 
 private extension JetpackConnectionStore {
-    func updateRemote(with siteURL: String, network: Network) {
-        self.jetpackConnectionRemote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+    func updateRemote(with siteURL: String, siteID: Int64, network: Network) {
+        self.jetpackConnectionRemote = JetpackConnectionRemote(siteURL: siteURL, siteID: siteID, network: network)
     }
 
     func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {

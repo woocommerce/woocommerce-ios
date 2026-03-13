@@ -26,7 +26,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -52,7 +52,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -74,7 +74,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -96,7 +96,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -118,7 +118,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -140,7 +140,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -162,7 +162,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-url")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -187,7 +187,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -209,7 +209,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -235,7 +235,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -292,7 +292,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -316,7 +316,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -338,7 +338,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-provision")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When
@@ -364,7 +364,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
-        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: 0, network: network)
         store.onAction(setupAction)
 
         // When

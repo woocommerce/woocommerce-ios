@@ -5,7 +5,7 @@ import protocol Networking.Network
 public enum JetpackConnectionAction: Action {
     /// Updates the store remote with the input siteURL and network to handle cookie authentication.
     /// Call this before triggering any other case in this action.
-    case authenticate(siteURL: String, network: Network)
+    case authenticate(siteURL: String, siteID: Int64, network: Network)
     /// Retrieves details about Jetpack plugin for the current site.
     case retrieveJetpackPluginDetails(completion: (Result<SitePlugin, Error>) -> Void)
     /// Installs Jetpack the plugin for the current site.

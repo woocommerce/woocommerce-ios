@@ -20,6 +20,7 @@ final class JetpackSetupCoordinator {
     private var jetpackConnectedEmail: String?
     private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
+    private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
 
@@ -57,6 +58,7 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.jetpackConnectionService = JetpackConnectionService(stores: stores)
     }
 
     /// Single entry point for starting Jetpack setup.
@@ -124,35 +126,31 @@ private extension JetpackSetupCoordinator {
     func startSetupDirectly() async {
         // If the user already has WPCom credentials (e.g. JCP site logged in with WPCom),
         // skip the login flow and go directly to setup steps.
-        if case let .wpcom(username, authToken, _) = stores.sessionManager.defaultCredentials {
-            showSetupSteps(username: username, authToken: authToken)
-            return
-        }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.present(progressView, animated: true)
-        await checkConnectionAndAuthenticate(dismissing: progressView)
+        await checkConnectionAndAuthenticateIfNeeded(dismissing: progressView)
     }
 
     @MainActor
     func handleBenefitModalCTA() async {
-        // If the user already has WPCom credentials (e.g. JCP site logged in with WPCom),
-        // skip the login flow and go directly to setup steps.
-        if case let .wpcom(username, authToken, _) = stores.sessionManager.defaultCredentials {
-            // Dismiss the benefit modal before showing setup steps.
-            if rootViewController.presentedViewController != nil {
-                await rootViewController.dismiss(animated: true)
-            }
-            showSetupSteps(username: username, authToken: authToken)
-            return
-        }
-        await checkConnectionAndAuthenticate()
+        await checkConnectionAndAuthenticateIfNeeded(dismissing: rootViewController.presentedViewController)
     }
 
     /// Checks Jetpack connection state, tracks analytics, and starts authentication.
     /// Optionally dismisses a presented view controller (e.g. a loading indicator) on completion.
     ///
     @MainActor
-    func checkConnectionAndAuthenticate(dismissing viewController: UIViewController? = nil) async {
+    func checkConnectionAndAuthenticateIfNeeded(dismissing viewController: UIViewController? = nil) async {
+        /// If user authenticated with WPCom to JCP site, skip checking connection state
+        if let credentials = stores.sessionManager.defaultCredentials,
+           case let .wpcom(username, authToken, _) = credentials {
+            let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, siteID: site.siteID, network: network))
+            requiresConnectionOnly = false
+            showSetupSteps(username: username, authToken: authToken)
+            return
+        }
+
         do {
             try await checkJetpackConnectionState()
             await viewController?.dismiss(animated: true)
@@ -182,7 +180,7 @@ private extension JetpackSetupCoordinator {
     ///
     func checkJetpackConnectionState() async throws {
         do {
-            let user = try await fetchJetpackConnectionData().currentUser
+            let user = try await jetpackConnectionService.fetchConnectionData().currentUser
             jetpackConnectedEmail = user.wpcomUser?.email
         } catch NetworkError.notFound {
             /// 404 error means Jetpack is not installed or activated yet.
@@ -277,21 +275,31 @@ private extension JetpackSetupCoordinator {
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         analytics.track(.jetpackSetupCompleted)
-        let previousCredentials = stores.sessionManager.defaultCredentials
-        stores.authenticate(credentials: credentials)
 
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
+
+        let previousCredentials = stores.sessionManager.defaultCredentials
 
         let resultHandler: (Result<Site, Error>) -> Void = { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let site):
-                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
-                self.stores.updateDefaultStore(storeID: site.siteID)
-                self.stores.synchronizeEntities { [weak self] in
-                    self?.stores.updateDefaultStore(site)
-                    self?.rootViewController.dismiss(animated: true, completion: {
+                stores.updateDefaultStore(storeID: site.siteID) // this triggers reloading Dashboard and Menu
+
+                if case .wpcom = previousCredentials {
+                    stores.updateDefaultStore(site)
+                    dismiss()
+                } else {
+                    stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
+                    stores.synchronizeEntities { [weak self] in
+                        self?.stores.updateDefaultStore(site)
+                        dismiss()
+                    }
+                }
+
+                func dismiss() {
+                    rootViewController.dismiss(animated: true, completion: { [weak self] in
                         self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()
                         progressView.dismiss(animated: true)
@@ -317,6 +325,7 @@ private extension JetpackSetupCoordinator {
         if site.isJetpackCPConnected {
             stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
         } else {
+            stores.authenticate(credentials: credentials)
             stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
         }
     }
@@ -344,16 +353,6 @@ private extension JetpackSetupCoordinator {
                 continuation.resume(returning: account?.username)
             }
             stores.dispatch(accountAction)
-        }
-    }
-
-    @MainActor
-    func fetchJetpackConnectionData() async throws -> JetpackConnectionData {
-        try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
-                continuation.resume(with: result)
-            }
-            stores.dispatch(action)
         }
     }
 

@@ -7,7 +7,11 @@ struct JetpackConnectionDataMapper: Mapper {
 
     func map(response: Data) throws -> JetpackConnectionData {
         let decoder = JSONDecoder()
-        return try decoder.decode(JetpackConnectionData.self, from: response)
+        if hasDataEnvelope(in: response) {
+            return try decoder.decode(JetpackConnectionDataEnvelope.self, from: response).data
+        } else {
+            return try decoder.decode(JetpackConnectionData.self, from: response)
+        }
     }
 }
 
@@ -57,4 +61,12 @@ public struct JetpackConnectionData: Decodable, GeneratedFakeable, GeneratedCopi
         case isRegistered
         case connectionOwner
     }
+}
+
+/// JetpackConnectionDataEnvelope Disposable Entity:
+/// The endpoint returns the document within a `data` key when tunneled through WPCom.
+/// This entity allows us to parse the returned model with JSONDecoder.
+///
+private struct JetpackConnectionDataEnvelope: Decodable {
+    let data: JetpackConnectionData
 }

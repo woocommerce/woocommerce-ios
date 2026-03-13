@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 import enum Alamofire.AFError
 import enum Networking.NetworkError
+import enum NetworkingCore.DotcomError
 import protocol WooFoundation.Analytics
 
 /// View model for `JetpackSetupView`.
@@ -458,6 +459,12 @@ fileprivate extension Error {
             return code
         } else if let error = self as? AFError, let code = error.responseCode {
             return code
+        } else if case let .unknown(_, _, data) = self as? DotcomError {
+            if let status = data?["status"]?.description {
+                return Int(status)
+            } else {
+                return (self as NSError).code
+            }
         } else {
             return (self as NSError).code
         }

@@ -4,17 +4,25 @@
 require 'open-uri'
 require 'tmpdir'
 
-# Install txcontext gem dynamically (CI uses a minimal Gemfile that doesn't include it)
+# Install txcontext gem dynamically (CI uses a minimal Gemfile that doesn't include it).
+# Bundler restricts GEM_PATH to the bundle dir, so we must install outside its env
+# and then manually wire up the load paths.
 txcontext_dir = Dir.mktmpdir('txcontext')
-system("git clone --depth 1 https://github.com/iangmaia/txcontext.git #{txcontext_dir}")
-Dir.chdir(txcontext_dir) do
-  system('gem build txcontext.gemspec -o txcontext.gem && gem install --no-document txcontext.gem')
+Bundler.with_unbundled_env do
+  system("git clone --depth 1 https://github.com/iangmaia/txcontext.git #{txcontext_dir}")
+  Dir.chdir(txcontext_dir) do
+    system('gem build txcontext.gemspec -o txcontext.gem && gem install --no-document txcontext.gem')
+  end
 end
 
-# Bundler isolates the load path — refresh gem paths and inject newly installed gems
+# Expand GEM_PATH to include the system gem dir so newly installed gems are visible
+ENV['GEM_PATH'] = [Gem.default_dir, Gem.user_dir, ENV['GEM_PATH']].compact.join(':')
 Gem.clear_paths
-Gem::Specification.each do |spec|
-  spec.load_paths.each { |p| $LOAD_PATH.unshift(p) unless $LOAD_PATH.include?(p) }
+# Add all gem lib dirs to $LOAD_PATH (filesystem scan — works regardless of Bundler state)
+Gem.path.each do |gem_dir|
+  Dir.glob("#{gem_dir}/gems/*/lib").each do |lib_path|
+    $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
+  end
 end
 require 'txcontext'
 

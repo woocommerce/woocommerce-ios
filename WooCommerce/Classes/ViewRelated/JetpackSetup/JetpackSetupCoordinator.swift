@@ -276,10 +276,13 @@ private extension JetpackSetupCoordinator {
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         analytics.track(.jetpackSetupCompleted)
 
+        let previousCredentials = stores.sessionManager.defaultCredentials
+        if previousCredentials != credentials {
+            stores.authenticate(credentials: credentials)
+        }
+
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
-
-        let previousCredentials = stores.sessionManager.defaultCredentials
 
         let resultHandler: (Result<Site, Error>) -> Void = { [weak self] result in
             guard let self else { return }
@@ -325,7 +328,6 @@ private extension JetpackSetupCoordinator {
         if site.isJetpackCPConnected {
             stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
         } else {
-            stores.authenticate(credentials: credentials)
             stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
         }
     }

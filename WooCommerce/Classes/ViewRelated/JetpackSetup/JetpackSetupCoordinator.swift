@@ -138,6 +138,10 @@ private extension JetpackSetupCoordinator {
         // If the user already has WPCom credentials (e.g. JCP site logged in with WPCom),
         // skip the login flow and go directly to setup steps.
         if case let .wpcom(username, authToken, _) = stores.sessionManager.defaultCredentials {
+            // Dismiss the benefit modal before showing setup steps.
+            if rootViewController.presentedViewController != nil {
+                await rootViewController.dismiss(animated: true)
+            }
             showSetupSteps(username: username, authToken: authToken)
             return
         }

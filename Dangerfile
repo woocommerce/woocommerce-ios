@@ -16,7 +16,7 @@ Bundler.with_unbundled_env do
 end
 
 # Expand GEM_PATH to include the system gem dir so newly installed gems are visible
-ENV['GEM_PATH'] = [Gem.default_dir, Gem.user_dir, ENV['GEM_PATH']].compact.join(':')
+ENV['GEM_PATH'] = [Gem.default_dir, Gem.user_dir, ENV.fetch('GEM_PATH', nil)].compact.join(':')
 Gem.clear_paths
 # Add all gem lib dirs to $LOAD_PATH (filesystem scan — works regardless of Bundler state)
 Gem.path.each do |gem_dir|

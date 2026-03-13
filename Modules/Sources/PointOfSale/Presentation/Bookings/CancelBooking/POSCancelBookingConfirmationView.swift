@@ -84,11 +84,12 @@ private extension POSCancelBookingConfirmationView {
         VStack(spacing: POSSpacing.medium) {
             if let errorMessage {
                 Text(errorMessage)
-                    .font(.posBodyMediumRegular())
+                    .font(.posBodyLargeRegular())
                     .foregroundColor(Color.posError)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
                     .padding(.horizontal, POSPadding.xLarge)
+                    .padding(.bottom, POSPadding.large)
             }
 
             Button(Localization.confirmButton, action: onConfirm)

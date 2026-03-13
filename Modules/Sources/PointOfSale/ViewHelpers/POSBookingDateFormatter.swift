@@ -33,6 +33,13 @@ struct POSBookingDateFormatter {
         timeRangeFormatter.string(from: booking.startDate, to: booking.endDate)
     }
 
+    // Example: Date + Time Range (e.g. "Mar 15 · 9:00 AM - 10:00 AM")
+    static func formattedDateAndTimeRange(for booking: POSBooking) -> String {
+        let date = shortDateFormatter.string(from: booking.startDate)
+        let timeRange = timeRangeFormatter.string(from: booking.startDate, to: booking.endDate)
+        return "\(date) · \(timeRange)"
+    }
+
     // Example: Date + Time (e.g. "Jan 15, 2025 at 9:00 AM")
     private static let dateTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()

@@ -123,7 +123,7 @@ private struct BookingOrderItemRowView: View {
 
     private var bookingTimeRange: String? {
         guard let booking else { return nil }
-        return POSBookingDateFormatter.formattedTimeRange(for: booking)
+        return POSBookingDateFormatter.formattedDateAndTimeRange(for: booking)
     }
 
     private var priceLabel: String {

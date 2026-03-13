@@ -564,6 +564,7 @@ private extension SiteAddressViewController {
                                                       isJetpackConnected: false,
                                                       icon: "",
                                                       isWPCom: false,
+                                                      isCommerceGarden: false,
                                                       isWP: true,
                                                       exists: true))
                     return

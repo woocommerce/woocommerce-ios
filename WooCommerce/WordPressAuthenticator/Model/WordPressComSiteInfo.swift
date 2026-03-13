@@ -56,7 +56,7 @@ public class WordPressComSiteInfo {
                 isJetpackConnected: Bool,
                 icon: String,
                 isWPCom: Bool,
-                isCommerceGarden: Bool = false,
+                isCommerceGarden: Bool,
                 isWP: Bool,
                 exists: Bool) {
         self.name = name

@@ -131,7 +131,7 @@ private extension EnhancedCouponListViewController {
         }
 
         let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
-        let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet)
+        let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet, initialPosition: .expanded)
         bottomSheetViewController.show(from: self)
     }
 

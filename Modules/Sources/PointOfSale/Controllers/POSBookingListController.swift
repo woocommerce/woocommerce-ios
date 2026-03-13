@@ -29,7 +29,6 @@ protocol POSBookingListControllerProtocol {
     func updateBooking(bookingID: Int64) async throws
     func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async
     func updateBookingNote(bookingID: Int64, note: String) async throws
-    func fetchBookingsByIDs(_ bookingIDs: [Int64]) async -> [Int64: POSBooking]
 }
 
 protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProtocol {
@@ -183,29 +182,6 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         } catch {
             DDLogError("⛔️ Failed to fetch booking \(bookingID) after optimistic update: \(error)")
         }
-    }
-
-    func fetchBookingsByIDs(_ bookingIDs: [Int64]) async -> [Int64: POSBooking] {
-        let loadedBookings = bookingsViewState.bookings
-        var result: [Int64: POSBooking] = [:]
-
-        // Use already-loaded bookings where available
-        for booking in loadedBookings where bookingIDs.contains(booking.id) {
-            result[booking.id] = booking
-        }
-
-        // Fetch any missing bookings individually
-        let missingIDs = bookingIDs.filter { result[$0] == nil }
-        for id in missingIDs {
-            do {
-                let booking = try await bookingService.fetchBooking(bookingID: id)
-                result[id] = booking
-            } catch {
-                DDLogError("⛔️ Failed to fetch booking \(id) for order items: \(error)")
-            }
-        }
-
-        return result
     }
 
     func selectDate(_ date: Date) async {

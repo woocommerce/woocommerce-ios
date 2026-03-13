@@ -820,13 +820,6 @@ final class POSConfigurablePreviewBookingListController: POSSearchingBookingList
     func updateBooking(bookingID: Int64) async throws {}
     func updateBookingOptimistically(bookingID: Int64, optimisticUpdate: (POSBooking) -> POSBooking) async {}
     func updateBookingNote(bookingID: Int64, note: String) async throws {}
-    func fetchBookingsByIDs(_ bookingIDs: [Int64]) async -> [Int64: POSBooking] {
-        var result: [Int64: POSBooking] = [:]
-        for booking in bookingsViewState.bookings where bookingIDs.contains(booking.id) {
-            result[booking.id] = booking
-        }
-        return result
-    }
     func reset() { selectedDate = Date(); selectedBooking = nil }
     func searchBookings(searchTerm: String) async {}
     func clearSearchBookings() {}

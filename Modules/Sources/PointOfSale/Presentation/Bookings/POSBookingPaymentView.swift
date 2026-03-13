@@ -17,7 +17,7 @@ struct POSBookingPaymentView: View {
                 if !paymentModel.paymentState.shownFullScreen {
                     POSBookingOrderItemsView(
                         booking: booking,
-                        orderItemBookings: bookingsModel.orderItemBookings
+                        orderItemBookings: bookingsModel.loadedBookingsByID
                     )
                     .frame(width: geometry.size.width * Constants.itemsWidth)
                 }

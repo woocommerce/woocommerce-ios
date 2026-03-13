@@ -92,14 +92,6 @@ final class MockPOSBookingListController: POSSearchingBookingListControllerProto
         updateBookingNoteCalledWith = (bookingID, note)
     }
 
-    var fetchBookingsByIDsCalledWith: [Int64]?
-    var fetchBookingsByIDsResult: [Int64: POSBooking] = [:]
-
-    func fetchBookingsByIDs(_ bookingIDs: [Int64]) async -> [Int64: POSBooking] {
-        fetchBookingsByIDsCalledWith = bookingIDs
-        return fetchBookingsByIDsResult
-    }
-
     // MARK: - POSSearchingBookingListControllerProtocol
 
     func searchBookings(searchTerm: String) async {

@@ -329,7 +329,6 @@ struct POSBookingDetailView: View {
 
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
-        bookingsModel.prepareOrderItemBookings(for: booking)
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true

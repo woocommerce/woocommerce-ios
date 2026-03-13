@@ -27,6 +27,7 @@ struct POSBookingsContainerView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.posButtonSymbolXSmall)
                     .foregroundColor(.posSuccess)
+                    .symbolEffect(.bounce, value: bookingsModel.successState)
                 Text(Localization.cancelBookingSuccessNotice)
                     .font(.posBodyMediumRegular())
                     .foregroundColor(.posSurface)

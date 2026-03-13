@@ -30,6 +30,10 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
 
     public let addOns: [OrderItemProductAddOn]
 
+    /// The booking ID associated with this line item, if any.
+    /// Extracted from `_booking_id` in the order item's `meta_data`.
+    public let bookingID: Int64?
+
     public let image: OrderItemProductImage?
 
     /// Item ID of parent `OrderItem`, if any.
@@ -60,6 +64,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                 totalTax: String,
                 attributes: [OrderItemAttribute],
                 addOns: [OrderItemProductAddOn],
+                bookingID: Int64? = nil,
                 image: OrderItemProductImage?,
                 parent: Int64?,
                 bundleConfiguration: [OrderItemBundleItem]) {
@@ -78,6 +83,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
         self.totalTax = totalTax
         self.attributes = attributes
         self.addOns = addOns
+        self.bookingID = bookingID
         self.image = image
         self.parent = parent
         self.bundleConfiguration = bundleConfiguration
@@ -127,6 +133,11 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                                                               forKey: .attributes)
             .first(where: { $0.key == "_pao_ids" })?.value ?? []
 
+        // WooCommerce Bookings stores the booking ID in `_booking_id` as an array of Int64.
+        let bookingID = container.failsafeDecodeIfPresent(lossyList: [OrderItemBookingIDContainer].self,
+                                                          forKey: .attributes)
+            .first(where: { $0.key == "_booking_id" })?.value.first
+
         // Order item product image can be either a string URL or an object with src field
         // Use failsafeDecodeIfPresent with alternative types to handle both formats gracefully
         let image: OrderItemProductImage? = {
@@ -166,6 +177,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
                   totalTax: totalTax,
                   attributes: attributes,
                   addOns: productAddOns,
+                  bookingID: bookingID,
                   image: image,
                   parent: bundledBy ?? compositeParent,
                   bundleConfiguration: [])
@@ -244,6 +256,12 @@ extension OrderItem: Comparable {
 private struct OrderItemProductAddOnContainer: Decodable {
     let key: String
     let value: [OrderItemProductAddOn]
+}
+
+/// Decodes the `_booking_id` meta_data entry, which contains an array of booking IDs.
+private struct OrderItemBookingIDContainer: Decodable {
+    let key: String
+    let value: [Int64]
 }
 
 

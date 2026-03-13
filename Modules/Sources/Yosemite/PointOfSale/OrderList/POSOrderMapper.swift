@@ -89,7 +89,8 @@ struct POSOrderMapper {
             formattedPrice: formattedPrice,
             formattedTotal: formattedTotal,
             imageSrc: orderItem.image?.src,
-            attributes: orderItem.attributes
+            attributes: orderItem.attributes,
+            bookingID: orderItem.bookingID
         )
     }
 

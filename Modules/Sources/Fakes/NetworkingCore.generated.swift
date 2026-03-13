@@ -272,6 +272,7 @@ extension NetworkingCore.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
+            bookingID: .fake(),
             image: .fake(),
             parent: .fake(),
             bundleConfiguration: .fake()

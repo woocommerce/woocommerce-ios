@@ -15,7 +15,7 @@ struct POSBookingDetailView: View {
     @State private var cancelModalState: CancelBookingModalState?
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
-    @State private var bookingsByOrderItemID: [Int64: POSBooking] = [:]
+    @State private var bookingsByID: [Int64: POSBooking] = [:]
     @State private var inlineButtonMinY: CGFloat = .infinity
     @State private var stickyButtonHeight: CGFloat = 0
     @State private var scrollViewHeight: CGFloat = 0
@@ -68,7 +68,7 @@ struct POSBookingDetailView: View {
         .posFullScreenCover(isPresented: $showPaymentView) {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking,
-                                      bookingsByOrderItemID: bookingsByOrderItemID,
+                                      bookingsByID: bookingsByID,
                                       paymentModel: paymentModel,
                                       onDismiss: dismissPayment)
             }
@@ -331,7 +331,7 @@ struct POSBookingDetailView: View {
 
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
-        bookingsByOrderItemID = bookingsModel.bookingsByOrderItemID(for: booking)
+        bookingsByID = bookingsModel.bookingsByID()
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true

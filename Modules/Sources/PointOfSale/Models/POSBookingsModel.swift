@@ -40,16 +40,14 @@ import class Yosemite.PaymentCaptureCelebration
         }
     }
 
-    /// Returns all bookings that share the same order as the given booking,
-    /// keyed by their `orderItemID`. Used to show per-item booking dates in the payment view.
+    /// Returns all loaded bookings keyed by booking ID.
+    /// Used to show per-item booking dates in the payment view by matching
+    /// each order item's `bookingID` (from `_booking_id` meta_data) to a booking.
     @MainActor
-    func bookingsByOrderItemID(for booking: POSBooking) -> [Int64: POSBooking] {
-        guard let orderID = booking.orderID else { return [:] }
+    func bookingsByID() -> [Int64: POSBooking] {
         var result: [Int64: POSBooking] = [:]
-        for sibling in bookingsController.bookingsViewState.bookings where sibling.orderID == orderID {
-            if let itemID = sibling.orderItemID {
-                result[itemID] = sibling
-            }
+        for booking in bookingsController.bookingsViewState.bookings {
+            result[booking.id] = booking
         }
         return result
     }

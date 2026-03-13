@@ -2,6 +2,16 @@
 
 # --- Translation Context Plugin (test) ---
 require 'open-uri'
+require 'tmpdir'
+
+# Install txcontext gem dynamically (CI uses a minimal Gemfile that doesn't include it)
+txcontext_dir = Dir.mktmpdir('txcontext')
+system("git clone --depth 1 https://github.com/iangmaia/txcontext.git #{txcontext_dir}")
+Dir.chdir(txcontext_dir) do
+  system("gem build txcontext.gemspec -o txcontext.gem && gem install --no-document txcontext.gem")
+end
+
+# Import the translation context checker plugin from the dangermattic branch
 branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'
 danger.import_plugin("#{branch_base}/translation_context_checker.rb")
 

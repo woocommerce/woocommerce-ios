@@ -7,7 +7,6 @@ group :screenshots, optional: true do
 end
 
 gem 'danger-dangermattic', '~> 1.2'
-gem 'txcontext', git: 'https://github.com/iangmaia/txcontext.git'
 gem 'dotenv'
 gem 'fastlane', '~> 2.228'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 0.10'

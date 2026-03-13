@@ -166,7 +166,7 @@ struct POSRefundModalContentView: View {
                 },
                 onConfirm: {
                     let refundType = reviewData.isFullRefund ? "full" : "partial"
-                    let hasReason = reviewData.refundReason != nil && !reviewData.refundReason!.isEmpty
+                    let hasReason = reviewData.refundReason?.isEmpty == false
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.refundConfirmTapped(refundType: refundType, hasReason: hasReason))
                     modalState = .processing(reviewData)
                     Task { @MainActor in

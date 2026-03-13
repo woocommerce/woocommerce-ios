@@ -371,7 +371,7 @@ private extension POSBookingListController {
         let referencedIDs = Set(loadedBookings.flatMap { $0.order.lineItems.compactMap(\.bookingID) })
         let missingIDs = referencedIDs.subtracting(loadedIDs).subtracting(orderItemBookings.keys)
 
-        guard missingIDs.isNotEmpty else { return }
+        guard !missingIDs.isEmpty else { return }
 
         for id in missingIDs {
             do {

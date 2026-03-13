@@ -797,6 +797,7 @@ extension POSPreviewHelpers {
 
 final class POSConfigurablePreviewBookingListController: POSSearchingBookingListControllerProtocol {
     let bookingsViewState: POSBookingListState
+    var orderItemBookings: [Int64: POSBooking] = [:]
     var selectedBooking: POSBooking?
     var selectedDate: Date = Date()
 

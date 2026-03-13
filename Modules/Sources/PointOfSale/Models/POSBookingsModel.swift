@@ -40,11 +40,15 @@ import class Yosemite.PaymentCaptureCelebration
         }
     }
 
-    /// All loaded bookings keyed by ID, derived from the current bookings list.
-    /// Used to resolve per-item booking dates in payment views via `_booking_id` meta_data.
+    /// All known bookings keyed by ID — combines the day's loaded list with any
+    /// sibling bookings fetched from order line item references during list load.
     @MainActor
     var loadedBookingsByID: [Int64: POSBooking] {
-        Dictionary(uniqueKeysWithValues: bookingsController.bookingsViewState.bookings.map { ($0.id, $0) })
+        var result = bookingsController.orderItemBookings
+        for booking in bookingsController.bookingsViewState.bookings {
+            result[booking.id] = booking
+        }
+        return result
     }
 
     @MainActor

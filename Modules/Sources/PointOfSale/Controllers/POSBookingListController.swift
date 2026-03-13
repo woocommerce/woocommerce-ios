@@ -13,6 +13,9 @@ import enum Yosemite.BookingStatus
 
 protocol POSBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState { get }
+    /// Bookings referenced by order line items (via `_booking_id` meta_data) that aren't
+    /// in the current day's loaded list. Fetched as part of the main list load.
+    var orderItemBookings: [Int64: POSBooking] { get }
     var selectedBooking: POSBooking? { get }
     var selectedDate: Date { get }
     func syncBookings()
@@ -39,6 +42,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
 @MainActor
 @Observable final class POSBookingListController: POSSearchingBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState
+    private(set) var orderItemBookings: [Int64: POSBooking] = [:]
     private(set) var selectedDate: Date
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSBookingListFetchStrategy
@@ -137,6 +141,7 @@ protocol POSSearchingBookingListControllerProtocol: POSBookingListControllerProt
         selectedBooking = nil
         activeSearchTerm = nil
         bookingsViewState = .loading([])
+        orderItemBookings = [:]
         fetchStrategy = bookingListFetchStrategyFactory.defaultStrategy(filters: nil)
         strategyPaginationTracker.removeAll()
     }
@@ -352,9 +357,29 @@ private extension POSBookingListController {
                 selectedBooking = updatedSelectedBooking
             }
 
+            await fetchMissingOrderItemBookings(from: allBookings)
+
             return pagedBookings.hasMorePages
         } catch POSBookingServiceError.requestCancelled {
             return true
+        }
+    }
+
+    /// Fetches any bookings referenced by order line items that aren't already in the loaded list.
+    func fetchMissingOrderItemBookings(from loadedBookings: [POSBooking]) async {
+        let loadedIDs = Set(loadedBookings.map(\.id))
+        let referencedIDs = Set(loadedBookings.flatMap { $0.order.lineItems.compactMap(\.bookingID) })
+        let missingIDs = referencedIDs.subtracting(loadedIDs).subtracting(orderItemBookings.keys)
+
+        guard missingIDs.isNotEmpty else { return }
+
+        for id in missingIDs {
+            do {
+                let booking = try await bookingService.fetchBooking(bookingID: id)
+                orderItemBookings[id] = booking
+            } catch {
+                DDLogError("⛔️ Failed to fetch booking \(id) for order items: \(error)")
+            }
         }
     }
 

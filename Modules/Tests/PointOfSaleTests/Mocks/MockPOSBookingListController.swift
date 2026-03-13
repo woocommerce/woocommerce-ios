@@ -8,6 +8,7 @@ import enum Yosemite.BookingAttendanceStatus
 @MainActor
 final class MockPOSBookingListController: POSSearchingBookingListControllerProtocol {
     var bookingsViewState: POSBookingListState = .loading([])
+    var orderItemBookings: [Int64: POSBooking] = [:]
     var selectedBooking: POSBooking?
     var selectedDate: Date = Date()
 

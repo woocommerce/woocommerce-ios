@@ -1,5 +1,17 @@
 # frozen_string_literal: true
 
+# --- Translation Context Plugin (test) ---
+require 'open-uri'
+branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'
+danger.import_plugin("#{branch_base}/translation_context_checker.rb")
+
+translation_context_checker.check_context_suggestions(
+  translations: 'WooCommerce/Resources/en.lproj/Localizable.strings',
+  source_paths: ['WooCommerce/Classes/'],
+  report_type: :warning
+)
+# --- End Translation Context Plugin ---
+
 github.dismiss_out_of_range_messages
 
 # `files: []` forces rubocop to scan all files, not just the ones modified in the PR

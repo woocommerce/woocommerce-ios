@@ -453,9 +453,6 @@ private enum NavigationDestination: Hashable {
     case orderDetailRefund
 }
 
-// MARK: - Constants
-
-
 // MARK: - Localization
 
 private enum Localization {
@@ -586,7 +583,6 @@ private enum Localization {
         value: "Cancel Booking",
         comment: "Menu action to cancel a booking from the POS booking detail view."
     )
-
 }
 
 // MARK: - CopyableRow

@@ -121,8 +121,7 @@ private extension JetpackSetupHostingController {
     }
 }
 
-/// View to show the process of Jetpack setup for non-JCP sites.
-/// For JCP sites, look for `JCPJetpackInstallView`.
+/// View to show the process of Jetpack setup.
 ///
 struct JetpackSetupView: View {
     /// To be set by the hosting controller

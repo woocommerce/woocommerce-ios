@@ -122,8 +122,10 @@ private extension JetpackSetupCoordinator {
     ///
     @MainActor
     func startSetupDirectly() async {
-        guard site.isNonJetpackSite else {
-            presentJCPJetpackInstallFlow()
+        // If the user already has WPCom credentials (e.g. JCP site logged in with WPCom),
+        // skip the login flow and go directly to setup steps.
+        if case let .wpcom(username, authToken, _) = stores.sessionManager.defaultCredentials {
+            showSetupSteps(username: username, authToken: authToken)
             return
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
@@ -133,8 +135,11 @@ private extension JetpackSetupCoordinator {
 
     @MainActor
     func handleBenefitModalCTA() async {
-        guard site.isNonJetpackSite else {
-            return presentJCPJetpackInstallFlow()
+        // If the user already has WPCom credentials (e.g. JCP site logged in with WPCom),
+        // skip the login flow and go directly to setup steps.
+        if case let .wpcom(username, authToken, _) = stores.sessionManager.defaultCredentials {
+            showSetupSteps(username: username, authToken: authToken)
+            return
         }
         await checkConnectionAndAuthenticate()
     }
@@ -165,26 +170,6 @@ private extension JetpackSetupCoordinator {
             DDLogError("⛔️ Jetpack status fetched error: \(error)")
             analytics.track(.jetpackSetupConnectionCheckFailed, withError: error)
             showAlert(message: Localization.errorCheckingJetpack)
-        }
-    }
-
-    /// Navigates to the Jetpack installation flow for JCP sites.
-    /// Dismisses any currently presented view controller first, then presents the install flow.
-    func presentJCPJetpackInstallFlow() {
-        let presentInstallFlow = { [weak self] in
-            guard let self else { return }
-            let installController = JCPJetpackInstallHostingController(siteID: self.site.siteID,
-                                                                       siteURL: self.site.url,
-                                                                       siteAdminURL: self.site.adminURL)
-            installController.setDismissAction { [weak self] in
-                self?.rootViewController.dismiss(animated: true, completion: nil)
-            }
-            self.rootViewController.present(installController, animated: true, completion: nil)
-        }
-        if rootViewController.presentedViewController != nil {
-            rootViewController.dismiss(animated: true, completion: presentInstallFlow)
-        } else {
-            presentInstallFlow()
         }
     }
 

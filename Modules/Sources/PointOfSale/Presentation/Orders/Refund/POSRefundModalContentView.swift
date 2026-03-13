@@ -1,5 +1,6 @@
 import CocoaLumberjackSwift
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 import struct Yosemite.POSOrder
 
 // MARK: - Refund Modal State
@@ -32,6 +33,20 @@ enum RefundModalState: Identifiable, Equatable {
         case .error: return "error"
         }
     }
+
+    /// Returns the analytics step for abort tracking
+    var abortStep: WooAnalyticsEvent.PointOfSale.RefundStep? {
+        switch self {
+        case .itemSelection:
+            return .selectItems
+        case .review, .reasonInput:
+            return .reviewRefund
+        case .confirmation:
+            return .confirmRefund
+        default:
+            return nil
+        }
+    }
 }
 
 // MARK: - Error Strings
@@ -51,6 +66,7 @@ struct POSRefundModalContentView: View {
     let state: RefundModalState
     @Binding var modalState: RefundModalState?
     @Environment(POSOrderListModel.self) private var orderListModel
+    @Environment(\.posAnalytics) private var analytics
 
     /// Dismisses the modal directly, bypassing the `onChange(of:)` chain in `POSModalViewModifier`
     /// which can fail to fire when the view is inside a pushed navigation destination.
@@ -104,7 +120,9 @@ struct POSRefundModalContentView: View {
         case .itemSelection:
             if showsItemSelection {
                 POSRefundItemsSelectionView(
-                    onClose: { dismissModal?() },
+                    onClose: {
+                        dismissModal?()
+                    },
                     onContinue: { navigateToRefundReview() }
                 )
             } else {
@@ -112,7 +130,9 @@ struct POSRefundModalContentView: View {
             }
         case .review(let reviewData):
             POSRefundReviewView(
-                onClose: { dismissModal?() },
+                onClose: {
+                    dismissModal?()
+                },
                 itemsCount: reviewData.itemsCount,
                 formattedItemsSubtotal: reviewData.formattedItemsSubtotal,
                 formattedTax: reviewData.formattedTax,
@@ -132,15 +152,22 @@ struct POSRefundModalContentView: View {
                     modalState = .review(updated)
                 },
                 onBack: { modalState = .review(reviewData) },
-                onClose: { dismissModal?() }
+                onClose: {
+                    dismissModal?()
+                }
             )
         case .confirmation(let reviewData):
             POSRefundConfirmationView(
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 isProcessing: false,
-                onClose: { dismissModal?() },
+                onClose: {
+                    dismissModal?()
+                },
                 onConfirm: {
+                    let refundType = reviewData.isFullRefund ? "full" : "partial"
+                    let hasReason = reviewData.refundReason?.isEmpty == false
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.refundConfirmTapped(refundType: refundType, hasReason: hasReason))
                     modalState = .processing(reviewData)
                     Task { @MainActor in
                         await processRefund(reviewData: reviewData)
@@ -187,12 +214,15 @@ struct POSRefundModalContentView: View {
 
     @MainActor
     private func processRefund(reviewData: POSRefundReviewData) async {
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
         do {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
             modalState = .success(reviewData)
             onRefundSuccess?()
         } catch {
             DDLogError("⛔️ Failed to process POS refund: \(error)")
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
             onRefundFailure?(error)
             modalState = .error(reviewData)
         }

@@ -153,6 +153,40 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         updateDefaultBackgroundConfiguration(using: state)
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        // Two-pass layout for multiline labels: after the first pass determines
+        // the label's width, set preferredMaxLayoutWidth so the label can compute
+        // the correct intrinsic height for text wrapping, then lay out again.
+        let titleWidth = titleLabel.frame.width
+        let descWidth = descriptionLabel.frame.width
+        if titleLabel.preferredMaxLayoutWidth != titleWidth ||
+            descriptionLabel.preferredMaxLayoutWidth != descWidth {
+            titleLabel.preferredMaxLayoutWidth = titleWidth
+            descriptionLabel.preferredMaxLayoutWidth = descWidth
+            super.layoutSubviews()
+        }
+    }
+
+    override func systemLayoutSizeFitting(
+        _ targetSize: CGSize,
+        withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority,
+        verticalFittingPriority: UILayoutPriority
+    ) -> CGSize {
+        // Lay out at the target width so multiline labels have the correct
+        // preferredMaxLayoutWidth before the table view computes cell height.
+        contentView.bounds.size.width = targetSize.width
+        contentView.setNeedsLayout()
+        contentView.layoutIfNeeded()
+        titleLabel.preferredMaxLayoutWidth = titleLabel.frame.width
+        descriptionLabel.preferredMaxLayoutWidth = descriptionLabel.frame.width
+        return super.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: horizontalFittingPriority,
+            verticalFittingPriority: verticalFittingPriority
+        )
+    }
+
     override func layoutMarginsDidChange() {
         super.layoutMarginsDidChange()
         updateSeparatorInset(layoutMargins: layoutMargins)
@@ -177,6 +211,7 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.textColor = .textSubtle
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
+        descriptionLabel.lineBreakMode = viewModel.numberOfLinesForText == 1 ? .byTruncatingTail : .byWordWrapping
         contentImageView.image = viewModel.image
         contentImageStackView.isHidden = viewModel.image == nil
         if viewModel.showsDisclosureIndicator {

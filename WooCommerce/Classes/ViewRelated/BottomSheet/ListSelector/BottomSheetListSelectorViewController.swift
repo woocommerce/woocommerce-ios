@@ -43,8 +43,35 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         configureTableView()
     }
 
+    private var lastLayoutWidth: CGFloat = 0
+    private var hasDeferredRecalculation = false
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+
+        let currentWidth = view.bounds.width
+
+        // When the view width changes (e.g. formSheet on iPad renders wider
+        // than the nib default), force the table view to recalculate cell
+        // heights so multiline labels size correctly at the new width.
+        if currentWidth != lastLayoutWidth {
+            lastLayoutWidth = currentWidth
+            tableView.performBatchUpdates(nil)
+
+            // Schedule a deferred recalculation after the presentation layout
+            // settles. Cell layout margins may change after the initial layout
+            // (e.g. in formSheet), narrowing labels and requiring different
+            // cell heights for multiline text wrapping.
+            if !hasDeferredRecalculation {
+                hasDeferredRecalculation = true
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.tableView.performBatchUpdates(nil)
+                    self.configurePreferredContentSize()
+                }
+            }
+        }
+
         configurePreferredContentSize()
     }
 

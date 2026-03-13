@@ -357,7 +357,9 @@ private extension POSBookingListController {
                 selectedBooking = updatedSelectedBooking
             }
 
-            await fetchMissingOrderItemBookings(from: allBookings)
+            Task { [weak self] in
+                await self?.fetchMissingOrderItemBookings(from: allBookings)
+            }
 
             return pagedBookings.hasMorePages
         } catch POSBookingServiceError.requestCancelled {

@@ -10,7 +10,8 @@ struct WooAnalyticsEvent_PushNotificationsSetupTests {
         // Given
         let cases: [(WooAnalyticsEvent.WPComPushNotificationsSetup.IntroductionViewState, String)] = [
             (.notConnected, "not_connected"),
-            (.updateRequired, "update_required")
+            (.updateRequired, "update_required"),
+            (.connected, "connected")
         ]
 
         for (state, expected) in cases {

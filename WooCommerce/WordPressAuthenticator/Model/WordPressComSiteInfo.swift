@@ -36,6 +36,10 @@ public class WordPressComSiteInfo {
     ///
     public let isWPCom: Bool
 
+    /// Indicates whether the site is a Commerce Garden (CIAB) site, or not.
+    ///
+    public let isCommerceGarden: Bool
+
     /// Inidcates wheter the site is WordPress, or not.
     ///
     public let isWP: Bool
@@ -44,7 +48,17 @@ public class WordPressComSiteInfo {
     ///
     public let exists: Bool
 
-    public init(name: String, tagline: String, url: String, hasJetpack: Bool, isJetpackActive: Bool, isJetpackConnected: Bool, icon: String, isWPCom: Bool, isWP: Bool, exists: Bool) {
+    public init(name: String,
+                tagline: String,
+                url: String,
+                hasJetpack: Bool,
+                isJetpackActive: Bool,
+                isJetpackConnected: Bool,
+                icon: String,
+                isWPCom: Bool,
+                isCommerceGarden: Bool,
+                isWP: Bool,
+                exists: Bool) {
         self.name = name
         self.tagline = tagline
         self.url = url
@@ -53,6 +67,7 @@ public class WordPressComSiteInfo {
         self.isJetpackConnected = isJetpackConnected
         self.icon = icon
         self.isWPCom = isWPCom
+        self.isCommerceGarden = isCommerceGarden
         self.isWP = isWP
         self.exists = exists
     }
@@ -68,6 +83,7 @@ public class WordPressComSiteInfo {
         isJetpackConnected  = remote["isJetpackConnected"] as? Bool     ?? false
         icon                = remote["icon.img"] as? String             ?? ""
         isWPCom             = remote["isWordPressDotCom"] as? Bool      ?? false
+        isCommerceGarden    = remote["isCommerceGarden"] as? Bool      ?? false
         isWP                = remote["isWordPress"] as? Bool            ?? false
         exists              = remote["exists"] as? Bool                 ?? false
     }

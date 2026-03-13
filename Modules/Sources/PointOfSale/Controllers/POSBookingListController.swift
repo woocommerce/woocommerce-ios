@@ -350,14 +350,14 @@ private extension POSBookingListController {
             }
             let allBookings = appendToExistingBookings ? existingBookings + uniqueNewBookings : uniqueNewBookings
 
+            await fetchMissingOrderItemBookings(from: allBookings)
+
             bookingsViewState = allBookings.isEmpty ? .empty : .loaded(allBookings, hasMoreItems: pagedBookings.hasMorePages)
 
             if let selectedBookingID = selectedBooking?.id,
                let updatedSelectedBooking = allBookings.first(where: { $0.id == selectedBookingID }) {
                 selectedBooking = updatedSelectedBooking
             }
-
-            await fetchMissingOrderItemBookings(from: allBookings)
 
             return pagedBookings.hasMorePages
         } catch POSBookingServiceError.requestCancelled {

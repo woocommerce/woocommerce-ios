@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 133 (Release 24.4.0.0)
+- @itsmeichigo 2026-03-11
+  - Added `paymentStatusMetadata` attribute to `BookingOrderInfo` entity.
+
 ## Model 132 (Release 24.2.0.0)
 - @jmucientes 2026-02-26
   - Added `datePaid` attribute to `BookingOrderInfo` entity.

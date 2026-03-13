@@ -20,14 +20,9 @@ import struct Yosemite.POSBooking
 // MARK: - Payment Status (POS presentation for shared BookingPaymentStatus)
 
 extension BookingPaymentStatus {
-    /// Creates a payment status from a POS booking's order data.
-    ///
-    /// `refundTotal`/`total` are not available on `POSOrder` (amounts are pre-formatted),
-    /// so partial-refund detection relies on the `orderStatus == .refunded` fallback.
-    /// POS collapses `.partiallyRefunded` → "Refunded" in `localizedTitle` anyway.
+    /// Creates a payment status from a POS booking's order metadata.
     init(booking: POSBooking) {
-        self.init(orderStatusKey: booking.order.status.rawValue,
-                  datePaid: booking.order.datePaid)
+        self.init(paymentStatusMetadata: booking.order.paymentStatusMetadata)
     }
 
     var localizedTitle: String {
@@ -40,6 +35,10 @@ extension BookingPaymentStatus {
             return Localization.refunded
         case .failed:
             return Localization.failed
+        case .authorized:
+            return Localization.authorized
+        case .authorizationVoided:
+            return Localization.authorizationVoided
         }
     }
 
@@ -47,18 +46,18 @@ extension BookingPaymentStatus {
 
     var textColor: Color {
         switch self {
-        case .paid:
+        case .paid, .authorized:
             return .posOnDefault
-        case .unpaid, .refunded, .partiallyRefunded, .failed:
+        case .unpaid, .refunded, .partiallyRefunded, .failed, .authorizationVoided:
             return .posOnErrorLowest
         }
     }
 
     var backgroundColor: Color {
         switch self {
-        case .paid:
+        case .paid, .authorized:
             return .posDefault
-        case .unpaid, .refunded, .partiallyRefunded, .failed:
+        case .unpaid, .refunded, .partiallyRefunded, .failed, .authorizationVoided:
             return .posErrorLowest
         }
     }
@@ -178,6 +177,18 @@ private enum Localization {
         "pos.bookingPaymentStatus.failed",
         value: "Failed",
         comment: "POS booking payment status label when the booking order payment failed."
+    )
+
+    static let authorized = NSLocalizedString(
+        "pos.bookingPaymentStatus.authorized",
+        value: "Authorized",
+        comment: "POS booking payment status label when the booking order payment is authorized but not yet captured."
+    )
+
+    static let authorizationVoided = NSLocalizedString(
+        "pos.bookingPaymentStatus.authorizationVoided",
+        value: "Authorization Voided",
+        comment: "POS booking payment status label when the booking order payment authorization has been voided."
     )
 
     static let attended = NSLocalizedString(

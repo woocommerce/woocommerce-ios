@@ -9,7 +9,7 @@ public final class JetpackConnectionRemote: Remote {
     private let network: Network
     private var accountConnectionURL: URL?
 
-    public init(siteURL: String, siteID: Int64 = 0, network: Network) {
+    public init(siteURL: String, siteID: Int64, network: Network) {
         self.siteURL = siteURL
         self.siteID = siteID
         self.network = network

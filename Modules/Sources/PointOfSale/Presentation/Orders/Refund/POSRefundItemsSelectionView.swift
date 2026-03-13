@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooAnalyticsEvent
 
 struct POSRefundItemsSelectionView: View {
     let onClose: () -> Void
@@ -6,6 +7,7 @@ struct POSRefundItemsSelectionView: View {
 
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
+    @Environment(\.posAnalytics) private var analytics
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
         orderListModel.ordersController.refundSelectableItems
@@ -70,6 +72,8 @@ private extension POSRefundItemsSelectionView {
             POSCheckbox(
                 isSelected: allItemsSelected,
                 onToggle: {
+                    let action = allItemsSelected ? "deselected" : "selected"
+                    analytics.track(event: WooAnalyticsEvent.PointOfSale.refundSelectAllTapped(action: action))
                     orderListModel.ordersController.toggleAllRefundItemsSelection()
                 }
             )

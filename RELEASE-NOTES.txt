@@ -7,6 +7,7 @@
 - [*] Display details of legacy bookable product type in a web view [https://github.com/woocommerce/woocommerce-ios/pull/16798]
 - [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
 - [*] Unify Jetpack setup flow for JCP sites [https://github.com/woocommerce/woocommerce-ios/pull/16816]
+- [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
 
 
 24.3

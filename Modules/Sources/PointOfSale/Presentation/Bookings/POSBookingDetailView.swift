@@ -12,7 +12,7 @@ struct POSBookingDetailView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
-    @State private var cancelModalState: CancelBookingModalState?
+    @State private var showCancelModal = false
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
     @State private var inlineButtonMinY: CGFloat = .infinity
@@ -132,11 +132,14 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .posModal(item: $cancelModalState) { state in
+        .posModal(isPresented: $showCancelModal) {
             POSCancelBookingModalContent(
-                state: state,
                 booking: booking,
-                cancelModalState: $cancelModalState
+                showCancelModal: $showCancelModal,
+                onSuccess: {
+                    showCancelModal = false
+                    bookingsModel.successState = .cancel
+                }
             )
         }
     }
@@ -172,7 +175,7 @@ struct POSBookingDetailView: View {
             }
             if booking.isCancellable {
                 Button(Localization.cancelBookingAction, role: .destructive) {
-                    cancelModalState = .confirmation
+                    showCancelModal = true
                 }
             }
         } label: {

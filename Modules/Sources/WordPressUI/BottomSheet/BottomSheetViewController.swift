@@ -31,6 +31,8 @@ public class BottomSheetViewController: UIViewController {
 
     private var customHeaderSpacing: CGFloat?
 
+    private let initialPosition: DrawerPosition
+
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return childViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
@@ -41,9 +43,11 @@ public class BottomSheetViewController: UIViewController {
     private weak var childViewController: DrawerPresentableViewController?
 
     public init(childViewController: DrawerPresentableViewController,
-         customHeaderSpacing: CGFloat? = nil) {
+         customHeaderSpacing: CGFloat? = nil,
+         initialPosition: DrawerPosition = .collapsed) {
         self.childViewController = childViewController
         self.customHeaderSpacing = customHeaderSpacing
+        self.initialPosition = initialPosition
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -83,7 +87,15 @@ public class BottomSheetViewController: UIViewController {
         } else {
             transitioningDelegate = self
             modalPresentationStyle = .custom
+            // When opening in a non-collapsed position, force the child view to lay out
+            // so content-based heights (e.g. table view contentSize) are accurate
+            // before the presentation controller computes the drawer frame.
+            if initialPosition != .collapsed {
+                childViewController?.loadViewIfNeeded()
+                childViewController?.view.layoutIfNeeded()
+            }
         }
+
         presenting.present(self, animated: true)
     }
 
@@ -214,7 +226,7 @@ public class BottomSheetViewController: UIViewController {
             return
         }
 
-        self.presentedVC?.transition(to: .collapsed)
+        self.presentedVC?.transition(to: initialPosition)
     }
 }
 
@@ -231,7 +243,9 @@ extension BottomSheetViewController: UIViewControllerTransitioningDelegate {
     }
 
     public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return DrawerPresentationController(presentedViewController: presented, presenting: presenting)
+        let controller = DrawerPresentationController(presentedViewController: presented, presenting: presenting)
+        controller.currentPosition = initialPosition
+        return controller
     }
 }
 

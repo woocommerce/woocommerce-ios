@@ -35,7 +35,7 @@ struct POSBookingsContainerView: View {
             .padding(.vertical, POSPadding.medium)
             .padding(.horizontal, POSPadding.large)
             .background(Color.posOnSurface)
-            .cornerRadius(POSCornerRadiusStyle.medium.value)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
             .posShadow(.medium, cornerRadius: POSCornerRadiusStyle.medium.value)
             .padding(.bottom, POSPadding.large)
             .transition(.move(edge: .bottom).combined(with: .opacity))

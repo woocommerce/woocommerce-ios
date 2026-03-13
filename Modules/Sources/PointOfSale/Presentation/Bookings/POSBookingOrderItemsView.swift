@@ -7,7 +7,9 @@ import struct Yosemite.OrderItemAttribute
 /// Mirrors the cart panel layout used in the regular POS checkout flow.
 struct POSBookingOrderItemsView: View {
     let booking: POSBooking
-    let bookingsByID: [Int64: POSBooking]
+    let bookingsModel: POSBookingsModel
+
+    @State private var bookingsByID: [Int64: POSBooking] = [:]
 
     private var lineItems: [POSOrderItem] {
         booking.order.lineItems
@@ -50,6 +52,11 @@ struct POSBookingOrderItemsView: View {
         .frame(maxWidth: .infinity)
         .background(Color.posSurfaceBright.ignoresSafeArea(.all))
         .accessibilityElement(children: .contain)
+        .task {
+            let bookingIDs = lineItems.compactMap(\.bookingID)
+            guard bookingIDs.isNotEmpty else { return }
+            bookingsByID = await bookingsModel.bookingsByID(for: bookingIDs)
+        }
     }
 
     private var itemsInCartLabel: String? {
@@ -197,7 +204,7 @@ private enum Localization {
 #Preview("Booking Order Items") {
     POSBookingOrderItemsView(
         booking: POSPreviewHelpers.makePreviewUnpaidBooking(),
-        bookingsByID: [:]
+        bookingsModel: POSPreviewHelpers.makePreviewBookingsModel()
     )
     .frame(width: 400)
 }

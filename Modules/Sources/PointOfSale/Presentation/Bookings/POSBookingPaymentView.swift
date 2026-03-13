@@ -6,9 +6,10 @@ import struct Yosemite.POSBooking
 /// mirroring the two-column layout used in the regular POS checkout flow.
 struct POSBookingPaymentView: View {
     let booking: POSBooking
-    let bookingsByID: [Int64: POSBooking]
     let paymentModel: POSPaymentModel
     let onDismiss: () -> Void
+
+    @Environment(POSBookingsModel.self) private var bookingsModel
 
     var body: some View {
         GeometryReader { geometry in
@@ -16,7 +17,7 @@ struct POSBookingPaymentView: View {
                 if !paymentModel.paymentState.shownFullScreen {
                     POSBookingOrderItemsView(
                         booking: booking,
-                        bookingsByID: bookingsByID
+                        bookingsModel: bookingsModel
                     )
                     .frame(width: geometry.size.width * Constants.itemsWidth)
                 }

@@ -22,7 +22,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_retrieveJetpackPluginDetails_returns_correct_plugin() throws {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
@@ -47,7 +47,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_retrieveJetpackPluginDetails_properly_relays_errors() {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -70,7 +70,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_installJetpackPlugin_completes_successfully_when_the_installation_succeeds() throws {
         // Given
-        let urlSuffix = "/wp/v2/plugins"
+        let urlSuffix = "wp/v2/plugins"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
@@ -91,7 +91,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_installJetpackPlugin_properly_relays_errors() {
         // Given
-        let urlSuffix = "/wp/v2/plugins"
+        let urlSuffix = "wp/v2/plugins"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -114,7 +114,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_activateJetpackPlugin_completes_successfully_when_the_activation_succeeds() throws {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
@@ -135,7 +135,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_activateJetpackPlugin_properly_relays_errors() {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)

@@ -147,6 +147,7 @@ private extension JetpackSetupCoordinator {
             let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
             stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, siteID: site.siteID, network: network))
             requiresConnectionOnly = false
+            await viewController?.dismiss(animated: true)
             showSetupSteps(username: username, authToken: authToken)
             return
         }

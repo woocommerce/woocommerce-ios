@@ -627,9 +627,15 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: [:], error: error)
         }
 
-        static func refundFlowAborted(step: String) -> WooAnalyticsEvent {
+        enum RefundStep: String {
+            case selectItems = "select_items"
+            case reviewRefund = "review_refund"
+            case confirmRefund = "confirm_refund"
+        }
+
+        static func refundFlowAborted(step: RefundStep) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleRefundFlowAborted, properties: [
-                Key.refundStep: step
+                Key.refundStep: step.rawValue
             ])
         }
 

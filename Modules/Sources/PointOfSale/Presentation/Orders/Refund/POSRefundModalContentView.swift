@@ -34,15 +34,15 @@ enum RefundModalState: Identifiable, Equatable {
         }
     }
 
-    /// Returns the analytics step name for abort tracking
-    var abortStep: String? {
+    /// Returns the analytics step for abort tracking
+    var abortStep: WooAnalyticsEvent.PointOfSale.RefundStep? {
         switch self {
         case .itemSelection:
-            return "select_items"
+            return .selectItems
         case .review, .reasonInput:
-            return "review_refund"
+            return .reviewRefund
         case .confirmation:
-            return "confirm_refund"
+            return .confirmRefund
         default:
             return nil
         }

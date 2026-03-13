@@ -138,7 +138,12 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         }
 
         var frame = containerView.frame
-        let y = collapsedYPosition
+        let y: CGFloat
+        if currentPosition != .collapsed {
+            y = max(collapsedYPosition - containerView.safeAreaInsets.bottom, containerView.safeAreaInsets.top)
+        } else {
+            y = collapsedYPosition
+        }
         var width: CGFloat = containerView.bounds.width - (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)
 
         frame.origin.y = y
@@ -221,11 +226,15 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        guard hasCompletedPresentation else {
+            return
+        }
         transition(to: currentPosition)
     }
 
     public override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
+        hasCompletedPresentation = completed
 
         configureScrollViewInsets()
     }
@@ -305,6 +314,8 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         addGestures()
         observe(scrollView: presentableViewController?.scrollableView)
     }
+
+    private var hasCompletedPresentation = false
 
     /// Represents whether the view is animating to a new position
     private var isPresentedViewAnimating = false

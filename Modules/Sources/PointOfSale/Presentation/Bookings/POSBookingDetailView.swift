@@ -138,7 +138,7 @@ struct POSBookingDetailView: View {
                 showCancelModal: $showCancelModal,
                 onSuccess: {
                     showCancelModal = false
-                    bookingsModel.showCancelSuccessNotice()
+                    bookingsModel.successState = .cancel
                 }
             )
         }

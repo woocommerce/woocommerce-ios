@@ -14,7 +14,14 @@ struct POSBookingsContainerView: View {
             .overlay(alignment: .bottom) {
                 cancelSuccessSnackbar
             }
-            .animation(.easeInOut, value: bookingsModel.showCancelSuccessNotice)
+            .animation(.easeInOut, value: bookingsModel.successState != nil)
+            .onChange(of: bookingsModel.successState) {
+                guard bookingsModel.successState != nil else { return }
+                Task {
+                    try? await Task.sleep(for: .seconds(3))
+                    bookingsModel.successState = nil
+                }
+            }
             .task {
                 await bookingsModel.bookingsController.loadBookings()
             }
@@ -22,7 +29,7 @@ struct POSBookingsContainerView: View {
 
     @ViewBuilder
     private var cancelSuccessSnackbar: some View {
-        if bookingsModel.showCancelSuccessNotice {
+        if bookingsModel.successState != nil {
             HStack(spacing: POSSpacing.medium) {
                 Image(systemName: "checkmark.circle.fill")
                     .font(.posButtonSymbolXSmall)

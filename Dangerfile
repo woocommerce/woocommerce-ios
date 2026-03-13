@@ -8,8 +8,15 @@ require 'tmpdir'
 txcontext_dir = Dir.mktmpdir('txcontext')
 system("git clone --depth 1 https://github.com/iangmaia/txcontext.git #{txcontext_dir}")
 Dir.chdir(txcontext_dir) do
-  system("gem build txcontext.gemspec -o txcontext.gem && gem install --no-document txcontext.gem")
+  system('gem build txcontext.gemspec -o txcontext.gem && gem install --no-document txcontext.gem')
 end
+
+# Bundler isolates the load path — refresh gem paths and inject newly installed gems
+Gem.clear_paths
+Gem::Specification.each do |spec|
+  spec.load_paths.each { |p| $LOAD_PATH.unshift(p) unless $LOAD_PATH.include?(p) }
+end
+require 'txcontext'
 
 # Import the translation context checker plugin from the dangermattic branch
 branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'

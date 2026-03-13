@@ -34,6 +34,7 @@ steps:
         # Buildkite considers this implicitly satisfied if the `depends_on` step is skipped due to `if:` condition. So this will run unconditionally on PRs
         # https://buildkite.com/docs/pipelines/configure/dependencies#how-skipped-steps-affect-dependencies
         depends_on: prototype_build_triggered
+        if: build.pull_request.id != null || build.branch == "trunk"
         command: .buildkite/commands/prototype-build.sh
         plugins: [$CI_TOOLKIT]
         notify:

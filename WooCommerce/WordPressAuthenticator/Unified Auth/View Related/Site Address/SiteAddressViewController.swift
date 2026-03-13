@@ -564,6 +564,7 @@ private extension SiteAddressViewController {
                                                       isJetpackConnected: false,
                                                       icon: "",
                                                       isWPCom: false,
+                                                      isCommerceGarden: false,
                                                       isWP: true,
                                                       exists: true))
                     return
@@ -616,7 +617,7 @@ private extension SiteAddressViewController {
 
                 self.showWPUsernamePassword()
             case .presentEmailController:
-                self.showGetStarted(forWPComSite: false)
+                self.showGetStarted(forWPComSite: siteInfo?.isCommerceGarden == true)
             case let .injectViewController(customUI):
                 self.pushCustomUI(customUI)
             }

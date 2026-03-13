@@ -62,6 +62,7 @@ struct POSOrderMapper {
             formattedPaymentTotal: order.paymentTotal(currencyFormatter: currencyFormatter),
             formattedNetAmount: formattedNetAmount,
             datePaid: order.datePaid,
+            paymentStatusMetadata: order.paymentStatusMetadata,
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }

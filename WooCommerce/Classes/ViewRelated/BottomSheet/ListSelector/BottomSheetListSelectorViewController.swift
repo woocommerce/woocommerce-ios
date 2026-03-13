@@ -45,10 +45,8 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // Recalculate cell heights on each layout pass. On iPad, popover and
-        // formSheet presentations may change cell layout margins after the
-        // initial layout, affecting multiline label wrapping. This stabilizes
-        // after 1-2 passes once cell heights converge.
+        // Recalculate cell heights so multiline labels wrap correctly
+        // when cell margins change during popover/formSheet presentation.
         tableView.performBatchUpdates(nil)
         configurePreferredContentSize()
     }

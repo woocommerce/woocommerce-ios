@@ -224,13 +224,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         configureScrollViewInsets()
     }
 
-    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        guard hasCompletedPresentation else {
-            return
-        }
-        transition(to: currentPosition)
-    }
+    private var traitChangeRegistration: UITraitChangeRegistration?
 
     public override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
@@ -313,9 +307,18 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
         addGestures()
         observe(scrollView: presentableViewController?.scrollableView)
+        registerTraitChanges()
     }
 
     private var hasCompletedPresentation = false
+
+    private func registerTraitChanges() {
+        guard traitChangeRegistration == nil else { return }
+        traitChangeRegistration = registerForTraitChanges([UITraitVerticalSizeClass.self, UITraitHorizontalSizeClass.self]) { [weak self] (_: DrawerPresentationController, _: UITraitCollection) in
+            guard let self, self.hasCompletedPresentation else { return }
+            self.transition(to: self.currentPosition)
+        }
+    }
 
     /// Represents whether the view is animating to a new position
     private var isPresentedViewAnimating = false

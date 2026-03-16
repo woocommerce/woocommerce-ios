@@ -34,6 +34,9 @@ struct POSCheckoutView: View {
                 }
             }
         }
+        .environmentObject(modalManager)
+        .environmentObject(sheetManager)
+        .environmentObject(coverManager)
         .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, onDismiss: {
             paymentModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in
@@ -49,9 +52,6 @@ struct POSCheckoutView: View {
                     paymentModel.cancelCardPaymentsOnboarding()
                 }))
         }
-        .environmentObject(modalManager)
-        .environmentObject(sheetManager)
-        .environmentObject(coverManager)
         .fullScreenCover(isPresented: fullScreenPaymentBinding) {
             paymentFullScreenContent
         }

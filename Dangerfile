@@ -6,6 +6,11 @@ require 'tmpdir'
 def install_txcontext!
   txcontext_root = Dir.mktmpdir('txcontext')
   txcontext_gem_home = File.join(txcontext_root, 'gems')
+  install_txcontext_gem!(txcontext_root: txcontext_root, txcontext_gem_home: txcontext_gem_home)
+  load_txcontext_gem!(txcontext_gem_home)
+end
+
+def install_txcontext_gem!(txcontext_root:, txcontext_gem_home:)
   install_env = {
     'GEM_HOME' => txcontext_gem_home,
     'GEM_PATH' => txcontext_gem_home
@@ -23,17 +28,27 @@ def install_txcontext!
         raise 'Failed to install txcontext gem'
     end
   end
+end
 
+def load_txcontext_gem!(txcontext_gem_home)
   gem_libs = Dir.glob(File.join(txcontext_gem_home, 'gems', '*', 'lib'))
-  txcontext_lib = gem_libs.find { |lib_path| File.basename(File.dirname(lib_path)).start_with?('txcontext-') }
+  txcontext_lib = find_txcontext_lib(gem_libs)
   raise 'Failed to locate txcontext gem lib directory' unless txcontext_lib
 
-  $LOAD_PATH.unshift(txcontext_lib) unless $LOAD_PATH.include?(txcontext_lib)
+  prepend_load_path(txcontext_lib)
   (gem_libs - [txcontext_lib]).each do |lib_path|
-    $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
+    prepend_load_path(lib_path)
   end
 
   require 'txcontext'
+end
+
+def find_txcontext_lib(gem_libs)
+  gem_libs.find { |lib_path| File.basename(File.dirname(lib_path)).start_with?('txcontext-') }
+end
+
+def prepend_load_path(lib_path)
+  $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
 end
 
 begin

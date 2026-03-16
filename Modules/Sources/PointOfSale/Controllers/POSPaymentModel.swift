@@ -491,5 +491,6 @@ extension POSPaymentModel {
         self.paymentState = paymentState
         self.cardPresentPaymentInlineMessage = inlineMessage
     }
+
 }
 #endif

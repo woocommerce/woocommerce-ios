@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
     @Environment(\.posExternalViews) private var externalViews
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: 0) {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
@@ -19,12 +19,15 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
             }
 
             if let primaryButtonViewModel = viewModel.primaryButtonViewModel {
+                Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+
                 Button(primaryButtonViewModel.title,
                        action: primaryButtonViewModel.actionHandler)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
                 .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
             }
         }
+        .frame(maxHeight: .infinity)
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)

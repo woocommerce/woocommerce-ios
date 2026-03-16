@@ -87,19 +87,28 @@ struct POSSettingsView: View {
         }
     }
 
-    @State private var showExitPOSModal: Bool = false
+    @State private var showExitPOSConfirmation: Bool = false
 
     private var exitButton: some View {
         Button(role: .destructive) {
             analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
+            showExitPOSConfirmation = true
         } label: {
             Text(Localization.exitPointOfSale)
                 .frame(maxWidth: .infinity)
         }
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-        .posModal(isPresented: $showExitPOSModal) {
-            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
+        .confirmationDialog(
+            Localization.exitTitle,
+            isPresented: $showExitPOSConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button(Localization.exitButton, role: .destructive) {
+                analytics.track(.pointOfSaleExitConfirmed)
+                dismiss()
+            }
+        } message: {
+            Text(Localization.exitBody)
         }
     }
 }
@@ -300,6 +309,24 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.exitPointOfSale",
             value: "Exit Point of Sale",
             comment: "Title for the Exit Point of Sale button in settings on phone POS"
+        )
+
+        static let exitTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.exitTitle",
+            value: "Exit Point of Sale mode?",
+            comment: "Title of the exit Point of Sale confirmation dialog on phone"
+        )
+
+        static let exitBody = NSLocalizedString(
+            "pointOfSaleSettingsView.exitBody",
+            value: "Any orders in progress will be lost.",
+            comment: "Body text of the exit Point of Sale confirmation dialog on phone"
+        )
+
+        static let exitButton = NSLocalizedString(
+            "pointOfSaleSettingsView.exitButton",
+            value: "Exit",
+            comment: "Confirm exit button in the exit Point of Sale confirmation dialog on phone"
         )
     }
 }

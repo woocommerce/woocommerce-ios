@@ -56,38 +56,44 @@ private extension POSCartPeekView {
                 }
 
                 Spacer()
+
+                Menu {
+                    Button(role: .destructive) {
+                        analytics.track(.pointOfSaleClearCartTapped)
+                        posModel.removeAllItemsFromCart()
+                    } label: {
+                        Text(Localization.clearCart)
+                    }
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.posButtonSymbolMedium)
+                        .foregroundStyle(Color.posOnSurface)
+                }
             }
             .padding(.horizontal, POSPadding.medium)
             .padding(.bottom, POSPadding.xSmall)
 
-            // Visible item rows (~1.5 rows, clipped)
+            // Visible item rows (~1.5 rows, clipped with fade)
             VStack(spacing: POSSpacing.small) {
                 ForEach(posModel.cart.purchasableItems.prefix(2), id: \.id) { cartItem in
-                    HStack {
-                        Text(cartItem.title)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(Color.posOnSurface)
-                            .lineLimit(1)
-
-                        if cartItem.quantity > 1 {
-                            Text("×\(cartItem.quantity)")
-                                .font(.posBodySmallRegular())
-                                .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                    ItemRowView(
+                        cartItem: cartItem,
+                        showImage: .constant(true),
+                        onItemRemoveTapped: nil,
+                        onCancelLoading: {
+                            posModel.cancelLoadingItem(id: cartItem.id)
                         }
-
-                        Spacer()
-                    }
+                    )
+                    .id(cartItem.id)
                 }
             }
             .padding(.horizontal, POSPadding.medium)
-            .frame(maxHeight: 52, alignment: .top)
+            .frame(maxHeight: 80, alignment: .top)
             .clipped()
-
-            // Fade hint if more items
-            if posModel.cart.purchasableItems.count > 2 {
+            .overlay(alignment: .bottom) {
                 LinearGradient(colors: [.clear, Color.posSurfaceBright],
                                startPoint: .top, endPoint: .bottom)
-                    .frame(height: 8)
+                    .frame(height: 16)
             }
 
             // Summary bar
@@ -134,6 +140,11 @@ private extension POSCartPeekView {
             "pos.phone.cartPeek.checkout",
             value: "Check out",
             comment: "Title for the checkout button in the phone POS cart peek"
+        )
+        static let clearCart = NSLocalizedString(
+            "pos.phone.cartPeek.clearCart",
+            value: "Clear cart",
+            comment: "Button to clear all items from the cart in phone POS"
         )
         static let emptyCart = NSLocalizedString(
             "pos.phone.cartPeek.empty",

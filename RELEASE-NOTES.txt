@@ -7,6 +7,7 @@
 - [*] Display details of legacy bookable product type in a web view [https://github.com/woocommerce/woocommerce-ios/pull/16798]
 - [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
+- [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
 
 
 24.3

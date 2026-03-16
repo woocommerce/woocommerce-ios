@@ -116,7 +116,7 @@ private extension BookingDetailsViewModel {
             customerContent.update(with: customerInfo)
         }
 
-        appointmentDetailsContent.update(with: booking, resource: bookingResource)
+        appointmentDetailsContent.update(with: booking, resource: bookingResource, bookingLocation: booking.location)
 
         paymentContent.update(with: booking)
         notesContent.update(with: booking)
@@ -198,6 +198,7 @@ extension BookingDetailsViewModel {
             self.bookingResource = resource // only update resource if fetching succeeds
         }
         await fetchBooking()
+        fetchProductBookingLocation()
     }
 }
 
@@ -327,6 +328,20 @@ private extension BookingDetailsViewModel {
             DDLogError("⛔️ Error fetching resource for Booking: \(error)")
             return nil
         }
+    }
+
+    func fetchProductBookingLocation() {
+        let action = BookingAction.fetchProductBookingLocation(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID,
+            productID: booking.productID
+        ) { result in
+            if case .failure(let error) = result {
+                DDLogError("⛔️ Error fetching booking location: \(error)")
+            }
+            // On success, the EntityListener will fire `onUpsert` and trigger `updateDisplayProperties`
+        }
+        stores.dispatch(action)
     }
 
     @MainActor

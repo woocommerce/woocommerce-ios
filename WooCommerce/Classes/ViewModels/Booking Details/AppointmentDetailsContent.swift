@@ -14,7 +14,7 @@ extension BookingDetailsViewModel {
 
         @Published private(set) var rows: [Row] = []
 
-        func update(with booking: Booking, resource: BookingResource?) {
+        func update(with booking: Booking, resource: BookingResource?, bookingLocation: String? = nil) {
             let appointmentDate = booking.startDate.toString(dateStyle: .short, timeStyle: .none, timeZone: BookingListTab.utcTimeZone)
             let appointmentTimeFrame = [
                 booking.startDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone),
@@ -25,11 +25,19 @@ extension BookingDetailsViewModel {
                 guard booking.resourceID > 0 else { return nil }
                 return Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: resource?.name ?? "-")
             }()
+
+            let locationValue: String = {
+                guard let location = bookingLocation, !location.isEmpty else {
+                    return "-"
+                }
+                return location
+            }()
+
             rows = [
                 Row(title: Localization.appointmentDetailsDateRowTitle, value: appointmentDate),
                 Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
                 resourceRow,
-                Row(title: Localization.appointmentDetailsLocationTitle, value: "238 Willow Creek Drive, Montgomery ..."), /// Temporarily hardcoded
+                Row(title: Localization.appointmentDetailsLocationTitle, value: locationValue),
                 Row(
                     title: Localization.appointmentDetailsDurationTitle,
                     value: Self.formatDuration(

@@ -30,6 +30,9 @@ public protocol BookingsRemoteProtocol {
     func fetchResources(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [BookingResource]
+
+    func fetchProductBookingLocation(siteID: Int64,
+                                     productID: Int64) async throws -> ProductBookingLocation
 }
 
 /// Filters for booking queries
@@ -281,6 +284,28 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         return try await enqueue(request, mapper: mapper)
     }
+
+    /// Fetches the `booking_location` field from a product.
+    ///
+    public func fetchProductBookingLocation(
+        siteID: Int64,
+        productID: Int64
+    ) async throws -> ProductBookingLocation {
+        let path = "products/\(productID)"
+        let parameters = [
+            ParameterKey.fields: "id,booking_location"
+        ]
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+
+        return try await enqueue(request, mapper: ProductBookingLocationMapper())
+    }
 }
 
 // MARK: - Constants
@@ -322,5 +347,6 @@ public extension BookingsRemote {
         static let bookingStatusExclude    = "booking_status_exclude"
         static let status: String          = "status"
         static let note: String            = "note"
+        static let fields: String          = "_fields"
     }
 }

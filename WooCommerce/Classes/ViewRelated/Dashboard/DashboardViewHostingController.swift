@@ -252,7 +252,7 @@ private extension DashboardViewHostingController {
             let coordinator = JetpackSetupCoordinator(site: site,
                                                       rootViewController: navigationController)
             jetpackSetupCoordinator = coordinator
-            coordinator.showBenefitModal()
+            coordinator.startSetup()
         }
     }
 }

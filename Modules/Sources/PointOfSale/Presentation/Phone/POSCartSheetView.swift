@@ -86,16 +86,6 @@ private extension POSCartSheetView {
 
     var summaryBar: some View {
         HStack {
-            if case .loaded(let orderTotals) = posModel.orderState {
-                Text(orderTotals.orderTotal)
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurface)
-            } else if posModel.cart.isNotEmpty {
-                Text("...")
-                    .font(.posHeadingBold)
-                    .foregroundStyle(Color.posOnSurfaceVariantLowest)
-            }
-
             Spacer()
 
             Button {

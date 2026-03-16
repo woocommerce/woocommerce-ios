@@ -190,7 +190,8 @@ private extension POSCheckoutView {
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                 connectCardReaderAction: paymentModel.connectCardReader
             )
-            .background(POSPaymentViewHelper().paymentBackgroundColor(for: paymentModel.paymentState))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(POSPaymentViewHelper().paymentBackgroundColor(for: paymentModel.paymentState).ignoresSafeArea())
         case .cash:
             if case .loaded(let totals) = posModel.orderState {
                 POSCashPaymentContentView(

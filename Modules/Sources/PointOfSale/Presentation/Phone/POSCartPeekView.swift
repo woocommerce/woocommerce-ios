@@ -13,27 +13,11 @@ struct POSCartPeekView: View {
     private let viewHelper = CartViewHelper()
 
     var body: some View {
-        if posModel.cart.isEmpty {
-            emptyBar
-        } else {
-            filledBar
-        }
+        filledBar
     }
 }
 
 private extension POSCartPeekView {
-    var emptyBar: some View {
-        HStack {
-            Text(Localization.emptyCart)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurfaceVariantLowest)
-            Spacer()
-        }
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.vertical, POSPadding.medium)
-        .background(Color.posSurfaceBright)
-    }
-
     var filledBar: some View {
         VStack(spacing: .zero) {
             // Drag handle hint
@@ -137,11 +121,6 @@ private extension POSCartPeekView {
             "pos.phone.cartPeek.clearCart",
             value: "Clear cart",
             comment: "Button to clear all items from the cart in phone POS"
-        )
-        static let emptyCart = NSLocalizedString(
-            "pos.phone.cartPeek.empty",
-            value: "Cart is empty",
-            comment: "Text shown when the cart is empty in the phone POS cart peek bar"
         )
     }
 }

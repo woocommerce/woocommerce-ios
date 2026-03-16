@@ -7,31 +7,35 @@ struct POSSaleTabView: View {
     @StateObject private var sheetManager = POSSheetManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
 
-    @State private var selectedItemListType: ItemListType = .products(search: false)
-    @State private var searchTerm: String = ""
     @State private var isCartExpanded: Bool = false
     @State private var isShowingCheckout: Bool = false
 
     var body: some View {
-        ItemListView(selectedItemListType: $selectedItemListType,
-                     searchTerm: $searchTerm)
+        @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
+        ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                     searchTerm: $viewStateCoordinator.searchTerm)
+            .environment(\.dynamicTypeSize, .small)
             .environmentObject(modalManager)
             .environmentObject(sheetManager)
             .environmentObject(coverManager)
             .safeAreaInset(edge: .bottom) {
-                POSCartPeekView(
-                    onExpandCart: {
-                        isCartExpanded = true
-                    },
-                    onCheckout: {
-                        Task { @MainActor in
-                            trackCheckoutTapped()
-                            await posModel.prepareCheckout()
+                if posModel.cart.isNotEmpty {
+                    POSCartPeekView(
+                        onExpandCart: {
+                            isCartExpanded = true
+                        },
+                        onCheckout: {
+                            Task { @MainActor in
+                                trackCheckoutTapped()
+                                await posModel.prepareCheckout()
+                            }
                         }
-                    }
-                )
-                .shadow(color: .black.opacity(0.1), radius: 8, y: -2)
+                    )
+                    .shadow(color: .black.opacity(0.1), radius: 8, y: -2)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
             }
+            .animation(.spring(duration: 0.3), value: posModel.cart.isNotEmpty)
             .sheet(isPresented: $isCartExpanded) {
                 POSCartSheetView()
                     .presentationDragIndicator(.visible)
@@ -40,8 +44,11 @@ struct POSSaleTabView: View {
                 POSCheckoutView(isPresented: $isShowingCheckout)
             }
             .onChange(of: posModel.orderStage) { _, newStage in
-                if newStage == .finalizing {
+                switch newStage {
+                case .finalizing:
                     isShowingCheckout = true
+                case .building:
+                    isShowingCheckout = false
                 }
             }
             .onChange(of: isShowingCheckout) { _, isShowing in

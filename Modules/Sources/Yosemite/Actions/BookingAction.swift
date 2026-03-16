@@ -112,7 +112,7 @@ public enum BookingAction: Action {
     /// - Parameter productID: The product ID to fetch the booking location from.
     /// - Parameter onCompletion: called when fetch completes, returns the location string or an error.
     ///
-    case fetchProductBookingLocation(siteID: Int64,
+    case fetchBookingLocationResponse(siteID: Int64,
                                      bookingID: Int64,
                                      productID: Int64,
                                      onCompletion: (Result<String?, Error>) -> Void)

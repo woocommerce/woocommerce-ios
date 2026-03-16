@@ -1,6 +1,4 @@
-/// Lightweight DTO for fetching only the `booking_location` field from a Product.
-///
-public struct ProductBookingLocation: Decodable {
+public struct BookingLocationResponse: Decodable {
     public let productID: Int64
     public let bookingLocation: String?
 

@@ -31,8 +31,8 @@ public protocol BookingsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int) async throws -> [BookingResource]
 
-    func fetchProductBookingLocation(for siteID: Int64,
-                                     productID: Int64) async throws -> ProductBookingLocation
+    func fetchBookingLocationResponse(for siteID: Int64,
+                                     productID: Int64) async throws -> BookingLocationResponse
 }
 
 /// Filters for booking queries
@@ -287,11 +287,11 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
     /// Fetches the `booking_location` field from a product.
     ///
-    public func fetchProductBookingLocation(
+    public func fetchBookingLocationResponse(
         for siteID: Int64,
         productID: Int64
-    ) async throws -> ProductBookingLocation {
-        let path = "products/\(productID)"
+    ) async throws -> BookingLocationResponse {
+        let path = "\(Path.products)/\(productID)"
         let parameters = [
             ParameterKey.fields: "id,booking_location"
         ]
@@ -329,6 +329,7 @@ public extension BookingsRemote {
     private enum Path {
         static let bookings = "bookings"
         static let resources = "resources/team-members"
+        static let products = "products"
     }
 
     private enum ParameterKey {

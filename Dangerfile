@@ -24,7 +24,7 @@ def install_txcontext!
     end
   end
 
-  gem_libs = Dir.glob(File.join(txcontext_gem_home, 'gems', '*', 'lib')).sort
+  gem_libs = Dir.glob(File.join(txcontext_gem_home, 'gems', '*', 'lib'))
   txcontext_lib = gem_libs.find { |lib_path| File.basename(File.dirname(lib_path)).start_with?('txcontext-') }
   raise 'Failed to locate txcontext gem lib directory' unless txcontext_lib
 
@@ -49,6 +49,8 @@ danger.import_plugin("#{branch_base}/translation_context_checker.rb")
 translation_context_checker.check_context_suggestions(
   translations: 'WooCommerce/Resources/en.lproj/Localizable.strings',
   source_paths: ['WooCommerce/Classes/'],
+  provider: :anthropic,
+  model: 'claude-sonnet-4-6',
   report_type: :warning
 )
 # --- End Translation Context Plugin ---

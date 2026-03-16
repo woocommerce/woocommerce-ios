@@ -1,46 +1,45 @@
 # frozen_string_literal: true
 
 # --- Translation Context Plugin (test) ---
-require 'open-uri'
 require 'tmpdir'
 
-# Install txcontext gem dynamically (CI uses a minimal Gemfile that doesn't include it).
-# Bundler restricts GEM_PATH to the bundle dir, so we must install outside its env
-# and then manually wire up the load paths.
-txcontext_dir = Dir.mktmpdir('txcontext')
-Bundler.with_unbundled_env do
-  system("git clone --depth 1 https://github.com/iangmaia/txcontext.git #{txcontext_dir}")
-  Dir.chdir(txcontext_dir) do
-    system('gem build txcontext.gemspec -o txcontext.gem && gem install --no-document txcontext.gem')
-  end
-end
+def install_txcontext!
+  txcontext_root = Dir.mktmpdir('txcontext')
+  txcontext_gem_home = File.join(txcontext_root, 'gems')
+  install_env = {
+    'GEM_HOME' => txcontext_gem_home,
+    'GEM_PATH' => txcontext_gem_home
+  }
 
-# Expand GEM_PATH to include the system gem dir so newly installed gems are visible
-ENV['GEM_PATH'] = [Gem.default_dir, Gem.user_dir, ENV.fetch('GEM_PATH', nil)].compact.join(':')
-Gem.clear_paths
-# Add all gem lib dirs to $LOAD_PATH (filesystem scan — works regardless of Bundler state)
-Gem.path.each do |gem_dir|
-  Dir.glob("#{gem_dir}/gems/*/lib").each do |lib_path|
+  Bundler.with_unbundled_env do
+    system('git', 'clone', '--depth', '1', 'https://github.com/iangmaia/txcontext.git', txcontext_root) or
+      raise 'Failed to clone txcontext'
+
+    Dir.chdir(txcontext_root) do
+      system('gem', 'build', 'txcontext.gemspec', '-o', 'txcontext.gem') or
+        raise 'Failed to build txcontext gem'
+      system(install_env, 'gem', 'install', '--no-document', '--force',
+             '--install-dir', txcontext_gem_home, 'txcontext.gem') or
+        raise 'Failed to install txcontext gem'
+    end
+  end
+
+  gem_libs = Dir.glob(File.join(txcontext_gem_home, 'gems', '*', 'lib')).sort
+  txcontext_lib = gem_libs.find { |lib_path| File.basename(File.dirname(lib_path)).start_with?('txcontext-') }
+  raise 'Failed to locate txcontext gem lib directory' unless txcontext_lib
+
+  $LOAD_PATH.unshift(txcontext_lib) unless $LOAD_PATH.include?(txcontext_lib)
+  (gem_libs - [txcontext_lib]).each do |lib_path|
     $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
   end
+
+  require 'txcontext'
 end
-require 'txcontext'
 
-# Override model — the hardcoded default may be stale
-Txcontext::LLM::Anthropic.send(:remove_const, :DEFAULT_MODEL)
-Txcontext::LLM::Anthropic.const_set(:DEFAULT_MODEL, 'claude-sonnet-4-6-20250514')
-
-# Debug: run one key to see the actual error
-debug_config = Txcontext::Config.new(
-  translations: ['WooCommerce/Resources/en.lproj/Localizable.strings'],
-  source_paths: ['WooCommerce/Classes/'],
-  key_filter: 'test_order_action_save',
-  no_cache: true
-)
-debug_extractor = Txcontext::ContextExtractor.new(debug_config)
-debug_extractor.run
-debug_extractor.results.each do |r|
-  warn("txcontext debug — key=#{r.key} error=#{r.error.inspect} desc=#{r.description.inspect} model=#{Txcontext::LLM::Anthropic::DEFAULT_MODEL}")
+begin
+  install_txcontext!
+rescue StandardError => e
+  warn("txcontext bootstrap failed: #{e.message}")
 end
 
 # Import the translation context checker plugin from the dangermattic branch

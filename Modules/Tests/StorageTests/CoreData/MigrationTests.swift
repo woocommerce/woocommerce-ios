@@ -2490,6 +2490,37 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedBooking.value(forKey: "location") as? String, updatedValue)
     }
+
+    func test_migrating_from_133_to_134_adds_userID_attribute_to_Booking() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 133")
+        let sourceContext = sourceContainer.viewContext
+
+        let booking = insertBooking(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(booking.entity.attributesByName["userID"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 134")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedBooking = try XCTUnwrap(targetContext.first(entityName: "Booking"))
+
+        XCTAssertNotNil(migratedBooking.entity.attributesByName["userID"])
+
+        // Default value should be 0
+        let defaultValue = migratedBooking.value(forKey: "userID") as? Int64
+        XCTAssertEqual(defaultValue, 0)
+
+        // Verify new attribute can be set and saved
+        let newUserID: Int64 = 42
+        migratedBooking.setValue(newUserID, forKey: "userID")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedBooking.value(forKey: "userID") as? Int64, newUserID)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

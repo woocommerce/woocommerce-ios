@@ -3,11 +3,20 @@ import SwiftUI
 struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation? = .store
 
     let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
+        if horizontalSizeClass == .compact {
+            compactLayout
+        } else {
+            regularLayout
+        }
+    }
+
+    private var regularLayout: some View {
         GeometryReader { geometry in
             HStack(spacing: POSSpacing.none) {
                 listView
@@ -16,6 +25,81 @@ struct POSSettingsView: View {
                 detailView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+        }
+    }
+
+    private var compactLayout: some View {
+        NavigationStack {
+            VStack(spacing: POSSpacing.none) {
+                List {
+                    Section {
+                        NavigationLink {
+                            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+                        } label: {
+                            settingsRow(title: SidebarNavigation.store.title,
+                                        subtitle: SidebarNavigation.store.subtitle)
+                        }
+
+                        NavigationLink {
+                            POSSettingsHardwareDetailView(settingsController: settingsController)
+                        } label: {
+                            settingsRow(title: SidebarNavigation.hardware.title,
+                                        subtitle: SidebarNavigation.hardware.subtitle)
+                        }
+
+                        if settingsController.isLocalCatalogEligible,
+                           let viewModel = settingsController.localCatalogViewModel {
+                            NavigationLink {
+                                POSSettingsLocalCatalogDetailView(viewModel: viewModel)
+                            } label: {
+                                settingsRow(title: SidebarNavigation.localCatalog.title,
+                                            subtitle: SidebarNavigation.localCatalog.subtitle)
+                            }
+                        }
+
+                        NavigationLink {
+                            POSSettingsHelpDetailView()
+                        } label: {
+                            settingsRow(title: SidebarNavigation.help.title,
+                                        subtitle: SidebarNavigation.help.subtitle)
+                        }
+                    }
+                }
+                .listStyle(.insetGrouped)
+
+                exitButton
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.bottom, POSPadding.medium)
+            }
+            .navigationTitle(Localization.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    @ViewBuilder
+    private func settingsRow(title: String, subtitle: String) -> some View {
+        VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+            Text(title)
+                .font(.posBodyMediumBold)
+            Text(subtitle)
+                .font(.posBodySmallRegular())
+                .foregroundStyle(Color.posOnSurfaceVariantLowest)
+        }
+    }
+
+    @State private var showExitPOSModal: Bool = false
+
+    private var exitButton: some View {
+        Button(role: .destructive) {
+            analytics.track(.pointOfSaleExitMenuItemTapped)
+            showExitPOSModal = true
+        } label: {
+            Text(Localization.exitPointOfSale)
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .posModal(isPresented: $showExitPOSModal) {
+            PointOfSaleExitPosAlertView(isPresented: $showExitPOSModal)
         }
     }
 }
@@ -210,6 +294,12 @@ extension POSSettingsView {
             "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle",
             value: "Get help and support",
             comment: "Description of the Help section in Point of Sale settings."
+        )
+
+        static let exitPointOfSale = NSLocalizedString(
+            "pointOfSaleSettingsView.exitPointOfSale",
+            value: "Exit Point of Sale",
+            comment: "Title for the Exit Point of Sale button in settings on phone POS"
         )
     }
 }

@@ -169,9 +169,16 @@ public struct PointOfSaleEntryPointView: View {
     public var body: some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView()
-                    .environment(posModel)
-                    .environment(posModel.paymentModel)
+                if horizontalSizeClass == .compact,
+                   services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhone) {
+                    POSPhoneRootView()
+                        .environment(posModel)
+                        .environment(posModel.paymentModel)
+                } else {
+                    PointOfSaleDashboardView()
+                        .environment(posModel)
+                        .environment(posModel.paymentModel)
+                }
             } else {
                 PointOfSaleLoadingView()
             }

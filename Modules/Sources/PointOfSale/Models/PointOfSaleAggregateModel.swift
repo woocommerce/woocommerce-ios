@@ -458,6 +458,19 @@ extension PointOfSaleAggregateModel {
         await paymentModel.startPayment()
     }
 
+    /// Syncs the order for checkout without starting payment.
+    /// Used on phone where the user explicitly taps a payment button.
+    @MainActor
+    func prepareCheckout() async {
+        collectOrderPaymentAnalyticsTracker.trackCheckoutTapped()
+        orderStage = .finalizing
+        let syncOrderResult = await orderController.syncOrder(for: cart, retryHandler: { [weak self] in
+            await self?.prepareCheckout()
+        })
+        trackOrderSyncState(syncOrderResult)
+        await removeMissingProductsFromCatalogAfterSync()
+    }
+
     /// Removes unavailable products from the local catalog after detecting them during order sync
     @MainActor
     private func removeMissingProductsFromCatalogAfterSync() async {

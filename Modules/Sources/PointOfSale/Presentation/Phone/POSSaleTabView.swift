@@ -26,7 +26,7 @@ struct POSSaleTabView: View {
                     onCheckout: {
                         Task { @MainActor in
                             trackCheckoutTapped()
-                            await posModel.checkOut()
+                            await posModel.prepareCheckout()
                         }
                     }
                 )

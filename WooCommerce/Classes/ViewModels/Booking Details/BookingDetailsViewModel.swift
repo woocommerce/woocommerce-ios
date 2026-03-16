@@ -198,7 +198,7 @@ extension BookingDetailsViewModel {
             self.bookingResource = resource // only update resource if fetching succeeds
         }
         await fetchBooking()
-        fetchProductBookingLocation()
+        await fetchProductBookingLocation()
     }
 }
 

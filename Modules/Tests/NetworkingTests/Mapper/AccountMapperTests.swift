@@ -90,13 +90,37 @@ final class AccountMapperTests: XCTestCase {
     /// even when the API returns `woocommerce_is_active: false`.
     ///
     func test_Site_isWooCommerceActive_is_true_for_CIAB_commerce_garden_site() {
-        let sites = mapLoadCIABCommerceGardenSitesResponse()
-        XCTAssertEqual(sites?.count, 1)
+        // Given
+        guard let sites = mapLoadCIABCommerceGardenSitesResponse() else {
+            XCTFail("Failed to load CIAB commerce garden site fixture")
+            return
+        }
 
-        let site = sites!.first!
+        // When
+        guard let site = sites.first else {
+            XCTFail("Expected at least one site in fixture")
+            return
+        }
+
+        // Then
+        XCTAssertEqual(sites.count, 1)
         XCTAssertTrue(site.isGarden)
         XCTAssertEqual(site.gardenName, "commerce")
         XCTAssertTrue(site.isWooCommerceActive, "Commerce garden sites should have isWooCommerceActive overridden to true")
+    }
+
+    /// Verifies that `isWooCommerceActive` is NOT overridden for non-commerce garden sites.
+    ///
+    func test_Site_isWooCommerceActive_is_not_overridden_for_non_commerce_garden_site() {
+        // Given
+        let site = Site.fake().copy(
+            isWooCommerceActive: false,
+            isGarden: true,
+            gardenName: "blog"
+        )
+
+        // Then
+        XCTAssertFalse(site.isWooCommerceActive, "Non-commerce garden sites should not have isWooCommerceActive overridden")
     }
 }
 

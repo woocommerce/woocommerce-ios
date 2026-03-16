@@ -66,7 +66,8 @@ translation_context_checker.check_context_suggestions(
   source_paths: ['WooCommerce/Classes/'],
   provider: :anthropic,
   model: 'claude-sonnet-4-6',
-  report_type: :warning
+  report_type: :warning,
+  inline_suggestions: true
 )
 # --- End Translation Context Plugin ---
 

@@ -450,6 +450,31 @@ final class BookingDetailsViewModelTests: XCTestCase {
         analyticsProvider.assertReceived(event: "booking_detail_cancel_booking")
     }
 
+    func test_appointmentDetails_does_not_contain_price_row() {
+        // Given
+        let booking = Booking.fake().copy(cost: "$50.00")
+
+        // When
+        let viewModel = givenViewModel(booking: booking)
+
+        // Then
+        let appointmentSection = viewModel.sections.first { section in
+            if case .appointmentDetails = section.content {
+                return true
+            }
+            return false
+        }
+
+        guard let appointmentSection = appointmentSection,
+              case let .appointmentDetails(content) = appointmentSection.content else {
+            XCTFail("Appointment details section not found")
+            return
+        }
+
+        let hasPriceRow = content.rows.contains { $0.title == "Price" }
+        XCTAssertFalse(hasPriceRow, "Price row should not be present in appointment details")
+    }
+
     func test_event_fired_when_notes_tapped() {
         // Given
         let viewModel = givenViewModel()

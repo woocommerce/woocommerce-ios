@@ -86,6 +86,5 @@ private extension BookingDetailsViewModel.AppointmentDetailsContent {
             value: "Duration",
             comment: "Duration row title in appointment details section in booking details view."
         )
-
     }
 }

@@ -9,6 +9,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let allDay: Bool
     public let cost: String
     public let customerID: Int64
+    public let userID: Int64
     public let dateCreated: Date?
     public let dateModified: Date?
     public let endDate: Date
@@ -41,6 +42,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                 allDay: Bool,
                 cost: String,
                 customerID: Int64,
+                userID: Int64,
                 dateCreated: Date?,
                 dateModified: Date?,
                 endDate: Date,
@@ -62,6 +64,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         self.allDay = allDay
         self.cost = cost
         self.customerID = customerID
+        self.userID = userID
         self.dateCreated = dateCreated
         self.dateModified = dateModified
         self.endDate = endDate
@@ -98,6 +101,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                                                      alternativeTypes: [.decimal(transform: { NSDecimalNumber(decimal: $0).stringValue })]) ?? ""
 
         let customerID = try container.decode(Int64.self, forKey: .customerID)
+        let userID = try container.decodeIfPresent(Int64.self, forKey: .userID) ?? 0
 
         let dateCreated: Date?
         if let dateCreatedValue = try container.decodeIfPresent(
@@ -139,6 +143,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                   allDay: allDay,
                   cost: cost,
                   customerID: customerID,
+                  userID: userID,
                   dateCreated: dateCreated,
                   dateModified: dateModified,
                   endDate: endDate,
@@ -164,6 +169,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         try container.encode(allDay, forKey: .allDay)
         try container.encode(cost, forKey: .cost)
         try container.encode(customerID, forKey: .customerID)
+        try container.encode(userID, forKey: .userID)
         try container.encode(dateCreated, forKey: .dateCreated)
         try container.encode(dateModified, forKey: .dateModified)
         try container.encode(endDate, forKey: .endDate)
@@ -193,6 +199,7 @@ private extension Booking {
         case allDay = "all_day"
         case cost
         case customerID = "customer_id"
+        case userID = "user_id"
         case dateCreated = "date_created"
         case dateModified = "date_modified"
         case endDate = "end"

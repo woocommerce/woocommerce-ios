@@ -105,6 +105,18 @@ public enum BookingAction: Action {
                            onCompletion: (Error?) -> Void)
 
 
+    /// Fetches the booking location from the product endpoint and persists it on the booking.
+    ///
+    /// - Parameter siteID: The site ID.
+    /// - Parameter bookingID: The ID of the booking to update with the location.
+    /// - Parameter productID: The product ID to fetch the booking location from.
+    /// - Parameter onCompletion: called when fetch completes, returns the location string or an error.
+    ///
+    case fetchProductBookingLocation(siteID: Int64,
+                                     bookingID: Int64,
+                                     productID: Int64,
+                                     onCompletion: (Result<String?, Error>) -> Void)
+
     /// Clears the booking cache.
     ///
     /// - Parameter siteID: The site ID of the booking.

@@ -11,6 +11,7 @@
 - [Internal] Unify Jetpack setup flow for JCP sites [https://github.com/woocommerce/woocommerce-ios/pull/16816]
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
 - [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
+- [*] Remove the redundant Price row from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16821]
 
 
 24.3

@@ -341,7 +341,7 @@ public extension BookingsRemote {
         static let order: String           = "order"
         static let orderBy: String         = "orderby"
         static let product: String         = "product"
-        static let user: String             = "user"
+        static let user: String            = "user"
         static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported

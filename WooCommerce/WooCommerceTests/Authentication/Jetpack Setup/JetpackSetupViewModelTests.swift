@@ -268,7 +268,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let connectionService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: true, wpcomCredentials: credentials,
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: true, wpcomCredentials: credentials,
                                               stores: stores, connectionService: connectionService)
 
         var triggeredRetrieveJetpackPluginDetails = false
@@ -306,7 +306,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let connectionService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: false, wpcomCredentials: credentials,
                                               stores: stores, connectionService: connectionService)
 
         var triggeredRetrieveJetpackPluginDetails = false
@@ -407,7 +407,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let connectionService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: false, wpcomCredentials: credentials,
                                               stores: stores, connectionService: connectionService)
         let plugin = SitePlugin.fake().copy(plugin: "Jetpack", status: .active)
 
@@ -482,7 +482,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let connectionService = MockJetpackConnectionService()
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: false, wpcomCredentials: credentials,
                                               stores: stores, connectionService: connectionService)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
@@ -511,7 +511,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let connectionService = MockJetpackConnectionService()
         connectionService.evaluateAndConnectResult = .success(.webViewRequired)
-        let viewModel = JetpackSetupViewModel(siteURL: testURL, connectionOnly: false, wpcomCredentials: credentials,
+        let viewModel = JetpackSetupViewModel(siteURL: testURL, siteID: 0, connectionOnly: false, wpcomCredentials: credentials,
                                               stores: stores, connectionService: connectionService)
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in

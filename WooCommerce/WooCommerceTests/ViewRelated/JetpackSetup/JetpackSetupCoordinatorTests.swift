@@ -108,7 +108,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.failure(JetpackSetupCoordinator.JetpackCheckError.missingPermission))
             default:
                 break
@@ -139,7 +139,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break
@@ -169,7 +169,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 let dotcomUser = DotcomUser.fake().copy(id: expectedAccount.userID, username: expectedAccount.username, email: expectedAccount.email)
                 completion(.success(JetpackConnectionData.fake().copy(currentUser: .fake().copy(wpcomUser: dotcomUser))))
             default:
@@ -199,7 +199,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                                                   featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break
@@ -229,7 +229,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                                                   featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break
@@ -278,7 +278,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                                                   featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break

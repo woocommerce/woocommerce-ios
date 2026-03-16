@@ -124,8 +124,9 @@ private extension JetpackSetupCoordinator {
     ///
     @MainActor
     func startSetupDirectly() async {
-        // If the user already has WPCom credentials (e.g. JCP site logged in with WPCom),
-        // skip the login flow and go directly to setup steps.
+        guard proceedToSetupSteps() == false else {
+            return
+        }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.present(progressView, animated: true)
         await checkConnectionAndAuthenticateIfNeeded(dismissing: progressView)
@@ -133,7 +134,23 @@ private extension JetpackSetupCoordinator {
 
     @MainActor
     func handleBenefitModalCTA() async {
+        guard proceedToSetupSteps() == false else {
+            return
+        }
         await checkConnectionAndAuthenticateIfNeeded(dismissing: rootViewController.presentedViewController)
+    }
+
+    /// If user authenticated with WPCom to JCP site, skip checking connection state
+    func proceedToSetupSteps() -> Bool {
+        if let credentials = stores.sessionManager.defaultCredentials,
+           case let .wpcom(username, authToken, _) = credentials {
+            let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, network: network))
+            requiresConnectionOnly = false
+            showSetupSteps(username: username, authToken: authToken)
+            return true
+        }
+        return false
     }
 
     /// Checks Jetpack connection state, tracks analytics, and starts authentication.
@@ -141,17 +158,6 @@ private extension JetpackSetupCoordinator {
     ///
     @MainActor
     func checkConnectionAndAuthenticateIfNeeded(dismissing viewController: UIViewController? = nil) async {
-        /// If user authenticated with WPCom to JCP site, skip checking connection state
-        if let credentials = stores.sessionManager.defaultCredentials,
-           case let .wpcom(username, authToken, _) = credentials {
-            let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
-            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, network: network))
-            requiresConnectionOnly = false
-            await viewController?.dismiss(animated: true)
-            showSetupSteps(username: username, authToken: authToken)
-            return
-        }
-
         do {
             try await checkJetpackConnectionState()
             await viewController?.dismiss(animated: true)

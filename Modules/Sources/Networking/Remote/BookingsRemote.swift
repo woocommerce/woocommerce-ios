@@ -138,7 +138,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             }
 
             if filters.customerIDs.isNotEmpty {
-                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init)
+                parameters[ParameterKey.user] = filters.customerIDs.map(String.init)
             }
 
             if filters.resourceIDs.isNotEmpty {
@@ -341,7 +341,7 @@ public extension BookingsRemote {
         static let order: String           = "order"
         static let orderBy: String         = "orderby"
         static let product: String         = "product"
-        static let customer: String        = "customer"
+        static let user: String             = "user"
         static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported

@@ -319,7 +319,12 @@ private extension POSTabCoordinator {
                     itemProvider: itemProvider
                 )
 
-                let hostingController = UIHostingController(rootView: posView)
+                let hostingController: UIViewController
+                if UIDevice.current.userInterfaceIdiom == .phone {
+                    hostingController = POSPortraitHostingController(rootView: posView)
+                } else {
+                    hostingController = UIHostingController(rootView: posView)
+                }
                 hostingController.modalPresentationStyle = .fullScreen
                 viewControllerToPresent.present(hostingController, animated: true)
             }

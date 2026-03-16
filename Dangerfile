@@ -30,19 +30,6 @@ require 'txcontext'
 branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'
 danger.import_plugin("#{branch_base}/translation_context_checker.rb")
 
-# Debug: run extraction directly to see errors
-debug_config = Txcontext::Config.new(
-  translations: ['WooCommerce/Resources/en.lproj/Localizable.strings'],
-  source_paths: ['WooCommerce/Classes/'],
-  key_filter: 'test_*',
-  no_cache: true
-)
-debug_extractor = Txcontext::ContextExtractor.new(debug_config)
-debug_extractor.run
-debug_extractor.results.each do |r|
-  warn("txcontext debug — key: #{r.key}, error: #{r.error.inspect}, desc: #{r.description.inspect}")
-end
-
 translation_context_checker.check_context_suggestions(
   translations: 'WooCommerce/Resources/en.lproj/Localizable.strings',
   source_paths: ['WooCommerce/Classes/'],

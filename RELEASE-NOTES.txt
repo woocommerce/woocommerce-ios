@@ -9,6 +9,7 @@
 - [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
 - [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
+- [Internal] Treat ecommerce garden sites as having WooCommerce by default [https://github.com/woocommerce/woocommerce-ios/pull/16820]
 
 
 24.3

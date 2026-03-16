@@ -99,7 +99,7 @@ private extension POSCheckoutView {
                         await paymentModel.startPayment()
                     }
                 } label: {
-                    Text(Localization.tapToPay)
+                    Text(paymentModel.connectionMethod == .tapToPay ? Localization.tapToPay : Localization.cardPayment)
                 }
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
@@ -220,6 +220,11 @@ private extension POSCheckoutView {
             "pos.phone.checkout.tapToPay",
             value: "Tap to Pay",
             comment: "Title for the Tap to Pay button on the phone POS checkout screen"
+        )
+        static let cardPayment = NSLocalizedString(
+            "pos.phone.checkout.cardPayment",
+            value: "Card Payment",
+            comment: "Title for the card payment button on the POS checkout screen when Tap to Pay is not available"
         )
         static let cashPayment = NSLocalizedString(
             "pos.phone.checkout.cashPayment",

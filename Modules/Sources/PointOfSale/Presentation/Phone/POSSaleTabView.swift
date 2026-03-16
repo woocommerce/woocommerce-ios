@@ -36,6 +36,9 @@ struct POSSaleTabView: View {
                 }
             }
             .animation(.spring(duration: 0.3), value: posModel.cart.isNotEmpty)
+            .task {
+                await posModel.purchasableItemsController.loadItems(base: .root)
+            }
             .sheet(isPresented: $isCartExpanded) {
                 POSCartSheetView()
                     .presentationDragIndicator(.visible)

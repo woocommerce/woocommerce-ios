@@ -41,7 +41,7 @@ final class POSPaymentModel {
     private let receiptSender: POSReceiptSending
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
-    private let connectionMethod: CardReaderConnectionMethod
+    let connectionMethod: CardReaderConnectionMethod
     private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let celebration: PaymentCaptureCelebrationProtocol

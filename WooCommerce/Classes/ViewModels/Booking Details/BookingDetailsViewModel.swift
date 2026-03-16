@@ -340,7 +340,6 @@ private extension BookingDetailsViewModel {
             if case .failure(let error) = result {
                 DDLogError("⛔️ Error fetching booking location: \(error)")
             }
-            // On success, the EntityListener will fire `onUpsert` and trigger `updateDisplayProperties`
         }
         stores.dispatch(action)
     }

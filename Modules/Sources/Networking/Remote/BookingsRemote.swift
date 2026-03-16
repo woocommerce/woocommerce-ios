@@ -31,7 +31,7 @@ public protocol BookingsRemoteProtocol {
                         pageNumber: Int,
                         pageSize: Int) async throws -> [BookingResource]
 
-    func fetchProductBookingLocation(siteID: Int64,
+    func fetchProductBookingLocation(for siteID: Int64,
                                      productID: Int64) async throws -> ProductBookingLocation
 }
 
@@ -288,7 +288,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     /// Fetches the `booking_location` field from a product.
     ///
     public func fetchProductBookingLocation(
-        siteID: Int64,
+        for siteID: Int64,
         productID: Int64
     ) async throws -> ProductBookingLocation {
         let path = "products/\(productID)"
@@ -304,7 +304,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             availableAsRESTRequest: true
         )
 
-        return try await enqueue(request, mapper: ProductBookingLocationMapper())
+        return try await enqueue(request)
     }
 }
 

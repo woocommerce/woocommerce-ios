@@ -33,13 +33,7 @@ extension Storage.Booking: ReadOnlyConvertible {
         localTimezone = booking.localTimezone
         currency = booking.currency
         note = booking.note
-
-        // `location` is not part of the booking API response — it's fetched separately
-        // from the product endpoint and persisted here. Guard against nil to avoid
-        // overwriting the cached value during regular booking syncs.
-        if booking.location != nil {
-            location = booking.location
-        }
+        location = booking.location
     }
 
     /// Returns a ReadOnly version of the receiver.

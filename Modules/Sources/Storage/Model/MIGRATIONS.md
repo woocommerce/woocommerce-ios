@@ -2,7 +2,7 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 134 (Release X.X.X.X)
+## Model 134 (Release 24.4.0.0)
 - @adborbas 2026-03-16
   - Added `location` attribute to `Booking` entity.
 

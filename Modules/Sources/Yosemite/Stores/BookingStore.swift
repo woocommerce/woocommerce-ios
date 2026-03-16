@@ -472,24 +472,17 @@ private extension BookingStore {
                                       onCompletion: @escaping (Result<String?, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let result = try await remote.fetchProductBookingLocation(siteID: siteID, productID: productID)
+                let result = try await remote.fetchProductBookingLocation(for: siteID, productID: productID)
                 let location = result.bookingLocation
 
-                await withCheckedContinuation { [weak self] (continuation: CheckedContinuation<Void, Never>) in
-                    guard let self else {
-                        return continuation.resume()
+                storageManager.performAndSave({ storage in
+                    guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else {
+                        return
                     }
-                    storageManager.performAndSave({ storage in
-                        guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else {
-                            return
-                        }
-                        storageBooking.location = location
-                    }, completion: {
-                        continuation.resume()
-                    }, on: .main)
-                }
-
-                onCompletion(.success(location))
+                    storageBooking.location = location
+                }, completion: {
+                    onCompletion(.success(location))
+                }, on: .main)
             } catch {
                 onCompletion(.failure(error))
             }

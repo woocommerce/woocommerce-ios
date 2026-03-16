@@ -80,7 +80,7 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
         return try result.get()
     }
 
-    func fetchProductBookingLocation(siteID: Int64, productID: Int64) async throws -> ProductBookingLocation {
+    func fetchProductBookingLocation(for siteID: Int64, productID: Int64) async throws -> ProductBookingLocation {
         guard let result = fetchProductBookingLocationResult else {
             throw NetworkError.timeout()
         }

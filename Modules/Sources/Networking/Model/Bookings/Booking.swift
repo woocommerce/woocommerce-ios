@@ -136,7 +136,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         let currency = try container.decode(String.self, forKey: .currency)
         let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
         let note = try container.decode(String.self, forKey: .note)
-        let location: String? = nil // fetched separately from the product endpoint
+        let location: String? = nil
 
         self.init(siteID: siteID,
                   bookingID: bookingID,

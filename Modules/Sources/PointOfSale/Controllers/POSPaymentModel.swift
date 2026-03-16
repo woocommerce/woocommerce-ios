@@ -337,6 +337,10 @@ extension POSPaymentModel {
 // MARK: - Reader Reconnection
 extension POSPaymentModel {
     func observeReaderReconnection() {
+        // Tap to Pay doesn't need reconnection observation — the built-in reader
+        // connects on demand when the user taps "Tap to Pay", not automatically.
+        guard connectionMethod == .bluetooth else { return }
+
         cardReaderDisconnection = cardPresentPaymentService.readerConnectionStatusPublisher
             .filter({ $0 == .disconnected })
             .sink { [weak self] _ in

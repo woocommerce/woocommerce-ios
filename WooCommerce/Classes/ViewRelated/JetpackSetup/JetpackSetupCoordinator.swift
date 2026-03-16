@@ -24,6 +24,7 @@ final class JetpackSetupCoordinator {
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
 
+    private let onCompletion: (() -> Void)?
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
 
@@ -50,7 +51,8 @@ final class JetpackSetupCoordinator {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         onCompletion: (() -> Void)? = nil) {
         self.site = site
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
@@ -58,6 +60,7 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.onCompletion = onCompletion
         self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
     }
 
@@ -296,12 +299,11 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             switch result {
             case .success(let site):
-                stores.updateDefaultStore(storeID: site.siteID) // this triggers reloading Dashboard and Menu
-
                 if case .wpcom = previousCredentials {
                     stores.updateDefaultStore(site)
                     dismiss()
                 } else {
+                    stores.updateDefaultStore(storeID: site.siteID)
                     stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
                     stores.synchronizeEntities { [weak self] in
                         self?.stores.updateDefaultStore(site)
@@ -313,6 +315,7 @@ private extension JetpackSetupCoordinator {
                     rootViewController.dismiss(animated: true, completion: { [weak self] in
                         self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()
+                        self?.onCompletion?()
                         progressView.dismiss(animated: true)
                     })
                 }

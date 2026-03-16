@@ -412,7 +412,10 @@ private extension SettingsViewController {
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
         let coordinator = JetpackSetupCoordinator(site: site,
-                                                  rootViewController: navigationController)
+                                                  rootViewController: navigationController,
+                                                  onCompletion: { [weak self] in
+            self?.viewModel.reloadSettings()
+        })
         self.jetpackSetupCoordinator = coordinator
         coordinator.startSetup()
     }

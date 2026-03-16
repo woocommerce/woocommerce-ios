@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Phone POS Designs — WooCommerce iOS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary: #f5f5f7;
+      --bg-secondary: #ffffff;
+      --bg-tertiary: #e5e5e7;
+      --border: #d1d1d6;
+      --text-primary: #1d1d1f;
+      --text-secondary: #86868b;
+      --text-tertiary: #aeaeb2;
+      --accent: #0071e3;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-primary: #1d1d1f;
+        --bg-secondary: #2d2d2f;
+        --bg-tertiary: #3d3d3f;
+        --border: #424245;
+        --text-primary: #f5f5f7;
+        --text-secondary: #86868b;
+        --text-tertiary: #636366;
+        --accent: #0a84ff;
+      }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.4rem; font-weight: 600; margin: 2.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin: 1.5rem 0 0.5rem; }
+    .subtitle { color: var(--text-secondary); margin-bottom: 1rem; }
+    .meta { color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 2rem; }
+
+    .decision-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .decision-box p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem; }
+
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
+    @media (max-width: 700px) { .split { grid-template-columns: 1fr; } }
+
+    .triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    @media (max-width: 900px) { .triple { grid-template-columns: 1fr; } }
+
+    .quad { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+    @media (max-width: 1100px) { .quad { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .quad { grid-template-columns: 1fr; } }
+
+    .mockup {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .mockup-header {
+      background: var(--bg-tertiary);
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+    .mockup-body { padding: 0; }
+
+    .section-notes {
+      background: var(--bg-secondary);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .section-notes ul { margin-left: 1.25rem; color: var(--text-secondary); font-size: 0.9rem; }
+    .section-notes li { margin-bottom: 0.25rem; }
+  </style>
+</head>
+<body>
+
+<h1>Phone POS Designs</h1>
+<p class="subtitle">WooCommerce iOS — Adapting POS from iPad landscape to iPhone portrait</p>
+<p class="meta">Last updated: 2026-03-16 13:30 UTC</p>
+
+<!-- ============================================================ -->
+<h2>1. Building Stage — Catalog + Cart</h2>
+
+<div class="decision-box">
+  <strong>Decision:</strong> Persistent cart bar with pull-up sheet
+  <p><strong>Reasoning:</strong> Merchants need to see cart changes as they tap items. A bottom bar showing ~1.5 rows of cart items provides visual feedback (items animate in), while maximizing catalog browsing space. The sheet can be expanded for full cart management.</p>
+  <p><strong>Product list:</strong> Rows, not a grid — matching the current iPad layout. Long product names and variations display more effectively in rows.</p>
+</div>
+
+<div class="split">
+  <!-- Building state -->
+  <div class="mockup">
+    <div class="mockup-header">Collapsed — Adding Items</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:580px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:8px 12px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; font-size:15px;">☰ Products</span>
+          <span style="font-size:12px; color:#888;">Coupons</span>
+        </div>
+        <div style="padding:8px 12px;">
+          <div style="background:#2a2a3e; border-radius:8px; padding:8px 12px; font-size:12px; color:#666;">🔍 Search products...</div>
+        </div>
+        <div style="flex:1; padding:0 8px; overflow:hidden;">
+          <div style="background:#2a2a3e; border-radius:8px; padding:12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Espresso</div><div style="font-size:11px; color:#888;">Single shot</div></div>
+            </div>
+            <span style="font-size:13px;">$4.50</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Latte</div><div style="font-size:11px; color:#888;">Regular</div></div>
+            </div>
+            <span style="font-size:13px;">$5.50</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Blueberry Muffin</div><div style="font-size:11px; color:#888;">Freshly baked</div></div>
+            </div>
+            <span style="font-size:13px;">$3.00</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Croissant</div><div style="font-size:11px; color:#888;">Butter</div></div>
+            </div>
+            <span style="font-size:13px;">$3.50</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:12px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Bagel</div><div style="font-size:11px; color:#888;">Plain</div></div>
+            </div>
+            <span style="font-size:13px;">$2.50</span>
+          </div>
+        </div>
+        <!-- Cart peek area -->
+        <div style="background:#222240; border-top:2px solid #4a6cf7; border-radius:16px 16px 0 0;">
+          <div style="padding:8px 0 4px; text-align:center;">
+            <div style="width:36px; height:4px; background:#555; border-radius:2px; margin:0 auto;"></div>
+          </div>
+          <div style="padding:0 14px 6px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:600; font-size:13px;">Cart (3)</span>
+            <span style="font-size:11px; color:#888;">Clear</span>
+          </div>
+          <div style="padding:0 14px; overflow:hidden; max-height:72px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#2e2e50; border-radius:8px; margin-bottom:4px; border:1px solid rgba(74,108,247,0.3); box-shadow:0 0 8px rgba(74,108,247,0.15);">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div style="background:#333; width:28px; height:28px; border-radius:4px;"></div>
+                <div><div style="font-size:12px; font-weight:500;">Muffin</div><div style="font-size:10px; color:#888;">Just added</div></div>
+              </div>
+              <span style="font-size:12px;">$3.00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#2a2a3e; border-radius:8px; margin-bottom:4px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <div style="background:#333; width:28px; height:28px; border-radius:4px;"></div>
+                <div><div style="font-size:12px; font-weight:500;">Latte</div><div style="font-size:10px; color:#888;">Qty: 1</div></div>
+              </div>
+              <span style="font-size:12px;">$5.50</span>
+            </div>
+          </div>
+          <div style="height:12px; background:linear-gradient(to bottom, transparent, #222240);"></div>
+          <div style="padding:4px 14px 14px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; font-size:14px;">$13.00</span>
+            <span style="background:#4a6cf7; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600;">Checkout</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart expanded -->
+  <div class="mockup">
+    <div class="mockup-header">Expanded — Full Cart (pulled up)</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:580px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:8px 12px; opacity:0.3; border-bottom:1px solid #333;">
+          <span style="font-weight:600; font-size:15px;">☰ Products</span>
+        </div>
+        <div style="flex:0 0 40px; opacity:0.15; padding:8px 12px;">
+          <div style="background:#2a2a3e; border-radius:8px; padding:8px 12px; font-size:12px; color:#666;">🔍 Search...</div>
+        </div>
+        <div style="flex:1; background:#222240; border-radius:16px 16px 0 0; display:flex; flex-direction:column; box-shadow:0 -4px 20px rgba(0,0,0,0.4);">
+          <div style="padding:8px 0 4px; text-align:center;">
+            <div style="width:36px; height:4px; background:#555; border-radius:2px; margin:0 auto;"></div>
+          </div>
+          <div style="padding:0 14px 8px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; font-size:15px;">Cart (3)</span>
+            <span style="font-size:12px; color:#4a6cf7;">Clear all</span>
+          </div>
+          <div style="flex:1; padding:0 14px; overflow:hidden;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#2a2a3e; border-radius:8px; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+                <div><div style="font-size:13px; font-weight:500;">Muffin</div><div style="font-size:11px; color:#888;">Qty: 1</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:13px;">$3.00</span>
+                <span style="color:#ff6b6b; font-size:14px;">✕</span>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#2a2a3e; border-radius:8px; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+                <div><div style="font-size:13px; font-weight:500;">Latte</div><div style="font-size:11px; color:#888;">Qty: 1</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:13px;">$5.50</span>
+                <span style="color:#ff6b6b; font-size:14px;">✕</span>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#2a2a3e; border-radius:8px; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="background:#333; width:36px; height:36px; border-radius:6px;"></div>
+                <div><div style="font-size:13px; font-weight:500;">Espresso</div><div style="font-size:11px; color:#888;">Qty: 1</div></div>
+              </div>
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:13px;">$4.50</span>
+                <span style="color:#ff6b6b; font-size:14px;">✕</span>
+              </div>
+            </div>
+          </div>
+          <div style="padding:10px 14px; border-top:1px solid #333;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:3px;"><span>Subtotal</span><span>$13.00</span></div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:8px;"><span>Tax</span><span>$1.17</span></div>
+            <div style="display:flex; justify-content:space-between; font-weight:700; font-size:16px; margin-bottom:10px;"><span>Total</span><span>$14.17</span></div>
+            <div style="background:#4a6cf7; padding:12px; border-radius:10px; text-align:center; font-weight:600; font-size:14px;">Collect Payment</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>2. Checkout Screen</h2>
+
+<div class="decision-box">
+  <strong>Decision:</strong> Pushed screen with cart review, prominent total, two stacked payment buttons
+  <p><strong>Reasoning:</strong> The checkout screen is the final confirmation before payment. Cart contents and grand total are the priority — no reader status or connection UI. On phone, the primary card method is Tap to Pay (system UI takeover). Two simple buttons: "Tap to Pay" (primary) and "Cash Payment" (secondary), stacked vertically.</p>
+</div>
+
+<div class="split">
+  <!-- Checkout screen -->
+  <div class="mockup">
+    <div class="mockup-header">Checkout — Cart Review</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:580px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:10px 14px; border-bottom:1px solid #333; display:flex; align-items:center;">
+          <span style="color:#4a6cf7; font-size:14px;">‹ Back</span>
+          <span style="font-weight:600; font-size:16px; flex:1; text-align:center; margin-right:40px;">Checkout</span>
+        </div>
+        <div style="flex:1; padding:12px 14px; overflow:hidden;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="background:#333; width:40px; height:40px; border-radius:8px;"></div>
+              <div><div style="font-size:14px; font-weight:500;">Espresso</div><div style="font-size:12px; color:#888;">Qty: 1</div></div>
+            </div>
+            <span style="font-size:14px; font-weight:500;">$4.50</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="background:#333; width:40px; height:40px; border-radius:8px;"></div>
+              <div><div style="font-size:14px; font-weight:500;">Latte</div><div style="font-size:12px; color:#888;">Qty: 1</div></div>
+            </div>
+            <span style="font-size:14px; font-weight:500;">$5.50</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="background:#333; width:40px; height:40px; border-radius:8px;"></div>
+              <div><div style="font-size:14px; font-weight:500;">Muffin</div><div style="font-size:12px; color:#888;">Qty: 1</div></div>
+            </div>
+            <span style="font-size:14px; font-weight:500;">$3.00</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="background:#333; width:40px; height:40px; border-radius:8px;"></div>
+              <div><div style="font-size:14px; font-weight:500;">Croissant</div><div style="font-size:12px; color:#888;">Qty: 2</div></div>
+            </div>
+            <span style="font-size:14px; font-weight:500;">$7.00</span>
+          </div>
+        </div>
+        <div style="padding:14px; background:#222240; border-top:1px solid #333;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:3px;"><span>Subtotal</span><span>$20.00</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:10px;"><span>Taxes</span><span>$1.80</span></div>
+          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:22px; margin-bottom:16px;"><span>Total</span><span>$21.80</span></div>
+          <div style="background:#4a6cf7; padding:14px; border-radius:10px; text-align:center; font-weight:600; font-size:15px; margin-bottom:8px;">Tap to Pay</div>
+          <div style="border:1.5px solid #555; padding:14px; border-radius:10px; text-align:center; font-weight:500; font-size:15px; color:#ccc;">Cash Payment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tap to Pay takeover -->
+  <div class="mockup">
+    <div class="mockup-header">Tap to Pay — System UI Takeover</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:580px; font-family:system-ui; font-size:13px; background:#000; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:rgba(255,255,255,0.5);"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px;">
+          <div style="font-size:28px; font-weight:300; color:#fff; margin-bottom:6px;">$21.80</div>
+          <div style="font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:40px;">WooCommerce POS</div>
+          <div style="width:100px; height:100px; border:2px solid rgba(255,255,255,0.3); border-radius:20px; display:flex; align-items:center; justify-content:center; margin-bottom:20px;">
+            <div style="font-size:40px; opacity:0.6;">📶</div>
+          </div>
+          <div style="font-size:16px; color:#fff; font-weight:500; margin-bottom:8px;">Ready to Read</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.5); text-align:center; line-height:1.5;">Hold contactless card or device<br>near the top of iPhone</div>
+        </div>
+        <div style="padding:16px; text-align:center;">
+          <span style="color:#4a6cf7; font-size:15px;">Cancel</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>3. Payment Result States</h2>
+
+<div class="decision-box">
+  <strong>Decision:</strong> Full-screen takeover for processing, success, and error — same as iPad
+  <p><strong>Reasoning:</strong> These states already work well at any screen size. They're simple centered layouts with an icon, message, and action buttons. No adaptation needed.</p>
+</div>
+
+<div class="triple">
+  <div class="mockup">
+    <div class="mockup-header">Processing</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:400px; font-family:system-ui; font-size:13px; background:#2a3a6e; color:#e0e0e0; overflow:hidden;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px;">
+          <div style="width:80px; height:80px; border:4px solid rgba(255,255,255,0.2); border-top-color:#fff; border-radius:50%; margin-bottom:24px;"></div>
+          <div style="font-size:20px; font-weight:700; margin-bottom:8px;">Processing</div>
+          <div style="font-size:14px; color:rgba(255,255,255,0.7); text-align:center;">Please wait while we process the payment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Success</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:400px; font-family:system-ui; font-size:13px; background:#1e2a1e; color:#e0e0e0; overflow:hidden;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px;">
+          <div style="width:64px; height:64px; border-radius:50%; background:#4caf50; display:flex; align-items:center; justify-content:center; margin-bottom:20px; font-size:32px;">✓</div>
+          <div style="font-size:20px; font-weight:700; margin-bottom:8px;">Payment successful</div>
+          <div style="font-size:14px; color:rgba(255,255,255,0.7); margin-bottom:28px;">$21.80 paid</div>
+          <div style="width:100%; max-width:240px;">
+            <div style="background:#4a6cf7; padding:12px; border-radius:10px; text-align:center; font-weight:600; font-size:14px; margin-bottom:8px;">New order</div>
+            <div style="border:1px solid #555; padding:12px; border-radius:10px; text-align:center; font-size:14px; color:#ccc;">Send receipt</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Error</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:400px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px;">
+          <div style="width:64px; height:64px; border-radius:50%; background:#ff3b30; display:flex; align-items:center; justify-content:center; margin-bottom:20px; font-size:28px; color:#fff;">✕</div>
+          <div style="font-size:20px; font-weight:700; margin-bottom:8px;">Payment failed</div>
+          <div style="font-size:14px; color:rgba(255,255,255,0.7); margin-bottom:28px; text-align:center;">Card was declined</div>
+          <div style="width:100%; max-width:240px;">
+            <div style="background:#4a6cf7; padding:12px; border-radius:10px; text-align:center; font-weight:600; font-size:14px; margin-bottom:8px;">Try again</div>
+            <div style="border:1px solid #555; padding:12px; border-radius:10px; text-align:center; font-size:14px; color:#ccc;">Back to checkout</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>4. Tab Bar Navigation & Secondary Features</h2>
+
+<div class="decision-box">
+  <strong>Decision:</strong> Bottom tab bar with four tabs: Sale | Orders | Bookings | Settings
+  <p><strong>Reasoning:</strong> The iPad's floating control menu doesn't work on phone. A tab bar gives direct access to all feature areas. The tab bar is hidden during checkout and payment (full-screen push). Orders and Bookings use their existing compact layouts. "Exit Point of Sale" lives in Settings.</p>
+</div>
+
+<div class="quad">
+  <!-- Sale tab -->
+  <div class="mockup">
+    <div class="mockup-header">Sale Tab — Building</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:540px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:8px 12px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-weight:600; font-size:15px;">Products</span>
+          <span style="font-size:12px; color:#888;">Coupons</span>
+        </div>
+        <div style="padding:6px 12px;">
+          <div style="background:#2a2a3e; border-radius:8px; padding:7px 10px; font-size:12px; color:#666;">🔍 Search...</div>
+        </div>
+        <div style="flex:1; padding:0 8px; overflow:hidden;">
+          <div style="background:#2a2a3e; border-radius:8px; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="background:#333; width:32px; height:32px; border-radius:6px;"></div>
+              <div><div style="font-size:12px; font-weight:500;">Espresso</div><div style="font-size:10px; color:#888;">Single shot</div></div>
+            </div>
+            <span style="font-size:12px;">$4.50</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="background:#333; width:32px; height:32px; border-radius:6px;"></div>
+              <div><div style="font-size:12px; font-weight:500;">Latte</div><div style="font-size:10px; color:#888;">Regular</div></div>
+            </div>
+            <span style="font-size:12px;">$5.50</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="background:#333; width:32px; height:32px; border-radius:6px;"></div>
+              <div><div style="font-size:12px; font-weight:500;">Blueberry Muffin</div><div style="font-size:10px; color:#888;">Freshly baked</div></div>
+            </div>
+            <span style="font-size:12px;">$3.00</span>
+          </div>
+          <div style="background:#2a2a3e; border-radius:8px; padding:10px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="background:#333; width:32px; height:32px; border-radius:6px;"></div>
+              <div><div style="font-size:12px; font-weight:500;">Croissant</div><div style="font-size:10px; color:#888;">Butter</div></div>
+            </div>
+            <span style="font-size:12px;">$3.50</span>
+          </div>
+        </div>
+        <!-- Cart peek -->
+        <div style="background:#222240; border-top:2px solid #4a6cf7; border-radius:14px 14px 0 0;">
+          <div style="padding:6px 0 3px; text-align:center;"><div style="width:32px; height:3px; background:#555; border-radius:2px; margin:0 auto;"></div></div>
+          <div style="padding:0 12px 4px; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+            <span style="font-weight:600;">Cart (3)</span><span style="color:#888; font-size:10px;">Clear</span>
+          </div>
+          <div style="padding:0 12px; max-height:56px; overflow:hidden;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:#2e2e50; border-radius:6px; margin-bottom:3px; border:1px solid rgba(74,108,247,0.3); font-size:11px;">
+              <span>Muffin</span><span>$3.00</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:#2a2a3e; border-radius:6px; font-size:11px;">
+              <span>Latte</span><span>$5.50</span>
+            </div>
+          </div>
+          <div style="height:8px; background:linear-gradient(to bottom, transparent, #222240);"></div>
+          <div style="padding:2px 12px 10px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; font-size:13px;">$13.00</span>
+            <span style="background:#4a6cf7; padding:6px 14px; border-radius:7px; font-size:12px; font-weight:600;">Checkout</span>
+          </div>
+        </div>
+        <!-- Tab bar -->
+        <div style="display:flex; border-top:1px solid #333; background:#1a1a2e; padding:6px 0 10px;">
+          <div style="flex:1; text-align:center; font-size:10px; color:#4a6cf7;"><div style="font-size:16px; margin-bottom:1px;">💳</div>Sale</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">📋</div>Orders</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">📅</div>Bookings</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">⚙️</div>Settings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout (tabs hidden) -->
+  <div class="mockup">
+    <div class="mockup-header">Checkout — Tabs Hidden</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:540px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:10px 14px; border-bottom:1px solid #333; display:flex; align-items:center;">
+          <span style="color:#4a6cf7; font-size:14px;">‹ Back</span>
+          <span style="font-weight:600; font-size:16px; flex:1; text-align:center; margin-right:40px;">Checkout</span>
+        </div>
+        <div style="flex:1; padding:12px 14px; overflow:hidden;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:7px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:7px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Espresso</div><div style="font-size:11px; color:#888;">Qty: 1</div></div>
+            </div>
+            <span style="font-size:13px; font-weight:500;">$4.50</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:7px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:7px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Latte</div><div style="font-size:11px; color:#888;">Qty: 1</div></div>
+            </div>
+            <span style="font-size:13px; font-weight:500;">$5.50</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; background:#2a2a3e; border-radius:10px; margin-bottom:7px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="background:#333; width:36px; height:36px; border-radius:7px;"></div>
+              <div><div style="font-size:13px; font-weight:500;">Muffin</div><div style="font-size:11px; color:#888;">Qty: 1</div></div>
+            </div>
+            <span style="font-size:13px; font-weight:500;">$3.00</span>
+          </div>
+        </div>
+        <div style="padding:14px; background:#222240; border-top:1px solid #333;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:3px;"><span>Subtotal</span><span>$13.00</span></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:10px;"><span>Taxes</span><span>$1.17</span></div>
+          <div style="display:flex; justify-content:space-between; font-weight:800; font-size:20px; margin-bottom:14px;"><span>Total</span><span>$14.17</span></div>
+          <div style="background:#4a6cf7; padding:13px; border-radius:10px; text-align:center; font-weight:600; font-size:14px; margin-bottom:7px;">Tap to Pay</div>
+          <div style="border:1.5px solid #555; padding:13px; border-radius:10px; text-align:center; font-weight:500; font-size:14px; color:#ccc;">Cash Payment</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders tab -->
+  <div class="mockup">
+    <div class="mockup-header">Orders Tab</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:540px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:10px 14px; border-bottom:1px solid #333;">
+          <span style="font-weight:600; font-size:16px;">Orders</span>
+        </div>
+        <div style="flex:1; padding:10px 14px; overflow:hidden;">
+          <div style="background:#2a2a3e; border-radius:10px; padding:12px; margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-weight:600; font-size:13px;">Order #1042</span>
+              <span style="font-size:12px; color:#4caf50;">Completed</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#888;">
+              <span>3 items</span><span>$14.17</span>
+            </div>
+          </div>
+          <div style="background:#2a2a3e; border-radius:10px; padding:12px; margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-weight:600; font-size:13px;">Order #1041</span>
+              <span style="font-size:12px; color:#4caf50;">Completed</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#888;">
+              <span>1 item</span><span>$5.50</span>
+            </div>
+          </div>
+          <div style="background:#2a2a3e; border-radius:10px; padding:12px; margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-weight:600; font-size:13px;">Order #1040</span>
+              <span style="font-size:12px; color:#ff9f0a;">Refunded</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#888;">
+              <span>2 items</span><span>$8.00</span>
+            </div>
+          </div>
+          <div style="background:#2a2a3e; border-radius:10px; padding:12px; margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span style="font-weight:600; font-size:13px;">Order #1039</span>
+              <span style="font-size:12px; color:#4caf50;">Completed</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#888;">
+              <span>5 items</span><span>$27.50</span>
+            </div>
+          </div>
+        </div>
+        <!-- Tab bar -->
+        <div style="display:flex; border-top:1px solid #333; background:#1a1a2e; padding:6px 0 10px;">
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">💳</div>Sale</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#4a6cf7;"><div style="font-size:16px; margin-bottom:1px;">📋</div>Orders</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">📅</div>Bookings</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">⚙️</div>Settings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings tab -->
+  <div class="mockup">
+    <div class="mockup-header">Settings Tab</div>
+    <div class="mockup-body">
+      <div style="display:flex; flex-direction:column; height:540px; font-family:system-ui; font-size:13px; background:#1a1a2e; color:#e0e0e0; overflow:hidden;">
+        <div style="padding:6px 12px; font-size:10px; display:flex; justify-content:space-between; color:#888;"><span>9:41</span><span>⚡ 85%</span></div>
+        <div style="padding:10px 14px; border-bottom:1px solid #333;">
+          <span style="font-weight:600; font-size:16px;">Settings</span>
+        </div>
+        <div style="flex:1; padding:10px 14px; overflow:hidden;">
+          <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; padding:0 4px;">Hardware</div>
+          <div style="background:#2a2a3e; border-radius:10px; margin-bottom:16px;">
+            <div style="padding:12px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333;">
+              <span style="font-size:13px;">Card Reader</span>
+              <span style="font-size:12px; color:#888;">Not connected ›</span>
+            </div>
+            <div style="padding:12px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px;">Barcode Scanner</span>
+              <span style="font-size:12px; color:#888;">›</span>
+            </div>
+          </div>
+          <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; padding:0 4px;">Store</div>
+          <div style="background:#2a2a3e; border-radius:10px; margin-bottom:16px;">
+            <div style="padding:12px 14px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333;">
+              <span style="font-size:13px;">Store Info</span>
+              <span style="font-size:12px; color:#888;">›</span>
+            </div>
+            <div style="padding:12px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px;">Local Catalog</span>
+              <span style="font-size:12px; color:#888;">›</span>
+            </div>
+          </div>
+          <div style="font-size:11px; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; padding:0 4px;">Support</div>
+          <div style="background:#2a2a3e; border-radius:10px; margin-bottom:24px;">
+            <div style="padding:12px 14px; display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:13px;">Help</span>
+              <span style="font-size:12px; color:#888;">›</span>
+            </div>
+          </div>
+          <div style="border:1.5px solid #ff3b30; padding:12px; border-radius:10px; text-align:center; font-size:14px; color:#ff3b30; font-weight:500;">
+            Exit Point of Sale
+          </div>
+        </div>
+        <!-- Tab bar -->
+        <div style="display:flex; border-top:1px solid #333; background:#1a1a2e; padding:6px 0 10px;">
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">💳</div>Sale</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">📋</div>Orders</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#666;"><div style="font-size:16px; margin-bottom:1px;">📅</div>Bookings</div>
+          <div style="flex:1; text-align:center; font-size:10px; color:#4a6cf7;"><div style="font-size:16px; margin-bottom:1px;">⚙️</div>Settings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<h2>5. Platform & Rollout</h2>
+
+<div class="section-notes">
+  <ul>
+    <li><strong>Phone orientation:</strong> Portrait only — no landscape support</li>
+    <li><strong>iPad:</strong> No changes — existing landscape layout remains as-is</li>
+    <li><strong>Feature flag:</strong> Phone POS behind a feature flag for gradual rollout</li>
+    <li><strong>Existing compact layouts:</strong> Orders, Bookings, and Settings already adapt to compact size class — no redesign needed</li>
+  </ul>
+</div>
+
+</body>
+</html>

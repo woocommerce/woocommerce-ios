@@ -19,13 +19,13 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_retrieveJetpackPluginDetails_correctly_returns_parsed_plugin() throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            remote.retrieveJetpackPluginDetails { result in
+            remote.retrieveJetpackPluginDetails(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -40,14 +40,14 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_retrieveJetpackPluginDetails_properly_relays_errors() {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            remote.retrieveJetpackPluginDetails { result in
+            remote.retrieveJetpackPluginDetails(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -59,13 +59,13 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_installJetpackPlugin_correctly_returns_parsed_plugin() throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "wp/v2/plugins"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            remote.installJetpackPlugin { result in
+            remote.installJetpackPlugin(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -80,14 +80,14 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_installJetpackPlugin_properly_relays_errors() {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "wp/v2/plugins"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            remote.installJetpackPlugin { result in
+            remote.installJetpackPlugin(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -99,13 +99,13 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_activateJetpackPlugin_correctly_returns_parsed_plugin() throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            remote.activateJetpackPlugin { result in
+            remote.activateJetpackPlugin(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -120,14 +120,14 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_activateJetpackPlugin_properly_relays_errors() {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            remote.activateJetpackPlugin { result in
+            remote.activateJetpackPlugin(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -139,7 +139,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_fetchJetpackConnectionURL_correctly_returns_parsed_url() throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/url"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-url")
 
@@ -159,7 +159,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_fetchJetpackConnectionURL_properly_relays_errors() {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/url"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
@@ -178,13 +178,13 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_fetchJetpackConnectionData_correctly_returns_parsed_user() throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/data"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connected-user")
 
         // When
         let result: Result<JetpackConnectionData, Error> = waitFor { promise in
-            remote.fetchJetpackConnectionData { result in
+            remote.fetchJetpackConnectionData(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -198,14 +198,14 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_fetchJetpackConnectionData_properly_relays_errors() {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/data"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
 
         // When
         let result: Result<JetpackConnectionData, Error> = waitFor { promise in
-            remote.fetchJetpackConnectionData { result in
+            remote.fetchJetpackConnectionData(siteID: 123) { result in
                 promise(result)
             }
         }
@@ -217,7 +217,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_registerSite_correctly_returns_blogID() async throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/register"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration")
 
@@ -230,7 +230,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_registerSite_properly_relays_errors() async {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/register"
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: expectedError)
@@ -246,7 +246,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_registerSite_throws_invalidAuthorizationURL_error_for_malformed_URL() async {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/connection/register"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-registration-invalid")
 
@@ -261,7 +261,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_provisionConnection_correctly_returns_provision_response() async throws {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/remote_provision"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-provision")
 
@@ -276,7 +276,7 @@ final class JetpackConnectionRemoteTests: XCTestCase {
 
     func test_provisionConnection_properly_relays_errors() async {
         // Given
-        let remote = JetpackConnectionRemote(siteURL: siteURL, siteID: 123, network: network)
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
         let urlSuffix = "/jetpack/v4/remote_provision"
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: expectedError)

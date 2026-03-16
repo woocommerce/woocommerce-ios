@@ -58,7 +58,7 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-        self.jetpackConnectionService = JetpackConnectionService(stores: stores)
+        self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
     }
 
     /// Single entry point for starting Jetpack setup.
@@ -145,7 +145,7 @@ private extension JetpackSetupCoordinator {
         if let credentials = stores.sessionManager.defaultCredentials,
            case let .wpcom(username, authToken, _) = credentials {
             let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
-            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, siteID: site.siteID, network: network))
+            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, network: network))
             requiresConnectionOnly = false
             await viewController?.dismiss(animated: true)
             showSetupSteps(username: username, authToken: authToken)
@@ -252,6 +252,7 @@ private extension JetpackSetupCoordinator {
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
+                                                    siteID: site.siteID,
                                                     connectionOnly: requiresConnectionOnly,
                                                     wpcomCredentials: credentials,
                                                     onStoreNavigation: { [weak self] _ in

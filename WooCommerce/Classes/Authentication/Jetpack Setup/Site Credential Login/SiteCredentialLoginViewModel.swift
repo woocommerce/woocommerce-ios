@@ -83,13 +83,13 @@ private extension SiteCredentialLoginViewModel {
                                                            loginURL: loginURL,
                                                            adminURL: adminURL)
         let network = WordPressOrgNetwork(configuration: config)
-        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, siteID: WooConstants.placeholderStoreID, network: network)
+        let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
     }
 
     func retrieveJetpackPluginDetails() {
         // Retrieves Jetpack plugin details to see if the authentication succeeds.
-        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: WooConstants.placeholderStoreID) { [weak self] result in
             guard let self else { return }
             self.isLoggingIn = false
             switch result {

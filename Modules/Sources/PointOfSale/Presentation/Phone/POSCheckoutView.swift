@@ -5,9 +5,14 @@ struct POSCheckoutView: View {
     @Environment(POSPaymentModel.self) private var paymentModel
     @Binding var isPresented: Bool
 
+    @StateObject private var modalManager = POSModalManager()
+    @StateObject private var sheetManager = POSSheetManager()
+    @StateObject private var coverManager = POSFullScreenCoverManager()
+
     private let viewHelper = TotalsViewHelper()
 
     var body: some View {
+        @Bindable var paymentModel = paymentModel
         NavigationStack {
             VStack(spacing: .zero) {
                 cartItemsList
@@ -29,6 +34,24 @@ struct POSCheckoutView: View {
                 }
             }
         }
+        .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, onDismiss: {
+            paymentModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }) { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        }
+        .posModal(item: $paymentModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+            paymentModel.cancelCardPaymentsOnboarding()
+        }) { factory in
+            PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
+                onboardingViewContainer: factory,
+                onDismissTap: {
+                    paymentModel.cancelCardPaymentsOnboarding()
+                }))
+        }
+        .environmentObject(modalManager)
+        .environmentObject(sheetManager)
+        .environmentObject(coverManager)
         .fullScreenCover(isPresented: fullScreenPaymentBinding) {
             paymentFullScreenContent
         }

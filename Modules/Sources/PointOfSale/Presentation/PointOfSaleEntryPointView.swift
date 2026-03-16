@@ -203,6 +203,7 @@ public struct PointOfSaleEntryPointView: View {
                 barcodeScanService: barcodeScanService,
                 receiptSender: receiptSender,
                 siteID: siteID,
+                connectionMethod: UIDevice.current.userInterfaceIdiom == .phone ? .tapToPay : .bluetooth,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible)
         }

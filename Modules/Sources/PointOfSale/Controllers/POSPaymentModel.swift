@@ -41,6 +41,7 @@ final class POSPaymentModel {
     private let receiptSender: POSReceiptSending
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
+    private let connectionMethod: CardReaderConnectionMethod
     private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let celebration: PaymentCaptureCelebrationProtocol
@@ -64,6 +65,7 @@ final class POSPaymentModel {
          receiptSender: POSReceiptSending,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
+         connectionMethod: CardReaderConnectionMethod = .bluetooth,
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
@@ -74,6 +76,7 @@ final class POSPaymentModel {
         self.receiptSender = receiptSender
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
+        self.connectionMethod = connectionMethod
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.celebration = celebration
@@ -159,7 +162,7 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: connectionMethod, channel: .pos)
     }
 
     func cancelThenCollectPayment() {
@@ -177,7 +180,7 @@ extension POSPaymentModel {
     func connectCardReader() {
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor [weak self] in
-            _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+            _ = try await self?.cardPresentPaymentService.connectReader(using: self?.connectionMethod ?? .bluetooth)
         }
     }
 

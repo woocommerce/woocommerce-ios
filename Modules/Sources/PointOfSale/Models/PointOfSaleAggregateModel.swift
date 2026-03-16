@@ -119,6 +119,7 @@ protocol PointOfSaleAggregateModelProtocol {
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
+         connectionMethod: CardReaderConnectionMethod = .bluetooth,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          isLocalCatalogEligible: Bool = false) {
         self.entryPointController = entryPointController
@@ -154,6 +155,7 @@ protocol PointOfSaleAggregateModelProtocol {
                     weakSelf?.startNewCart()
                     weakSelf?.barcodeScanned(barcode)
                 }),
+            connectionMethod: connectionMethod,
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             paymentState: paymentState)

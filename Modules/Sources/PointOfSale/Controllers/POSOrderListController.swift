@@ -369,7 +369,8 @@ enum RefundActionAvailability {
             formattedRefundTotal: formattedTotal,
             paymentMethodDescription: paymentMethodDescription,
             customerEmail: order.customerEmail,
-            refundReason: nil
+            refundReason: nil,
+            isFullRefund: selectedItems.count == refundSelectableItems.count
         )
     }
 

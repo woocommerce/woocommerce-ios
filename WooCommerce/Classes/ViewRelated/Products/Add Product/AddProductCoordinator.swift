@@ -176,7 +176,7 @@ private extension AddProductCoordinator {
             }
         }
 
-        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command, initialPosition: .expanded)
 
         // `topmostPresentedViewController` is used because another bottom sheet could have been presented before.
         productTypesListPresenter.show(from: navigationController.topmostPresentedViewController,

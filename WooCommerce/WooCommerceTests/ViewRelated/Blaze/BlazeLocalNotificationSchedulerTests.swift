@@ -427,9 +427,11 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
 private extension BlazeLocalNotificationSchedulerTests {
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
-        readOnlyCampaigns.forEach { campaign in
-            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
-            newCampaign.update(with: campaign)
-        }
+        storageManager.performAndSave({ storage in
+            readOnlyCampaigns.forEach { campaign in
+                let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
+                newCampaign.update(with: campaign)
+            }
+        }, completion: nil, on: .main)
     }
 }

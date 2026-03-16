@@ -9,6 +9,7 @@ extension Storage.BookingOrderInfo: ReadOnlyConvertible {
         datePaid = orderInfo.datePaid
         total = orderInfo.total as NSDecimalNumber
         refundTotal = orderInfo.refundTotal as NSDecimalNumber
+        paymentStatusMetadata = orderInfo.paymentStatusMetadata
         // Relationships are handled in BookingStore
     }
 
@@ -17,6 +18,7 @@ extension Storage.BookingOrderInfo: ReadOnlyConvertible {
                      datePaid: datePaid,
                      total: total as Decimal? ?? 0,
                      refundTotal: refundTotal as Decimal? ?? 0,
+                     paymentStatusMetadata: paymentStatusMetadata,
                      paymentInfo: paymentInfo?.toReadOnly(),
                      customerInfo: customerInfo?.toReadOnly(),
                      productInfo: productInfo?.toReadOnly())

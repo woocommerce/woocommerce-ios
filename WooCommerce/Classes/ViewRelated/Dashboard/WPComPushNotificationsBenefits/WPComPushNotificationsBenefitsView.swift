@@ -152,7 +152,7 @@ struct WPComPushNotificationsBenefitsView: View {
 
     private var primaryButtonText: String {
         switch viewModel.variant {
-        case .connect:
+        case .connect, .setup:
             return Localization.continueButton
         case .pluginUpdate:
             return Localization.updatePluginButton

@@ -3,12 +3,14 @@ import UIKit
 import Yosemite
 import enum Alamofire.AFError
 import enum Networking.NetworkError
+import enum NetworkingCore.DotcomError
 import protocol WooFoundation.Analytics
 
 /// View model for `JetpackSetupView`.
 ///
 final class JetpackSetupViewModel: ObservableObject {
     let siteURL: String
+    let siteID: Int64
     /// Whether Jetpack is installed and activated and only connection needs to be handled.
     @Published private(set) var connectionOnly: Bool
 
@@ -92,6 +94,7 @@ final class JetpackSetupViewModel: ObservableObject {
     private let connectionService: JetpackConnectionServiceProtocol
 
     init(siteURL: String,
+         siteID: Int64,
          connectionOnly: Bool,
          wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
@@ -99,6 +102,7 @@ final class JetpackSetupViewModel: ObservableObject {
          connectionService: JetpackConnectionServiceProtocol? = nil,
          onStoreNavigation: @escaping (String?) -> Void = { _ in}) {
         self.siteURL = siteURL
+        self.siteID = siteID
         self.connectionOnly = connectionOnly
         self.wpcomCredentials = wpcomCredentials
         self.stores = stores
@@ -106,7 +110,7 @@ final class JetpackSetupViewModel: ObservableObject {
         self.setupSteps = connectionOnly ? [.connection, .done] : JetpackInstallStep.allCases
         self.storeNavigationHandler = onStoreNavigation
         self.siteConnectionURL = URL(string: String(format: Constants.jetpackInstallString, siteURL))
-        self.connectionService = connectionService ?? JetpackConnectionService(stores: stores)
+        self.connectionService = connectionService ?? JetpackConnectionService(siteID: siteID, stores: stores)
     }
 
     func isSetupStepFailed(_ step: JetpackInstallStep) -> Bool {
@@ -188,7 +192,7 @@ final class JetpackSetupViewModel: ObservableObject {
 //
 private extension JetpackSetupViewModel {
     func retrieveJetpackPluginDetails() {
-        let action = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+        let action = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let plugin):
@@ -221,7 +225,7 @@ private extension JetpackSetupViewModel {
         currentSetupStep = .installation
         trackSetup()
 
-        let action = JetpackConnectionAction.installJetpackPlugin { [weak self] result in
+        let action = JetpackConnectionAction.installJetpackPlugin(siteID: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -239,7 +243,7 @@ private extension JetpackSetupViewModel {
     func activateJetpack() {
         currentSetupStep = .activation
         trackSetup()
-        let action = JetpackConnectionAction.activateJetpackPlugin { [weak self] result in
+        let action = JetpackConnectionAction.activateJetpackPlugin(siteID: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -458,6 +462,12 @@ fileprivate extension Error {
             return code
         } else if let error = self as? AFError, let code = error.responseCode {
             return code
+        } else if case let .unknown(_, _, data) = self as? DotcomError {
+            if let status = data?["status"]?.description {
+                return Int(status)
+            } else {
+                return (self as NSError).code
+            }
         } else {
             return (self as NSError).code
         }

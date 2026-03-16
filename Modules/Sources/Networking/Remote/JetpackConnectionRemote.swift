@@ -16,28 +16,33 @@ public final class JetpackConnectionRemote: Remote {
 
     /// Retrieves the information about Jetpack the plugin for the current site.
     ///
-    public func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+    public func retrieveJetpackPluginDetails(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
-        let request = RESTRequest(siteURL: siteURL, method: .get, path: path)
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, availableAsRESTRequest: true)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Installs Jetpack the plugin to the current site.
     ///
-    public func installJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+    public func installJetpackPlugin(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let parameters: [String: Any] = [Field.slug.rawValue: Constants.jetpackPluginSlug]
-        let request = RESTRequest(siteURL: siteURL, method: .post, path: Path.plugins, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: Path.plugins, parameters: parameters, availableAsRESTRequest: true)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Activates Jetpack the plugin to the current site
     ///
-    public func activateJetpackPlugin(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+    public func activateJetpackPlugin(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
         let parameters: [String: Any] = [Field.status.rawValue: Constants.activeStatus]
-        let request = RESTRequest(siteURL: siteURL, method: .put, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .none,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -88,8 +93,8 @@ public final class JetpackConnectionRemote: Remote {
 
     /// Fetches the connection state with the site's Jetpack for the authenticated user.
     ///
-    public func fetchJetpackConnectionData(completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
-        let request = RESTRequest(siteURL: siteURL, method: .get, path: Path.jetpackConnectionData)
+    public func fetchJetpackConnectionData(siteID: Int64, completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.jetpackConnectionData, availableAsRESTRequest: true)
         let mapper = JetpackConnectionDataMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -145,7 +150,7 @@ private extension JetpackConnectionRemote {
         static let jetpackConnectionData = "/jetpack/v4/connection/data"
         static let jetpackConnectionRegister = "/jetpack/v4/connection/register"
         static let jetpackConnectionProvision = "/jetpack/v4/remote_provision"
-        static let plugins = "/wp/v2/plugins"
+        static let plugins = "wp/v2/plugins"
         static let jetpackModule = "/jetpack/v4/module"
     }
 

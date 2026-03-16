@@ -22,7 +22,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_retrieveJetpackPluginDetails_returns_correct_plugin() throws {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
@@ -31,7 +31,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.retrieveJetpackPluginDetails { result in
+            let action = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -47,7 +47,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_retrieveJetpackPluginDetails_properly_relays_errors() {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -57,7 +57,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<SitePlugin, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.retrieveJetpackPluginDetails { result in
+            let action = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -70,7 +70,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_installJetpackPlugin_completes_successfully_when_the_installation_succeeds() throws {
         // Given
-        let urlSuffix = "/wp/v2/plugins"
+        let urlSuffix = "wp/v2/plugins"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
@@ -79,7 +79,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.installJetpackPlugin { result in
+            let action = JetpackConnectionAction.installJetpackPlugin(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -91,7 +91,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_installJetpackPlugin_properly_relays_errors() {
         // Given
-        let urlSuffix = "/wp/v2/plugins"
+        let urlSuffix = "wp/v2/plugins"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -101,7 +101,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.installJetpackPlugin { result in
+            let action = JetpackConnectionAction.installJetpackPlugin(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -114,7 +114,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_activateJetpackPlugin_completes_successfully_when_the_activation_succeeds() throws {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "site-plugin-without-envelope")
         let store = JetpackConnectionStore(dispatcher: dispatcher)
 
@@ -123,7 +123,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.activateJetpackPlugin { result in
+            let action = JetpackConnectionAction.activateJetpackPlugin(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -135,7 +135,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
     func test_activateJetpackPlugin_properly_relays_errors() {
         // Given
-        let urlSuffix = "/wp/v2/plugins/jetpack/jetpack"
+        let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: urlSuffix, error: error)
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -145,7 +145,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.activateJetpackPlugin { result in
+            let action = JetpackConnectionAction.activateJetpackPlugin(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -214,7 +214,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<JetpackConnectionData, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
+            let action = JetpackConnectionAction.fetchJetpackConnectionData(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -240,7 +240,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
 
         // When
         let result: Result<JetpackConnectionData, Error> = waitFor { promise in
-            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
+            let action = JetpackConnectionAction.fetchJetpackConnectionData(siteID: 0) { result in
                 promise(result)
             }
             store.onAction(action)

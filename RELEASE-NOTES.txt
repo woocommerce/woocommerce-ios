@@ -8,6 +8,7 @@
 - [*] Fix dashboard showing inflated revenue by displaying net sales instead of total sales, matching wp-admin [https://github.com/woocommerce/woocommerce-ios/pull/16814]
 - [*] Display details of legacy bookable product type in a web view [https://github.com/woocommerce/woocommerce-ios/pull/16798]
 - [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
+- [Internal] Unify Jetpack setup flow for JCP sites [https://github.com/woocommerce/woocommerce-ios/pull/16816]
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
 - [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
 

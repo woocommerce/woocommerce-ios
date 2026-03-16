@@ -9,7 +9,7 @@ struct POSPhoneRootView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            Text(Localization.sale)
+            POSSaleTabView()
                 .tabItem {
                     Label(Localization.sale, systemImage: "creditcard")
                 }

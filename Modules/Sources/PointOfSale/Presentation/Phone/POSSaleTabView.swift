@@ -36,7 +36,7 @@ struct POSSaleTabView: View {
                 POSCartSheetView()
                     .presentationDragIndicator(.visible)
             }
-            .fullScreenCover(isPresented: $isShowingCheckout) {
+            .posFullScreenCover(isPresented: $isShowingCheckout) {
                 POSCheckoutView(isPresented: $isShowingCheckout)
             }
             .onChange(of: posModel.orderStage) { _, newStage in

@@ -5,10 +5,6 @@ struct POSCheckoutView: View {
     @Environment(POSPaymentModel.self) private var paymentModel
     @Binding var isPresented: Bool
 
-    @StateObject private var modalManager = POSModalManager()
-    @StateObject private var sheetManager = POSSheetManager()
-    @StateObject private var coverManager = POSFullScreenCoverManager()
-
     private let viewHelper = TotalsViewHelper()
 
     var body: some View {
@@ -34,9 +30,6 @@ struct POSCheckoutView: View {
                 }
             }
         }
-        .environmentObject(modalManager)
-        .environmentObject(sheetManager)
-        .environmentObject(coverManager)
         .posModal(item: $paymentModel.cardPresentPaymentAlertViewModel, onDismiss: {
             paymentModel.cardPresentPaymentAlertViewModel?.onDismiss?()
         }) { alertType in

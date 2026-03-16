@@ -26,6 +26,23 @@ Gem.path.each do |gem_dir|
 end
 require 'txcontext'
 
+# Override model — the hardcoded default may be stale
+Txcontext::LLM::Anthropic.send(:remove_const, :DEFAULT_MODEL)
+Txcontext::LLM::Anthropic.const_set(:DEFAULT_MODEL, 'claude-sonnet-4-6-20250514')
+
+# Debug: run one key to see the actual error
+debug_config = Txcontext::Config.new(
+  translations: ['WooCommerce/Resources/en.lproj/Localizable.strings'],
+  source_paths: ['WooCommerce/Classes/'],
+  key_filter: 'test_order_action_save',
+  no_cache: true
+)
+debug_extractor = Txcontext::ContextExtractor.new(debug_config)
+debug_extractor.run
+debug_extractor.results.each do |r|
+  warn("txcontext debug — key=#{r.key} error=#{r.error.inspect} desc=#{r.description.inspect} model=#{Txcontext::LLM::Anthropic::DEFAULT_MODEL}")
+end
+
 # Import the translation context checker plugin from the dangermattic branch
 branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'
 danger.import_plugin("#{branch_base}/translation_context_checker.rb")

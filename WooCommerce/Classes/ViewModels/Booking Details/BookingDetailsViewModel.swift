@@ -198,7 +198,7 @@ extension BookingDetailsViewModel {
             self.bookingResource = resource // only update resource if fetching succeeds
         }
         await fetchBooking()
-        await fetchBookingLocationResponse()
+        await fetchBookingLocation()
     }
 }
 
@@ -331,7 +331,7 @@ private extension BookingDetailsViewModel {
     }
 
     @MainActor
-    func fetchBookingLocationResponse() {
+    func fetchBookingLocation() {
         let action = BookingAction.fetchBookingLocationResponse(
             siteID: booking.siteID,
             bookingID: booking.bookingID,

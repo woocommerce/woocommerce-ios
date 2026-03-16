@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.4
 -----
+- [*] Remove the flashing empty state in booking list when updating filters [https://github.com/woocommerce/woocommerce-ios/pull/16824]
 - [*] Fix My Store dashboard showing different revenue numbers than wp-admin by respecting the store's date type setting [https://github.com/woocommerce/woocommerce-ios/pull/16812]
 - [Internal] Skip Jetpack benefits screen during setup when self driven push notifications feature is enabled [https://github.com/woocommerce/woocommerce-ios/pull/16791]
 - [*] Update booking badge styling to match design [https://github.com/woocommerce/woocommerce-ios/pull/16802#pullrequestreview-3927676114]

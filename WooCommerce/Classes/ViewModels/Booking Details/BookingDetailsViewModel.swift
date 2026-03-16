@@ -330,6 +330,7 @@ private extension BookingDetailsViewModel {
         }
     }
 
+    @MainActor
     func fetchProductBookingLocation() {
         let action = BookingAction.fetchProductBookingLocation(
             siteID: booking.siteID,

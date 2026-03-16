@@ -85,8 +85,10 @@ private extension POSCartPeekView {
                         }
                     )
                     .id(cartItem.id)
+                    .transition(.opacity)
                 }
             }
+            .animation(.spring(duration: 0.2), value: posModel.cart.purchasableItems.map(\.id))
             .padding(.horizontal, POSPadding.medium)
             .frame(maxHeight: 80, alignment: .top)
             .clipped()

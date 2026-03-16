@@ -98,16 +98,6 @@ private extension POSCartPeekView {
 
             // Summary bar
             HStack {
-                if case .loaded(let orderTotals) = posModel.orderState {
-                    Text(orderTotals.orderTotal)
-                        .font(.posHeadingBold)
-                        .foregroundStyle(Color.posOnSurface)
-                } else {
-                    Text("...")
-                        .font(.posHeadingBold)
-                        .foregroundStyle(Color.posOnSurfaceVariantLowest)
-                }
-
                 Spacer()
 
                 Button {

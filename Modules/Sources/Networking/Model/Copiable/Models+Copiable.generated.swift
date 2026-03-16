@@ -435,6 +435,7 @@ extension Networking.Booking {
         allDay: CopiableProp<Bool> = .copy,
         cost: CopiableProp<String> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
         dateCreated: NullableCopiableProp<Date> = .copy,
         dateModified: NullableCopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
@@ -457,6 +458,7 @@ extension Networking.Booking {
         let allDay = allDay ?? self.allDay
         let cost = cost ?? self.cost
         let customerID = customerID ?? self.customerID
+        let userID = userID ?? self.userID
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
         let endDate = endDate ?? self.endDate
@@ -480,6 +482,7 @@ extension Networking.Booking {
             allDay: allDay,
             cost: cost,
             customerID: customerID,
+            userID: userID,
             dateCreated: dateCreated,
             dateModified: dateModified,
             endDate: endDate,

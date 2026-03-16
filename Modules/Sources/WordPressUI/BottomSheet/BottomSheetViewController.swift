@@ -162,6 +162,7 @@ public class BottomSheetViewController: UIViewController {
         stackView.axis = .vertical
 
         refreshForTraits()
+        registerTraitChanges()
 
         view.addSubview(stackView)
         view.pinSubviewToSafeArea(stackView, insets: Constants.Stack.insets)
@@ -169,9 +170,10 @@ public class BottomSheetViewController: UIViewController {
         childViewController.didMove(toParent: self)
     }
 
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        refreshForTraits()
+    private func registerTraitChanges() {
+        registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: BottomSheetViewController, _: UITraitCollection) in
+            self.refreshForTraits()
+        }
     }
 
     override public var preferredContentSize: CGSize {

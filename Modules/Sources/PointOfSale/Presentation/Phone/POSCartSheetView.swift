@@ -1,52 +1,45 @@
 import SwiftUI
 
+/// Full cart view shown as a sheet when the user expands the cart peek bar.
 struct POSCartSheetView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
-    @Binding var selectedDetent: PresentationDetent
+    @Environment(\.dismiss) private var dismiss
 
     private let viewHelper = CartViewHelper()
 
     var body: some View {
-        VStack(spacing: .zero) {
-            cartHeader
-            cartItemsList
-            summaryBar
+        NavigationStack {
+            VStack(spacing: .zero) {
+                cartItemsList
+                summaryBar
+            }
+            .background(Color.posSurfaceBright)
+            .navigationTitle(Localization.cart)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if posModel.cart.isNotEmpty {
+                        Menu {
+                            Button(role: .destructive) {
+                                analytics.track(.pointOfSaleClearCartTapped)
+                                posModel.removeAllItemsFromCart()
+                            } label: {
+                                Text(Localization.clearCart)
+                            }
+                        } label: {
+                            Image(systemName: "trash")
+                                .font(.posButtonSymbolMedium)
+                                .foregroundStyle(Color.posOnSurface)
+                        }
+                    }
+                }
+            }
         }
-        .background(Color.posSurfaceBright)
     }
 }
 
 private extension POSCartSheetView {
-    var cartHeader: some View {
-        HStack {
-            Text(Localization.cart)
-                .font(.posBodyLargeBold)
-                .foregroundStyle(Color.posOnSurface)
-
-            if let countLabel = viewHelper.itemsInCartLabel(for: posModel.cart.purchasableItems.count) {
-                Text(countLabel)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posOnSurfaceVariantLowest)
-            }
-
-            Spacer()
-
-            if posModel.cart.isNotEmpty {
-                Button(role: .destructive) {
-                    analytics.track(.pointOfSaleClearCartTapped)
-                    posModel.removeAllItemsFromCart()
-                } label: {
-                    Image(systemName: "trash")
-                        .font(.posButtonSymbolMedium)
-                        .foregroundStyle(Color.posOnSurface)
-                }
-            }
-        }
-        .padding(.horizontal, POSPadding.medium)
-        .padding(.vertical, POSPadding.small)
-    }
-
     @ViewBuilder
     var cartItemsList: some View {
         if posModel.cart.isEmpty {
@@ -58,7 +51,7 @@ private extension POSCartSheetView {
                         ItemRowView(
                             cartItem: cartItem,
                             showImage: .constant(true),
-                            onItemRemoveTapped: selectedDetent == .large ? {
+                            onItemRemoveTapped: {
                                 analytics.track(
                                     event: .PointOfSale.itemRemovedFromCart(
                                         sourceView: .cart,
@@ -67,7 +60,7 @@ private extension POSCartSheetView {
                                     )
                                 )
                                 posModel.remove(cartItem: cartItem)
-                            } : nil,
+                            },
                             onCancelLoading: {
                                 posModel.cancelLoadingItem(id: cartItem.id)
                             }
@@ -76,7 +69,7 @@ private extension POSCartSheetView {
                     }
                 }
                 .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+                .padding(.vertical, POSPadding.medium)
             }
         }
     }
@@ -106,27 +99,15 @@ private extension POSCartSheetView {
             Spacer()
 
             Button {
-                Task { @MainActor in
-                    trackCheckoutTapped()
-                    await posModel.checkOut()
-                }
+                dismiss()
             } label: {
-                Text(Localization.checkout)
+                Text(Localization.done)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .disabled(posModel.cart.isEmpty || CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
         }
         .padding(.horizontal, POSPadding.medium)
         .padding(.vertical, POSPadding.small)
-    }
-
-    func trackCheckoutTapped() {
-        analytics.track(
-            event: .PointOfSale.checkoutTapped(
-                purchasableItemsInCart: posModel.cart.purchasableItems.count,
-                couponsInCart: posModel.cart.coupons.count
-            )
-        )
+        .renderedIf(posModel.cart.isNotEmpty)
     }
 }
 
@@ -137,15 +118,20 @@ private extension POSCartSheetView {
             value: "Cart",
             comment: "Title for the cart sheet in phone POS"
         )
-        static let checkout = NSLocalizedString(
-            "pos.phone.cartSheet.checkout",
-            value: "Check out",
-            comment: "Title for the checkout button in the phone POS cart sheet"
+        static let clearCart = NSLocalizedString(
+            "pos.phone.cartSheet.clearCart",
+            value: "Clear cart",
+            comment: "Button to clear all items from the cart in phone POS"
         )
         static let emptyCart = NSLocalizedString(
             "pos.phone.cartSheet.empty",
             value: "Tap a product to add it to the cart",
             comment: "Hint shown when the cart is empty in phone POS"
+        )
+        static let done = NSLocalizedString(
+            "pos.phone.cartSheet.done",
+            value: "Done",
+            comment: "Button to dismiss the expanded cart sheet in phone POS"
         )
     }
 }

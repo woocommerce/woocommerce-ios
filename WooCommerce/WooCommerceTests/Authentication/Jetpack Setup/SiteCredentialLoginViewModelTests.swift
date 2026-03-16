@@ -44,7 +44,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 let error = NSError(domain: "Test", code: 1)
                 completion(.failure(error))
             default:
@@ -67,7 +67,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 completion(.success(SitePlugin.fake()))
             default:
                 break
@@ -88,7 +88,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 let error = NSError(domain: "Test", code: 1)
                 completion(.failure(error))
             default:
@@ -112,7 +112,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 401))
                 completion(.failure(error))
             default:
@@ -141,7 +141,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
             switch action {
             case .authenticate:
                 triggeredAuthentication = true
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 completion(.success(SitePlugin.fake()))
             default:
                 break
@@ -170,7 +170,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
             switch action {
             case .authenticate:
                 triggeredAuthentication = true
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404))
                 completion(.failure(error))
             default:
@@ -200,7 +200,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
             switch action {
             case .authenticate:
                 triggeredAuthentication = true
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 let error = AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403))
                 completion(.failure(error))
             default:
@@ -256,7 +256,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 completion(.failure(MockError()))
             default:
                 break
@@ -280,7 +280,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 completion(.success(SitePlugin.fake()))
             default:
                 break

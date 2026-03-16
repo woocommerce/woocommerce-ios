@@ -213,6 +213,7 @@ WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator
   - `Fix product type filters issue`
   - `Update Stripe SDK to 5.1.1`
   - `Remove redundant MainActor annotation`
+- **PR creation**: Always use the `/pr` skill when creating pull requests
 - **PR merge policy**: Merge commits (not squash). 1 reviewer required. PR author merges own PR.
 - **PR size**: Keep non-test diff under 300 lines (enforced by Danger)
 - **Labels and milestones**: Required on non-draft PRs

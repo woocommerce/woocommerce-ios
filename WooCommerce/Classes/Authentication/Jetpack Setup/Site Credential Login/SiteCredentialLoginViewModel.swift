@@ -89,7 +89,7 @@ private extension SiteCredentialLoginViewModel {
 
     func retrieveJetpackPluginDetails() {
         // Retrieves Jetpack plugin details to see if the authentication succeeds.
-        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails { [weak self] result in
+        let jetpackAction = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: WooConstants.placeholderStoreID) { [weak self] result in
             guard let self else { return }
             self.isLoggingIn = false
             switch result {

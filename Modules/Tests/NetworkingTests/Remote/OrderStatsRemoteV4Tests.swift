@@ -97,7 +97,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_loadOrderStats_sets_date_type_parameter_to_date_created() throws {
+    func test_loadOrderStats_does_not_send_date_type_parameter() throws {
         // Given
         let remote = OrderStatsRemoteV4(network: network)
 
@@ -111,6 +111,6 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
                               forceRefresh: false) { _ in }
 
         // Then
-        XCTAssertEqual(network.queryParametersDictionary?["date_type"] as? String, "date_created")
+        XCTAssertNil(network.queryParametersDictionary?["date_type"])
     }
 }

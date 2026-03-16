@@ -250,7 +250,12 @@ private extension DashboardViewHostingController {
                 return
             }
             let coordinator = JetpackSetupCoordinator(site: site,
-                                                      rootViewController: navigationController)
+                                                      rootViewController: navigationController,
+                                                      onCompletion: { [weak self] in
+                Task { @MainActor in
+                    await self?.viewModel.reloadAllData(forceCardsRefresh: true)
+                }
+            })
             jetpackSetupCoordinator = coordinator
             coordinator.startSetup()
         }

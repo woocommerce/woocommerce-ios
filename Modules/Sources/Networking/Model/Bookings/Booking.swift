@@ -25,6 +25,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let currency: String
     public let orderInfo: BookingOrderInfo?
     public let note: String
+    public let location: String?
 
     public var bookingStatus: BookingStatus {
         return BookingStatus(rawValue: statusKey) ?? .unknown
@@ -56,7 +57,8 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                 localTimezone: String,
                 currency: String,
                 orderInfo: BookingOrderInfo?,
-                note: String) {
+                note: String,
+                location: String? = nil) {
         self.siteID = siteID
         self.bookingID = bookingID
         self.allDay = allDay
@@ -78,6 +80,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         self.currency = currency
         self.orderInfo = orderInfo
         self.note = note
+        self.location = location
     }
 
     /// The public initializer for Booking.
@@ -133,6 +136,7 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
         let currency = try container.decode(String.self, forKey: .currency)
         let orderInfo: BookingOrderInfo? = nil // to be prefilled when synced
         let note = try container.decode(String.self, forKey: .note)
+        let location: String? = nil // fetched separately from the product endpoint
 
         self.init(siteID: siteID,
                   bookingID: bookingID,
@@ -154,7 +158,8 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
                   localTimezone: localTimezone,
                   currency: currency,
                   orderInfo: orderInfo,
-                  note: note)
+                  note: note,
+                  location: location)
     }
 
     public func encode(to encoder: Encoder) throws {

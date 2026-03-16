@@ -24,4 +24,5 @@ extension Booking {
     @NSManaged public var currency: String?
     @NSManaged public var orderInfo: BookingOrderInfo?
     @NSManaged public var note: String?
+    @NSManaged public var location: String?
 }

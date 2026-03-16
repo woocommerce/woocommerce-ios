@@ -318,6 +318,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             allDay: false,
             cost: "$70.00",
             customerID: 456,
+            userID: 456,
             dateCreated: now,
             dateModified: now,
             endDate: hourFromNow,

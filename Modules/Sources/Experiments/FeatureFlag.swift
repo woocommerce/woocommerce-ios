@@ -225,6 +225,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleOnlyProducts
 
+    /// Enables Point of Sale on iPhone (portrait layout)
+    ///
+    case pointOfSalePhone
+
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner

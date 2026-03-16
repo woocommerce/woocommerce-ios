@@ -107,6 +107,22 @@ extension POSPaymentModel {
         // can't race into different branches.
         guard case .connected = cardReaderConnectionStatus else {
             DDLogInfo("🃏 [CardPayment] reader not connected, waiting for connection")
+
+            if connectionMethod == .tapToPay {
+                // For Tap to Pay, auto-connect the built-in reader then collect payment.
+                DDLogInfo("🃏 [CardPayment] Tap to Pay: auto-connecting built-in reader")
+                startPaymentOnCardReaderConnection?.cancel()
+                startPaymentOnCardReaderConnection = nil
+                do {
+                    _ = try await cardPresentPaymentService.connectReader(using: .tapToPay)
+                    guard startPaymentGeneration == generation else { return }
+                    await cancelThenCollectCardPayment(generation: generation)
+                } catch {
+                    DDLogError("🃏 [CardPayment] Tap to Pay connection failed: \(error)")
+                }
+                return
+            }
+
             startPaymentOnCardReaderConnection?.cancel()
             return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
                 .filter { status in

@@ -499,9 +499,6 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
         // When
         useCase.duplicateProduct(originalProduct: model, password: nil) { _ in }
-        waitUntil {
-            receivedMetadata != nil
-        }
 
         // Then
         XCTAssertEqual(receivedParentItemID, 99)

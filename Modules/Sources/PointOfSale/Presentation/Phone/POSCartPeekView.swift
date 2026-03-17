@@ -82,18 +82,17 @@ private extension POSCartPeekView {
                     .frame(height: 16)
             }
 
-            // Summary bar
-            HStack {
-                Spacer()
-
-                Button {
-                    onCheckout()
-                } label: {
-                    Text(Localization.checkout)
-                }
-                .buttonStyle(POSFilledButtonStyle(size: .compact))
-                .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
+            // Checkout button
+            Button {
+                onCheckout()
+            } label: {
+                Text(Localization.checkout)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, POSPadding.small)
             }
+            .buttonStyle(.borderedProminent)
+            .tint(.posPrimary)
+            .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
             .padding(.horizontal, POSPadding.small)
             .padding(.vertical, POSPadding.xSmall)
         }

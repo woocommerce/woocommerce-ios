@@ -93,24 +93,29 @@ private extension POSCheckoutView {
             totalsSection
                 .padding(.horizontal, POSPadding.small)
 
-            VStack(spacing: POSSpacing.small) {
+            HStack(spacing: POSSpacing.small) {
                 Button {
                     Task { @MainActor in
                         await paymentModel.startPayment()
                     }
                 } label: {
-                    Text(paymentModel.connectionMethod == .tapToPay ? Localization.tapToPay : Localization.cardPayment)
+                    Text(Localization.card)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, POSPadding.small)
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
+                .buttonStyle(.borderedProminent)
+                .tint(.posPrimary)
 
                 Button {
                     Task { @MainActor in
                         await paymentModel.startCashPayment()
                     }
                 } label: {
-                    Text(Localization.cashPayment)
+                    Text(Localization.cash)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, POSPadding.small)
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
+                .buttonStyle(.bordered)
             }
             .padding(.horizontal, POSPadding.small)
             .padding(.bottom, POSPadding.small)
@@ -216,20 +221,15 @@ private extension POSCheckoutView {
             value: "Back",
             comment: "Back button title on the phone POS checkout screen"
         )
-        static let tapToPay = NSLocalizedString(
-            "pos.phone.checkout.tapToPay",
-            value: "Tap to Pay",
-            comment: "Title for the Tap to Pay button on the phone POS checkout screen"
+        static let card = NSLocalizedString(
+            "pos.phone.checkout.card",
+            value: "Card",
+            comment: "Title for the card payment button on the phone POS checkout screen"
         )
-        static let cardPayment = NSLocalizedString(
-            "pos.phone.checkout.cardPayment",
-            value: "Card Payment",
-            comment: "Title for the card payment button on the POS checkout screen when Tap to Pay is not available"
-        )
-        static let cashPayment = NSLocalizedString(
-            "pos.phone.checkout.cashPayment",
-            value: "Cash Payment",
-            comment: "Title for the Cash Payment button on the phone POS checkout screen"
+        static let cash = NSLocalizedString(
+            "pos.phone.checkout.cash",
+            value: "Cash",
+            comment: "Title for the cash payment button on the phone POS checkout screen"
         )
         static let subtotal = NSLocalizedString(
             "pos.phone.checkout.subtotal",

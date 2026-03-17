@@ -95,6 +95,44 @@ final class StatsDataTextFormatterTests: XCTestCase {
         XCTAssertEqual(totalRevenue, "$25")
     }
 
+    // MARK: Net Sales (Dashboard)
+
+    func test_createNetSalesText_returns_net_revenue_from_totals() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 100, netRevenue: 62))
+
+        // When
+        let netSales = StatsDataTextFormatter.createNetSalesText(orderStats: orderStats,
+                                                                 selectedIntervalIndex: nil,
+                                                                 currencyFormatter: currencyFormatter,
+                                                                 currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(netSales, "$62")
+    }
+
+    func test_createNetSalesText_returns_net_revenue_from_selected_interval() {
+        // Given
+        let orderStats = OrderStatsV4.fake().copy(totals: .fake().copy(netRevenue: 62.7),
+                                                  intervals: [.fake().copy(dateStart: "2019-07-09 01:00:00",
+                                                                           dateEnd: "2019-07-09 01:59:59",
+                                                                           subtotals: .fake().copy(netRevenue: 25)),
+                                                              .fake().copy(dateStart: "2019-07-09 00:00:00",
+                                                                           dateEnd: "2019-07-09 00:59:59",
+                                                                           subtotals: .fake().copy(netRevenue: 31))
+                                                  ])
+        let selectedIntervalIndex = 1 // Corresponds to the second earliest interval, which is the first interval in `OrderStatsV4`.
+
+        // When
+        let netSales = StatsDataTextFormatter.createNetSalesText(orderStats: orderStats,
+                                                                 selectedIntervalIndex: selectedIntervalIndex,
+                                                                 currencyFormatter: currencyFormatter,
+                                                                 currencyCode: currencyCode.rawValue)
+
+        // Then
+        XCTAssertEqual(netSales, "$25")
+    }
+
     func test_createDelta_for_grossRevenue_returns_expected_delta() {
         // Given
         let previousOrderStats = OrderStatsV4.fake().copy(totals: .fake().copy(grossRevenue: 10))

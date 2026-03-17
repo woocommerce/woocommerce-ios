@@ -31,7 +31,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         // Given
         let service = makeService()
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { [connectedData] action in
-            if case .fetchJetpackConnectionData(let completion) = action {
+            if case .fetchJetpackConnectionData(_, let completion) = action {
                 completion(.success(connectedData))
             }
         }
@@ -65,9 +65,9 @@ final class JetpackConnectionServiceTests: XCTestCase {
         let service = makeService()
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackConnectionData(let completion):
+            case .fetchJetpackConnectionData(_, let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 completion(.success(.fake()))
             default:
                 break
@@ -88,7 +88,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
             initialData: .fake().copy(isRegistered: nil, connectionOwner: "owner"),
             expectsRegister: true
         ) { action in
-            if case .retrieveJetpackPluginDetails(let completion) = action {
+            if case .retrieveJetpackPluginDetails(_, let completion) = action {
                 completion(.failure(NSError(domain: "Test", code: 404)))
             }
         }
@@ -99,9 +99,9 @@ final class JetpackConnectionServiceTests: XCTestCase {
         let service = makeService()
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case .fetchJetpackConnectionData(let completion):
+            case .fetchJetpackConnectionData(_, let completion):
                 completion(.success(.fake().copy(isRegistered: nil)))
-            case .retrieveJetpackPluginDetails(let completion):
+            case .retrieveJetpackPluginDetails(_, let completion):
                 completion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 break
@@ -127,7 +127,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
         var fetchCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { [connectedData] action in
-            if case .fetchJetpackConnectionData(let completion) = action {
+            if case .fetchJetpackConnectionData(_, let completion) = action {
                 fetchCount += 1
                 completion(.success(fetchCount <= 2 ? noEmailData : connectedData))
             }
@@ -147,7 +147,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         let noEmailData = JetpackConnectionData.fake().copy(currentUser: .fake().copy(isConnected: true, wpcomUser: nil))
 
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            if case .fetchJetpackConnectionData(let completion) = action {
+            if case .fetchJetpackConnectionData(_, let completion) = action {
                 completion(.success(noEmailData))
             }
         }
@@ -168,7 +168,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
         var fetchCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { [connectedData] action in
-            if case .fetchJetpackConnectionData(let completion) = action {
+            if case .fetchJetpackConnectionData(_, let completion) = action {
                 fetchCount += 1
                 if fetchCount == 1 {
                     completion(.failure(NSError(domain: "Test", code: -1001)))
@@ -190,7 +190,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
 // MARK: - Helpers
 private extension JetpackConnectionServiceTests {
     func makeService(maxRetryCount: Int = 2) -> JetpackConnectionService {
-        JetpackConnectionService(stores: stores, maxRetryCount: maxRetryCount, delayBeforeRetry: 0)
+        JetpackConnectionService(siteID: 0, stores: stores, maxRetryCount: maxRetryCount, delayBeforeRetry: 0)
     }
 
     /// Asserts that `evaluateAndConnect` performs a full native connection flow.
@@ -208,7 +208,7 @@ private extension JetpackConnectionServiceTests {
         var fetchCount = 0
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { [connectedData] action in
             switch action {
-            case .fetchJetpackConnectionData(let completion):
+            case .fetchJetpackConnectionData(_, let completion):
                 fetchCount += 1
                 completion(.success(fetchCount == 1 ? initialData : connectedData))
             case .registerSite(let completion):

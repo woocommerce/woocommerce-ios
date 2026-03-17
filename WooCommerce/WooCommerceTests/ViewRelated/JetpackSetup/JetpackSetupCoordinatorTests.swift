@@ -108,7 +108,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.failure(JetpackSetupCoordinator.JetpackCheckError.missingPermission))
             default:
                 break
@@ -139,7 +139,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break
@@ -169,7 +169,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 let dotcomUser = DotcomUser.fake().copy(id: expectedAccount.userID, username: expectedAccount.username, email: expectedAccount.email)
                 completion(.success(JetpackConnectionData.fake().copy(currentUser: .fake().copy(wpcomUser: dotcomUser))))
             default:
@@ -199,7 +199,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                                                   featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break
@@ -229,7 +229,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                                                   featureFlagService: featureFlagService)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
-            case let .fetchJetpackConnectionData(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 completion(.success(JetpackConnectionData.fake()))
             default:
                 break
@@ -247,9 +247,9 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertFalse(navigationController.presentedViewController is JetpackBenefitsHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_then_presents_JCP_install_flow_for_JCP_site() {
+    func test_startSetup_when_feature_flag_enabled_and_wpcom_credentials_then_presents_setup_steps_directly() {
         // Given
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
         let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
@@ -264,7 +264,37 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         waitUntil {
             self.navigationController.presentedViewController != nil
         }
-        XCTAssertTrue(navigationController.presentedViewController is JCPJetpackInstallHostingController)
+        XCTAssertTrue((navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController)
+    }
+
+    func test_startSetup_when_feature_flag_enabled_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores,
+                                                  featureFlagService: featureFlagService)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.success(JetpackConnectionData.fake()))
+            default:
+                break
+            }
+        }
+        stores.mockJetpackCheck()
+
+        // When
+        coordinator.startSetup()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is LoginNavigationController
+        }
+        let loginViewController = navigationController.presentedViewController as? LoginNavigationController
+        XCTAssertTrue(loginViewController?.topViewController is WPComEmailLoginHostingController)
     }
 
     func test_startAuthentication_proceeds_to_display_email_screen_when_email_is_not_found() {

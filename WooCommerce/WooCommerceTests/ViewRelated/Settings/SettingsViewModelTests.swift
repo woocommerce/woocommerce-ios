@@ -141,26 +141,6 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(presenter.refreshViewContentCalled)
     }
 
-    func test_onJetpackInstallDismiss_updates_sections_correctly() {
-        // Given
-        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
-        sessionManager.defaultSite = site
-        let viewModel = SettingsViewModel(
-            stores: stores,
-            storageManager: storageManager)
-
-        viewModel.onViewDidLoad()
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
-
-        // When
-        let updatedSite = site.copy(isJetpackThePluginInstalled: true, isJetpackConnected: false)
-        sessionManager.defaultSite = updatedSite
-        viewModel.onJetpackInstallDismiss()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
-    }
-
     // MARK: - `accountSettings` row visibility
 
     func test_accountSettings_section_is_shown_when_authenticated_with_wpcom() {

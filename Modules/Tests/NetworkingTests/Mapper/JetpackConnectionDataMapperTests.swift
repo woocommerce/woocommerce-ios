@@ -29,6 +29,26 @@ final class JetpackConnectionDataMapperTests: XCTestCase {
         XCTAssertEqual(wpcomUser.avatar, "http://2.gravatar.com/avatar/5e1a8fhjd")
     }
 
+    func test_all_fields_are_parsed_properly_when_response_has_data_envelope() throws {
+        // Given
+        let data = try mapUserFromEnvelopedMockResponse()
+        let user = data.currentUser
+        let wpcomUser = try XCTUnwrap(user.wpcomUser)
+
+        // Then
+        XCTAssertEqual(data.isRegistered, true)
+        XCTAssertEqual(data.connectionOwner, "testuser")
+        XCTAssertEqual(data.blogID, 1244634)
+
+        XCTAssertEqual(user.username, "admin")
+        XCTAssertTrue(user.isPrimary)
+        XCTAssertTrue(user.isConnected)
+
+        XCTAssertEqual(wpcomUser.id, 223)
+        XCTAssertEqual(wpcomUser.username, "test")
+        XCTAssertEqual(wpcomUser.email, "test@gmail.com")
+    }
+
     func test_all_fields_are_parsed_properly_when_user_is_not_connected() throws {
         // Given
         let data = try mapNotConnectedUserFromMockResponse()
@@ -58,6 +78,14 @@ private extension JetpackConnectionDataMapperTests {
 
     func mapNotConnectedUserFromMockResponse() throws -> JetpackConnectionData {
         guard let response = Loader.contentsOf("jetpack-user-not-connected") else {
+            throw FileNotFoundError()
+        }
+
+        return try JetpackConnectionDataMapper().map(response: response)
+    }
+
+    func mapUserFromEnvelopedMockResponse() throws -> JetpackConnectionData {
+        guard let response = Loader.contentsOf("jetpack-connected-user-enveloped") else {
             throw FileNotFoundError()
         }
 

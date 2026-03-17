@@ -43,10 +43,6 @@ protocol SettingsViewModelActionsHandler {
     ///
     func onStorePickerDismiss()
 
-    /// Reloads settings if the site is no longer Jetpack CP.
-    ///
-    func onJetpackInstallDismiss()
-
     /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
     ///
     func reloadSettings()
@@ -173,15 +169,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
-        reloadSettings()
-    }
-
-    /// Reloads settings if the site is no longer Jetpack CP.
-    ///
-    func onJetpackInstallDismiss() {
-        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
-            return
-        }
         reloadSettings()
     }
 

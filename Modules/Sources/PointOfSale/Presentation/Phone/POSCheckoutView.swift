@@ -101,7 +101,7 @@ private extension POSCheckoutView {
                 } label: {
                     Text(paymentModel.connectionMethod == .tapToPay ? Localization.tapToPay : Localization.cardPayment)
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .compact))
+                .buttonStyle(POSFilledButtonStyle(size: .extraSmall))
 
                 Button {
                     Task { @MainActor in
@@ -110,7 +110,7 @@ private extension POSCheckoutView {
                 } label: {
                     Text(Localization.cashPayment)
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+                .buttonStyle(POSOutlinedButtonStyle(size: .extraSmall))
             }
             .padding(.horizontal, POSPadding.small)
             .padding(.bottom, POSPadding.small)

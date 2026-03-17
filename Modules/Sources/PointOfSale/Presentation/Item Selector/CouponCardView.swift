@@ -13,9 +13,17 @@ struct CouponCardView: View {
     }
 
     private var dimension: CGFloat {
-        let baseSize: CGFloat = isCompact ? 64 : Constants.productCardSize
-        let maxSize: CGFloat = isCompact ? 96 : Constants.maximumProductCardSize
+        let baseSize: CGFloat = isCompact ? 56 : Constants.productCardSize
+        let maxSize: CGFloat = isCompact ? 84 : Constants.maximumProductCardSize
         return min(baseSize * scale, maxSize)
+    }
+
+    private var titleFont: POSFontStyle {
+        isCompact ? .posBodySmallBold() : Constants.itemTitleFont
+    }
+
+    private var detailFont: POSFontStyle {
+        isCompact ? .posBodySmallRegular() : Constants.itemDetailFont
     }
 
     init(coupon: POSCoupon) {
@@ -31,11 +39,11 @@ struct CouponCardView: View {
                 Text(coupon.code)
                     .foregroundStyle(titleColor)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemTitleFont)
+                    .font(titleFont)
 
                 Text(coupon.summary)
                     .foregroundStyle(summaryColor)
-                    .font(Constants.itemDetailFont)
+                    .font(detailFont)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .fixedSize(horizontal: false, vertical: true)
 
@@ -47,7 +55,7 @@ struct CouponCardView: View {
                 }
             }
             .padding(.horizontal, (isCompact ? POSPadding.small : Constants.horizontalTextPadding) * (1 / scale))
-            .padding(.vertical, (isCompact ? POSPadding.xSmall : Constants.verticalTextPadding) * (1 / scale))
+            .padding(.vertical, (isCompact ? POSPadding.small : Constants.verticalTextPadding) * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

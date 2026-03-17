@@ -14,9 +14,17 @@ struct SimpleProductCardView: View {
     }
 
     private var dimension: CGFloat {
-        let baseSize: CGFloat = isCompact ? 64 : Constants.productCardSize
-        let maxSize: CGFloat = isCompact ? 96 : Constants.maximumProductCardSize
+        let baseSize: CGFloat = isCompact ? 56 : Constants.productCardSize
+        let maxSize: CGFloat = isCompact ? 84 : Constants.maximumProductCardSize
         return min(baseSize * scale, maxSize)
+    }
+
+    private var titleFont: POSFontStyle {
+        isCompact ? .posBodySmallBold() : Constants.itemTitleFont
+    }
+
+    private var detailFont: POSFontStyle {
+        isCompact ? .posBodySmallRegular() : Constants.itemDetailFont
     }
 
     private var shouldShowProductLabels: Bool {
@@ -39,20 +47,20 @@ struct SimpleProductCardView: View {
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemTitleFont)
+                    .font(titleFont)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text(product.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
+                    .font(detailFont)
 
                 Text(POSStockFormatter.stockStatusLabel(for: product))
                     .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
+                    .font(detailFont)
                     .renderedIf(shouldShowProductLabels)
             }
             .padding(.horizontal, (isCompact ? POSPadding.small : Constants.horizontalTextPadding) * (1 / scale))
-            .padding(.vertical, (isCompact ? POSPadding.xSmall : Constants.verticalTextPadding) * (1 / scale))
+            .padding(.vertical, (isCompact ? POSPadding.small : Constants.verticalTextPadding) * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

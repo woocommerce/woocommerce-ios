@@ -8,9 +8,24 @@ struct SearchResultVariationCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        let baseSize: CGFloat = isCompact ? 56 : Constants.productCardSize
+        let maxSize: CGFloat = isCompact ? 84 : Constants.maximumProductCardSize
+        return min(baseSize * scale, maxSize)
+    }
+
+    private var titleFont: POSFontStyle {
+        isCompact ? .posBodySmallBold() : Constants.itemTitleFont
+    }
+
+    private var detailFont: POSFontStyle {
+        isCompact ? .posBodySmallRegular() : Constants.itemDetailFont
     }
 
     init(variation: POSVariation, parentProduct: POSVariableParentProduct) {
@@ -32,20 +47,20 @@ struct SearchResultVariationCardView: View {
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.titleColor)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemTitleFont)
+                    .font(titleFont)
 
                 Text(variation.name)
                     .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                     .foregroundStyle(Constants.detailColor)
                     .multilineTextAlignment(.leading)
-                    .font(Constants.itemDetailFont)
+                    .font(detailFont)
 
                 Text(variation.formattedPrice)
                     .foregroundStyle(Constants.detailColor)
-                    .font(Constants.itemDetailFont)
+                    .font(detailFont)
             }
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .padding(.horizontal, (isCompact ? POSPadding.small : Constants.horizontalTextPadding) * (1 / scale))
+            .padding(.vertical, (isCompact ? POSPadding.small : Constants.verticalTextPadding) * (1 / scale))
 
             Spacer()
         }

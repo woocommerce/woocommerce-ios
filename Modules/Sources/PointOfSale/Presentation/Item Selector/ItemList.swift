@@ -8,6 +8,7 @@ struct ItemList<HeaderView: View>: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @StateObject private var infiniteScrollTriggerDeterminer = ThresholdInfiniteScrollTriggerDeterminer()
 
     // Navigation only uses this on iOS 17
@@ -52,7 +53,7 @@ struct ItemList<HeaderView: View>: View {
                     await itemsController.loadNextItems(base: node)
                 },
                 content: {
-                    LazyVStack(spacing: Constants.itemSpacing) {
+                    LazyVStack(spacing: horizontalSizeClass == .compact ? POSSpacing.small : Constants.itemSpacing) {
                         headerView
 
                         headerRows

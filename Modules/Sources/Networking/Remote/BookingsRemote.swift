@@ -293,7 +293,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     ) async throws -> BookingLocationResponse {
         let path = "\(Path.products)/\(productID)"
         let parameters = [
-            ParameterKey.fields: "id,booking_location"
+            ParameterKey.fields: FieldValue.bookingLocationFields
         ]
         let request = JetpackRequest(
             wooApiVersion: .mark3,
@@ -349,5 +349,9 @@ public extension BookingsRemote {
         static let status: String          = "status"
         static let note: String            = "note"
         static let fields: String          = "_fields"
+    }
+
+    private enum FieldValue {
+        static let bookingLocationFields = "id,booking_location"
     }
 }

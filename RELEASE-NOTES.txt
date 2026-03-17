@@ -12,6 +12,7 @@
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
 - [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
 - [*] Fix sheet/popover presentation showing trimmed content on iPad [https://github.com/woocommerce/woocommerce-ios/pull/16817]
+- [*] Hide edit status button in order details and order edit form for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16827]
 
 
 24.3

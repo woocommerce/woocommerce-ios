@@ -46,7 +46,7 @@ private extension POSCartSheetView {
             emptyCartView
         } else {
             ScrollView {
-                LazyVStack(spacing: POSSpacing.medium) {
+                LazyVStack(spacing: POSSpacing.small) {
                     ForEach(posModel.cart.purchasableItems, id: \.id) { cartItem in
                         ItemRowView(
                             cartItem: cartItem,
@@ -68,9 +68,9 @@ private extension POSCartSheetView {
                         .id(cartItem.id)
                     }
                 }
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.vertical, POSPadding.medium)
+                .padding(.vertical, POSPadding.small)
             }
+            .environment(\.dynamicTypeSize, .small)
         }
     }
 

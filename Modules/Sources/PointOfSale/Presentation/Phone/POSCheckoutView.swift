@@ -55,7 +55,7 @@ struct POSCheckoutView: View {
 private extension POSCheckoutView {
     var cartItemsList: some View {
         ScrollView {
-            LazyVStack(spacing: POSSpacing.medium) {
+            LazyVStack(spacing: POSSpacing.small) {
                 ForEach(posModel.cart.purchasableItems, id: \.id) { cartItem in
                     ItemRowView(
                         cartItem: cartItem,
@@ -77,9 +77,9 @@ private extension POSCheckoutView {
                     }
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.vertical, POSPadding.medium)
+            .padding(.vertical, POSPadding.small)
         }
+        .environment(\.dynamicTypeSize, .small)
     }
 }
 
@@ -91,7 +91,7 @@ private extension POSCheckoutView {
                 .overlay(Color.posOutlineVariant)
 
             totalsSection
-                .padding(.horizontal, POSPadding.medium)
+                .padding(.horizontal, POSPadding.small)
 
             VStack(spacing: POSSpacing.small) {
                 Button {
@@ -101,7 +101,7 @@ private extension POSCheckoutView {
                 } label: {
                     Text(paymentModel.connectionMethod == .tapToPay ? Localization.tapToPay : Localization.cardPayment)
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .compact))
 
                 Button {
                     Task { @MainActor in
@@ -110,10 +110,10 @@ private extension POSCheckoutView {
                 } label: {
                     Text(Localization.cashPayment)
                 }
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                .buttonStyle(POSOutlinedButtonStyle(size: .compact))
             }
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.bottom, POSPadding.medium)
+            .padding(.horizontal, POSPadding.small)
+            .padding(.bottom, POSPadding.small)
         }
         .background(Color.posSurfaceBright)
     }

@@ -54,11 +54,11 @@ private extension POSCartPeekView {
                         .foregroundStyle(Color.posOnSurface)
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
+            .padding(.horizontal, POSPadding.small)
             .padding(.bottom, POSPadding.xSmall)
 
             // Visible item rows (~1.5 rows, clipped with fade)
-            VStack(spacing: POSSpacing.small) {
+            VStack(spacing: POSSpacing.xSmall) {
                 ForEach(posModel.cart.purchasableItems.prefix(2), id: \.id) { cartItem in
                     ItemRowView(
                         cartItem: cartItem,
@@ -72,8 +72,8 @@ private extension POSCartPeekView {
                     .transition(.opacity)
                 }
             }
+            .environment(\.dynamicTypeSize, .xSmall)
             .animation(.spring(duration: 0.2), value: posModel.cart.purchasableItems.map(\.id))
-            .padding(.horizontal, POSPadding.medium)
             .frame(maxHeight: 80, alignment: .top)
             .clipped()
             .overlay(alignment: .bottom) {
@@ -91,11 +91,11 @@ private extension POSCartPeekView {
                 } label: {
                     Text(Localization.checkout)
                 }
-                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .buttonStyle(POSFilledButtonStyle(size: .compact))
                 .disabled(CartViewHelper().hasUnresolvedItems(cart: posModel.cart))
             }
-            .padding(.horizontal, POSPadding.medium)
-            .padding(.vertical, POSPadding.small)
+            .padding(.horizontal, POSPadding.small)
+            .padding(.vertical, POSPadding.xSmall)
         }
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.large.value))

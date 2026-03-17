@@ -3,18 +3,20 @@ import SwiftUI
 struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
-    @State private var selection: SidebarNavigation? = .store
+    @State private var selection: SidebarNavigation?
 
     let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
-        GeometryReader { geometry in
-            HStack(spacing: POSSpacing.none) {
-                listView
-                .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
-
-                detailView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+        POSNavigationSplitView(selection: $selection) { _ in
+            listView
+        } detail: { selectedItem, _ in
+            detailContent(for: selectedItem)
+        } detailPlaceholderView: {
+            EmptyView()
+        } setDefaultValue: {
+            if selection == nil {
+                selection = .store
             }
         }
     }
@@ -68,22 +70,33 @@ extension POSSettingsView {
     }
 
     @ViewBuilder
-    private var detailView: some View {
-        switch selection {
-        case .store:
-            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
-        case .hardware:
-            POSSettingsHardwareDetailView(settingsController: settingsController)
-        case .localCatalog:
-            if let viewModel = settingsController.localCatalogViewModel {
-                POSSettingsLocalCatalogDetailView(viewModel: viewModel)
-            } else {
-                EmptyView()
+    private func detailContent(for item: SidebarNavigation) -> some View {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: item.title,
+                backButtonConfiguration: .init(
+                    state: .enabled,
+                    action: { selection = nil }
+                )
+            )
+
+            Group {
+                switch item {
+                case .store:
+                    POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+                case .hardware:
+                    POSSettingsHardwareDetailView(settingsController: settingsController)
+                case .localCatalog:
+                    if let viewModel = settingsController.localCatalogViewModel {
+                        POSSettingsLocalCatalogDetailView(viewModel: viewModel)
+                    } else {
+                        EmptyView()
+                    }
+                case .help:
+                    POSSettingsHelpDetailView()
+                }
             }
-        case .help:
-            POSSettingsHelpDetailView()
-        default:
-            EmptyView()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 
@@ -111,12 +124,6 @@ extension POSSettingsView {
         .buttonStyle(.plain)
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel(SidebarNavigation.help.title)
-    }
-}
-
-extension POSSettingsView {
-    enum Constants {
-        static let sidebarWidthFraction: CGFloat = 0.35
     }
 }
 

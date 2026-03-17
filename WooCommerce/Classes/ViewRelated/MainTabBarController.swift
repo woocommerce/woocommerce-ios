@@ -950,7 +950,7 @@ private extension MainTabBarController {
         guard bookingsFeatureAvailable else {
             return false
         }
-        return isPad ? !isPOSTabVisible : true
+        return !isPOSTabVisible
     }
 }
 

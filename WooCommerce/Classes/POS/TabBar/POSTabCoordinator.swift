@@ -280,6 +280,11 @@ private extension POSTabCoordinator {
                 let isBookingsEligible = storesManager.sessionManager.defaultSite
                     .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
 
+                let supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, stores: storesManager)
+                let siteSupports = supportDeterminer.siteSupportsTapToPayReader()
+                let deviceSupports = siteSupports ? await supportDeterminer.deviceSupportsTapToPayReader() : false
+                let preferredConnectionMethod: CardReaderConnectionMethod = (siteSupports && deviceSupports) ? .tapToPay : .bluetooth
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -315,11 +320,12 @@ private extension POSTabCoordinator {
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
+                    preferredConnectionMethod: preferredConnectionMethod,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )
 
-                let hostingController = UIHostingController(rootView: posView)
+                let hostingController = POSHostingController(rootView: posView)
                 hostingController.modalPresentationStyle = .fullScreen
                 viewControllerToPresent.present(hostingController, animated: true)
             }

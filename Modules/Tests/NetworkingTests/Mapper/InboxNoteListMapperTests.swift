@@ -26,7 +26,7 @@ final class InboxNoteListMapperTests: XCTestCase {
     ///
     func test_InboxNoteListMapper_includes_siteID_in_parsed_results() throws {
         let inboxNotes = try mapLoadInboxNoteListResponse()
-        XCTAssertTrue(inboxNotes.count > 0)
+        XCTAssertTrue(!inboxNotes.isEmpty)
 
         for inboxNote in inboxNotes {
             XCTAssertEqual(inboxNote.siteID, dummySiteID)

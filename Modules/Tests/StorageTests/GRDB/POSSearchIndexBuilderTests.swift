@@ -571,7 +571,7 @@ struct POSSearchIndexBuilderTests {
         let shirtVariationsAfter = try await grdbManager.databaseConnection.read { db in
             try POSSearchIndexBuilder.search(siteID: siteID, term: "VSHIRT", in: db)
         }
-        #expect(shirtVariationsAfter.count == 0)
+        #expect(shirtVariationsAfter.isEmpty)
 
         let pantsVariationsAfter = try await grdbManager.databaseConnection.read { db in
             try POSSearchIndexBuilder.search(siteID: siteID, term: "VPANTS", in: db)

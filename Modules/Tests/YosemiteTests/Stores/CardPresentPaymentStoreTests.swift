@@ -159,7 +159,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             discoveryMethod: .bluetoothScan,
             onReaderDiscovered: { discoveredReaders in
                 XCTAssertTrue(self.mockCardReaderService.didReceiveAConfigurationProvider)
-                if discoveredReaders.count == 0 {
+                if discoveredReaders.isEmpty {
                     expectation.fulfill()
                 }
             },

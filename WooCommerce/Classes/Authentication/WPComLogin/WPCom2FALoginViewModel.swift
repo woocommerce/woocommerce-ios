@@ -154,7 +154,7 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
     @available(iOS 16, *)
     func extractClientData(from credential: ASAuthorizationPlatformPublicKeyCredentialAssertion, challengeInfo: WebauthnChallengeInfo) -> Data? {
 
-        if credential.rawClientDataJSON.count > 0 {
+        if !credential.rawClientDataJSON.isEmpty {
             return credential.rawClientDataJSON
         }
 

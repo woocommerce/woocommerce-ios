@@ -4,23 +4,23 @@ struct POSPhoneRootView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posBookingsEligible) private var isBookingsEligible
-
-    @State private var selectedTab: PhoneTab = .sale
+    @Environment(\.posNavigationModel) private var navigationModel
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        @Bindable var navModel = navigationModel
+        TabView(selection: $navModel.selectedTab) {
             POSSaleTabView()
                 .tabItem {
                     Label(Localization.sale, systemImage: "creditcard")
                 }
-                .tag(PhoneTab.sale)
+                .tag(POSNavigationModel.Tab.sale)
 
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 POSOrdersView(isPresented: .constant(true))
                     .tabItem {
                         Label(Localization.orders, systemImage: "list.clipboard")
                     }
-                    .tag(PhoneTab.orders)
+                    .tag(POSNavigationModel.Tab.orders)
             }
 
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings),
@@ -29,26 +29,19 @@ struct POSPhoneRootView: View {
                     .tabItem {
                         Label(Localization.bookings, systemImage: "calendar")
                     }
-                    .tag(PhoneTab.bookings)
+                    .tag(POSNavigationModel.Tab.bookings)
             }
 
             POSSettingsView(settingsController: posModel.settingsController)
                 .tabItem {
                     Label(Localization.settings, systemImage: "gearshape")
                 }
-                .tag(PhoneTab.settings)
+                .tag(POSNavigationModel.Tab.settings)
         }
     }
 }
 
 private extension POSPhoneRootView {
-    enum PhoneTab: Hashable {
-        case sale
-        case orders
-        case bookings
-        case settings
-    }
-
     enum Localization {
         static let sale = NSLocalizedString(
             "pos.phone.tab.sale",

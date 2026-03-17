@@ -3,15 +3,16 @@ import SwiftUI
 struct POSSaleTabView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posNavigationModel) private var navigationModel
     @StateObject private var modalManager = POSModalManager()
     @StateObject private var sheetManager = POSSheetManager()
     @StateObject private var coverManager = POSFullScreenCoverManager()
 
     @State private var isCartExpanded: Bool = false
-    @State private var isShowingCheckout: Bool = false
 
     var body: some View {
         @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
+        @Bindable var navModel = navigationModel
         ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                      searchTerm: $viewStateCoordinator.searchTerm)
             .environmentObject(modalManager)
@@ -42,18 +43,18 @@ struct POSSaleTabView: View {
                 POSCartSheetView()
                     .presentationDragIndicator(.visible)
             }
-            .posFullScreenCover(isPresented: $isShowingCheckout) {
-                POSCheckoutView(isPresented: $isShowingCheckout)
+            .posFullScreenCover(isPresented: $navModel.isShowingCheckout) {
+                POSCheckoutView(isPresented: $navModel.isShowingCheckout)
             }
             .onChange(of: posModel.orderStage) { _, newStage in
                 switch newStage {
                 case .finalizing:
-                    isShowingCheckout = true
+                    navigationModel.showCheckout()
                 case .building:
-                    isShowingCheckout = false
+                    navigationModel.dismissCheckout()
                 }
             }
-            .onChange(of: isShowingCheckout) { _, isShowing in
+            .onChange(of: navigationModel.isShowingCheckout) { _, isShowing in
                 if !isShowing && posModel.orderStage == .finalizing {
                     posModel.addMoreToCart()
                 }

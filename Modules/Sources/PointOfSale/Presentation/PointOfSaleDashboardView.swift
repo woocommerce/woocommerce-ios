@@ -7,12 +7,12 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posNavigationModel) private var navigationModel
     @Environment(\.dismiss) private var dismiss
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var showDocumentation: Bool = false
-    @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
     @State private var floatingSize: CGSize = .zero
@@ -59,6 +59,7 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
+        @Bindable var navigationModel = navigationModel
         ZStack(alignment: .bottomLeading) {
             switch viewState {
             case .loading(let isCatalogSyncing):
@@ -106,7 +107,7 @@ struct PointOfSaleDashboardView: View {
             POSFloatingControlView(showExitPOSModal: $showExitPOSModal,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
-                                   showSettings: $showSettings)
+                                   showSettings: $navigationModel.isShowingSettings)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -146,10 +147,10 @@ struct PointOfSaleDashboardView: View {
         .posSheet(isPresented: $showDocumentation) {
             documentationView
         }
-        .posFullScreenCover(isPresented: $showSettings) {
+        .posFullScreenCover(isPresented: $navigationModel.isShowingSettings) {
             POSSettingsView(settingsController: posModel.settingsController)
         }
-        .onChange(of: showSettings) { oldValue, newValue in
+        .onChange(of: navigationModel.isShowingSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
             Task {
                 await posModel.checkStaleSyncStatus()

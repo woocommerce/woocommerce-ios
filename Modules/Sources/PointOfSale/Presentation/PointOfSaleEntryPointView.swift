@@ -23,6 +23,7 @@ import protocol Yosemite.PointOfSaleItemServiceProtocol
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
     @State private var posModel: PointOfSaleAggregateModel?
+    @State private var navigationModel = POSNavigationModel()
     @StateObject private var posModalManager = POSModalManager()
     @StateObject private var posSheetManager = POSSheetManager()
     @StateObject private var posCoverManager = POSFullScreenCoverManager()
@@ -214,6 +215,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
         .environment(\.posBookingsEligible, isBookingsEligible)
+        .environment(\.posNavigationModel, navigationModel)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)

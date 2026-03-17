@@ -7,14 +7,13 @@ struct POSFloatingControlView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posNavigationModel) private var navigationModel
     @Binding private var showExitPOSModal: Bool
     @Binding private var showSupport: Bool
     @Binding private var showDocumentation: Bool
     @Binding private var showSettings: Bool
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
-    @State private var showOrders: Bool = false
-    @State private var showBookings: Bool = false
     @Environment(\.posBookingsEligible) private var isBookingsEligible
 
     init(showExitPOSModal: Binding<Bool>,
@@ -28,6 +27,7 @@ struct POSFloatingControlView: View {
     }
 
     var body: some View {
+        @Bindable var navigationModel = navigationModel
         HStack {
             Menu {
                 menuOptions()
@@ -60,14 +60,14 @@ struct POSFloatingControlView: View {
         .posModal(isPresented: $showBarcodeScanningModal) {
             POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
         }
-        .posFullScreenCover(isPresented: $showOrders) {
-            POSOrdersView(isPresented: $showOrders)
+        .posFullScreenCover(isPresented: $navigationModel.isShowingOrders) {
+            POSOrdersView(isPresented: $navigationModel.isShowingOrders)
         }
-        .posFullScreenCover(isPresented: $showBookings) {
-            POSBookingsContainerView(isPresented: $showBookings)
+        .posFullScreenCover(isPresented: $navigationModel.isShowingBookings) {
+            POSBookingsContainerView(isPresented: $navigationModel.isShowingBookings)
                 .environment(\.floatingControlAreaSize, .zero)
         }
-        .onChange(of: showBookings) { _, isShowing in
+        .onChange(of: navigationModel.isShowingBookings) { _, isShowing in
             if isShowing {
                 posModel.paymentModel.deactivate()
             } else if posModel.orderStage == .finalizing {
@@ -109,7 +109,7 @@ private extension POSFloatingControlView {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    showOrders = true
+                    navigationModel.isShowingOrders = true
                 } label: {
                     Label(
                         title: { Text(Localization.orders) },
@@ -121,7 +121,7 @@ private extension POSFloatingControlView {
             if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
                 Button {
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
-                    showBookings = true
+                    navigationModel.isShowingBookings = true
                 } label: {
                     Label(
                         title: { Text(Localization.bookings) },

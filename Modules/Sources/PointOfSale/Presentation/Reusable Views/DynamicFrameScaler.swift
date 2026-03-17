@@ -3,14 +3,21 @@ import SwiftUI
 /// A view modifier that adjusts the width multiplier based on dynamic type size.
 struct DynamicWidthScaler: ViewModifier {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.posLayoutScale) private var layoutScale
     let containerWidth: CGFloat
     let threshold: DynamicTypeSize
     let smallSizeScale: CGFloat
     let largeSizeScale: CGFloat
 
     func body(content: Content) -> some View {
-        content
-            .frame(width: containerWidth * widthMultiplier)
+        if layoutScale == .phone {
+            content
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, POSPadding.medium)
+        } else {
+            content
+                .frame(width: containerWidth * widthMultiplier)
+        }
     }
 
     /// Returns a width multiplier based on the current dynamic type size

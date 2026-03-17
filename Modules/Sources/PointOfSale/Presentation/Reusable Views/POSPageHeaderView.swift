@@ -88,59 +88,17 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         self.bottomContent = bottomContent()
     }
 
+    @Environment(\.posLayoutScale) private var layoutScale
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 leadingContent
 
-                VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                    HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
-                        if showsBackButton {
-                            backButton
-                        }
-                        ForEach(0..<items.count, id: \.self) { index in
-                            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                                HStack(spacing: POSSpacing.small) {
-                                    if items[index].title.isNotEmpty {
-                                        Button(action: {
-                                            items[index].action?()
-                                        }) {
-                                            Text(items[index].title)
-                                                .font(.posHeadingBold)
-                                                .lineLimit(1)
-                                                .minimumScaleFactor(0.5)
-                                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
-                                        }
-                                        .disabled(items[index].isSelected)
-                                        .accessibilityElement()
-                                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                                        .accessibilityLabel(items[index].title)
-                                    }
-
-                                    if items[index].isLoading {
-                                        ProgressView()
-                                            .progressViewStyle(.circular)
-                                            .scaleEffect(0.7)
-                                            .transition(.opacity.combined(with: .scale))
-                                    }
-                                }
-
-                                if let subtitle = items[index].subtitle {
-                                    Text(subtitle)
-                                        .font(.posBodyLargeRegular())
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                        .foregroundColor(.posOnSurface)
-                                }
-                            }
-                        }
-                    }
-                }
+                itemsContent
 
                 if items.isNotEmpty {
-                    Spacer()
+                    Spacer(minLength: 0)
                 }
 
                 trailingContent
@@ -152,6 +110,63 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
         .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+    }
+
+    @ViewBuilder
+    private var itemsContent: some View {
+        let itemsRow = VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+                if showsBackButton {
+                    backButton
+                }
+                ForEach(0..<items.count, id: \.self) { index in
+                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                        HStack(spacing: POSSpacing.small) {
+                            if items[index].title.isNotEmpty {
+                                Button(action: {
+                                    items[index].action?()
+                                }) {
+                                    Text(items[index].title)
+                                        .font(.posHeadingBold)
+                                        .lineLimit(1)
+                                        .fixedSize(horizontal: true, vertical: false)
+                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                        .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+                                }
+                                .disabled(items[index].isSelected)
+                                .accessibilityElement()
+                                .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                .accessibilityLabel(items[index].title)
+                            }
+
+                            if items[index].isLoading {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .scaleEffect(0.7)
+                                    .transition(.opacity.combined(with: .scale))
+                            }
+                        }
+
+                        if let subtitle = items[index].subtitle {
+                            Text(subtitle)
+                                .font(.posBodyLargeRegular())
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.5)
+                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+                                .foregroundColor(.posOnSurface)
+                        }
+                    }
+                }
+            }
+        }
+
+        if layoutScale == .phone {
+            ScrollView(.horizontal, showsIndicators: false) {
+                itemsRow
+            }
+        } else {
+            itemsRow
+        }
     }
 
     private var shouldHaveLeadingPaddingForItems: Bool {

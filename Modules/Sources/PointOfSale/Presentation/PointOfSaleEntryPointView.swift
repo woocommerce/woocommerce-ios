@@ -193,6 +193,7 @@ public struct PointOfSaleEntryPointView: View {
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
                 receiptSender: receiptSender,
+                preferredConnectionMethod: preferredConnectionMethod,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
@@ -210,6 +211,7 @@ public struct PointOfSaleEntryPointView: View {
         .environmentObject(posCoverManager)
         .environment(orderListModel)
         .environment(\.siteTimezone, siteTimezone)
+        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

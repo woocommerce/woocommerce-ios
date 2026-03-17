@@ -79,6 +79,48 @@ struct POSNavigationModelTests {
         #expect(sut.selectedTab == .settings)
     }
 
+    @Test("selecting orders tab sets isShowingOrders to true")
+    func selecting_orders_tab_sets_isShowingOrders() {
+        // Given
+        let sut = POSNavigationModel()
+
+        // When
+        sut.selectedTab = .orders
+
+        // Then
+        #expect(sut.isShowingOrders == true)
+        #expect(sut.isShowingBookings == false)
+        #expect(sut.isShowingSettings == false)
+    }
+
+    @Test("selecting bookings tab sets isShowingBookings to true")
+    func selecting_bookings_tab_sets_isShowingBookings() {
+        // Given
+        let sut = POSNavigationModel()
+
+        // When
+        sut.selectedTab = .bookings
+
+        // Then
+        #expect(sut.isShowingBookings == true)
+        #expect(sut.isShowingOrders == false)
+    }
+
+    @Test("selecting sale tab clears all isShowing flags")
+    func selecting_sale_tab_clears_isShowing_flags() {
+        // Given
+        let sut = POSNavigationModel()
+        sut.isShowingOrders = true
+
+        // When
+        sut.selectedTab = .sale
+
+        // Then
+        #expect(sut.isShowingOrders == false)
+        #expect(sut.isShowingBookings == false)
+        #expect(sut.isShowingSettings == false)
+    }
+
     @Test("startNewOrder dismisses checkout and returns to sale tab")
     func startNewOrder_dismisses_checkout_and_selects_sale_tab() {
         // Given

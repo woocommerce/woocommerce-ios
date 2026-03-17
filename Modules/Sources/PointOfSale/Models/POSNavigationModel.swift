@@ -16,12 +16,20 @@ final class POSNavigationModel: @unchecked Sendable {
         case settings
     }
 
-    var selectedTab: Tab = .sale
+    /// The active tab on phone. Setting this also syncs the isShowing* flags
+    /// so that transitioning from compact to regular preserves the visible feature.
+    var selectedTab: Tab = .sale {
+        didSet {
+            guard selectedTab != oldValue else { return }
+            syncShowingFlags(for: selectedTab)
+        }
+    }
     var isShowingCheckout: Bool = false
 
     // Secondary feature presentation state.
     // On iPad these drive full-screen covers from the floating menu.
     // On phone these map to tab selection.
+    // Both directions must stay in sync for size-class transitions.
     var isShowingOrders: Bool = false {
         didSet { if isShowingOrders { selectedTab = .orders } }
     }
@@ -30,6 +38,14 @@ final class POSNavigationModel: @unchecked Sendable {
     }
     var isShowingSettings: Bool = false {
         didSet { if isShowingSettings { selectedTab = .settings } }
+    }
+
+    /// Syncs the isShowing* flags to match the selected tab.
+    /// Called when the tab changes (e.g. user taps a tab on phone).
+    private func syncShowingFlags(for tab: Tab) {
+        isShowingOrders = (tab == .orders)
+        isShowingBookings = (tab == .bookings)
+        isShowingSettings = (tab == .settings)
     }
 
     func showCheckout() {

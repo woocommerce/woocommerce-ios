@@ -273,7 +273,9 @@ struct OrderForm: View {
                         }
 
                         Group {
-                            OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                            OrderStatusSection(viewModel: viewModel,
+                                               topDivider: !viewModel.shouldShowNonEditableIndicators,
+                                               isEditButtonVisible: viewModel.isOrderStatusEditingEnabled)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
                         .renderedIf(flow == .editing)

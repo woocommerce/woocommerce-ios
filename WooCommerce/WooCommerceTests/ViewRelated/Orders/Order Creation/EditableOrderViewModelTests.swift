@@ -3563,6 +3563,32 @@ private extension EditableOrderViewModelTests {
     }
 }
 
+// MARK: - CIAB Order Status Editing
+
+    func test_isOrderStatusEditingEnabled_when_non_CIAB_site_then_returns_true() {
+        // Given
+        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               ciabEligibilityChecker: checker)
+
+        // Then
+        XCTAssertTrue(viewModel.isOrderStatusEditingEnabled)
+    }
+
+    func test_isOrderStatusEditingEnabled_when_CIAB_site_then_returns_false() {
+        // Given
+        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               ciabEligibilityChecker: checker)
+
+        // Then
+        XCTAssertFalse(viewModel.isOrderStatusEditingEnabled)
+    }
+
 // MARK: - POS Notification Tests & MockPOSNotificationScheduler
 private extension EditableOrderViewModelTests {
     final class MockPOSNotificationScheduler: POSNotificationScheduling {

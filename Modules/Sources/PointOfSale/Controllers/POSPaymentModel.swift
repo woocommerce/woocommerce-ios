@@ -44,6 +44,7 @@ final class POSPaymentModel {
     private let analytics: POSAnalyticsProviding
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
     private let celebration: PaymentCaptureCelebrationProtocol
+    let preferredConnectionMethod: CardReaderConnectionMethod
 
     // MARK: - Internal
     private var startPaymentOnCardReaderConnection: AnyCancellable?
@@ -67,6 +68,7 @@ final class POSPaymentModel {
          analytics: POSAnalyticsProviding,
          collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking,
          celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          paymentState: PointOfSalePaymentState = .idle) {
         self.cardPresentPaymentService = cardPresentPaymentService
         self.orderProvider = orderProvider
@@ -77,6 +79,7 @@ final class POSPaymentModel {
         self.analytics = analytics
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.celebration = celebration
+        self.preferredConnectionMethod = preferredConnectionMethod
         self.paymentState = paymentState
 
         publishCardReaderConnectionStatus()
@@ -94,6 +97,19 @@ extension POSPaymentModel {
 
         subscribeToPaymentSessionEvents()
 
+        // For Tap to Pay, pre-connect the reader but don't auto-collect.
+        // The user selects a payment method from the buttons.
+        if preferredConnectionMethod == .tapToPay {
+            connectTapToPayReader()
+            return
+        }
+
+        await startPaymentFlow()
+    }
+
+    /// Starts the full payment flow: waits for reader connection, then collects.
+    /// Used by bluetooth (auto) and by explicit payment method button taps.
+    private func startPaymentFlow() async {
         // Invalidate stale `startPaymentOnCardReaderConnection` callbacks
         // so only the latest subscription can reach `collectCardPayment`.
         startPaymentGeneration += 1
@@ -105,7 +121,7 @@ extension POSPaymentModel {
         guard case .connected = cardReaderConnectionStatus else {
             DDLogInfo("🃏 [CardPayment] reader not connected, waiting for connection")
             startPaymentOnCardReaderConnection?.cancel()
-            return startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
+            startPaymentOnCardReaderConnection = cardPresentPaymentService.readerConnectionStatusPublisher
                 .filter { status in
                     switch status {
                     case .connected:
@@ -121,6 +137,8 @@ extension POSPaymentModel {
                         await self?.cancelThenCollectCardPayment(generation: generation)
                     }
                 }
+
+            return
         }
 
         // Reader is connected — cancel any stale payment, then collect.
@@ -159,7 +177,7 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+        _ = try await cardPresentPaymentService.collectPayment(for: order, using: preferredConnectionMethod, channel: .pos)
     }
 
     func cancelThenCollectPayment() {
@@ -177,8 +195,36 @@ extension POSPaymentModel {
     func connectCardReader() {
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
         Task { @MainActor [weak self] in
-            _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+            guard let self else { return }
+            _ = try await self.cardPresentPaymentService.connectReader(using: self.preferredConnectionMethod)
         }
+    }
+
+    /// Pre-connects the Tap to Pay reader without starting payment collection.
+    func connectTapToPayReader() {
+        Task { @MainActor [weak self] in
+            _ = try await self?.cardPresentPaymentService.connectReader(using: .tapToPay)
+        }
+    }
+
+    /// Starts payment using a specific connection method. Used when the user
+    /// explicitly chooses Tap to Pay or Card Reader from the payment buttons.
+    func startPaymentWithMethod(_ method: CardReaderConnectionMethod) async {
+        subscribeToPaymentSessionEvents()
+
+        // If switching from Tap to Pay to bluetooth, disconnect TTP first
+        if method == .bluetooth, case .connected = cardReaderConnectionStatus {
+            await cardPresentPaymentService.disconnectReader()
+        }
+
+        // Connect with the chosen method, then run the standard payment flow
+        if case .disconnected = cardReaderConnectionStatus {
+            Task { @MainActor [weak self] in
+                _ = try await self?.cardPresentPaymentService.connectReader(using: method)
+            }
+        }
+
+        await startPaymentFlow()
     }
 
     func disconnectCardReader() {

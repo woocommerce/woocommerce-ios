@@ -118,6 +118,7 @@ protocol PointOfSaleAggregateModelProtocol {
          receiptSender: POSReceiptSending,
          soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
          paymentState: PointOfSalePaymentState = .idle,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          isLocalCatalogEligible: Bool = false) {
@@ -156,6 +157,7 @@ protocol PointOfSaleAggregateModelProtocol {
                 }),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
+            preferredConnectionMethod: preferredConnectionMethod,
             paymentState: paymentState)
         weakSelf = self
 
@@ -453,6 +455,7 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await removeMissingProductsFromCatalogAfterSync()
+
         await paymentModel.startPayment()
     }
 

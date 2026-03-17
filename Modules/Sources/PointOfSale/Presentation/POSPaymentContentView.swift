@@ -15,6 +15,7 @@ struct POSPaymentContentView: View {
     let onDismiss: (() -> Void)?
 
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posLayoutScale) private var layoutScale
     private let viewHelper = POSPaymentViewHelper()
 
     var body: some View {
@@ -33,7 +34,7 @@ struct POSPaymentContentView: View {
             Spacer()
                 .renderedIf(viewHelper.shouldApplyPadding(paymentState: paymentModel.paymentState))
 
-            cashPaymentButtonView
+            paymentMethodButtonsView
         }
         .background(viewHelper.paymentBackgroundColor(for: paymentModel.paymentState))
         .animation(.default, value: paymentModel.paymentState)
@@ -142,8 +143,11 @@ struct POSPaymentContentView: View {
                 leading: POSPadding.large,
                 bottom: POSPadding.medium,
                 trailing: POSPadding.large))
-            .frame(minWidth: 382)
-            .fixedSize(horizontal: true, vertical: false)
+            .if(layoutScale == .tablet) { view in
+                view
+                    .frame(minWidth: 382)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
             Spacer()
         }
         .transition(.opacity)
@@ -164,24 +168,62 @@ struct POSPaymentContentView: View {
         .foregroundColor(Color.posOnSurface)
     }
 
-    // MARK: - Cash Payment Button
+    // MARK: - Payment Method Buttons
 
-    @ViewBuilder
-    private var cashPaymentButtonView: some View {
-        if viewHelper.shouldShowCashPaymentButton(
+    private var shouldShowTapToPayButtons: Bool {
+        paymentModel.preferredConnectionMethod == .tapToPay
+        && paymentModel.paymentState.card == .idle
+        && !paymentModel.isZeroTotal
+    }
+
+    private var shouldShowCashButton: Bool {
+        viewHelper.shouldShowCashPaymentButton(
             paymentState: paymentModel.paymentState,
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-            isZeroTotal: paymentModel.isZeroTotal) {
-            Button(action: {
-                Task { @MainActor in
-                    await paymentModel.startCashPayment()
+            isZeroTotal: paymentModel.isZeroTotal)
+    }
+
+    @ViewBuilder
+    private var paymentMethodButtonsView: some View {
+        if shouldShowTapToPayButtons || shouldShowCashButton {
+            VStack(spacing: POSSpacing.small) {
+                if shouldShowTapToPayButtons {
+                    Button(action: {
+                        Task { @MainActor in
+                            await paymentModel.startPaymentWithMethod(.tapToPay)
+                        }
+                    }) {
+                        Label(Localization.tapToPayButton, systemImage: "wave.3.right")
+                            .font(POSFontStyle.posBodyLargeBold)
+                    }
+                    .buttonStyle(POSFilledButtonStyle(size: .normal))
+                    .padding(.horizontal, POSPadding.medium)
+
+                    Button(action: {
+                        Task { @MainActor in
+                            await paymentModel.startPaymentWithMethod(.bluetooth)
+                        }
+                    }) {
+                        Label(Localization.cardReaderButton, systemImage: "creditcard.and.123")
+                            .font(POSFontStyle.posBodyLargeBold)
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    .padding(.horizontal, POSPadding.medium)
                 }
-            }) {
-                Text(Localization.cashPaymentButton)
-                    .font(POSFontStyle.posBodyLargeBold)
+
+                if shouldShowCashButton {
+                    Button(action: {
+                        Task { @MainActor in
+                            await paymentModel.startCashPayment()
+                        }
+                    }) {
+                        Text(Localization.cashPaymentButton)
+                            .font(POSFontStyle.posBodyLargeBold)
+                    }
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                    .padding(.horizontal, POSPadding.medium)
+                }
             }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .padding(.horizontal, POSPadding.medium)
             .safeAreaPadding(.bottom, POSPadding.medium)
         }
     }
@@ -214,6 +256,18 @@ private extension POSPaymentContentView {
             value: "Cash payment",
             comment: "Button to start a cash payment in the payment flow"
         )
+
+        static let tapToPayButton = NSLocalizedString(
+            "pointOfSale.paymentContent.tapToPayButton",
+            value: "Tap to Pay",
+            comment: "Button to start a Tap to Pay payment on iPhone in the POS payment flow"
+        )
+
+        static let cardReaderButton = NSLocalizedString(
+            "pointOfSale.paymentContent.cardReaderButton",
+            value: "Card reader",
+            comment: "Button to start a payment with an external card reader in the POS payment flow"
+        )
     }
 }
 
@@ -228,14 +282,21 @@ struct POSCardPaymentContentView: View {
     let connectCardReaderAction: () -> Void
     var showLoadingWhenIdle: Bool = false
 
+    @Environment(POSPaymentModel.self) private var paymentModel
+
     private let viewHelper = POSPaymentViewHelper()
 
     @ViewBuilder
     var body: some View {
         if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
-                connectCardReaderAction()
+            if paymentModel.preferredConnectionMethod == .tapToPay {
+                // Tap to Pay auto-connects - show loading instead of "Reader not connected"
+                POSPaymentLoadingView()
+            } else {
+                PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+                    connectCardReaderAction()
+                }
             }
         } else if let inlineMessage = cardPresentPaymentInlineMessage {
             switch inlineMessage {

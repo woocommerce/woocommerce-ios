@@ -7,9 +7,16 @@ struct ItemRowView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Binding private var showProductImage: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        let baseSize = isCompact ? Constants.compactProductCardSize : Constants.productCardSize
+        let maxSize = isCompact ? Constants.compactMaxProductCardSize : Constants.maximumProductCardSize
+        return min(baseSize * scale, maxSize)
     }
 
     init(cartItem: Cart.PurchasableItem,
@@ -73,7 +80,7 @@ struct ItemRowView: View {
             .lineLimit(Constants.titleSubtitleLineLimit)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.leading, showProductImage ? 0 : Constants.cardContentHorizontalPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalPadding * (1 / scale))
+            .padding(.vertical, (isCompact ? Constants.compactVerticalPadding : Constants.verticalPadding) * (1 / scale))
             if let onItemRemoveTapped {
                 CartRowRemoveButton {
                     onItemRemoveTapped()
@@ -126,8 +133,11 @@ private extension ItemRowView {
     enum Constants {
         static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
+        static let compactProductCardSize: CGFloat = 56
+        static let compactMaxProductCardSize: CGFloat = Self.compactProductCardSize * 1.5
         static let horizontalPadding: CGFloat = POSPadding.medium
         static let verticalPadding: CGFloat = POSPadding.small
+        static let compactVerticalPadding: CGFloat = POSPadding.xSmall
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
         static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall

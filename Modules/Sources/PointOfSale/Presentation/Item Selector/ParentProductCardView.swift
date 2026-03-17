@@ -8,9 +8,16 @@ struct ParentProductCardView: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        let baseSize: CGFloat = isCompact ? 64 : Constants.productCardSize
+        let maxSize: CGFloat = isCompact ? 96 : Constants.maximumProductCardSize
+        return min(baseSize * scale, maxSize)
     }
 
     init(name: String, imageSource: String?, detailText: String) {
@@ -37,8 +44,8 @@ struct ParentProductCardView: View {
                     .foregroundStyle(Constants.detailColor)
                     .font(Constants.itemDetailFont)
             }
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .padding(.horizontal, (isCompact ? POSPadding.small : Constants.horizontalTextPadding) * (1 / scale))
+            .padding(.vertical, (isCompact ? POSPadding.xSmall : Constants.verticalTextPadding) * (1 / scale))
             Spacer()
 
             Image(systemName: "chevron.forward")

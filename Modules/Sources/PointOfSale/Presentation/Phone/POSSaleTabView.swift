@@ -14,7 +14,6 @@ struct POSSaleTabView: View {
         @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
         ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                      searchTerm: $viewStateCoordinator.searchTerm)
-            .environment(\.dynamicTypeSize, .small)
             .environmentObject(modalManager)
             .environmentObject(sheetManager)
             .environmentObject(coverManager)

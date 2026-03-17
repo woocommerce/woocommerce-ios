@@ -7,9 +7,16 @@ struct SimpleProductCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var isCompact: Bool {
+        horizontalSizeClass == .compact
+    }
 
     private var dimension: CGFloat {
-        min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
+        let baseSize: CGFloat = isCompact ? 64 : Constants.productCardSize
+        let maxSize: CGFloat = isCompact ? 96 : Constants.maximumProductCardSize
+        return min(baseSize * scale, maxSize)
     }
 
     private var shouldShowProductLabels: Bool {
@@ -44,8 +51,8 @@ struct SimpleProductCardView: View {
                     .font(Constants.itemDetailFont)
                     .renderedIf(shouldShowProductLabels)
             }
-            .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
-            .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
+            .padding(.horizontal, (isCompact ? POSPadding.small : Constants.horizontalTextPadding) * (1 / scale))
+            .padding(.vertical, (isCompact ? POSPadding.xSmall : Constants.verticalTextPadding) * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, idealHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

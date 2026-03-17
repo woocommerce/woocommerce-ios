@@ -8,10 +8,6 @@ struct PointOfSaleDashboardViewHelper {
         horizontalSizeClass: UserInterfaceSizeClass?
     ) -> PointOfSaleDashboardView.ViewState {
 
-        guard case .regular = horizontalSizeClass else {
-            return .unsupportedWidth
-        }
-
         guard let eligibilityState else {
             return .loading(isCatalogSyncing: itemsContainerState.isCatalogSyncing)
         }

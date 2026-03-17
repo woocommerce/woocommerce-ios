@@ -50,6 +50,7 @@ public struct PointOfSaleEntryPointView: View {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let isLocalCatalogEligible: Bool
     private let isBookingsEligible: Bool
+    private let preferredConnectionMethod: CardReaderConnectionMethod
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -77,6 +78,7 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
+         preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -164,6 +166,7 @@ public struct PointOfSaleEntryPointView: View {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.isBookingsEligible = isBookingsEligible
+        self.preferredConnectionMethod = preferredConnectionMethod
     }
 
     public var body: some View {
@@ -195,6 +198,7 @@ public struct PointOfSaleEntryPointView: View {
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
                 receiptSender: receiptSender,
+                preferredConnectionMethod: preferredConnectionMethod,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible)
@@ -214,6 +218,7 @@ public struct PointOfSaleEntryPointView: View {
             view.environment(bookingsModel!)
         }
         .environment(\.siteTimezone, siteTimezone)
+        .environment(\.posLayoutScale, horizontalSizeClass == .compact ? .phone : .tablet)
         .injectKeyboardObserver()
         .onAppear {
             onPointOfSaleModeActiveStateChange(true)

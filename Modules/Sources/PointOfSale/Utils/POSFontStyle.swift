@@ -85,20 +85,119 @@ private extension POSFontStyle {
         static let bodySmall: CGFloat = 16
         static let caption: CGFloat = 14
     }
+
+    enum PhoneFontSize {
+        static let heading: CGFloat = 24
+        static let bodyXLarge: CGFloat = 22
+        static let bodyLarge: CGFloat = 18
+        static let bodyMedium: CGFloat = 16
+        static let bodySmall: CGFloat = 14
+        static let caption: CGFloat = 12
+    }
+
+    enum MinimumFloor {
+        static let heading: CGFloat = 16
+        static let bodyXLarge: CGFloat = 14
+        static let bodyLarge: CGFloat = 13
+        static let bodyMedium: CGFloat = 12
+        static let bodySmall: CGFloat = 11
+        static let caption: CGFloat = 11
+        static let buttonSymbol: CGFloat = 11
+    }
+}
+
+// MARK: - Scale-aware sizing
+
+extension POSFontStyle {
+    func baseSize(for scale: POSLayoutScale) -> CGFloat {
+        switch scale {
+        case .tablet:
+            return tabletBaseSize
+        case .phone:
+            return phoneBaseSize
+        }
+    }
+
+    func font(baseSize: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> Font {
+        let scaledSize = scaledValue(baseSize, maximumContentSizeCategory: maximumContentSizeCategory)
+        let flooredSize = max(scaledSize, minimumFloor)
+        return Font.system(size: flooredSize, weight: fontWeight)
+    }
+
+    private var tabletBaseSize: CGFloat {
+        switch self {
+        case .posHeadingBold, .posHeadingRegular: return FontSize.heading
+        case .posBodyXLargeRegular, .posBodyXLargeBold: return FontSize.bodyXLarge
+        case .posBodyLargeBold, .posBodyLargeRegular: return FontSize.bodyLarge
+        case .posBodyMediumBold, .posBodyMediumRegular: return FontSize.bodyMedium
+        case .posBodySmallBold, .posBodySmallRegular: return FontSize.bodySmall
+        case .posCaptionBold, .posCaptionRegular: return FontSize.caption
+        case .posButtonSymbolXSmall: return 16
+        case .posButtonSymbolSmall: return 20
+        case .posButtonSymbolMedium: return 24
+        case .posButtonSymbolLarge: return 30
+        }
+    }
+
+    private var phoneBaseSize: CGFloat {
+        switch self {
+        case .posHeadingBold, .posHeadingRegular: return PhoneFontSize.heading
+        case .posBodyXLargeRegular, .posBodyXLargeBold: return PhoneFontSize.bodyXLarge
+        case .posBodyLargeBold, .posBodyLargeRegular: return PhoneFontSize.bodyLarge
+        case .posBodyMediumBold, .posBodyMediumRegular: return PhoneFontSize.bodyMedium
+        case .posBodySmallBold, .posBodySmallRegular: return PhoneFontSize.bodySmall
+        case .posCaptionBold, .posCaptionRegular: return PhoneFontSize.caption
+        case .posButtonSymbolXSmall: return 14
+        case .posButtonSymbolSmall: return 16
+        case .posButtonSymbolMedium: return 20
+        case .posButtonSymbolLarge: return 24
+        }
+    }
+
+    private var minimumFloor: CGFloat {
+        switch self {
+        case .posHeadingBold, .posHeadingRegular: return MinimumFloor.heading
+        case .posBodyXLargeRegular, .posBodyXLargeBold: return MinimumFloor.bodyXLarge
+        case .posBodyLargeBold, .posBodyLargeRegular: return MinimumFloor.bodyLarge
+        case .posBodyMediumBold, .posBodyMediumRegular: return MinimumFloor.bodyMedium
+        case .posBodySmallBold, .posBodySmallRegular: return MinimumFloor.bodySmall
+        case .posCaptionBold, .posCaptionRegular: return MinimumFloor.caption
+        case .posButtonSymbolXSmall, .posButtonSymbolSmall,
+             .posButtonSymbolMedium, .posButtonSymbolLarge: return MinimumFloor.buttonSymbol
+        }
+    }
+
+    var fontWeight: Font.Weight {
+        switch self {
+        case .posHeadingBold, .posBodyXLargeBold, .posBodyLargeBold,
+             .posBodyMediumBold, .posBodySmallBold, .posCaptionBold:
+            return .bold
+        case .posBodyXLargeRegular:
+            return .semibold
+        case .posButtonSymbolXSmall, .posButtonSymbolSmall,
+             .posButtonSymbolMedium, .posButtonSymbolLarge:
+            return .semibold
+        case .posHeadingRegular, .posBodyLargeRegular, .posBodyMediumRegular,
+             .posBodySmallRegular, .posCaptionRegular:
+            return .regular
+        }
+    }
 }
 
 // MARK: - Helpers
 
 private struct POSScaledFont: ViewModifier {
-    // Declaring dynamicTypeSize ensures it's automatically observed
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posLayoutScale) var layoutScale
     var style: POSFontStyle
 
     func body(content: Content) -> some View {
         let category = UIContentSizeCategory(dynamicTypeSize)
+        let base = style.baseSize(for: layoutScale)
+        let font = style.font(baseSize: base, maximumContentSizeCategory: category)
 
         return content
-            .font(style.font(maximumContentSizeCategory: category))
+            .font(font)
             .if(shouldUnderline()) { view in
                 view.underline()
             }

@@ -4,6 +4,8 @@ import struct WooFoundation.IndefiniteCircularProgressViewStyle
 /// The size variant of the POS button.
 enum POSButtonSize {
     case normal
+    /// A smaller button suitable for phone layouts — medium font with moderate padding.
+    case small
     case extraSmall
     case compact
 }
@@ -136,7 +138,7 @@ private struct POSButtonStyleInternal: View {
     @ViewBuilder
     private func containerView(@ViewBuilder content: () -> some View) -> some View {
         switch size {
-        case .normal:
+        case .normal, .small:
             HStack {
                 Spacer()
                 content()
@@ -154,7 +156,7 @@ private struct POSButtonStyleInternal: View {
 
     private var successView: some View {
         Image(systemName: "checkmark.circle")
-            .font(size == .normal ? .title2 : .body)
+            .font(size == .normal || size == .small ? .title2 : .body)
             .foregroundColor(.posOnPrimaryContainer)
     }
 
@@ -225,6 +227,8 @@ private extension POSButtonSize {
         switch self {
         case .normal:
             (vertical: POSPadding.large, horizontal: POSPadding.large)
+        case .small:
+            (vertical: POSPadding.medium, horizontal: POSPadding.medium)
         case .extraSmall:
             (vertical: POSPadding.small, horizontal: POSPadding.medium)
         case .compact:
@@ -236,6 +240,8 @@ private extension POSButtonSize {
         switch self {
         case .normal:
                 .posBodyLargeBold
+        case .small:
+                .posBodyMediumBold
         case .extraSmall:
                 .posBodyMediumBold
         case .compact:
@@ -245,7 +251,7 @@ private extension POSButtonSize {
 
     var cornerRadius: CGFloat {
         switch self {
-        case .normal, .extraSmall:
+        case .normal, .extraSmall, .small:
             POSCornerRadiusStyle.medium.value
         case .compact:
             POSCornerRadiusStyle.small.value
@@ -258,7 +264,7 @@ private extension POSButtonSize {
         switch self {
         case .normal:
             (size: 32, lineWidth: 10)
-        case .extraSmall:
+        case .small, .extraSmall:
             (size: 20, lineWidth: 6)
         case .compact:
             (size: 16, lineWidth: 4)

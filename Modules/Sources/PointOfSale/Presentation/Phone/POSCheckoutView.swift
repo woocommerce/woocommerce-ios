@@ -100,11 +100,8 @@ private extension POSCheckoutView {
                     }
                 } label: {
                     Text(Localization.card)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, POSPadding.small)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.posPrimary)
+                .buttonStyle(POSFilledButtonStyle(size: .small))
 
                 Button {
                     Task { @MainActor in
@@ -112,10 +109,8 @@ private extension POSCheckoutView {
                     }
                 } label: {
                     Text(Localization.cash)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, POSPadding.small)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(POSOutlinedButtonStyle(size: .small))
             }
             .padding(.horizontal, POSPadding.small)
             .padding(.bottom, POSPadding.small)

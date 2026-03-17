@@ -150,6 +150,8 @@ private extension ItemRowView {
             placeholderHeight: 24,
             cardSize: Constants.productCardSize,
             maximumCardSize: Constants.maximumProductCardSize,
+            compactCardSize: Constants.compactProductCardSize,
+            compactMaxCardSize: Constants.compactMaxProductCardSize,
             topPlaceholderWidthMultiplier: 0.4,
             bottomPlaceholderWidthMultiplier: 0.35,
             backgroundColor: Color.posSurfaceContainerLowest

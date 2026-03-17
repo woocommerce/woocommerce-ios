@@ -5,11 +5,14 @@ struct GhostItemCardView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @State private var viewWidth: CGFloat = 0.0
     @Binding private var showProductImage: Bool
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let configuration: GhostItemCardViewConfiguration
     private let accessory: AnyView?
 
     private var dimension: CGFloat {
-        min(configuration.cardSize * scale, configuration.maximumCardSize)
+        let baseSize = horizontalSizeClass == .compact ? configuration.compactCardSize : configuration.cardSize
+        let maxSize = horizontalSizeClass == .compact ? configuration.compactMaxCardSize : configuration.maximumCardSize
+        return min(baseSize * scale, maxSize)
     }
 
     init(configuration: GhostItemCardViewConfiguration = .itemList,
@@ -89,14 +92,36 @@ struct GhostItemCardViewConfiguration {
     let placeholderHeight: CGFloat
     let cardSize: CGFloat
     let maximumCardSize: CGFloat
+    let compactCardSize: CGFloat
+    let compactMaxCardSize: CGFloat
     let topPlaceholderWidthMultiplier: CGFloat
     let bottomPlaceholderWidthMultiplier: CGFloat
     let backgroundColor: Color
+
+    init(placeholderHeight: CGFloat,
+         cardSize: CGFloat,
+         maximumCardSize: CGFloat,
+         compactCardSize: CGFloat? = nil,
+         compactMaxCardSize: CGFloat? = nil,
+         topPlaceholderWidthMultiplier: CGFloat,
+         bottomPlaceholderWidthMultiplier: CGFloat,
+         backgroundColor: Color) {
+        self.placeholderHeight = placeholderHeight
+        self.cardSize = cardSize
+        self.maximumCardSize = maximumCardSize
+        self.compactCardSize = compactCardSize ?? cardSize
+        self.compactMaxCardSize = compactMaxCardSize ?? maximumCardSize
+        self.topPlaceholderWidthMultiplier = topPlaceholderWidthMultiplier
+        self.bottomPlaceholderWidthMultiplier = bottomPlaceholderWidthMultiplier
+        self.backgroundColor = backgroundColor
+    }
 
     static let itemList = GhostItemCardViewConfiguration(
         placeholderHeight: 32,
         cardSize: Constants.productCardSize,
         maximumCardSize: Constants.maximumProductCardSize,
+        compactCardSize: 64,
+        compactMaxCardSize: 96,
         topPlaceholderWidthMultiplier: 0.5,
         bottomPlaceholderWidthMultiplier: 0.1,
         backgroundColor: Color.posSurfaceBright

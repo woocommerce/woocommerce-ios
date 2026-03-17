@@ -11,6 +11,7 @@ struct ItemListView: View {
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
+    @Environment(\.posHeaderLeadingContent) private var headerLeadingContent
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
@@ -275,7 +276,11 @@ private extension ItemListView {
     @ViewBuilder
     var headerView: some View {
         VStack {
-            POSPageHeaderView(items: headerViewItems, trailingContent: {
+            POSPageHeaderView(items: headerViewItems, leadingContent: {
+                if !isSearching, let headerLeadingContent {
+                    headerLeadingContent
+                }
+            }, trailingContent: {
                 HStack {
                     if isSearching {
                         POSSearchField(

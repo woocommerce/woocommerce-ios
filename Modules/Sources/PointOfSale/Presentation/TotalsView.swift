@@ -270,6 +270,7 @@ private extension TotalsView {
 }
 
 private struct TotalsFieldsContent: View {
+    @Environment(\.posLayoutScale) private var layoutScale
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
     let cart: Cart
@@ -333,8 +334,13 @@ private struct TotalsFieldsContent: View {
             )
         }
         .padding(TotalsView.Constants.totalsLineViewPadding)
-        .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-        .fixedSize(horizontal: true, vertical: false)
+        .if(layoutScale == .tablet) {
+            $0.frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        .if(layoutScale == .phone) {
+            $0.frame(maxWidth: .infinity)
+        }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }
 }
@@ -406,13 +412,17 @@ private struct TotalFieldView: View {
 }
 
 private struct ShimmeringLineView: View {
+    @Environment(\.posLayoutScale) private var layoutScale
     let width: CGFloat
     let height: CGFloat
 
     var body: some View {
         Color.posOnSurfaceVariantLowest
-            .frame(width: width, height: height)
-            .fixedSize(horizontal: true, vertical: true)
+            .frame(maxWidth: layoutScale == .phone ? .infinity : width,
+                   minHeight: layoutScale == .phone ? max(height, 48) : height,
+                   maxHeight: layoutScale == .phone ? max(height, 48) : height)
+            .fixedSize(horizontal: layoutScale != .phone, vertical: true)
+            .padding(.horizontal, layoutScale == .phone ? POSPadding.medium : 0)
             .shimmering(active: true)
             .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
     }

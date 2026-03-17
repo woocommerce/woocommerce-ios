@@ -6,31 +6,18 @@ struct POSFloatingControlView: View {
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Binding private var showExitPOSModal: Bool
-    @Binding private var showSupport: Bool
-    @Binding private var showDocumentation: Bool
-    @Binding private var showSettings: Bool
-    @State private var showProductRestrictionsModal: Bool = false
-    @State private var showBarcodeScanningModal: Bool = false
-    @State private var showOrders: Bool = false
-    @State private var showBookings: Bool = false
     @Environment(\.posBookingsEligible) private var isBookingsEligible
 
-    init(showExitPOSModal: Binding<Bool>,
-         showSupport: Binding<Bool>,
-         showDocumentation: Binding<Bool>,
-         showSettings: Binding<Bool>) {
-        self._showExitPOSModal = showExitPOSModal
-        self._showSupport = showSupport
-        self._showDocumentation = showDocumentation
-        self._showSettings = showSettings
-    }
+    let menuPresenter: POSMenuPresenter
 
     var body: some View {
         HStack {
             Menu {
-                menuOptions()
+                menuPresenter.menuOptions(
+                    featureFlags: featureFlags,
+                    isBookingsEligible: isBookingsEligible,
+                    analytics: analytics
+                )
             } label: {
                 VStack {
                     Spacer()
@@ -52,84 +39,11 @@ struct POSFloatingControlView: View {
                 .background(backgroundColor)
                 .cornerRadius(Constants.cornerRadius)
                 .disabled(posModel.paymentState.shownFullScreen)
-                .disabled(horizontalSizeClass != .regular)
-        }
-        .posModal(isPresented: $showProductRestrictionsModal) {
-            SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)
-        }
-        .posModal(isPresented: $showBarcodeScanningModal) {
-            POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
-        }
-        .posFullScreenCover(isPresented: $showOrders) {
-            POSOrdersView(isPresented: $showOrders)
-        }
-        .posFullScreenCover(isPresented: $showBookings) {
-            POSBookingsContainerView(isPresented: $showBookings)
-                .environment(\.floatingControlAreaSize, .zero)
-        }
-        .onChange(of: showBookings) { _, isShowing in
-            if isShowing {
-                posModel.paymentModel.deactivate()
-            } else if posModel.orderStage == .finalizing {
-                Task { @MainActor in
-                    await posModel.paymentModel.activate()
-                }
-            }
         }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
         .posShadow(.large, cornerRadius: Constants.cornerRadius)
-    }
-}
-
-private extension POSFloatingControlView {
-    @ViewBuilder private func menuOptions() -> some View {
-        Button {
-            analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
-        } label: {
-            Label(
-                title: { Text(Localization.exitPointOfSale) },
-                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-            )
-        }
-        .accessibilityIdentifier("pos-exit-menu-item")
-        if horizontalSizeClass == .regular {
-            Button {
-                analytics.track(.pointOfSaleSettingsMenuItemTapped)
-                showSettings = true
-            } label: {
-                Label(
-                    title: { Text(Localization.settings) },
-                    icon: { Image(systemName: "gearshape") }
-                )
-            }
-
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleHistoricalOrdersi1) {
-                Button {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersMenuItemTapped())
-                    showOrders = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.orders) },
-                        icon: { Image(systemName: "text.document") }
-                    )
-                }
-            }
-
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
-                Button {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
-                    showBookings = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.bookings) },
-                        icon: { Image(systemName: "calendar") }
-                    )
-                }
-            }
-        }
     }
 }
 
@@ -164,42 +78,12 @@ private extension POSFloatingControlView {
         static let size: CGFloat = 80
         static let cornerRadius: CGFloat = POSCornerRadiusStyle.medium.value
     }
-
-    enum Localization {
-        static let orders = NSLocalizedString(
-            "pointOfSale.floatingButtons.orders.button.title",
-            value: "Orders",
-            comment: "The title of the menu button to access Point of Sale historical orders, shown in a fullscreen view."
-        )
-
-        static let exitPointOfSale = NSLocalizedString(
-            "pointOfSale.floatingButtons.exit.button.title",
-            value: "Exit POS",
-            comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
-            "The action is confirmed in a modal."
-        )
-
-        static let bookings = NSLocalizedString(
-            "pointOfSale.floatingButtons.bookings.button.title",
-            value: "Bookings",
-            comment: "The title of the menu button to access Point of Sale bookings, shown in a fullscreen view."
-        )
-
-        static let settings = NSLocalizedString(
-            "pointOfSale.floatingButtons.settings.button.title",
-            value: "Settings",
-            comment: "The title of the menu button to access Point of Sale settings."
-        )
-    }
 }
 
 #if DEBUG
 
 #Preview("Reader Disconnected") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
-                           showSupport: .constant(false),
-                           showDocumentation: .constant(false),
-                           showSettings: .constant(false))
+    POSFloatingControlView(menuPresenter: POSMenuPresenter())
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -210,19 +94,13 @@ private extension POSFloatingControlView {
     let posModel = POSPreviewHelpers.makePreviewAggregateModel(
         cardPresentPaymentService: paymentService
     )
-    return POSFloatingControlView(showExitPOSModal: .constant(false),
-                                  showSupport: .constant(false),
-                                  showDocumentation: .constant(false),
-                                  showSettings: .constant(false))
+    return POSFloatingControlView(menuPresenter: POSMenuPresenter())
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
 
 #Preview("Secondary/disabled Background") {
-    POSFloatingControlView(showExitPOSModal: .constant(false),
-                           showSupport: .constant(false),
-                           showDocumentation: .constant(false),
-                           showSettings: .constant(false))
+    POSFloatingControlView(menuPresenter: POSMenuPresenter())
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }

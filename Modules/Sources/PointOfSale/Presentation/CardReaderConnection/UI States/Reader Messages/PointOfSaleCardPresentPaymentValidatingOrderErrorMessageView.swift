@@ -6,6 +6,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
     let animation: POSCardPresentPaymentInLineMessageAnimation
 
     @State private var width: CGFloat = 0
+    @Environment(\.posLayoutScale) private var layoutScale
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
@@ -35,7 +36,8 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageView: View {
             if let tryAgainButtonViewModel = viewModel.tryAgainButtonViewModel {
                 Button(tryAgainButtonViewModel.title, action: tryAgainButtonViewModel.actionHandler)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
-                    .frame(width: width * 0.5)
+                    .if(layoutScale == .tablet) { $0.frame(width: width * 0.5) }
+                    .if(layoutScale == .phone) { $0.frame(maxWidth: .infinity).padding(.horizontal, POSPadding.medium) }
             }
         }
         .multilineTextAlignment(.center)

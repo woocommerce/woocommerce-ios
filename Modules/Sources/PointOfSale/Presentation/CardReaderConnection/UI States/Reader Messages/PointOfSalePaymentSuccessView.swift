@@ -7,6 +7,7 @@ struct PointOfSalePaymentSuccessView: View {
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.posLayoutScale) private var layoutScale
 
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isViewLoaded: Bool = false
@@ -85,8 +86,14 @@ struct PointOfSalePaymentSuccessView: View {
 
                 PaymentsActionButtons(successAction: successAction,
                                       isShowingSendReceiptView: $isShowingSendReceiptView)
-                    .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    .if(layoutScale == .tablet) {
+                        $0.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                    .if(layoutScale == .phone) {
+                        $0.frame(maxWidth: .infinity)
+                            .padding(.horizontal, POSPadding.medium)
+                    }
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)
 

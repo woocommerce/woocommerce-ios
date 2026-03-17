@@ -4,6 +4,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
     private let connectCardReader: () -> Void
     @ScaledMetric private var scale: CGFloat = 1.0
+    @Environment(\.posLayoutScale) private var layoutScale
 
     @State private var width: CGFloat = 0
 
@@ -39,7 +40,8 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                 Text(viewModel.connectReaderButtonTitle)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .frame(width: width * 0.5)
+            .if(layoutScale == .tablet) { $0.frame(width: width * 0.5) }
+            .if(layoutScale == .phone) { $0.frame(maxWidth: .infinity).padding(.horizontal, POSPadding.medium) }
         }
         .frame(maxWidth: .infinity)
         .measureWidth({ containerWidth in

@@ -60,7 +60,8 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
             return false
         }
 
-        guard userInterfaceIdiom == .pad else {
+        guard userInterfaceIdiom == .pad ||
+              (userInterfaceIdiom == .phone && featureFlagService.isFeatureFlagEnabled(.pointOfSalePhone)) else {
             return false
         }
 

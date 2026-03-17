@@ -5,10 +5,16 @@ struct PointOfSaleDashboardViewHelper {
     static func determineViewState(
         eligibilityState: POSEligibilityState?,
         itemsContainerState: ItemsContainerState,
-        horizontalSizeClass: UserInterfaceSizeClass?
+        horizontalSizeClass: UserInterfaceSizeClass?,
+        isPhonePOSEnabled: Bool = false
     ) -> PointOfSaleDashboardView.ViewState {
 
         guard case .regular = horizontalSizeClass else {
+            // When the phone POS flag is enabled, compact size class is handled
+            // by POSPhoneRootView — the dashboard should not show unsupported width.
+            if isPhonePOSEnabled {
+                return .content
+            }
             return .unsupportedWidth
         }
 

@@ -80,6 +80,15 @@ final class ProductFormRemoteActionUseCase {
             guard let self else { return }
             switch result {
             case .success(let data):
+                // Copy custom fields from the original product to the duplicated product.
+                if originalProduct.product.customFields.isNotEmpty {
+                    Task { [weak self] in
+                        await self?.copyCustomFields(originalProduct.product.customFields,
+                                                     toProductID: data.product.productID,
+                                                     siteID: data.product.siteID)
+                    }
+                }
+
                 let variableTypes: [ProductType] = [.variable, .variableSubscription]
                 guard variableTypes.contains(data.product.productType) else {
                     return onCompletion(.success(data))
@@ -344,6 +353,26 @@ private extension ProductFormRemoteActionUseCase {
                 self?.stores.dispatch(action)
             }
         } as ProductVariation?
+    }
+
+    func copyCustomFields(_ customFields: [MetaData],
+                           toProductID newProductID: Int64,
+                           siteID: Int64) async {
+        guard customFields.isNotEmpty else { return }
+        let metadata: [[String: Any?]] = customFields.map { ["key": $0.key, "value": $0.value.stringValue] }
+        await withCheckedContinuation { [weak self] continuation in
+            let action = MetaDataAction.updateMetaData(
+                siteID: siteID,
+                parentItemID: newProductID,
+                metaDataType: .product,
+                metadata: metadata
+            ) { _ in
+                continuation.resume()
+            }
+            DispatchQueue.main.async { [weak self] in
+                self?.stores.dispatch(action)
+            }
+        } as Void
     }
 
     func duplicateProductVariation(_ newVariation: CreateProductVariation, parent: EditableProductModel) async {

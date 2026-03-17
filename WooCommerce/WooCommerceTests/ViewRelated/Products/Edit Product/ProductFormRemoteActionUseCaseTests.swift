@@ -474,6 +474,44 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
+    func test_duplicating_product_with_custom_fields_dispatches_metadata_update_action() {
+        // Given
+        let customFields = [
+            MetaData(metadataID: 1, key: "color", value: "red"),
+            MetaData(metadataID: 2, key: "size", value: "large")
+        ]
+        let product = Product.fake().copy(productID: 5, siteID: siteID, customFields: customFields)
+        let model = EditableProductModel(product: product)
+        let duplicatedProduct = Product.fake().copy(productID: 99, siteID: siteID)
+        mockAddProduct(result: .success(duplicatedProduct))
+
+        var receivedParentItemID: Int64?
+        var receivedMetadata: [[String: Any?]]?
+        storesManager.whenReceivingAction(ofType: MetaDataAction.self) { action in
+            if case let MetaDataAction.updateMetaData(_, parentItemID, _, metadata, onCompletion) = action {
+                receivedParentItemID = parentItemID
+                receivedMetadata = metadata
+                onCompletion(.success([]))
+            }
+        }
+
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        useCase.duplicateProduct(originalProduct: model, password: nil) { _ in }
+        waitUntil {
+            receivedMetadata != nil
+        }
+
+        // Then
+        XCTAssertEqual(receivedParentItemID, 99)
+        XCTAssertEqual(receivedMetadata?.count, 2)
+        XCTAssertEqual(receivedMetadata?[0]["key"] as? String, "color")
+        XCTAssertEqual(receivedMetadata?[0]["value"] as? String, "red")
+        XCTAssertEqual(receivedMetadata?[1]["key"] as? String, "size")
+        XCTAssertEqual(receivedMetadata?[1]["value"] as? String, "large")
+    }
+
     func test_duplicating_variable_product_triggers_retrieving_original_product_variations_and_creating_new_variations_for_duplicated_product() {
         // Given
         let testVariationIDs: [Int64] = [11, 20, 35]

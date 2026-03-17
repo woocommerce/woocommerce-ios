@@ -9,6 +9,8 @@ final class BookingDetailsViewModel: ObservableObject {
     private let storage: StorageManagerType
 
     private var bookingResource: BookingResource?
+    private var isLoadingResource = false
+    private var isLoadingLocation = false
     private var booking: Booking {
         didSet {
             updateDisplayProperties(from: booking)
@@ -116,7 +118,11 @@ private extension BookingDetailsViewModel {
             customerContent.update(with: customerInfo)
         }
 
-        appointmentDetailsContent.update(with: booking, resource: bookingResource, bookingLocation: booking.location)
+        appointmentDetailsContent.update(with: booking,
+                                        resource: bookingResource,
+                                        bookingLocation: booking.location,
+                                        isLoadingResource: isLoadingResource,
+                                        isLoadingLocation: isLoadingLocation)
 
         paymentContent.update(with: booking)
         notesContent.update(with: booking)
@@ -193,12 +199,25 @@ private extension BookingDetailsViewModel {
 // MARK: Syncing
 
 extension BookingDetailsViewModel {
+    @MainActor
     func syncData() async {
-        if let resource = await fetchResource() {
-            self.bookingResource = resource // only update resource if fetching succeeds
+        isLoadingResource = bookingResource == nil && booking.resourceID > 0
+        isLoadingLocation = booking.location == nil
+        updateDisplayProperties(from: booking)
+
+        async let resourceResult = fetchResource()
+        async let bookingSync: Void = fetchBooking()
+
+        if let resource = await resourceResult {
+            self.bookingResource = resource
         }
-        await fetchBooking()
+        isLoadingResource = false
+        _ = await bookingSync
+        updateDisplayProperties(from: booking)
+
         await fetchBookingLocation()
+        isLoadingLocation = false
+        updateDisplayProperties(from: booking)
     }
 }
 
@@ -331,17 +350,20 @@ private extension BookingDetailsViewModel {
     }
 
     @MainActor
-    func fetchBookingLocation() {
-        let action = BookingAction.fetchBookingLocationResponse(
-            siteID: booking.siteID,
-            bookingID: booking.bookingID,
-            productID: booking.productID
-        ) { result in
-            if case .failure(let error) = result {
-                DDLogError("⛔️ Error fetching booking location: \(error)")
+    func fetchBookingLocation() async {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.fetchBookingLocationResponse(
+                siteID: booking.siteID,
+                bookingID: booking.bookingID,
+                productID: booking.productID
+            ) { result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Error fetching booking location: \(error)")
+                }
+                continuation.resume()
             }
+            stores.dispatch(action)
         }
-        stores.dispatch(action)
     }
 
     @MainActor

@@ -6,27 +6,46 @@ extension BookingDetailsViewModel {
         struct Row: Identifiable {
             let title: String
             let value: String
+            let isLoading: Bool
 
             var id: String {
                 return title
+            }
+
+            init(title: String, value: String, isLoading: Bool = false) {
+                self.title = title
+                self.value = value
+                self.isLoading = isLoading
             }
         }
 
         @Published private(set) var rows: [Row] = []
 
-        func update(with booking: Booking, resource: BookingResource?, bookingLocation: String? = nil) {
+        func update(with booking: Booking,
+                    resource: BookingResource?,
+                    bookingLocation: String? = nil,
+                    isLoadingResource: Bool = false,
+                    isLoadingLocation: Bool = false) {
             let appointmentDate = booking.startDate.toString(dateStyle: .short, timeStyle: .none, timeZone: BookingListTab.utcTimeZone)
             let appointmentTimeFrame = [
                 booking.startDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone),
                 booking.endDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone)
             ].joined(separator: " - ")
 
+            let loadingPlaceholder = String(repeating: "X", count: 20)
+
             let resourceRow: Row? = {
                 guard booking.resourceID > 0 else { return nil }
-                return Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: resource?.name ?? "-")
+                let value = isLoadingResource ? loadingPlaceholder : (resource?.name ?? "-")
+                return Row(title: Localization.appointmentDetailsAssignedStaffTitle,
+                           value: value,
+                           isLoading: isLoadingResource)
             }()
 
             let locationValue: String = {
+                if isLoadingLocation {
+                    return loadingPlaceholder
+                }
                 guard let location = bookingLocation, !location.isEmpty else {
                     return "-"
                 }
@@ -37,7 +56,7 @@ extension BookingDetailsViewModel {
                 Row(title: Localization.appointmentDetailsDateRowTitle, value: appointmentDate),
                 Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
                 resourceRow,
-                Row(title: Localization.appointmentDetailsLocationTitle, value: locationValue),
+                Row(title: Localization.appointmentDetailsLocationTitle, value: locationValue, isLoading: isLoadingLocation),
                 Row(
                     title: Localization.appointmentDetailsDurationTitle,
                     value: Self.formatDuration(

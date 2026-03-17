@@ -158,7 +158,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
 
         // On CIAB commerce garden sites, `woocommerce_is_active` can be false even though
         // WooCommerce is expected to be present. Bypass the flag for these sites.
-        let effectiveWooCommerceActive = isWooCommerceActive || Site.isCIAB(isGarden: isGarden, gardenName: isGarden)
+        let effectiveWooCommerceActive = isWooCommerceActive || Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
 
         self.init(siteID: siteID,
                   name: name,

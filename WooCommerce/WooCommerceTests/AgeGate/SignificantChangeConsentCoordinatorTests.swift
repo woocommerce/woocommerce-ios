@@ -3,7 +3,7 @@ import XCTest
 
 final class SignificantChangeConsentCoordinatorTests: XCTestCase {
 
-    func test_checkConsentIfNeeded_when_not_minor_returns_granted_without_request() async {
+    @MainActor func test_checkConsentIfNeeded_when_not_minor_returns_granted_without_request() async {
         let provider = MockConsentProvider(outcome: .denied)
         let store = MockConsentStore()
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
@@ -18,7 +18,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertEqual(store.setCount, 1)
     }
 
-    func test_checkConsentIfNeeded_when_no_change_returns_granted() async {
+    @MainActor func test_checkConsentIfNeeded_when_no_change_returns_granted() async {
         let provider = MockConsentProvider(outcome: .denied)
         let store = MockConsentStore()
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
@@ -33,7 +33,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertEqual(store.setCount, 0)
     }
 
-    func test_checkConsentIfNeeded_when_cached_granted_returns_granted_without_request() async {
+    @MainActor func test_checkConsentIfNeeded_when_cached_granted_returns_granted_without_request() async {
         let provider = MockConsentProvider(outcome: .denied)
         let store = MockConsentStore()
         let identifier = SignificantChangeIdentifier.ageRatingChange(ratingCode: 13)
@@ -50,7 +50,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertEqual(store.setCount, 0)
     }
 
-    func test_checkConsentIfNeeded_when_cached_denied_returns_denied_without_request() async {
+    @MainActor func test_checkConsentIfNeeded_when_cached_denied_returns_denied_without_request() async {
         let provider = MockConsentProvider(outcome: .granted)
         let store = MockConsentStore()
         let identifier = SignificantChangeIdentifier.ageRatingChange(ratingCode: 13)
@@ -67,7 +67,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertEqual(store.setCount, 0)
     }
 
-    func test_checkConsentIfNeeded_when_provider_grants_caches_and_returns_granted() async {
+    @MainActor func test_checkConsentIfNeeded_when_provider_grants_caches_and_returns_granted() async {
         let provider = MockConsentProvider(outcome: .granted)
         let store = MockConsentStore()
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
@@ -82,7 +82,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .granted)
     }
 
-    func test_checkConsentIfNeeded_when_provider_denies_caches_and_returns_denied() async {
+    @MainActor func test_checkConsentIfNeeded_when_provider_denies_caches_and_returns_denied() async {
         let provider = MockConsentProvider(outcome: .denied)
         let store = MockConsentStore()
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
@@ -97,7 +97,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .denied)
     }
 
-    func test_checkConsentIfNeeded_when_manual_identifier_uses_manual_path() async {
+    @MainActor func test_checkConsentIfNeeded_when_manual_identifier_uses_manual_path() async {
         let provider = MockConsentProvider(outcome: .granted)
         let store = MockConsentStore()
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)

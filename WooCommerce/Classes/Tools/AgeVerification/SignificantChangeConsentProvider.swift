@@ -4,7 +4,7 @@ import UIKit
 import PermissionKit
 #endif
 
-enum SignificantChangeConsentOutcome {
+enum SignificantChangeConsentOutcome: Equatable {
     case granted
     case denied
     case notAvailable

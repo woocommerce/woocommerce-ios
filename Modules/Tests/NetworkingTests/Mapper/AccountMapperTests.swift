@@ -113,13 +113,21 @@ final class AccountMapperTests: XCTestCase {
     ///
     func test_Site_isWooCommerceActive_is_not_overridden_for_non_commerce_garden_site() {
         // Given
-        let site = Site.fake().copy(
-            isWooCommerceActive: false,
-            isGarden: true,
-            gardenName: "blog"
-        )
+        guard let sites = mapLoadCIABNonCommerceGardenSitesResponse() else {
+            XCTFail("Failed to load CIAB non-commerce garden site fixture")
+            return
+        }
+
+        // When
+        guard let site = sites.first else {
+            XCTFail("Expected at least one site in fixture")
+            return
+        }
 
         // Then
+        XCTAssertEqual(sites.count, 1)
+        XCTAssertTrue(site.isGarden)
+        XCTAssertEqual(site.gardenName, "blog")
         XCTAssertFalse(site.isWooCommerceActive, "Non-commerce garden sites should not have isWooCommerceActive overridden")
     }
 }
@@ -164,6 +172,16 @@ private extension AccountMapperTests {
     ///
     func mapLoadCIABCommerceGardenSitesResponse() -> [Site]? {
         guard let response = Loader.contentsOf("site-ciab-commerce-garden") else {
+            return nil
+        }
+
+        return try? SiteListMapper().map(response: response)
+    }
+
+    /// Returns the SiteListMapper output upon receiving `site-ciab-non-commerce-garden` mock response (Data Encoded).
+    ///
+    func mapLoadCIABNonCommerceGardenSitesResponse() -> [Site]? {
+        guard let response = Loader.contentsOf("site-ciab-non-commerce-garden") else {
             return nil
         }
 

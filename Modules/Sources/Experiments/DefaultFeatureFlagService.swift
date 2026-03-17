@@ -109,7 +109,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleOnlyProducts:
             return true
         case .pointOfSalePhone:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:

@@ -13,8 +13,8 @@ struct CouponCardView: View {
     }
 
     private var dimension: CGFloat {
-        let baseSize: CGFloat = isCompact ? 56 : Constants.productCardSize
-        let maxSize: CGFloat = isCompact ? 84 : Constants.maximumProductCardSize
+        let baseSize: CGFloat = isCompact ? 64 : Constants.productCardSize
+        let maxSize: CGFloat = isCompact ? 96 : Constants.maximumProductCardSize
         return min(baseSize * scale, maxSize)
     }
 
@@ -55,7 +55,7 @@ struct CouponCardView: View {
                 }
             }
             .padding(.horizontal, (isCompact ? POSPadding.small : Constants.horizontalTextPadding) * (1 / scale))
-            .padding(.vertical, (isCompact ? POSPadding.small : Constants.verticalTextPadding) * (1 / scale))
+            .padding(.vertical, (isCompact ? 12 : Constants.verticalTextPadding) * (1 / scale))
             Spacer()
         }
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)

@@ -133,11 +133,11 @@ private extension ItemRowView {
     enum Constants {
         static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
-        static let compactProductCardSize: CGFloat = 56
+        static let compactProductCardSize: CGFloat = 64
         static let compactMaxProductCardSize: CGFloat = Self.compactProductCardSize * 1.5
         static let horizontalPadding: CGFloat = POSPadding.medium
         static let verticalPadding: CGFloat = POSPadding.small
-        static let compactVerticalPadding: CGFloat = POSPadding.xSmall
+        static let compactVerticalPadding: CGFloat = 12
         static let horizontalElementSpacing: CGFloat = POSSpacing.medium
         static let cardContentHorizontalPadding: CGFloat = POSPadding.medium
         static let itemTitleAndPriceSpacing: CGFloat = POSSpacing.xSmall

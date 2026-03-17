@@ -178,7 +178,14 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: connectionMethod, channel: .pos)
+        DDLogInfo("🃏 [CardPayment] collectPayment facade call starting — order: \(order.orderID), method: \(connectionMethod), total: \(order.total)")
+        do {
+            _ = try await cardPresentPaymentService.collectPayment(for: order, using: connectionMethod, channel: .pos)
+            DDLogInfo("🃏 [CardPayment] collectPayment facade call completed successfully")
+        } catch {
+            DDLogError("🃏 [CardPayment] collectPayment facade call failed: \(error)")
+            throw error
+        }
     }
 
     func cancelThenCollectPayment() {

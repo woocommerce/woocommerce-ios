@@ -34,9 +34,7 @@ struct POSCartButton: View {
     }
 
     private var cartLabel: String {
-        itemCount == 1
-            ? String(format: Localization.singleItem, itemCount)
-            : String(format: Localization.multipleItems, itemCount)
+        CartViewHelper().itemsInCartLabel(for: itemCount) ?? Localization.emptyCart
     }
 
     private enum Localization {
@@ -44,16 +42,6 @@ struct POSCartButton: View {
             "pointOfSale.phone.cartButton.empty",
             value: "Cart",
             comment: "Title shown on the cart button when no items have been added to the POS cart."
-        )
-        static let singleItem = NSLocalizedString(
-            "pointOfSale.phone.cartButton.singleItem",
-            value: "%1$d item",
-            comment: "Cart button label showing singular item count. %1$d is the number of items."
-        )
-        static let multipleItems = NSLocalizedString(
-            "pointOfSale.phone.cartButton.multipleItems",
-            value: "%1$d items",
-            comment: "Cart button label showing plural item count. %1$d is the number of items."
         )
     }
 }

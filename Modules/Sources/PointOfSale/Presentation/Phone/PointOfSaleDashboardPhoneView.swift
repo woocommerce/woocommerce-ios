@@ -169,10 +169,5 @@ struct PointOfSaleDashboardPhoneView: View {
                             state: .enabled,
                             action: { isCartPresented = false }
                           ))
-            .onChange(of: posModel.orderStage) { _, newValue in
-                if newValue == .finalizing {
-                    isShowingCheckout = true
-                }
-            }
     }
 }

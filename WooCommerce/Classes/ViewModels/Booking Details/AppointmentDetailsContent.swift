@@ -63,10 +63,6 @@ extension BookingDetailsViewModel {
                         from: booking.startDate,
                         to: booking.endDate
                     )
-                ),
-                Row(
-                    title: Localization.appointmentDetailsPriceTitle,
-                    value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost)
                 )
             ].compactMap { $0 }
         }
@@ -116,12 +112,6 @@ private extension BookingDetailsViewModel.AppointmentDetailsContent {
             "BookingDetailsView.appointmentDetails.durationRow.title",
             value: "Duration",
             comment: "Duration row title in appointment details section in booking details view."
-        )
-
-        static let appointmentDetailsPriceTitle = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.priceRow.title",
-            value: "Price",
-            comment: "Price row title in appointment details section in booking details view."
         )
     }
 }

@@ -46,12 +46,12 @@ final class WPComPushNotificationsBenefitsViewModel {
     init(siteID: Int64,
          siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
-         jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
+         jetpackConnectionService: JetpackConnectionServiceProtocol? = nil,
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          onDismiss: @escaping () -> Void) {
         self.stores = stores
-        self.jetpackConnectionService = jetpackConnectionService
+        self.jetpackConnectionService = jetpackConnectionService ?? JetpackConnectionService(siteID: siteID)
         self.analytics = analytics
         self.onDismiss = onDismiss
         let minimumVersion: String = {

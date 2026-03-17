@@ -85,6 +85,51 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(site!.siteID, 1112233334444555)
         XCTAssertEqual(site!.shortName, "Business")
     }
+
+    /// Verifies that `isWooCommerceActive` is overridden to `true` for CIAB commerce garden sites
+    /// even when the API returns `woocommerce_is_active: false`.
+    ///
+    func test_Site_isWooCommerceActive_is_true_for_CIAB_commerce_garden_site() {
+        // Given
+        guard let sites = mapLoadCIABCommerceGardenSitesResponse() else {
+            XCTFail("Failed to load CIAB commerce garden site fixture")
+            return
+        }
+
+        // When
+        guard let site = sites.first else {
+            XCTFail("Expected at least one site in fixture")
+            return
+        }
+
+        // Then
+        XCTAssertEqual(sites.count, 1)
+        XCTAssertTrue(site.isGarden)
+        XCTAssertEqual(site.gardenName, "commerce")
+        XCTAssertTrue(site.isWooCommerceActive, "Commerce garden sites should have isWooCommerceActive overridden to true")
+    }
+
+    /// Verifies that `isWooCommerceActive` is NOT overridden for non-commerce garden sites.
+    ///
+    func test_Site_isWooCommerceActive_is_not_overridden_for_non_commerce_garden_site() {
+        // Given
+        guard let sites = mapLoadCIABNonCommerceGardenSitesResponse() else {
+            XCTFail("Failed to load CIAB non-commerce garden site fixture")
+            return
+        }
+
+        // When
+        guard let site = sites.first else {
+            XCTFail("Expected at least one site in fixture")
+            return
+        }
+
+        // Then
+        XCTAssertEqual(sites.count, 1)
+        XCTAssertTrue(site.isGarden)
+        XCTAssertEqual(site.gardenName, "blog")
+        XCTAssertFalse(site.isWooCommerceActive, "Non-commerce garden sites should not have isWooCommerceActive overridden")
+    }
 }
 
 
@@ -121,5 +166,25 @@ private extension AccountMapperTests {
         }
 
         return try? SitePlanMapper().map(response: response)
+    }
+
+    /// Returns the SiteListMapper output upon receiving `site-ciab-commerce-garden` mock response (Data Encoded).
+    ///
+    func mapLoadCIABCommerceGardenSitesResponse() -> [Site]? {
+        guard let response = Loader.contentsOf("site-ciab-commerce-garden") else {
+            return nil
+        }
+
+        return try? SiteListMapper().map(response: response)
+    }
+
+    /// Returns the SiteListMapper output upon receiving `site-ciab-non-commerce-garden` mock response (Data Encoded).
+    ///
+    func mapLoadCIABNonCommerceGardenSitesResponse() -> [Site]? {
+        guard let response = Loader.contentsOf("site-ciab-non-commerce-garden") else {
+            return nil
+        }
+
+        return try? SiteListMapper().map(response: response)
     }
 }

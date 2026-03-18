@@ -551,8 +551,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             let hasRESTAPI = discoveredRoot != nil
 
             DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
-            self.analytics.track(event: .Login.siteInfoFailed(error: error, hasDiscoveredRESTAPI: hasRESTAPI))
-
             completion(hasRESTAPI)
         }
     }

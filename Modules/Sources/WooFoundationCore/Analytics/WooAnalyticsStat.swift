@@ -84,7 +84,6 @@ public enum WooAnalyticsStat: String {
     // MARK: REST API login
     //
     case loginSiteAddressSiteInfoFetched = "login_site_address_site_info_fetched"
-    case loginSiteAddressSiteInfoFailed = "login_site_address_site_info_failed"
     case loginSiteCredentialsFailed = "login_site_credentials_login_failed"
 
     // MARK: Site credentials

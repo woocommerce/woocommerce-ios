@@ -2903,15 +2903,6 @@ extension WooAnalyticsEvent {
                                      error: error)
         }
 
-        /// Tracks when the site info check fails during site address login.
-        ///
-        static func siteInfoFailed(error: Error,
-                                   hasDiscoveredRESTAPI: Bool) -> WooAnalyticsEvent {
-            .init(statName: .loginSiteAddressSiteInfoFailed,
-                  properties: ["has_discovered_rest_api": hasDiscoveredRESTAPI],
-                  error: error)
-        }
-
         /// Tracks when site info is fetched during site address login.
         ///
         static func siteInfoFetched(exists: Bool,

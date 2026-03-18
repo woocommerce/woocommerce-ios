@@ -16,6 +16,14 @@ struct DebugPanelView: View {
             }
 
             Button {
+                ServiceLocator.storageManager.reset {
+                    ServiceLocator.noticePresenter.enqueue(notice: Notice(title: "CoreData storage cleared"))
+                }
+            } label: {
+                Text("Clear CoreData Storage")
+            }
+
+            Button {
                 ServiceLocator.crashLogging.crash()
             } label: {
                 Text("Crash Immediately")

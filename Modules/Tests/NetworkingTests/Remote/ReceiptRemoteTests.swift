@@ -125,7 +125,7 @@ final class ReceiptRemoteTests: XCTestCase {
         try await remote.sendReceipt(siteID: 123, orderID: orderID)
     }
 
-    func test_sendPOSReceipt_when_template_exists_triggers_send_email_action() async throws {
+    func test_sendPOSReceipt_when_templateID_provided_includes_template_id() async throws {
         // Given
         let remote = ReceiptRemote(network: network)
         let posReceiptTemplateID = "customer_pos_completed_order"
@@ -137,13 +137,35 @@ final class ReceiptRemoteTests: XCTestCase {
         )
 
         // When
-        try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail)
+        try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail, templateID: posReceiptTemplateID)
 
         // Then the send email request was made with correct parameters.
         let sendEmailRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         XCTAssertEqual(sendEmailRequest.method, .post)
         XCTAssertEqual(sendEmailRequest.path, "orders/\(sampleOrderID)/actions/send_email")
         XCTAssertEqual(sendEmailRequest.parameters["template_id"] as? String, posReceiptTemplateID)
+        XCTAssertEqual(sendEmailRequest.parameters["email"] as? String, testEmail)
+        XCTAssertEqual(sendEmailRequest.parameters["force_email_update"] as? Bool, true)
+    }
+
+    func test_sendPOSReceipt_when_templateID_is_nil_does_not_include_template_id() async throws {
+        // Given
+        let remote = ReceiptRemote(network: network)
+        let testEmail = "test@example.com"
+
+        network.simulateResponse(
+            requestUrlSuffix: "orders/\(sampleOrderID)/actions/send_email",
+            filename: "orders-actions-send-email-success"
+        )
+
+        // When
+        try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail, templateID: nil)
+
+        // Then
+        let sendEmailRequest = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(sendEmailRequest.method, .post)
+        XCTAssertEqual(sendEmailRequest.path, "orders/\(sampleOrderID)/actions/send_email")
+        XCTAssertNil(sendEmailRequest.parameters["template_id"])
         XCTAssertEqual(sendEmailRequest.parameters["email"] as? String, testEmail)
         XCTAssertEqual(sendEmailRequest.parameters["force_email_update"] as? Bool, true)
     }
@@ -155,7 +177,7 @@ final class ReceiptRemoteTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail)
+            try await remote.sendPOSReceipt(siteID: sampleSiteID, orderID: sampleOrderID, emailAddress: testEmail, templateID: nil)
         }, errorAssert: { error in
             // Then
             return error is NetworkError

@@ -110,7 +110,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return false
         case .ciabSiteBadge:
-            return buildConfig == .localDeveloper
+            return buildConfig == .localDeveloper && !isUITesting
         default:
             return true
         }

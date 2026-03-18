@@ -103,10 +103,7 @@ struct DashboardView: View {
                     Text(currentSite?.name ?? Localization.title)
                         .subheadlineStyle()
                     if shouldShowCIABBadge {
-                        BadgeView(text: Localization.ciabBadge,
-                                  customizations: .init(textColor: .white,
-                                                        backgroundColor: .orange,
-                                                        borderColor: nil))
+                        BadgeView(text: Localization.ciabBadge)
                     }
                 }
                 .padding(Layout.sectionHeadingPadding)

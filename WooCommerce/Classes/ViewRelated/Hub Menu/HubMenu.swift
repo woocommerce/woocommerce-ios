@@ -323,10 +323,7 @@ private extension HubMenu {
                         }
 
                         if let secondaryTitleBadge, secondaryTitleBadge.isNotEmpty {
-                            BadgeView(text: secondaryTitleBadge,
-                                      customizations: .init(textColor: .white,
-                                                            backgroundColor: .orange,
-                                                            borderColor: nil))
+                            BadgeView(text: secondaryTitleBadge)
                         }
                     }
 

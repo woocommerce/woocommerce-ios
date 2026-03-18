@@ -39,8 +39,8 @@ class StoreTableViewCell: UITableViewCell {
         label.text = "CIAB"
         label.textInsets = Constants.badgeInsets
         label.font = .preferredFont(forTextStyle: .caption2)
-        label.textColor = .white
-        label.backgroundColor = .systemOrange
+        label.textColor = .textBrand
+        label.backgroundColor = .wooCommercePurple(.shade0)
         label.layer.cornerRadius = Constants.badgeCornerRadius
         label.layer.masksToBounds = true
         label.translatesAutoresizingMaskIntoConstraints = false

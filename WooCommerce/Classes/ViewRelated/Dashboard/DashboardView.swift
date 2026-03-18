@@ -73,6 +73,11 @@ struct DashboardView: View {
 
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
+    private let featureFlagService = ServiceLocator.featureFlagService
+
+    private var shouldShowCIABBadge: Bool {
+        currentSite?.isCIAB == true && featureFlagService.isFeatureFlagEnabled(.ciabSiteBadge)
+    }
 
     private var shouldShowJetpackBenefitsBanner: Bool {
         let isJetpackCPSite = currentSite?.isJetpackCPConnected == true
@@ -94,11 +99,19 @@ struct DashboardView: View {
         ScrollView {
             VStack(spacing: Layout.padding) {
                 // Store title
-                Text(currentSite?.name ?? Localization.title)
-                    .subheadlineStyle()
-                    .padding(Layout.sectionHeadingPadding)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .renderedIf(verticalSizeClass == .regular)
+                HStack(spacing: Layout.ciabBadgeSpacing) {
+                    Text(currentSite?.name ?? Localization.title)
+                        .subheadlineStyle()
+                    if shouldShowCIABBadge {
+                        BadgeView(text: Localization.ciabBadge,
+                                  customizations: .init(textColor: .white,
+                                                        backgroundColor: .orange,
+                                                        borderColor: nil))
+                    }
+                }
+                .padding(Layout.sectionHeadingPadding)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .renderedIf(verticalSizeClass == .regular)
 
                 // Feature announcement if any.
                 featureAnnouncementCard
@@ -439,6 +452,7 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
+        static let ciabBadgeSpacing: CGFloat = 6
     }
     enum Localization {
         static let title = NSLocalizedString(
@@ -446,6 +460,7 @@ private extension DashboardView {
             value: "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
+        static let ciabBadge = "CIAB"
         static let done = NSLocalizedString(
             "dashboardView.supportForm.done",
             value: "Done",

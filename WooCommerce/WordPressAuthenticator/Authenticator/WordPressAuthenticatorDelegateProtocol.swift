@@ -156,6 +156,16 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///
     func showSiteCreationGuide(in navigationController: UINavigationController)
 
+    /// Called when the site-info check fails. The host app should attempt API discovery
+    /// to determine if the site has a WordPress REST API, log the failure, and report back.
+    ///
+    /// - Parameters:
+    ///     - siteURL: The site URL that failed the site-info check.
+    ///     - error: The error from the site-info check.
+    ///     - completion: Called with `true` if API discovery found a WordPress REST API, `false` otherwise.
+    ///
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void)
+
     /// Signals the Host App that a given Analytics Event has occurred.
     ///
     func track(event: WPAnalyticsStat)

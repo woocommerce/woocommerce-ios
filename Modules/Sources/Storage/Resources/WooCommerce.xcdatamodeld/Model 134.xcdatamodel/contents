@@ -285,6 +285,7 @@
         <attribute name="discountTax" optional="YES" attributeType="String"/>
         <attribute name="discountTotal" optional="YES" attributeType="String"/>
         <attribute name="exclusiveForSearch" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="fulfillmentStatusKey" optional="YES" attributeType="String"/>
         <attribute name="isEditable" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="needsPayment" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="needsProcessing" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>

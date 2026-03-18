@@ -37,6 +37,7 @@ extension Storage.Order: ReadOnlyConvertible {
         paymentMethodTitle = order.paymentMethodTitle
         paymentURL = order.paymentURL as NSURL?
         chargeID = order.chargeID
+        fulfillmentStatusKey = order.fulfillmentStatus.rawValue
         renewalSubscriptionID = order.renewalSubscriptionID
 
         if let billingAddress = order.billingAddress {
@@ -109,6 +110,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      paymentMethodTitle: paymentMethodTitle ?? "",
                      paymentURL: paymentURL as URL?,
                      chargeID: chargeID,
+                     fulfillmentStatus: OrderFulfillmentStatus(rawValue: fulfillmentStatusKey ?? "") ?? .unknown,
                      items: orderItems,
                      billingAddress: createReadOnlyBillingAddress(),
                      shippingAddress: createReadOnlyShippingAddress(),

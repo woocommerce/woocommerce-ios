@@ -42,6 +42,11 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// Used by the Bookings feature to determine payment status badges.
     public let paymentStatusMetadata: String?
 
+    /// Fulfillment status from the `_fulfillment_status` order metadata key.
+    /// Used by CIAB to determine order fulfillment state.
+    /// Returns `.unknown` for non-CIAB sites or orders without the meta key.
+    public let fulfillmentStatus: OrderFulfillmentStatus
+
     public let items: [OrderItem]
     public let billingAddress: Address?
     public let shippingAddress: Address?
@@ -72,6 +77,8 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     /// Set to orders created via specific sources (e.g. checkout, store-api, Point of Sale, ...)
     ///
     public let createdVia: String?
+
+    private static let fulfillmentStatusMetaKey = "_fulfillment_status"
 
     public var salesChannel: SalesChannel? {
         guard let createdVia else { return nil }
@@ -107,6 +114,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 paymentURL: URL?,
                 chargeID: String?,
                 paymentStatusMetadata: String? = nil,
+                fulfillmentStatus: OrderFulfillmentStatus = .unknown,
                 items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
@@ -152,6 +160,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.paymentURL = paymentURL
         self.chargeID = chargeID
         self.paymentStatusMetadata = paymentStatusMetadata
+        self.fulfillmentStatus = fulfillmentStatus
 
         self.items = items
         self.billingAddress = billingAddress
@@ -215,6 +224,15 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         chargeID = allOrderMetaData?.first(where: { $0.key == "_charge_id" })?.value.stringValue
 
         let paymentStatusMetadata = allOrderMetaData?.first(where: { $0.key == "_payment_status" })?.value.stringValue
+
+        let fulfillmentStatus: OrderFulfillmentStatus = {
+            guard let rawValue = allOrderMetaData?
+                .first(where: { $0.key == Self.fulfillmentStatusMetaKey })?
+                .value.stringValue else {
+                return .unknown
+            }
+            return OrderFulfillmentStatus(rawValue: rawValue) ?? .unknown
+        }()
 
         let items = try container.decode([OrderItem].self, forKey: .items)
 
@@ -302,6 +320,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   paymentURL: paymentURL,
                   chargeID: chargeID,
                   paymentStatusMetadata: paymentStatusMetadata,
+                  fulfillmentStatus: fulfillmentStatus,
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,
@@ -346,6 +365,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   paymentURL: nil,
                   chargeID: nil,
                   paymentStatusMetadata: nil,
+                  fulfillmentStatus: .unknown,
                   items: [],
                   billingAddress: nil,
                   shippingAddress: nil,
@@ -452,7 +472,8 @@ extension Order: Equatable {
             lhs.items.sorted() == rhs.items.sorted() &&
             lhs.customerNote == rhs.customerNote &&
             lhs.attributionInfo == rhs.attributionInfo &&
-            lhs.shippingLabels == rhs.shippingLabels
+            lhs.shippingLabels == rhs.shippingLabels &&
+            lhs.fulfillmentStatus == rhs.fulfillmentStatus
     }
 }
 

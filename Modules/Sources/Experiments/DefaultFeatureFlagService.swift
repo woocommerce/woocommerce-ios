@@ -109,6 +109,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
+        case .ciabSiteBadge:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

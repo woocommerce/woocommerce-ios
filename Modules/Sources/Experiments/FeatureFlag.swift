@@ -229,4 +229,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Displays a "CIAB" badge next to site names for CIAB sites (local dev only)
+    ///
+    case ciabSiteBadge
 }

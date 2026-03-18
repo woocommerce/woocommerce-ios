@@ -221,7 +221,6 @@ extension BookingDetailsViewModel {
 
             group.addTask { @MainActor in
                 await self.fetchBooking()
-                // entityListener handles UI update via booking didSet
             }
 
             group.addTask { @MainActor in

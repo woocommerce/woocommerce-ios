@@ -84,6 +84,19 @@ private extension DashboardViewHostingController {
         tabBarItem.image = .statsAltImage
         tabBarItem.title = Localization.title
         tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciabSiteBadge) {
+            ServiceLocator.stores.site
+                .sink { [weak self] site in
+                    guard let self else { return }
+                    if site?.isCIAB == true {
+                        tabBarItem.title = Localization.title + " [CIAB]"
+                    } else {
+                        tabBarItem.title = Localization.title
+                    }
+                }
+                .store(in: &subscriptions)
+        }
     }
 
     /// Presents the privacy banner if needed.

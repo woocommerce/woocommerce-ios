@@ -21,6 +21,8 @@ extension BookingDetailsViewModel {
 
         @Published private(set) var rows: [Row] = []
 
+        private static let shimmeringPlaceholder = String(repeating: "X", count: 20)
+
         func update(with booking: Booking,
                     resource: BookingResource?,
                     bookingLocation: String? = nil,
@@ -32,11 +34,9 @@ extension BookingDetailsViewModel {
                 booking.endDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone)
             ].joined(separator: " - ")
 
-            let loadingPlaceholder = String(repeating: "X", count: 20)
-
             let resourceRow: Row? = {
                 guard booking.resourceID > 0 else { return nil }
-                let value = isLoadingResource ? loadingPlaceholder : (resource?.name ?? "-")
+                let value = isLoadingResource ? Self.shimmeringPlaceholder : (resource?.name ?? "-")
                 return Row(title: Localization.appointmentDetailsAssignedStaffTitle,
                            value: value,
                            isLoading: isLoadingResource)
@@ -44,7 +44,7 @@ extension BookingDetailsViewModel {
 
             let locationValue: String = {
                 if isLoadingLocation {
-                    return loadingPlaceholder
+                    return Self.shimmeringPlaceholder
                 }
                 guard let location = bookingLocation, !location.isEmpty else {
                     return "-"

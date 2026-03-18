@@ -240,6 +240,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let featureFlags: FeatureFlagService
 
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
@@ -248,7 +250,8 @@ final class OrderDetailsDataSource: NSObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
@@ -259,6 +262,7 @@ final class OrderDetailsDataSource: NSObject {
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
         self.featureFlags = featureFlags
+        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         super.init()
     }
@@ -1041,9 +1045,11 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
+        let isStatusEditingSupported = ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
-            status: lookUpOrderStatus(for: order)
+            status: lookUpOrderStatus(for: order),
+            isEditButtonVisible: isStatusEditingSupported
         )
 
         cell.configure(cellViewModel)

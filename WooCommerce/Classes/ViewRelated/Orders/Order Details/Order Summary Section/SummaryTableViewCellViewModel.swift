@@ -13,10 +13,14 @@ struct SummaryTableViewCellViewModel {
 
     let presentation: OrderStatusPresentation
 
+    /// Whether the edit status button should be displayed.
+    let isEditButtonVisible: Bool
+
     private let calendar: Calendar
 
     init(order: Order,
          status: OrderStatus?,
+         isEditButtonVisible: Bool = true,
          calendar: Calendar = .current) {
 
         billingAddress = order.billingAddress
@@ -28,6 +32,7 @@ struct SummaryTableViewCellViewModel {
             title: status?.name ?? order.status.rawValue
         )
 
+        self.isEditButtonVisible = isEditButtonVisible
         self.calendar = calendar
     }
 

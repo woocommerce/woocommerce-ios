@@ -258,7 +258,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_loads_synced_pending_order_status() {
         // Given
-        storageManager.insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
+        insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
 
         // When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -269,8 +269,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_is_updated_when_order_status_updated() {
         // Given
-        storageManager.insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
-        storageManager.insertOrderStatus(.init(name: "Processing", siteID: sampleSiteID, slug: "processing", total: 0))
+        insertOrderStatus(.init(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 0))
+        insertOrderStatus(.init(name: "Processing", siteID: sampleSiteID, slug: "processing", total: 0))
 
         // When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -462,9 +462,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Inserts necessary objects to storage.
         storageManager.insertSampleProduct(readOnlyProduct: bundledProduct)
         storageManager.insertSampleProduct(readOnlyProduct: bundledVariableProduct)
-        let storageBundleProduct = storageManager.insertSampleProduct(readOnlyProduct: bundleProduct)
-        storageManager.insert(bundleItem, for: storageBundleProduct)
-        storageManager.insert(variableBundleItem, for: storageBundleProduct)
+        storageManager.insertSampleProduct(readOnlyProduct: bundleProduct)
+        insertBundleItem(bundleItem, forProductWithSiteID: sampleSiteID, productID: bundleProduct.productID)
+        insertBundleItem(variableBundleItem, forProductWithSiteID: sampleSiteID, productID: bundleProduct.productID)
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, items: [
             // Bundle order item
@@ -528,7 +528,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        storageManager.insertProducts([product0, product1])
+        insertProducts([product0, product1])
         viewModel.toggleProductSelectorVisibility()
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
@@ -552,7 +552,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
-        storageManager.insertProducts([product0, product1])
+        insertProducts([product0, product1])
         viewModel.toggleProductSelectorVisibility()
         let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
@@ -1238,7 +1238,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_product_is_tracked_when_removed_from_order() throws {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
-        storageManager.insertProducts([product0])
+        insertProducts([product0])
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
@@ -2393,7 +2393,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_when_initialItem_is_bundle_product_it_sets_configurableScannedProductViewModel_without_order_items() throws {
         // Given
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake()])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake()])
 
         // When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: .product(bundleProduct))
@@ -2861,8 +2861,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_bundle_child_order_items_excluded_from_productRows_and_added_to_parent_childProductRows() throws {
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
-        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
             // Bundle product order item.
             .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
@@ -2891,9 +2891,9 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_when_existing_items_contain_bundle_and_non_bundle_then_selecting_same_bundle_results_in_two_bundles() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 777, purchasable: true)
-        storageManager.insertProducts([nonBundleProduct,
+        insertProducts([nonBundleProduct,
                                        // Product of the bundled item.
                                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
@@ -2958,10 +2958,10 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let itemProductID: Int64 = 777
         let bundleItem = ProductBundleItem.fake().copy(productID: itemProductID)
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         // Non-bundle product is in storage but not part of the order.
         let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: itemProductID, purchasable: true)
-        storageManager.insertProducts([nonBundleProduct,
+        insertProducts([nonBundleProduct,
                                        // Product of the bundled item.
                                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
 
@@ -3023,9 +3023,9 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_when_no_existing_items_then_selecting_bundle_twice_results_in_two_bundle_items() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         // Product of the bundled item.
-        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
@@ -3089,9 +3089,9 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_selecting_bundle_then_canceling_then_selecting_bundle_again_results_in_one_bundle_item_with_the_latest_configuration() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
-        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         // Product of the bundled item.
-        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
@@ -3149,8 +3149,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let bundledItems = [ProductBundleItem.fake().copy(productID: 2, pricedIndividually: false),
                             ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
-        let product = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
-        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
+        let product = createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
+        insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
                                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
@@ -3170,8 +3170,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let bundledItems = [ProductBundleItem.fake().copy(productID: 2, pricedIndividually: false),
                             ProductBundleItem.fake().copy(productID: 3, pricedIndividually: true)]
-        let product = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
-        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
+        let product = createAndInsertBundleProduct(siteID: sampleSiteID, productID: sampleProductID, bundleItems: bundledItems)
+        insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 2),
                                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
 
@@ -3189,7 +3189,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_createProductRowViewModel_sets_isReadOnly_to_false_for_non_bundle_parent_and_child_items() throws {
         // Given
-        storageManager.insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 1),
+        insertProducts([Product.fake().copy(siteID: sampleSiteID, productID: 1),
                                        Product.fake().copy(siteID: sampleSiteID, productID: 2),
                                        Product.fake().copy(siteID: sampleSiteID, productID: 3)])
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager)
@@ -3466,6 +3466,32 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(mockScheduler.scheduleCallCount, 0)
         XCTAssertNil(mockScheduler.lastMerchantType)
     }
+
+    // MARK: - CIAB Order Status Editing
+
+    func test_isOrderStatusEditingEnabled_when_non_CIAB_site_then_returns_true() {
+        // Given
+        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               ciabEligibilityChecker: checker)
+
+        // Then
+        XCTAssertTrue(viewModel.isOrderStatusEditingEnabled)
+    }
+
+    func test_isOrderStatusEditingEnabled_when_CIAB_site_then_returns_false() {
+        // Given
+        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               ciabEligibilityChecker: checker)
+
+        // Then
+        XCTAssertFalse(viewModel.isOrderStatusEditingEnabled)
+    }
 }
 
 private extension EditableOrderViewModelTests {
@@ -3488,33 +3514,40 @@ private extension EditableOrderViewModelTests {
     }
 }
 
-private extension MockStorageManager {
+// MARK: - Storage Helpers
+private extension EditableOrderViewModelTests {
 
     func insertOrderStatus(_ readOnlyOrderStatus: OrderStatus) {
-        let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
-        orderStatus.update(with: readOnlyOrderStatus)
-        viewStorage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let orderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+            orderStatus.update(with: readOnlyOrderStatus)
+        }, completion: {}, on: .main)
     }
 
     func insertProducts(_ readOnlyProducts: [Product]) {
-        for readOnlyProduct in readOnlyProducts {
-            let product = viewStorage.insertNewObject(ofType: StorageProduct.self)
+        storageManager.performAndSave({ storage in
+            for readOnlyProduct in readOnlyProducts {
+                let product = storage.insertNewObject(ofType: StorageProduct.self)
+                product.update(with: readOnlyProduct)
+            }
+        }, completion: {}, on: .main)
+    }
+
+    func insertProduct(_ readOnlyProduct: Product) {
+        storageManager.performAndSave({ storage in
+            let product = storage.insertNewObject(ofType: StorageProduct.self)
             product.update(with: readOnlyProduct)
-            viewStorage.saveIfNeeded()
-        }
+        }, completion: {}, on: .main)
     }
 
-    @discardableResult
-    func insert(_ readOnlyProduct: Product) -> StorageProduct {
-        let product = viewStorage.insertNewObject(ofType: StorageProduct.self)
-        product.update(with: readOnlyProduct)
-        return product
-    }
-
-    func insert(_ readOnlyProductBundleItem: ProductBundleItem, for product: StorageProduct) {
-        let bundleItem = viewStorage.insertNewObject(ofType: StorageProductBundleItem.self)
-        bundleItem.update(with: readOnlyProductBundleItem)
-        bundleItem.product = product
+    func insertBundleItem(_ readOnlyProductBundleItem: ProductBundleItem, forProductWithSiteID siteID: Int64 = 123, productID: Int64) {
+        storageManager.performAndSave({ storage in
+            let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            bundleItem.update(with: readOnlyProductBundleItem)
+            if let storageProduct = storage.loadProduct(siteID: siteID, productID: productID) {
+                bundleItem.product = storageProduct
+            }
+        }, completion: {}, on: .main)
     }
 
     func createAndInsertBundleProduct(siteID: Int64, productID: Int64, bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {
@@ -3523,11 +3556,16 @@ private extension MockStorageManager {
                                                 productTypeKey: ProductType.bundle.rawValue,
                                                 purchasable: true,
                                                 bundledItems: bundleItems)
-        let storageProduct = insert(bundleProduct)
+        storageManager.performAndSave({ storage in
+            let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
+            storageProduct.update(with: bundleProduct)
 
-        bundleItems.forEach { bundleItem in
-            insert(bundleItem, for: storageProduct)
-        }
+            bundleItems.forEach { item in
+                let storageBundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+                storageBundleItem.update(with: item)
+                storageBundleItem.product = storageProduct
+            }
+        }, completion: {}, on: .main)
 
         return bundleProduct
     }

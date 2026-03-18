@@ -67,6 +67,7 @@ private extension HubMenu {
                 } label: {
                     Row(title: viewModel.storeTitle,
                         titleBadge: viewModel.planName,
+                        secondaryTitleBadge: viewModel.isCIABSite ? "CIAB" : nil,
                         iconBadge: nil,
                         description: viewModel.storeURL.host ?? viewModel.storeURL.absoluteString,
                         icon: .remote(viewModel.avatarURL),
@@ -239,6 +240,10 @@ private extension HubMenu {
         ///
         let titleBadge: String?
 
+        /// Secondary text badge displayed after the primary title badge (e.g. "CIAB" indicator)
+        ///
+        var secondaryTitleBadge: String?
+
         /// Badge displayed on the icon.
         ///
         let iconBadge: HubMenuBadgeType?
@@ -315,6 +320,13 @@ private extension HubMenu {
 
                         if let titleBadge, titleBadge.isNotEmpty {
                             BadgeView(text: titleBadge)
+                        }
+
+                        if let secondaryTitleBadge, secondaryTitleBadge.isNotEmpty {
+                            BadgeView(text: secondaryTitleBadge,
+                                      customizations: .init(textColor: .white,
+                                                            backgroundColor: .orange,
+                                                            borderColor: nil))
                         }
                     }
 

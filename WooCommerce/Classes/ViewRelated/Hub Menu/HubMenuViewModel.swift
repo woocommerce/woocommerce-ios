@@ -52,6 +52,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var planName = ""
 
+    @Published private(set) var isCIABSite = false
+
     @Published private(set) var storeURL = WooConstants.URLs.blog.asURL()
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
@@ -345,6 +347,13 @@ private extension HubMenuViewModel {
         $currentSite
             .compactMap { $0?.name }
             .assign(to: &$storeTitle)
+
+        $currentSite
+            .map { [weak self] site in
+                site?.isCIAB == true
+                && self?.featureFlagService.isFeatureFlagEnabled(.ciabSiteBadge) == true
+            }
+            .assign(to: &$isCIABSite)
 
         $currentSite
             .compactMap { site -> URL? in

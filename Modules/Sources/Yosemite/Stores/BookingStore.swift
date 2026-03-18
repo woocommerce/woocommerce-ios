@@ -485,9 +485,7 @@ private extension BookingStore {
                     onCompletion(.success(location))
                 }, on: .main)
             } catch {
-                DispatchQueue.main.async {
-                    onCompletion(.failure(error))
-                }
+                onCompletion(.failure(error))
             }
         }
     }

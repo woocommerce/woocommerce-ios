@@ -1152,6 +1152,42 @@ struct BookingStoreTests {
         #expect(existingStoredResource.resourceID == 999)
     }
 
+    // MARK: - fetchBookingLocationResponse
+
+    @Test func fetchBookingLocationResponse_persists_location_and_returns_it() async throws {
+        // Given
+        let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, productID: 42)
+        storeBooking(booking)
+
+        let response = BookingLocationResponse(productID: 42, bookingLocation: "Room 101")
+        remote.whenFetchingBookingLocationResponse(thenReturn: .success(response))
+        let store = BookingStore(dispatcher: Dispatcher(),
+                                 storageManager: storageManager,
+                                 network: network,
+                                 remote: remote,
+                                 ordersRemote: ordersRemote)
+
+        // When
+        let result = await withCheckedContinuation { continuation in
+            store.onAction(
+                BookingAction.fetchBookingLocationResponse(
+                    siteID: sampleSiteID,
+                    bookingID: 1,
+                    productID: 42,
+                    onCompletion: { result in
+                        continuation.resume(returning: result)
+                    }
+                )
+            )
+        }
+
+        // Then
+        let location = try result.get()
+        #expect(location == "Room 101")
+        let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
+        #expect(storedBooking.location == "Room 101")
+    }
+
     // MARK: - orderInfo Storage Tests
 
     @Test func synchronizeBookings_stores_complete_orderInfo_with_all_nested_properties() async throws {

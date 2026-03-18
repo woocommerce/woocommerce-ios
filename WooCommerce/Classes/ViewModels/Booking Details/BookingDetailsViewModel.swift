@@ -9,6 +9,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let storage: StorageManagerType
 
     private var bookingResource: BookingResource?
+    private var bookingLocation: String?
     private var isLoadingResource = false
     private var isLoadingLocation = false
     private var booking: Booking {
@@ -65,6 +66,10 @@ final class BookingDetailsViewModel: ObservableObject {
             siteID: booking.siteID,
             resourceID: booking.resourceID
         )?.toReadOnly()
+        self.bookingLocation = storage.viewStorage.loadBooking(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID
+        )?.location
 
         setupSections()
         configureEntityListener()
@@ -120,7 +125,7 @@ private extension BookingDetailsViewModel {
 
         appointmentDetailsContent.update(with: booking,
                                         resource: bookingResource,
-                                        bookingLocation: booking.location,
+                                        bookingLocation: bookingLocation,
                                         isLoadingResource: isLoadingResource,
                                         isLoadingLocation: isLoadingLocation)
 
@@ -202,22 +207,29 @@ extension BookingDetailsViewModel {
     @MainActor
     func syncData() async {
         isLoadingResource = bookingResource == nil && booking.resourceID > 0
-        isLoadingLocation = booking.location == nil
+        isLoadingLocation = bookingLocation == nil
         updateDisplayProperties(from: booking)
 
-        async let resourceResult = fetchResource()
-        async let bookingSync: Void = fetchBooking()
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { @MainActor in
+                if let resource = await self.fetchResource() {
+                    self.bookingResource = resource
+                }
+                self.isLoadingResource = false
+                self.updateDisplayProperties(from: self.booking)
+            }
 
-        if let resource = await resourceResult {
-            self.bookingResource = resource
+            group.addTask { @MainActor in
+                await self.fetchBooking()
+                // entityListener handles UI update via booking didSet
+            }
+
+            group.addTask { @MainActor in
+                self.bookingLocation = await self.fetchBookingLocation()
+                self.isLoadingLocation = false
+                self.updateDisplayProperties(from: self.booking)
+            }
         }
-        isLoadingResource = false
-        _ = await bookingSync
-        updateDisplayProperties(from: booking)
-
-        await fetchBookingLocation()
-        isLoadingLocation = false
-        updateDisplayProperties(from: booking)
     }
 }
 
@@ -350,17 +362,20 @@ private extension BookingDetailsViewModel {
     }
 
     @MainActor
-    func fetchBookingLocation() async {
+    func fetchBookingLocation() async -> String? {
         await withCheckedContinuation { continuation in
             let action = BookingAction.fetchBookingLocationResponse(
                 siteID: booking.siteID,
                 bookingID: booking.bookingID,
                 productID: booking.productID
             ) { result in
-                if case .failure(let error) = result {
+                switch result {
+                case .success(let location):
+                    continuation.resume(returning: location)
+                case .failure(let error):
                     DDLogError("⛔️ Error fetching booking location: \(error)")
+                    continuation.resume(returning: nil)
                 }
-                continuation.resume()
             }
             stores.dispatch(action)
         }

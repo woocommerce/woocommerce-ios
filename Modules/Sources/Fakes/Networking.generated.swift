@@ -344,8 +344,7 @@ extension Networking.Booking {
             localTimezone: .fake(),
             currency: .fake(),
             orderInfo: .fake(),
-            note: .fake(),
-            location: .fake()
+            note: .fake()
         )
     }
 }

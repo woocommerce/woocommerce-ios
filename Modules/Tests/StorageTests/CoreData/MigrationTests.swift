@@ -2490,6 +2490,35 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedBooking.value(forKey: "location") as? String, updatedValue)
     }
+
+    func test_migrating_from_133_to_134_adds_fulfillmentStatusKey_attribute_to_order() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 133")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(order.entity.attributesByName["fulfillmentStatusKey"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 134")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrder = try XCTUnwrap(targetContext.first(entityName: "Order"))
+
+        XCTAssertNotNil(migratedOrder.entity.attributesByName["fulfillmentStatusKey"])
+
+        let statusValue = migratedOrder.value(forKey: "fulfillmentStatusKey") as? String
+        XCTAssertNil(statusValue)
+
+        let updatedValue = "fulfilled"
+        migratedOrder.setValue(updatedValue, forKey: "fulfillmentStatusKey")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedOrder.value(forKey: "fulfillmentStatusKey") as? String, updatedValue)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

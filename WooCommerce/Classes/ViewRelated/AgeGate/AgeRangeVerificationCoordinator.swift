@@ -29,7 +29,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
         ageRangeVerificationService: AgeRangeVerificationServiceProtocol = ServiceLocator.ageRangeVerificationService,
         significantChangeConsentCoordinator: SignificantChangeConsentCoordinator = SignificantChangeConsentCoordinator(),
-        ageRatingChangeDetector: AgeRatingChangeDetecting = NoOpAgeRatingChangeDetector()
+        ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector()
     ) {
         self.featureFlagService = featureFlagService
         self.ageRangeVerificationService = ageRangeVerificationService

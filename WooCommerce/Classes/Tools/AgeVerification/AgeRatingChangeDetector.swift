@@ -6,7 +6,7 @@ enum AgeRatingChangeCheckResult: Equatable {
 }
 
 /// Lightweight detector that tracks the last seen age rating and reports when it changes.
-final class AgeRatingChangeDetector {
+final class AgeRatingChangeDetector: AgeRatingChangeDetecting {
     private enum Key {
         static let lastSeenAgeRating = "ageRatingChangeDetector.lastSeenAgeRating"
     }

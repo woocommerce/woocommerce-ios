@@ -32,6 +32,34 @@ class StoreTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var urlLabel: UILabel!
 
+    /// Badge label displayed next to the store name for CIAB sites.
+    ///
+    private lazy var ciabBadgeLabel: PaddedLabel = {
+        let label = PaddedLabel()
+        label.text = "CIAB"
+        label.textInsets = Constants.badgeInsets
+        label.font = .preferredFont(forTextStyle: .caption2)
+        label.textColor = .white
+        label.backgroundColor = .systemOrange
+        label.layer.cornerRadius = Constants.badgeCornerRadius
+        label.layer.masksToBounds = true
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        return label
+    }()
+
+    /// Stack view wrapping nameLabel and the CIAB badge.
+    ///
+    private lazy var nameStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.alignment = .center
+        stack.spacing = Constants.badgeSpacing
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+
     /// Store's Name
     ///
     var name: String? {
@@ -83,12 +111,21 @@ class StoreTableViewCell: UITableViewCell {
         }
     }
 
+    /// Whether to display the CIAB badge next to the store name.
+    ///
+    var displaysCIABBadge: Bool = false {
+        didSet {
+            ciabBadgeLabel.isHidden = !displaysCIABBadge
+        }
+    }
+
     // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
         configureNameLabel()
+        configureCIABBadge()
         configureUrlLabel()
         configureNoticeImageView()
     }
@@ -128,6 +165,40 @@ private extension StoreTableViewCell {
         nameLabel.accessibilityIdentifier = "name-label"
     }
 
+    /// Wraps `nameLabel` in a horizontal stack view and adds the CIAB badge label.
+    /// The stack view takes over the nameLabel's position in the layout.
+    ///
+    func configureCIABBadge() {
+        guard let container = nameLabel.superview else { return }
+
+        // Collect nameLabel's constraints from the superview that reference it
+        let relatedConstraints = container.constraints.filter { constraint in
+            constraint.firstItem === nameLabel || constraint.secondItem === nameLabel
+        }
+
+        // Deactivate those constraints — we'll re-pin via the stack view
+        NSLayoutConstraint.deactivate(relatedConstraints)
+
+        nameLabel.removeFromSuperview()
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        nameStackView.addArrangedSubview(nameLabel)
+        nameStackView.addArrangedSubview(ciabBadgeLabel)
+        container.addSubview(nameStackView)
+
+        // Re-apply equivalent constraints: the stack view takes nameLabel's original position
+        NSLayoutConstraint.activate([
+            nameStackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            nameStackView.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor),
+            nameStackView.topAnchor.constraint(equalTo: container.topAnchor, constant: Constants.nameTopPadding)
+        ])
+
+        // Re-pin urlLabel top to stack view bottom (was pinned to nameLabel bottom)
+        urlLabel.topAnchor.constraint(equalTo: nameStackView.bottomAnchor).isActive = true
+
+        ciabBadgeLabel.isHidden = true
+    }
+
     func configureUrlLabel() {
         urlLabel.textColor = .textSubtle
         urlLabel.accessibilityIdentifier = "url-label"
@@ -136,5 +207,12 @@ private extension StoreTableViewCell {
     func configureNoticeImageView() {
         noticeImageView.image = .noticeImage
         noticeImageView.tintColor = .warning
+    }
+
+    enum Constants {
+        static let badgeCornerRadius: CGFloat = 4
+        static let badgeSpacing: CGFloat = 6
+        static let badgeInsets = UIEdgeInsets(top: 2, left: 6, bottom: 2, right: 6)
+        static let nameTopPadding: CGFloat = 10
     }
 }

@@ -704,6 +704,7 @@ extension StorePickerViewController: UITableViewDataSource {
 
         cell.name = site.name
         cell.url = site.url
+        cell.displaysCIABBadge = site.isCIAB && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciabSiteBadge)
         cell.allowsCheckmark = viewModel.multipleStoresAvailable && site.isWooCommerceActive
         cell.displaysCheckmark = currentlySelectedSite?.siteID == site.siteID && site.isWooCommerceActive
         cell.displaysNotice = site.isWooCommerceActive == false

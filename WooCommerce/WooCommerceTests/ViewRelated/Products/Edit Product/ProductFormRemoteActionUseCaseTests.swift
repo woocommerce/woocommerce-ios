@@ -480,9 +480,9 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
             MetaData(metadataID: 1, key: "color", value: "red"),
             MetaData(metadataID: 2, key: "size", value: "large")
         ]
-        let product = Product.fake().copy(productID: 5, siteID: siteID, customFields: customFields)
+        let product = Product.fake().copy(siteID: siteID, productID: 5, customFields: customFields)
         let model = EditableProductModel(product: product)
-        let duplicatedProduct = Product.fake().copy(productID: 99, siteID: siteID)
+        let duplicatedProduct = Product.fake().copy(siteID: siteID, productID: 99)
         mockAddProduct(result: .success(duplicatedProduct))
 
         var receivedParentItemID: Int64?

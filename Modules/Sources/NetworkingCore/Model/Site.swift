@@ -270,6 +270,12 @@ public extension Site {
         plan == WooConstants.freePlanSlug
     }
 
+    /// Whether this site is a CIAB (Commerce in a Box) site.
+    ///
+    public var isCIAB: Bool {
+        Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
+    }
+
     static func isCIAB(isGarden: Bool, gardenName: String?) -> Bool {
         isGarden && gardenName ==  Constants.commerceGardenName
     }

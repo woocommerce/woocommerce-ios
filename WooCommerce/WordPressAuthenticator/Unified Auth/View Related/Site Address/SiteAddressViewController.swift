@@ -545,8 +545,6 @@ private extension SiteAddressViewController {
                 return
             }
 
-            WPAuthenticatorLogError("Site info check failed for \(baseSiteUrl): \(error.localizedDescription)")
-
             if self.authenticationDelegate.shouldHandleError(error) {
                 self.configureViewLoading(false)
                 self.authenticationDelegate.handleError(error) { [weak self] customUI in

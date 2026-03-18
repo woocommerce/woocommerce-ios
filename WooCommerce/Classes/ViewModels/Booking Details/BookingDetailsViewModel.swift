@@ -210,25 +210,27 @@ extension BookingDetailsViewModel {
         isLoadingLocation = bookingLocation == nil
         updateDisplayProperties(from: booking)
 
-        await withTaskGroup(of: Void.self) { group in
-            group.addTask { @MainActor in
-                if let resource = await self.fetchResource() {
-                    self.bookingResource = resource
-                }
-                self.isLoadingResource = false
-                self.updateDisplayProperties(from: self.booking)
-            }
+        // Parallel network fetches
+        async let resourceResult = fetchResource()
+        async let bookingSync: Void = fetchBooking()
+        async let locationResult = fetchBookingLocation()
 
-            group.addTask { @MainActor in
-                await self.fetchBooking()
-            }
-
-            group.addTask { @MainActor in
-                self.bookingLocation = await self.fetchBookingLocation()
-                self.isLoadingLocation = false
-                self.updateDisplayProperties(from: self.booking)
-            }
+        // Sequential updates
+        if let resource = await resourceResult {
+            self.bookingResource = resource
         }
+        isLoadingResource = false
+
+        _ = await bookingSync
+
+        self.bookingLocation = await locationResult
+        isLoadingLocation = false
+
+        // Persist location after booking sync completes
+        // to avoid Core Data context race.
+        persistBookingLocation(bookingLocation)
+
+        updateDisplayProperties(from: booking)
     }
 }
 
@@ -395,6 +397,15 @@ private extension BookingDetailsViewModel {
         } catch {
             DDLogError("⛔️ Error synchronizing Booking: \(error)")
         }
+    }
+
+    func persistBookingLocation(_ location: String?) {
+        let siteID = booking.siteID
+        let bookingID = booking.bookingID
+        storage.performAndSave({ storage in
+            guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else { return }
+            storageBooking.location = location
+        }, completion: {}, on: .main)
     }
 }
 

@@ -1154,7 +1154,7 @@ struct BookingStoreTests {
 
     // MARK: - fetchBookingLocationResponse
 
-    @Test func fetchBookingLocationResponse_persists_location_and_returns_it() async throws {
+    @Test func fetchBookingLocationResponse_returns_location_without_persisting() async throws {
         // Given
         let booking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, productID: 42)
         storeBooking(booking)
@@ -1185,7 +1185,7 @@ struct BookingStoreTests {
         let location = try result.get()
         #expect(location == "Room 101")
         let storedBooking = try #require(viewStorage.loadBooking(siteID: sampleSiteID, bookingID: 1))
-        #expect(storedBooking.location == "Room 101")
+        #expect(storedBooking.location == nil)
     }
 
     // MARK: - orderInfo Storage Tests

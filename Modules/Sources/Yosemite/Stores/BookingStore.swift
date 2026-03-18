@@ -473,22 +473,13 @@ private extension BookingStore {
         Task { @MainActor in
             do {
                 let result = try await remote.fetchBookingLocationResponse(for: siteID, productID: productID)
-                let location = result.bookingLocation
-
-                storageManager.performAndSave({ storage in
-                    guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else {
-                        assertionFailure("Expected booking \(bookingID) in storage when updating location")
-                        return
-                    }
-                    storageBooking.location = location
-                }, completion: {
-                    onCompletion(.success(location))
-                }, on: .main)
+                onCompletion(.success(result.bookingLocation))
             } catch {
                 onCompletion(.failure(error))
             }
         }
     }
+
 
     func clearBookingsCache(siteID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in

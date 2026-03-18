@@ -477,6 +477,7 @@ private extension BookingStore {
 
                 storageManager.performAndSave({ storage in
                     guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else {
+                        assertionFailure("Expected booking \(bookingID) in storage when updating location")
                         return
                     }
                     storageBooking.location = location

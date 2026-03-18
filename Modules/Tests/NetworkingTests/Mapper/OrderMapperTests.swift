@@ -564,6 +564,7 @@ final class OrderMapperTests: XCTestCase {
         // Then
         XCTAssertEqual(order.fulfillmentStatus, .unknown)
     }
+
 }
 
 

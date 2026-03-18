@@ -78,8 +78,6 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let createdVia: String?
 
-    private static let fulfillmentStatusMetaKey = "_fulfillment_status"
-
     public var salesChannel: SalesChannel? {
         guard let createdVia else { return nil }
         return SalesChannel(rawValue: createdVia)
@@ -160,6 +158,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.paymentURL = paymentURL
         self.chargeID = chargeID
         self.paymentStatusMetadata = paymentStatusMetadata
+
         self.fulfillmentStatus = fulfillmentStatus
 
         self.items = items
@@ -227,7 +226,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
 
         let fulfillmentStatus: OrderFulfillmentStatus = {
             guard let rawValue = allOrderMetaData?
-                .first(where: { $0.key == Self.fulfillmentStatusMetaKey })?
+                .first(where: { $0.key == "_fulfillment_status" })?
                 .value.stringValue else {
                 return .unknown
             }

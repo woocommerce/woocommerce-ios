@@ -91,7 +91,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      orderKey: orderKey,
                      isEditable: isEditable,
                      needsPayment: needsPayment,
-                     needsProcessing: needsPayment,
+                     needsProcessing: needsProcessing,
                      number: number ?? "",
                      status: OrderStatusEnum(rawValue: statusKey),
                      currency: currency ?? "",

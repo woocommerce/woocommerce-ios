@@ -16,6 +16,7 @@
 - [*] Remove the redundant Price row from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16821]
 - [*] Fix sheet/popover presentation showing trimmed content on iPad [https://github.com/woocommerce/woocommerce-ios/pull/16817]
 - [*] Hide edit status button in order details and order edit form for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16827]
+- [*] Display booking location from product data in booking details [https://github.com/woocommerce/woocommerce-ios/pull/16826]
 
 
 24.3

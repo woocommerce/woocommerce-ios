@@ -10,6 +10,7 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
     private var updateBookingResult: Result<Booking?, Error>?
     private var fetchResourcesResult: Result<[BookingResource], Error>?
     private var updateBookingNote: Result<Booking?, Error>?
+    private var fetchBookingLocationResponseResult: Result<BookingLocationResponse, Error>?
 
     func whenLoadingAllBookings(thenReturn result: Result<[Booking], Error>) {
         loadAllBookingsResult = result
@@ -29,6 +30,10 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
 
     func whenFetchingResources(thenReturn result: Result<[BookingResource], Error>) {
         fetchResourcesResult = result
+    }
+
+    func whenFetchingBookingLocationResponse(thenReturn result: Result<BookingLocationResponse, Error>) {
+        fetchBookingLocationResponseResult = result
     }
 
     func loadAllBookings(for siteID: Int64,
@@ -70,6 +75,13 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
 
     func fetchResources(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [BookingResource] {
         guard let result = fetchResourcesResult else {
+            throw NetworkError.timeout()
+        }
+        return try result.get()
+    }
+
+    func fetchBookingLocationResponse(for siteID: Int64, productID: Int64) async throws -> BookingLocationResponse {
+        guard let result = fetchBookingLocationResponseResult else {
             throw NetworkError.timeout()
         }
         return try result.get()

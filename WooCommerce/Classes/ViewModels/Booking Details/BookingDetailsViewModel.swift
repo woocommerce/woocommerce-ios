@@ -9,6 +9,9 @@ final class BookingDetailsViewModel: ObservableObject {
     private let storage: StorageManagerType
 
     private var bookingResource: BookingResource?
+    private var bookingLocation: String?
+    private var isLoadingResource = false
+    private var isLoadingLocation = false
     private var booking: Booking {
         didSet {
             updateDisplayProperties(from: booking)
@@ -63,6 +66,10 @@ final class BookingDetailsViewModel: ObservableObject {
             siteID: booking.siteID,
             resourceID: booking.resourceID
         )?.toReadOnly()
+        self.bookingLocation = storage.viewStorage.loadBooking(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID
+        )?.location
 
         setupSections()
         configureEntityListener()
@@ -116,7 +123,11 @@ private extension BookingDetailsViewModel {
             customerContent.update(with: customerInfo)
         }
 
-        appointmentDetailsContent.update(with: booking, resource: bookingResource)
+        appointmentDetailsContent.update(with: booking,
+                                        resource: bookingResource,
+                                        bookingLocation: bookingLocation,
+                                        isLoadingResource: isLoadingResource,
+                                        isLoadingLocation: isLoadingLocation)
 
         paymentContent.update(with: booking)
         notesContent.update(with: booking)
@@ -193,11 +204,33 @@ private extension BookingDetailsViewModel {
 // MARK: Syncing
 
 extension BookingDetailsViewModel {
+    @MainActor
     func syncData() async {
-        if let resource = await fetchResource() {
-            self.bookingResource = resource // only update resource if fetching succeeds
+        isLoadingResource = bookingResource == nil && booking.resourceID > 0
+        isLoadingLocation = bookingLocation == nil
+        updateDisplayProperties(from: booking)
+
+        // Parallel network fetches
+        async let resourceResult = fetchResource()
+        async let bookingSync: Void = fetchBooking()
+        async let locationResult = fetchBookingLocation()
+
+        // Sequential updates
+        if let resource = await resourceResult {
+            self.bookingResource = resource
         }
-        await fetchBooking()
+        isLoadingResource = false
+
+        _ = await bookingSync
+
+        self.bookingLocation = await locationResult
+        isLoadingLocation = false
+
+        // Persist location after booking sync completes
+        // to avoid Core Data context race.
+        persistBookingLocation(bookingLocation)
+
+        updateDisplayProperties(from: booking)
     }
 }
 
@@ -330,6 +363,26 @@ private extension BookingDetailsViewModel {
     }
 
     @MainActor
+    func fetchBookingLocation() async -> String? {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.fetchBookingLocationResponse(
+                siteID: booking.siteID,
+                bookingID: booking.bookingID,
+                productID: booking.productID
+            ) { result in
+                switch result {
+                case .success(let location):
+                    continuation.resume(returning: location)
+                case .failure(let error):
+                    DDLogError("⛔️ Error fetching booking location: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
     func fetchBooking() async {
         do {
             try await withCheckedThrowingContinuation { continuation in
@@ -344,6 +397,15 @@ private extension BookingDetailsViewModel {
         } catch {
             DDLogError("⛔️ Error synchronizing Booking: \(error)")
         }
+    }
+
+    func persistBookingLocation(_ location: String?) {
+        let siteID = booking.siteID
+        let bookingID = booking.bookingID
+        storage.performAndSave({ storage in
+            guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else { return }
+            storageBooking.location = location
+        }, completion: {}, on: .main)
     }
 }
 

@@ -20,7 +20,7 @@ struct POSReceiptServiceTests {
         let email = "test@example.com"
 
         // When
-        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: email, isEligibleForPOSReceipt: false)
+        try await sut.sendReceipt(orderID: order.orderID, recipientEmail: email, isEligibleForPOSReceipt: false, templateID: nil)
 
         // Then
         #expect(receiptsRemote.sendReceiptCalled)
@@ -36,7 +36,7 @@ struct POSReceiptServiceTests {
 
         // When/Then
         do {
-            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com", isEligibleForPOSReceipt: false)
+            try await sut.sendReceipt(orderID: order.orderID, recipientEmail: "test@example.com", isEligibleForPOSReceipt: false, templateID: nil)
             XCTFail("Expected error to be thrown")
         } catch {
             guard case POSReceiptService.POSReceiptServiceError.sendReceiptFailed = error else {
@@ -53,12 +53,27 @@ struct POSReceiptServiceTests {
         let orderID: Int64 = 789
 
         // When
-        try await sut.sendReceipt(orderID: orderID, recipientEmail: email, isEligibleForPOSReceipt: true)
+        try await sut.sendReceipt(orderID: orderID, recipientEmail: email, isEligibleForPOSReceipt: true, templateID: "some_template")
 
         // Then
         #expect(receiptsRemote.sendPOSReceiptCalled)
         #expect(receiptsRemote.spySiteID == 123)
         #expect(receiptsRemote.spyOrderID == orderID)
         #expect(receiptsRemote.spyEmail == email)
+        #expect(receiptsRemote.spyTemplateID == "some_template")
+    }
+
+    @Test
+    func sendReceipt_when_templateID_is_nil_passes_nil_to_remote() async throws {
+        // Given
+        let email = "test@example.com"
+        let orderID: Int64 = 789
+
+        // When
+        try await sut.sendReceipt(orderID: orderID, recipientEmail: email, isEligibleForPOSReceipt: true, templateID: nil)
+
+        // Then
+        #expect(receiptsRemote.sendPOSReceiptCalled)
+        #expect(receiptsRemote.spyTemplateID == nil)
     }
 }

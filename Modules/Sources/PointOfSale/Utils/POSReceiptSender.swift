@@ -49,7 +49,17 @@ final class POSReceiptSender: POSReceiptSending {
                 try await orderService.updatePOSOrder(orderID: orderID, recipientEmail: recipientEmail)
             }
 
-            try await receiptService.sendReceipt(orderID: orderID, recipientEmail: recipientEmail, isEligibleForPOSReceipt: isEligibleForPOSReceipt)
+            let supportsAutoTemplateSelection = isPluginSupported(
+                .wooCommerce,
+                minimumVersion: POSReceiptEligibilityConstants.wcAutoTemplateSelectionMinimumVersion,
+                siteID: siteID
+            )
+            let templateID: String? = supportsAutoTemplateSelection ? nil : POSReceiptEligibilityConstants.defaultReceiptTemplateID
+
+            try await receiptService.sendReceipt(orderID: orderID,
+                                                 recipientEmail: recipientEmail,
+                                                 isEligibleForPOSReceipt: isEligibleForPOSReceipt,
+                                                 templateID: templateID)
 
             analytics.track(.receiptEmailSuccess, parameters: ["eligible_for_pos_receipt": isEligibleForPOSReceipt])
         } catch {
@@ -82,5 +92,7 @@ private extension POSReceiptSender {
 private extension POSReceiptSender {
     enum POSReceiptEligibilityConstants {
         static let wcPluginMinimumVersion = "10.0.0"
+        static let wcAutoTemplateSelectionMinimumVersion = "10.7.0-dev"
+        static let defaultReceiptTemplateID = "customer_pos_completed_order"
     }
 }

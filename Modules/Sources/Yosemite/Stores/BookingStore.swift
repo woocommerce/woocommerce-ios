@@ -89,6 +89,8 @@ public class BookingStore: Store {
                 note: note,
                 onCompletion: onCompletion
             )
+        case .fetchBookingLocationResponse(let siteID, let bookingID, let productID, let onCompletion):
+            fetchBookingLocationResponse(siteID: siteID, bookingID: bookingID, productID: productID, onCompletion: onCompletion)
         case .clearBookingsCache(siteID: let siteID, onCompletion: let onCompletion):
             clearBookingsCache(siteID: siteID, onCompletion: onCompletion)
         }
@@ -463,6 +465,21 @@ private extension BookingStore {
             }
         }
     }
+
+    func fetchBookingLocationResponse(siteID: Int64,
+                                      bookingID: Int64,
+                                      productID: Int64,
+                                      onCompletion: @escaping (Result<String?, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let result = try await remote.fetchBookingLocationResponse(for: siteID, productID: productID)
+                onCompletion(.success(result.bookingLocation))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
 
     func clearBookingsCache(siteID: Int64, onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in

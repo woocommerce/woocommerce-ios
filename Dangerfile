@@ -59,6 +59,7 @@ end
 
 # Import the translation context checker plugin from the dangermattic branch
 branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'
+danger.import_plugin("#{branch_base}/common/inline_markdown_poster.rb")
 danger.import_plugin("#{branch_base}/translation_context_checker.rb")
 
 translation_context_checker.check_context_suggestions(

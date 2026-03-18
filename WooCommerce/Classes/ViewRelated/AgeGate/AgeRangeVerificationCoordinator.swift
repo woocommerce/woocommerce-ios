@@ -22,13 +22,19 @@ extension AgeRangeVerificationCoordinator {
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
     private let featureFlagService: FeatureFlagService
     private let ageRangeVerificationService: AgeRangeVerificationServiceProtocol
+    private let significantChangeConsentCoordinator: SignificantChangeConsentCoordinator
+    private let ageRatingChangeDetector: AgeRatingChangeDetecting
 
     init(
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-        ageRangeVerificationService: AgeRangeVerificationServiceProtocol = ServiceLocator.ageRangeVerificationService
+        ageRangeVerificationService: AgeRangeVerificationServiceProtocol = ServiceLocator.ageRangeVerificationService,
+        significantChangeConsentCoordinator: SignificantChangeConsentCoordinator = SignificantChangeConsentCoordinator(),
+        ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector()
     ) {
         self.featureFlagService = featureFlagService
         self.ageRangeVerificationService = ageRangeVerificationService
+        self.significantChangeConsentCoordinator = significantChangeConsentCoordinator
+        self.ageRatingChangeDetector = ageRatingChangeDetector
     }
 
     /// Triggers the age range verification flow.
@@ -65,17 +71,32 @@ private extension AgeRangeVerificationCoordinator {
             in: anchor,
             minimumAge: Constants.minimumTOSRequiredAge
         ) { result in
-            let decision: AppAccessDescision
             switch result {
             case let .eligible(significantAppChangeApprovalRequired, isMinor):
-                // TODO: if isMinor && significantAppChangeApprovalRequired, trigger app age rating change check
-                // and parental consent flow (separate coordinator) before allowing access.
                 DDLogInfo(
                     "Age is eligible. significantAppChangeApprovalRequired: \(significantAppChangeApprovalRequired), isMinor: \(isMinor)"
                 )
-                decision = .allow
+                guard isMinor, significantAppChangeApprovalRequired else {
+                    onResult(.allow, result)
+                    return
+                }
+
+                Task { @MainActor in
+                    let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
+                    let outcome = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
+                        in: anchor,
+                        ageRatingChange: ageRatingChange
+                    )
+                    switch outcome {
+                    case .denied:
+                        // TODO: decide on a dedicated result when consent is rejected.
+                        onResult(.denyAndLogout, .ineligible)
+                    case .granted, .notAvailable, .unknown:
+                        onResult(.allow, result)
+                    }
+                }
             case .ineligible:
-                decision = .denyAndLogout
+                onResult(.denyAndLogout, result)
             case .declinedSharing,
                  .featureUnavailable,
                  .ineligibleForAgeFeatures,
@@ -83,10 +104,8 @@ private extension AgeRangeVerificationCoordinator {
                  .sdkError,
                  .unknown:
                 // Non-deterministic/unavailable results are treated as allowed.
-                decision = .allow
+                onResult(.allow, result)
             }
-
-            onResult(decision, result)
         }
     }
 }

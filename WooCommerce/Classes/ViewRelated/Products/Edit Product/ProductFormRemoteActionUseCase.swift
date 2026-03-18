@@ -80,14 +80,24 @@ final class ProductFormRemoteActionUseCase {
             guard let self else { return }
             switch result {
             case .success(let data):
+                let originalCustomFields = originalProduct.product.customFields
+
                 // Copy custom fields from the original product to the duplicated product.
-                self.copyCustomFields(originalProduct.product.customFields,
+                self.copyCustomFields(originalCustomFields,
                                       toProductID: data.product.productID,
                                       siteID: data.product.siteID)
 
+                // Wrap completion to optimistically inject custom fields so the UI shows them immediately.
+                let onCompletionWithCustomFields: DuplicateProductCompletion = { result in
+                    onCompletion(result.map { data in
+                        ResultData(product: EditableProductModel(product: data.product.product.copy(customFields: originalCustomFields)),
+                                   password: data.password)
+                    })
+                }
+
                 let variableTypes: [ProductType] = [.variable, .variableSubscription]
                 guard variableTypes.contains(data.product.productType) else {
-                    return onCompletion(.success(data))
+                    return onCompletionWithCustomFields(.success(data))
                 }
                 self.duplicateVariations(originalProduct.product.variations,
                                          from: originalProduct.productID,
@@ -96,10 +106,10 @@ final class ProductFormRemoteActionUseCase {
                     switch result {
                     case .success(let product):
                         ServiceLocator.analytics.track(successEventName)
-                        onCompletion(.success(ResultData(product: product, password: data.password)))
+                        onCompletionWithCustomFields(.success(ResultData(product: product, password: data.password)))
                     case .failure(let error):
                         ServiceLocator.analytics.track(failureEventName, withError: error)
-                        onCompletion(.failure(error))
+                        onCompletionWithCustomFields(.failure(error))
                     }
                 })
             case .failure(let error):

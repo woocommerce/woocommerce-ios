@@ -498,7 +498,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
 
         // When
-        useCase.duplicateProduct(originalProduct: model, password: nil) { _ in }
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: model, password: nil) { result = $0 }
 
         // Then
         XCTAssertEqual(receivedParentItemID, 99)
@@ -507,6 +508,10 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedMetadata?[0]["value"] as? String, "red")
         XCTAssertEqual(receivedMetadata?[1]["key"] as? String, "size")
         XCTAssertEqual(receivedMetadata?[1]["value"] as? String, "large")
+
+        // Verify the returned product optimistically includes custom fields
+        let returnedProduct = try XCTUnwrap(result?.get().product)
+        XCTAssertEqual(returnedProduct.product.customFields, customFields)
     }
 
     func test_duplicating_variable_product_triggers_retrieving_original_product_variations_and_creating_new_variations_for_duplicated_product() {

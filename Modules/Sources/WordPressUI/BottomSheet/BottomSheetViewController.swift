@@ -31,6 +31,8 @@ public class BottomSheetViewController: UIViewController {
 
     private var customHeaderSpacing: CGFloat?
 
+    private let initialPosition: DrawerPosition
+
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return childViewController?.supportedInterfaceOrientations ?? super.supportedInterfaceOrientations
     }
@@ -41,9 +43,11 @@ public class BottomSheetViewController: UIViewController {
     private weak var childViewController: DrawerPresentableViewController?
 
     public init(childViewController: DrawerPresentableViewController,
-         customHeaderSpacing: CGFloat? = nil) {
+         customHeaderSpacing: CGFloat? = nil,
+         initialPosition: DrawerPosition = .collapsed) {
         self.childViewController = childViewController
         self.customHeaderSpacing = customHeaderSpacing
+        self.initialPosition = initialPosition
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -58,6 +62,14 @@ public class BottomSheetViewController: UIViewController {
                      sourceView: UIView? = nil,
                      sourceBarButtonItem: UIBarButtonItem? = nil,
                      arrowDirections: UIPopoverArrowDirection = .any) {
+        // When opening in a non-collapsed position, force the child view to lay out
+        // so content-based heights (e.g. table view contentSize) are accurate
+        // before the presentation controller computes the drawer frame.
+        if initialPosition != .collapsed {
+            childViewController?.loadViewIfNeeded()
+            childViewController?.view.layoutIfNeeded()
+        }
+
         if UIDevice.isPad() {
 
             // If the anchor views are not set, or the user is using a larger text option
@@ -84,6 +96,7 @@ public class BottomSheetViewController: UIViewController {
             transitioningDelegate = self
             modalPresentationStyle = .custom
         }
+
         presenting.present(self, animated: true)
     }
 
@@ -149,6 +162,7 @@ public class BottomSheetViewController: UIViewController {
         stackView.axis = .vertical
 
         refreshForTraits()
+        registerTraitChanges()
 
         view.addSubview(stackView)
         view.pinSubviewToSafeArea(stackView, insets: Constants.Stack.insets)
@@ -156,9 +170,10 @@ public class BottomSheetViewController: UIViewController {
         childViewController.didMove(toParent: self)
     }
 
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        refreshForTraits()
+    private func registerTraitChanges() {
+        registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: BottomSheetViewController, _: UITraitCollection) in
+            self.refreshForTraits()
+        }
     }
 
     override public var preferredContentSize: CGSize {
@@ -175,7 +190,12 @@ public class BottomSheetViewController: UIViewController {
     }
 
     func computePreferredContentSize() -> CGSize {
-        return (childViewController?.preferredContentSize ?? super.preferredContentSize)
+        var size = childViewController?.preferredContentSize ?? super.preferredContentSize
+        if size.height > 0 {
+            // Account for the grip handle, spacing, and stack view insets.
+            size.height += Constants.additionalContentTopMargin
+        }
+        return size
     }
 
     public override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
@@ -192,7 +212,12 @@ public class BottomSheetViewController: UIViewController {
     }
 
     private func refreshForTraits() {
-        if presentingViewController?.traitCollection.horizontalSizeClass == .regular && presentingViewController?.traitCollection.verticalSizeClass != .compact {
+        let hSizeClass = presentingViewController?.traitCollection.horizontalSizeClass
+        let vSizeClass = presentingViewController?.traitCollection.verticalSizeClass
+        let isRegular = hSizeClass == .regular && vSizeClass != .compact
+        // Hide the grip for popover presentations (iPad) and for regular
+        // size class. The grip is only appropriate for drawer-style sheets.
+        if isRegular || modalPresentationStyle == .popover {
             gripButton.isHidden = true
             additionalSafeAreaInsets = additionalSafeAreaInsetsRegular
         } else {
@@ -214,7 +239,7 @@ public class BottomSheetViewController: UIViewController {
             return
         }
 
-        self.presentedVC?.transition(to: .collapsed)
+        self.presentedVC?.transition(to: initialPosition)
     }
 }
 
@@ -231,7 +256,9 @@ extension BottomSheetViewController: UIViewControllerTransitioningDelegate {
     }
 
     public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return DrawerPresentationController(presentedViewController: presented, presenting: presenting)
+        let controller = DrawerPresentationController(presentedViewController: presented, presenting: presenting)
+        controller.currentPosition = initialPosition
+        return controller
     }
 }
 

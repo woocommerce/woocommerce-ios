@@ -14,6 +14,7 @@ public enum CIABAffectedFeature: CaseIterable {
     case pointOfSale
     case cardReader
     case storeSetupDashboardCard
+    case manualOrderStatusUpdate
 }
 
 extension CIABAffectedFeature {

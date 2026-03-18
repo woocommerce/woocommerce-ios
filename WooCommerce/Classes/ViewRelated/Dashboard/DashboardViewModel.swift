@@ -971,7 +971,7 @@ private extension DashboardViewModel {
         dismissedWPComConnectionSuggestion = userDefaults.hideWPComConnectionOnDashboard
         shouldSuggestWPComConnection = pushNotesManager.hasStoredSiteIDsRegisteredForWooPNs &&
             registeredSiteIDs.contains(siteID) == false &&
-            stores.isAuthenticatedWithoutWPCom &&
+            (stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true) &&
             !dismissedWPComConnectionSuggestion &&
             featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
     }

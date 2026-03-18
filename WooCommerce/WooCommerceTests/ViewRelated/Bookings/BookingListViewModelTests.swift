@@ -632,6 +632,73 @@ class BookingListViewModelTests {
         #expect(bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should be included in All tab")
     }
 
+    @Test func state_is_syncingFirstPage_when_updating_filters_with_no_matching_bookings_in_storage() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let booking = createBooking(id: 1, startDate: testDate, status: .confirmed)
+        insertBookings([booking])
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            // Don't complete the sync — keep it in progress
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager,
+                                             currentDate: testDate)
+        #expect(viewModel.syncState == .results, "Should have results from storage")
+
+        // When — apply a filter that doesn't match any bookings in storage
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 99, name: "Unknown")],
+            products: [],
+            attendanceStatus: nil,
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.updateFilters(userFilters)
+
+        // Then — should show loading state, not empty state
+        #expect(viewModel.syncState == .syncingFirstPage,
+                "Should show loading state instead of empty state while syncing after filter change")
+    }
+
+    @Test func state_is_empty_after_updating_filters_when_sync_completes_with_no_results() {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let booking = createBooking(id: 1, startDate: testDate, status: .confirmed)
+        insertBookings([booking])
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard let onCompletion = action.synchronizeBookingsCompletion else { return }
+            onCompletion(.success(false))
+        }
+
+        let viewModel = BookingListViewModel(siteID: sampleSiteID,
+                                             type: .all,
+                                             stores: stores,
+                                             storage: storageManager,
+                                             currentDate: testDate)
+        #expect(viewModel.syncState == .results, "Should have results from storage")
+
+        // When — apply a filter and let sync complete with no results
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 99, name: "Unknown")],
+            products: [],
+            attendanceStatus: nil,
+            customers: [],
+            dateRange: nil,
+            numberOfActiveFilters: 1
+        )
+        viewModel.updateFilters(userFilters)
+
+        // Then — sync completed with no matching results, should show empty state
+        #expect(viewModel.syncState == .empty,
+                "Should show empty state after sync completes with no matching results")
+    }
+
     @Test func today_tab_excludes_cancelled_bookings_after_applying_filters() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -650,7 +717,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 0, name: "Any")],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: nil,
             numberOfActiveFilters: 1
@@ -684,7 +751,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(
                 startDate: Date(timeIntervalSince1970: 1609416000), // 2020-12-31T12:00:00Z
@@ -729,7 +796,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(
                 startDate: Date(timeIntervalSince1970: 1609632000), // 2021-01-03T00:00:00Z
@@ -773,7 +840,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: BookingDateRangeFilter(startDate: userStartDate, endDate: userEndDate),
             numberOfActiveFilters: 1
@@ -806,7 +873,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [BookingProductFilter(productID: 100, name: "Massage")],
-            attendanceStatuses: [.attended],
+            attendanceStatus: .attended,
             customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
             dateRange: nil,
             numberOfActiveFilters: 4
@@ -819,7 +886,7 @@ class BookingListViewModelTests {
         // Then - non-date filters should pass through
         #expect(capturedFilters?.resourceIDs == [42])
         #expect(capturedFilters?.productIDs == [100])
-        #expect(capturedFilters?.attendanceStatuses == [BookingAttendanceStatus.attended.rawValue])
+        #expect(capturedFilters?.attendanceStatus == BookingAttendanceStatus.attended.rawValue)
         #expect(capturedFilters?.customerIDs == [7])
         // Tab date constraints should still be applied
         #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
@@ -847,7 +914,7 @@ class BookingListViewModelTests {
         let userFilters = BookingFiltersViewModel.Filters(
             teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
             products: [],
-            attendanceStatuses: [],
+            attendanceStatus: nil,
             customers: [],
             dateRange: nil,
             numberOfActiveFilters: 1
@@ -864,7 +931,7 @@ class BookingListViewModelTests {
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")
         #expect(capturedFilters?.resourceIDs == [])
         #expect(capturedFilters?.productIDs == [])
-        #expect(capturedFilters?.attendanceStatuses == [])
+        #expect(capturedFilters?.attendanceStatus == nil)
         #expect(capturedFilters?.customerIDs == [])
         #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue])
     }

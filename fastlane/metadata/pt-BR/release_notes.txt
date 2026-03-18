@@ -1,1 +1,0 @@
-Essa atualização mostra as tarefas de configuração da loja de forma mais confiável, garante que a varredura de código de barras funcione perfeitamente no Ponto de Venda e melhora a confiabilidade da biblioteca de mídia. Atualize agora para uma experiência de gerenciamento de loja mais tranquila!

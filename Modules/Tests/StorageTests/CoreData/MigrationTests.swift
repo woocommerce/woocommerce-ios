@@ -2432,6 +2432,35 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedOrderInfo.value(forKey: "total") as? NSDecimalNumber, updatedTotal)
         XCTAssertEqual(migratedOrderInfo.value(forKey: "refundTotal") as? NSDecimalNumber, updatedRefundTotal)
     }
+
+    func test_migrating_from_132_to_133_adds_paymentStatusMetadata_attribute_to_bookingOrderInfo() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 132")
+        let sourceContext = sourceContainer.viewContext
+
+        let orderInfo = insertBookingOrderInfo(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(orderInfo.entity.attributesByName["paymentStatusMetadata"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 133")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedOrderInfo = try XCTUnwrap(targetContext.first(entityName: "BookingOrderInfo"))
+
+        XCTAssertNotNil(migratedOrderInfo.entity.attributesByName["paymentStatusMetadata"])
+
+        let metadataValue = migratedOrderInfo.value(forKey: "paymentStatusMetadata") as? String
+        XCTAssertNil(metadataValue)
+
+        let updatedValue = "paid"
+        migratedOrderInfo.setValue(updatedValue, forKey: "paymentStatusMetadata")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedOrderInfo.value(forKey: "paymentStatusMetadata") as? String, updatedValue)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

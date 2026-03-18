@@ -48,13 +48,16 @@ protocol JetpackConnectionServiceProtocol {
 }
 
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
+    private let siteID: Int64
     private let stores: StoresManager
     private let maxRetryCount: Int
     private let delayBeforeRetry: TimeInterval
 
-    init(stores: StoresManager = ServiceLocator.stores,
+    init(siteID: Int64,
+         stores: StoresManager = ServiceLocator.stores,
          maxRetryCount: Int = 2,
          delayBeforeRetry: TimeInterval = 0.5) {
+        self.siteID = siteID
         self.stores = stores
         self.maxRetryCount = maxRetryCount
         self.delayBeforeRetry = delayBeforeRetry
@@ -131,7 +134,9 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
     }
 
     func fetchConnectionData() async throws -> JetpackConnectionData {
-        try await dispatch(JetpackConnectionAction.fetchJetpackConnectionData)
+        try await dispatch { completion in
+            JetpackConnectionAction.fetchJetpackConnectionData(siteID: self.siteID, completion: completion)
+        }
     }
 }
 
@@ -169,7 +174,9 @@ private extension JetpackConnectionService {
 
     func checkJetpackPluginInstalled() async -> PluginCheckResult {
         do {
-            let _: SitePlugin = try await dispatch(JetpackConnectionAction.retrieveJetpackPluginDetails)
+            let _: SitePlugin = try await dispatch { completion in
+                JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: self.siteID, completion: completion)
+            }
             return .installed
         } catch {
             let code = (error as? NetworkError)?.responseCode ?? (error as NSError).code

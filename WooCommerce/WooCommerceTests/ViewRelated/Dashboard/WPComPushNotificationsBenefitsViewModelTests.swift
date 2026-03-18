@@ -85,7 +85,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
-    func test_error_is_noMissingRequirements_when_jetpack_connected_and_plugin_compatible() async {
+    func test_variant_is_setup_when_jetpack_connected_and_plugin_compatible() async {
         // Given
         let connectionService = MockJetpackConnectionService()
         connectionService.fetchConnectionDataResult = .success(
@@ -99,9 +99,8 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         await viewModel.determineSetupVariant()
 
         // Then
-        guard case .noMissingRequirements = viewModel.error else {
-            return XCTFail("Expected noMissingRequirements error, got \(String(describing: viewModel.error))")
-        }
+        XCTAssertEqual(viewModel.variant, .setup)
+        XCTAssertNil(viewModel.error)
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
@@ -211,6 +210,47 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(provider.receivedEvents.contains("push_notifications_setup_introduction_view"))
+    }
+
+    func test_determineSetupVariant_when_jetpack_connected_and_plugin_compatible_then_tracks_introduction_view_with_connected_state() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService, pluginVersionChecker: checker, analytics: analytics)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_view", with: ["state": "connected"])
+    }
+
+    func test_continueTapped_when_setup_variant_then_tracks_continue_button_label() async {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: provider)
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .success(
+            JetpackConnectionData.fake().copy(isRegistered: true)
+        )
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService,
+                                      pluginVersionChecker: checker,
+                                      analytics: analytics)
+        await viewModel.determineSetupVariant() // Precondition: set variant to .setup
+
+        // When
+        viewModel.continueTapped()
+
+        // Then
+        provider.assertReceived(event: "push_notifications_setup_introduction_button_tap", with: ["button_label": "continue"])
     }
 
     func test_determineSetupVariant_when_plugin_check_fails_then_does_not_track_introduction_view() async {
@@ -353,18 +393,53 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isCheckingPlugin)
     }
 
+    // MARK: - determineSetupVariant for JCP site
+
+    func test_determineSetupVariant_when_site_is_JCP_skips_jetpack_connection_check_and_sets_pluginUpdate_variant() async {
+        // Given
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: "10.5.3"))
+        let viewModel = makeViewModel(isJCPSite: true, pluginVersionChecker: checker)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertEqual(viewModel.variant, .pluginUpdate(currentVersion: "10.0.0"))
+        XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
+    func test_determineSetupVariant_when_site_is_JCP_and_plugin_compatible_then_sets_setup_variant() async {
+        // Given
+        let checker = MockPluginVersionChecker()
+        checker.result = .success(.compatible)
+        let viewModel = makeViewModel(isJCPSite: true, pluginVersionChecker: checker)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        XCTAssertEqual(viewModel.variant, .setup)
+        XCTAssertNil(viewModel.error)
+        XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
     // MARK: - Helpers
 
     private let sampleSiteID: Int64 = 123
 
     private func makeViewModel(
+        isJCPSite: Bool = false,
         jetpackConnectionService: JetpackConnectionServiceProtocol = MockJetpackConnectionService(),
         pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
         analytics: Analytics = ServiceLocator.analytics
     ) -> WPComPushNotificationsBenefitsViewModel {
-        WPComPushNotificationsBenefitsViewModel(
+        let site = Site.fake().copy(isJetpackThePluginInstalled: !isJCPSite, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
+        return WPComPushNotificationsBenefitsViewModel(
             siteID: sampleSiteID,
             siteURL: "https://example.com",
+            stores: stores,
             jetpackConnectionService: jetpackConnectionService,
             pluginVersionChecker: pluginVersionChecker,
             analytics: analytics,

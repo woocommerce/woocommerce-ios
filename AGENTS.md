@@ -54,6 +54,13 @@ CONTRIBUTING.md                  # PR merge policy
 
 Use the `bootstrap` skill to set up the environment from a clean checkout. It will guide through Xcode version verification, Ruby version setup, and dependency installation.
 
+## Internal Resources (ContextA8C)
+
+ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s, Linear, Field Guide, GitHub Enterprise, and other internal resources. It is optional — the agent works without it but provides richer context when available.
+
+- **Setup and usage**: See `.agents/rules/context-a8c.md`
+- **Claude Code setup skill**: `/setup-context-a8c`
+
 ## Build Commands
 
 ```bash
@@ -206,6 +213,7 @@ WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator
   - `Fix product type filters issue`
   - `Update Stripe SDK to 5.1.1`
   - `Remove redundant MainActor annotation`
+- **PR creation**: Always use the `/pr` skill when creating pull requests
 - **PR merge policy**: Merge commits (not squash). 1 reviewer required. PR author merges own PR.
 - **PR size**: Keep non-test diff under 300 lines (enforced by Danger)
 - **Labels and milestones**: Required on non-draft PRs
@@ -267,9 +275,9 @@ See `Modules/Package.swift` for the definitive list of supported platforms, inte
 
 Agents can verify their changes work from a user's perspective using two complementary loops:
 
-- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
+- **`/verify`** — E2E simulator verification: builds the app, launches on simulator, navigates UI via mobile-mcp, screenshots and checks elements. Auto-detects scope from `git diff` using `.claude/references/feature-map.json`. Environment-aware — uses existing session during development, sets up WireMock mocked environment only when needed.
 - **`/snapshot`** — Fast UI iteration: uses `swift-snapshot-testing` to render SwiftUI views to PNG (~25s/cycle). Agent reads images, compares against design goals, iterates. Temporary — artifacts are never committed.
 
-**Prerequisites**: Node.js v22+, Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
+**Prerequisites**: Node.js (see `.nvmrc`), Java (for WireMock), booted iOS simulator. mobile-mcp is auto-configured via `.mcp.json`.
 
 See `.claude/rules/verification.md` for full details on tools, mock server setup, and launch arguments.

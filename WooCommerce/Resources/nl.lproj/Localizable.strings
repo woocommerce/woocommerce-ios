@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-02-28 08:27:24+0000 */
+/* Translation-Revision-Date: 2026-03-09 15:56:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -950,6 +950,12 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for bookable product type. */
 "Bookable" = "Boekbaar";
 
+/* Title for 'Attended' booking attendance status. */
+"BookingAttendanceStatus.attended" = "Beheerd";
+
+/* Title for 'Unattended' booking attendance status. */
+"BookingAttendanceStatus.unattended" = "Onbeheerd";
+
 /* Title for 'Unknown' booking attendance status. */
 "BookingAttendanceStatus.unknown" = "Onbekend";
 
@@ -973,6 +979,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Tijd";
+
+/* Button title to mark a booking's attendance as attended. */
+"BookingDetailsView.attendance.markAsAttended" = "Markeren als beheerd";
+
+/* Button title to mark a booking's attendance as unattended. */
+"BookingDetailsView.attendance.markAsUnattended" = "Markeren als onbeheerd";
 
 /* Content of error presented when updating the attendance status of a Booking fails. It reads: Unable to change status of Booking #{Booking number}. Parameters: %1$d - Booking number */
 "BookingDetailsView.attendanceStatus.failureMessage." = "Kan de aanwezigheidsstatus van reserveringsnr. %1$d niet wijzigen.";
@@ -1039,6 +1051,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Betaling";
+
+/* Title for 'Refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.refund.title" = "Terugbetaling";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Dienst";
@@ -9681,6 +9696,21 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "Boekingen";
 
+/* Badge label for a booking with a failed payment. */
+"bookingPaymentStatus.failed" = "Mislukt";
+
+/* Badge label for a paid booking in the Store Management booking list. */
+"bookingPaymentStatus.paid" = "Betaald";
+
+/* Badge label for a partially refunded booking. */
+"bookingPaymentStatus.partiallyRefunded" = "Gedeeltelijk terugbetaald";
+
+/* Badge label for a refunded booking. */
+"bookingPaymentStatus.refunded" = "Terugbetaald";
+
+/* Badge label for an unpaid booking in the Store Management booking list. */
+"bookingPaymentStatus.unpaid" = "Onbetaald";
+
 /* Message on the empty search result view of the booking service/event selector view */
 "bookingServiceEventSelectorView.emptySearchDescription" = "Probeer je zoekterm aan te passen om meer resultaten te zien";
 
@@ -9999,6 +10029,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Configuratie voltooid";
+
+/* Button to hide the Connect WPCom card from the My Store screen */
+"connectWPComCard.hideButton" = "Deze inhoud verbergen";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"connectWPComCard.subtitle" = "Schakel pushmeldingen in om op de hoogte te blijven van nieuwe bestellingen en beoordelingen.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"connectWPComCard.title" = "Nooit een nieuwe bestelling missen";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Problemen met verbinding oplossen";
@@ -10353,15 +10392,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on unavailable dashboard card on the Customize Dashboard screen */
 "dashboardCustomization.unavailable" = "Niet beschikbaar";
-
-/* Button to hide the Connect WPCom card from the My Store screen */
-"dashboardView.connectWPComCard.hideButton" = "Verberg deze inhoud";
-
-/* Subtitle of the Connect WPCom card on My Store screen */
-"dashboardView.connectWPComCard.subtitle" = "Koppel je winkel aan een WordPress.com-account om meldingen voor nieuwe bestellingen en beoordelingen te ontvangen.";
-
-/* Title of the Connect WPCom card on My Store screen */
-"dashboardView.connectWPComCard.title" = "Mis nooit een nieuwe bestelling";
 
 /* Title of the button to edit the layout of the Dashboard screen. */
 "dashboardView.edit" = "Bewerken";
@@ -10801,6 +10831,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the reader's IP address is unknown. */
 "hardware.cardReader.underlyingError.unknownReaderIpAddress" = "De lezer heeft na ontdekking geen IP-adres gevonden en verbinding is niet mogelijk.";
+
+/* Title of the Bookings menu in the hub menu */
+"hubMenu.bookings" = "Reserveringen";
+
+/* Description of the Bookings menu in the hub menu */
+"hubMenu.bookingsDescription" = "Beheer je klantafspraken";
 
 /* Title of the view containing Coupons list */
 "hubMenu.couponsList" = "Coupons";
@@ -11549,6 +11585,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "De bestelling werd met cash betaald. De klant betaalde %1$@. Het wisselgeld was %2$@.";
 
+/* Note added to order when Scan to Pay is used. */
+"paymentMethods.scanToPayNoteText.note" = "Betaallink gedeeld via Scan to Pay. Verifieer de betaling voordat je de bestelling afrondt.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalingen, Tap to Pay, woocommerce, woo, fysieke betalingen, betaling innen, betalingen, lezer, kaartlezer, kaartlezer bestellen";
 
@@ -11632,6 +11671,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A placeholder name when we can't determine the name of a variation for an error message */
 "pointOfSale.barcodeScanning.unresolved.variation.name" = "Onbekend";
+
+/* Indicates the status of a card reader. Presented to users when payment collection starts */
+"pointOfSale.cardPresent.canceledOnReader.title" = "Betaling geannuleerd op reader";
+
+/* Button to try to collect a payment again. Presented to users after card reader canceled on the Point of Sale Checkout */
+"pointOfSale.cardPresent.canceledOnReader.tryPaymentAgain.button.title" = "Probeer de betaling opnieuw";
 
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "pointOfSale.cardPresent.cardInserted.subtitle" = "Kaart ingevoerd";
@@ -11978,6 +12023,9 @@ which should be translated separately and considered part of this sentence. */
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon niet toegepast";
 
+/* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.bookings.button.title" = "Reserveringen";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Een moment geduld";
 
@@ -12056,11 +12104,47 @@ which should be translated separately and considered part of this sentence. */
 /* Generic product name used when we can't identify which specific product is unavailable */
 "pointOfSale.orderSync.missingProductsError.unknownProductName" = "Een of meer producten";
 
+/* Message shown while loading the order for a payment in Point of Sale */
+"pointOfSale.payment.loading.message" = "Bestelling wordt geladen";
+
+/* Title shown while loading the order for a payment in Point of Sale */
+"pointOfSale.payment.loading.title" = "Gereedmaken";
+
+/* Button to start a cash payment in the payment flow */
+"pointOfSale.paymentContent.cashPaymentButton" = "Contante betaling";
+
+/* Label for the subtotal amount in the payment content view */
+"pointOfSale.paymentContent.subtotal" = "Subtotaal";
+
+/* Label for the taxes amount in the payment content view */
+"pointOfSale.paymentContent.taxes" = "Belastingen";
+
+/* Label for the total amount in the payment content view */
+"pointOfSale.paymentContent.total" = "Totaal";
+
+/* Error when trying to send a receipt before an order has been loaded in the Point of Sale */
+"pointOfSale.paymentError.noOrder" = "Nog geen bestelling geladen. Begin een betaling voordat je een betalingsbewijs verzendt.";
+
+/* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Terug naar reservering";
+
+/* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Gereed";
+
+/* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
+"pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Bestelling bewerken";
+
+/* Button title on the payment success and capture error screens in the Point of Sale checkout to start a new order */
+"pointOfSale.paymentFlowConfiguration.cart.newOrder.button.title" = "Nieuwe bestelling";
+
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.card.1" = "Een kaartbetaling van %1$@ is voldaan.";
 
 /* Message shown to users when payment is made. %1$@ is a placeholder for the order  total, e.g $10.50. Please include %1$@ in your formatted string */
 "pointOfSale.paymentSuccessful.message.cash.1" = "Een contante betaling van %1$@ is voldaan.";
+
+/* Informational message shown on payment success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
+"pointOfSale.paymentSuccessful.receiptSent" = "Er is een betalingsbewijs verzonden naar %1$@";
 
 /* Title shown to users when payment is made successfully. */
 "pointOfSale.paymentSuccessful.title" = "Betaling gelukt";
@@ -12401,6 +12485,219 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the scanner testing step */
 "pos.barcodeScannerSetup.test.title" = "Test je scanner";
 
+/* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
+"pos.booking.durationHours" = "%du";
+
+/* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
+"pos.booking.durationHoursAndMinutes" = "%1$du %2$d m";
+
+/* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
+"pos.booking.durationMinutes" = "%d min.";
+
+/* POS booking attendance status label when the customer attended. */
+"pos.bookingAttendanceDisplay.attended" = "Beheerd";
+
+/* POS booking attendance status label when the customer has not attended. */
+"pos.bookingAttendanceDisplay.unattended" = "Onbeheerd";
+
+/* Accessibility label for the next day button in the bookings date bar. */
+"pos.bookingDateBar.nextDay" = "Volgende dag";
+
+/* Accessibility label for the previous day button in the bookings date bar. */
+"pos.bookingDateBar.previousDay" = "Vorige dag";
+
+/* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
+"pos.bookingDateBar.selectedDate" = "%1$@, tik om agenda te openen";
+
+/* Button to add a private note to a booking. */
+"pos.bookingDetailView.addNoteButton" = "Notitie toevoegen";
+
+/* Section title for the attendance status in booking details. */
+"pos.bookingDetailView.attendanceStatusTitle" = "Aanwezigheidsstatus";
+
+/* Subtitle text below the attendance section explaining why marking attendance matters. */
+"pos.bookingDetailView.attendanceSubtitle" = "Markeer aanwezigheid om je rapporten accuraat te houden en reserveringstrends te herkennen.";
+
+/* Error message shown below attendance section when updating attendance status fails. */
+"pos.bookingDetailView.attendanceUpdateError" = "Bijwerken van aanwezigheid mislukt. Probeer het nog eens.";
+
+/* Label for the attended pill button in booking attendance section. */
+"pos.bookingDetailView.attendedPill" = "Beheerd";
+
+/* Section title for booking details showing the booking ID number. %lld is the booking ID. */
+"pos.bookingDetailView.bookingIdTitle" = "Reserveringsnr. %lld";
+
+/* Label for the private booking note section in booking details. */
+"pos.bookingDetailView.bookingNoteLabel" = "Notitie bij reservering";
+
+/* Subtitle text below the booking note section explaining the note is private. */
+"pos.bookingDetailView.bookingNoteSubtitle" = "Dit is een privébericht. Het wordt niet gedeeld met de klant.";
+
+/* Menu action to cancel a booking from the POS booking detail view. */
+"pos.bookingDetailView.cancelBookingAction" = "Annuleer reservering";
+
+/* Subtitle shown when cancelling a booking from POS has failed. */
+"pos.bookingDetailView.cancelBookingError.subtitle" = "Probeer het nog eens.";
+
+/* Title shown when cancelling a booking from POS has failed. */
+"pos.bookingDetailView.cancelBookingError.title" = "Annuleren van reservering mislukt";
+
+/* Button to initiate payment collection for a booking. */
+"pos.bookingDetailView.collectPaymentButton" = "Betaling innen";
+
+/* Accessibility label for the copy email button in booking details. */
+"pos.bookingDetailView.copyEmail.accessibilityLabel" = "E-mailadres kopiëren";
+
+/* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Telefoonnummer kopiëren";
+
+/* Section title for the customer details in booking details. */
+"pos.bookingDetailView.customerTitle" = "Klant";
+
+/* Label for the duration in booking details. */
+"pos.bookingDetailView.durationLabel" = "Duur";
+
+/* Button to edit an existing private note on a booking. */
+"pos.bookingDetailView.editNoteButton" = "Notitie bewerken";
+
+/* Accessibility label for customer email row in booking details. %1$@ is the email address. */
+"pos.bookingDetailView.email.accessibilityLabel" = "E-mail: %1$@";
+
+/* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
+"pos.bookingDetailView.guestBadge" = "Gast";
+
+/* Menu action to issue a full refund for a booking. */
+"pos.bookingDetailView.issueRefundAction" = "Restitueren";
+
+/* Label for the location in booking details. */
+"pos.bookingDetailView.locationLabel" = "Locatie";
+
+/* Accessibility label for the overflow actions menu button in booking details. */
+"pos.bookingDetailView.moreActions.accessibilityLabel" = "Meer acties";
+
+/* Label for the customer note in booking details. */
+"pos.bookingDetailView.noteLabel" = "Notitie";
+
+/* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
+"pos.bookingDetailView.phone.accessibilityLabel" = "Telefoon: %1$@";
+
+/* Label for the team member / staff resource in booking details. */
+"pos.bookingDetailView.teamMemberLabel" = "Teamlid";
+
+/* Label for the unattended pill button in booking attendance section. */
+"pos.bookingDetailView.unattendedPill" = "Onbeheerd";
+
+/* Button to view the linked order from the booking detail header. */
+"pos.bookingDetailView.viewOrderAction" = "Bestelling weergeven";
+
+/* Text appearing in the booking details pane when no booking is selected. */
+"pos.bookingDetailsEmptyView.description" = "Tik op een reservering om de details te bekijken";
+
+/* POS booking lifecycle status label for active bookings. */
+"pos.bookingLifecycleStatus.booked" = "Geboekt";
+
+/* POS booking lifecycle status label for canceled bookings. */
+"pos.bookingLifecycleStatus.canceled" = "Geannuleerd";
+
+/* POS booking lifecycle status label for completed bookings. */
+"pos.bookingLifecycleStatus.completed" = "Voltooid";
+
+/* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
+"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Kan niet meer reserveringen laden";
+
+/* Text appearing on the booking list screen when there's an error loading bookings. */
+"pos.bookingList.failedToLoadBookingsTitle" = "Kan reserveringen niet laden";
+
+/* Title at the header for the Bookings view. */
+"pos.bookingListView.bookingsTitle" = "Reserveringen";
+
+/* Subtitle appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchSubtitle" = "We konden geen reserveringen vinden die aan je zoekopdracht voldoen. Pas je zoekterm aan.";
+
+/* Title appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchTitle" = "Geen reserveringen gevonden";
+
+/* Subtitle appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsSubtitle.2" = "Alle reserveringen die gepland zijn voor deze datum zullen hier verschijnen.";
+
+/* Title appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsTitle.2" = "Geen reserveringen voor deze dag";
+
+/* Accessibility label for the search button in bookings list. */
+"pos.bookingListView.searchButton.accessibilityLabel" = "Zoek reserveringen";
+
+/* Placeholder for a search field in the Bookings view. */
+"pos.bookingListView.searchFieldPlaceholder" = "Zoek reserveringen";
+
+/* Button label shown when no changes have been made to the booking note yet. */
+"pos.bookingNoteView.addButton" = "Toevoegen";
+
+/* Title shown at the top of the booking note editor screen when adding a new note. */
+"pos.bookingNoteView.addTitle" = "Notitie toevoegen";
+
+/* Title shown at the top of the booking note editor screen when editing an existing note. */
+"pos.bookingNoteView.editTitle" = "Notitie bewerken";
+
+/* Placeholder text shown in the booking note text field when empty. */
+"pos.bookingNoteView.placeholder" = "Maak notitie";
+
+/* Button to save the booking note. */
+"pos.bookingNoteView.saveButton" = "Opslaan";
+
+/* Error message shown when saving a booking note fails. */
+"pos.bookingNoteView.saveError" = "Opslaan mislukt Probeer het opnieuw.";
+
+/* POS booking payment status label when the booking order payment failed. */
+"pos.bookingPaymentStatus.failed" = "Mislukt";
+
+/* POS booking payment status label when the booking is paid. */
+"pos.bookingPaymentStatus.paid" = "Betaald";
+
+/* POS booking payment status label when the booking order has been refunded. */
+"pos.bookingPaymentStatus.refunded" = "Terugbetaald";
+
+/* POS booking payment status label when the booking is unpaid. */
+"pos.bookingPaymentStatus.unpaid" = "Onbetaald";
+
+/* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
+"pos.cancelBookingConfirmation.canceled.confirmationMessage" = "Reservering #%1$@ voor %2$@ op %3$@ wordt geannuleerd.";
+
+/* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
+"pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "Reservering #%1$@ voor %2$@ op %3$@ voor %4$@ wordt geannuleerd.";
+
+/* Title shown while a booking cancellation is being processed in POS. */
+"pos.cancelBookingConfirmation.canceling.processingTitle" = "Reservering annuleren...";
+
+/* Accessibility label for close button on cancel booking confirmation modal. */
+"pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Sluiten";
+
+/* Button to confirm and proceed with booking cancellation. */
+"pos.cancelBookingConfirmation.confirmButton" = "Ja, reservering annuleren";
+
+/* Secondary message informing that the customer will receive an email notification about the cancellation. */
+"pos.cancelBookingConfirmation.customerNotificationMessage" = "De klant wordt via e-mail op de hoogte gesteld.";
+
+/* Button to dismiss the cancel booking confirmation and keep the booking. */
+"pos.cancelBookingConfirmation.keepButton" = "Nee, bewaar hem";
+
+/* Message shown while the booking cancellation is being processed. */
+"pos.cancelBookingConfirmation.processingMessage" = "Een moment geduld terwijl we de reservering annuleren.";
+
+/* Title for the cancel booking confirmation modal in POS. */
+"pos.cancelBookingConfirmation.title" = "Deze reservering annuleren?";
+
+/* Message shown after a booking is successfully canceled in POS. */
+"pos.cancelBookingSuccess.canceled.message" = "De reservering is geannuleerd.";
+
+/* Title shown when a booking has been successfully canceled in POS. */
+"pos.cancelBookingSuccess.canceled.title" = "Reservering geannuleerd";
+
+/* Accessibility label for close button on cancel booking success screen. */
+"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "Sluiten";
+
+/* Button to dismiss the cancel booking success screen in POS. */
+"pos.cancelBookingSuccess.doneButton" = "Gereed";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Tik op een product om het \n toe te voegen aan de winkelwagen of ";
 
@@ -12604,6 +12901,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the overflow actions menu button (three dots) */
 "pos.orderDetailsView.moreActions.label" = "Meer acties";
+
+/* Subtitle shown when refund data preparation fails */
+"pos.orderDetailsView.prepareRefundError.subtitle" = "Probeer het nog eens.";
+
+/* Title shown when refund data preparation fails */
+"pos.orderDetailsView.prepareRefundError.title" = "Terugbetaling kon niet worden voorbereid";
 
 /* Accessibility label for product row. %1$@ is quantity, %2$@ is unit price, %3$@ is total price. */
 "pos.orderDetailsView.productRow.accessibilityLabel" = "Aantal: %1$@ voor elk %2$@, totaal %3$@";
@@ -12861,6 +13164,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message shown after successful refund. %1$@ is the formatted amount, %2$@ is the payment method description. */
 "pos.refundSuccessView.messageFormat" = "Je hebt %1$@ %2$@ terugbetaald.";
 
+/* Informational message shown on refund success screen when an email receipt is automatically sent. %1$@ is a placeholder for the customer's email address. */
+"pos.refundSuccessView.receiptSent" = "Er is een betalingsbewijs verzonden naar %1$@";
+
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "Terugbetaling voltooid";
 
@@ -12891,8 +13197,44 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the Point of Sale tab. */
 "pos.tab.title" = "POS";
 
+/* Label for discount in the totals breakdown. */
+"pos.totalsSectionView.discountLabel.v2" = "Korting";
+
+/* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
+"pos.totalsSectionView.netPayment.accessibilityLabel" = "Netto betaling: %1$@";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.netPaymentLabel" = "Netto betaling";
+
+/* Accessibility label for total paid. %1$@ is the paid amount. */
+"pos.totalsSectionView.paid.accessibilityLabel" = "Totaal betaald: %1$@";
+
+/* Payment method portion of paid accessibility label. %1$@ is the payment method. */
+"pos.totalsSectionView.paid.accessibilityLabel.method" = "Betaalmethode: %1$@";
+
+/* Label for the paid amount in the totals breakdown. */
+"pos.totalsSectionView.paidLabel" = "Totaal betaald";
+
+/* Label for refund reason. %1$@ is the reason text. */
+"pos.totalsSectionView.reasonLabel" = "Reden: %1$@";
+
+/* Accessibility label for refunded amount. %1$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel" = "Terugbetaald: %1$@";
+
+/* Reason portion of refund accessibility label. %1$@ is the refund reason. */
+"pos.totalsSectionView.refund.accessibilityLabel.reason" = "Reden: %1$@";
+
+/* Label for a refund entry in the totals breakdown. */
+"pos.totalsSectionView.refundLabel" = "Terugbetaald";
+
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
+
+/* Label for taxes in the totals breakdown. */
+"pos.totalsSectionView.taxesLabel" = "Belastingen";
+
+/* Label for the total amount in the totals breakdown. */
+"pos.totalsSectionView.totalLabel" = "Totaal";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Betalingsbewijs e-mailen";
@@ -14138,6 +14480,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the self-driven push notification setup flow */
 "wooPushNotificationSetupCoordinator.flowTitle" = "Koppelen aan WordPress.com";
 
+/* Title of the web view to update WooCommerce plugin during push notification setup */
+"wooPushNotificationSetupCoordinator.updateWooCommerce" = "WooCommerce bijwerken";
+
 /* Title for the Add Package screen Add Package Details button */
 "wooShipping.createLabel.addPackage.addPackageDetails" = "Pakketgegevens toevoegen";
 
@@ -15080,11 +15425,14 @@ which should be translated separately and considered part of this sentence. */
 /* Status label shown when a setup step has not been started yet. */
 "wpComConnectionSetupStepView.notStarted" = "Niet gestart";
 
+/* Error message when the WooCommerce plugin version is outdated. %@ is the current plugin version. */
+"wpComConnectionSetupStepView.outdatedPlugin" = "Je huidige WooCommerce-plugin versie %1$@ moet worden bijgewerkt om je winkel volledig te verbinden met WordPress.com.";
+
 /* Cancel button title in the WPCom connection setup screen toolbar. */
 "wpComConnectionSetupView.cancelButton" = "Annuleren";
 
-/* Title for the WPCom connection setup screen. */
-"wpComConnectionSetupView.title" = "Koppelen aan WordPress.com";
+/* Get help button title in the WPCom connection setup screen toolbar. */
+"wpComConnectionSetupView.getHelpButton" = "Ontvang hulp";
 
 /* Step title for checking plugin compatibility during WPCom connection setup. */
 "wpComConnectionSetupViewModel.checkPluginStep" = "Compatibiliteit van plugin controleren";
@@ -15097,6 +15445,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title to navigate to the store after successful WPCom connection setup. */
 "wpComConnectionSetupViewModel.goToMyStore" = "Ga naar Mijn winkel";
+
+/* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
+"wpComConnectionSetupViewModel.message" = "Een moment geduld terwijl we je winkel %1$@ aan WordPress.com koppelen.";
+
+/* Title for the WPCom connection setup screen when the site is not yet connected. */
+"wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "Koppelen aan WordPress.com";
+
+/* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Pushmeldingen instellen";
 
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Opnieuw proberen";
@@ -15128,6 +15485,18 @@ which should be translated separately and considered part of this sentence. */
 /* Text hinting the user to ensure their email is correct and check their spam folder */
 "wpComMagicLinkView.emailConfirmationHint" = "Controleer of je e-mailadres klopt en check je spammap.";
 
+/* Error message when the connection step is canceled during push notification setup */
+"wpcomConnectionSetupHandler.ConnectionStep.canceled" = "Verbinding geannuleerd";
+
+/* Generic error message when the connection step fails during push notification setup */
+"wpcomConnectionSetupHandler.ConnectionStep.genericError" = "Er is een fout opgetreden bij het afronden van je aanvraag. Probeer het opnieuw of neem contact op met ondersteuning als het probleem aanhoudt.";
+
+/* Generic error message when the plugin check step fails during push notification setup */
+"wpcomConnectionSetupHandler.PluginCheckStep.genericError" = "Er is een fout opgetreden bij het controleren van de versie van de WooCommerce-plugin in je winkel. Probeer het opnieuw of neem contact op met ondersteuning als het probleem aanhoudt.";
+
+/* Error message when push notification registration fails during setup */
+"wpcomConnectionSetupHandler.PushStep.genericError" = "Er is een fout opgetreden bij het inschakelen van pushmeldingen. Probeer het opnieuw of neem contact op met ondersteuning als het probleem aanhoudt.";
+
 /* A message that informs the user that a magic link will be sent to their email address. */
 "wpcomMagicLinkRequestView.label" = "We e-mailen je een link waarmee je direct kan inloggen, zonder wachtwoord.";
 
@@ -15149,8 +15518,14 @@ which should be translated separately and considered part of this sentence. */
 /* Cancel button title in the WordPress.com Push Notifications Benefits View toolbar */
 "wpcomPushNotificationsBenefitsView.cancelButton" = "Annuleren";
 
+/* Button title to contact support in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.contactSupport" = "Neem contact op met de ondersteuning";
+
 /* Continue button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.continueButton" = "Doorgaan";
+
+/* Title of the error state in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.errorTitle" = "Er is iets fout gegaan";
 
 /* Not now button title in the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.notNowButton" = "Niet nu";
@@ -15158,11 +15533,35 @@ which should be translated separately and considered part of this sentence. */
 /* Secondary description text of the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.subdescription" = "Het duurt maar een minuut.";
 
-/* Title of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsView.title" = "Ontgrendel pushmeldingen met WordPress.com";
+/* Button title to update the WooCommerce plugin in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsView.updatePluginButton" = "Plugin bijwerken";
 
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "Wat is WordPress.com?";
+
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Koppel je winkel aan WordPress.com om toegang te krijgen tot pushmeldingen voor nieuwe bestellingen, beoordelingen en meer.";
+
+/* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
+"wpcomPushNotificationsBenefitsViewModel.shareDetails" = "gegevens delen";
+
+/* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
+"wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Servicevoorwaarden";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.title" = "Pushmeldingen ontgrendelen met WordPress.com";
+
+/* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Je winkel is al gekoppeld aan een WordPress.com-account, maar je moet de WooCommerce-plugin bijwerken om pushmeldingen in te schakelen voor nieuwe bestellingen, beoordelingen en meer.";
+
+/* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Pushmeldingen ontvangen voor je winkel";
+
+/* Generic error message in the Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "We konden de configuratie van de pushmeldingen niet voltooien. Neem contact op met ondersteuning voor hulp.";
+
+/* Error message in the Push Notifications Benefits View for users without admin role */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "Je account heeft geen toestemming om de configuratie van pushberichten te voltooien. Vraag je winkelbeheerder om dit af te handelen.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

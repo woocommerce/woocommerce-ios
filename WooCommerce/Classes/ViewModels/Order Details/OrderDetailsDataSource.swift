@@ -70,36 +70,6 @@ final class OrderDetailsDataSource: NSObject {
         !isEligibleForWooShipping
     }
 
-    /// Whether the option to install the WCShip extension should be visible.
-    /// This feature is hidden behind a feature flag `shippingLabelsOnboardingM1`.
-    /// We do those check because we are going to display the feature only to US store owners:
-    /// - WCShip is not installed or not enabled.
-    /// - The store is located in US.
-    /// - The currency is USD.
-    /// - The products are eligible for SL (not virtual/downloadable).
-    /// - The order is not eligible for IPP.
-    ///
-    var shouldAllowWCShipInstallation: Bool {
-        let isFeatureFlagEnabled = featureFlags.isFeatureFlagEnabled(.shippingLabelsOnboardingM1)
-        let plugin = resultsControllers.sitePlugins.first { $0.plugin == SitePlugin.SupportedPluginPath.LegacyWCShip }
-        let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
-        let isPluginActive = plugin?.status.isActive ?? false
-        let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == CountryCode.US
-        let isCurrencyUSD = currencySettings.currencyCode == .USD
-
-        guard isFeatureFlagEnabled,
-              userIsAdmin,
-              !isPluginInstalled,
-              !isPluginActive,
-              isCountryCodeUS,
-              isCurrencyUSD,
-              !isEligibleForPayment else {
-            return false
-        }
-
-        return true
-    }
-
     /// Whether the order has a locally-generated receipt associated.
     ///
     var orderHasLocalReceipt: Bool = false
@@ -270,6 +240,8 @@ final class OrderDetailsDataSource: NSObject {
 
     private let featureFlags: FeatureFlagService
 
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
+
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
@@ -278,7 +250,8 @@ final class OrderDetailsDataSource: NSObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
@@ -289,6 +262,7 @@ final class OrderDetailsDataSource: NSObject {
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
         self.featureFlags = featureFlags
+        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         super.init()
     }
@@ -445,8 +419,6 @@ private extension OrderDetailsDataSource {
             configureBillingDetail(cell: cell)
         case let cell as WooBasicTableViewCell where row == .shippingLabelDetail:
             configureShippingLabelDetail(cell: cell)
-        case let cell as WCShipInstallTableViewCell where row == .installWCShip:
-            configureInstallWCShip(cell: cell)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
         case let cell as LargeHeightLeftImageTableViewCell where row == .addOrderNote:
@@ -584,24 +556,6 @@ private extension OrderDetailsDataSource {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
-    }
-
-    private func configureInstallWCShip(cell: WCShipInstallTableViewCell) {
-        cell.update(title: NSLocalizedString("Need a shipping label?",
-                                             comment: "Title of the banner in the Order Detail for suggesting to install WCShip extension."),
-                    body: NSLocalizedString("Print labels from your phone, with WooCommerce Shipping.",
-                                            comment: "Body of the banner in the Order Detail for suggesting to install WCShip extension."),
-                    action: NSLocalizedString("Get WooCommerce Shipping",
-                                              comment: "Action of the banner in the Order Detail for suggesting to install WCShip extension."),
-                    image: .installWCShipImage)
-
-        cell.selectionStyle = .none
-
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString("Install the WCShip extension.",
-                                                    comment: "Accessibility label for the Install WCShip banner in the Order Detail")
-        cell.accessibilityHint = NSLocalizedString("Open the flow for installing the WCShip extension.",
-                                                   comment: "VoiceOver accessibility label for the Install WCShip banner in the Order Detail")
     }
 
     private func configureNewNote(cell: LargeHeightLeftImageTableViewCell) {
@@ -1091,9 +1045,11 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureSummary(cell: SummaryTableViewCell) {
+        let isStatusEditingSupported = ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
-            status: lookUpOrderStatus(for: order)
+            status: lookUpOrderStatus(for: order),
+            isEditButtonVisible: isStatusEditingSupported
         )
 
         cell.configure(cellViewModel)
@@ -1345,15 +1301,6 @@ extension OrderDetailsDataSource {
             return Section(category: .refundedProducts, title: Title.refundedProducts, row: row)
         }()
 
-        let installWCShipSection: Section? = {
-            guard shouldAllowWCShipInstallation else {
-                return nil
-            }
-
-            let rows: [Row] = [.installWCShip]
-            return Section(category: .installWCShip, title: nil, rows: rows)
-        }()
-
         let wooShippingSection = createWooShippingSection()
 
         let shippingLabelSections: [Section] = {
@@ -1546,7 +1493,6 @@ extension OrderDetailsDataSource {
             products,
             customAmountsSection,
             customFields,
-            installWCShipSection,
             refundedProducts,
             wooShippingSection
         ] + shippingLabelSections + [
@@ -1886,7 +1832,6 @@ extension OrderDetailsDataSource {
             case summary
             case products
             case customAmounts
-            case installWCShip
             case shippingLabel
             case refundedProducts
             case payment
@@ -1991,7 +1936,6 @@ extension OrderDetailsDataSource {
         case tracking
         case trackingAdd
         case collectCardPaymentButton
-        case installWCShip
         case shippingLabelDetail
         case shippingLabelPrintingInfo
         case shippingLabelProducts
@@ -2051,8 +1995,6 @@ extension OrderDetailsDataSource {
                 return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .collectCardPaymentButton:
                 return ButtonTableViewCell.reuseIdentifier
-            case .installWCShip:
-                return WCShipInstallTableViewCell.reuseIdentifier
             case .shippingLabelDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .shippingLabelPrintingInfo:

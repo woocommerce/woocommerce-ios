@@ -175,6 +175,7 @@ extension NetworkingCore.Order {
             paymentMethodTitle: .fake(),
             paymentURL: .fake(),
             chargeID: .fake(),
+            paymentStatusMetadata: .fake(),
             items: .fake(),
             billingAddress: .fake(),
             shippingAddress: .fake(),

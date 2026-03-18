@@ -15,6 +15,7 @@ import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import class WooFoundation.CurrencyFormatter
+import CocoaLumberjackSwift
 
 enum StartRefundFlowResult {
     case hasItemsToRefund
@@ -25,6 +26,7 @@ enum StartRefundFlowResult {
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
+    var isLoadingOrderRefunds: Bool { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
@@ -38,6 +40,7 @@ protocol POSOrderListControllerProtocol {
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
     func processRefund(reason: String?) async throws
+    func loadOrderRefunds() async
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -64,6 +67,7 @@ enum RefundActionAvailability {
     private var fetchStrategy: POSOrderListFetchStrategy
     private var cachedOrders: [POSOrder] = []
     private(set) var selectedOrder: POSOrder?
+    private(set) var isLoadingOrderRefunds = false
     private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
     private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
@@ -221,6 +225,7 @@ enum RefundActionAvailability {
     @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
+        isLoadingOrderRefunds = false
         selectedOrderRefundsState = .idle
     }
 
@@ -364,7 +369,8 @@ enum RefundActionAvailability {
             formattedRefundTotal: formattedTotal,
             paymentMethodDescription: paymentMethodDescription,
             customerEmail: order.customerEmail,
-            refundReason: nil
+            refundReason: nil,
+            isFullRefund: selectedItems.count == refundSelectableItems.count
         )
     }
 
@@ -410,6 +416,23 @@ enum RefundActionAvailability {
 
         clearRefundSelection()
         try? await updateOrder(orderID: order.id)
+        await loadOrderRefunds()
+    }
+
+    func loadOrderRefunds() async {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1) else { return }
+        guard let order = selectedOrder, order.refunds.isNotEmpty else {
+            return
+        }
+        isLoadingOrderRefunds = true
+        do {
+            let refunds = try await refundsService.loadOrderRefunds(for: order)
+            guard selectedOrder?.id == order.id else { return }
+            selectedOrder = order.copy(refunds: .some(refunds))
+        } catch {
+            DDLogError("⛔️ Failed to load refund details: \(error)")
+        }
+        isLoadingOrderRefunds = false
     }
 }
 

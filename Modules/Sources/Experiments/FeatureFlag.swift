@@ -26,10 +26,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case updateOrderOptimistically
 
-    /// Enable Shipping Labels Onboarding M1 (display the banner in Order Detail screen for installing the WCShip plugin)
-    ///
-    case shippingLabelsOnboardingM1
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU

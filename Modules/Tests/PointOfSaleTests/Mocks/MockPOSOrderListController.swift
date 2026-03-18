@@ -5,6 +5,7 @@ import struct Yosemite.POSOrder
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
+    var isLoadingOrderRefunds = false
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
     var updateOrderCalled = false
@@ -78,9 +79,12 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             formattedRefundTotal: "$0.00",
             paymentMethodDescription: "Via payment card",
             customerEmail: nil,
-            refundReason: nil
+            refundReason: nil,
+            isFullRefund: selectedItems.count == refundSelectableItems.count
         )
     }
+
+    func loadOrderRefunds() async {}
 
     // MARK: - Refund Processing
 

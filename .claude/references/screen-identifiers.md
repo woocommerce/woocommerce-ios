@@ -32,9 +32,7 @@ The tab bar is visible on all top-level screens.
 
 The app launches to the prologue screen when started with `logout-at-launch`.
 
-| | |
-|---|---|
-| **Primary Identifier** | `prologue-title-label` |
+- **Primary Identifier**: `prologue-title-label`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -67,18 +65,14 @@ The mock server always requires 2FA. Enter any 6-digit code (e.g., `123456`).
 | Store name | `name-label` | |
 | Store URL | `url-label` | |
 
-**Mock credentials** (only work with the WireMock mock server, not real accounts): site `http://yourwoosite.com`, email `t@wp.com`, password `pw`.
-
 ---
 
 ## Top-Level Screens
 
 ### Dashboard (My Store)
 
-| | |
-|---|---|
-| **Primary Identifier** | `revenue-value` (always visible on Dashboard) |
-| **Nav Path** | Tap `tab-bar-my-store-item` |
+- **Primary Identifier**: `revenue-value` (always visible on Dashboard)
+- **Nav Path**: Tap `tab-bar-my-store-item`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -92,10 +86,8 @@ The mock server always requires 2FA. Enter any 6-digit code (e.g., `123456`).
 
 ### Orders List
 
-| | |
-|---|---|
-| **Primary Identifier** | `order-search-button` (always visible on Orders screen) |
-| **Nav Path** | Tap `tab-bar-orders-item` |
+- **Primary Identifier**: `order-search-button` (always visible on Orders screen)
+- **Nav Path**: Tap `tab-bar-orders-item`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -106,10 +98,8 @@ The mock server always requires 2FA. Enter any 6-digit code (e.g., `123456`).
 
 ### Products List
 
-| | |
-|---|---|
-| **Primary Identifier** | `product-search-button` (always visible on Products screen) |
-| **Nav Path** | Tap `tab-bar-products-item` |
+- **Primary Identifier**: `product-search-button` (always visible on Products screen)
+- **Nav Path**: Tap `tab-bar-products-item`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -121,10 +111,8 @@ The mock server always requires 2FA. Enter any 6-digit code (e.g., `123456`).
 
 ### Hub Menu
 
-| | |
-|---|---|
-| **Primary Identifier** | `menu-payments` (first menu item, reliably present) |
-| **Nav Path** | Tap `tab-bar-menu-item` |
+- **Primary Identifier**: `menu-payments` (first menu item, reliably present)
+- **Nav Path**: Tap `tab-bar-menu-item`
 
 Menu items (vary by store configuration):
 
@@ -148,10 +136,8 @@ Menu items (vary by store configuration):
 
 ### Order Detail
 
-| | |
-|---|---|
-| **Primary Identifier** | `order-details-table-view` |
-| **Nav Path** | Orders List → tap any order row |
+- **Primary Identifier**: `order-details-table-view`
+- **Nav Path**: Orders List → tap any order row
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -166,10 +152,8 @@ Menu items (vary by store configuration):
 
 ### Order Creation
 
-| | |
-|---|---|
-| **Primary Identifier** | `order-form-scroll-view` |
-| **Nav Path** | Orders List → tap `new-order-type-sheet-button` |
+- **Primary Identifier**: `order-form-scroll-view`
+- **Nav Path**: Orders List → tap `new-order-type-sheet-button`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -187,10 +171,8 @@ Menu items (vary by store configuration):
 
 ### Product Detail
 
-| | |
-|---|---|
-| **Primary Identifier** | `product-form` |
-| **Nav Path** | Products List → tap any product row |
+- **Primary Identifier**: `product-form`
+- **Nav Path**: Products List → tap any product row
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -204,10 +186,8 @@ Menu items (vary by store configuration):
 
 ### Reviews List
 
-| | |
-|---|---|
-| **Primary Identifier** | `reviews-table` |
-| **Nav Path** | Hub Menu → tap `menu-reviews` |
+- **Primary Identifier**: `reviews-table`
+- **Nav Path**: Hub Menu → tap `menu-reviews`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -225,10 +205,8 @@ Menu items (vary by store configuration):
 
 POS requires additional launch arguments: `bypass-pos-eligibility-checks`, `load-mocked-pos-products`, `bypass-pos-order-syncing`.
 
-| | |
-|---|---|
-| **Primary Identifier** | `pos-cart-view` |
-| **Nav Path** | Tap `tab-bar-pos-item` |
+- **Primary Identifier**: `pos-cart-view`
+- **Nav Path**: Tap `tab-bar-pos-item`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|
@@ -252,9 +230,7 @@ POS requires additional launch arguments: `bypass-pos-eligibility-checks`, `load
 
 ## Settings
 
-| | |
-|---|---|
-| **Nav Path** | Hub Menu → tap `dashboard-settings-button` |
+- **Nav Path**: Hub Menu → tap `dashboard-settings-button`
 
 | Element | Identifier | Notes |
 |---------|-----------|-------|

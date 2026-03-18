@@ -105,21 +105,23 @@ struct WPComPushNotificationsBenefitsView: View {
     }
 
     private var title: some View {
-        Text(Localization.title)
+        Text(viewModel.title)
             .font(.largeTitle)
             .fontWeight(.bold)
     }
 
     private var detail: some View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            Text(Localization.description)
+            Text(viewModel.description)
                 .font(.body)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Text(Localization.subdescription)
-                .font(.body)
-            Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
-                .font(.body)
-                .foregroundColor(Color(UIColor.accent))
+            if case .connect = viewModel.variant {
+                Text(Localization.subdescription)
+                    .font(.body)
+                Link(Localization.whatIsWPCom, destination: WooConstants.URLs.whatIsWPCom.asURL())
+                    .font(.body)
+                    .foregroundColor(Color(UIColor.accent))
+            }
         }
     }
 
@@ -150,7 +152,7 @@ struct WPComPushNotificationsBenefitsView: View {
 
     private var primaryButtonText: String {
         switch viewModel.variant {
-        case .connect:
+        case .connect, .setup:
             return Localization.continueButton
         case .pluginUpdate:
             return Localization.updatePluginButton
@@ -198,16 +200,6 @@ fileprivate extension WPComPushNotificationsBenefitsView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("wpcomPushNotificationsBenefitsView.title",
-                                             value: "Unlock push notifications with WordPress.com",
-                                             comment: "Title of the WordPress.com Push Notifications Benefits View")
-
-        static let description = NSLocalizedString(
-            "wpcomPushNotificationsBenefitsView.mainDescription",
-            value: "Connect your store to WordPress.com to get access to push notifications for new orders, reviews and more.",
-            comment: "Main description text of the WordPress.com Push Notifications Benefits View"
-        )
-
         static let subdescription = NSLocalizedString(
             "wpcomPushNotificationsBenefitsView.subdescription",
             value: "It only takes a minute.",

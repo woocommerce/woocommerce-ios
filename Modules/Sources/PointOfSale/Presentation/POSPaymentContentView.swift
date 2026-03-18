@@ -26,6 +26,7 @@ struct POSPaymentContentView: View {
             paymentContentView
 
             if shouldShowTotalsFields {
+                Spacer()
                 totalsFieldsView
             }
 

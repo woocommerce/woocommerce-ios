@@ -377,6 +377,19 @@ private extension StorePickerViewController {
 }
 
 
+// MARK: - Site Discovery Support
+//
+extension StorePickerViewController {
+    /// Selects a site programmatically, updating the UI as if the user tapped it.
+    /// Also unhides the site if it was hidden, so it remains visible in the picker.
+    func selectSite(_ site: Site) {
+        viewModel.unhideStoreIfNeeded(site.siteID)
+        currentlySelectedSite = site
+        tableView.reloadData()
+    }
+}
+
+
 // MARK: - Notifications
 //
 extension StorePickerViewController {

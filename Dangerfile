@@ -68,8 +68,7 @@ translation_context_checker.check_context_suggestions(
   provider: :anthropic,
   model: 'claude-sonnet-4-6',
   report_type: :warning,
-  inline_suggestions: true,
-  inline_suggestion_target: :source
+  inline_mode: :source_suggestion
 )
 # --- End Translation Context Plugin ---
 

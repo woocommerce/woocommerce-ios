@@ -364,14 +364,18 @@ private extension ProductFormRemoteActionUseCase {
     func copyCustomFields(_ customFields: [MetaData],
                            toProductID newProductID: Int64,
                            siteID: Int64) {
-        guard customFields.isNotEmpty else { return }
+        if customFields.isEmpty { return }
         let metadata: [[String: Any?]] = customFields.map { ["key": $0.key, "value": $0.value.stringValue] }
         let action = MetaDataAction.updateMetaData(
             siteID: siteID,
             parentItemID: newProductID,
             metaDataType: .product,
             metadata: metadata
-        ) { _ in }
+        ) { result in
+            if case .failure(let error) = result {
+                DDLogError("⚠️ Failed to copy custom fields to duplicated product: \(error)")
+            }
+        }
         stores.dispatch(action)
     }
 

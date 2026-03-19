@@ -67,6 +67,10 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         // no-op
     }
 
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
+        completion(false)
+    }
+
     func track(event: WPAnalyticsStat) {
         // no-op
     }

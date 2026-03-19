@@ -16,6 +16,7 @@ import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
+import struct NetworkingCore.WordPressAPIDiscovery
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -539,6 +540,19 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
+        DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
+
+        let discovery = WordPressAPIDiscovery()
+        Task { @MainActor in
+            let discoveredRoot = await discovery.discoverRESTAPIRootURL(for: siteURL)
+            let hasRESTAPI = discoveredRoot != nil
+
+            DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
+            completion(hasRESTAPI)
+        }
     }
 
     /// Tracks a given Analytics Event.

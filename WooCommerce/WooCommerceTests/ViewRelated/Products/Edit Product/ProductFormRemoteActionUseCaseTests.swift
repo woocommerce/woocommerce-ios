@@ -474,7 +474,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
-    func test_duplicating_product_with_custom_fields_dispatches_metadata_update_action() {
+    func test_duplicating_product_with_custom_fields_dispatches_metadata_update_action() throws {
         // Given
         let customFields = [
             MetaData(metadataID: 1, key: "color", value: "red"),

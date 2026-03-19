@@ -18,6 +18,7 @@
 - [*] Hide edit status button in order details and order edit form for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16827]
 - [*] Offer site credentials login when the site info check fails but the site has a WordPress REST API [https://github.com/woocommerce/woocommerce-ios/pull/16832]
 - [*] Display booking location from product data in booking details [https://github.com/woocommerce/woocommerce-ios/pull/16826]
+- [*] Fix sheets with discard-changes prompts being dismissable [https://github.com/woocommerce/woocommerce-ios/pull/16836]
 
 
 24.3

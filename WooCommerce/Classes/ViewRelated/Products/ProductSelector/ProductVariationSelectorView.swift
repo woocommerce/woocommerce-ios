@@ -105,7 +105,6 @@ struct ProductVariationSelectorView: View {
             viewModel.onLoadTrigger.send()
         }
         .notice($viewModel.notice, autoDismiss: false)
-        .interactiveDismissDisabled()
     }
 }
 

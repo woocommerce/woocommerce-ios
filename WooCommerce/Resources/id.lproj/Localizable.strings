@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-03 11:55:45+0000 */
+/* Translation-Revision-Date: 2026-03-10 09:55:50+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -1054,6 +1054,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Pembayaran";
+
+/* Title for 'Refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.refund.title" = "Pengembalian dana";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Layanan";
@@ -10027,6 +10030,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Konfigurasi selesai";
 
+/* Button to hide the Connect WPCom card from the My Store screen */
+"connectWPComCard.hideButton" = "Sembunyikan konten ini";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"connectWPComCard.subtitle" = "Aktifkan pemberitahuan push untuk tetap mendapatkan pesanan dan tinjauan baru.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"connectWPComCard.title" = "Jangan lewatkan pesanan baru";
+
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Memecahkan Masalah Koneksi";
 
@@ -11573,6 +11585,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Pesanan dibayar dengan uang tunai. Pelanggan membayar %1$@. Kembalian terutang sebesar %2$@.";
 
+/* Note added to order when Scan to Pay is used. */
+"paymentMethods.scanToPayNoteText.note" = "Tautan pembayaran dibagikan melalui Pindai untuk Membayar. Lakukan verifikasi pembayaran sebelum memenuhi pesanan.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pembayaran, ketuk untuk membayar, woocommerce, woo, pembayaran langsung, pembayaran langsung, terima pembayaran, pembayaran, pembaca, pembaca kartu, pesan pembaca kartu";
 
@@ -12532,6 +12547,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the copy email button in booking details. */
 "pos.bookingDetailView.copyEmail.accessibilityLabel" = "Salin alamat email";
+
+/* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Salin nomor telepon";
 
 /* Section title for the customer details in booking details. */
 "pos.bookingDetailView.customerTitle" = "Pelanggan";
@@ -15437,6 +15455,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
 "wpComConnectionSetupViewModel.message" = "Harap tunggu hingga kami selesai menghubungkan toko Anda %1$@ ke WordPress.com.";
 
+/* Title for the WPCom connection setup screen when the site is not yet connected. */
+"wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "Hubungkan ke WordPress.com";
+
+/* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Menyiapkan pemberitahuan push";
+
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Coba lagi";
 
@@ -15521,6 +15545,9 @@ which should be translated separately and considered part of this sentence. */
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "Apa itu WordPress.com?";
 
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Hubungkan toko Anda ke WordPress.com agar mendapatkan akses ke pemberitahuan push untuk pesanan, tinjauan, dan lainnya.";
+
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "membagikan detail";
 
@@ -15529,6 +15556,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Ketentuan Layanan";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.title" = "Dapatkan pemberitahuan push dengan WordPress.com";
+
+/* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Toko Anda sudah terhubung ke akun WordPress.com, tetapi Anda perlu memperbarui plugin WooCommerce guna mengaktifkan pemberitahuan push untuk pesanan, tinjauan baru, dan masih banyak lagi.";
+
+/* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Dapatkan pemberitahuan push untuk toko Anda";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "Kami tidak dapat menyelesaikan penyiapan pemberitahuan push. Silakan hubungi dukungan untuk mendapatkan bantuan.";

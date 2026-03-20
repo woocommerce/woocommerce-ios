@@ -23,21 +23,28 @@ struct POSRefundReasonView: View {
     }
 
     var body: some View {
-        VStack(spacing: POSSpacing.none) {
-            headerView
+        ScrollView {
+            VStack(alignment: .center, spacing: POSSpacing.medium) {
+                POSPageHeaderView(
+                    title: Localization.title,
+                    backButtonConfiguration: .init(
+                        state: .enabled,
+                        action: onBack
+                    )
+                )
 
-            Spacer()
+                VStack(alignment: .center, spacing: POSSpacing.medium) {
+                    Spacer()
 
-            textFieldView
+                    textFieldView
 
-            Spacer()
+                    Spacer()
+
+                    buttonSection
+                }
+                .padding([.horizontal])
+            }
         }
-        .safeAreaInset(edge: .bottom) {
-            buttonSection
-                .padding(.bottom, POSPadding.xLarge)
-                .background(Color.posSurfaceBright)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posModalFullScreen()
         .onAppear {
@@ -49,27 +56,6 @@ struct POSRefundReasonView: View {
 // MARK: - Subviews
 
 private extension POSRefundReasonView {
-    var headerView: some View {
-        HStack(spacing: POSSpacing.medium) {
-            Button {
-                onBack()
-            } label: {
-                Text(Image(systemName: "chevron.backward"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.backButtonAccessibilityLabel)
-
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-
-            Spacer()
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
-    }
-
     var textFieldView: some View {
         TextField("",
                   text: $reasonText,
@@ -115,12 +101,6 @@ private extension POSRefundReasonView {
             "pos.refundReasonView.title",
             value: "Refund reason",
             comment: "Title for the refund reason input screen"
-        )
-
-        static let backButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundReasonView.backButton.accessibilityLabel",
-            value: "Back",
-            comment: "Accessibility label for back button on refund reason screen"
         )
 
         static let placeholder = NSLocalizedString(

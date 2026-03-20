@@ -153,10 +153,7 @@ struct POSRefundModalContentView: View {
                     currentRefundReason = reason
                     modalState = .review(updated)
                 },
-                onBack: { modalState = .review(reviewData) },
-                onClose: {
-                    dismissModal?()
-                }
+                onBack: { modalState = .review(reviewData) }
             )
         case .confirmation(let reviewData):
             POSRefundConfirmationView(

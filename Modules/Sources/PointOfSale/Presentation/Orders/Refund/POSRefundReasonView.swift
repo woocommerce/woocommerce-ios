@@ -8,17 +8,14 @@ struct POSRefundReasonView: View {
     private let initialReason: String?
     private let onSave: (String) -> Void
     private let onBack: () -> Void
-    private let onClose: () -> Void
 
     init(initialReason: String?,
          onSave: @escaping (String) -> Void,
-         onBack: @escaping () -> Void,
-         onClose: @escaping () -> Void) {
+         onBack: @escaping () -> Void) {
         self._reasonText = State(initialValue: initialReason ?? "")
         self.initialReason = initialReason
         self.onSave = onSave
         self.onBack = onBack
-        self.onClose = onClose
     }
 
     private var isAddButtonEnabled: Bool {
@@ -68,14 +65,6 @@ private extension POSRefundReasonView {
                 .lineLimit(1)
 
             Spacer()
-
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
         }
         .foregroundColor(Color.posOnSurface)
         .padding(POSPadding.xLarge)
@@ -134,12 +123,6 @@ private extension POSRefundReasonView {
             comment: "Accessibility label for back button on refund reason screen"
         )
 
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundReasonView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund reason screen"
-        )
-
         static let placeholder = NSLocalizedString(
             "pos.refundReasonView.placeholder",
             value: "Reason for refunding order",
@@ -159,8 +142,7 @@ private extension POSRefundReasonView {
     POSRefundReasonView(
         initialReason: nil,
         onSave: { _ in },
-        onBack: {},
-        onClose: {}
+        onBack: {}
     )
     .environmentObject(POSModalManager())
 }
@@ -169,8 +151,7 @@ private extension POSRefundReasonView {
     POSRefundReasonView(
         initialReason: "Customer not happy with the order.",
         onSave: { _ in },
-        onBack: {},
-        onClose: {}
+        onBack: {}
     )
     .environmentObject(POSModalManager())
 }

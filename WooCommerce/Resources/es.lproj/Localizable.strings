@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-03 15:58:43+0000 */
+/* Translation-Revision-Date: 2026-03-10 16:54:30+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -1054,6 +1054,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Pago";
+
+/* Title for 'Refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.refund.title" = "Reembolsar";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Servicio";
@@ -10030,6 +10033,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Configuración completada";
 
+/* Button to hide the Connect WPCom card from the My Store screen */
+"connectWPComCard.hideButton" = "Ocultar este contenido";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"connectWPComCard.subtitle" = "Activa las notificaciones push para estar al tanto de los nuevos pedidos y valoraciones.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"connectWPComCard.title" = "No te pierdas ningún pedido nuevo";
+
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Solución de problemas de conexión";
 
@@ -11576,6 +11588,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "El pedido se pagó al contado. El cliente ha pagado %1$@. El cambio fue de %2$@.";
 
+/* Note added to order when Scan to Pay is used. */
+"paymentMethods.scanToPayNoteText.note" = "Enlace de pago compartido mediante Scan to Pay. Verifica el pago antes de completar el pedido.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pagos, toca para pagar, woocommerce, woo, pagos en persona, recibir pago, pagos, lector, lector de tarjetas, pedir lector de tarjetas";
 
@@ -12535,6 +12550,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the copy email button in booking details. */
 "pos.bookingDetailView.copyEmail.accessibilityLabel" = "Copiar dirección de correo electrónico";
+
+/* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Copiar número de teléfono";
 
 /* Section title for the customer details in booking details. */
 "pos.bookingDetailView.customerTitle" = "Cliente";
@@ -15440,6 +15458,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
 "wpComConnectionSetupViewModel.message" = "Espera mientras terminamos de conectar tu tienda %1$@ a WordPress.com.";
 
+/* Title for the WPCom connection setup screen when the site is not yet connected. */
+"wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "Conecta a WordPress.com";
+
+/* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Configurar las notificaciones push";
+
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Inténtalo de nuevo";
 
@@ -15524,6 +15548,9 @@ which should be translated separately and considered part of this sentence. */
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "¿Qué es WordPress.com?";
 
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Conecta tu tienda a WordPress.com para acceder a notificaciones push de nuevos pedidos, valoraciones y mucho más.";
+
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "compartir información";
 
@@ -15532,6 +15559,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Condiciones del servicio";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.title" = "Accede a notificaciones push con WordPress.com";
+
+/* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Tu tienda ya está conectada a una cuenta de WordPress.com, pero tendrás que actualizar el plugin de WooCommerce para activar las notificaciones push de nuevos pedidos, reseñas y más.";
+
+/* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Recibe notificaciones push de tu tienda";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "No hemos podido completar la configuración de las notificaciones push. Por favor, contacta con soporte para obtener ayuda.";

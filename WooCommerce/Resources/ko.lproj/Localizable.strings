@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-04 09:56:38+0000 */
+/* Translation-Revision-Date: 2026-03-10 09:58:26+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1054,6 +1054,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "결제";
+
+/* Title for 'Refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.refund.title" = "환불";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "서비스";
@@ -10030,6 +10033,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "구성 완료";
 
+/* Button to hide the Connect WPCom card from the My Store screen */
+"connectWPComCard.hideButton" = "이 콘텐츠 숨기기";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"connectWPComCard.subtitle" = "푸시 알림을 활성화하여 새 주문과 리뷰를 놓치지 마세요.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"connectWPComCard.title" = "새 주문 놓치지 않기";
+
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "연결 문제 해결";
 
@@ -11576,6 +11588,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "주문이 현금으로 결제되었습니다. 고객이 %1$@을(를) 결제했습니다. %2$@이(가) 거슬러줄 잔돈이었습니다.";
 
+/* Note added to order when Scan to Pay is used. */
+"paymentMethods.scanToPayNoteText.note" = "Scan to Pay를 통해 공유된 결제 링크입니다. 주문을 처리하기 전에 결제를 확인하세요.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "결제, 탭 투 페이, 우커머스, 우, 대면 결제, 대면 결제, 대면 결제 받기, 결제, 리더, 카드 리더, 주문 카드 리더";
 
@@ -12535,6 +12550,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the copy email button in booking details. */
 "pos.bookingDetailView.copyEmail.accessibilityLabel" = "이메일 주소 복사";
+
+/* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "전화번호 복사";
 
 /* Section title for the customer details in booking details. */
 "pos.bookingDetailView.customerTitle" = "고객";
@@ -15440,6 +15458,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
 "wpComConnectionSetupViewModel.message" = "%1$@ 스토어를 워드프레스닷컴에 연결하는 동안 기다려 주세요.";
 
+/* Title for the WPCom connection setup screen when the site is not yet connected. */
+"wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "워드프레스닷컴에 연결";
+
+/* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "푸시 알림 설정";
+
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "다시 시도";
 
@@ -15524,6 +15548,9 @@ which should be translated separately and considered part of this sentence. */
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "워드프레스닷컴이란 무엇인가요?";
 
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "워드프레스닷컴에 스토어를 연결하여 새 주문, 리뷰 등에 대한 푸시 알림 접근 권한을 받으세요.";
+
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "상세 정보 공유";
 
@@ -15532,6 +15559,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "서비스 약관";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.title" = "워드프레스닷컴에서 푸시 알림 잠금 해제";
+
+/* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "스토어는 이미 워드프레스닷컴 계정에 연결되어 있지만, 새 주문, 리뷰 등에 대한 푸시 알림을 활성화하려면 우커머스 플러그인을 업데이트해야 합니다.";
+
+/* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "스토어에 대한 푸시 알림 받기";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "푸시 알림 설정을 완료할 수 없습니다. 도움이 필요한 경우 지원팀에 문의하세요.";

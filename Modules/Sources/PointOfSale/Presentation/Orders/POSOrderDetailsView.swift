@@ -183,6 +183,7 @@ private extension POSOrderDetailsView {
         var quantities: [Int64: Int] = [:]
         for refund in order.refunds {
             for item in refund.items {
+                // Accumulate the total refunded quantity for each item ID in the dictionary
                 guard let itemID = item.refundedItemID else { continue }
                 quantities[itemID, default: 0] += abs(NSDecimalNumber(decimal: item.quantity).intValue)
             }

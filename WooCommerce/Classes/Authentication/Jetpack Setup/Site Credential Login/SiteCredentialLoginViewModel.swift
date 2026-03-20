@@ -21,6 +21,7 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     private let stores: StoresManager
     private let successHandler: () -> Void
     private let analytics: Analytics
+    private let cookieJar: HTTPCookieStorage
 
     private var loginFields: LoginFields {
         let loginFields = LoginFields()
@@ -34,11 +35,13 @@ final class SiteCredentialLoginViewModel: NSObject, ObservableObject {
     init(siteURL: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         cookieJar: HTTPCookieStorage = HTTPCookieStorage.shared,
          onLoginSuccess: @escaping () -> Void = {}) {
         self.siteURL = siteURL
         self.stores = stores
         self.analytics = analytics
         self.successHandler = onLoginSuccess
+        self.cookieJar = cookieJar
         super.init()
         configurePrimaryButton()
     }
@@ -77,6 +80,10 @@ private extension SiteCredentialLoginViewModel {
             isLoggingIn = false
             return
         }
+
+        // Clear old cookies to avoid reusing a previous session's nonce with new credentials.
+        clearAllCookies()
+
         // Prepares the authenticator with username and password
         let config = CookieNonceAuthenticatorConfiguration(username: username,
                                                            password: password,
@@ -124,6 +131,14 @@ private extension SiteCredentialLoginViewModel {
     func handleCompletion() {
         analytics.track(.loginJetpackSiteCredentialDidFinishLogin)
         successHandler()
+    }
+
+    func clearAllCookies() {
+        if let cookies = cookieJar.cookies {
+            for cookie in cookies {
+                cookieJar.deleteCookie(cookie)
+            }
+        }
     }
 }
 

@@ -55,8 +55,8 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    if !order.lineItems.isEmpty {
-                        productsSection(order)
+                    if !displayedLineItems.isEmpty {
+                        productsSection(displayedLineItems)
                     }
                     if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
                         ghostRefundedProductsSection
@@ -167,8 +167,31 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 // MARK: - Main Sections
 
 private extension POSOrderDetailsView {
+    private var displayedLineItems: [POSOrderItem] {
+        guard shouldShowDedicatedRefundsSection,
+              !orderListModel.ordersController.isLoadingOrderRefunds else {
+            return order.lineItems
+        }
+        let refundedQuantities = refundedQuantitiesByItemID
+        return order.lineItems.filter { item in
+            let refunded = refundedQuantities[item.itemID] ?? 0
+            return refunded < NSDecimalNumber(decimal: item.quantity).intValue
+        }
+    }
+
+    private var refundedQuantitiesByItemID: [Int64: Int] {
+        var quantities: [Int64: Int] = [:]
+        for refund in order.refunds {
+            for item in refund.items {
+                guard let itemID = item.refundedItemID else { continue }
+                quantities[itemID, default: 0] += abs(NSDecimalNumber(decimal: item.quantity).intValue)
+            }
+        }
+        return quantities
+    }
+
     @ViewBuilder
-    func productsSection(_ order: POSOrder) -> some View {
+    func productsSection(_ items: [POSOrderItem]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {
             Text(Localization.productsTitle)
                 .font(.posBodyXLargeRegular)
@@ -176,10 +199,10 @@ private extension POSOrderDetailsView {
                 .accessibilityAddTraits(.isHeader)
 
             VStack(spacing: POSSpacing.small) {
-                ForEach(Array(order.lineItems.enumerated()), id: \.element.itemID) { index, item in
+                ForEach(Array(items.enumerated()), id: \.element.itemID) { index, item in
                     productRow(item: item)
 
-                    if index < order.lineItems.count - 1 {
+                    if index < items.count - 1 {
                         divider
                     }
                 }

@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+24.5
+-----
+
+
 24.4
 -----
 - [*] Fix site discovery showing errors for stores already connected to the account [https://github.com/woocommerce/woocommerce-ios/pull/16835]

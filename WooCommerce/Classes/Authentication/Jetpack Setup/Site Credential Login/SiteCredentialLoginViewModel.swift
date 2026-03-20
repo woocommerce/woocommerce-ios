@@ -82,7 +82,7 @@ private extension SiteCredentialLoginViewModel {
                                                            password: password,
                                                            loginURL: loginURL,
                                                            adminURL: adminURL)
-        let network = WordPressOrgNetwork(configuration: config)
+        let network = WordPressOrgNetwork(configuration: config, siteAddress: siteURL)
         let authenticationAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
         stores.dispatch(authenticationAction)
     }

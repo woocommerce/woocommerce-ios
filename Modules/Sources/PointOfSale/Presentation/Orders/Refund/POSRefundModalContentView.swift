@@ -83,6 +83,7 @@ struct POSRefundModalContentView: View {
     let errorStrings: POSRefundErrorStrings
 
     @State private var isShowingEmailReceiptView = false
+    @State private var currentRefundReason: String?
 
     var body: some View {
         content
@@ -149,6 +150,7 @@ struct POSRefundModalContentView: View {
                 onSave: { reason in
                     var updated = reviewData
                     updated.refundReason = reason
+                    currentRefundReason = reason
                     modalState = .review(updated)
                 },
                 onBack: { modalState = .review(reviewData) },
@@ -205,10 +207,11 @@ struct POSRefundModalContentView: View {
     }
 
     private func navigateToRefundReview() {
-        guard let reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
+        guard var reviewData = orderListModel.ordersController.preparePOSRefundReviewData() else {
             modalState = .preparationError
             return
         }
+        reviewData.refundReason = currentRefundReason
         modalState = .review(reviewData)
     }
 

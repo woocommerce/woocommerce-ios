@@ -265,7 +265,7 @@ private extension POSTabEligibilityChecker {
 private extension POSTabEligibilityChecker {
     /// Checks whether a CIAB site has a Pro plan required for POS access.
     func checkCIABPlanEligibility() -> POSEligibilityState {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleGatingForCIABSites) else {
+        guard featureFlagService.isFeatureFlagEnabled(.gateFeatureIfCIABSite) else {
             return .eligible
         }
         guard let site = stores.sessionManager.defaultSite else {

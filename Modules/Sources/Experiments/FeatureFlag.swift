@@ -229,4 +229,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Gates POS when CIAB site to only Pro plans
+    ///
+    case pointOfSaleGatingForCIABSites
 }

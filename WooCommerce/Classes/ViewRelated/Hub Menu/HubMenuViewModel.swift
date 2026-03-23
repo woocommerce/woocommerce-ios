@@ -86,6 +86,10 @@ final class HubMenuViewModel: ObservableObject {
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+
+    private var isIPPHiddenForCIAB: Bool {
+        featureFlagService.isFeatureFlagEnabled(.gateFeatureIfCIABSite) && siteCIABEligibilityChecker.isCurrentSiteCIAB
+    }
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
@@ -293,7 +297,11 @@ private extension HubMenuViewModel {
                                eligibleForBlaze: Bool,
                                eligibleForInbox: Bool,
                                eligibleForBookings: Bool) -> [HubMenuItem] {
-        var items: [HubMenuItem] = [Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)]
+        var items: [HubMenuItem] = []
+
+        if !isIPPHiddenForCIAB {
+            items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
+        }
 
         if shouldShowBookingsInMenu, eligibleForBookings {
             items.append(Bookings())

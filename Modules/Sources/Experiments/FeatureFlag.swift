@@ -230,7 +230,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ageRangeRequirementsCompliance
 
-    /// Gates POS when CIAB site to only Pro plans
+    /// Gates features for CIAB sites:
+    /// - IPP removed for all CIAB sites
+    /// - POS available only for CIAB Pro
     ///
-    case pointOfSaleGatingForCIABSites
+    case gateFeatureIfCIABSite
 }

@@ -7,6 +7,7 @@ struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.posAnalytics) private var analytics
     @State private var isLoading: Bool = false
@@ -39,7 +40,7 @@ struct POSIneligibleView: View {
                         .frame(height: POSSpacing.medium)
 
                     VStack(spacing: POSSpacing.small) {
-                        Text(Localization.title)
+                        Text(titleText)
                             .font(POSFontStyle.posHeadingBold.font())
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color.posOnSurface)
@@ -78,6 +79,16 @@ struct POSIneligibleView: View {
                         .renderedIf(reason.shouldShowRetryButton)
 
                         Button {
+                            if let url = URL(string: Constants.ciabLearnMoreURL) {
+                                openURL(url)
+                            }
+                        } label: {
+                            Text(Localization.learnMore)
+                        }
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
+                        .renderedIf(reason.shouldShowLearnMoreButton)
+
+                        Button {
                             dismiss()
                         } label: {
                             Text(Localization.dismiss)
@@ -108,6 +119,15 @@ struct POSIneligibleView: View {
             scrollViewHeight = height
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var titleText: String {
+        switch reason {
+        case .ciabPlanUpgradeRequired:
+            return Localization.planUpgradeTitle
+        default:
+            return Localization.title
+        }
     }
 
     private var suggestionText: String {
@@ -151,16 +171,37 @@ struct POSIneligibleView: View {
             return NSLocalizedString("pos.ineligible.suggestion.selfDeallocated",
                                      value: "Try relaunching the app to resolve this issue.",
                                      comment: "Suggestion for self deallocated: relaunch")
+        case .ciabPlanUpgradeRequired:
+            return NSLocalizedString("pos.ineligible.suggestion.ciabPlanUpgradeRequired",
+                                     value: "Point of Sale is available on the Pro plan. ",
+                                     comment: "Suggestion shown when CIAB site does not have a Pro plan for POS access")
         }
     }
 }
 
 private extension POSIneligibleView {
+    enum Constants {
+        // TODO: Replace with the actual URL. TBD
+        static let ciabLearnMoreURL = "https://woocommerce.com/"
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.ineligible.title",
             value: "Unable to load",
             comment: "Title shown in POS ineligible view"
+        )
+
+        static let planUpgradeTitle = NSLocalizedString(
+            "pos.ineligible.planUpgrade.title",
+            value: "Pro plan required",
+            comment: "Title shown in POS ineligible view when a CIAB site needs a Pro plan"
+        )
+
+        static let learnMore = NSLocalizedString(
+            "pos.ineligible.learnMore.button.title",
+            value: "Learn More",
+            comment: "Button title to learn more about upgrading the plan for POS access"
         )
 
         static let dismiss = NSLocalizedString(
@@ -181,6 +222,17 @@ private extension POSIneligibleReason {
                 .unsupportedCurrency,
                 .selfDeallocated:
             return true
+        case .ciabPlanUpgradeRequired:
+            return false
+        }
+    }
+
+    var shouldShowLearnMoreButton: Bool {
+        switch self {
+        case .ciabPlanUpgradeRequired:
+            return true
+        default:
+            return false
         }
     }
 
@@ -202,6 +254,9 @@ private extension POSIneligibleReason {
                 value: "Retry",
                 comment: "Button title to refresh POS eligibility check"
             )
+        case .ciabPlanUpgradeRequired:
+            // Not used, a button is rendered instead
+            return ""
         }
     }
 }
@@ -239,6 +294,13 @@ private extension POSIneligibleReason {
 #Preview("Unsupported WooCommerce version") {
     POSIneligibleView(
         reason: .unsupportedWooCommerceVersion(minimumVersion: "9.6.0"),
+        onRefresh: {}
+    )
+}
+
+#Preview("CIAB plan upgrade required") {
+    POSIneligibleView(
+        reason: .ciabPlanUpgradeRequired,
         onRefresh: {}
     )
 }

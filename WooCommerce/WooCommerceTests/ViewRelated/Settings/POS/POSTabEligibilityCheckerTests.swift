@@ -228,7 +228,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
         let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
+        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -248,7 +248,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
         let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
+        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -274,7 +274,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
         let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
+        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -294,7 +294,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(nonCIABSite)
         setupCountry(country: .us)
         let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
+        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -314,7 +314,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
         let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = false
+        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = false
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
@@ -334,7 +334,7 @@ struct POSTabEligibilityCheckerTests {
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us, currency: .USD)
         let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
+        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,

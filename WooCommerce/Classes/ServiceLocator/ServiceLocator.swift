@@ -26,8 +26,6 @@ final class ServiceLocator {
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
 
-    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
-
     private static var _siteFeatureProvider: SiteFeatureProvider = SiteFeatureProvider()
 
     private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
@@ -211,10 +209,6 @@ final class ServiceLocator {
     /// - Returns: An implementation of the AuthenticationManager protocol. It defaults to DefaultAuthenticationManager
     static var authenticationManager: Authentication {
         return _authenticationManager
-    }
-
-    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
-        return _ciabEligibilityChecker
     }
 
     static var siteFeatureProvider: SiteFeatureProvider {

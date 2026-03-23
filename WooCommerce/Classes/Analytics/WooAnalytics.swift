@@ -201,7 +201,7 @@ private extension Analytics {
         updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
         updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
         if let site {
-            updatedProperties[PropertyKeys.isCIAB] = ServiceLocator.ciabEligibilityChecker.isSiteCIAB(site)
+            updatedProperties[PropertyKeys.isCIAB] = SiteType(site: site) == .ciab
             if let gardenPartner = site.gardenPartner {
                 updatedProperties[PropertyKeys.gardenPartner] = gardenPartner
             }

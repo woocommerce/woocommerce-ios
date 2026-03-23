@@ -10,15 +10,13 @@ struct BookingsTabEligibilityCheckerTests {
     private var stores: MockStoresManager!
     private var site: Site!
     private var featureFlagService: MockFeatureFlagService!
-    private var ciabEligibilityChecker: MockCIABEligibilityChecker!
     private let siteID: Int64 = 123
 
     init() {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.updateDefaultStore(storeID: siteID)
-        site = Site.fake().copy(siteID: siteID)
+        site = Site.fake().copy(siteID: siteID, isGarden: true, gardenName: "commerce")
         featureFlagService = MockFeatureFlagService()
-        ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedCIABSites: [site])
     }
 
     // MARK: - `checkInitialVisibility` Tests
@@ -30,7 +28,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -47,7 +45,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -63,7 +61,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -82,7 +80,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -96,13 +94,12 @@ struct BookingsTabEligibilityCheckerTests {
         // Given
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let featureFlagService = MockFeatureFlagService(isCIABBookingsEnabled: true)
-        let ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let nonCIABSite = Site.fake().copy(siteID: siteID, isGarden: false)
         setupStoreHasBookableProducts(hasProducts: true)
         setupStoreHasBookings(hasBookings: true)
-        let checker = BookingsTabEligibilityChecker(site: site,
+        let checker = BookingsTabEligibilityChecker(site: nonCIABSite,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
                                                     userDefaults: userDefaults)
 
         // When
@@ -121,7 +118,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -140,7 +137,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -159,7 +156,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -179,7 +176,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -199,7 +196,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -218,7 +215,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -237,7 +234,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -256,7 +253,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When
@@ -275,7 +272,7 @@ struct BookingsTabEligibilityCheckerTests {
         let checker = BookingsTabEligibilityChecker(site: site,
                                                     stores: stores,
                                                     featureFlagService: featureFlagService,
-                                                    ciabEligibilityChecker: ciabEligibilityChecker,
+
                                                     userDefaults: userDefaults)
 
         // When

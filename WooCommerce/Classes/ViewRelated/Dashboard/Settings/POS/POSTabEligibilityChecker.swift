@@ -28,16 +28,19 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let stores: StoresManager
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
+    private let featureFlagService: FeatureFlagService
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
          siteSettingService: POSSiteSettingServiceProtocol? = nil) {
         self.siteID = siteID
         self.siteSettings = siteSettings
         self.stores = stores
+        self.featureFlagService = featureFlagService
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
@@ -61,6 +64,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         // Bypass eligibility checks for screenshot tests
         if ProcessConfiguration.shouldBypassPOSEligibilityChecks {
             return .eligible
+        }
+
+        let ciabEligibility = checkCIABPlanEligibility()
+        if case .ineligible = ciabEligibility {
+            return ciabEligibility
         }
 
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
@@ -98,6 +106,8 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
+            return await checkEligibility()
+        case .ciabPlanUpgradeRequired:
             return await checkEligibility()
         }
     }
@@ -250,6 +260,27 @@ private extension POSTabEligibilityChecker {
     }
 }
 
+// MARK: - CIAB Plan Eligibility Check
+
+private extension POSTabEligibilityChecker {
+    /// Checks whether a CIAB site has a Pro plan required for POS access.
+    func checkCIABPlanEligibility() -> POSEligibilityState {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleGatingForCIABSites) else {
+            return .eligible
+        }
+        guard let site = stores.sessionManager.defaultSite else {
+            return .eligible
+        }
+        guard Site.isCIAB(isGarden: site.isGarden, gardenName: site.gardenName) else {
+            return .eligible
+        }
+        guard Constants.ciabProPlanSlugs.contains(site.plan) else {
+            return .ineligible(reason: .ciabPlanUpgradeRequired)
+        }
+        return .eligible
+    }
+}
+
 private enum POSTabEligibilityCheckerError: Error {
     case selfDeallocated
 }
@@ -259,5 +290,9 @@ private extension POSTabEligibilityChecker {
         static let wcPlugin = "woocommerce/woocommerce.php"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
+        static let ciabProPlanSlugs: Set<String> = [
+            "woo_hosted_pro_plan_monthly",
+            "woo_hosted_pro_plan_yearly"
+        ]
     }
 }

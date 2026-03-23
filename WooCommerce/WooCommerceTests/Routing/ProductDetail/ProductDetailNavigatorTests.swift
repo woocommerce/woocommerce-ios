@@ -11,19 +11,32 @@ final class ProductDetailNavigatorTests {
 
     // MARK: - Non-bookable products
 
-    @Test(arguments: [
-        (isCIABSite: true, product: aNonBookingProduct),
-        (isCIABSite: false, product: aNonBookingProduct),
-    ])
-    func non_bookable_product_directs_to_native_view_regardless_of_CIAB(isCIABSite: Bool, product: Product) {
+    @Test
+    func non_bookable_product_directs_to_native_view_with_standard_routing() {
         // Given
         let navigator = ProductDetailNavigator(
-            ciabChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: isCIABSite),
+            productRouting: StandardProductRoutingProvider(),
             coordinatorFactory: coordinatorFactory
         )
 
         // When
-        _ = navigator.makeDestination(product: product, isReadOnly: false)
+        _ = navigator.makeDestination(product: Self.aNonBookingProduct, isReadOnly: false)
+
+        // Then
+        #expect(coordinatorFactory.createdNativeCoordiantor)
+        #expect(!coordinatorFactory.createdWebCoordiantor)
+    }
+
+    @Test
+    func non_bookable_product_directs_to_native_view_with_ciab_routing() {
+        // Given
+        let navigator = ProductDetailNavigator(
+            productRouting: CIABProductRoutingProvider(),
+            coordinatorFactory: coordinatorFactory
+        )
+
+        // When
+        _ = navigator.makeDestination(product: Self.aNonBookingProduct, isReadOnly: false)
 
         // Then
         #expect(coordinatorFactory.createdNativeCoordiantor)
@@ -33,10 +46,10 @@ final class ProductDetailNavigatorTests {
     // MARK: - New booking type (bookable-service)
 
     @Test
-    func new_booking_product_on_CIAB_site_directs_to_web_view() {
+    func new_booking_product_with_ciab_routing_directs_to_web_view() {
         // Given
         let navigator = ProductDetailNavigator(
-            ciabChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true),
+            productRouting: CIABProductRoutingProvider(),
             coordinatorFactory: coordinatorFactory
         )
 
@@ -49,10 +62,10 @@ final class ProductDetailNavigatorTests {
     }
 
     @Test
-    func new_booking_product_on_non_CIAB_site_directs_to_native_view() {
+    func new_booking_product_with_standard_routing_directs_to_native_view() {
         // Given
         let navigator = ProductDetailNavigator(
-            ciabChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false),
+            productRouting: StandardProductRoutingProvider(),
             coordinatorFactory: coordinatorFactory
         )
 
@@ -66,11 +79,14 @@ final class ProductDetailNavigatorTests {
 
     // MARK: - Legacy booking type
 
-    @Test(arguments: [true, false])
-    func legacy_booking_product_directs_to_web_view_regardless_of_CIAB(isCIABSite: Bool) {
+    @Test(arguments: [
+        StandardProductRoutingProvider() as ProductRoutingProviding,
+        CIABProductRoutingProvider() as ProductRoutingProviding
+    ])
+    func legacy_booking_product_directs_to_web_view_regardless_of_routing(routing: ProductRoutingProviding) {
         // Given
         let navigator = ProductDetailNavigator(
-            ciabChecker: MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: isCIABSite),
+            productRouting: routing,
             coordinatorFactory: coordinatorFactory
         )
 

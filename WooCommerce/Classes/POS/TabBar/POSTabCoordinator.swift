@@ -278,7 +278,7 @@ private extension POSTabCoordinator {
                 }
 
                 let isBookingsEligible = storesManager.sessionManager.defaultSite
-                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+                    .map { SiteType(site: $0) == .ciab } ?? false
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,

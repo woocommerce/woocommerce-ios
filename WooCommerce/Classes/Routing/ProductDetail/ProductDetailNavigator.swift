@@ -20,15 +20,15 @@ final class ProductDetailNavigator {
 
     static var shared = ProductDetailNavigator()
 
-    private let ciabChecker: CIABEligibilityCheckerProtocol
+    private let productRouting: ProductRoutingProviding
     private let coordinatorFactory: ProductDetailCoordinatorFactoryProtocol
     private let stores: StoresManager
 
-    init(ciabChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+    init(productRouting: ProductRoutingProviding? = nil,
          coordinatorFactory: ProductDetailCoordinatorFactoryProtocol = ProductDetailCoordinatorFactory.default,
-         stores: StoresManager = ServiceLocator.stores,
+         stores: StoresManager = ServiceLocator.stores
     ) {
-        self.ciabChecker = ciabChecker
+        self.productRouting = productRouting ?? ServiceLocator.siteFeatureProvider.current.productRouting
         self.coordinatorFactory = coordinatorFactory
         self.stores = stores
     }
@@ -66,7 +66,7 @@ final class ProductDetailNavigator {
 
     private func shouldOpenInWeb(product: Product) -> Bool {
         let isLegacyBookableType = product.productType == .legacyBooking
-        let isNewBookableType = ciabChecker.isCurrentSiteCIAB && product.productType == .booking
-        return isLegacyBookableType || isNewBookableType
+        let isRoutedToWeb = productRouting.navigationTarget(for: product.productType) == .webView
+        return isLegacyBookableType || isRoutedToWeb
     }
 }

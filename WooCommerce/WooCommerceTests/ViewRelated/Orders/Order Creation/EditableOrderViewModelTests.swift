@@ -3469,25 +3469,23 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - CIAB Order Status Editing
 
-    func test_isOrderStatusEditingEnabled_when_non_CIAB_site_then_returns_true() {
+    func test_isOrderStatusEditingEnabled_when_enabled_then_returns_true() {
         // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
                                                storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
+                                               orderStatusEditing: MockOrderStatusEditingProvider(isEnabled: true))
 
         // Then
         XCTAssertTrue(viewModel.isOrderStatusEditingEnabled)
     }
 
-    func test_isOrderStatusEditingEnabled_when_CIAB_site_then_returns_false() {
+    func test_isOrderStatusEditingEnabled_when_disabled_then_returns_false() {
         // Given
-        let checker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
                                                storageManager: storageManager,
-                                               ciabEligibilityChecker: checker)
+                                               orderStatusEditing: MockOrderStatusEditingProvider(isEnabled: false))
 
         // Then
         XCTAssertFalse(viewModel.isOrderStatusEditingEnabled)
@@ -3610,6 +3608,13 @@ private extension EditableOrderViewModelTests {
         func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
             scheduleCallCount += 1
             lastMerchantType = merchantType
+        }
+    }
+
+    struct MockOrderStatusEditingProvider: OrderStatusEditingProviding {
+        let isOrderStatusEditingEnabled: Bool
+        init(isEnabled: Bool) {
+            self.isOrderStatusEditingEnabled = isEnabled
         }
     }
 }

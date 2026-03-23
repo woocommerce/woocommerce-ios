@@ -238,9 +238,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         )
     }()
 
-    /// Provides checks for CIAB
-    /// Used to determine "Split Shipments" feature availability
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let shipmentSplitting: ShipmentSplittingProviding
 
     /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
@@ -250,7 +248,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         shipmentSplitting: ShipmentSplittingProviding = ServiceLocator.siteFeatureProvider.current.shipmentSplitting,
          initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
          onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
@@ -267,7 +265,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.shipmentSplitting = shipmentSplitting
         self.shippingSettingsService = shippingSettingsService
         self.weightUnit = shippingSettingsService.weightUnit ?? ""
         self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
@@ -534,7 +532,7 @@ extension WooShippingCreateLabelsViewModel {
     }
 
     private var splitShipmentsFeatureAvailable: Bool {
-        return siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.splitShipments)
+        shipmentSplitting.isSplitShipmentsEnabled
     }
 
     /// Determines if the "Edit split shipments" (pencil icon) is visible in top shipments bar.

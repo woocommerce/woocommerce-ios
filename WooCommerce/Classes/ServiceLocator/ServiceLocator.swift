@@ -28,6 +28,8 @@ final class ServiceLocator {
 
     private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
 
+    private static var _siteFeatureProvider: SiteFeatureProvider = SiteFeatureProvider()
+
     private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
 
     private static var _remoteFeatureFlagOverrideStore: RemoteFeatureFlagOverrideStore? = {
@@ -213,6 +215,10 @@ final class ServiceLocator {
 
     static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
         return _ciabEligibilityChecker
+    }
+
+    static var siteFeatureProvider: SiteFeatureProvider {
+        return _siteFeatureProvider
     }
 
     /// Shipping Settings

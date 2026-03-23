@@ -71,8 +71,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
-    private let subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+    private let creatableProductTypeProvider: CreatableProductTypeProviding
 
     private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
@@ -119,7 +118,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.productImageUploader = productImageUploader
         self.onDeleteCompletion = onDeleteCompletion
         self.aiEligibilityChecker = .init(site: ServiceLocator.stores.sessionManager.defaultSite)
-        self.subscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: viewModel.productModel.siteID, storage: storageManager)
+        self.creatableProductTypeProvider = ServiceLocator.siteFeatureProvider.current.creatableProductTypes
         self.tableViewModel = DefaultProductFormTableViewModel(product: viewModel.productModel,
                                                                actionsFactory: viewModel.actionsFactory,
                                                                currency: currency,
@@ -1631,8 +1630,7 @@ private extension ProductFormViewController {
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .editForm(selected: productType),
-            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            productTypeProvider: creatableProductTypeProvider
         ) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 

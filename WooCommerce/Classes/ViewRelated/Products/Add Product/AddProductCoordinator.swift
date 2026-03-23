@@ -62,9 +62,7 @@ final class AddProductCoordinator: Coordinator {
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
-
-    private let wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+    private let creatableProductTypeProvider: CreatableProductTypeProviding
 
     /// - Parameters:
     ///   - navigateToProductForm: Optional custom navigation when showing the product form for the new product.
@@ -74,7 +72,7 @@ final class AddProductCoordinator: Coordinator {
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         creatableProductTypeProvider: CreatableProductTypeProviding = ServiceLocator.siteFeatureProvider.current.creatableProductTypes,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool,
@@ -97,8 +95,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
-        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.creatableProductTypeProvider = creatableProductTypeProvider
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
         self.navigateToProductForm = navigateToProductForm
@@ -165,8 +162,7 @@ private extension AddProductCoordinator {
         )
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
-            subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            productTypeProvider: creatableProductTypeProvider
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation
@@ -200,15 +196,7 @@ private extension AddProductCoordinator {
     /// Presents an action sheet with the option to start product creation with AI
     ///
     func presentActionSheetWithAI() {
-        let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
-        let productTypes: [BottomSheetProductType] = [
-            .simple(isVirtual: false),
-            .simple(isVirtual: true),
-            isEligibleForWooSubscriptionProducts ? .subscription : nil,
-            .variable,
-            isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
-            .grouped,
-            .affiliate].compactMap { $0 }
+        let productTypes = creatableProductTypeProvider.creatableProductTypes
 
         let controller = AddProductWithAIActionSheetHostingController(
             productTypes: productTypes,

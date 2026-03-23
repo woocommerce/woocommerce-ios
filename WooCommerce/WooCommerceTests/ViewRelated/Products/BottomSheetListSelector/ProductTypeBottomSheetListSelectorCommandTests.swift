@@ -4,18 +4,9 @@ import XCTest
 
 final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
 
-    func test_data_contains_subscription_types_if_eligible_for_creation_form() {
+    func test_data_returns_all_provider_types_for_creation_form() {
         // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
-
-        // When
-        let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .creationForm,
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
-        ) { _ in }
-
-        // Then
-        let expectedTypes: [BottomSheetProductType] = [
+        let allTypes: [BottomSheetProductType] = [
             .simple(isVirtual: false),
             .simple(isVirtual: true),
             .subscription,
@@ -24,60 +15,52 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
             .grouped,
             .affiliate
         ]
-        assertEqual(expectedTypes, command.data)
-    }
-
-    func test_data_does_not_contain_subscription_types_if_ineligible_for_creation_form() {
-        // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: false)
+        let provider = MockCreatableProductTypeProvider(types: allTypes)
 
         // When
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
+            productTypeProvider: provider
         ) { _ in }
 
         // Then
-        let expectedTypes: [BottomSheetProductType] = [
+        assertEqual(allTypes, command.data)
+    }
+
+    func test_data_returns_reduced_types_for_creation_form() {
+        // Given
+        let reducedTypes: [BottomSheetProductType] = [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            .affiliate
+        ]
+        let provider = MockCreatableProductTypeProvider(types: reducedTypes)
+
+        // When
+        let command = ProductTypeBottomSheetListSelectorCommand(
+            source: .creationForm,
+            productTypeProvider: provider
+        ) { _ in }
+
+        // Then
+        assertEqual(reducedTypes, command.data)
+    }
+
+    func test_data_excludes_selected_type_for_edit_form() {
+        // Given
+        let allTypes: [BottomSheetProductType] = [
             .simple(isVirtual: false),
             .simple(isVirtual: true),
             .variable,
             .grouped,
             .affiliate
         ]
-        assertEqual(expectedTypes, command.data)
-    }
-
-    func test_data_contains_subscription_types_if_eligible_for_edit_form() {
-        // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
+        let provider = MockCreatableProductTypeProvider(types: allTypes)
 
         // When
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .editForm(selected: .variable),
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
-        ) { _ in }
-
-        // Then
-        let expectedTypes: [BottomSheetProductType] = [
-            .simple(isVirtual: false),
-            .simple(isVirtual: true),
-            .subscription,
-            .variableSubscription,
-            .grouped,
-            .affiliate
-        ]
-        assertEqual(expectedTypes, command.data)
-    }
-
-    func test_data_does_not_contain_subscription_types_if_ineligible_for_edit_form() {
-        // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: false)
-
-        // When
-        let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .editForm(selected: .variable),
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
+            productTypeProvider: provider
         ) { _ in }
 
         // Then
@@ -91,101 +74,79 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
     }
 
     func test_callback_is_called_on_selection() {
-        // Arrange
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
+        // Given
+        let provider = MockCreatableProductTypeProvider(types: [.simple(isVirtual: false)])
         var selectedActions = [BottomSheetProductType]()
         let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .editForm(selected: .simple(isVirtual: false)),
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker
-        ) { (selected) in
+            source: .creationForm,
+            productTypeProvider: provider
+        ) { selected in
             selectedActions.append(selected)
         }
 
-        // Action
+        // When
         command.handleSelectedChange(selected: .simple(isVirtual: true))
         command.handleSelectedChange(selected: .grouped)
-        command.handleSelectedChange(selected: .variable)
-        command.handleSelectedChange(selected: .affiliate)
-        command.handleSelectedChange(selected: .subscription)
-        command.handleSelectedChange(selected: .variableSubscription)
 
-        // Assert
+        // Then
         let expectedActions: [BottomSheetProductType] = [
             .simple(isVirtual: true),
             .grouped,
-            .variable,
-            .affiliate,
-            .subscription,
-            .variableSubscription
         ]
         XCTAssertEqual(selectedActions, expectedActions)
     }
 
-    func test_creation_form_data_does_not_contain_grouped_and_variable_types_if_site_is_ciab() {
+    func test_creation_form_data_does_not_contain_grouped_and_variable_when_ciab_provider() {
         // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
-        let siteCIABEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+        let ciabTypes: [BottomSheetProductType] = [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            .affiliate
+        ]
+        let provider = MockCreatableProductTypeProvider(types: ciabTypes)
 
         // When
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            productTypeProvider: provider
         ) { _ in }
 
         // Then
-        XCTAssertFalse(command.data.contains(.grouped), "'command.data' should not contain grouped product type")
-        XCTAssertFalse(command.data.contains(.variable), "'command.data' should not contain variable product type")
+        XCTAssertFalse(command.data.contains(.grouped))
+        XCTAssertFalse(command.data.contains(.variable))
     }
 
-    func test_creation_form_data_contains_grouped_and_variable_types_if_site_is_non_ciab_and_other_requirements_met() {
+    func test_creation_form_data_contains_grouped_and_variable_when_standard_provider() {
         // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
-        let siteCIABEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let standardTypes: [BottomSheetProductType] = [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            .subscription,
+            .variable,
+            .variableSubscription,
+            .grouped,
+            .affiliate
+        ]
+        let provider = MockCreatableProductTypeProvider(types: standardTypes)
 
         // When
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            productTypeProvider: provider
         ) { _ in }
 
         // Then
-        XCTAssertTrue(command.data.contains(.grouped), "'command.data' should contain grouped product type")
-        XCTAssertTrue(command.data.contains(.variable), "'command.data' should contain variable product type")
+        XCTAssertTrue(command.data.contains(.grouped))
+        XCTAssertTrue(command.data.contains(.variable))
     }
+}
 
-    func test_edit_form_data_does_not_contain_grouped_and_variable_types_if_site_is_ciab() {
-        // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
-        let siteCIABEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+// MARK: - Mock
 
-        // When
-        let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .editForm(selected: .simple(isVirtual: false)),
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
-        ) { _ in }
+private struct MockCreatableProductTypeProvider: CreatableProductTypeProviding {
+    let creatableProductTypes: [BottomSheetProductType]
 
-        // Then
-        XCTAssertFalse(command.data.contains(.grouped), "'command.data' should not contain grouped product type")
-        XCTAssertFalse(command.data.contains(.variable), "'command.data' should not contain variable product type")
-    }
-
-    func test_edit_form_data_contains_grouped_and_variable_types_if_site_is_non_ciab_and_other_requirements_met() {
-        // Given
-        let subscriptionEligibilityChecker = MockWooSubscriptionProductsEligibilityChecker(isEligible: true)
-        let siteCIABEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
-
-        // When
-        let command = ProductTypeBottomSheetListSelectorCommand(
-            source: .editForm(selected: .simple(isVirtual: false)),
-            subscriptionProductsEligibilityChecker: subscriptionEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
-        ) { _ in }
-
-        // Then
-        XCTAssertTrue(command.data.contains(.grouped), "'command.data' should contain grouped product type")
-        XCTAssertTrue(command.data.contains(.variable), "'command.data' should contain variable product type")
+    init(types: [BottomSheetProductType]) {
+        self.creatableProductTypes = types
     }
 }

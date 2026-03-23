@@ -192,25 +192,6 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(removedSettings?.favoriteProduct, filters.favoriteProduct?.isActive ?? false)
     }
 
-    func test_productTypeFilter_usesStorageSite_whenSiteIsNil() {
-        // Given
-        let checker = CIABEligibilityCheckerSiteCaptureMock()
-        let filters = FilterProductListViewModel.Filters()
-
-        // When
-        let viewModel = FilterProductListViewModel.ProductListFilter
-            .productType(siteID: sampleSiteID)
-            .createViewModel(filters: filters,
-                             storageManager: storageManager,
-                             site: nil,
-                             siteCIABEligibilityChecker: checker)
-
-        // Then
-        guard case .staticOptions = viewModel.listSelectorConfig else {
-            return XCTFail("Expected static options for product type filter.")
-        }
-        XCTAssertEqual(checker.lastSite, sampleSite)
-    }
 }
 
 private extension FilterProductListViewModelTests {
@@ -223,25 +204,5 @@ private extension FilterProductListViewModelTests {
                                            productCategory: filterProductCategory,
                                            favoriteProduct: FavoriteProductsFilter(),
                                            numberOfActiveFilters: 5)
-    }
-}
-
-private final class CIABEligibilityCheckerSiteCaptureMock: CIABEligibilityCheckerProtocol {
-    private(set) var lastSite: Site?
-
-    var isCurrentSiteCIAB: Bool { false }
-
-    func isSiteCIAB(_ site: Site) -> Bool {
-        lastSite = site
-        return false
-    }
-
-    func isFeatureSupportedForCurrentSite(_ feature: CIABAffectedFeature) -> Bool {
-        true
-    }
-
-    func isFeatureSupported(_ feature: CIABAffectedFeature, for site: Site) -> Bool {
-        lastSite = site
-        return true
     }
 }

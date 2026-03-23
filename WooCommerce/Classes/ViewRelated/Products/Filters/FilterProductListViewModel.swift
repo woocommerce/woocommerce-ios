@@ -98,11 +98,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter
             .productType(siteID: siteID)
-            .createViewModel(
-                filters: filters,
-                storageManager: storageManager,
-                site: site ?? stores.sessionManager.defaultSite
-            )
+            .createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
         self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
@@ -267,9 +263,8 @@ extension FilterProductListViewModel.ProductListFilter {
 
 extension FilterProductListViewModel.ProductListFilter {
     func createViewModel(filters: FilterProductListViewModel.Filters,
-                         storageManager: StorageManagerType = ServiceLocator.storageManager,
-                         site: Site? = nil,
-                         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) -> FilterTypeViewModel {
+                         filterableProductTypeProvider: FilterableProductTypeProviding
+                            = ServiceLocator.siteFeatureProvider.current.filterableProductTypes) -> FilterTypeViewModel {
         switch self {
         case .stockStatus:
             let options: [ProductStockStatus?] = [nil, .inStock, .outOfStock, .onBackOrder]
@@ -281,13 +276,8 @@ extension FilterProductListViewModel.ProductListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productStatus)
-        case let .productType(siteID):
-            let options = buildPromotableTypes(
-                siteID: siteID,
-                site: site,
-                storageManager: storageManager,
-                siteCIABEligibilityChecker: siteCIABEligibilityChecker
-            )
+        case .productType(_):
+            let options: [PromotableProductType?] = [nil] + filterableProductTypeProvider.filterableProductTypes
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.promotableProductType)
@@ -300,120 +290,5 @@ extension FilterProductListViewModel.ProductListFilter {
                                        listSelectorConfig: .staticOptions(options: [nil, FavoriteProductsFilter()]),
                                        selectedValue: filters.favoriteProduct)
         }
-    }
-
-    /// Builds the products types filter array identifying which extension is available or not.
-    ///
-    private func buildPromotableTypes(
-        siteID: Int64,
-        site: Site?,
-        storageManager: StorageManagerType,
-        siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol,
-    ) -> [PromotableProductType?] {
-        let activePlugins = fetchActivePlugins(siteID: siteID, storageManager: storageManager)
-        let isSubscriptionsAvailable = activePlugins.contains(.wooSubscriptions)
-        let isCompositeProductsAvailable = activePlugins.contains(.wooCompositeProducts)
-        let isProductBundlesAvailable = activePlugins.contains(.wooProductBundles)
-
-        let isVariableProductVisible: Bool
-        let isGroupedProductVisible: Bool
-        let isBookableProductVisible: Bool
-        let isSubscriptionProductVisible: Bool
-        let isBundleProductVisible: Bool
-        let isCompositeProductVisible: Bool
-
-        let resolvedSite = site ?? fetchStorageSite(
-            siteID: siteID,
-            storageManager: storageManager
-        )
-
-        if let site = resolvedSite {
-            isVariableProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .variableProducts,
-                for: site
-            )
-            isGroupedProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .groupedProducts,
-                for: site
-            )
-            isBookableProductVisible = siteCIABEligibilityChecker.isSiteCIAB(site)
-            isSubscriptionProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .subscriptionProducts,
-                for: site
-            )
-            isBundleProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .bundleProducts,
-                for: site
-            )
-            isCompositeProductVisible = siteCIABEligibilityChecker.isFeatureSupported(
-                .compositeProducts,
-                for: site
-            )
-        } else {
-            /// Fallback positively if site is absent and there is no way to check CIAB eligibility
-            isVariableProductVisible = true
-            isGroupedProductVisible = true
-            isBookableProductVisible = true
-            isSubscriptionProductVisible = true
-            isBundleProductVisible = true
-            isCompositeProductVisible = true
-        }
-
-        let productTypes: [PromotableProductType] = [
-            .init(productType: .simple, isAvailable: true, promoteUrl: nil),
-            isVariableProductVisible ? .init(
-                productType: .variable,
-                isAvailable: true,
-                promoteUrl: nil
-            ) : nil,
-            isGroupedProductVisible ? .init(
-                productType: .grouped,
-                isAvailable: true,
-                promoteUrl: nil
-            ) : nil,
-            isBookableProductVisible ? .init(
-                productType: .booking,
-                isAvailable: true,
-                promoteUrl: nil
-            ) : nil,
-            .init(productType: .affiliate, isAvailable: true, promoteUrl: nil),
-            isSubscriptionProductVisible ? .init(
-                productType: .subscription,
-                isAvailable: isSubscriptionsAvailable,
-                promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()
-            ) : nil,
-            isSubscriptionProductVisible ? .init(
-                productType: .variableSubscription,
-                isAvailable: isSubscriptionsAvailable,
-                promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()
-            ) : nil,
-            isBundleProductVisible ? .init(
-                productType: .bundle,
-                isAvailable: isProductBundlesAvailable,
-                promoteUrl: WooConstants.URLs.productBundlesExtension.asURL()
-            ) : nil,
-            isCompositeProductVisible ? .init(
-                productType: .composite,
-                isAvailable: isCompositeProductsAvailable,
-                promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL()
-            ) : nil
-        ].compactMap { $0 }
-
-        return [nil] + productTypes
-    }
-
-    /// Fetches the active known plugins for the provided site IDs using a `ResultsController`
-    ///
-    private func fetchActivePlugins(siteID: Int64, storageManager: StorageManagerType) -> [Plugin] {
-        let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.active == true
-        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, sortedBy: [])
-        resultsController.predicate = predicate
-
-        try? resultsController.performFetch()
-        return resultsController.fetchedObjects.compactMap { Plugin(systemPlugin: $0) }
-    }
-
-    private func fetchStorageSite(siteID: Int64, storageManager: StorageManagerType) -> Site? {
-        return storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
     }
 }

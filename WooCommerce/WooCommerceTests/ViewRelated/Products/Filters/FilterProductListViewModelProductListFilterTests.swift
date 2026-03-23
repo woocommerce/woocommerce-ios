@@ -24,7 +24,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productCategory: filterProductCategory,
                                                          favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
-        let viewModel = filterType.createViewModel(filters: filters, storageManager: mockStorage)
+        let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductStockStatus, .inStock)
     }
 
@@ -45,7 +45,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productCategory: filterProductCategory,
                                                          favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
-        let viewModel = filterType.createViewModel(filters: filters, storageManager: mockStorage)
+        let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductStatus, .draft)
     }
 
@@ -67,7 +67,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productCategory: filterProductCategory,
                                                          favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
-        let viewModel = filterType.createViewModel(filters: filters, storageManager: mockStorage)
+        let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual((viewModel.selectedValue as? PromotableProductType)?.productType, .grouped)
     }
 
@@ -90,7 +90,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productCategory: filterProductCategory,
                                                          favoriteProduct: nil,
                                                          numberOfActiveFilters: 4)
-        let viewModel = filterType.createViewModel(filters: filters, storageManager: mockStorage)
+        let viewModel = filterType.createViewModel(filters: filters)
         XCTAssertEqual(viewModel.selectedValue as? ProductCategory, filterProductCategory)
     }
 
@@ -103,17 +103,11 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productCategory: nil,
                                                          favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
-        let mockStorage = MockStorageManager()
-
-        mockStorage.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
-        )
+        let provider = StandardFilterableProductTypeProvider(activePlugins: [])
 
         // When
-        let viewModel = filterType.createViewModel(filters: filters, storageManager: mockStorage)
+        let viewModel = filterType.createViewModel(filters: filters,
+                                                   filterableProductTypeProvider: provider)
         let options: [PromotableProductType?] = try {
             switch viewModel.listSelectorConfig {
             case .staticOptions(let options):
@@ -147,22 +141,13 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
                                                          productCategory: nil,
                                                          favoriteProduct: nil,
                                                          numberOfActiveFilters: 0)
-        let mockStorage = MockStorageManager()
-        mockStorage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                                plugin: "woocommerce-subscriptions/woocommerce-subscriptions.php",
-                                                                                active: true))
-        mockStorage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                                plugin: "woocommerce-product-bundles/woocommerce-product-bundles.php",
-                                                                                active: true))
-        mockStorage.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: false,
-            )
+        let provider = StandardFilterableProductTypeProvider(
+            activePlugins: [.wooSubscriptions, .wooProductBundles]
         )
 
         // When
-        let viewModel = filterType.createViewModel(filters: filters, storageManager: mockStorage)
+        let viewModel = filterType.createViewModel(filters: filters,
+                                                   filterableProductTypeProvider: provider)
         let options: [PromotableProductType?] = try {
             switch viewModel.listSelectorConfig {
             case .staticOptions(let options):
@@ -189,15 +174,6 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
 
     func test_creating_promotable_product_types_for_ciab_site_outputs_correct_types() throws {
         // Given
-        let mockStorage = MockStorageManager()
-        mockStorage.insertSampleSite(
-            readOnlySite: Site.fake().copy(
-                siteID: sampleSiteID,
-                isGarden: true,
-                gardenName: "commerce"
-            )
-        )
-
         let filterType = FilterProductListViewModel.ProductListFilter.productType(
             siteID: sampleSiteID
         )
@@ -214,7 +190,7 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
         // When
         let viewModel = filterType.createViewModel(
             filters: filters,
-            storageManager: mockStorage
+            filterableProductTypeProvider: CIABFilterableProductTypeProvider()
         )
 
         let options: [PromotableProductType?] = try {

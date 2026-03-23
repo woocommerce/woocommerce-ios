@@ -100,6 +100,8 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let featureFlagService: FeatureFlagService
 
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
+
     private let currencySettings: CurrencySettings
 
     private var cardPaymentGateway: CardPresentPaymentsPlugin?
@@ -135,6 +137,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let orderDurationRecorder: OrderDurationRecorderProtocol
         let featureFlagService: FeatureFlagService
         let currencySettings: CurrencySettings
+        let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
         init(presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
@@ -144,7 +147,8 @@ final class PaymentMethodsViewModel: ObservableObject {
              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
              orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
              featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-             currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+             currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+             ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -155,6 +159,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.orderDurationRecorder = orderDurationRecorder
             self.featureFlagService = featureFlagService
             self.currencySettings = currencySettings
+            self.ciabEligibilityChecker = ciabEligibilityChecker
         }
     }
 
@@ -181,6 +186,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         analytics = dependencies.analytics
         cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
         featureFlagService = dependencies.featureFlagService
+        ciabEligibilityChecker = dependencies.ciabEligibilityChecker
         currencySettings = dependencies.currencySettings
         title = String(format: Localization.title, formattedTotal)
         cardPaymentGateway = nil
@@ -452,8 +458,12 @@ private extension PaymentMethodsViewModel {
         try? ordersResultController.performFetch()
     }
 
+    private var isIPPHiddenForCIAB: Bool {
+        featureFlagService.isFeatureFlagEnabled(.gateFeatureIfCIABSite) && ciabEligibilityChecker.isCurrentSiteCIAB
+    }
+
     func updateCardPaymentVisibility() {
-        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+        guard !isIPPHiddenForCIAB, cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
             showTapToPayRow = false
 

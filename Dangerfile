@@ -63,7 +63,7 @@ danger.import_plugin("#{branch_base}/common/inline_markdown_poster.rb")
 danger.import_plugin("#{branch_base}/translation_context_checker.rb")
 
 translation_context_checker.check_context_suggestions(
-  translations: 'WooCommerce/Resources/en.lproj/Localizable.strings',
+  discovery_mode: :source,
   source_paths: ['WooCommerce/Classes/'],
   provider: :anthropic,
   model: 'claude-sonnet-4-6',

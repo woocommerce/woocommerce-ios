@@ -102,7 +102,7 @@ final class DashboardViewModel: ObservableObject {
     private let pushNotesManager: PushNotesManager
     private let storageManager: StorageManagerType
     private let inboxEligibilityChecker: InboxEligibilityChecker
-    private let siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let siteFeatureProvider: SiteFeatureProvider
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
     private let tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining
@@ -157,7 +157,7 @@ final class DashboardViewModel: ObservableObject {
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteIsCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         siteFeatureProvider: SiteFeatureProvider = ServiceLocator.siteFeatureProvider,
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
          tapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining = TapToPayAwarenessMomentDeterminer(),
          clientSideBannerProvider: ClientSideBannerProvider? = nil) {
@@ -192,7 +192,7 @@ final class DashboardViewModel: ObservableObject {
         )
 
         self.inboxEligibilityChecker = inboxEligibilityChecker
-        self.siteIsCIABEligibilityChecker = siteIsCIABEligibilityChecker
+        self.siteFeatureProvider = siteFeatureProvider
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         self.blazeLocalNotificationScheduler = localNotificationScheduler ?? DefaultBlazeLocalNotificationScheduler(siteID: siteID,
@@ -218,8 +218,7 @@ final class DashboardViewModel: ObservableObject {
             self?.onInAppFeedbackCardAction()
         }
 
-        observeStockEligibility()
-        observeStoreSetupEligibility()
+        observeDashboardCardEligibility()
         configureOrdersResultController()
         setupDashboardCards()
         observeWPCOMSiteSuspendedState()
@@ -706,44 +705,15 @@ private extension DashboardViewModel {
         isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
     }
 
-    func observeStockEligibility() {
-        stores.site
-            .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .productsStockDashboardCard,
-                        for: site
-                    )
+    func observeDashboardCardEligibility() {
+        siteFeatureProvider.$current
+            .map(\.dashboardCards)
+            .sink { [weak self] cardProvider in
+                guard let self else { return }
+                self.isEligibleForStock = cardProvider.isStockCardEnabled
+                self.isEligibleForStoreSetup = cardProvider.isStoreSetupCardEnabled
             }
-            .assign(to: &$isEligibleForStock)
-    }
-
-    func observeStoreSetupEligibility() {
-        stores.site
-            .removeDuplicates()
-            .map { [weak self] in
-                guard
-                    let self,
-                    let site = $0
-                else {
-                    return false
-                }
-
-                return siteIsCIABEligibilityChecker
-                    .isFeatureSupported(
-                        .storeSetupDashboardCard,
-                        for: site
-                    )
-            }
-            .assign(to: &$isEligibleForStoreSetup)
+            .store(in: &subscriptions)
     }
 
     func configureOrdersResultController() {

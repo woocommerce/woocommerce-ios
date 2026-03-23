@@ -657,7 +657,6 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_contain_stock_card_when_store_is_eligible_and_non_ciab() async throws {
         // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -665,7 +664,7 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+                                           siteFeatureProvider: SiteFeatureProvider(stores: stores))
 
         mockReloadingData()
 
@@ -682,10 +681,10 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_does_not_contain_stock_card_when_store_is_eligible_and_ciab() async throws {
         // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [site]
-        )
+        let ciabSite = Site.fake().copy(siteID: sampleSiteID,
+                                        isJetpackThePluginInstalled: true, isJetpackConnected: true,
+                                        isGarden: true, gardenName: "commerce")
+        stores.updateDefaultStore(ciabSite)
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -693,7 +692,7 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+                                           siteFeatureProvider: SiteFeatureProvider(stores: stores))
 
         mockReloadingData()
 
@@ -710,7 +709,6 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_contain_onboarding_card_when_store_is_non_ciab() async throws {
         // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -718,7 +716,7 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+                                           siteFeatureProvider: SiteFeatureProvider(stores: stores))
 
         mockReloadingData(storeHasOrders: false)
 
@@ -734,10 +732,10 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_does_not_contain_onboarding_card_when_store_is_ciab() async throws {
         // Given
-        let siteCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [site]
-        )
+        let ciabSite = Site.fake().copy(siteID: sampleSiteID,
+                                        isJetpackThePluginInstalled: true, isJetpackConnected: true,
+                                        isGarden: true, gardenName: "commerce")
+        stores.updateDefaultStore(ciabSite)
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -745,7 +743,7 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+                                           siteFeatureProvider: SiteFeatureProvider(stores: stores))
 
         mockReloadingData(storeHasOrders: false)
 

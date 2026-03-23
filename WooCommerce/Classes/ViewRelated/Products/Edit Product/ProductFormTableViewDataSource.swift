@@ -163,7 +163,7 @@ private extension ProductFormTableViewDataSource {
                            productUIImageLoader: productUIImageLoader)
             return
         }
-        if productImageStatuses.count > 0 {
+        if !productImageStatuses.isEmpty {
             if allowsMultipleImages {
                 cell.configure(with: productImageStatuses,
                                config: .addImages,

@@ -829,7 +829,7 @@ private extension HubMenuViewModelTests {
     func mockGeneralAppSettingsStorage() throws -> GeneralAppSettingsStorage {
         let fileStorage = MockInMemoryStorage()
         let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
-        var settings = GeneralAppSettings.default
+        let settings = GeneralAppSettings.default
         try storage.saveSettings(settings)
         return storage
     }

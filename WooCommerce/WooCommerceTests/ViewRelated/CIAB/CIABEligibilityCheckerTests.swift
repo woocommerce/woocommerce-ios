@@ -91,7 +91,7 @@ class CIABEligibilityCheckerTests: XCTestCase {
         sessionManager.defaultSite = makeNonCIABGardenSite()
 
         // Then
-        XCTAssertTrue(checker.isFeatureSupportedForCurrentSite(.payments))
+        XCTAssertTrue(checker.isFeatureSupportedForCurrentSite(.blaze))
     }
 
     func test_is_feature_supported_for_current_site_when_ciab_and_feature_unsupported_returns_false() {
@@ -99,7 +99,7 @@ class CIABEligibilityCheckerTests: XCTestCase {
         sessionManager.defaultSite = makeCIABSite()
 
         // Then
-        XCTAssertFalse(checker.isFeatureSupportedForCurrentSite(.payments))
+        XCTAssertFalse(checker.isFeatureSupportedForCurrentSite(.blaze))
     }
 
     // MARK: - isFeatureSupported(for:)
@@ -109,7 +109,7 @@ class CIABEligibilityCheckerTests: XCTestCase {
         let site = makeNonCIABGardenSite()
 
         // Then
-        XCTAssertTrue(checker.isFeatureSupported(.payments, for: site))
+        XCTAssertTrue(checker.isFeatureSupported(.blaze, for: site))
     }
 
     func test_is_feature_supported_for_site_when_ciab_and_feature_unsupported_returns_false() {
@@ -117,7 +117,7 @@ class CIABEligibilityCheckerTests: XCTestCase {
         let site = makeCIABSite()
 
         // Then
-        XCTAssertFalse(checker.isFeatureSupported(.payments, for: site))
+        XCTAssertFalse(checker.isFeatureSupported(.blaze, for: site))
     }
 }
 

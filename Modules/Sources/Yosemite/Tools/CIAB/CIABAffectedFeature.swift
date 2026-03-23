@@ -3,7 +3,6 @@
 
 public enum CIABAffectedFeature: CaseIterable {
     case blaze
-    case payments
     case splitShipments
     case groupedProducts
     case variableProducts
@@ -12,7 +11,6 @@ public enum CIABAffectedFeature: CaseIterable {
     case compositeProducts
     case productsStockDashboardCard
     case pointOfSale
-    case cardReader
     case storeSetupDashboardCard
     case manualOrderStatusUpdate
 }

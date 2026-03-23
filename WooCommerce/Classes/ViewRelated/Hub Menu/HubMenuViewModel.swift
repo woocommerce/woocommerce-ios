@@ -85,7 +85,6 @@ final class HubMenuViewModel: ObservableObject {
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
@@ -137,7 +136,6 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
          bookingsEligibilityCheckerFactory: @escaping (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
              BookingsTabEligibilityChecker(site: site)
@@ -155,7 +153,6 @@ final class HubMenuViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.posEligibilityService = posEligibilityService
         self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory
         self.isPad = isPad

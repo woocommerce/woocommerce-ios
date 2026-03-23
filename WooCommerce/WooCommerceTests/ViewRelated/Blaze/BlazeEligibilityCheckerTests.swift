@@ -138,13 +138,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         let site = mockSite(isEligibleForBlaze: true,
                             isJetpackThePluginInstalled: false,
                             isJetpackConnected: true)
-        let siteIsCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: false,
-        )
-        let blazeEligibilityChecker = BlazeEligibilityChecker(
-            stores: stores,
-            siteCIABEligibilityChecker: siteIsCIABChecker
-        )
+        let blazeEligibilityChecker = BlazeEligibilityChecker(stores: stores)
         mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
 
         // When
@@ -160,15 +154,10 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
         let site = mockSite(isEligibleForBlaze: true,
                             isJetpackThePluginInstalled: false,
-                            isJetpackConnected: true)
-        let siteIsCIABChecker = MockCIABEligibilityChecker(
-            mockedIsCurrentSiteCIAB: true,
-            mockedCIABSites: [site]
-        )
-        let blazeEligibilityChecker = BlazeEligibilityChecker(
-            stores: stores,
-            siteCIABEligibilityChecker: siteIsCIABChecker
-        )
+                            isJetpackConnected: true,
+                            isGarden: true,
+                            gardenName: "commerce")
+        let blazeEligibilityChecker = BlazeEligibilityChecker(stores: stores)
         mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
 
         // When
@@ -287,12 +276,16 @@ private extension BlazeEligibilityCheckerTests {
     func mockSite(isEligibleForBlaze: Bool,
                   isAdmin: Bool = true,
                   isJetpackThePluginInstalled: Bool = true,
-                  isJetpackConnected: Bool = true) -> Site {
+                  isJetpackConnected: Bool = true,
+                  isGarden: Bool = false,
+                  gardenName: String? = nil) -> Site {
         Site.fake().copy(siteID: 134,
                          isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                          isJetpackConnected: isJetpackConnected,
                          canBlaze: isEligibleForBlaze,
-                         isAdmin: isAdmin)
+                         isAdmin: isAdmin,
+                         isGarden: isGarden,
+                         gardenName: gardenName)
     }
 
     func mockPluginFetch(remotePlugin: SystemPlugin? = nil) {

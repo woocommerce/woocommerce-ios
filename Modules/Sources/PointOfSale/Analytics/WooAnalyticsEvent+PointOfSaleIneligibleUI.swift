@@ -14,6 +14,10 @@ extension WooAnalyticsEvent {
         static func ineligibleUIRetryTapped(reason: POSIneligibleReason) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleIneligibleUIRetryTapped, properties: [Key.reason: reason.analyticsValue])
         }
+
+        static func ineligibleUILearnMoreTapped(reason: POSIneligibleReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleIneligibleUILearnMoreTapped, properties: [Key.reason: reason.analyticsValue])
+        }
     }
 }
 

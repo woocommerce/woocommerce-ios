@@ -77,6 +77,9 @@ struct POSIneligibleView: View {
 
                         if case .ciabPlanUpgradeRequired(let learnMoreURL) = reason {
                             Button {
+                                analytics.track(
+                                    event: .PointOfSaleIneligibleUI.ineligibleUILearnMoreTapped(reason: reason)
+                                )
                                 openURL(learnMoreURL)
                             } label: {
                                 Text(Localization.learnMore)

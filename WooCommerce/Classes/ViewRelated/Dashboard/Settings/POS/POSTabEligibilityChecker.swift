@@ -275,7 +275,9 @@ private extension POSTabEligibilityChecker {
             return .eligible
         }
         guard Constants.ciabProPlanSlugs.contains(site.plan) else {
-            return .ineligible(reason: .ciabPlanUpgradeRequired)
+            let siteSlug = URL(string: site.url)?.host ?? ""
+            let learnMoreURL = URL(string: Constants.ciabLearnMoreBaseURL + "?siteSlug=\(siteSlug)")!
+            return .ineligible(reason: .ciabPlanUpgradeRequired(learnMoreURL: learnMoreURL))
         }
         return .eligible
     }
@@ -294,5 +296,6 @@ private extension POSTabEligibilityChecker {
             "woo_hosted_pro_plan_monthly",
             "woo_hosted_pro_plan_yearly"
         ]
+        static let ciabLearnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
     }
 }

@@ -78,15 +78,14 @@ struct POSIneligibleView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                         .renderedIf(reason.shouldShowRetryButton)
 
-                        Button {
-                            if let url = URL(string: Constants.ciabLearnMoreURL) {
-                                openURL(url)
+                        if case .ciabPlanUpgradeRequired(let learnMoreURL) = reason {
+                            Button {
+                                openURL(learnMoreURL)
+                            } label: {
+                                Text(Localization.learnMore)
                             }
-                        } label: {
-                            Text(Localization.learnMore)
+                            .buttonStyle(POSFilledButtonStyle(size: .normal))
                         }
-                        .buttonStyle(POSFilledButtonStyle(size: .normal))
-                        .renderedIf(reason.shouldShowLearnMoreButton)
 
                         Button {
                             dismiss()
@@ -173,18 +172,15 @@ struct POSIneligibleView: View {
                                      comment: "Suggestion for self deallocated: relaunch")
         case .ciabPlanUpgradeRequired:
             return NSLocalizedString("pos.ineligible.suggestion.ciabPlanUpgradeRequired",
-                                     value: "Point of Sale is available on the Pro plan. ",
+                                     value: "Accept payments in person for just 2.70% + $0.10 per transaction. " +
+                                     "Upgrade to Pro to access tap-to-pay on your phone and our full point of sale system " +
+                                     "with real-time inventory and order syncing.",
                                      comment: "Suggestion shown when CIAB site does not have a Pro plan for POS access")
         }
     }
 }
 
 private extension POSIneligibleView {
-    enum Constants {
-        // TODO: Replace with the actual URL. TBD
-        static let ciabLearnMoreURL = "https://woocommerce.com/"
-    }
-
     enum Localization {
         static let title = NSLocalizedString(
             "pos.ineligible.title",
@@ -223,15 +219,6 @@ private extension POSIneligibleReason {
                 .selfDeallocated:
             return true
         case .ciabPlanUpgradeRequired:
-            return false
-        }
-    }
-
-    var shouldShowLearnMoreButton: Bool {
-        switch self {
-        case .ciabPlanUpgradeRequired:
-            return true
-        default:
             return false
         }
     }
@@ -300,7 +287,7 @@ private extension POSIneligibleReason {
 
 #Preview("CIAB plan upgrade required") {
     POSIneligibleView(
-        reason: .ciabPlanUpgradeRequired,
+        reason: .ciabPlanUpgradeRequired(learnMoreURL: URL(string: "https://wordpress.com/setup/woo-hosted-plans/?siteSlug=example.com")!),
         onRefresh: {}
     )
 }

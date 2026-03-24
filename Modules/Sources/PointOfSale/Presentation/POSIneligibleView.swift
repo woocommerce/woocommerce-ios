@@ -45,10 +45,7 @@ struct POSIneligibleView: View {
                             .multilineTextAlignment(.center)
                             .foregroundColor(Color.posOnSurface)
 
-                        Text(suggestionText)
-                            .font(POSFontStyle.posBodyLargeRegular().font())
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(Color.posOnSurface)
+                        suggestionContent
                     }
                     .containerRelativeFrame(.horizontal) { length, _ in
                         max(length * frameWidthMultiplier, 300)
@@ -120,6 +117,25 @@ struct POSIneligibleView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
+    @ViewBuilder
+    private var suggestionContent: some View {
+        if case .ciabPlanUpgradeRequired = reason {
+            VStack(spacing: POSSpacing.medium) {
+                suggestionBodyText(Localization.ciabPricingInfo)
+                suggestionBodyText(Localization.ciabUpgradePrompt)
+            }
+        } else {
+            suggestionBodyText(suggestionText)
+        }
+    }
+
+    private func suggestionBodyText(_ text: String) -> some View {
+        Text(text)
+            .font(POSFontStyle.posBodyLargeRegular().font())
+            .multilineTextAlignment(.center)
+            .foregroundColor(Color.posOnSurface)
+    }
+
     private var titleText: String {
         switch reason {
         case .ciabPlanUpgradeRequired:
@@ -171,11 +187,7 @@ struct POSIneligibleView: View {
                                      value: "Try relaunching the app to resolve this issue.",
                                      comment: "Suggestion for self deallocated: relaunch")
         case .ciabPlanUpgradeRequired:
-            return NSLocalizedString("pos.ineligible.suggestion.ciabPlanUpgradeRequired",
-                                     value: "Accept payments in person for just 2.70% + $0.10 per transaction. " +
-                                     "Upgrade to Pro to access tap-to-pay on your phone and our full point of sale system " +
-                                     "with real-time inventory and order syncing.",
-                                     comment: "Suggestion shown when CIAB site does not have a Pro plan for POS access")
+            return "" // Handled separately as needs its own design
         }
     }
 }
@@ -192,6 +204,19 @@ private extension POSIneligibleView {
             "pos.ineligible.planUpgrade.title",
             value: "Pro plan required",
             comment: "Title shown in POS ineligible view when a CIAB site needs a Pro plan"
+        )
+
+        static let ciabPricingInfo = NSLocalizedString(
+            "pos.ineligible.ciabPricingInfo",
+            value: "Accept payments in person for just 2.70% + $0.10 per transaction.",
+            comment: "Pricing info shown when CIAB site does not have a Pro plan for POS access"
+        )
+
+        static let ciabUpgradePrompt = NSLocalizedString(
+            "pos.ineligible.ciabUpgradePrompt",
+            value: "Upgrade to Pro to access tap-to-pay on your phone and our full point of sale system " +
+            "with real-time inventory and order syncing.",
+            comment: "Upgrade prompt shown when CIAB site does not have a Pro plan for POS access"
         )
 
         static let learnMore = NSLocalizedString(

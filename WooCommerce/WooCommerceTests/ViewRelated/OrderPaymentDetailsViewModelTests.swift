@@ -210,4 +210,42 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     func test_giftCards_is_hidden_for_orders_without_giftCard() {
         XCTAssertTrue(viewModel.shouldHideGiftCards)
     }
+
+    func test_refundSummary_when_isAutomated_true_then_shows_payment_method_title() {
+        // Given
+        let refund = MockRefunds.sampleRefund(isAutomated: true)
+        let viewModel = OrderPaymentDetailsViewModel(order: order, refund: refund, currencySettings: CurrencySettings())
+
+        // When
+        let summary = viewModel.refundSummary
+
+        // Then
+        XCTAssertTrue(summary?.contains(order.paymentMethodTitle) == true)
+    }
+
+    func test_refundSummary_when_isAutomated_false_and_not_cod_then_shows_manual_refund() {
+        // Given
+        let refund = MockRefunds.sampleRefund(isAutomated: false)
+        let viewModel = OrderPaymentDetailsViewModel(order: order, refund: refund, currencySettings: CurrencySettings())
+
+        // When
+        let summary = viewModel.refundSummary
+
+        // Then
+        XCTAssertTrue(summary?.contains("manual refund") == true)
+    }
+
+    func test_refundSummary_when_isAutomated_false_and_cod_then_shows_payment_method_title() {
+        // Given
+        let codOrder = order.copy(paymentMethodID: "cod", paymentMethodTitle: "Pay in Person")
+        let refund = MockRefunds.sampleRefund(isAutomated: false)
+        let viewModel = OrderPaymentDetailsViewModel(order: codOrder, refund: refund, currencySettings: CurrencySettings())
+
+        // When
+        let summary = viewModel.refundSummary
+
+        // Then
+        XCTAssertTrue(summary?.contains("Pay in Person") == true)
+        XCTAssertFalse(summary?.contains("manual refund") == true)
+    }
 }

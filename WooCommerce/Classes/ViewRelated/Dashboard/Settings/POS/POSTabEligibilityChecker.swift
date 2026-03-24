@@ -3,7 +3,6 @@ import UIKit
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
-import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import struct Yosemite.Site
 import protocol Yosemite.StoresManager
@@ -28,19 +27,16 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let stores: StoresManager
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
-    private let featureFlagService: FeatureFlagService
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
          siteSettingService: POSSiteSettingServiceProtocol? = nil) {
         self.siteID = siteID
         self.siteSettings = siteSettings
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
@@ -265,9 +261,6 @@ private extension POSTabEligibilityChecker {
 private extension POSTabEligibilityChecker {
     /// Checks whether a CIAB site has a Pro plan required for POS access.
     func checkCIABPlanEligibility() -> POSEligibilityState {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleGatingForCIABSites) else {
-            return .eligible
-        }
         guard let site = stores.sessionManager.defaultSite else {
             return .eligible
         }

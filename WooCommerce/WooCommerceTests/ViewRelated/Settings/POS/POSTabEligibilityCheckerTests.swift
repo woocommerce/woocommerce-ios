@@ -227,12 +227,9 @@ struct POSTabEligibilityCheckerTests {
         let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_monthly", isGarden: true, gardenName: "commerce")
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
-                                               featureFlagService: featureFlags,
                                                systemStatusService: mockSystemStatusService)
 
         // When
@@ -247,12 +244,9 @@ struct POSTabEligibilityCheckerTests {
         let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_yearly", isGarden: true, gardenName: "commerce")
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
-                                               featureFlagService: featureFlags,
                                                systemStatusService: mockSystemStatusService)
 
         // When
@@ -273,19 +267,19 @@ struct POSTabEligibilityCheckerTests {
         let ciabSite = Site.fake().copy(siteID: siteID, plan: planSlug, isGarden: true, gardenName: "commerce")
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us)
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
-                                               featureFlagService: featureFlags,
                                                systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .ineligible(reason: .ciabPlanUpgradeRequired))
+        guard case .ineligible(reason: .ciabPlanUpgradeRequired) = result else {
+            Issue.record("Expected .ineligible(reason: .ciabPlanUpgradeRequired) but got \(result)")
+            return
+        }
     }
 
     @Test func checkEligibility_when_non_ciab_site_then_not_blocked_by_plan_check() async throws {
@@ -293,38 +287,15 @@ struct POSTabEligibilityCheckerTests {
         let nonCIABSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_free_plan", isGarden: false)
         stores.updateDefaultStore(nonCIABSite)
         setupCountry(country: .us)
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
-                                               featureFlagService: featureFlags,
                                                systemStatusService: mockSystemStatusService)
 
         // When
         let result = await checker.checkEligibility()
 
         // Then
-        #expect(result == .eligible)
-    }
-
-    @Test func checkEligibility_when_feature_flag_disabled_then_ciab_check_skipped() async throws {
-        // Given
-        let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_free_plan", isGarden: true, gardenName: "commerce")
-        stores.updateDefaultStore(ciabSite)
-        setupCountry(country: .us)
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = false
-        let checker = POSTabEligibilityChecker(siteID: siteID,
-                                               siteSettings: siteSettings,
-                                               stores: stores,
-                                               featureFlagService: featureFlags,
-                                               systemStatusService: mockSystemStatusService)
-
-        // When
-        let result = await checker.checkEligibility()
-
-        // Then (CIAB check is skipped, so site is eligible at this point)
         #expect(result == .eligible)
     }
 
@@ -333,16 +304,14 @@ struct POSTabEligibilityCheckerTests {
         let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_monthly", isGarden: true, gardenName: "commerce")
         stores.updateDefaultStore(ciabSite)
         setupCountry(country: .us, currency: .USD)
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleGatingForCIABSites] = true
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,
                                                stores: stores,
-                                               featureFlagService: featureFlags,
                                                systemStatusService: mockSystemStatusService)
 
         // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .ciabPlanUpgradeRequired)
+        let dummyURL = URL(string: "https://example.com")!
+        let result = try await checker.refreshEligibility(ineligibleReason: .ciabPlanUpgradeRequired(learnMoreURL: dummyURL))
 
         // Then
         #expect(result == .eligible)

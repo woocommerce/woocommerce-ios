@@ -35,7 +35,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wordpress-oauth-v2</string>
-				<string>woocommerce</string>
+				<string>$(DOTCOM_AUTH_SCHEME)</string>
 			</array>
 		</dict>
 		<dict>
@@ -45,7 +45,7 @@
 			<string>GoogleSignIn</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.108380595987-jbbnnqi7cad7uu6eg8l8eg30dpupmcpa</string>
+				<string>$(GOOGLE_AUTH_SCHEME)</string>
 			</array>
 		</dict>
 	</array>
@@ -157,9 +157,9 @@
 	<key>BuildConfigurationName</key>
 	<string>$(CONFIGURATION)</string>
 	<key>WCDotcomAuthScheme</key>
-	<string>woocommerce</string>
+	<string>$(DOTCOM_AUTH_SCHEME)</string>
 	<key>WCGoogleAuthScheme</key>
-	<string>com.googleusercontent.apps.108380595987-jbbnnqi7cad7uu6eg8l8eg30dpupmcpa</string>
+	<string>$(GOOGLE_AUTH_SCHEME)</string>
   <key>UIApplicationSceneManifest</key>
   <dict>
     <key>UIApplicationSupportsMultipleScenes</key>

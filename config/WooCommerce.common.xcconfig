@@ -1,4 +1,5 @@
 #include "Common.xcconfig"
+#include "UrlSchemes.xcconfig"
 
 // This is App Store account id.
 // Build configurations that need the Enterprise account should override in their dedicated xcconfig.

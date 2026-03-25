@@ -12,4 +12,22 @@ extension Bundle {
         let version = infoDictionary?[String(kCFBundleVersionKey)] as? String
         return version ?? ""
     }
+
+    /// WordPress.com Magic Link URL scheme, read from Info.plist (`WCDotcomAuthScheme`).
+    ///
+    var dotcomAuthScheme: String {
+        guard let scheme = object(forInfoDictionaryKey: "WCDotcomAuthScheme") as? String, !scheme.isEmpty else {
+            return ""
+        }
+        return scheme
+    }
+
+    /// Google Sign-In URL scheme, read from Info.plist (`WCGoogleAuthScheme`).
+    ///
+    var googleAuthScheme: String {
+        guard let scheme = object(forInfoDictionaryKey: "WCGoogleAuthScheme") as? String, !scheme.isEmpty else {
+            return ""
+        }
+        return scheme
+    }
 }

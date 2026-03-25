@@ -77,7 +77,7 @@ final class JetpackSetupCoordinator {
         }
     }
 
-    func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme) -> Bool {
+    func handleAuthenticationUrl(_ url: URL, dotcomAuthScheme: String = Bundle.main.dotcomAuthScheme) -> Bool {
         let expectedPrefix = dotcomAuthScheme + "://" + Constants.magicLinkUrlHostname
         guard url.absoluteString.hasPrefix(expectedPrefix) else {
             return false

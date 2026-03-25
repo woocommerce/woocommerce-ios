@@ -123,6 +123,10 @@ struct POSIneligibleView: View {
             if case .ciabPlanUpgradeRequired(let learnMoreURL) = reason {
                 externalViews.createWCWebView(adminUrl: learnMoreURL, completion: {
                     showLearnMore = false
+                    Task { @MainActor in
+                        // When the webview is dismissed, automatically re-check plan eligibility
+                        try? await onRefresh()
+                    }
                 })
             }
         }

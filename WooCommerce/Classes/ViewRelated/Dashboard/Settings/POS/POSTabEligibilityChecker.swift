@@ -9,6 +9,7 @@ import protocol Yosemite.StoresManager
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
+import enum Yosemite.SiteAction
 import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
@@ -104,6 +105,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .selfDeallocated:
             return await checkEligibility()
         case .ciabPlanUpgradeRequired:
+            do {
+                try await syncSiteRemotely()
+            } catch {
+                DDLogError("⛔️ Error syncing site for CIAB plan re-check: \(error)")
+            }
             return await checkEligibility()
         }
     }
@@ -252,6 +258,28 @@ private extension POSTabEligibilityChecker {
                 siteSettings.refresh()
                 continuation.resume(returning: ())
             })
+        }
+    }
+
+    @MainActor
+    func syncSiteRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                switch result {
+                case .success(let site):
+                    self.stores.updateDefaultStore(site)
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
         }
     }
 }

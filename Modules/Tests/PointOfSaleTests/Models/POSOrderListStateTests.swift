@@ -112,10 +112,10 @@ struct POSOrderListStateTests {
         #expect(inlineErrorState.orders.count == 2)
 
         let emptyState = POSOrderListState.empty
-        #expect(emptyState.orders.count == 0)
+        #expect(emptyState.orders.isEmpty)
 
         let fullErrorState = POSOrderListState.error(errorState)
-        #expect(fullErrorState.orders.count == 0)
+        #expect(fullErrorState.orders.isEmpty)
     }
 }
 

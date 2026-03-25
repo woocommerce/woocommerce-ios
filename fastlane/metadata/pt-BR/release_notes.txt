@@ -1,0 +1,1 @@
+O gerenciamento da sua loja ficou ainda melhor. Melhoramos a rolagem nas listas de pedidos e produtos, tornamos os recibos mais confiáveis em todas as formas de pagamento e status de pedidos, e melhoramos a confiabilidade do Tap to Pay para configurações de várias lojas. Também melhoramos o login, os filtros de reserva e o rastreamento do Escaneie para pagar.

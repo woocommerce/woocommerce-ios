@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-09 15:56:00+0000 */
+/* Translation-Revision-Date: 2026-03-10 16:58:45+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -10037,7 +10037,7 @@ which should be translated separately and considered part of this sentence. */
 "connectWPComCard.hideButton" = "Dölj detta innehåll";
 
 /* Subtitle of the Connect WPCom card on My Store screen */
-"connectWPComCard.subtitle" = "Aktivera push-notiser för att hålla koll på nya beställningar och recensioner.";
+"connectWPComCard.subtitle" = "Aktivera pushnotiser för att hålla koll på nya beställningar och recensioner.";
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Missa aldrig en ny beställning";
@@ -11589,7 +11589,7 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Beställningen betalades kontant. Kunden betalade %1$@. Växeln var %2$@.";
 
 /* Note added to order when Scan to Pay is used. */
-"paymentMethods.scanToPayNoteText.note" = "Betalningslänk delad via Skanna för att betala. Verifiera betalning innan du uppfyller beställningen.";
+"paymentMethods.scanToPayNoteText.note" = "Betalningslänk delad via Skanna för att betala. Verifiera betalning innan beställningen fullföljs.";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";
@@ -15462,7 +15462,7 @@ which should be translated separately and considered part of this sentence. */
 "wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "Anslut till WordPress.com";
 
 /* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
-"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Push-notiser";
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Konfigurera pushnotiser";
 
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Försök igen";
@@ -15549,7 +15549,7 @@ which should be translated separately and considered part of this sentence. */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "Vad är WordPress.com?";
 
 /* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Anslut din butik till WordPress.com för att få åtkomst till pushnotiser för nya beställningar, recensioner och mer.";
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Anslut din butik till WordPress.com för att få åtkomst till pushnotiser för nya beställningar, recensioner med mera.";
 
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "dela detaljer";
@@ -15561,13 +15561,13 @@ which should be translated separately and considered part of this sentence. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Användarvillkor";
 
 /* Title of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsViewModel.title" = "Lås upp push-notiser med WordPress.com";
+"wpcomPushNotificationsBenefitsViewModel.title" = "Lås upp pushnotiser med WordPress.com";
 
 /* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
-"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Din butik är redan ansluten till ett WordPress.com-konto, men du måste uppdatera WooCommerce-tillägget för att aktivera push-aviseringar för nya beställningar, recensioner och mer.";
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Din butik är redan ansluten till ett WordPress.com-konto, men du måste uppdatera WooCommerce-tillägget för att aktivera pushnotiser för nya beställningar, recensioner med mera.";
 
 /* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
-"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Få push-aviseringar för din butik";
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Få pushnotiser för din butik";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "Vi kunde inte slutföra konfigurationen av push-notiser. Kontakta supporten för att få hjälp.";

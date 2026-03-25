@@ -19,7 +19,7 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     }
 
     public func isSiteCIAB(_ site: Site) -> Bool {
-        return site.isCIAB
+        return Site.isCIAB(isGarden: site.isGarden, gardenName: site.gardenName)
     }
 
     public func isFeatureSupportedForCurrentSite(_ feature: CIABAffectedFeature) -> Bool {
@@ -32,17 +32,4 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     ) -> Bool {
         return !isSiteCIAB(site) || !CIABAffectedFeature.unsupportedFeatures.contains(feature)
     }
-}
-
-// MARK: - Site checks
-
-private extension Site {
-    var isCIAB: Bool {
-        return isGarden && gardenName == GardenName.commerce.rawValue
-    }
-}
-
-private enum GardenName: String {
-    /// Garden name for CIAB sites
-    case commerce
 }

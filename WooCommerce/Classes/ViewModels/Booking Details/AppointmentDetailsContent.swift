@@ -6,15 +6,28 @@ extension BookingDetailsViewModel {
         struct Row: Identifiable {
             let title: String
             let value: String
+            let isLoading: Bool
 
             var id: String {
                 return title
+            }
+
+            init(title: String, value: String, isLoading: Bool = false) {
+                self.title = title
+                self.value = value
+                self.isLoading = isLoading
             }
         }
 
         @Published private(set) var rows: [Row] = []
 
-        func update(with booking: Booking, resource: BookingResource?) {
+        private static let shimmeringPlaceholder = String(repeating: "X", count: 20)
+
+        func update(with booking: Booking,
+                    resource: BookingResource?,
+                    bookingLocation: String? = nil,
+                    isLoadingResource: Bool = false,
+                    isLoadingLocation: Bool = false) {
             let appointmentDate = booking.startDate.toString(dateStyle: .short, timeStyle: .none, timeZone: BookingListTab.utcTimeZone)
             let appointmentTimeFrame = [
                 booking.startDate.toString(dateStyle: .none, timeStyle: .short, timeZone: BookingListTab.utcTimeZone),
@@ -23,23 +36,33 @@ extension BookingDetailsViewModel {
 
             let resourceRow: Row? = {
                 guard booking.resourceID > 0 else { return nil }
-                return Row(title: Localization.appointmentDetailsAssignedStaffTitle, value: resource?.name ?? "-")
+                let value = isLoadingResource ? Self.shimmeringPlaceholder : (resource?.name ?? "-")
+                return Row(title: Localization.appointmentDetailsAssignedStaffTitle,
+                           value: value,
+                           isLoading: isLoadingResource)
             }()
+
+            let locationValue: String = {
+                if isLoadingLocation {
+                    return Self.shimmeringPlaceholder
+                }
+                guard let location = bookingLocation, !location.isEmpty else {
+                    return "-"
+                }
+                return location
+            }()
+
             rows = [
                 Row(title: Localization.appointmentDetailsDateRowTitle, value: appointmentDate),
                 Row(title: Localization.appointmentDetailsTimeRowTitle, value: appointmentTimeFrame),
                 resourceRow,
-                Row(title: Localization.appointmentDetailsLocationTitle, value: "238 Willow Creek Drive, Montgomery ..."), /// Temporarily hardcoded
+                Row(title: Localization.appointmentDetailsLocationTitle, value: locationValue, isLoading: isLoadingLocation),
                 Row(
                     title: Localization.appointmentDetailsDurationTitle,
                     value: Self.formatDuration(
                         from: booking.startDate,
                         to: booking.endDate
                     )
-                ),
-                Row(
-                    title: Localization.appointmentDetailsPriceTitle,
-                    value: BookingDetailsViewModel.formatPrice(for: booking, priceString: booking.cost)
                 )
             ].compactMap { $0 }
         }
@@ -89,12 +112,6 @@ private extension BookingDetailsViewModel.AppointmentDetailsContent {
             "BookingDetailsView.appointmentDetails.durationRow.title",
             value: "Duration",
             comment: "Duration row title in appointment details section in booking details view."
-        )
-
-        static let appointmentDetailsPriceTitle = NSLocalizedString(
-            "BookingDetailsView.appointmentDetails.priceRow.title",
-            value: "Price",
-            comment: "Price row title in appointment details section in booking details view."
         )
     }
 }

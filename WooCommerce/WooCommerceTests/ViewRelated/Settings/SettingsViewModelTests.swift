@@ -55,7 +55,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.count > 0)
+        XCTAssertTrue(!viewModel.sections.isEmpty)
     }
 
     func test_sections_contain_install_jetpack_row_when_default_site_is_jcp() {
@@ -139,26 +139,6 @@ final class SettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(presenter.refreshViewContentCalled)
-    }
-
-    func test_onJetpackInstallDismiss_updates_sections_correctly() {
-        // Given
-        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
-        sessionManager.defaultSite = site
-        let viewModel = SettingsViewModel(
-            stores: stores,
-            storageManager: storageManager)
-
-        viewModel.onViewDidLoad()
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
-
-        // When
-        let updatedSite = site.copy(isJetpackThePluginInstalled: true, isJetpackConnected: false)
-        sessionManager.defaultSite = updatedSite
-        viewModel.onJetpackInstallDismiss()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
     // MARK: - `accountSettings` row visibility

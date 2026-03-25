@@ -42,7 +42,7 @@ final class GenerateAllVariationsUseCase {
                 }
 
                 // Guard for no variations to generate
-                guard variationsToGenerate.count > 0 else {
+                guard !variationsToGenerate.isEmpty else {
                     return onStateChanged(.finished(false, product))
                 }
 

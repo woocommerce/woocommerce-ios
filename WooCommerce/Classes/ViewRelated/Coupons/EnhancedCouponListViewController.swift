@@ -132,7 +132,7 @@ private extension EnhancedCouponListViewController {
 
         let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
         let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet, initialPosition: .expanded)
-        bottomSheetViewController.show(from: self)
+        bottomSheetViewController.show(from: self, sourceBarButtonItem: createCouponButtonItem)
     }
 
     func showDetails(from coupon: Coupon) {

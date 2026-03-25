@@ -38,7 +38,7 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
             let pagedProducts = try await fetchStrategy.fetchProducts(pageNumber: pageNumber)
             let products = pagedProducts.items
 
-            if pageNumber != 1 && products.count == 0 {
+            if pageNumber != 1 && products.isEmpty {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 

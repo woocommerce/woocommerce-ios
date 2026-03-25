@@ -20,9 +20,11 @@ final class JetpackSetupCoordinator {
     private var jetpackConnectedEmail: String?
     private let accountService: WordPressComAccountServiceProtocol
     private let stores: StoresManager
+    private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
 
+    private let onCompletion: (() -> Void)?
     private var loginNavigationController: LoginNavigationController?
     private var setupStepsNavigationController: UINavigationController?
 
@@ -49,7 +51,8 @@ final class JetpackSetupCoordinator {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         onCompletion: (() -> Void)? = nil) {
         self.site = site
         self.requiresConnectionOnly = false // to be updated later after fetching Jetpack status
         self.rootViewController = rootViewController
@@ -57,6 +60,8 @@ final class JetpackSetupCoordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.onCompletion = onCompletion
+        self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
     }
 
     /// Single entry point for starting Jetpack setup.
@@ -122,28 +127,40 @@ private extension JetpackSetupCoordinator {
     ///
     @MainActor
     func startSetupDirectly() async {
-        guard site.isNonJetpackSite else {
-            presentJCPJetpackInstallFlow()
+        guard proceedToSetupSteps() == false else {
             return
         }
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.pleaseWait, message: ""))
         rootViewController.present(progressView, animated: true)
-        await checkConnectionAndAuthenticate(dismissing: progressView)
+        await checkConnectionAndAuthenticateIfNeeded(dismissing: progressView)
     }
 
     @MainActor
     func handleBenefitModalCTA() async {
-        guard site.isNonJetpackSite else {
-            return presentJCPJetpackInstallFlow()
+        guard proceedToSetupSteps() == false else {
+            return
         }
-        await checkConnectionAndAuthenticate()
+        await checkConnectionAndAuthenticateIfNeeded(dismissing: rootViewController.presentedViewController)
+    }
+
+    /// If user authenticated with WPCom to JCP site, skip checking connection state
+    func proceedToSetupSteps() -> Bool {
+        if let credentials = stores.sessionManager.defaultCredentials,
+           case let .wpcom(username, authToken, _) = credentials {
+            let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: site.url, network: network))
+            requiresConnectionOnly = false
+            showSetupSteps(username: username, authToken: authToken)
+            return true
+        }
+        return false
     }
 
     /// Checks Jetpack connection state, tracks analytics, and starts authentication.
     /// Optionally dismisses a presented view controller (e.g. a loading indicator) on completion.
     ///
     @MainActor
-    func checkConnectionAndAuthenticate(dismissing viewController: UIViewController? = nil) async {
+    func checkConnectionAndAuthenticateIfNeeded(dismissing viewController: UIViewController? = nil) async {
         do {
             try await checkJetpackConnectionState()
             await viewController?.dismiss(animated: true)
@@ -168,32 +185,12 @@ private extension JetpackSetupCoordinator {
         }
     }
 
-    /// Navigates to the Jetpack installation flow for JCP sites.
-    /// Dismisses any currently presented view controller first, then presents the install flow.
-    func presentJCPJetpackInstallFlow() {
-        let presentInstallFlow = { [weak self] in
-            guard let self else { return }
-            let installController = JCPJetpackInstallHostingController(siteID: self.site.siteID,
-                                                                       siteURL: self.site.url,
-                                                                       siteAdminURL: self.site.adminURL)
-            installController.setDismissAction { [weak self] in
-                self?.rootViewController.dismiss(animated: true, completion: nil)
-            }
-            self.rootViewController.present(installController, animated: true, completion: nil)
-        }
-        if rootViewController.presentedViewController != nil {
-            rootViewController.dismiss(animated: true, completion: presentInstallFlow)
-        } else {
-            presentInstallFlow()
-        }
-    }
-
     /// Checks the Jetpack connection status for non-Jetpack sites to save the status and connected email locally if available.
     /// Throws any error if the Jetpack user fetch failed.
     ///
     func checkJetpackConnectionState() async throws {
         do {
-            let user = try await fetchJetpackConnectionData().currentUser
+            let user = try await jetpackConnectionService.fetchConnectionData().currentUser
             jetpackConnectedEmail = user.wpcomUser?.email
         } catch NetworkError.notFound {
             /// 404 error means Jetpack is not installed or activated yet.
@@ -264,6 +261,7 @@ private extension JetpackSetupCoordinator {
         /// WPCom credentials to authenticate the user in the Jetpack connection web view automatically
         let credentials: Credentials = .wpcom(username: username, authToken: authToken, siteAddress: site.url)
         let setupUI = JetpackSetupHostingController(siteURL: site.url,
+                                                    siteID: site.siteID,
                                                     connectionOnly: requiresConnectionOnly,
                                                     wpcomCredentials: credentials,
                                                     onStoreNavigation: { [weak self] _ in
@@ -288,8 +286,11 @@ private extension JetpackSetupCoordinator {
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
         analytics.track(.jetpackSetupCompleted)
+
         let previousCredentials = stores.sessionManager.defaultCredentials
-        stores.authenticate(credentials: credentials)
+        if previousCredentials != credentials {
+            stores.authenticate(credentials: credentials)
+        }
 
         let progressView = InProgressViewController(viewProperties: .init(title: Localization.syncingData, message: ""))
         rootViewController.topmostPresentedViewController.present(progressView, animated: true)
@@ -298,13 +299,23 @@ private extension JetpackSetupCoordinator {
             guard let self else { return }
             switch result {
             case .success(let site):
-                self.stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
-                self.stores.updateDefaultStore(storeID: site.siteID)
-                self.stores.synchronizeEntities { [weak self] in
-                    self?.stores.updateDefaultStore(site)
-                    self?.rootViewController.dismiss(animated: true, completion: {
+                if case .wpcom = previousCredentials {
+                    stores.updateDefaultStore(site)
+                    dismiss()
+                } else {
+                    stores.updateDefaultStore(storeID: site.siteID)
+                    stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
+                    stores.synchronizeEntities { [weak self] in
+                        self?.stores.updateDefaultStore(site)
+                        dismiss()
+                    }
+                }
+
+                func dismiss() {
+                    rootViewController.dismiss(animated: true, completion: { [weak self] in
                         self?.analytics.track(.jetpackSetupSynchronizationCompleted)
                         self?.registerForPushNotifications()
+                        self?.onCompletion?()
                         progressView.dismiss(animated: true)
                     })
                 }
@@ -355,16 +366,6 @@ private extension JetpackSetupCoordinator {
                 continuation.resume(returning: account?.username)
             }
             stores.dispatch(accountAction)
-        }
-    }
-
-    @MainActor
-    func fetchJetpackConnectionData() async throws -> JetpackConnectionData {
-        try await withCheckedThrowingContinuation { continuation in
-            let action = JetpackConnectionAction.fetchJetpackConnectionData { result in
-                continuation.resume(with: result)
-            }
-            stores.dispatch(action)
         }
     }
 

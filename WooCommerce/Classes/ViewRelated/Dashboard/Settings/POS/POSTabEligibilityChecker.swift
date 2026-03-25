@@ -269,7 +269,11 @@ private extension POSTabEligibilityChecker {
         }
         guard Constants.ciabProPlanSlugs.contains(site.plan) else {
             let siteSlug = URL(string: site.url)?.host ?? ""
-            let learnMoreURL = URL(string: Constants.ciabLearnMoreBaseURL + "?siteSlug=\(siteSlug)")!
+            var components = URLComponents(string: Constants.ciabLearnMoreBaseURL)
+            components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
+            guard let learnMoreURL = components?.url else {
+                return .eligible
+            }
             return .ineligible(reason: .ciabPlanUpgradeRequired(learnMoreURL: learnMoreURL))
         }
         return .eligible

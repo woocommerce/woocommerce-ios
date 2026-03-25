@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 # --- Translation Context Plugin ---
+# Install the gem if not already available (e.g. CI linter environment).
+# This can be removed once dangermattic ships with i18n-context-generator as a dependency.
+begin
+  require 'i18n_context_generator'
+rescue LoadError
+  system('gem', 'install', 'i18n-context-generator', '--no-document')
+end
+
 # Import the translation context checker plugin from the dangermattic branch
 branch_base = 'https://raw.githubusercontent.com/Automattic/dangermattic/iangmaia/add-translation-context-plugin/lib/dangermattic/plugins'
 danger.import_plugin("#{branch_base}/common/inline_markdown_poster.rb")

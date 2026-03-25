@@ -453,6 +453,23 @@ private extension PaymentMethodsViewModel {
 }
 
 // MARK: - Helpers
+// MARK: - Site Sync
+
+extension PaymentMethodsViewModel {
+    /// Syncs site data from the network and re-checks card payment visibility.
+    /// Called when returning from the Learn More webview in case the user upgraded their plan.
+    func syncSiteAndRefreshVisibility() {
+        let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
+            guard let self else { return }
+            if case .success(let site) = result {
+                self.stores.updateDefaultStore(site)
+            }
+            self.updateCardPaymentVisibility()
+        }
+        stores.dispatch(action)
+    }
+}
+
 private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///

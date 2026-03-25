@@ -94,7 +94,10 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
-                    NavigationLink(destination: AuthenticatableWebView(url: viewModel.learnMoreViewModel.url)
+                    NavigationLink(destination: AuthenticatableWebView(url: viewModel.learnMoreViewModel.url,
+                                                                       onDismiss: {
+                                                    viewModel.syncSiteAndRefreshVisibility()
+                                                })
                                                 .onAppear {
                                                     viewModel.learnMoreViewModel.learnMoreTapped()
                                                 }

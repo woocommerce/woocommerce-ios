@@ -88,7 +88,7 @@ final class HubMenuViewModel: ObservableObject {
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private var isIPPHiddenForCIAB: Bool {
-        featureFlagService.isFeatureFlagEnabled(.gateFeatureIfCIABSite) && siteCIABEligibilityChecker.isCurrentSiteCIAB
+        siteCIABEligibilityChecker.isCurrentSiteCIAB
     }
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol

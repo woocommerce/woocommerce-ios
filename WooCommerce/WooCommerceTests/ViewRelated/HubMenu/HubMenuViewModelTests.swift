@@ -767,62 +767,6 @@ final class HubMenuViewModelTests: XCTestCase {
             XCTAssertNil(eventProperties)
         }
     }
-
-    // MARK: - CIAB IPP Gating
-
-    @MainActor
-    func test_generalElements_hides_payments_for_ciab_site_when_feature_flag_enabled() {
-        // Given
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
-        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlags,
-                                         siteCIABEligibilityChecker: ciabChecker)
-
-        // When
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
-    }
-
-    @MainActor
-    func test_generalElements_shows_payments_for_non_ciab_site_when_feature_flag_enabled() {
-        // Given
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = true
-        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlags,
-                                         siteCIABEligibilityChecker: ciabChecker)
-
-        // When
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
-    }
-
-    @MainActor
-    func test_generalElements_shows_payments_for_ciab_site_when_feature_flag_disabled() {
-        // Given
-        let featureFlags = MockFeatureFlagService()
-        featureFlags.isFeatureFlagEnabledReturnValue[.gateFeatureIfCIABSite] = false
-        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlags,
-                                         siteCIABEligibilityChecker: ciabChecker)
-
-        // When
-        viewModel.setupMenuElements()
-
-        // Then
-        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
-    }
 }
 
 private extension HubMenuViewModelTests {

@@ -459,7 +459,7 @@ private extension PaymentMethodsViewModel {
     }
 
     private var isIPPHiddenForCIAB: Bool {
-        featureFlagService.isFeatureFlagEnabled(.gateFeatureIfCIABSite) && ciabEligibilityChecker.isCurrentSiteCIAB
+        ciabEligibilityChecker.isCurrentSiteCIAB
     }
 
     func updateCardPaymentVisibility() {

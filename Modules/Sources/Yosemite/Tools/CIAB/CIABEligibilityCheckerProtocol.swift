@@ -3,6 +3,7 @@ import Foundation
 /// periphery: ignore
 public protocol CIABEligibilityCheckerProtocol {
     var isCurrentSiteCIAB: Bool { get }
+    var isCurrentSiteCIABProPlan: Bool { get }
 
     func isSiteCIAB(_ site: Site) -> Bool
 

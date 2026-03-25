@@ -459,7 +459,7 @@ private extension PaymentMethodsViewModel {
     }
 
     private var isIPPHiddenForCIAB: Bool {
-        ciabEligibilityChecker.isCurrentSiteCIAB
+        ciabEligibilityChecker.isCurrentSiteCIAB && !ciabEligibilityChecker.isCurrentSiteCIABProPlan
     }
 
     func updateCardPaymentVisibility() {

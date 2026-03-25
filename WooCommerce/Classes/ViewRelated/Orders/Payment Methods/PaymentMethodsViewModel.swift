@@ -453,7 +453,6 @@ private extension PaymentMethodsViewModel {
 }
 
 // MARK: - Helpers
-// MARK: - Site Sync
 
 extension PaymentMethodsViewModel {
     /// Syncs site data from the network and re-checks card payment visibility.

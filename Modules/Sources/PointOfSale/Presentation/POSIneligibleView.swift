@@ -7,10 +7,11 @@ struct POSIneligibleView: View {
     let reason: POSIneligibleReason
     let onRefresh: () async throws -> Void
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.openURL) private var openURL
     @Environment(\.sizeCategory) private var sizeCategory
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posExternalViews) private var externalViews
     @State private var isLoading: Bool = false
+    @State private var showLearnMore: Bool = false
     @State private var scrollViewHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
 
@@ -75,12 +76,12 @@ struct POSIneligibleView: View {
                         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isLoading))
                         .renderedIf(reason.shouldShowRetryButton)
 
-                        if case .ciabPlanUpgradeRequired(let learnMoreURL) = reason {
+                        if case .ciabPlanUpgradeRequired = reason {
                             Button {
                                 analytics.track(
                                     event: .PointOfSaleIneligibleUI.ineligibleUILearnMoreTapped(reason: reason)
                                 )
-                                openURL(learnMoreURL)
+                                showLearnMore = true
                             } label: {
                                 Text(Localization.learnMore)
                             }
@@ -118,6 +119,13 @@ struct POSIneligibleView: View {
             scrollViewHeight = height
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .posFullScreenCover(isPresented: $showLearnMore) {
+            if case .ciabPlanUpgradeRequired(let learnMoreURL) = reason {
+                externalViews.createWCWebView(adminUrl: learnMoreURL, completion: {
+                    showLearnMore = false
+                })
+            }
+        }
     }
 
     @ViewBuilder

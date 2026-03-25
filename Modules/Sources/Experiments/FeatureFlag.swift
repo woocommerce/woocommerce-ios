@@ -229,10 +229,4 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
-
-    /// Gates features for CIAB sites:
-    /// - IPP removed for all CIAB sites
-    /// - POS available only for CIAB Pro
-    ///
-    case gateFeatureIfCIABSite
 }

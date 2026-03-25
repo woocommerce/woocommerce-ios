@@ -3,13 +3,13 @@ import UIKit
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
-import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import struct Yosemite.Site
 import protocol Yosemite.StoresManager
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
+import enum Yosemite.SiteAction
 import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
@@ -28,19 +28,16 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let stores: StoresManager
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let siteSettingService: POSSiteSettingServiceProtocol
-    private let featureFlagService: FeatureFlagService
     private let appPasswordSupportState: ApplicationPasswordsExperimentState
 
     init(siteID: Int64,
          siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          systemStatusService: POSSystemStatusServiceProtocol? = nil,
          siteSettingService: POSSiteSettingServiceProtocol? = nil) {
         self.siteID = siteID
         self.siteSettings = siteSettings
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.appPasswordSupportState = ApplicationPasswordsExperimentState()
 
         let credentials = stores.sessionManager.defaultCredentials
@@ -108,6 +105,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .selfDeallocated:
             return await checkEligibility()
         case .ciabPlanUpgradeRequired:
+            do {
+                try await syncSiteRemotely()
+            } catch {
+                DDLogError("⛔️ Error syncing site for CIAB plan re-check: \(error)")
+            }
             return await checkEligibility()
         }
     }
@@ -258,6 +260,28 @@ private extension POSTabEligibilityChecker {
             })
         }
     }
+
+    @MainActor
+    func syncSiteRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                switch result {
+                case .success(let site):
+                    self.stores.updateDefaultStore(site)
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 // MARK: - CIAB Plan Eligibility Check
@@ -265,9 +289,6 @@ private extension POSTabEligibilityChecker {
 private extension POSTabEligibilityChecker {
     /// Checks whether a CIAB site has a Pro plan required for POS access.
     func checkCIABPlanEligibility() -> POSEligibilityState {
-        guard featureFlagService.isFeatureFlagEnabled(.gateFeatureIfCIABSite) else {
-            return .eligible
-        }
         guard let site = stores.sessionManager.defaultSite else {
             return .eligible
         }
@@ -275,7 +296,13 @@ private extension POSTabEligibilityChecker {
             return .eligible
         }
         guard Constants.ciabProPlanSlugs.contains(site.plan) else {
-            return .ineligible(reason: .ciabPlanUpgradeRequired)
+            let siteSlug = URL(string: site.url)?.host ?? ""
+            var components = URLComponents(string: Constants.ciabLearnMoreBaseURL)
+            components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
+            guard let learnMoreURL = components?.url else {
+                return .eligible
+            }
+            return .ineligible(reason: .ciabPlanUpgradeRequired(learnMoreURL: learnMoreURL))
         }
         return .eligible
     }
@@ -294,5 +321,6 @@ private extension POSTabEligibilityChecker {
             "woo_hosted_pro_plan_monthly",
             "woo_hosted_pro_plan_yearly"
         ]
+        static let ciabLearnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
     }
 }

@@ -297,10 +297,7 @@ private extension POSTabEligibilityChecker {
             return .eligible
         }
         guard CIABEligibilityChecker.Constants.ciabProPlanSlugs.contains(site.plan) else {
-            let siteSlug = URL(string: site.url)?.host ?? ""
-            var components = URLComponents(string: Constants.ciabLearnMoreBaseURL)
-            components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
-            guard let learnMoreURL = components?.url else {
+            guard let learnMoreURL = CIABEligibilityChecker.learnMoreURL(siteURL: site.url) else {
                 return .eligible
             }
             return .ineligible(reason: .ciabPlanUpgradeRequired(learnMoreURL: learnMoreURL))
@@ -318,6 +315,5 @@ private extension POSTabEligibilityChecker {
         static let wcPlugin = "woocommerce/woocommerce.php"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
-        static let ciabLearnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
     }
 }

@@ -107,7 +107,12 @@ final class PaymentMethodsViewModel: ObservableObject {
     private var cardPaymentGateway: CardPresentPaymentsPlugin?
 
     var learnMoreViewModel: LearnMoreViewModel {
-        LearnMoreViewModel.inPersonPayments(source: .paymentMethods, paymentGateway: cardPaymentGateway)
+        if isIPPHiddenForCIAB {
+            let url = CIABEligibilityChecker.learnMoreURL(siteURL: stores.sessionManager.defaultSite?.url ?? "")
+                ?? WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+            return LearnMoreViewModel(url: url, formatText: Localization.ciabUpgradeText)
+        }
+        return LearnMoreViewModel.inPersonPayments(source: .paymentMethods, paymentGateway: cardPaymentGateway)
     }
 
     /// Stored orders.
@@ -605,6 +610,15 @@ private extension PaymentMethodsViewModel {
 
 private extension PaymentMethodsViewModel {
     enum Localization {
+        static let ciabUpgradeText = NSLocalizedString(
+            "paymentMethods.ciabUpgrade.learnMore.text",
+            value: "Accept payments in person for just 2.70%% + $0.10 per transaction. " +
+            "Upgrade to Pro to access tap-to-pay on your phone and our full point of sale system " +
+            "with real-time inventory and order syncing. %1$@",
+            comment: "Upgrade prompt shown in payment methods for non-Pro CIAB sites. " +
+            "%1$@ is a placeholder for the Learn More link text."
+        )
+
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
 

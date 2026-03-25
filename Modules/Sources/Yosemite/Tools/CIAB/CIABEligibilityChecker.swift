@@ -47,5 +47,13 @@ public extension CIABEligibilityChecker {
             "woo_hosted_pro_plan_monthly",
             "woo_hosted_pro_plan_yearly"
         ]
+        public static let learnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
+    }
+
+    static func learnMoreURL(siteURL: String) -> URL? {
+        let siteSlug = URL(string: siteURL)?.host ?? ""
+        var components = URLComponents(string: Constants.learnMoreBaseURL)
+        components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
+        return components?.url
     }
 }

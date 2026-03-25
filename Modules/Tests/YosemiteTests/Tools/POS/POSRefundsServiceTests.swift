@@ -496,6 +496,37 @@ struct POSRefundsServiceTests {
         #expect(remote.spyCreateRefund?.createAutomated == false)
     }
 
+    @Test func createRefund_then_sends_positive_quantities_and_totals_to_remote() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        calculator.stubRefundRequest = POSRefundRequest(
+            orderID: 456,
+            amount: Decimal(string: "50.00")!,
+            reason: nil,
+            items: [
+                POSRefundRequestItem(itemID: 10, quantity: 2, refundTotal: Decimal(string: "32.00")!, refundTax: Decimal(string: "3.20")!),
+                POSRefundRequestItem(itemID: 20, quantity: 1, refundTotal: Decimal(string: "18.00")!, refundTax: Decimal(string: "1.80")!)
+            ]
+        )
+        let sut = makeSUT(remote: remote, calculator: calculator)
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
+
+        // Then - quantities and totals must be positive (the WooCommerce API negates them)
+        let refund = try #require(remote.spyCreateRefund)
+        #expect(refund.items.count == 2)
+
+        let firstItem = refund.items[0]
+        #expect(firstItem.quantity == Decimal(2))
+        #expect(firstItem.total == "32.00")
+
+        let secondItem = refund.items[1]
+        #expect(secondItem.quantity == Decimal(1))
+        #expect(secondItem.total == "18.00")
+    }
+
     @Test func createRefund_when_remote_fails_then_propagates_error() async throws {
         // Given
         let remote = MockPOSRefundsRemote()

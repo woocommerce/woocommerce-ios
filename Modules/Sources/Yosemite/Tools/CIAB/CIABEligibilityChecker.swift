@@ -41,9 +41,9 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     }
 }
 
-private extension CIABEligibilityChecker {
+public extension CIABEligibilityChecker {
     enum Constants {
-        static let ciabProPlanSlugs: Set<String> = [
+        public static let ciabProPlanSlugs: Set<String> = [
             "woo_hosted_pro_plan_monthly",
             "woo_hosted_pro_plan_yearly"
         ]

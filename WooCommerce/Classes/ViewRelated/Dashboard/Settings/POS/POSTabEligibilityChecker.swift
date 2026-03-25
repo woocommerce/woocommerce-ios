@@ -15,6 +15,7 @@ import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
 import class Yosemite.POSSiteSettingService
 import class Yosemite.SiteAddress
+import class Yosemite.CIABEligibilityChecker
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
@@ -295,7 +296,7 @@ private extension POSTabEligibilityChecker {
         guard Site.isCIAB(isGarden: site.isGarden, gardenName: site.gardenName) else {
             return .eligible
         }
-        guard Constants.ciabProPlanSlugs.contains(site.plan) else {
+        guard CIABEligibilityChecker.Constants.ciabProPlanSlugs.contains(site.plan) else {
             let siteSlug = URL(string: site.url)?.host ?? ""
             var components = URLComponents(string: Constants.ciabLearnMoreBaseURL)
             components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
@@ -317,10 +318,6 @@ private extension POSTabEligibilityChecker {
         static let wcPlugin = "woocommerce/woocommerce.php"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
-        static let ciabProPlanSlugs: Set<String> = [
-            "woo_hosted_pro_plan_monthly",
-            "woo_hosted_pro_plan_yearly"
-        ]
         static let ciabLearnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
     }
 }

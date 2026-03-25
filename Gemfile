@@ -7,6 +7,7 @@ group :screenshots, optional: true do
 end
 
 gem 'danger-dangermattic', '~> 1.2'
+gem 'i18n-context-generator', '~> 0.4'
 gem 'dotenv'
 gem 'fastlane', '~> 2.228'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 0.10'

@@ -230,6 +230,7 @@ private final class CIABEligibilityCheckerSiteCaptureMock: CIABEligibilityChecke
     private(set) var lastSite: Site?
 
     var isCurrentSiteCIAB: Bool { false }
+    var isCurrentSiteCIABProPlan: Bool { false }
 
     func isSiteCIAB(_ site: Site) -> Bool {
         lastSite = site

@@ -18,6 +18,13 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
         return isSiteCIAB(currentSite)
     }
 
+    public var isCurrentSiteCIABProPlan: Bool {
+        guard let site = currentSite(), isSiteCIAB(site) else {
+            return false
+        }
+        return Constants.ciabProPlanSlugs.contains(site.plan)
+    }
+
     public func isSiteCIAB(_ site: Site) -> Bool {
         return Site.isCIAB(isGarden: site.isGarden, gardenName: site.gardenName)
     }
@@ -31,5 +38,22 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
         for site: Site
     ) -> Bool {
         return !isSiteCIAB(site) || !CIABAffectedFeature.unsupportedFeatures.contains(feature)
+    }
+}
+
+public extension CIABEligibilityChecker {
+    enum Constants {
+        public static let ciabProPlanSlugs: Set<String> = [
+            "woo_hosted_pro_plan_monthly",
+            "woo_hosted_pro_plan_yearly"
+        ]
+        public static let learnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
+    }
+
+    static func learnMoreURL(siteURL: String) -> URL? {
+        let siteSlug = URL(string: siteURL)?.host ?? ""
+        var components = URLComponents(string: Constants.learnMoreBaseURL)
+        components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
+        return components?.url
     }
 }

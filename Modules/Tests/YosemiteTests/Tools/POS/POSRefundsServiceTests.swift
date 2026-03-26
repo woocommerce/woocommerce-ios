@@ -505,8 +505,12 @@ struct POSRefundsServiceTests {
             amount: try #require(Decimal(string: "50.00")),
             reason: nil,
             items: [
-                POSRefundRequestItem(itemID: 10, quantity: 2, refundTotal: try #require(Decimal(string: "32.00")), refundTax: try #require(Decimal(string: "3.20"))),
-                POSRefundRequestItem(itemID: 20, quantity: 1, refundTotal: try #require(Decimal(string: "18.00")), refundTax: try #require(Decimal(string: "1.80")))
+                POSRefundRequestItem(itemID: 10, quantity: 2,
+                                     refundTotal: try #require(Decimal(string: "32.00")),
+                                     refundTax: try #require(Decimal(string: "3.20"))),
+                POSRefundRequestItem(itemID: 20, quantity: 1,
+                                     refundTotal: try #require(Decimal(string: "18.00")),
+                                     refundTax: try #require(Decimal(string: "1.80")))
             ]
         )
         let sut = makeSUT(remote: remote, calculator: calculator)

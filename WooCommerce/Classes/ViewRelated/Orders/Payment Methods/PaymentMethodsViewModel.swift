@@ -110,7 +110,9 @@ final class PaymentMethodsViewModel: ObservableObject {
         if isIPPHiddenForCIAB {
             let url = CIABEligibilityChecker.learnMoreURL(siteURL: stores.sessionManager.defaultSite?.url ?? "")
                 ?? WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
-            return LearnMoreViewModel(url: url, formatText: Localization.ciabUpgradeText)
+            return LearnMoreViewModel(url: url,
+                                      formatText: Localization.ciabUpgradeText,
+                                      tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .ciabUpgrade))
         }
         return LearnMoreViewModel.inPersonPayments(source: .paymentMethods, paymentGateway: cardPaymentGateway)
     }

@@ -82,10 +82,17 @@ xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
   test -only-testing:"WooCommerceTests/SomeTestClass/test_method_name"
 
-# Run module tests (e.g. Yosemite)
+# Run module tests - use the module's own scheme for faster builds
+# When changes only affect a specific module (e.g. Yosemite, PointOfSale),
+# use that module's scheme instead of WooCommerce. Available schemes: Yosemite, PointOfSale, etc.
+xcodebuild -workspace WooCommerce.xcworkspace -scheme Yosemite \
+  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  test -only-testing:"YosemiteTests/SomeTestClass"
+
+# Only use the WooCommerce scheme when changes span the main app target
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
   -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
-  test -only-testing:"YosemiteTests"
+  test -only-testing:"WooCommerceTests"
 
 # Lint (SwiftLint via BuildTools plugin)
 pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \

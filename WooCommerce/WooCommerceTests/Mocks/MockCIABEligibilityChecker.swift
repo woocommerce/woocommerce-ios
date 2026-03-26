@@ -4,7 +4,7 @@ import Yosemite
 
 final class MockCIABEligibilityChecker: CIABEligibilityCheckerProtocol {
     private let mockedIsCurrentSiteCIAB: Bool
-    private let mockedIsCurrentSiteCIABProPlan: Bool
+    var mockedIsCurrentSiteCIABProPlan: Bool
     private let mockedCIABSites: [Site]
     private let mockedCIABDisabledFeatures: [CIABAffectedFeature]
 

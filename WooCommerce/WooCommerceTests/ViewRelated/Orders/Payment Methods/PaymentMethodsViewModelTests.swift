@@ -959,10 +959,10 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         XCTAssertFalse(viewModel.showPayWithCardRow)
 
-        // Simulate plan upgrade: mock syncSite to return a site, and update the checker
-        ciabChecker.mockedIsCurrentSiteCIABProPlan = true
+        // Simulate plan upgrade: update the checker to Pro inside the sync completion
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
             guard case let .syncSite(_, completion) = action else { return }
+            ciabChecker.mockedIsCurrentSiteCIABProPlan = true
             completion(.success(Site.fake()))
         }
 

@@ -271,7 +271,7 @@ private extension ReviewOrderViewModel {
         }()
 
         let shippingMethodRow: Row? = {
-            guard order.shippingLines.count > 0 else { return nil }
+            guard !order.shippingLines.isEmpty else { return nil }
             return Row.shippingMethod(method: shippingMethod)
         }()
 

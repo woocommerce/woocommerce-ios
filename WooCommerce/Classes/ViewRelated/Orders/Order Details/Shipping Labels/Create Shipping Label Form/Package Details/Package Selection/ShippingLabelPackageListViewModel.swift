@@ -25,7 +25,7 @@ final class ShippingLabelPackageListViewModel: ObservableObject {
     /// Returns if the custom packages header should be shown in Package List
     ///
     var showCustomPackagesHeader: Bool {
-        return customPackages.count > 0
+        return !customPackages.isEmpty
     }
 
     /// Whether there are saved custom or predefined packages to select from.

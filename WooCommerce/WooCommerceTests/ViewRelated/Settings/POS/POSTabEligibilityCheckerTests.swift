@@ -303,6 +303,10 @@ struct POSTabEligibilityCheckerTests {
         // Given
         let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_monthly", isGarden: true, gardenName: "commerce")
         stores.updateDefaultStore(ciabSite)
+        stores.whenReceivingAction(ofType: SiteAction.self) { action in
+            guard case let .syncSite(_, completion) = action else { return }
+            completion(.success(ciabSite))
+        }
         setupCountry(country: .us, currency: .USD)
         let checker = POSTabEligibilityChecker(siteID: siteID,
                                                siteSettings: siteSettings,

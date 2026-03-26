@@ -30,7 +30,7 @@ public struct StoredOrderSettings: Codable, Equatable {
 
         public func numberOfActiveFilters() -> Int {
             var total = 0
-            if let orderStatusesFilter = orderStatusesFilter, orderStatusesFilter.count > 0 {
+            if let orderStatusesFilter = orderStatusesFilter, !orderStatusesFilter.isEmpty {
                 total += 1
             }
             if let dateRangeFilter = dateRangeFilter, dateRangeFilter.filter != .any {

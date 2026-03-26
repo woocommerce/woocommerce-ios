@@ -53,7 +53,7 @@
 
 
     ```bash
-    bundle install && bundle exec rake dependencies
+    brew install xz && bundle install && bundle exec rake dependencies
     ```
 
     This command installs the required build tools and dependencies.

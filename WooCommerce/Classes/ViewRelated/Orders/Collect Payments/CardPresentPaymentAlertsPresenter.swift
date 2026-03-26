@@ -77,7 +77,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
         guard let modalController else {
             return
         }
-        let nav = WCSettingsWebView(adminUrl: adminURL) {
+        let nav = WCAuthenticatedWebView(url: adminURL, title: Localization.settingsWebViewTitle) {
             modalController.dismiss(animated: true) {
                 completion()
             }
@@ -142,5 +142,15 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
     func dismiss() {
         dismissCommonAndPresent(animated: true)
         dismissSeveralFoundAndPresent(animated: true)
+    }
+}
+
+private extension CardPresentPaymentAlertsPresenter {
+    enum Localization {
+        static let settingsWebViewTitle = NSLocalizedString(
+            "cardPresentPayment.settingsWebView.title",
+            value: "WooCommerce Settings",
+            comment: "Navigation title for the webview shown when the merchant needs to update their store address for card reader connection"
+        )
     }
 }

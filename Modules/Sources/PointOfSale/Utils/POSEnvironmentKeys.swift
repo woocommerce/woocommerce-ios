@@ -159,7 +159,7 @@ struct EmptyPOSExternalView: POSExternalViewProviding {
                                           onSelection: @escaping (Coupon.DiscountType) -> Void) -> AnyView {
         AnyView(EmptyView())
     }
-    func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView {
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(EmptyView())
     }
     init() {}

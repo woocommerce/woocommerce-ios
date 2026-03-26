@@ -3,13 +3,13 @@ import UIKit
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
-import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import struct Yosemite.Site
 import protocol Yosemite.StoresManager
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
+import enum Yosemite.SiteAction
 import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
@@ -63,6 +63,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return .eligible
         }
 
+        let ciabEligibility = checkCIABPlanEligibility()
+        if case .ineligible = ciabEligibility {
+            return ciabEligibility
+        }
+
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let pluginEligibility = checkPluginEligibility()
 
@@ -98,6 +103,13 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
+            return await checkEligibility()
+        case .ciabPlanUpgradeRequired:
+            do {
+                try await syncSiteRemotely()
+            } catch {
+                DDLogError("⛔️ Error syncing site for CIAB plan re-check: \(error)")
+            }
             return await checkEligibility()
         }
     }
@@ -248,6 +260,52 @@ private extension POSTabEligibilityChecker {
             })
         }
     }
+
+    @MainActor
+    func syncSiteRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                switch result {
+                case .success(let site):
+                    self.stores.updateDefaultStore(site)
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
+// MARK: - CIAB Plan Eligibility Check
+
+private extension POSTabEligibilityChecker {
+    /// Checks whether a CIAB site has a Pro plan required for POS access.
+    func checkCIABPlanEligibility() -> POSEligibilityState {
+        guard let site = stores.sessionManager.defaultSite else {
+            return .eligible
+        }
+        guard Site.isCIAB(isGarden: site.isGarden, gardenName: site.gardenName) else {
+            return .eligible
+        }
+        guard Constants.ciabProPlanSlugs.contains(site.plan) else {
+            let siteSlug = URL(string: site.url)?.host ?? ""
+            var components = URLComponents(string: Constants.ciabLearnMoreBaseURL)
+            components?.queryItems = [URLQueryItem(name: "siteSlug", value: siteSlug)]
+            guard let learnMoreURL = components?.url else {
+                return .eligible
+            }
+            return .ineligible(reason: .ciabPlanUpgradeRequired(learnMoreURL: learnMoreURL))
+        }
+        return .eligible
+    }
 }
 
 private enum POSTabEligibilityCheckerError: Error {
@@ -259,5 +317,10 @@ private extension POSTabEligibilityChecker {
         static let wcPlugin = "woocommerce/woocommerce.php"
         static let wcPluginMinimumVersion = "9.6.0-beta"
         static let wcPluginMinimumVersionWithFeatureSwitch = "10.0.0"
+        static let ciabProPlanSlugs: Set<String> = [
+            "woo_hosted_pro_plan_monthly",
+            "woo_hosted_pro_plan_yearly"
+        ]
+        static let ciabLearnMoreBaseURL = "https://wordpress.com/setup/woo-hosted-plans/"
     }
 }

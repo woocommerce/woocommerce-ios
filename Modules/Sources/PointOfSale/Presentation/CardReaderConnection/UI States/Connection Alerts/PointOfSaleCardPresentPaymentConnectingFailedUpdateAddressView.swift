@@ -30,9 +30,20 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView: View {
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
         .posSheet(isPresented: $viewModel.shouldShowSettingsWebView) {
-            externalViews.createWCWebView(adminUrl: viewModel.settingsAdminUrl,
-                                          completion: viewModel.settingsWebViewWasDismissed)
+            externalViews.createAuthenticatedWebView(url: viewModel.settingsAdminUrl,
+                                                    title: Localization.settingsWebViewTitle,
+                                                    completion: viewModel.settingsWebViewWasDismissed)
         }
+    }
+}
+
+private extension PointOfSaleCardPresentPaymentConnectingFailedUpdateAddressView {
+    enum Localization {
+        static let settingsWebViewTitle = NSLocalizedString(
+            "pos.cardReader.updateAddress.webview.title",
+            value: "WooCommerce Settings",
+            comment: "Navigation title for the webview shown when the merchant needs to update their store address for card reader connection"
+        )
     }
 }
 

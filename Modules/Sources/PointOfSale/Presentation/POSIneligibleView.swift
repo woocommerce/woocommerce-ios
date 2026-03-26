@@ -121,7 +121,7 @@ struct POSIneligibleView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .posFullScreenCover(isPresented: $showLearnMore) {
             if case .ciabPlanUpgradeRequired(let learnMoreURL) = reason {
-                externalViews.createWCWebView(adminUrl: learnMoreURL, completion: {
+                externalViews.createAuthenticatedWebView(url: learnMoreURL, title: Localization.upgradePlanTitle, completion: {
                     showLearnMore = false
                     Task { @MainActor in
                         // When the webview is dismissed, automatically re-check plan eligibility
@@ -232,6 +232,12 @@ private extension POSIneligibleView {
             value: "Upgrade to Pro to access tap-to-pay on your phone and our full point of sale system " +
             "with real-time inventory and order syncing.",
             comment: "Upgrade prompt shown when CIAB site does not have a Pro plan for POS access"
+        )
+
+        static let upgradePlanTitle = NSLocalizedString(
+            "pos.ineligible.upgradePlan.webview.title",
+            value: "Upgrade Plan",
+            comment: "Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan"
         )
 
         static let learnMore = NSLocalizedString(

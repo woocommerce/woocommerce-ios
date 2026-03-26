@@ -502,11 +502,11 @@ struct POSRefundsServiceTests {
         let calculator = MockPOSRefundCalculator()
         calculator.stubRefundRequest = POSRefundRequest(
             orderID: 456,
-            amount: Decimal(string: "50.00")!,
+            amount: try #require(Decimal(string: "50.00")),
             reason: nil,
             items: [
-                POSRefundRequestItem(itemID: 10, quantity: 2, refundTotal: Decimal(string: "32.00")!, refundTax: Decimal(string: "3.20")!),
-                POSRefundRequestItem(itemID: 20, quantity: 1, refundTotal: Decimal(string: "18.00")!, refundTax: Decimal(string: "1.80")!)
+                POSRefundRequestItem(itemID: 10, quantity: 2, refundTotal: try #require(Decimal(string: "32.00")), refundTax: try #require(Decimal(string: "3.20"))),
+                POSRefundRequestItem(itemID: 20, quantity: 1, refundTotal: try #require(Decimal(string: "18.00")), refundTax: try #require(Decimal(string: "1.80")))
             ]
         )
         let sut = makeSUT(remote: remote, calculator: calculator)
@@ -521,10 +521,12 @@ struct POSRefundsServiceTests {
         let firstItem = refund.items[0]
         #expect(firstItem.quantity == Decimal(2))
         #expect(firstItem.total == "32.00")
+        #expect(firstItem.taxes.first?.total == "3.20")
 
         let secondItem = refund.items[1]
         #expect(secondItem.quantity == Decimal(1))
         #expect(secondItem.total == "18.00")
+        #expect(secondItem.taxes.first?.total == "1.80")
     }
 
     @Test func createRefund_when_remote_fails_then_propagates_error() async throws {

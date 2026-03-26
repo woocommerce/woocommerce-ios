@@ -458,6 +458,7 @@ extension PaymentMethodsViewModel {
     /// Syncs site data from the network and re-checks card payment visibility.
     /// Called when returning from the Learn More webview in case the user upgraded their plan.
     func syncSiteAndRefreshVisibility() {
+        guard isIPPHiddenForCIAB else { return }
         let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
             guard let self else { return }
             if case .success(let site) = result {

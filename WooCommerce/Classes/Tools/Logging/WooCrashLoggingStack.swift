@@ -1,3 +1,4 @@
+import BuildSecrets
 import Foundation
 import AutomatticTracks
 import AutomatticEncryptedLogs
@@ -166,7 +167,7 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     }
 
     var sentryDSN: String {
-        return ApiCredentials.sentryDSN
+        return BuildSecrets.current.sentryDSN
     }
 
     var buildType: String {

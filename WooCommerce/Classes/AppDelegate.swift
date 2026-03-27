@@ -7,6 +7,7 @@ import protocol WooFoundation.Analytics
 import protocol Yosemite.StoresManager
 import struct Yosemite.Site
 
+import BuildSecrets
 import CocoaLumberjackSwift
 import KeychainAccess
 import WordPressUI
@@ -54,6 +55,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - AppDelegate Methods
 
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        // Configure secrets before anything else accesses them
+        BuildSecrets.configure(secrets: ApiCredentials.toSecrets())
+
         // Setup Components
         setupStartupWaitingTimeTracker()
 

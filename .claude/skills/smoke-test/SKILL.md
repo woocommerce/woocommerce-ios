@@ -102,6 +102,39 @@ If a test step fails after 3 retries and `list_elements_on_screen` doesn't expla
 2. Compact it: `sips -Z 1200 <file.png> --out <file.png>`
 3. Only then read the compacted file if visual inspection is needed
 
+## Unexpected Behavior and Triage
+
+When something doesn't work on the first attempt, **don't just retry silently**. Reason about what happened and record an observation.
+
+### Classify the problem
+
+Before retrying, consider which category the issue falls into:
+
+| Category | Signals | Action |
+|----------|---------|--------|
+| **Test framework flake** | WDA timeout, `context deadline exceeded`, home screen appeared, tap didn't register but elements are correct | Retry. Note it as a framework issue in observations. |
+| **Transient app/network issue** | "Something went wrong", spinner that doesn't resolve, empty data that loads on retry | Retry. Flag it as an observation — transient errors can mask real bugs if they happen consistently. |
+| **Possible app bug** | Wrong screen shown, unexpected error message, element missing that should be there, data looks wrong | Take a `FAIL-` screenshot. Record a detailed observation. Continue if possible but mark the step with a warning. |
+| **Definite app bug** | Crash, data loss, wrong amounts, broken navigation that doesn't recover | Take a `FAIL-` screenshot. Mark the section as FAIL. Record the bug in detail. |
+
+### Record observations
+
+Keep a running list of observations as you go. Each observation should include:
+- **What happened**: the unexpected behavior
+- **Category**: framework flake, transient issue, possible bug, or definite bug
+- **What you did**: how you worked around it (retried, adjusted coordinates, relaunched, etc.)
+- **Concern level**: low (framework noise), medium (worth a second look), high (likely a real bug)
+
+Even if a step eventually passes after retries, record the observation. A step that consistently needs 3 retries is a signal, not just noise.
+
+### Observations in the report
+
+Observations appear in a dedicated section of the HTML report, separate from the pass/fail results. This lets the user see at a glance what was clean and what was messy. Each observation shows:
+- The step it relates to
+- A short description
+- The concern level (color-coded: grey for low, amber for medium, red for high)
+- Any associated `FAIL-` screenshot
+
 ## Step 1: Get Credentials
 
 Unless `--skip-login` is set, ask the user for:
@@ -194,7 +227,7 @@ The report file should be saved as `/tmp/woo-smoke-test-<timestamp>/report.html`
 
 1. **Summary table** — section name, PASS/FAIL badge, and notes for each section tested
 2. **Screenshot flipbook** — all audit screenshots displayed in order with labels, navigable with Previous/Next buttons or arrow keys
-3. **Issues found** — any crashes, errors, or unexpected behavior
+3. **Observations** — anything unexpected that happened during the run, even if the step eventually passed (see "Unexpected Behavior and Triage" above). Each observation shows the step, description, concern level (color-coded), and any `FAIL-` screenshot. Only include this section if there are observations to report.
 4. **Not tested** — list of manual-only items
 
 ### HTML report structure
@@ -217,7 +250,8 @@ open /tmp/woo-smoke-test-<timestamp>/report.html
 Also print a brief text summary to the console so the user sees results without needing the browser:
 
 ```
-Smoke Test: 5/7 sections passed
+Smoke Test: 5/7 sections passed, 2 observations
 Report: /tmp/woo-smoke-test-<timestamp>/report.html (opened in browser)
 Failed: Orders (refund button not found), POS (crash on checkout)
+Observations: Login password entry needed 3 retries (medium), WDA timed out during orders (low)
 ```

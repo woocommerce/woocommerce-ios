@@ -31,9 +31,11 @@ extension Bundle {
         guard let value = object(forInfoDictionaryKey: key) as? String else {
             fatalError("\(key) not found in Info.plist. Check the xcconfig setup.")
         }
+
         guard !value.isEmpty else {
             fatalError("\(key) is empty in Info.plist. Check the xcconfig setup.")
         }
+
         return value
     }
 }

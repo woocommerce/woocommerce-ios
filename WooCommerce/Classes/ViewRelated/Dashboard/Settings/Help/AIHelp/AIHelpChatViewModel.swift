@@ -99,6 +99,14 @@ final class AIHelpChatViewModel {
             onFileZendeskTicket?()
         case .openNotificationSettings:
             onOpenNotificationSettings?()
+        case .enableOrderNotifications:
+            Task {
+                await enableNotifications(orders: true, reviews: false)
+            }
+        case .enableReviewNotifications:
+            Task {
+                await enableNotifications(orders: false, reviews: true)
+            }
         }
     }
 
@@ -226,8 +234,76 @@ final class AIHelpChatViewModel {
             )
         }
 
+        // Check notification settings for the current site
+        await checkSiteNotificationSettings()
+
         addSystemMessage(Localization.notificationCheckComplete)
         offerEscalation()
+    }
+
+    private func checkSiteNotificationSettings() async {
+        do {
+            guard let settingsResult = try await diagnosticsService.loadNotificationSettings(siteID: siteID) else {
+                addDiagnosticMessage(Localization.notificationSettingsUnavailable, status: .warning)
+                return
+            }
+
+            var actions: [AIHelpChatMessage.MessageAction] = []
+
+            if settingsResult.ordersEnabled {
+                addDiagnosticMessage(Localization.orderNotificationsEnabled, status: .success)
+            } else {
+                actions.append(.init(title: Localization.enableOrderNotifications, actionType: .enableOrderNotifications))
+            }
+
+            if settingsResult.reviewsEnabled {
+                addDiagnosticMessage(Localization.reviewNotificationsEnabled, status: .success)
+            } else {
+                actions.append(.init(title: Localization.enableReviewNotifications, actionType: .enableReviewNotifications))
+            }
+
+            if !settingsResult.ordersEnabled || !settingsResult.reviewsEnabled {
+                let disabledItems = [
+                    settingsResult.ordersEnabled ? nil : Localization.orders,
+                    settingsResult.reviewsEnabled ? nil : Localization.reviews
+                ].compactMap { $0 }.joined(separator: ", ")
+
+                addDiagnosticMessage(
+                    String(format: Localization.notificationSettingsDisabled, disabledItems),
+                    status: .warning,
+                    actions: actions
+                )
+            }
+        } catch {
+            addDiagnosticMessage(
+                String(format: Localization.notificationSettingsCheckFailed, error.localizedDescription),
+                status: .failure
+            )
+        }
+    }
+
+    private func enableNotifications(orders: Bool, reviews: Bool) async {
+        isProcessing = true
+        let loadingID = addSystemMessage(Localization.enablingNotifications, diagnosticStatus: .loading)
+
+        do {
+            try await diagnosticsService.enableNotifications(siteID: siteID, enableOrders: orders, enableReviews: reviews)
+            removeMessage(withID: loadingID)
+            let label = orders ? Localization.orders : Localization.reviews
+            addDiagnosticMessage(
+                String(format: Localization.notificationsNowEnabled, label),
+                status: .success
+            )
+        } catch {
+            removeMessage(withID: loadingID)
+            addDiagnosticMessage(
+                String(format: Localization.enableNotificationsFailed, error.localizedDescription),
+                status: .failure,
+                actions: [.init(title: Localization.contactSupport, actionType: .fileZendeskTicket)]
+            )
+        }
+
+        isProcessing = false
     }
 
     private func enableAnalytics() async {
@@ -455,6 +531,68 @@ private extension AIHelpChatViewModel {
             "aiHelp.chat.notificationCheckComplete",
             value: "Notification checks complete. If you're still not receiving notifications, try toggling them off and on in Settings, or contact support.",
             comment: "Message after all notification diagnostics complete"
+        )
+
+        // Notification Settings
+        static let notificationSettingsUnavailable = NSLocalizedString(
+            "aiHelp.chat.notificationSettingsUnavailable",
+            value: "Could not retrieve notification settings for this site. The device may not be registered for push notifications.",
+            comment: "Diagnostic result when notification settings cannot be loaded"
+        )
+        static let orderNotificationsEnabled = NSLocalizedString(
+            "aiHelp.chat.orderNotificationsEnabled",
+            value: "Order notifications are enabled for this site.",
+            comment: "Diagnostic result when order notifications are enabled"
+        )
+        static let reviewNotificationsEnabled = NSLocalizedString(
+            "aiHelp.chat.reviewNotificationsEnabled",
+            value: "Review notifications are enabled for this site.",
+            comment: "Diagnostic result when review notifications are enabled"
+        )
+        static let notificationSettingsDisabled = NSLocalizedString(
+            "aiHelp.chat.notificationSettingsDisabled",
+            value: "Notifications are disabled for: %1$@. You can enable them below.",
+            comment: "Diagnostic result when some notification types are disabled. %1$@ is a comma-separated list (e.g. 'Orders, Reviews')"
+        )
+        static let enableOrderNotifications = NSLocalizedString(
+            "aiHelp.chat.enableOrderNotifications",
+            value: "Enable Order Notifications",
+            comment: "Button title to enable order push notifications"
+        )
+        static let enableReviewNotifications = NSLocalizedString(
+            "aiHelp.chat.enableReviewNotifications",
+            value: "Enable Review Notifications",
+            comment: "Button title to enable review push notifications"
+        )
+        static let orders = NSLocalizedString(
+            "aiHelp.chat.orders",
+            value: "Orders",
+            comment: "Label for order notifications in the diagnostic message"
+        )
+        static let reviews = NSLocalizedString(
+            "aiHelp.chat.reviews",
+            value: "Reviews",
+            comment: "Label for review notifications in the diagnostic message"
+        )
+        static let enablingNotifications = NSLocalizedString(
+            "aiHelp.chat.enablingNotifications",
+            value: "Enabling notifications...",
+            comment: "Message shown while enabling notification settings"
+        )
+        static let notificationsNowEnabled = NSLocalizedString(
+            "aiHelp.chat.notificationsNowEnabled",
+            value: "%1$@ notifications have been enabled!",
+            comment: "Message after notifications are enabled. %1$@ is the notification type (e.g. 'Orders')"
+        )
+        static let enableNotificationsFailed = NSLocalizedString(
+            "aiHelp.chat.enableNotificationsFailed",
+            value: "Failed to enable notifications: %1$@",
+            comment: "Error message when enabling notifications fails. %1$@ is the error description"
+        )
+        static let notificationSettingsCheckFailed = NSLocalizedString(
+            "aiHelp.chat.notificationSettingsCheckFailed",
+            value: "Could not check notification settings: %1$@",
+            comment: "Error when notification settings check fails. %1$@ is the error description"
         )
 
         // AI Analysis

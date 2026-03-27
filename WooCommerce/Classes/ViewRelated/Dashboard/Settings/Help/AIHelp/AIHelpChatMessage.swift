@@ -53,6 +53,8 @@ struct AIHelpChatMessage: Identifiable {
             case enableAnalytics
             case fileZendeskTicket
             case openNotificationSettings
+            case enableOrderNotifications
+            case enableReviewNotifications
         }
     }
 }

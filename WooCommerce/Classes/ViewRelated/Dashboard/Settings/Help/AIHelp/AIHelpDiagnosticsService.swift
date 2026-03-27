@@ -126,6 +126,74 @@ struct AIHelpDiagnosticsService {
         }
     }
 
+    // MARK: - Notification Settings
+
+    /// Result of checking notification settings for a site.
+    ///
+    struct NotificationSettingsResult {
+        let ordersEnabled: Bool
+        let reviewsEnabled: Bool
+    }
+
+    /// Loads notification settings for the current device and site.
+    /// - Returns: The notification settings for the site, or `nil` if unavailable.
+    ///
+    func loadNotificationSettings(siteID: Int64) async throws -> NotificationSettingsResult? {
+        guard let deviceIDString = ServiceLocator.pushNotesManager.deviceID,
+              let deviceID = Int64(deviceIDString) else {
+            return nil
+        }
+
+        let settings: NotificationSettings = try await withCheckedThrowingContinuation { continuation in
+            let action = AccountAction.loadNotificationSettings(deviceID: deviceID) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+
+        guard let blog = settings.blogs.first(where: { $0.blogID == siteID }),
+              let device = blog.devices.first(where: { $0.deviceID == deviceID }) else {
+            return nil
+        }
+
+        return NotificationSettingsResult(ordersEnabled: device.storeOrder, reviewsEnabled: device.newComment)
+    }
+
+    /// Enables order and/or review notifications for a site.
+    ///
+    func enableNotifications(siteID: Int64, enableOrders: Bool, enableReviews: Bool) async throws {
+        guard let deviceIDString = ServiceLocator.pushNotesManager.deviceID,
+              let deviceID = Int64(deviceIDString) else {
+            return
+        }
+
+        let settings: NotificationSettings = try await withCheckedThrowingContinuation { continuation in
+            let action = AccountAction.loadNotificationSettings(deviceID: deviceID) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+
+        let updatedBlogs = settings.blogs.map { blog -> NotificationSettings.Blog in
+            guard blog.blogID == siteID else { return blog }
+            let updatedDevices = blog.devices.map { device -> NotificationSettings.Device in
+                guard device.deviceID == deviceID else { return device }
+                return device.copy(newComment: enableReviews ? true : device.newComment,
+                                   storeOrder: enableOrders ? true : device.storeOrder)
+            }
+            return blog.copy(devices: updatedDevices)
+        }
+
+        let updatedSettings = NotificationSettings(blogs: updatedBlogs)
+
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let action = AccountAction.updateNotificationSettings(notificationSettings: updatedSettings) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
     // MARK: - AI Text Generation
 
     /// Uses Jetpack AI to analyze the user's problem description and suggest troubleshooting steps.

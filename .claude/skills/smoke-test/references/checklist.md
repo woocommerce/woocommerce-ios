@@ -89,7 +89,19 @@ This section mutates store data. Only run it on the agreed smoke-test store.
 
 > SCREENSHOT: 09-orders-list.png — Orders list loaded
 
-3. Scroll down repeatedly, listing elements after each scroll, until you have seen at least 26 distinct orders (page size is 25, so 26+ confirms pagination loaded a second page). Count unique order rows across all listings.
+3. **Pagination verification (REQUIRED — do not skip or mark as passed early):**
+   - The page size is 25. You MUST see **at least 26 distinct order numbers** to confirm a second page loaded.
+   - Scroll down, calling `list_elements_on_screen` after each scroll. Extract order numbers from each listing and add them to a running set of unique order numbers seen.
+   - Take a screenshot after each scroll that reveals new orders:
+
+   > SCREENSHOT: 09a-orders-page1.png — Orders list first page
+   > SCREENSHOT: 09b-orders-page2.png — Orders list after pagination (second page loaded)
+
+   Take additional `09c-`, `09d-`, etc. screenshots if more scrolls are needed.
+   - Keep scrolling until you have seen 26+ unique order numbers OR you reach the bottom of the list (no new orders appear after two consecutive scrolls).
+   - **In the report**, list all unique order numbers seen and the total count (e.g. "Saw 28 unique orders: #1234, #1233, #1232, ...").
+   - **Pass criteria**: 26 or more unique order numbers seen. If fewer than 26 are found, mark pagination as **FAIL** even if scrolling worked — the store may not have enough orders, or the second page did not load.
+
 4. Tap `order-search-button`. A small downward offset may be needed.
 5. Search for a known order number and verify results appear.
 6. Cancel search and return to the orders list.
@@ -134,7 +146,7 @@ This section mutates store data. Only run it on the agreed smoke-test store.
 
 > SCREENSHOT: 13-order-refunded.png — Order detail showing Refunded, Net Payment $0.00
 
-Pass criteria: the orders list loads and paginates, order creation succeeds with cash payment, the created order appears correctly, and the refund completes successfully.
+Pass criteria: the orders list loads and paginates (26+ unique order numbers seen — fewer is a FAIL), order creation succeeds with cash payment, the created order appears correctly, and the refund completes successfully.
 
 ## Section: Products
 

@@ -14,24 +14,23 @@ extension Bundle {
     }
 
     /// WordPress.com Magic Link URL scheme, read from Info.plist (`WCDotcomAuthScheme`).
-    ///
-    /// - Important: Crashes if the value is missing or empty — this is a developer error
-    ///   indicating the xcconfig is misconfigured.
     var dotcomAuthScheme: String {
-        guard let scheme = object(forInfoDictionaryKey: "WCDotcomAuthScheme") as? String, !scheme.isEmpty else {
-            fatalError("WCDotcomAuthScheme is missing or empty in Info.plist. Check the xcconfig setup.")
-        }
-        return scheme
+        requiredNonEmptyInfoPlistString(for: "WCDotcomAuthScheme")
     }
 
     /// Google Sign-In URL scheme, read from Info.plist (`WCGoogleAuthScheme`).
-    ///
-    /// - Important: Crashes if the value is missing or empty — this is a developer error
-    ///   indicating the xcconfig is misconfigured.
     var googleAuthScheme: String {
-        guard let scheme = object(forInfoDictionaryKey: "WCGoogleAuthScheme") as? String, !scheme.isEmpty else {
-            fatalError("WCGoogleAuthScheme is missing or empty in Info.plist. Check the xcconfig setup.")
+        requiredNonEmptyInfoPlistString(for: "WCGoogleAuthScheme")
+    }
+
+    /// Reads a `String` value from Info.plist and crashes if it is missing or empty.
+    ///
+    /// Use this for values that must be wired up at build time via xcconfig.
+    /// A crash on first launch makes misconfiguration obvious immediately.
+    private func requiredNonEmptyInfoPlistString(for key: String) -> String {
+        guard let value = object(forInfoDictionaryKey: key) as? String, !value.isEmpty else {
+            fatalError("\(key) is missing or empty in Info.plist. Check the xcconfig setup.")
         }
-        return scheme
+        return value
     }
 }

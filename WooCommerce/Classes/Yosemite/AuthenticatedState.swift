@@ -1,3 +1,4 @@
+import BuildSecrets
 import Foundation
 import Yosemite
 import Networking
@@ -110,8 +111,8 @@ class AuthenticatedState: StoresManagerState {
             ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePluginStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            SiteStore(dotcomClientID: ApiCredentials.dotcomAppId,
-                      dotcomClientSecret: ApiCredentials.dotcomSecret,
+            SiteStore(dotcomClientID: BuildSecrets.current.oauth.appId,
+                      dotcomClientSecret: BuildSecrets.current.oauth.secret,
                       dispatcher: dispatcher,
                       storageManager: storageManager,
                       network: network),

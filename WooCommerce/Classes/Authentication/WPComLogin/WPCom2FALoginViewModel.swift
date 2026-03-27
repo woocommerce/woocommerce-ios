@@ -1,4 +1,5 @@
 import AuthenticationServices
+import BuildSecrets
 import Foundation
 import WordPressAuthenticator
 import class Networking.UserAgent
@@ -45,8 +46,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
          onLoginFailure: @escaping (TwoFALoginError) -> Void,
          onLoginSuccess: @escaping (String) async -> Void) {
         self.loginFields = loginFields
-        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                       dotcomSecret: ApiCredentials.dotcomSecret,
+        self.loginFacade = LoginFacade(dotcomClientID: BuildSecrets.current.oauth.appId,
+                                       dotcomSecret: BuildSecrets.current.oauth.secret,
                                        userAgent: UserAgent.defaultUserAgent)
         self.onAuthWindowRequest = onAuthWindowRequest
         self.onLoginFailure = onLoginFailure

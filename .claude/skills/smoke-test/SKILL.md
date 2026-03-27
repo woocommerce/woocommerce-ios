@@ -16,6 +16,8 @@ Read these before starting:
 - `.claude/references/screen-identifiers.md` for accessibility identifiers and navigation flows
 - `.claude/skills/smoke-test/references/checklist.md` for the section-by-section smoke test checklist
 
+Mobile-mcp interaction patterns (tap strategy, text entry, screenshots, triage) are defined in `.claude/rules/mobile-interaction.md` and are always loaded. Follow them throughout the run.
+
 ## Arguments
 
 - `--skip-login` — Skip login, reuse existing session on the simulator
@@ -43,42 +45,8 @@ These require hardware, external auth, or out-of-app interaction and must be tes
 - Blaze campaign creation (real payment)
 - Locale / language changes
 
-## Known mobile-mcp Quirks
+## Screenshots
 
-- **Tap coordinates can be slightly off.** If a tap does not register on the exact coordinates reported by `list_elements_on_screen`, retry with a small offset from the reported center.
-- **UIMenu buttons** such as `performance-time-range-menu` often need a slight right/down offset.
-- **Navigation bar buttons** such as search or `+` often need a tap roughly 15px below the reported y coordinate because of safe area insets.
-
-## Tap and Text Entry Strategy
-
-### Retry with variance
-When a tap does not produce the expected result, do NOT retry at the same coordinates. Instead, use a tight loop:
-
-1. **Tap** at the element coordinates reported by `list_elements_on_screen`
-2. **Immediately call `list_elements_on_screen`** to check whether the screen state changed
-3. If unchanged, **vary the tap position**: try the center of the element's bounding rect (`x + width/2`, `y + height/2`), then offsets of ~10–20px in each direction
-4. Repeat up to 3 times with different coordinates before considering the tap a failure
-
-Do NOT take screenshots to check whether a tap worked — use `list_elements_on_screen` instead. It is faster and does not consume context window space.
-
-### Text field interaction
-Text fields in this app often require specific handling:
-
-1. **Tap to focus**: The reported `y` coordinate is the top edge of the field. Tap at `y + height/2` (the vertical center) to reliably activate the field.
-2. **Verify focus before typing**: After tapping, call `list_elements_on_screen`. If the keyboard is visible (keyboard buttons like `shift`, `continue`, `Emoji` appear in the listing), the field is focused. If no keyboard elements appear, re-tap with adjusted coordinates.
-3. **Type and verify**: After calling `type_keys`, call `list_elements_on_screen` and check the field's `value` property. If it still shows the placeholder, the text did not land — re-tap and retype.
-4. **Never use screenshots** to verify text entry — check the `value` property in the element listing.
-
-### General principle
-Prefer tight `tap → list_elements → adjust` loops over `tap → sleep → screenshot → inspect` loops. The element listing is the primary feedback mechanism. Screenshots are a last resort for visual diagnosis when the element listing is ambiguous.
-
-## Screenshot Policy
-
-**Always use `save_screenshot` (saves to disk). Never use `take_screenshot` (loads into context).**
-
-`take_screenshot` puts the full image into the conversation context, consuming tokens and slowing down the run. The only acceptable use of `take_screenshot` is failure triage when `list_elements_on_screen` is genuinely ambiguous — and even then, prefer `save_screenshot` + reading the saved file after compacting.
-
-### Audit screenshots
 The checklist (`references/checklist.md`) defines **required** screenshot checkpoints inline with the test steps, marked with `> SCREENSHOT: <filename> — <label>`. Take each one using `save_screenshot` when you reach that step.
 
 Create the run folder at the start:
@@ -93,47 +61,7 @@ sips -Z 1200 <file.png> --out <file.png>
 
 Keep a running list of `{ file, label }` pairs as you go — these feed directly into the HTML report flipbook at the end.
 
-### Additional screenshots
-You may take screenshots beyond the required checkpoints — especially for error states or unexpected behavior. Use a `FAIL-` prefix for failure triage screenshots (e.g. `FAIL-05-unexpected-error.png`).
-
-### Failure triage
-If a test step fails after 3 retries and `list_elements_on_screen` doesn't explain why:
-1. Use `save_screenshot` to save to the run folder with a `FAIL-` prefix
-2. Compact it: `sips -Z 1200 <file.png> --out <file.png>`
-3. Only then read the compacted file if visual inspection is needed
-
-## Unexpected Behavior and Triage
-
-When something doesn't work on the first attempt, **don't just retry silently**. Reason about what happened and record an observation.
-
-### Classify the problem
-
-Before retrying, consider which category the issue falls into:
-
-| Category | Signals | Action |
-|----------|---------|--------|
-| **Test framework flake** | WDA timeout, `context deadline exceeded`, home screen appeared, tap didn't register but elements are correct | Retry. Note it as a framework issue in observations. |
-| **Transient app/network issue** | "Something went wrong", spinner that doesn't resolve, empty data that loads on retry | Retry. Flag it as an observation — transient errors can mask real bugs if they happen consistently. |
-| **Possible app bug** | Wrong screen shown, unexpected error message, element missing that should be there, data looks wrong | Take a `FAIL-` screenshot. Record a detailed observation. Continue if possible but mark the step with a warning. |
-| **Definite app bug** | Crash, data loss, wrong amounts, broken navigation that doesn't recover | Take a `FAIL-` screenshot. Mark the section as FAIL. Record the bug in detail. |
-
-### Record observations
-
-Keep a running list of observations as you go. Each observation should include:
-- **What happened**: the unexpected behavior
-- **Category**: framework flake, transient issue, possible bug, or definite bug
-- **What you did**: how you worked around it (retried, adjusted coordinates, relaunched, etc.)
-- **Concern level**: low (framework noise), medium (worth a second look), high (likely a real bug)
-
-Even if a step eventually passes after retries, record the observation. A step that consistently needs 3 retries is a signal, not just noise.
-
-### Observations in the report
-
-Observations appear in a dedicated section of the HTML report, separate from the pass/fail results. This lets the user see at a glance what was clean and what was messy. Each observation shows:
-- The step it relates to
-- A short description
-- The concern level (color-coded: grey for low, amber for medium, red for high)
-- Any associated `FAIL-` screenshot
+You may take **additional** screenshots beyond the required checkpoints — especially for error states or unexpected behavior. Use a `FAIL-` prefix for failure triage screenshots (e.g. `FAIL-05-unexpected-error.png`).
 
 ## Step 1: Get Credentials
 
@@ -180,7 +108,7 @@ Then launch the app:
 xcrun simctl launch $UDID com.automattic.woocommerce disable-animations
 ```
 
-Wait 5 seconds for the app to settle. Do not take a screenshot here unless login is already going off the rails and you need failure triage.
+Wait 5 seconds for the app to settle.
 
 **Login flow** (from `screen-identifiers.md`):
 1. Tap `Prologue Self Hosted Button`
@@ -201,23 +129,11 @@ Execution rules:
 - Continue after a section failure when the app is still usable, and mark that section failed in the report
 - Stop only for blockers such as build failure, launch failure, inability to log in, or a crash that prevents further testing
 
-For each step, use mobile-mcp tools:
-- `list_elements_on_screen` — find elements, verify screen state, and get coordinates. **This is the primary tool.**
-- `click_on_screen_at_coordinates` — tap elements
-- `save_screenshot` — save audit checkpoint screenshots to disk (**never use `take_screenshot`**)
-- `type_keys` — enter text
-
-**Always call `list_elements_on_screen` before tapping** — coordinates change between screens.
-
-**Never use screenshots for routine verification.** Do not take a screenshot to check whether a tap worked, whether text was entered, or whether a screen transition happened. Use `list_elements_on_screen` for all of these.
-
-**Dismiss overlays**: If `top-banner-view-dismiss-button` or `feedback-banner-popover-close-button` appears, tap it before proceeding.
-
 Record evidence as you go:
 - Capture the simulator name and UDID used for each device class
 - Keep the created order number for the `orders` section
-- Save checkpoint screenshots using `save_screenshot` at each recommended checkpoint (see Screenshot Policy)
-- Compact each screenshot immediately after saving
+- Save checkpoint screenshots at each `> SCREENSHOT:` directive in the checklist
+- Keep a running list of observations (see `.claude/rules/mobile-interaction.md`)
 
 ## Step 6: Generate HTML Report
 
@@ -227,14 +143,14 @@ The report file should be saved as `/tmp/woo-smoke-test-<timestamp>/report.html`
 
 1. **Summary table** — section name, PASS/FAIL badge, and notes for each section tested
 2. **Screenshot flipbook** — all audit screenshots displayed in order with labels, navigable with Previous/Next buttons or arrow keys
-3. **Observations** — anything unexpected that happened during the run, even if the step eventually passed (see "Unexpected Behavior and Triage" above). Each observation shows the step, description, concern level (color-coded), and any `FAIL-` screenshot. Only include this section if there are observations to report.
+3. **Observations** — anything unexpected that happened during the run, even if the step eventually passed. Each observation shows the step, description, concern level (color-coded: grey for low, amber for medium, red for high), and any `FAIL-` screenshot. Only include this section if there are observations to report.
 4. **Not tested** — list of manual-only items
 
 ### HTML report structure
 
 Generate a single HTML file with inline CSS and JS (no external dependencies). Key features:
 
-- Screenshots embedded as `<img src="file:///tmp/woo-smoke-test-<timestamp>/screenshots/01-prologue.png">` using absolute `file://` paths
+- Screenshots referenced via relative paths (e.g. `screenshots/01-prologue.png`) so the report works from the run folder
 - PASS sections get a green badge, FAIL sections get a red badge
 - Flipbook: show one screenshot at a time with the label below it. Arrow keys and buttons navigate between screenshots
 - Responsive layout that works at reasonable browser widths

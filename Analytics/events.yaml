@@ -1,0 +1,20 @@
+schemaVersion: 1
+
+enums:
+  booking_source:
+    - booking_list
+    - search
+    - push_notification
+
+events:
+  eh_bookings_tab_viewed:
+    total_bookings_count:
+      type: int
+
+  eh_booking_detail_opened:
+    booking_id:
+      type: int
+    source:
+      type: booking_source
+    is_upcoming:
+      type: boolean

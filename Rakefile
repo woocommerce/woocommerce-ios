@@ -83,6 +83,14 @@ task :generate do
   run_package_plugin(cmd: 'sourcery-command --disableCache')
 end
 
+desc 'Generate analytics event code from YAML schema'
+task :event_horizon do
+  sh 'event-horizon ' \
+     '-i Analytics/events.yaml ' \
+     '-o WooCommerce/Classes/Analytics/Generated/ ' \
+     '-f swift'
+end
+
 def command?(command)
   system("which #{command} > /dev/null 2>&1")
 end

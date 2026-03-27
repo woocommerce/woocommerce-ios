@@ -75,6 +75,12 @@ final class BookingDetailsViewModel: ObservableObject {
         configureEntityListener()
 
         updateDisplayProperties(from: booking)
+
+        analytics.track(EhBookingDetailOpenedEvent(
+            bookingId: Int(booking.bookingID),
+            source: .bookingList,
+            isUpcoming: booking.startDate > Date()
+        ))
     }
 }
 

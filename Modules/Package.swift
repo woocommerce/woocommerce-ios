@@ -16,6 +16,10 @@ let package = Package(
             targets: ["APIMocks"]
         ),
         .library(
+            name: "BuildSecrets",
+            targets: ["BuildSecrets"]
+        ),
+        .library(
             name: "Codegen",
             targets: ["Codegen"]
         ),
@@ -122,6 +126,9 @@ let package = Package(
         .target(
             name: "APIMocks",
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "BuildSecrets"
         ),
         .target(
             name: "Codegen",
@@ -422,6 +429,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
+                    "BuildSecrets",
                     "Codegen",
                     "Experiments",
                     "Hardware",
@@ -492,6 +500,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceWatchApp,
                 dependencies: [
+                    "BuildSecrets",
                     "NetworkingCore",
                     "WooFoundationCore",
                     .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),

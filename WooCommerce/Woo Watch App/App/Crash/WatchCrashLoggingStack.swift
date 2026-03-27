@@ -1,3 +1,4 @@
+import BuildSecrets
 import NetworkingCore
 import WooFoundationCore
 
@@ -68,7 +69,7 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
 class WatchCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     var sentryDSN: String {
-        ApiCredentials.sentryDSN
+        BuildSecrets.current.sentryDSN
     }
 
     var userHasOptedOut: Bool = false

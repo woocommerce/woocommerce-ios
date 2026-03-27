@@ -1,3 +1,4 @@
+import BuildSecrets
 import WatchKit
 import UserNotifications
 import CocoaLumberjack
@@ -25,6 +26,8 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
     /// Setup code after the app finishes launching
     ///
     func applicationDidFinishLaunching() {
+        BuildSecrets.configure(secrets: ApiCredentials.toSecrets())
+
         // Set up logging
         setupCocoaLumberjack()
 

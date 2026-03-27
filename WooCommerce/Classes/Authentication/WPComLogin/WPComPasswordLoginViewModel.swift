@@ -1,3 +1,4 @@
+import BuildSecrets
 import Foundation
 import WordPressAuthenticator
 import class Networking.UserAgent
@@ -30,8 +31,8 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
          onLoginSuccess: @escaping (String) async -> Void) {
         self.siteURL = siteURL
         self.email = email
-        self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
-                                       dotcomSecret: ApiCredentials.dotcomSecret,
+        self.loginFacade = LoginFacade(dotcomClientID: BuildSecrets.current.oauth.appId,
+                                       dotcomSecret: BuildSecrets.current.oauth.secret,
                                        userAgent: UserAgent.defaultUserAgent)
         self.onMagicLinkRequest = onMagicLinkRequest
         self.onMultifactorCodeRequest = onMultifactorCodeRequest

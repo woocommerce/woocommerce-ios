@@ -253,10 +253,10 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         // Given
         let refund = MockRefunds.sampleRefund(isAutomated: nil)
         let viewModel = OrderPaymentDetailsViewModel(order: order, refund: refund, currencySettings: CurrencySettings())
-        
+
         // When
         let summary = viewModel.refundSummary
-        
+
         // Then
         XCTAssertTrue(summary?.contains("manual refund") == true)
     }

@@ -105,6 +105,7 @@ If running all sections including POS, start with iPhone for everything else, th
 ### Physical device
 If `--device` is set, use mobile-mcp to discover connected devices:
 - List available devices and confirm the target device with the user
+- If no physical device appears, guide the user through `.claude/skills/smoke-test/references/device-setup.md`
 - Device-only tests (installation, push notifications, card reader, TTP, camera) are enabled
 
 ## Step 3: Build the App

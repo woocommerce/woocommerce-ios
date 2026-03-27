@@ -141,9 +141,12 @@ After all sections complete, generate a self-contained HTML report file in the r
 
 The report file should be saved as `/tmp/woo-smoke-test-<timestamp>/report.html` and include:
 
-1. **Summary table** — section name, PASS/FAIL badge, and notes for each section tested
-2. **Screenshot flipbook** — all audit screenshots displayed in order with labels, navigable with Previous/Next buttons or arrow keys
-3. **Observations** — anything unexpected that happened during the run, even if the step eventually passed. Each observation shows the step, description, concern level (color-coded: grey for low, amber for medium, red for high), and any `FAIL-` screenshot. Only include this section if there are observations to report.
+1. **Summary table** — section name, PASS/FAIL badge, and notes for each section tested. Clicking a section name scrolls to that section's detail.
+2. **Section details** — one collapsible section per test (Login, Dashboard, Orders, Products, Hub Menu, POS), each containing:
+   - PASS/FAIL badge and section title
+   - A screenshot flipbook for that section's screenshots only (Previous/Next buttons, arrow keys navigate within the section's flipbook)
+   - Any observations from that section, shown inline below the flipbook. Each observation shows the step, description, concern level (color-coded: grey for low, amber for medium, red for high), and any `FAIL-` screenshot.
+3. **Observations summary** — a collected list of all observations across all sections, for quick scanning. Each entry links back to the relevant section. Only include this if there are observations to report.
 4. **Not tested** — list of manual-only items
 
 ### HTML report structure
@@ -152,7 +155,8 @@ Generate a single HTML file with inline CSS and JS (no external dependencies). K
 
 - Screenshots referenced via relative paths (e.g. `screenshots/01-prologue.png`) so the report works from the run folder
 - PASS sections get a green badge, FAIL sections get a red badge
-- Flipbook: show one screenshot at a time with the label below it. Arrow keys and buttons navigate between screenshots
+- Each section has its own independent flipbook — arrow keys and buttons navigate within the currently visible/focused flipbook only
+- Sections are collapsible (expanded by default for FAIL sections, collapsed for PASS sections)
 - Responsive layout that works at reasonable browser widths
 - Dark header with the Woo purple (`#7F54B3`) as accent color
 

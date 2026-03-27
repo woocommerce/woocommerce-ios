@@ -89,7 +89,7 @@ This section mutates store data. Only run it on the agreed smoke-test store.
 
 > SCREENSHOT: 09-orders-list.png — Orders list loaded
 
-3. Scroll down and list elements again to verify more orders load.
+3. Scroll down repeatedly, listing elements after each scroll, until you have seen at least 26 distinct orders (page size is 25, so 26+ confirms pagination loaded a second page). Count unique order rows across all listings.
 4. Tap `order-search-button`. A small downward offset may be needed.
 5. Search for a known order number and verify results appear.
 6. Cancel search and return to the orders list.

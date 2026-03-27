@@ -248,15 +248,15 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(summary?.contains("Pay in Person") == true)
         XCTAssertFalse(summary?.contains("manual refund") == true)
     }
-        
-        func test_refundSummary_when_isAutomated_nil_and_not_cod_then_shows_manual_refund() {
+
+    func test_refundSummary_when_isAutomated_nil_and_not_cod_then_shows_manual_refund() {
         // Given
         let refund = MockRefunds.sampleRefund(isAutomated: nil)
         let viewModel = OrderPaymentDetailsViewModel(order: order, refund: refund, currencySettings: CurrencySettings())
-
+        
         // When
         let summary = viewModel.refundSummary
-
+        
         // Then
         XCTAssertTrue(summary?.contains("manual refund") == true)
     }

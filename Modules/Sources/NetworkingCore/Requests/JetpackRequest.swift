@@ -4,7 +4,7 @@ import Alamofire
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
-public struct JetpackRequest: Request, RESTRequestConvertible {
+public struct JetpackRequest: Request, RESTRequestConvertible, @unchecked Sendable {
 
     /// WordPress.com API Version: By Default, we'll go thru Mark 1.1.
     ///

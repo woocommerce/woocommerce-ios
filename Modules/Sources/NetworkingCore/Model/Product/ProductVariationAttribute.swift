@@ -4,7 +4,7 @@ import Codegen
 
 /// Represents a Product Variation Attribute Entity.
 ///
-public struct ProductVariationAttribute: Codable, Equatable, GeneratedFakeable, GeneratedCopiable, Hashable {
+public struct ProductVariationAttribute: Codable, Equatable, GeneratedFakeable, GeneratedCopiable, Hashable, Sendable {
     public let id: Int64
     public let name: String
     public let option: String

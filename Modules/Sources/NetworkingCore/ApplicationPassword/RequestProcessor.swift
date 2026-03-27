@@ -190,7 +190,7 @@ public extension NSNotification.Name {
 }
 
 private extension RequestProcessor {
-    final class RequestProcessorState {
+    final class RequestProcessorState: @unchecked Sendable {
         private var requestsToRetry: [(RetryResult) -> Void]
         private var isAuthenticating: Bool
         private var requestAuthenticator: RequestAuthenticator

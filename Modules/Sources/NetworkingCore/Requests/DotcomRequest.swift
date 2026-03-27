@@ -8,7 +8,7 @@ enum DotcomRequestError: Error {
 
 /// Represents a WordPress.com Request
 ///
-public struct DotcomRequest: Request, RESTRequestConvertible {
+public struct DotcomRequest: Request, RESTRequestConvertible, @unchecked Sendable {
 
     /// WordPress.com API Version
     ///

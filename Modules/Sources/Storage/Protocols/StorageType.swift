@@ -58,7 +58,7 @@ public protocol StorageType: AnyObject {
 
     /// Asynchronously performs a given block on the StorageType's queue.
     ///
-    func perform(_ closure: @escaping () -> Void)
+    func perform(_ closure: @escaping @Sendable () -> Void)
 
     /// Create an `NSFetchedResultsController` using this `StorageType`.
     ///

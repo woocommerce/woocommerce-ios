@@ -2,6 +2,10 @@
 
 import PackageDescription
 
+let concurrencySettings: [SwiftSetting] = [
+    .enableExperimentalFeature("StrictConcurrency=targeted")
+]
+
 let package = Package(
     name: "Modules",
     platforms: [
@@ -173,7 +177,8 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "HTMLParser", package: "AztecEditor-iOS"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
-            ]
+            ],
+            swiftSettings: concurrencySettings
         ),
         .target(
             name: "Storage",
@@ -183,7 +188,8 @@ let package = Package(
                 .product(name: "GRDB", package: "GRDB.swift")
             ],
             exclude: ["Model/Migrations.md"],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: concurrencySettings
         ),
         .target(
             name: "TestKit",

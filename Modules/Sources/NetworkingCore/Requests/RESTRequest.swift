@@ -3,7 +3,7 @@ import Alamofire
 
 /// Represents a WordPress.org REST API request
 ///
-public struct RESTRequest: Request {
+public struct RESTRequest: Request, @unchecked Sendable {
     /// URL of the site to make the request with
     ///
     let siteURL: String

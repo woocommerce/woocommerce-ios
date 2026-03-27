@@ -56,18 +56,19 @@ public extension LoginFacade {
 
         delegate?.displayLoginMessage?(NSLocalizedString("Waiting for security key", comment: "Text while waiting for a security key challenge"))
 
-        return await withCheckedContinuation { continuation in
-            wordpressComOAuthClientFacade.requestWebauthnChallenge(userID: Int64(userID), twoStepNonce: twoStepNonce, success: { challengeInfo in
-                continuation.resume(returning: challengeInfo)
-            }, failure: { [weak self] error in
-                guard let self else { return }
+        nonisolated(unsafe) let facade = wordpressComOAuthClientFacade
+        nonisolated(unsafe) let weakSelf = self
 
+        return await withCheckedContinuation { continuation in
+            facade.requestWebauthnChallenge(userID: Int64(userID), twoStepNonce: twoStepNonce, success: { challengeInfo in
+                continuation.resume(returning: challengeInfo)
+            }, failure: { error in
                 WPAuthenticatorLogError("Failed to request webauthn challenge \(error)")
                 WordPressAuthenticator.track(.loginFailed, error: error)
                 continuation.resume(returning: nil)
 
                 DispatchQueue.main.async {
-                    self.delegate?.displayRemoteError?(error)
+                    weakSelf.delegate?.displayRemoteError?(error)
                 }
             })
         }

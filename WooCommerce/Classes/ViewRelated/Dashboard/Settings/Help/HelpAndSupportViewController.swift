@@ -201,6 +201,8 @@ private extension HelpAndSupportViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: HelpAndSupportRow, at indexPath: IndexPath) {
         switch cell {
+        case let cell as ValueOneTableViewCell where row == .aiHelp:
+            configureAIHelp(cell: cell)
         case let cell as ValueOneTableViewCell where row == .helpCenter:
             configureHelpCenter(cell: cell)
         case let cell as ValueOneTableViewCell where row == .contactSupport:
@@ -214,6 +216,23 @@ private extension HelpAndSupportViewController {
         default:
             fatalError()
         }
+    }
+
+    /// AI Help cell.
+    ///
+    func configureAIHelp(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "aiHelp.row.title",
+            value: "Troubleshoot with AI",
+            comment: "Title for the AI Help row in the Help & Support screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "aiHelp.row.subtitle",
+            value: "Get instant help diagnosing common issues",
+            comment: "Subtitle for the AI Help row in the Help & Support screen"
+        )
     }
 
     /// Help Center cell.
@@ -297,6 +316,19 @@ private extension HelpAndSupportViewController {
 // MARK: - Actions
 //
 private extension HelpAndSupportViewController {
+
+    /// AI Help action
+    ///
+    func aiHelpWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID,
+              let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+
+        let controller = AIHelpChatHostingController(siteID: siteID, siteName: site.name, siteURL: site.url)
+        controller.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
     /// Help Center action
     ///
@@ -407,6 +439,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         switch rowAtIndexPath(indexPath) {
+        case .aiHelp:
+            aiHelpWasPressed()
         case .helpCenter:
             helpCenterWasPressed()
         case .contactSupport:
@@ -436,6 +470,7 @@ private struct Section {
 // MARK: - Row type
 //
 enum HelpAndSupportRow: CaseIterable {
+    case aiHelp
     case helpCenter
     case contactSupport
     case contactEmail
@@ -444,7 +479,7 @@ enum HelpAndSupportRow: CaseIterable {
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport:
+        case .aiHelp, .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport:
             return ValueOneTableViewCell.self
         }
     }

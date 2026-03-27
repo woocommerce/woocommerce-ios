@@ -7,6 +7,7 @@ public enum GenerativeContentRemoteFeature: String {
     case productDetailsFromScannedTexts = "woo_ios_product_details_from_scanned_texts"
     case productName = "woo_ios_product_name"
     case productCreation = "woo_ios_product_creation"
+    case supportTroubleshooting = "woo_ios_support_troubleshooting"
 }
 
 public enum GenerativeContentRemoteResponseFormat: String {

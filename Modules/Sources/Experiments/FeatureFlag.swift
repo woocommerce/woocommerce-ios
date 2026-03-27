@@ -229,4 +229,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Enables the AI-based help chat interface in Settings > Help
+    ///
+    case aiHelp
 }

@@ -1,15 +1,21 @@
 import Foundation
 import UIKit
+import Experiments
 
 struct HelpAndSupportViewModel {
     private let isAuthenticated: Bool
     private let isZendeskEnabled: Bool
     private let isMacCatalyst: Bool
+    private let featureFlagService: FeatureFlagService
 
-    init(isAuthenticated: Bool, isZendeskEnabled: Bool, isMacCatalyst: Bool) {
+    init(isAuthenticated: Bool,
+         isZendeskEnabled: Bool,
+         isMacCatalyst: Bool,
+         featureFlagService: FeatureFlagService = DefaultFeatureFlagService()) {
         self.isAuthenticated = isAuthenticated
         self.isZendeskEnabled = isZendeskEnabled
         self.isMacCatalyst = isMacCatalyst
+        self.featureFlagService = featureFlagService
     }
 
     func getRows() -> [HelpAndSupportRow] {
@@ -21,7 +27,13 @@ struct HelpAndSupportViewModel {
             return [.helpCenter]
         }
 
-        var rows: [HelpAndSupportRow] = [.helpCenter, .contactSupport, .contactEmail, .applicationLog]
+        var rows: [HelpAndSupportRow] = []
+
+        if isAuthenticated && featureFlagService.isFeatureFlagEnabled(.aiHelp) {
+            rows.append(.aiHelp)
+        }
+
+        rows.append(contentsOf: [.helpCenter, .contactSupport, .contactEmail, .applicationLog])
         if isAuthenticated {
             rows.append(.systemStatusReport)
         }

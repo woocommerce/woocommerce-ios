@@ -140,7 +140,8 @@ class AuthenticatedState: StoresManagerState {
             GoogleAdsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            BookingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            BookingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            GenerativeContentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 

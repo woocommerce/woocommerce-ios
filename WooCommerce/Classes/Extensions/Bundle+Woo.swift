@@ -15,18 +15,22 @@ extension Bundle {
 
     /// WordPress.com Magic Link URL scheme, read from Info.plist (`WCDotcomAuthScheme`).
     ///
+    /// - Important: Crashes if the value is missing or empty — this is a developer error
+    ///   indicating the xcconfig is misconfigured.
     var dotcomAuthScheme: String {
         guard let scheme = object(forInfoDictionaryKey: "WCDotcomAuthScheme") as? String, !scheme.isEmpty else {
-            return ""
+            fatalError("WCDotcomAuthScheme is missing or empty in Info.plist. Check the xcconfig setup.")
         }
         return scheme
     }
 
     /// Google Sign-In URL scheme, read from Info.plist (`WCGoogleAuthScheme`).
     ///
+    /// - Important: Crashes if the value is missing or empty — this is a developer error
+    ///   indicating the xcconfig is misconfigured.
     var googleAuthScheme: String {
         guard let scheme = object(forInfoDictionaryKey: "WCGoogleAuthScheme") as? String, !scheme.isEmpty else {
-            return ""
+            fatalError("WCGoogleAuthScheme is missing or empty in Info.plist. Check the xcconfig setup.")
         }
         return scheme
     }

@@ -65,7 +65,7 @@ These login flows require user interaction for authentication steps the agent ca
 2. Enter site URL: `https://woomobilepasswordlesslogin.wpcomstaging.com/`
 3. Enter email: `woomobile@bakbmdyy.mailosaur.net`
 4. Tap continue. The app will send a magic link email.
-5. Ask the user via `AskUserQuestion`: "Please check the Mailosaur inbox (credentials: https://mc.a8c.com/secret-store/?secret_id=11346) and provide the magic link URL."
+5. Ask the user via `AskUserQuestion`: "Please check the Mailosaur **passwordless1** inbox (credentials: https://mc.a8c.com/secret-store/?secret_id=11346) and provide the magic link URL."
 6. Open the magic link in the simulator/device: `xcrun simctl openurl <UDID> <magic_link_url>`
 7. Verify the app completes login and reaches the dashboard.
 
@@ -105,8 +105,16 @@ Pass criteria: all user-assisted login methods reach the dashboard successfully.
 
 ### Barcode scanning — start order creation (user-assisted)
 
-1. From the orders list, tap the barcode scan button to start order creation via barcode.
-2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present a barcode for the Barcode Product (or another product with a known SKU). Confirm when done."
+The test store has a "Barcode Product" with this barcode (Code 128):
+
+```
+WOOBARCODE123
+```
+
+Generate a scannable barcode image and display it to the user. You can use a barcode generator URL or create one inline. Alternatively, the user can generate one at https://barcode.tec-it.com/en/Code128?data=WOOBARCODE123
+
+1. From the orders list, tap the barcode scan button (`create-new-order-by-product-scanning`) to start order creation via barcode.
+2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present this barcode to the camera (display it on another screen or print it): https://barcode.tec-it.com/en/Code128?data=WOOBARCODE123 — or use a barcode for another product with a known SKU. Confirm when done."
 3. Verify the scanned product is recognized and an order creation form appears with the product added.
 
 > SCREENSHOT: 07-barcode-order-creation.png — Order created from barcode scan
@@ -114,7 +122,7 @@ Pass criteria: all user-assisted login methods reach the dashboard successfully.
 ### Barcode scanning — add product to order (user-assisted)
 
 1. During order creation, tap the barcode button to add a product via scan.
-2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present a barcode. Confirm when done."
+2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present the barcode to the camera (same barcode as before, or a different product). Confirm when done."
 3. Verify the scanned product is added to the order.
 
 > SCREENSHOT: 08-barcode-product-added.png — Product added via barcode scan
@@ -166,9 +174,10 @@ Requires a physical device and payment hardware. The agent drives the UI; the us
 
 1. Create a new order or use an existing unpaid order.
 2. Tap Collect Payment, then select the card reader option.
-3. Ask the user via `AskUserQuestion`: "Please connect the card reader and present a test card when prompted. Let me know when payment is complete."
-4. Verify payment success.
-5. Verify the "Print receipt" button appears on the payment success dialog.
+3. After tapping, watch for permission prompts (Bluetooth, location) and onboarding screens (card reader setup, terms acceptance). Tap through these as they appear — list elements after each to check for the next prompt.
+4. Ask the user via `AskUserQuestion`: "Please connect the card reader and present a test card when prompted. Let me know when payment is complete."
+5. Verify payment success.
+6. Verify the "Print receipt" button appears on the payment success dialog.
 
 > SCREENSHOT: 12-card-reader-payment-success.png — Card reader payment success with print receipt button
 
@@ -176,8 +185,9 @@ Requires a physical device and payment hardware. The agent drives the UI; the us
 
 1. Create a new order or use an existing unpaid order.
 2. Tap Collect Payment, then select Tap to Pay.
-3. Ask the user via `AskUserQuestion`: "Please present a test card for Tap to Pay when prompted. Let me know when payment is complete."
-4. Verify payment success.
+3. After tapping, watch for permission prompts and onboarding screens (TTP terms acceptance via Apple ID, setup steps). Tap through these as they appear. If an Apple ID prompt requires user interaction, ask via `AskUserQuestion`.
+4. Ask the user via `AskUserQuestion`: "Please present a test card for Tap to Pay when prompted. Let me know when payment is complete."
+5. Verify payment success.
 
 > SCREENSHOT: 13-ttp-payment-success.png — Tap to Pay payment success
 

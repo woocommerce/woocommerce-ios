@@ -105,16 +105,10 @@ Pass criteria: all user-assisted login methods reach the dashboard successfully.
 
 ### Barcode scanning — start order creation (user-assisted)
 
-The test store has a "Barcode Product" with this barcode (Code 128):
-
-```
-WOOBARCODE123
-```
-
-Generate a scannable barcode image and display it to the user. You can use a barcode generator URL or create one inline. Alternatively, the user can generate one at https://barcode.tec-it.com/en/Code128?data=WOOBARCODE123
+The test store has a "Barcode Product" with SKU `12345678911`. The user needs a scannable barcode image — link them to: https://barcode.tec-it.com/en/UPCA?data=12345678911
 
 1. From the orders list, tap the barcode scan button (`create-new-order-by-product-scanning`) to start order creation via barcode.
-2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present this barcode to the camera (display it on another screen or print it): https://barcode.tec-it.com/en/Code128?data=WOOBARCODE123 — or use a barcode for another product with a known SKU. Confirm when done."
+2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present the barcode for SKU 12345678911 to the camera. You can display it from this link on another screen: https://barcode.tec-it.com/en/UPCA?data=12345678911 — Confirm when done."
 3. Verify the scanned product is recognized and an order creation form appears with the product added.
 
 > SCREENSHOT: 07-barcode-order-creation.png — Order created from barcode scan

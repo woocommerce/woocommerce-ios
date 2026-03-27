@@ -1,3 +1,4 @@
+import BuildSecrets
 import Foundation
 import Yosemite
 import class Networking.AlamofireNetwork
@@ -18,8 +19,8 @@ class DeauthenticatedState: StoresManagerState {
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
         services = [
             JetpackConnectionStore(dispatcher: dispatcher),
-            AccountCreationStore(dotcomClientID: ApiCredentials.dotcomAppId,
-                                 dotcomClientSecret: ApiCredentials.dotcomSecret,
+            AccountCreationStore(dotcomClientID: BuildSecrets.current.oauth.appId,
+                                 dotcomClientSecret: BuildSecrets.current.oauth.secret,
                                  network: network,
                                  dispatcher: dispatcher),
             WordPressSiteStore(network: network, dispatcher: dispatcher)

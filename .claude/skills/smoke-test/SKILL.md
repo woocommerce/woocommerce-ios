@@ -79,48 +79,22 @@ Prefer tight `tap → list_elements → adjust` loops over `tap → sleep → sc
 `take_screenshot` puts the full image into the conversation context, consuming tokens and slowing down the run. The only acceptable use of `take_screenshot` is failure triage when `list_elements_on_screen` is genuinely ambiguous — and even then, prefer `save_screenshot` + reading the saved file after compacting.
 
 ### Audit screenshots
-Save screenshots at key checkpoints to build a flipbook for human review. Use `save_screenshot` to write directly to the run folder — never load them into context.
+The checklist (`references/checklist.md`) defines **required** screenshot checkpoints inline with the test steps, marked with `> SCREENSHOT: <filename> — <label>`. Take each one using `save_screenshot` when you reach that step.
 
 Create the run folder at the start:
 ```bash
 mkdir -p /tmp/woo-smoke-test-<timestamp>/screenshots
 ```
 
-Use ordered filenames: `01-prologue.png`, `02-site-address-filled.png`, `03-email-filled.png`, `04-dashboard-loaded.png`, etc.
-
 Compact each screenshot immediately after saving:
 ```bash
 sips -Z 1200 <file.png> --out <file.png>
 ```
 
-### Recommended checkpoint screenshots
+Keep a running list of `{ file, label }` pairs as you go — these feed directly into the HTML report flipbook at the end.
 
-**Login section:**
-- Prologue screen (first screen)
-- Site address field filled in
-- Email field filled in
-- Dashboard loaded (successful login)
-
-**Dashboard section:**
-- Dashboard with revenue visible
-- Time range changed
-
-**Orders section:**
-- Orders list loaded
-- Order creation form
-- Order created (detail view)
-- Order refunded (detail view)
-
-**Products section:**
-- Products list
-- Product detail
-
-**Hub Menu section:**
-- Hub menu root
-
-**POS section:**
-- POS cart ready
-- POS payment success
+### Additional screenshots
+You may take screenshots beyond the required checkpoints — especially for error states or unexpected behavior. Use a `FAIL-` prefix for failure triage screenshots (e.g. `FAIL-05-unexpected-error.png`).
 
 ### Failure triage
 If a test step fails after 3 retries and `list_elements_on_screen` doesn't explain why:

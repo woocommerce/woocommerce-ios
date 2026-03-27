@@ -1,3 +1,4 @@
+import BuildSecrets
 import WordPressAuthenticator
 import Experiments
 import class Networking.UserAgent
@@ -8,14 +9,15 @@ extension WordPressAuthenticator {
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
         let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
-        let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
-                                                                wpcomSecret: ApiCredentials.dotcomSecret,
+        let secrets = BuildSecrets.current
+        let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: secrets.oauth.appId,
+                                                                wpcomSecret: secrets.oauth.secret,
                                                                 wpcomScheme: dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: URL(string: WooConstants.URLs.termsOfService.rawValue)!,
                                                                 wpcomAPIBaseURL: URL(string: Settings.wordpressApiBaseURL)!,
                                                                 whatIsWPComURL: URL(string: WooConstants.URLs.whatIsWPCom.rawValue)!,
-                                                                googleLoginClientId: ApiCredentials.googleClientId,
-                                                                googleLoginServerClientId: ApiCredentials.googleServerId,
+                                                                googleLoginClientId: secrets.google.clientId,
+                                                                googleLoginServerClientId: secrets.google.serverId,
                                                                 googleLoginScheme: Bundle.main.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,

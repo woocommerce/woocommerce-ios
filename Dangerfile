@@ -2,11 +2,14 @@
 
 # --- Translation Context Plugin ---
 # Install the gem if not already available (e.g. CI linter environment).
+# Bundler restricts require to its lockfile, so we also add the gem's paths to $LOAD_PATH.
 # This can be removed once dangermattic ships with i18n-context-generator as a dependency.
 begin
   require 'i18n_context_generator'
 rescue LoadError
   system('gem', 'install', 'i18n-context-generator', '--no-document')
+  Gem::Specification.find_by_name('i18n-context-generator').full_require_paths.each { |p| $LOAD_PATH.unshift(p) }
+  require 'i18n_context_generator'
 end
 
 # Import the translation context checker plugin from the dangermattic branch

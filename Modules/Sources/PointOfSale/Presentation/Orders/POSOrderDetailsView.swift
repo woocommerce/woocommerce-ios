@@ -55,8 +55,8 @@ struct POSOrderDetailsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    if !displayedLineItems.isEmpty {
-                        productsSection(displayedLineItems)
+                    if !orderListModel.ordersController.displayedLineItems.isEmpty {
+                        productsSection(orderListModel.ordersController.displayedLineItems)
                     }
                     if shouldShowDedicatedRefundsSection && orderListModel.ordersController.isLoadingOrderRefunds {
                         ghostRefundedProductsSection
@@ -167,22 +167,6 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 // MARK: - Main Sections
 
 private extension POSOrderDetailsView {
-    var displayedLineItems: [POSOrderItem] {
-        guard shouldShowDedicatedRefundsSection,
-              !orderListModel.ordersController.isLoadingOrderRefunds else {
-            return order.lineItems
-        }
-        let refundedQuantities = refundedQuantitiesByItemID
-        return order.lineItems.filter { item in
-            let refunded = refundedQuantities[item.itemID] ?? 0
-            return refunded < NSDecimalNumber(decimal: item.quantity).intValue
-        }
-    }
-
-    var refundedQuantitiesByItemID: [Int64: Int] {
-        order.refunds.flatMap(\.items).refundedQuantitiesByItemID()
-    }
-
     @ViewBuilder
     func productsSection(_ items: [POSOrderItem]) -> some View {
         VStack(alignment: .leading, spacing: POSSpacing.medium) {

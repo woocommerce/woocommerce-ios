@@ -12,6 +12,7 @@ import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderRefund
 import class Yosemite.Store
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
@@ -28,6 +29,7 @@ protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
     var isLoadingOrderRefunds: Bool { get }
+    var displayedLineItems: [POSOrderItem] { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
     func loadOrders() async
@@ -108,6 +110,20 @@ enum RefundActionAvailability {
             return .unavailable
         }
         return .available
+    }
+
+    @MainActor
+    var displayedLineItems: [POSOrderItem] {
+        guard let order = selectedOrder else { return [] }
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleRefundsi1),
+              !isLoadingOrderRefunds else {
+            return order.lineItems
+        }
+        let refundedQuantities = order.refunds.flatMap(\.items).refundedQuantitiesByItemID()
+        return order.lineItems.filter { item in
+            let refunded = refundedQuantities[item.itemID] ?? 0
+            return refunded < NSDecimalNumber(decimal: item.quantity).intValue
+        }
     }
 
     @MainActor

@@ -1,14 +1,15 @@
+import BuildSecrets
 import Foundation
 import AutomatticTracks
 import AutomatticEncryptedLogs
 
 struct WCEventLoggingDataSource: EventLoggingDataSource {
     var loggingEncryptionKey: String {
-        return ApiCredentials.loggingEncryptionKey
+        return BuildSecrets.current.loggingEncryptionKey
     }
 
     var loggingAuthenticationToken: String {
-        return ApiCredentials.dotcomSecret
+        return BuildSecrets.current.oauth.secret
     }
 
     func logFilePath(forErrorLevel: EventLoggingErrorType, at date: Date) -> URL? {

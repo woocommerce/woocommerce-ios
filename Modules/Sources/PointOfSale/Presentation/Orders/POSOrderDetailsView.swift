@@ -167,7 +167,7 @@ private struct POSRefundNothingToRefundError: LocalizedError {
 // MARK: - Main Sections
 
 private extension POSOrderDetailsView {
-    private var displayedLineItems: [POSOrderItem] {
+    var displayedLineItems: [POSOrderItem] {
         guard shouldShowDedicatedRefundsSection,
               !orderListModel.ordersController.isLoadingOrderRefunds else {
             return order.lineItems
@@ -223,7 +223,7 @@ private extension POSOrderDetailsView {
     }
 
     @ViewBuilder
-    private var ghostRefundedProductRow: some View {
+    var ghostRefundedProductRow: some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             ghostLine(width: Constants.productImageSize, height: Constants.productImageSize)
 
@@ -238,7 +238,7 @@ private extension POSOrderDetailsView {
         }
     }
 
-    private func ghostLine(width: CGFloat, height: CGFloat) -> some View {
+    func ghostLine(width: CGFloat, height: CGFloat) -> some View {
         Rectangle()
             .fill(Color.posOnSurfaceVariantLowest)
             .frame(width: width, height: height)
@@ -299,7 +299,7 @@ private extension POSOrderDetailsView {
         .accessibilityLabel(headerBottomContentAccessibilityLabel(for: order))
     }
 
-    private func headerBottomContentAccessibilityLabel(for order: POSOrder) -> String {
+    func headerBottomContentAccessibilityLabel(for order: POSOrder) -> String {
         let date = dateFormatter.string(from: order.dateCreated)
         let email = order.customerEmail
         let status = order.status.localizedName
@@ -328,7 +328,7 @@ private extension POSOrderDetailsView {
         .accessibilityLabel(productRowAccessibilityLabel(for: item))
     }
 
-    private func productRowAccessibilityLabel(for item: POSOrderItem) -> String {
+    func productRowAccessibilityLabel(for item: POSOrderItem) -> String {
         let attributesText = item.attributes.isEmpty ? nil : item.attributes.map { "\($0.name): \($0.value)" }.joined(separator: ", ")
         return Localization.productRowAccessibilityLabel(
             name: item.name,

@@ -6,7 +6,9 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
     let animation: POSCardPresentPaymentAlertAnimation
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: 0) {
+            Spacer()
+
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 SharedImageAsset.location.decorativeImage
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
@@ -33,11 +35,14 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
             .frame(maxWidth: .infinity)
             .scrollVerticallyIfNeeded()
 
+            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
+
             Button(viewModel.primaryButtonViewModel.title,
                    action: viewModel.primaryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
+        .frame(maxHeight: .infinity)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
     }

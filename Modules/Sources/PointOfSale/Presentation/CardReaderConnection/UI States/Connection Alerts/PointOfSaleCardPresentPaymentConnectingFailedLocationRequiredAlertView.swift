@@ -6,7 +6,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
     let animation: POSCardPresentPaymentAlertAnimation
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: 0) {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 SharedImageAsset.location.image
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
@@ -25,13 +25,16 @@ struct PointOfSaleCardPresentPaymentConnectingFailedLocationRequiredAlertView: V
                 }
             }
             .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
+
+            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
 
             Button(viewModel.primaryButtonViewModel.title,
                    action: viewModel.primaryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
-        .scrollVerticallyIfNeeded()
+        .frame(maxHeight: .infinity)
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)

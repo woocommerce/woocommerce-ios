@@ -12,7 +12,6 @@ enum RefundModalState: Identifiable, Equatable {
     case nothingToRefund
     case itemSelection
     case review(POSRefundReviewData)
-    case reasonInput(POSRefundReviewData)
     case confirmation(POSRefundReviewData)
     case processing(POSRefundReviewData)
     case success(POSRefundReviewData)
@@ -26,7 +25,6 @@ enum RefundModalState: Identifiable, Equatable {
         case .nothingToRefund: return "nothingToRefund"
         case .itemSelection: return "itemSelection"
         case .review: return "review"
-        case .reasonInput: return "reasonInput"
         case .confirmation: return "confirmation"
         case .processing: return "processing"
         case .success: return "success"
@@ -39,7 +37,7 @@ enum RefundModalState: Identifiable, Equatable {
         switch self {
         case .itemSelection:
             return .selectItems
-        case .review, .reasonInput:
+        case .review:
             return .reviewRefund
         case .confirmation:
             return .confirmRefund
@@ -83,7 +81,9 @@ struct POSRefundModalContentView: View {
     let errorStrings: POSRefundErrorStrings
 
     @State private var isShowingEmailReceiptView = false
+    @State private var isShowingReasonInput = false
     @State private var currentRefundReason: String?
+    @State private var reasonInputReviewData: POSRefundReviewData?
 
     var body: some View {
         content
@@ -91,6 +91,21 @@ struct POSRefundModalContentView: View {
                 POSSendReceiptView(isShowingSendReceiptView: $isShowingEmailReceiptView) { email in
                     try await orderListModel.sendReceipt(order: order, email: email)
                 }
+                .posHeaderBackButtonIcon(systemName: "xmark")
+            }
+            .posFullScreenCover(isPresented: $isShowingReasonInput) {
+                POSRefundReasonView(
+                    initialReason: reasonInputReviewData?.refundReason,
+                    onSave: { reason in
+                        if var reviewData = reasonInputReviewData {
+                            reviewData.refundReason = reason
+                            currentRefundReason = reason
+                            modalState = .review(reviewData)
+                        }
+                        isShowingReasonInput = false
+                    },
+                    onClose: { isShowingReasonInput = false }
+                )
                 .posHeaderBackButtonIcon(systemName: "xmark")
             }
     }
@@ -140,20 +155,12 @@ struct POSRefundModalContentView: View {
                 formattedRefundTotal: reviewData.formattedRefundTotal,
                 paymentMethodDescription: reviewData.paymentMethodDescription,
                 refundReason: reviewData.refundReason,
-                onAddReason: { modalState = .reasonInput(reviewData) },
+                onAddReason: {
+                    reasonInputReviewData = reviewData
+                    isShowingReasonInput = true
+                },
                 onContinue: { modalState = .confirmation(reviewData) },
                 onEditRefund: onEditRefund
-            )
-        case .reasonInput(let reviewData):
-            POSRefundReasonView(
-                initialReason: reviewData.refundReason,
-                onSave: { reason in
-                    var updated = reviewData
-                    updated.refundReason = reason
-                    currentRefundReason = reason
-                    modalState = .review(updated)
-                },
-                onBack: { modalState = .review(reviewData) }
             )
         case .confirmation(let reviewData):
             POSRefundConfirmationView(

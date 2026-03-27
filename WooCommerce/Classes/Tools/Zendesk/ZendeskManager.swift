@@ -1,3 +1,4 @@
+import BuildSecrets
 import Foundation
 #if !targetEnvironment(macCatalyst)
 import SupportSDK
@@ -144,9 +145,10 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
             return
         }
 
-        Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
-                           clientId: ApiCredentials.zendeskClientId,
-                           zendeskUrl: ApiCredentials.zendeskUrl)
+        let secrets = BuildSecrets.current
+        Zendesk.initialize(appId: secrets.zendesk.appId,
+                           clientId: secrets.zendesk.clientId,
+                           zendeskUrl: secrets.zendesk.url)
         Support.initialize(withZendesk: Zendesk.instance)
         CommonTheme.currentTheme.primaryColor = UIColor.primary
 

@@ -7,6 +7,7 @@ import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.POSRefundsServiceProtocol
 import struct Yosemite.POSOrder
 import struct Yosemite.POSRefund
+import struct Yosemite.POSRefundItem
 import struct Yosemite.POSRefundsResult
 import struct Yosemite.POSRefundableItem
 import struct Yosemite.POSRefundAmounts
@@ -283,7 +284,7 @@ enum RefundActionAvailability {
         }
 
         // Calculate already refunded quantities per itemID
-        let refundedQuantitiesByItemID = calculateRefundedQuantitiesByItemID(from: refundsResult.refunds)
+        let refundedQuantitiesByItemID = refundsResult.refunds.flatMap(\.items).refundedQuantitiesByItemID()
 
         // Build selectable items excluding already refunded quantities
         refundSelectableItems = order.lineItems.flatMap { item -> [POSRefundSelectableItem] in
@@ -300,19 +301,6 @@ enum RefundActionAvailability {
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
 
-    /// Calculates the total refunded quantity for each itemID from previous refunds.
-    /// Note: API returns negative quantities for refunds, so we use abs().
-    private func calculateRefundedQuantitiesByItemID(from refunds: [POSRefund]) -> [Int64: Int] {
-        var refundedQuantities: [Int64: Int] = [:]
-        for refund in refunds {
-            for item in refund.items {
-                guard let refundedItemID = item.refundedItemID else { continue }
-                let quantity = NSDecimalNumber(decimal: abs(item.quantity)).intValue
-                refundedQuantities[refundedItemID, default: 0] += quantity
-            }
-        }
-        return refundedQuantities
-    }
 
     @MainActor
     func toggleRefundItemSelection(at index: Int) {

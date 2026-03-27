@@ -4,6 +4,7 @@ import SwiftUI
 
 /// Hosting Controller for the `AnalyticsHubView` view.
 ///
+@MainActor
 final class AnalyticsHubHostingViewController: UIHostingController<AnalyticsHubView> {
 
     private let viewModel: AnalyticsHubViewModel
@@ -111,25 +112,31 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
-        RefreshablePlainList(action: {
-            viewModel.trackAnalyticsInteraction()
-            await viewModel.updateData()
-        }) {
-            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
-                AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
-                                       selectionType: $viewModel.timeRangeSelectionType)
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(uiColor: .listForeground(modal: false)))
-                .addingTopAndBottomDividers()
-
-                ForEach(viewModel.enabledCards, id: \.self) { card in
-                    analyticsCard(type: card)
+        Group {
+            if viewModel.isRestrictedAccess {
+                LocalOperatorRestrictedAccessView()
+            } else {
+                RefreshablePlainList(action: {
+                    viewModel.trackAnalyticsInteraction()
+                    await viewModel.updateData()
+                }) {
+                    VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                        AnalyticsTimeRangeCard(viewModel: viewModel.timeRangeCard,
+                                               selectionType: $viewModel.timeRangeSelectionType)
                         .padding(.horizontal, insets: safeAreaInsets)
                         .background(Color(uiColor: .listForeground(modal: false)))
                         .addingTopAndBottomDividers()
-                }
 
-                Spacer()
+                        ForEach(viewModel.enabledCards, id: \.self) { card in
+                            analyticsCard(type: card)
+                                .padding(.horizontal, insets: safeAreaInsets)
+                                .background(Color(uiColor: .listForeground(modal: false)))
+                                .addingTopAndBottomDividers()
+                        }
+
+                        Spacer()
+                    }
+                }
             }
         }
         .navigationTitle(Localization.title)
@@ -137,6 +144,9 @@ struct AnalyticsHubView: View {
         .background(Color(uiColor: .listBackground))
         .edgesIgnoringSafeArea(.horizontal)
         .task {
+            guard viewModel.isRestrictedAccess == false else {
+                return
+            }
             await viewModel.loadAnalyticsCardSettings()
             await viewModel.updateData()
         }
@@ -151,11 +161,13 @@ struct AnalyticsHubView: View {
             })
         )
         .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    viewModel.customizeAnalytics()
-                } label: {
-                    Text(Localization.editButton)
+            if viewModel.isRestrictedAccess == false {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        viewModel.customizeAnalytics()
+                    } label: {
+                        Text(Localization.editButton)
+                    }
                 }
             }
         }
@@ -213,6 +225,7 @@ private extension AnalyticsHubView {
 // MARK: Preview
 
 struct AnalyticsHubPreview: PreviewProvider {
+    @MainActor
     static var previews: some View {
         NavigationView {
             AnalyticsHubView(viewModel: AnalyticsHubViewModel(siteID: 123,

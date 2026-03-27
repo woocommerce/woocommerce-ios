@@ -8,6 +8,7 @@ import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class AppCoordinator {
     let tabBarController: MainTabBarController
 
@@ -21,10 +22,12 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let localOperatorSessionController: LocalOperatorSessionControlling
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
+    private var localOperatorLockSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
 
@@ -44,6 +47,7 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         localOperatorSessionController: LocalOperatorSessionControlling? = nil,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
@@ -62,6 +66,7 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
+        self.localOperatorSessionController = localOperatorSessionController ?? ServiceLocator.localOperatorSessionController
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
@@ -102,6 +107,19 @@ final class AppCoordinator {
 
         localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
+        }
+
+        if let localOperatorSessionController = localOperatorSessionController as? LocalOperatorSessionController {
+            localOperatorLockSubscription = localOperatorSessionController.$isLocked
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isLocked in
+                    guard let self, self.isLoggedIn else { return }
+                    if isLocked, localOperatorSessionController.isDeviceStaffModeEnabled {
+                        self.presentLocalOperatorFlowIfNeeded()
+                    } else {
+                        self.dismissLocalOperatorFlowIfNeeded()
+                    }
+                }
         }
         updateSitePropertiesIfNeeded()
     }
@@ -310,6 +328,7 @@ private extension AppCoordinator {
     ///
     func displayLoggedInUI() {
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
+        presentLocalOperatorFlowIfNeeded()
     }
 
     /// If the app is authenticated but there is no default store ID on launch,
@@ -419,6 +438,27 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
+    func presentLocalOperatorFlowIfNeeded() {
+        guard localOperatorSessionController.isDeviceStaffModeEnabled,
+              localOperatorSessionController.isLocked else {
+            return
+        }
+
+        let presenter = window.topmostPresentedViewController ?? window.rootViewController
+        guard (presenter is LocalOperatorHostingController) == false else {
+            return
+        }
+
+        presenter?.present(LocalOperatorHostingController(sessionController: localOperatorSessionController), animated: false)
+    }
+
+    func dismissLocalOperatorFlowIfNeeded() {
+        let presenter = window.topmostPresentedViewController ?? window.rootViewController
+        if presenter is LocalOperatorHostingController {
+            presenter?.dismiss(animated: false)
+        }
+    }
+
     /// Sets the app window's root view controller, with animation only if the root view controller is previously non-nil.
     /// - Parameters:
     ///   - rootViewController: view controller to be set as the window's root view controller.

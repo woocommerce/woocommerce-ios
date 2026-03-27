@@ -127,6 +127,21 @@ final class ServiceLocator {
     ///
     private static var _generalAppSettings: GeneralAppSettingsStorage = GeneralAppSettingsStorage()
 
+    /// Storage for local operator profiles and settings.
+    ///
+    private static var _localOperatorStore: LocalOperatorStoreProtocol = LocalOperatorStore()
+
+    /// PIN verification service for local operator mode.
+    ///
+    private static var _pinVerificationService: PINVerificationServiceProtocol = PINVerificationService()
+
+    /// Session controller for local operator mode.
+    ///
+    @MainActor private static var _localOperatorSessionController: LocalOperatorSessionControlling = LocalOperatorSessionController(
+        store: _localOperatorStore,
+        pinVerificationService: _pinVerificationService
+    )
+
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
@@ -365,6 +380,11 @@ final class ServiceLocator {
         _ageRatingChangeDetector
     }
 
+    @MainActor
+    static var localOperatorSessionController: LocalOperatorSessionControlling {
+        _localOperatorSessionController
+    }
+
     /// Provides access point to the `POSCatalogSyncCoordinator`.
     /// Returns nil if feature flag is disabled or user is not authenticated.
     ///
@@ -541,6 +561,41 @@ extension ServiceLocator {
         }
 
         _productImageUploader = mock
+    }
+
+    @MainActor
+    static func setLocalOperatorStore(_ mock: LocalOperatorStoreProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _localOperatorStore = mock
+        _localOperatorSessionController = LocalOperatorSessionController(
+            store: mock,
+            pinVerificationService: _pinVerificationService
+        )
+    }
+
+    @MainActor
+    static func setPINVerificationService(_ mock: PINVerificationServiceProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _pinVerificationService = mock
+        _localOperatorSessionController = LocalOperatorSessionController(
+            store: _localOperatorStore,
+            pinVerificationService: mock
+        )
+    }
+
+    @MainActor
+    static func setLocalOperatorSessionController(_ mock: LocalOperatorSessionControlling) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _localOperatorSessionController = mock
     }
 
     /// periphery:ignore - for use in future tests.

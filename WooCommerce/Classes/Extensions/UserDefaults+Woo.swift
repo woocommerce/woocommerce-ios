@@ -83,6 +83,10 @@ extension UserDefaults {
 
         /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
         case debugMinWooVersionForSelfDrivenPushNotifications
+
+        /// Local operator mode settings and profiles for shared-device access control.
+        case localOperatorSettings
+        case localOperatorProfiles
     }
 }
 

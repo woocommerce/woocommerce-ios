@@ -13,6 +13,7 @@ protocol SettingsViewPresenter: AnyObject {
 
 // MARK: - SettingsViewController
 //
+@MainActor
 final class SettingsViewController: UIViewController {
     typealias ViewModel = SettingsViewModelOutput & SettingsViewModelActionsHandler & SettingsViewModelInput
 
@@ -43,10 +44,10 @@ final class SettingsViewController: UIViewController {
 
     private var jetpackSetupCoordinator: JetpackSetupCoordinator?
 
-    init(viewModel: ViewModel = SettingsViewModel(),
+    init(viewModel: ViewModel? = nil,
          stores: StoresManager = ServiceLocator.stores,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
-        self.viewModel = viewModel
+        self.viewModel = viewModel ?? SettingsViewModel()
         self.stores = stores
         self.pushNotesManager = pushNotesManager
         super.init(nibName: nil, bundle: nil)
@@ -135,8 +136,12 @@ private extension SettingsViewController {
             configureSelectedStore(cell: cell)
         case let cell as BasicTableViewCell where row == .switchStore:
             configureSwitchStore(cell: cell)
+        case let cell as BasicTableViewCell where row == .switchOperator:
+            configureSwitchOperator(cell: cell)
         case let cell as BasicTableViewCell where row == .plugins:
             configurePlugins(cell: cell)
+        case let cell as BasicTableViewCell where row == .localOperators:
+            configureLocalOperators(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowContent> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
         case let cell as BasicTableViewCell where row == .connectivity:
@@ -188,10 +193,22 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.switchStore
     }
 
+    func configureSwitchOperator(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = Localization.switchOperator
+    }
+
     func configurePlugins(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = Localization.plugins
+    }
+
+    func configureLocalOperators(cell: BasicTableViewCell) {
+        cell.selectionStyle = .default
+        cell.accessoryType = .disclosureIndicator
+        cell.textLabel?.text = Localization.localOperators
     }
 
     func configureWooCommmerceDetails(cell: HostingTableViewCell<PluginDetailsRowContent>) {
@@ -393,6 +410,22 @@ private extension SettingsViewController {
         let navigationController = UINavigationController(rootViewController: pluginListHostingController)
 
         present(navigationController, animated: true)
+    }
+
+    func switchOperatorWasPressed() {
+        Task { @MainActor in
+            ServiceLocator.localOperatorSessionController.lock()
+        }
+    }
+
+    func localOperatorsWasPressed() {
+        Task { @MainActor in
+            let controller = UIHostingController(rootView: LocalOperatorManagementView(sessionController: ServiceLocator.localOperatorSessionController))
+            controller.title = Localization.localOperators
+            controller.addCloseNavigationBarButton()
+            let navigationController = UINavigationController(rootViewController: controller)
+            present(navigationController, animated: true)
+        }
     }
 
     func supportWasPressed() {
@@ -623,8 +656,12 @@ extension SettingsViewController: UITableViewDelegate {
         switch rowAtIndexPath(indexPath) {
         case .switchStore:
             switchStoreWasPressed()
+        case .switchOperator:
+            switchOperatorWasPressed()
         case .plugins:
             sitePluginsWasPressed()
+        case .localOperators:
+            localOperatorsWasPressed()
         case .woocommerceDetails:
             openWoocommerceDetails()
         case .support:
@@ -710,9 +747,11 @@ extension SettingsViewController {
         // Selected Store
         case selectedStore
         case switchStore
+        case switchOperator
 
         // Plugins
         case plugins
+        case localOperators
         case woocommerceDetails
 
         // Store settings
@@ -761,7 +800,11 @@ extension SettingsViewController {
                 return HeadlineLabelTableViewCell.self
             case .switchStore:
                 return BasicTableViewCell.self
+            case .switchOperator:
+                return BasicTableViewCell.self
             case .plugins:
+                return BasicTableViewCell.self
+            case .localOperators:
                 return BasicTableViewCell.self
             case .woocommerceDetails:
                 return HostingTableViewCell<PluginDetailsRowContent>.self
@@ -825,6 +868,16 @@ private extension SettingsViewController {
         static let switchStore = NSLocalizedString(
             "Switch Store",
             comment: "This action allows the user to change stores without logging out and logging back in again."
+        )
+
+        static let switchOperator = NSLocalizedString(
+            "Switch Operator",
+            comment: "This action allows the user to switch the active local operator on a shared device."
+        )
+
+        static let localOperators = NSLocalizedString(
+            "Device Staff Mode",
+            comment: "Navigates to the local operator management screen."
         )
 
         static let plugins = NSLocalizedString(

@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 
 /// Main View Model for the Analytics Hub.
 ///
+@MainActor
 final class AnalyticsHubViewModel: ObservableObject {
 
     let siteID: Int64
@@ -15,6 +16,7 @@ final class AnalyticsHubViewModel: ObservableObject {
     private let storage: StorageManagerType
     private let timeZone: TimeZone
     let analytics: Analytics
+    let isRestrictedAccess: Bool
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -32,16 +34,20 @@ final class AnalyticsHubViewModel: ObservableObject {
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         localOperatorCapabilitiesProvider: LocalOperatorCapabilitiesProviding? = nil) {
         let selectedType = AnalyticsHubTimeRangeSelection.SelectionType(statsTimeRange)
         let timeRangeSelection = AnalyticsHubTimeRangeSelection(selectionType: selectedType, timezone: timeZone)
+        let resolvedLocalOperatorCapabilitiesProvider = localOperatorCapabilitiesProvider ?? ServiceLocator.localOperatorSessionController
 
         self.siteID = siteID
         self.timeZone = timeZone
         self.stores = stores
         self.storage = storage
         self.userIsAdmin = stores.sessionManager.defaultRoles.contains(.administrator)
+            && resolvedLocalOperatorCapabilitiesProvider.canAccessAdminSettings()
         self.analytics = analytics
+        self.isRestrictedAccess = resolvedLocalOperatorCapabilitiesProvider.canViewAnalytics() == false
         self.timeRangeSelectionType = selectedType
         self.timeRangeSelection = timeRangeSelection
         self.timeRangeCard = AnalyticsHubViewModel.timeRangeCard(timeRangeSelection: timeRangeSelection,
@@ -152,6 +158,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     /// All analytics cards to display in the Analytics Hub.
     ///
     var enabledCards: [AnalyticsCard.CardType] {
+        guard isRestrictedAccess == false else {
+            return []
+        }
         return allCardsWithSettings.compactMap { card in
             guard card.enabled, canDisplayCard(ofType: card.type) else {
                 return nil

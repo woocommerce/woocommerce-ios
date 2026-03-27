@@ -52,6 +52,7 @@ protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
 }
 
+@MainActor
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
 
     typealias Row = SettingsViewController.Row
@@ -104,6 +105,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
+    private let localOperatorCapabilitiesProvider: LocalOperatorCapabilitiesProviding
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -116,13 +118,16 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         localOperatorCapabilitiesProvider: LocalOperatorCapabilitiesProviding? = nil) {
+        let resolvedLocalOperatorCapabilitiesProvider = localOperatorCapabilitiesProvider ?? ServiceLocator.localOperatorSessionController
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
+        self.localOperatorCapabilitiesProvider = resolvedLocalOperatorCapabilitiesProvider
 
         /// Initialize Sites Results Controller
         ///
@@ -211,6 +216,9 @@ private extension SettingsViewModel {
 
     func configureSections() {
         let configureSection: Section? = {
+            guard localOperatorCapabilitiesProvider.canAccessAdminSettings() else {
+                return nil
+            }
             var rows: [Row] = []
 
             if stores.isAuthenticated,
@@ -230,7 +238,8 @@ private extension SettingsViewModel {
         let pluginsSection: Section? = {
             // Show the plugins section only if the user has an `admin` role for the default store site.
             //
-            guard stores.sessionManager.defaultRoles.contains(.administrator) else {
+            guard stores.sessionManager.defaultRoles.contains(.administrator),
+                  localOperatorCapabilitiesProvider.canAccessAdminSettings() else {
                 return nil
             }
 
@@ -241,6 +250,9 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section? = {
+            guard localOperatorCapabilitiesProvider.canAccessAdminSettings() else {
+                return nil
+            }
             guard let site = stores.sessionManager.defaultSite else {
                 return nil
             }
@@ -274,12 +286,36 @@ private extension SettingsViewModel {
         // Help & Feedback
         let helpAndFeedbackSection: Section = {
             let rows: [Row]
-            if couldShowBetaFeaturesRow {
+            if couldShowBetaFeaturesRow && localOperatorCapabilitiesProvider.canAccessAdminSettings() {
                 rows = [.support, .betaFeatures, .sendFeedback]
             } else {
                 rows = [.support, .sendFeedback]
             }
             return Section(title: Localization.helpAndFeedbackTitle,
+                           rows: rows,
+                           footerHeight: UITableView.automaticDimension)
+        }()
+
+        let localOperatorSection: Section? = {
+            let shouldShowSwitchOperator = localOperatorCapabilitiesProvider.isDeviceStaffModeEnabled
+            let canConfigureLocalOperators = localOperatorCapabilitiesProvider.canManageLocalOperators()
+            let canSetUpLocalOperators = localOperatorCapabilitiesProvider.isDeviceStaffModeEnabled == false
+                && (stores.sessionManager.defaultRoles.contains(.administrator)
+                    || stores.sessionManager.defaultRoles.contains(.shopManager))
+
+            var rows: [Row] = []
+            if shouldShowSwitchOperator {
+                rows.append(.switchOperator)
+            }
+            if canConfigureLocalOperators || canSetUpLocalOperators {
+                rows.append(.localOperators)
+            }
+
+            guard rows.isNotEmpty else {
+                return nil
+            }
+
+            return Section(title: Localization.deviceAccessTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)
         }()
@@ -329,8 +365,8 @@ private extension SettingsViewModel {
 
         // Other
         let otherSection: Section = {
-            var rows: [Row] = [.deviceSettings]
-            if !BuildConfiguration.current.isProduction {
+            var rows: [Row] = localOperatorCapabilitiesProvider.canAccessAdminSettings() ? [.deviceSettings] : []
+            if !BuildConfiguration.current.isProduction && localOperatorCapabilitiesProvider.canAccessAdminSettings() {
                 rows.append(contentsOf: [.wormholy, .debugPanel])
             }
 
@@ -341,6 +377,9 @@ private extension SettingsViewModel {
 
         // Account Settings
         let accountSettingsSection: Section? = {
+            guard localOperatorCapabilitiesProvider.canAccessAdminSettings() else {
+                return nil
+            }
             // Do not show the Account Settings option when authenticated with application password
             guard stores.isAuthenticatedWithoutWPCom == false else {
                 return nil
@@ -360,9 +399,10 @@ private extension SettingsViewModel {
             pluginsSection,
             storeSettingsSection,
             helpAndFeedbackSection,
+            localOperatorSection,
             appSettingsSection,
             aboutTheAppSection,
-            otherSection,
+            otherSection.rows.isEmpty ? nil : otherSection,
             accountSettingsSection,
             logoutSection
         ]
@@ -456,6 +496,11 @@ private extension SettingsViewModel {
         static let helpAndFeedbackTitle = NSLocalizedString(
             "Help & Feedback",
             comment: "My Store > Settings > Help and Feedback settings section title"
+        ).uppercased()
+
+        static let deviceAccessTitle = NSLocalizedString(
+            "Device Access",
+            comment: "My Store > Settings > Device access section title"
         ).uppercased()
 
         static let appSettingsTitle = NSLocalizedString(

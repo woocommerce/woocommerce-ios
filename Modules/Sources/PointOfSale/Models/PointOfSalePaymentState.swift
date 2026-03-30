@@ -134,6 +134,16 @@ extension PointOfSaleCardPaymentState {
             return false
         }
     }
+
+    var resetsToIdleOnDisconnect: Bool {
+        switch self {
+        case .preparingReader, .acceptingCard, .validatingOrder:
+            return true
+        case .idle, .validatingOrderError, .paymentIntentCreationError,
+             .cardInserted, .processingPayment, .paymentError, .cardPaymentSuccessful:
+            return false
+        }
+    }
 }
 
 extension PointOfSaleCashPaymentState {

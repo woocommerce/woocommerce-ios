@@ -840,6 +840,91 @@ struct POSPaymentModelTests {
         #expect(sut.paymentState.card == .processingPayment)
     }
 
+    // MARK: - Reader Disconnect
+
+    @Test("reader disconnect during preparingReader resets card state to idle")
+    @MainActor
+    func readerDisconnect_during_preparingReader_resetsCardStateToIdle() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        // Move to preparingReader state
+        service.paymentEvent = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
+        #expect(sut.paymentState.card == .preparingReader)
+
+        // When: reader disconnects
+        service.connectedReader = nil
+
+        // Then: card state should reset to idle so cash button becomes available
+        #expect(sut.paymentState.card == .idle)
+        #expect(sut.paymentState.allowsCashPayment == true)
+    }
+
+    @Test("reader disconnect during acceptingCard resets card state to idle")
+    @MainActor
+    func readerDisconnect_during_acceptingCard_resetsCardStateToIdle() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+        #expect(sut.paymentState.card == .acceptingCard)
+
+        // When: reader disconnects
+        service.connectedReader = nil
+
+        // Then: card state should reset to idle
+        #expect(sut.paymentState.card == .idle)
+        #expect(sut.paymentState.allowsCashPayment == true)
+    }
+
+    @Test("reader disconnect during processingPayment does NOT reset card state")
+    @MainActor
+    func readerDisconnect_during_processingPayment_doesNotResetCardState() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .processing)
+        #expect(sut.paymentState.card == .processingPayment)
+
+        // When: reader disconnects
+        service.connectedReader = nil
+
+        // Then: card state should NOT be reset - payment may still complete
+        #expect(sut.paymentState.card == .processingPayment)
+    }
+
     // MARK: - Cash Cancel and Card Restart
 
     @Test("cancelCashPayment awaits background cancel before restarting card flow")

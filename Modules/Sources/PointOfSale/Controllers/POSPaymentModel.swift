@@ -350,9 +350,19 @@ private extension POSPaymentModel {
     func publishCardReaderConnectionStatus() {
         cardPresentPaymentService.readerConnectionStatusPublisher
             .sink(receiveValue: { [weak self] connectionStatus in
-                self?.cardReaderConnectionStatus = connectionStatus
+                guard let self else { return }
+                cardReaderConnectionStatus = connectionStatus
+                if connectionStatus == .disconnected {
+                    resetTransientCardStateOnDisconnect()
+                }
             })
             .store(in: &cancellables)
+    }
+
+    func resetTransientCardStateOnDisconnect() {
+        guard paymentState.card.resetsToIdleOnDisconnect else { return }
+        DDLogInfo("🔌 [Disconnect] resetting transient card state \(paymentState.card) to idle")
+        paymentState.card = .idle
     }
 
     func publishCardReaderUpdateState() {

@@ -21,8 +21,8 @@
                     "description": "Enter your card details",
                     "order": -1,
                     "enabled": true,
-                    "method_title": "WooCommerce Payments",
-                    "method_description": "WooCommerce Payments gives your store flexibility to accept credit cards, debit cards, and Apple Pay. Enable popular local payment methods and other digital wallets like Google Pay to give customers even more choice.<br/><br/>\n\t\t\tBy using WooCommerce Payments you agree to be bound by our <a href=\"https://wordpress.com/tos/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>  and acknowledge that you have read our <a href=\"https://automattic.com/privacy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a>",
+                    "method_title": "WooPayments",
+                    "method_description": "WooPayments gives your store flexibility to accept credit cards, debit cards, and Apple Pay. Enable popular local payment methods and other digital wallets like Google Pay to give customers even more choice.<br/><br/>\n\t\t\tBy using WooPayments you agree to be bound by our <a href=\"https://wordpress.com/tos/\" target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>  and acknowledge that you have read our <a href=\"https://automattic.com/privacy/\" target=\"_blank\" rel=\"noopener noreferrer\">Privacy Policy</a>",
                     "method_supports": [
                         "products",
                         "refunds",

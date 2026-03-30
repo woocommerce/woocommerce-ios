@@ -840,6 +840,44 @@ struct POSPaymentModelTests {
         #expect(sut.paymentState.card == .processingPayment)
     }
 
+    // MARK: - Cash Cancel and Card Restart
+
+    @Test("cancelCashPayment awaits background cancel before restarting card flow")
+    @MainActor
+    func cancelCashPayment_awaitsBackgroundCancel_beforeRestartingCardFlow() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        await sut.startPayment()
+
+        service.paymentEvent = .show(eventDetails: .tapSwipeOrInsertCard(
+            inputMethods: [.tap, .swipe, .insert],
+            cancelPayment: {}))
+
+        // Record cancel calls order
+        var cancelCallOrder: [String] = []
+        service.onCancelPaymentCalled = {
+            cancelCallOrder.append("cancel")
+        }
+
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // When: cancel cash payment and restart card flow
+        service.collectPaymentWasCalled = false
+        await sut.cancelCashPayment()
+
+        #expect(service.collectPaymentWasCalled == true)
+    }
+
     @Test("connection success alert is shown when not waiting to start payment")
     @MainActor
     func connectionSuccessAlert_isShown_whenNotWaitingToStartPayment() async {

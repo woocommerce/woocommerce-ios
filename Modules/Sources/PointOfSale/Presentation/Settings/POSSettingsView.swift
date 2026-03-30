@@ -36,8 +36,8 @@ extension POSSettingsView {
                                                action: {
                                                    analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                    dismiss()
-                                               },
-                                               buttonIcon: "chevron.left"))
+                                               }))
+            .posHeaderBackButtonIcon(systemName: "xmark")
             .foregroundColor(.posSurface)
             .accessibilityAddTraits(.isHeader)
 

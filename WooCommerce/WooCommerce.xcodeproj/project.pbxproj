@@ -231,11 +231,8 @@
 		8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = WooCommerce.release.xcconfig; path = ../config/WooCommerce.release.xcconfig; sourceTree = "<group>"; };
 		8CA4F6E1220B259100A47B5D /* Version.Public.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Version.Public.xcconfig; path = ../config/Version.Public.xcconfig; sourceTree = "<group>"; };
 		8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "RELEASE-NOTES.txt"; path = "../RELEASE-NOTES.txt"; sourceTree = "<group>"; };
-		93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bash_secrets.tpl; sourceTree = "<group>"; };
 		B559EBAD20A0BF8E00836CD4 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		B559EBAE20A0BF8F00836CD4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		B55D4BFA20B5CDE600D7A50F /* ApiCredentials.tpl */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; fileEncoding = 4; path = ApiCredentials.tpl; sourceTree = "<group>"; };
-		B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = replace_secrets.rb; sourceTree = "<group>"; };
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
@@ -505,6 +502,7 @@
 		3F985FAD2F29AFD400924231 /* WatchWidgetsExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FB12F29AFD400924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WatchWidgetsExtension; sourceTree = "<group>"; };
 		3F985FBB2F29B00D00924231 /* NotificationExtension */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FC72F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC82F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FC92F29B00D00924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = NotificationExtension; sourceTree = "<group>"; };
 		3F985FE02F29B06300924231 /* StoreWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3F985FFC2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FFD2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FFE2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3F985FFF2F29B06300924231 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (Entitlements, ); path = StoreWidgets; sourceTree = "<group>"; };
+		3F9DC43D2F7A39590039E4FB /* Credentials */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {ApiCredentials.tpl = sourcecode.swift; }; explicitFolders = (); path = Credentials; sourceTree = "<group>"; };
 		3FA611E72F306A0D00F48C4E /* WooCommerceUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA611F82F306A0D00F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceUITests; sourceTree = "<group>"; };
 		3FA6FD902F2C941500F48C4E /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FA6FD9C2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9D2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, 3FA6FD9E2F2C941600F48C4E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Resources; sourceTree = "<group>"; };
 		3FD9BFBE2E0A2533004A8DC8 /* WooCommerceScreenshots */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (3FD9BFC42E0A2534004A8DC8 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = WooCommerceScreenshots; sourceTree = "<group>"; };
@@ -652,23 +650,13 @@
 			path = ../config;
 			sourceTree = "<group>";
 		};
-		B55D4BF920B5CDE600D7A50F /* Credentials */ = {
-			isa = PBXGroup;
-			children = (
-				B55D4BFA20B5CDE600D7A50F /* ApiCredentials.tpl */,
-				93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */,
-				B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */,
-			);
-			path = Credentials;
-			sourceTree = "<group>";
-		};
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
 				3F3689E22DCB1B470065B48F /* Modules */,
 				3FDA4E362F440D3900CC3259 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,
-				B55D4BF920B5CDE600D7A50F /* Credentials */,
+				3F9DC43D2F7A39590039E4FB /* Credentials */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
 				3F39E9372F624A4A00B68326 /* Classes */,
 				3FA6FD902F2C941500F48C4E /* Resources */,

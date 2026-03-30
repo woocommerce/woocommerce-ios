@@ -64,7 +64,9 @@ struct POSBookingDetailView: View {
                     }))
                 }
             }
-        .posFullScreenCover(isPresented: $showPaymentView) {
+        .posFullScreenCover(isPresented: $showPaymentView, onDismiss: {
+            cleanUpPaymentModel()
+        }) {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
             }
@@ -317,8 +319,11 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
-        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
+    }
+
+    private func cleanUpPaymentModel() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         paymentModel = nil
         guard paymentSucceeded else { return }
         Task { @MainActor in
@@ -330,6 +335,7 @@ struct POSBookingDetailView: View {
 
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
+        guard paymentModel == nil else { return }
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true

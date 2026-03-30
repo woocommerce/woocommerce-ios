@@ -78,7 +78,7 @@ struct POSSettingsStoreDetailView: View {
                 .padding(.bottom, POSPadding.medium)
             }
         }
-        .posSheet(isPresented: $showingWebView) {
+        .posFullScreenCover(isPresented: $showingWebView) {
             if let adminURL = viewModel.receiptSettingsAdminURL {
                 externalViews.createAuthenticatedWebView(
                     url: adminURL,

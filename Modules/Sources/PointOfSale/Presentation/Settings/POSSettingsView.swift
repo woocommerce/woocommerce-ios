@@ -3,18 +3,24 @@ import SwiftUI
 struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
-    @State private var selection: SidebarNavigation? = .store
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @State private var selection: SidebarNavigation?
 
     let settingsController: POSSettingsControllerProtocol
 
     var body: some View {
-        GeometryReader { geometry in
-            HStack(spacing: POSSpacing.none) {
-                listView
-                .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
-
-                detailView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+        POSNavigationSplitView(selection: $selection) { _ in
+            listView
+        } detail: { selection, navigationPath in
+            detailView(for: selection, navigationPath: navigationPath)
+                .environment(\.posHeaderBackButtonConfiguration,
+                             horizontalSizeClass == .compact ?
+                                .init(state: .enabled, action: { self.selection = nil }) : nil)
+        } detailPlaceholderView: {
+            POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
+        } setDefaultValue: {
+            if selection == nil {
+                selection = .store
             }
         }
     }
@@ -68,12 +74,12 @@ extension POSSettingsView {
     }
 
     @ViewBuilder
-    private var detailView: some View {
+    private func detailView(for selection: SidebarNavigation, navigationPath: Binding<NavigationPath>) -> some View {
         switch selection {
         case .store:
             POSSettingsStoreDetailView(viewModel: settingsController.storeViewModel)
         case .hardware:
-            POSSettingsHardwareDetailView(settingsController: settingsController)
+            POSSettingsHardwareDetailView(settingsController: settingsController, navigationPath: navigationPath)
         case .localCatalog:
             if let viewModel = settingsController.localCatalogViewModel {
                 POSSettingsLocalCatalogDetailView(viewModel: viewModel)
@@ -82,8 +88,6 @@ extension POSSettingsView {
             }
         case .help:
             POSSettingsHelpDetailView()
-        default:
-            EmptyView()
         }
     }
 
@@ -111,12 +115,6 @@ extension POSSettingsView {
         .buttonStyle(.plain)
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel(SidebarNavigation.help.title)
-    }
-}
-
-extension POSSettingsView {
-    enum Constants {
-        static let sidebarWidthFraction: CGFloat = 0.35
     }
 }
 

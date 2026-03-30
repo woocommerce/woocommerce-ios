@@ -767,13 +767,60 @@ final class HubMenuViewModelTests: XCTestCase {
             XCTAssertNil(eventProperties)
         }
     }
+
+    // MARK: - CIAB IPP Gating
+
+    @MainActor
+    func test_generalElements_hides_payments_for_non_pro_ciab_site() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
+
+    @MainActor
+    func test_generalElements_shows_payments_for_pro_ciab_site() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: true)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
+
+    @MainActor
+    func test_generalElements_shows_payments_for_non_ciab_site() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
 }
 
 private extension HubMenuViewModelTests {
     func mockGeneralAppSettingsStorage() throws -> GeneralAppSettingsStorage {
         let fileStorage = MockInMemoryStorage()
         let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
-        var settings = GeneralAppSettings.default
+        let settings = GeneralAppSettings.default
         try storage.saveSettings(settings)
         return storage
     }

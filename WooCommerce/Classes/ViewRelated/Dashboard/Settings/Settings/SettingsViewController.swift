@@ -404,25 +404,20 @@ private extension SettingsViewController {
     }
 
     func installJetpackWasPressed() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite,
+              let navigationController else {
             return
         }
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        if site.isNonJetpackSite, let navigationController {
-            let coordinator = JetpackSetupCoordinator(site: site,
-                                                      rootViewController: navigationController)
-            self.jetpackSetupCoordinator = coordinator
-            return coordinator.showBenefitModal()
-        }
-        let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
-
-        installJetpackController.setDismissAction { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-            self?.viewModel.onJetpackInstallDismiss()
-        }
-        present(installJetpackController, animated: true, completion: nil)
+        let coordinator = JetpackSetupCoordinator(site: site,
+                                                  rootViewController: navigationController,
+                                                  onCompletion: { [weak self] in
+            self?.viewModel.reloadSettings()
+        })
+        self.jetpackSetupCoordinator = coordinator
+        coordinator.startSetup()
     }
 
     func storeNameWasPressed() {

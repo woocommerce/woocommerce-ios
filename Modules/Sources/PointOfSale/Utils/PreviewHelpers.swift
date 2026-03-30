@@ -840,6 +840,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
 
     var isLoadingOrderRefunds = false
+    var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
 
     func loadOrders() async {}
@@ -919,7 +920,7 @@ final class POSRefundsServicePreview: POSRefundsServiceProtocol {
 }
 
 final class POSReceiptServicePreview: POSReceiptServiceProtocol {
-    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool) async throws {}
+    func sendReceipt(orderID: Int64, recipientEmail: String, isEligibleForPOSReceipt: Bool, templateID: String?) async throws {}
 }
 
 final class PointOfSaleCouponServicePreview: PointOfSaleCouponServiceProtocol {

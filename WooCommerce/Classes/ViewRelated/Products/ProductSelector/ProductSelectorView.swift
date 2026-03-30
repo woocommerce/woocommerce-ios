@@ -191,7 +191,6 @@ struct ProductSelectorView: View {
                 // no-op
             }
         }
-        .interactiveDismissDisabled()
     }
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {

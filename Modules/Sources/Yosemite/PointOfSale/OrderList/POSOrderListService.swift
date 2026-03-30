@@ -28,7 +28,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
                 pageSize: 25
             )
 
-            if pageNumber != 1 && pagedOrders.items.count == 0 {
+            if pageNumber != 1 && pagedOrders.items.isEmpty {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 
@@ -54,7 +54,7 @@ public final class POSOrderListService: POSOrderListServiceProtocol {
                 pageSize: 25
             )
 
-            if pageNumber != 1 && pagedOrders.items.count == 0 {
+            if pageNumber != 1 && pagedOrders.items.isEmpty {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 

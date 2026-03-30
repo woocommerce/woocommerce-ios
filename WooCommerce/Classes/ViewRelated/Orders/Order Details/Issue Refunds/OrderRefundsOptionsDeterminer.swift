@@ -47,7 +47,7 @@ final class OrderRefundsOptionsDeterminer: OrderRefundsOptionsDeterminerProtocol
         let orderTotal = (currencyFormatter.convertToDecimal(order.total) ?? 0) as Decimal
 
         let thereIsSomeAmountToRefund = orderTotal - alreadyRefundedTotal > 0
-        let thereAreItemsToRefund = determineRefundableOrderItems(from: order, with: refunds).count > 0
+        let thereAreItemsToRefund = !determineRefundableOrderItems(from: order, with: refunds).isEmpty
 
         return thereIsSomeAmountToRefund || thereAreItemsToRefund
     }

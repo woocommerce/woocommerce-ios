@@ -278,6 +278,7 @@ private extension CustomFieldsListView {
                 } : nil
             ))
         }
+        .interactiveDismissDisabled()
     }
 }
 

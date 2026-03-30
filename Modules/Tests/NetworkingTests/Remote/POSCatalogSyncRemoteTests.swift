@@ -214,7 +214,7 @@ struct POSCatalogSyncRemoteTests {
         let pagedVariations = try await remote.loadProductVariations(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: 1)
 
         // Then
-        #expect(pagedVariations.items.count > 0)
+        #expect(!pagedVariations.items.isEmpty)
 
         let firstVariation = try #require(pagedVariations.items.first)
         #expect(firstVariation.siteID == sampleSiteID)
@@ -761,8 +761,8 @@ struct POSCatalogSyncRemoteTests {
         let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then
-        #expect(catalog.products.count == 0)
-        #expect(catalog.variations.count == 0)
+        #expect(catalog.products.isEmpty)
+        #expect(catalog.variations.isEmpty)
     }
 
     @Test func downloadCatalog_throws_error_for_empty_url() async throws {

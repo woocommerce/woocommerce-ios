@@ -31,6 +31,10 @@ Organize tests into three logical blocks with comments:
 }
 ```
 
+## XCTest Async Rules
+- Mark all `async` XCTest methods with `@MainActor` to prevent flaky failures from threading issues
+- Use `storageManager.performAndSave({ storage in ... }, completion: {}, on: .main)` for all Core Data operations in tests — never use `storage.insertNewObject(...)` directly
+
 ## Async Testing Patterns
 These patterns target modern Swift concurrency when using the Swift Testing framework.
 

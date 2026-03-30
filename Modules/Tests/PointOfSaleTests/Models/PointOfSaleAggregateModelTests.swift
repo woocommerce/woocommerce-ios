@@ -192,7 +192,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.cart.purchasableItems.count == 2)
-            #expect(sut.cart.coupons.count == 0)
+            #expect(sut.cart.coupons.isEmpty)
         }
 
         enum CartTestError: Error {

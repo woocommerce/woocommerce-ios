@@ -22,6 +22,7 @@ extension WooAnalyticsEvent {
         enum IntroductionViewState: String {
             case notConnected = "not_connected"
             case updateRequired = "update_required"
+            case connected = "connected"
         }
 
         static func introductionView(state: IntroductionViewState) -> WooAnalyticsEvent {

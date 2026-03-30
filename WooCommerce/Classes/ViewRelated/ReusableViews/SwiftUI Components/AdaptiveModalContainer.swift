@@ -19,13 +19,15 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
     @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
     @ViewBuilder let dismissBarButton: () -> DismissButton
     @Binding var isShowingSecondaryView: Bool
+    var isSecondaryViewInteractiveDismissable: Bool = true
 
     var body: some View {
         if horizontalSizeClass == .compact {
             ModalOnModalView(primaryView: primaryView,
                              secondaryView: secondaryView,
                              dismissBarButton: dismissBarButton,
-                             isShowingSecondaryView: $isShowingSecondaryView)
+                             isShowingSecondaryView: $isShowingSecondaryView,
+                             isInteractiveDismissable: isSecondaryViewInteractiveDismissable)
                 .environment(\.adaptiveModalContainerPresentationStyle, .modalOnModal)
         } else {
             SideBySideView(primaryView: primaryView,
@@ -41,6 +43,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
         @ViewBuilder let secondaryView: (_ isPresented: Binding<Bool>) -> SecondaryView
         @ViewBuilder let dismissBarButton: () -> DismissButton
         @Binding var isShowingSecondaryView: Bool
+        let isInteractiveDismissable: Bool
 
         var body: some View {
             NavigationView {
@@ -56,6 +59,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
                     NavigationView {
                         secondaryView($isShowingSecondaryView)
                     }
+                    .interactiveDismissDisabled(!isInteractiveDismissable)
                 }
             }
             .navigationViewStyle(.stack)

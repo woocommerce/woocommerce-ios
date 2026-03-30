@@ -100,12 +100,21 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let featureFlagService: FeatureFlagService
 
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
+
     private let currencySettings: CurrencySettings
 
     private var cardPaymentGateway: CardPresentPaymentsPlugin?
 
     var learnMoreViewModel: LearnMoreViewModel {
-        LearnMoreViewModel.inPersonPayments(source: .paymentMethods, paymentGateway: cardPaymentGateway)
+        if isIPPHiddenForCIAB {
+            let url = CIABEligibilityChecker.learnMoreURL(siteURL: stores.sessionManager.defaultSite?.url ?? "")
+                ?? WooConstants.URLs.inPersonPaymentsLearnMoreWCPay.asURL()
+            return LearnMoreViewModel(url: url,
+                                      formatText: Localization.ciabUpgradeText,
+                                      tappedAnalyticEvent: .InPersonPayments.learnMoreTapped(source: .ciabUpgrade))
+        }
+        return LearnMoreViewModel.inPersonPayments(source: .paymentMethods, paymentGateway: cardPaymentGateway)
     }
 
     /// Stored orders.
@@ -135,6 +144,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let orderDurationRecorder: OrderDurationRecorderProtocol
         let featureFlagService: FeatureFlagService
         let currencySettings: CurrencySettings
+        let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
         init(presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
@@ -144,7 +154,8 @@ final class PaymentMethodsViewModel: ObservableObject {
              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
              orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
              featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-             currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+             currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+             ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -155,6 +166,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.orderDurationRecorder = orderDurationRecorder
             self.featureFlagService = featureFlagService
             self.currencySettings = currencySettings
+            self.ciabEligibilityChecker = ciabEligibilityChecker
         }
     }
 
@@ -181,6 +193,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         analytics = dependencies.analytics
         cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
         featureFlagService = dependencies.featureFlagService
+        ciabEligibilityChecker = dependencies.ciabEligibilityChecker
         currencySettings = dependencies.currencySettings
         title = String(format: Localization.title, formattedTotal)
         cardPaymentGateway = nil
@@ -442,6 +455,23 @@ private extension PaymentMethodsViewModel {
 }
 
 // MARK: - Helpers
+
+extension PaymentMethodsViewModel {
+    /// Syncs site data from the network and re-checks card payment visibility.
+    /// Called when returning from the Learn More webview in case the user upgraded their plan.
+    func syncSiteAndRefreshVisibility() {
+        guard isIPPHiddenForCIAB else { return }
+        let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
+            guard let self else { return }
+            if case .success(let site) = result {
+                self.stores.updateDefaultStore(site)
+            }
+            self.updateCardPaymentVisibility()
+        }
+        stores.dispatch(action)
+    }
+}
+
 private extension PaymentMethodsViewModel {
     /// Observes the store CPP state and update publish variables accordingly.
     ///
@@ -452,8 +482,12 @@ private extension PaymentMethodsViewModel {
         try? ordersResultController.performFetch()
     }
 
+    private var isIPPHiddenForCIAB: Bool {
+        ciabEligibilityChecker.isIPPHiddenForCurrentSite
+    }
+
     func updateCardPaymentVisibility() {
-        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+        guard !isIPPHiddenForCIAB, cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
             showTapToPayRow = false
 
@@ -595,6 +629,15 @@ private extension PaymentMethodsViewModel {
 
 private extension PaymentMethodsViewModel {
     enum Localization {
+        static let ciabUpgradeText = NSLocalizedString(
+            "paymentMethods.ciabUpgrade.learnMore.text",
+            value: "Accept payments in person for just 2.70%% + $0.10 per transaction. " +
+            "Upgrade to Pro to access tap-to-pay on your phone and our full point of sale system " +
+            "with real-time inventory and order syncing. %1$@",
+            comment: "Upgrade prompt shown in payment methods for non-Pro CIAB sites. " +
+            "%1$@ is a placeholder for the Learn More link text."
+        )
+
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
 

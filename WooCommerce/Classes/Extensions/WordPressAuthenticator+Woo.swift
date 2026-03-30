@@ -4,7 +4,7 @@ import class Networking.UserAgent
 import struct Networking.Settings
 
 extension WordPressAuthenticator {
-    static func initializeWithCustomConfigs(dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
+    static func initializeWithCustomConfigs(dotcomAuthScheme: String = Bundle.main.dotcomAuthScheme,
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
         let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
@@ -16,7 +16,7 @@ extension WordPressAuthenticator {
                                                                 whatIsWPComURL: URL(string: WooConstants.URLs.whatIsWPCom.rawValue)!,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
-                                                                googleLoginScheme: ApiCredentials.googleAuthScheme,
+                                                                googleLoginScheme: Bundle.main.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent,
                                                                 showLoginOptions: true,
                                                                 enableSignUp: false,

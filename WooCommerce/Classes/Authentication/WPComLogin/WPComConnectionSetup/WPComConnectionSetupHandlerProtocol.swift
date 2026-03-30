@@ -39,13 +39,13 @@ final class WPComConnectionSetupHandler: WPComConnectionSetupHandlerProtocol {
          siteURL: String,
          siteAlreadyConnected: Bool,
          stores: StoresManager = ServiceLocator.stores,
-         jetpackConnectionService: JetpackConnectionServiceProtocol = JetpackConnectionService(),
+         jetpackConnectionService: JetpackConnectionServiceProtocol? = nil,
          pluginVersionChecker: PluginVersionCheckerProtocol? = nil,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteURL = siteURL
         self.siteAlreadyConnected = siteAlreadyConnected
         self.stores = stores
-        self.jetpackConnectionService = jetpackConnectionService
+        self.jetpackConnectionService = jetpackConnectionService ?? JetpackConnectionService(siteID: siteID)
         let minimumVersion: String = {
             #if DEBUG
             if let override: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications],

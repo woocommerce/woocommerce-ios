@@ -160,6 +160,7 @@ private extension BookingDetailsView {
                 TitleAndValueRow(
                     title: row.title,
                     value: .placeholder(row.value),
+                    isLoading: row.isLoading,
                     horizontalPadding: 0,
                     isMultiline: false
                 )

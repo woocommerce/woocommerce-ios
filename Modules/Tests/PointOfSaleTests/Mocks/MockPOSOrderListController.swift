@@ -1,11 +1,13 @@
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderItem
 
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
     var isLoadingOrderRefunds = false
+    var displayedLineItems: [POSOrderItem] = []
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
     var updateOrderCalled = false
@@ -79,7 +81,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             formattedRefundTotal: "$0.00",
             paymentMethodDescription: "Via payment card",
             customerEmail: nil,
-            refundReason: nil
+            refundReason: nil,
+            isFullRefund: selectedItems.count == refundSelectableItems.count
         )
     }
 

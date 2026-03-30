@@ -124,6 +124,7 @@ final class BookingListViewModel: ObservableObject {
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
         hasFilters = filters.numberOfActiveFilters > 0
         self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
+        syncState = .syncingFirstPage
         resultsController.predicate = currentPredicate
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
@@ -162,9 +163,13 @@ private extension BookingListViewModel {
     }
 
     /// Updates row view models and sync state.
-    func updateResults() {
+    /// - Parameter afterSync: Whether this is called after a sync completes.
+    ///   When `false` (e.g. from a results controller callback), the state
+    ///   will not transition to `.empty` to avoid flashing the empty state
+    ///   while a sync is still in progress.
+    func updateResults(afterSync: Bool = false) {
         bookings = resultsController.fetchedObjects
-        transitionToResultsUpdatedState()
+        transitionToResultsUpdatedState(afterSync: afterSync)
     }
 }
 
@@ -196,7 +201,7 @@ extension BookingListViewModel: PaginationTrackerDelegate {
                 onCompletion?(.failure(error))
             }
 
-            self?.updateResults()
+            self?.updateResults(afterSync: true)
         }
         stores.dispatch(action)
     }
@@ -220,10 +225,17 @@ extension BookingListViewModel {
         }
     }
 
-    /// Update states after sync is complete.
-    func transitionToResultsUpdatedState() {
+    /// Update states after results change.
+    /// - Parameter afterSync: When `true`, allows transitioning to `.empty`
+    ///   state. When `false` (results controller callback), only transitions
+    ///   to `.results` to avoid flashing the empty state during a sync.
+    func transitionToResultsUpdatedState(afterSync: Bool = false) {
         shouldShowBottomActivityIndicator = false
-        syncState = bookings.isNotEmpty ? .results : .empty
+        if bookings.isNotEmpty {
+            syncState = .results
+        } else if afterSync {
+            syncState = .empty
+        }
     }
 }
 

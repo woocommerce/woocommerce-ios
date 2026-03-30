@@ -48,6 +48,30 @@ final class SummaryTableViewCellTests: XCTestCase {
         XCTAssertEqual(mirror.paymentStatusLabel.text, orderStatus.name)
     }
 
+    func test_edit_button_is_visible_when_viewModel_isEditButtonVisible_is_true() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
+        let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: nil, isEditButtonVisible: true)
+
+        // When
+        cell.configure(viewModel)
+
+        // Then
+        XCTAssertFalse(mirror.updateStatusButton.isHidden)
+    }
+
+    func test_edit_button_is_hidden_when_viewModel_isEditButtonVisible_is_false() throws {
+        // Given
+        let mirror = try self.mirror(of: cell)
+        let viewModel = SummaryTableViewCellViewModel(order: sampleOrder(), status: nil, isEditButtonVisible: false)
+
+        // When
+        cell.configure(viewModel)
+
+        // Then
+        XCTAssertTrue(mirror.updateStatusButton.isHidden)
+    }
+
     func test_tapping_button_executes_callback() throws {
         // Given
         let mirror = try self.mirror(of: cell)

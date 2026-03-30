@@ -2,7 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.5
 -----
-
+- [*] POS: Receipt details can be edited directly from POS settings [https://github.com/woocommerce/woocommerce-ios/pull/16811]
 
 24.4
 -----

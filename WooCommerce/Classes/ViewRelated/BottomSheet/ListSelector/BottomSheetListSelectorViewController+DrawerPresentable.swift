@@ -13,7 +13,6 @@ extension BottomSheetListSelectorViewController: DrawerPresentable {
 
 private extension BottomSheetListSelectorViewController {
     var fullBottomSheetHeight: CGFloat {
-        let height = contentSize.height + BottomSheetViewController.Constants.additionalContentTopMargin
-        return height
+        return contentSize.height + BottomSheetViewController.Constants.additionalContentTopMargin
     }
 }

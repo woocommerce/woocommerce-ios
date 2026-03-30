@@ -191,6 +191,30 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    func test_it_presents_email_controller_for_commerce_garden_site() {
+        // Given
+        let manager = AuthenticationManager()
+        let siteInfo = siteInfo(exists: true,
+                                hasWordPress: true,
+                                isWordPressCom: false,
+                                isCommerceGarden: true,
+                                hasJetpack: true,
+                                isJetpackActive: true,
+                                isJetpackConnected: false)
+        var result: WordPressAuthenticatorResult?
+        let completionHandler: (WordPressAuthenticatorResult) -> Void = { completionResult in
+            result = completionResult
+        }
+
+        // When
+        manager.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: completionHandler)
+
+        // Then
+        guard case .presentEmailController = result else {
+            return XCTFail("Expected presentEmailController for Commerce Garden site")
+        }
+    }
+
     func test_it_presents_username_and_password_controller_for_non_wpcom_site_without_jetpack_site() {
         // Given
         let manager = AuthenticationManager()
@@ -471,6 +495,25 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(topController is ULAccountMismatchViewController || topController is ULErrorViewController)
     }
 
+    func test_troubleshootSite_displays_account_mismatch_error_if_site_is_commerce_garden() {
+        // Given
+        let navigationController = UINavigationController()
+        let siteInfo = siteInfo(exists: true, hasWordPress: true, isWordPressCom: false, isCommerceGarden: true)
+        let storage = MockStorageManager()
+        let manager = AuthenticationManager(storageManager: storage)
+
+        // When
+        manager.troubleshootSite(siteInfo, in: navigationController)
+
+        // Then
+        waitUntil {
+            navigationController.viewControllers.isNotEmpty &&
+            navigationController.topViewController != nil
+        }
+        let topController = navigationController.topViewController
+        XCTAssertTrue(topController is ULAccountMismatchViewController)
+    }
+
     func test_troubleshootSite_tracks_site_discovery_event() throws {
         // Given
         let navigationController = UINavigationController()
@@ -594,6 +637,7 @@ private extension AuthenticationManagerTests {
                   exists: Bool = false,
                   hasWordPress: Bool = false,
                   isWordPressCom: Bool = false,
+                  isCommerceGarden: Bool = false,
                   hasJetpack: Bool = false,
                   isJetpackActive: Bool = false,
                   isJetpackConnected: Bool = false) -> WordPressComSiteInfo {
@@ -603,6 +647,7 @@ private extension AuthenticationManagerTests {
                                       "hasJetpack": hasJetpack,
                                       "isJetpackActive": isJetpackActive,
                                       "isJetpackConnected": isJetpackConnected,
-                                      "isWordPressDotCom": isWordPressCom])
+                                      "isWordPressDotCom": isWordPressCom,
+                                      "isCommerceGarden": isCommerceGarden])
     }
 }

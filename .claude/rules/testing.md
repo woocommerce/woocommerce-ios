@@ -40,6 +40,15 @@ Organize every test into three blocks with comments:
 - Module tests: `Modules/Tests/<ModuleName>Tests/`
 - Test plan: `WooCommerce/WooCommerceTests/UnitTests.xctestplan`
 
+## Async Tests
+- Mark `async` XCTest methods with `@MainActor` to prevent flaky failures from threading issues
+- This applies to all `async` test methods in XCTest classes (Swift Testing handles this differently)
+
+## Core Data in Tests
+- Use `storageManager.performAndSave({ storage in ... }, completion: {}, on: .main)` for all storage insertions and mutations
+- Do NOT use `storage.insertNewObject(...)` directly — always go through `performAndSave` to ensure thread-safe operations
+- This prevents flaky test failures caused by Core Data threading violations
+
 ## What to Test
 - **ViewModels**: state changes, action dispatching, data transformation, error handling
 - **Stores**: action handling with MockNetwork and MockStorageManager

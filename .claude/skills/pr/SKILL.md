@@ -26,6 +26,7 @@ git diff trunk...HEAD --stat -- . ':!*Tests*' ':!*Test*' ':!*.generated.*'
 ```
 
 4. Review the changes to write an accurate description. Read modified files if needed.
+   - **Never include actual Linear issue links** (e.g., `https://linear.app/...`) in PR descriptions — Linear is an internal resource. Only reference the issue ID (e.g., `WOOMOB-2485`).
 
 5. Determine if RELEASE-NOTES.txt needs updating. If the change is user-facing, remind about adding a release note entry.
 

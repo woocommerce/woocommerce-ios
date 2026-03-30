@@ -49,6 +49,10 @@ extension WooAnalyticsEvent {
             static let searchMethod = "search_method"
             static let resultPosition = "result_position"
             static let deltaFromToday = "delta_from_today"
+            static let refundType = "refund_type"
+            static let hasReason = "has_reason"
+            static let refundStep = "refund_step"
+            static let action = "action"
         }
 
         /// Source of the event where the event is triggered
@@ -596,6 +600,49 @@ extension WooAnalyticsEvent {
         static func bookingDateCalendarSelected(deltaFromToday: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleBookingDateCalendarSelected,
                               properties: [Key.deltaFromToday: "\(deltaFromToday)"])
+        }
+
+        // MARK: - Refund Flow
+
+        static func refundFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundFlowStarted, properties: [:])
+        }
+
+        static func refundConfirmTapped(refundType: String, hasReason: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundConfirmTapped, properties: [
+                Key.refundType: refundType,
+                Key.hasReason: hasReason
+            ])
+        }
+
+        static func refundProcessingStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [:])
+        }
+
+        static func refundProcessingSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [:])
+        }
+
+        static func refundProcessingFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: [:], error: error)
+        }
+
+        enum RefundStep: String {
+            case selectItems = "select_items"
+            case reviewRefund = "review_refund"
+            case confirmRefund = "confirm_refund"
+        }
+
+        static func refundFlowAborted(step: RefundStep) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundFlowAborted, properties: [
+                Key.refundStep: step.rawValue
+            ])
+        }
+
+        static func refundSelectAllTapped(action: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundSelectAllTapped, properties: [
+                Key.action: action
+            ])
         }
     }
 }

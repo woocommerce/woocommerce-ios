@@ -38,6 +38,7 @@ struct DashboardCustomizationView: View {
             .background(Color(uiColor: .listBackground))
             .closeButtonWithDiscardChangesPrompt(hasChanges: viewModel.hasChanges)
         }
+        .interactiveDismissDisabled()
     }
 }
 

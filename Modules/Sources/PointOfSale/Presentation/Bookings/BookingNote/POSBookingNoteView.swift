@@ -1,5 +1,4 @@
 import SwiftUI
-import Combine
 import WooFoundation
 import struct Yosemite.POSBooking
 
@@ -9,16 +8,11 @@ struct POSBookingNoteView: View {
     @State private var noteText: String
     @State private var buttonState: POSButtonState = .idle
     @State private var errorMessage: String?
-    @FocusState private var isTextFieldFocused: Bool
 
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
 
     @Binding private(set) var isShowingNoteView: Bool
-
-    @State private var buttonFrame: CGRect = .zero
-    @State private var keyboardFrame: CGRect = .zero
-    @State private var shouldMinimizePadding: Bool = false
 
     private var originalNote: String
     @State private var isEditingExistingNote: Bool
@@ -37,72 +31,20 @@ struct POSBookingNoteView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
-                POSPageHeaderView(
-                    title: isEditingExistingNote ? Localization.editTitle : Localization.addTitle,
-                    backButtonConfiguration: .init(
-                        state: buttonState != .idle ? .disabled : .enabled,
-                        action: {
-                            withAnimation {
-                                isShowingNoteView = false
-                                isTextFieldFocused = false
-                            }
-                        }
-                    )
-                )
-
-                VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
-                    Spacer()
-
-                    VStack(alignment: .center, spacing: POSSpacing.xSmall) {
-                        TextField("",
-                                  text: $noteText,
-                                  prompt: Text(Localization.placeholder).foregroundColor(.posOnDisabledContainer))
-                        .foregroundStyle(Color.posOnSurface)
-                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                        .textInputAutocapitalization(.sentences)
-                        .multilineTextAlignment(.center)
-                        .font(POSFontStyle.posHeadingRegular)
-                        .focused()
-                        .focused($isTextFieldFocused)
-
-                        if let errorMessage {
-                            Text(errorMessage)
-                                .font(POSFontStyle.posBodySmallRegular())
-                                .foregroundColor(.posError)
-                        }
-                    }
-
-                    Spacer()
-
-                    Button(action: {
-                        saveNote()
-                    }, label: {
-                        Text(hasChanges ? Localization.saveButton : Localization.addButton)
-                    })
-                    .measureFrame {
-                        buttonFrame = $0
-                    }
-                    .buttonStyle(POSFilledButtonStyle(size: .normal, state: buttonState))
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility3)
-                    .frame(maxWidth: .infinity)
-                    .disabled(buttonState != .idle || !hasChanges)
-                }
-                .padding([.horizontal])
-                .padding(.bottom, keyboardFrame.height)
-            }
-            .animation(.easeInOut, value: errorMessage)
-            .onChange(of: noteText) {
-                errorMessage = nil
-            }
-            .onReceive(Publishers.keyboardFrame) {
-                keyboardFrame = $0
-                shouldMinimizePadding = $0.intersects(buttonFrame)
-            }
-            .animation(.default, value: shouldMinimizePadding)
-        }
-        .background(Color.posSurfaceBright)
+        POSSingleFieldInputView(
+            title: isEditingExistingNote ? Localization.editTitle : Localization.addTitle,
+            placeholder: Localization.placeholder,
+            buttonTitle: hasChanges ? Localization.saveButton : Localization.addButton,
+            text: $noteText,
+            buttonState: $buttonState,
+            errorMessage: $errorMessage,
+            isButtonEnabled: hasChanges,
+            onSubmit: { saveNote() },
+            onClose: {
+                isShowingNoteView = false
+            },
+            autocapitalization: .sentences
+        )
     }
 
     private func saveNote() {
@@ -121,7 +63,6 @@ struct POSBookingNoteView: View {
                     buttonState = .success
                 } completion: {
                     isShowingNoteView = false
-                    isTextFieldFocused = false
                 }
             } catch {
                 analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingNoteAddFailed(error: error))
@@ -129,21 +70,6 @@ struct POSBookingNoteView: View {
                 buttonState = .idle
             }
         }
-    }
-}
-
-// MARK: - Helpers
-
-private extension POSBookingNoteView {
-    enum Constants {
-        static let minimumPadding: CGFloat = POSSpacing.xSmall
-    }
-
-    func conditionalPadding(_ padding: CGFloat) -> CGFloat {
-        if shouldMinimizePadding {
-            return Constants.minimumPadding
-        }
-        return padding
     }
 }
 

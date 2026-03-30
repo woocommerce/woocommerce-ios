@@ -776,7 +776,7 @@ final class ProductImageUploaderTests: XCTestCase {
         // Wait for the upload to be processed
         let _ = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
-                if statuses.count > 0 {
+                if !statuses.isEmpty {
                     promise(statuses)
                 }
             }

@@ -141,7 +141,7 @@ private extension ProductImagesGalleryViewController {
                 self.collectionView.reloadData()
             }
 
-            if self.productImages.count == 0 {
+            if self.productImages.isEmpty {
                 self.navigationController?.popViewController(animated: true)
             }
         }

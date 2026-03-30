@@ -21,13 +21,26 @@ struct StatsDataTextFormatter {
                             numberOfFractionDigits: numberOfFractionDigits)
     }
 
-    /// Creates the text to display for the net revenue.
+    /// Creates the text to display for the net revenue (totals only, no interval support).
     ///
     static func createNetRevenueText(orderStats: OrderStatsV4?,
                                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                                      currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
                                      numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
         return formatAmount(orderStats?.totals.netRevenue,
+                            currencyFormatter: currencyFormatter,
+                            currencyCode: currencyCode,
+                            numberOfFractionDigits: numberOfFractionDigits)
+    }
+
+    /// Creates the text to display for the net sales on the dashboard, with interval support.
+    ///
+    static func createNetSalesText(orderStats: OrderStatsV4?,
+                                   selectedIntervalIndex: Int?,
+                                   currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                                   currencyCode: String = ServiceLocator.currencySettings.currencyCode.rawValue,
+                                   numberOfFractionDigits: Int = ServiceLocator.currencySettings.fractionDigits) -> String {
+        return formatAmount(netRevenue(at: selectedIntervalIndex, orderStats: orderStats),
                             currencyFormatter: currencyFormatter,
                             currencyCode: currencyCode,
                             numberOfFractionDigits: numberOfFractionDigits)
@@ -319,7 +332,7 @@ private extension StatsDataTextFormatter {
         }
     }
 
-    /// Retrieves the total revenue from the provided order stats and, optionally, a specific interval.
+    /// Retrieves the total revenue (gross) from the provided order stats and, optionally, a specific interval.
     ///
     static func totalRevenue(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Decimal? {
         let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
@@ -328,6 +341,20 @@ private extension StatsDataTextFormatter {
             return orderStats.subtotals.grossRevenue
         } else if let orderStats {
             return orderStats.totals.grossRevenue
+        } else {
+            return nil
+        }
+    }
+
+    /// Retrieves the net revenue from the provided order stats and, optionally, a specific interval.
+    ///
+    static func netRevenue(at selectedIndex: Int?, orderStats: OrderStatsV4?) -> Decimal? {
+        let orderStatsIntervals = StatsIntervalDataParser.sortStatsIntervals(from: orderStats)
+        if let selectedIndex, selectedIndex < orderStatsIntervals.count {
+            let orderStats = orderStatsIntervals[selectedIndex]
+            return orderStats.subtotals.netRevenue
+        } else if let orderStats {
+            return orderStats.totals.netRevenue
         } else {
             return nil
         }

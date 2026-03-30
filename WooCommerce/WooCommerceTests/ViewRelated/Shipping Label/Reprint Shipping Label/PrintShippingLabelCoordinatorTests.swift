@@ -76,7 +76,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         waitUntil {
             // Since `UIPrintInteractionController` does not conform to `UIViewController`, its presentation is hard to test.
             // Here we wait for the in-progress UI to be presented then dismissed.
-            viewController.presentedViewControllers.count == 0
+            viewController.presentedViewControllers.isEmpty
         }
     }
 

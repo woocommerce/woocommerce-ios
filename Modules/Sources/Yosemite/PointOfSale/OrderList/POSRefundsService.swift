@@ -147,8 +147,8 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
 
     private func buildRefund(from request: POSRefundRequest, createAutomated: Bool, numberOfDecimals: Int) -> Refund {
         let items = request.items.map { item in
-            let refundQuantity = Decimal(-item.quantity)
-            let refundTotal = formatDecimalForAPI(-item.refundTotal, numberOfDecimals: numberOfDecimals)
+            let refundQuantity = Decimal(item.quantity)
+            let refundTotal = formatDecimalForAPI(item.refundTotal, numberOfDecimals: numberOfDecimals)
             let refundTaxes = buildRefundTaxes(for: item.refundTax, numberOfDecimals: numberOfDecimals)
 
             return OrderItemRefund(

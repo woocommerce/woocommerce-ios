@@ -14,6 +14,12 @@ import class Yosemite.PaymentCaptureCelebration
     private let receiptSender: POSReceiptSending
     private let collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking
 
+    enum SuccessState {
+        case cancel
+    }
+
+    var successState: SuccessState?
+
     init(bookingsController: POSSearchingBookingListControllerProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
          orderService: POSOrderServiceProtocol,

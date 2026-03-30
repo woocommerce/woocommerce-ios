@@ -57,7 +57,7 @@ public protocol POSExternalViewProviding {
                                           title: String,
                                           cancelButtonTitle: String,
                                           onSelection: @escaping (CouponDiscountType) -> Void) -> AnyView
-    func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

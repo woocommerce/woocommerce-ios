@@ -2974,8 +2974,8 @@ private extension MigrationTests {
         context.insert(entityName: "PaymentGateway", properties: [
             "siteID": 1372,
             "gatewayID": "woocommerce-payments",
-            "title": "WooCommerce Payments",
-            "gatewayDescription": "WooCommerce Payments - easy payments by Woo",
+            "title": "WooPayments",
+            "gatewayDescription": "WooPayments - easy payments by Woo",
             "enabled": true,
             "features": [String]()
         ])

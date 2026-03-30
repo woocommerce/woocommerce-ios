@@ -74,18 +74,88 @@ Keep a running list of `{ file, label }` pairs as you go — these feed directly
 
 You may take **additional** screenshots beyond the required checkpoints — especially for error states or unexpected behavior. Use a `FAIL-` prefix for failure triage screenshots (e.g. `FAIL-05-unexpected-error.png`).
 
-## Step 1: Get Credentials
+## Credentials
 
-Unless `--skip-login` is set, ask the user for:
-1. **Store URL** (e.g. `https://inpersonpayments.wpcomstaging.com/`)
-2. **Username/email**
-3. **Password**
+Credentials are stored in the macOS Keychain and accessed via a local MCP server (`woo-credentials`). **The agent never sees credential values** — not even at runtime. The MCP server reads from keychain and types into device fields or makes API calls on the agent's behalf.
 
-Suggest the test store from the smoke test doc: `inpersonpayments.wpcomstaging.com` with username `appstestadmin`. Credentials are in the Automattic secret store (https://mc.a8c.com/secret-store/?secret_id=8326).
+**First-time setup:** Run the setup script once per machine:
+```bash
+.claude/skills/smoke-test/scripts/setup-keychain.sh
+```
+
+The script prompts for each credential and stores it securely. For details on where to find each credential, see the credential setup wiki: `P91TBi-dNC-p2`
+
+**Checking stored entries:**
+```bash
+.claude/skills/smoke-test/scripts/setup-keychain.sh --check
+```
+
+### Credentials MCP Server
+
+The `woo-credentials` MCP server (configured in `.mcp.json`) provides these tools:
+
+- **`check_credentials`** — check which keychain entries exist for a store. Returns missing entry names.
+- **`type_credential`** — type a keychain value into the focused field on a device. Returns only `{ status: "typed" }`.
+- **`create_order`** — create a WooCommerce order using keychain API credentials. Returns only order ID/status.
+- **`list_stores`** — list configured store aliases and their credential types.
+
+**CRITICAL — credential security rules:**
+- **Never call `security find-generic-password` directly** — not even as a fallback if `type_credential` fails.
+- **Never read credentials via Bash** — no `security`, `cat`, `echo`, or any other command that would expose credential values.
+- **Never ask the user to provide credentials** in the chat — they are already in the keychain.
+- If `type_credential` fails, **ask the user to fix the MCP server connection** (restart WDA/mobile-mcp), then retry. Do not work around it by reading credentials yourself.
+- After calling `type_credential`, verify the typed value by calling `list_elements_on_screen` and checking the field value.
+
+### Stores
+
+- `primary` — Main smoke test store. Store URL + WP.com creds + WC REST API keys.
+- `apple` — Apple sign-in test store. Store URL only (auth handled by user in Apple sheet).
+- `google` — Google sign-in test store. Store URL only (auth handled by user in Google sheet).
+- `passwordless` — Passwordless login test store. Mailosaur-routed WP.com email only.
+- `not-woo` — Not-a-WooCommerce store error test. WP.com creds only.
+- `wrong-account` — Wrong-account error test. WP.com creds only.
+- `mailosaur` — Mailosaur API key for magic link retrieval.
+
+## Jurassic Ninja Site Creation
+
+For tests that need a throwaway WooCommerce site (no-Jetpack, Jetpack-disconnected), the skill can create one automatically:
+
+1. If Playwright is available (`npx playwright --version`), run:
+   ```bash
+   node .claude/skills/smoke-test/scripts/create-jn-site.js
+   ```
+   This launches a browser, creates the site, and outputs credentials as JSON. WordPress.com login may be required on first use.
+
+2. If Playwright is not available, open the JN create URL in the user's browser and ask them to paste the resulting site URL and credentials.
+
+Credentials from JN sites are ephemeral (sites self-destruct after 7 days) and can be used directly by the agent without keychain storage.
+
+## Step 1: Check Credentials
+
+At startup, use the `woo-credentials` MCP server to check that the required keychain entries exist:
+
+```
+woo-credentials: check_credentials({ store: "primary" })
+→ { status: "ok", missing: [] }
+```
+
+If any entries are missing:
+1. Tell the user which entries are missing
+2. Show the wiki page link (`P91TBi-dNC-p2`) for credential details
+3. Offer to run the setup script: `.claude/skills/smoke-test/scripts/setup-keychain.sh --store <alias>`
+4. Re-check via `check_credentials` after setup
+
+**To type credentials into device fields**, use `type_credential`:
+```
+woo-credentials: type_credential({ account: "primary.wpcom-email" })
+→ { status: "typed" }
+```
+
+Then verify via `list_elements_on_screen` that the field value updated. **Never use `security find-generic-password` directly.**
 
 Also ask:
-4. **Running on device or simulator?** (determines which tests to run)
-5. **Run Phase 1, Phase 2, or both?** (unless specified via `--phase`)
+1. **Running on device or simulator?** (determines which tests to run)
+2. **Run Phase 1, Phase 2, or both?** (unless specified via `--phase`)
 
 ## Step 2: Boot Simulator / Connect Device
 
@@ -142,6 +212,22 @@ Wait 5 seconds for the app to settle.
 5. If 2FA screen appears, enter `123456`, tap `Continue Button`
 6. Tap `login-epilogue-continue-button`
 7. Verify dashboard loads (`revenue-value` visible)
+
+## Connection Drops and WDA Instability
+
+mobile-mcp / WDA connections occasionally drop during a run. This is normal and not a reason to skip tests.
+
+**Rules:**
+- **Never skip a section preemptively** because of a prior connection drop. A drop in section A does not predict a drop in section B.
+- **Never batch-skip remaining sections** after a connection issue. Each section gets its own chance.
+- When a mobile-mcp tool call fails with a connection/timeout error:
+  1. Wait 5 seconds, then retry the same call once.
+  2. If it fails again, tell the user the connection dropped and ask them to restart WDA / mobile-mcp. Wait for confirmation, then resume from the step that failed.
+  3. If the user restarts successfully, **continue the run from where you left off** — do not restart the current section from the beginning unless you lost app state (e.g. the app crashed or returned to the home screen).
+- If the user cannot restore the connection after two attempts, mark only the **current section** as "not tested (connection lost)" and move on to the next section. The next section starts with a fresh connection check.
+- Record every connection drop as a low-concern observation. If the same section requires 3+ retries, escalate to medium concern.
+
+**The goal is maximum coverage.** A smoke test that skips sections due to hypothetical instability is worse than one that hits a real drop mid-section and recovers.
 
 ## Step 5: Run Test Sections
 

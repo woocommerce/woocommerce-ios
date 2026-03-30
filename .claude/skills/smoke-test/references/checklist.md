@@ -63,9 +63,9 @@ These login flows require user interaction for authentication steps the agent ca
 
 1. Log out if needed. Start login.
 2. Enter site URL: `https://woomobilepasswordlesslogin.wpcomstaging.com/`
-3. Enter email: `woomobile@bakbmdyy.mailosaur.net`
-4. Tap continue. The app will send a magic link email.
-5. Ask the user via `AskUserQuestion`: "Please check the Mailosaur **passwordless1** inbox (credentials: https://mc.a8c.com/secret-store/?secret_id=11346) and provide the magic link URL."
+3. Tap into the email field, then call `type_credential(account: "passwordless.wpcom-email")` to type the email.
+4. Verify the email field updated via `list_elements_on_screen`. Tap continue. The app will send a magic link email.
+5. Ask the user via `AskUserQuestion`: "A magic link email was sent. Please check the Mailosaur inbox and provide the magic link URL."
 6. Open the magic link in the simulator/device: `xcrun simctl openurl <UDID> <magic_link_url>`
 7. Verify the app completes login and reaches the dashboard.
 
@@ -74,18 +74,20 @@ These login flows require user interaction for authentication steps the agent ca
 ### Social login — Apple (user-assisted)
 
 1. Log out if needed. Start login.
-2. Navigate to the Apple sign-in button and tap it.
-3. Ask the user via `AskUserQuestion`: "An Apple sign-in sheet should appear. Please complete the authentication."
-4. After the user confirms, verify the app reaches the dashboard.
+2. Tap into the site address field, then call `type_credential(account: "apple.store-url")` to type the store URL. Tap Continue.
+3. On the email screen, navigate to the Apple sign-in button and tap it.
+4. Ask the user via `AskUserQuestion`: "An Apple sign-in sheet should appear. Please complete the authentication."
+5. After the user confirms, verify the app reaches the dashboard.
 
 > SCREENSHOT: 04-social-login-apple.png — Dashboard after Apple sign-in
 
 ### Social login — Google (user-assisted)
 
 1. Log out if needed. Start login.
-2. Navigate to the Google sign-in button and tap it.
-3. Ask the user via `AskUserQuestion`: "A Google sign-in sheet should appear. Please complete the authentication."
-4. After the user confirms, verify the app reaches the dashboard.
+2. Tap into the site address field, then call `type_credential(account: "google.store-url")` to type the store URL. Tap Continue.
+3. On the email screen, navigate to the Google sign-in button and tap it.
+4. Ask the user via `AskUserQuestion`: "A Google sign-in sheet should appear. Please complete the authentication."
+5. After the user confirms, verify the app reaches the dashboard.
 
 > SCREENSHOT: 05-social-login-google.png — Dashboard after Google sign-in
 
@@ -275,8 +277,8 @@ Pass criteria: the app navigates from prologue through credentials to the dashbo
 
 1. Start login.
 2. Enter `notawoostore.wordpress.com` as the site address.
-3. Enter credentials — username: `appstestadmin`, from https://mc.a8c.com/secret-store/?secret_id=8326
-4. Complete login.
+3. On the email screen, tap into the email field and call `type_credential(account: "not-woo.wpcom-email")`. Tap Continue.
+4. Tap into the password field and call `type_credential(account: "not-woo.wpcom-password")`. Tap Continue.
 5. Verify the app shows an appropriate error or messaging indicating the site does not have WooCommerce.
 
 > SCREENSHOT: 26-not-woo-store-error.png — Not a WooCommerce store error
@@ -285,20 +287,23 @@ Pass criteria: the app navigates from prologue through credentials to the dashbo
 
 1. Start login.
 2. Enter site URL: `https://site-for-woocommerce12a3fasdf45dfs6789.mystagingwebsite.com/`
-3. Enter credentials from https://mc.a8c.com/secret-store/?secret_id=8326
-4. Attempt login.
+3. On the email screen, tap into the email field and call `type_credential(account: "wrong-account.wpcom-email")`. Tap Continue.
+4. Tap into the password field and call `type_credential(account: "wrong-account.wpcom-password")`. Tap Continue.
 5. Verify the app shows an error indicating the account doesn't have access to the store.
 
 > SCREENSHOT: 27-wrong-account-error.png — Wrong account for store error
 
 ### No Jetpack site
 
-1. Create a Jurassic Ninja site with WooCommerce enabled but no Jetpack. Attempt automated creation first; if that fails, ask the user via `AskUserQuestion` for a site URL.
-2. Check the WC Smooth Generator options and generate test data (e.g. 100 products and orders).
-3. Log in to the app using site credentials.
-4. Verify onboarding tasks are shown.
-5. Verify the order list loads successfully.
-6. Verify the product list loads successfully.
+1. Create a Jurassic Ninja site with WooCommerce:
+   - **Playwright available:** Run `node .claude/skills/smoke-test/scripts/create-jn-site.js --no-jetpack` and parse the JSON output for URL/username/password. The user may need to authenticate with WordPress.com in the browser on first use.
+   - **No Playwright:** Open `https://jurassic.ninja/create?features=woocommerce,wc-smooth-generator` in the user's browser via `open`. Ask the user to paste the site URL and admin credentials.
+2. After the site is created, deactivate Jetpack via WP Admin or WP CLI.
+3. Use WC Smooth Generator to generate test data (e.g. 100 products and orders).
+4. Log in to the app using the JN site credentials (ephemeral — use directly, no keychain needed).
+5. Verify onboarding tasks are shown.
+6. Verify the order list loads successfully.
+7. Verify the product list loads successfully.
 
 > SCREENSHOT: 28-no-jetpack-site.png — App loaded on no-Jetpack site
 
@@ -584,7 +589,7 @@ Pass criteria: product list loads and paginates, sort works, all product detail 
 ### Change store
 
 3. Navigate to the store switcher.
-4. Verify multiple stores are listed (the `appstestadmin` account has multiple stores).
+4. Verify multiple stores are listed (the primary test account has access to multiple stores).
 5. Select a different store.
 6. Verify the app switches to the new store (store name updates, dashboard reloads).
 

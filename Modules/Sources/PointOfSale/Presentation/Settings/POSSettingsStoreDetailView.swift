@@ -105,11 +105,12 @@ struct POSSettingsStoreDetailView: View {
 
                 Spacer()
 
-                if !isLoading, viewModel.receiptSettingsAdminURL != nil {
+                if viewModel.receiptSettingsAdminURL != nil {
                     Button(Localization.edit) {
                         showingWebView = true
                     }
                     .font(.posBodyMediumRegular())
+                    .disabled(isLoading)
                 }
             }
             .padding(.vertical, POSPadding.small)

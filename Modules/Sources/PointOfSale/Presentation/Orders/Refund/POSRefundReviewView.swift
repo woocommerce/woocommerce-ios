@@ -111,7 +111,7 @@ private extension POSRefundReviewView {
             }
             Text(refundReason ?? Localization.reasonPlaceholder)
                 .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantHighest)
+                .foregroundColor(refundReason != nil ? .posOnSurfaceVariantHighest : .posOnSurfaceVariantLowest)
         }
     }
 

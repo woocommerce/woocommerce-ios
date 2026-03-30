@@ -14,7 +14,9 @@ struct POSRefundLoadingView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(POSPadding.xLarge)
+        .padding(.horizontal, POSPadding.xLarge)
+        .padding(.bottom, POSPadding.xLarge)
+        .padding(.top, POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
         .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
         .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))

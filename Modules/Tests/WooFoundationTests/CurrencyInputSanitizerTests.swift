@@ -80,7 +80,7 @@ struct CurrencyInputSanitizerTests {
         let result = sut.sanitize("")
 
         // Then
-        #expect(result == "")
+        #expect(result.isEmpty)
     }
 
     @Test func sanitize_when_just_decimal_separator_then_allows_it() {

@@ -124,6 +124,16 @@ extension PointOfSaleCardPaymentState {
             return false
         }
     }
+
+    var requiresCashExit: Bool {
+        switch self {
+        case .cardInserted, .processingPayment, .cardPaymentSuccessful:
+            return true
+        case .idle, .validatingOrder, .validatingOrderError, .paymentIntentCreationError,
+             .preparingReader, .acceptingCard, .paymentError:
+            return false
+        }
+    }
 }
 
 extension PointOfSaleCashPaymentState {

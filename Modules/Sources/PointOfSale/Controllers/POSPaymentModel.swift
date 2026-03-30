@@ -437,9 +437,14 @@ private extension POSPaymentModel {
             .sink(receiveValue: { [weak self] cardPaymentState in
                 guard let self else { return }
                 if paymentState.cash != .idle {
-                    if case .idle = cardPaymentState { return }
-                    DDLogWarn("💵 [CashPayment] card event \(cardPaymentState) during cash flow - transitioning to card view")
-                    paymentState.cash = .idle
+                    if cardPaymentState.requiresCashExit {
+                        DDLogWarn("💵 [CashPayment] committed card event \(cardPaymentState) during cash flow " +
+                                  "- transitioning to card view")
+                        paymentState.cash = .idle
+                    } else {
+                        DDLogInfo("💵 [CashPayment] ignoring non-committed card event \(cardPaymentState) during cash flow")
+                        return
+                    }
                 }
                 DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
                           "current cash state: \(paymentState.cash)")

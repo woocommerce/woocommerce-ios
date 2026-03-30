@@ -21,7 +21,8 @@ struct POSSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                isLocalCatalogEligible: true)
+                                                isLocalCatalogEligible: true,
+                                                receiptSettingsAdminURL: nil)
 
         // When
         let cardReader = sut.connectedCardReader
@@ -41,7 +42,8 @@ struct POSSettingsControllerTests {
                                                 siteSettings: [],
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
-                                                isLocalCatalogEligible: true)
+                                                isLocalCatalogEligible: true,
+                                                receiptSettingsAdminURL: nil)
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)
@@ -54,9 +56,6 @@ struct POSSettingsControllerTests {
         #expect(sut.connectedCardReader?.name == "WisePad 3")
         #expect(sut.connectedCardReader?.batteryLevel == 0.75)
     }
-
-
-
 }
 
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
@@ -73,17 +72,6 @@ private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServicePr
             throw error
         }
     }
-
-    var updatePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
-
-    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
-        switch updatePointOfSaleSettingsResult {
-        case .success(let receiptInfo):
-            return receiptInfo
-        case .failure(let error):
-            throw error
-        }
-    }
 }
 
 final class MockPOSSettingsController: POSSettingsControllerProtocol {
@@ -92,7 +80,8 @@ final class MockPOSSettingsController: POSSettingsControllerProtocol {
                                                                               settingsService: MockPointOfSaleSettingsService(),
                                                                               pluginsService: MockPluginsService(),
                                                                               defaultSiteName: "Sample Store",
-                                                                              siteSettings: [])
+                                                                              siteSettings: [],
+                                                                              receiptSettingsAdminURL: nil)
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     var isLocalCatalogEligible = true
 }

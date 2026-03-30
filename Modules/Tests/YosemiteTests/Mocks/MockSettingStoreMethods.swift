@@ -87,21 +87,4 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
         }
     }
 
-    var updatePointOfSaleSettingCalled = false
-    var updatePointOfSaleSettingResult: Result<SiteSetting, Error> = .success(SiteSetting(siteID: 0,
-                                                                                          settingID: "",
-                                                                                          label: "",
-                                                                                          settingDescription: "",
-                                                                                          value: "",
-                                                                                          settingGroupKey: "point-of-sale"))
-
-    func updatePointOfSaleSetting(siteID: Int64, settingID: String, value: String) async throws -> SiteSetting {
-        updatePointOfSaleSettingCalled = true
-        switch updatePointOfSaleSettingResult {
-        case .success(let setting):
-            return setting
-        case .failure(let error):
-            throw error
-        }
-    }
 }

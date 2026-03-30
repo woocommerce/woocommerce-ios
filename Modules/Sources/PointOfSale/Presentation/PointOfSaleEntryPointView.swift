@@ -77,6 +77,7 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
+         receiptSettingsAdminURL: URL?,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -130,7 +131,8 @@ public struct PointOfSaleEntryPointView: View {
                                                                 siteSettings: siteSettings,
                                                                 grdbManager: grdbManager,
                                                                 catalogSyncCoordinator: catalogSyncCoordinator,
-                                                                isLocalCatalogEligible: isLocalCatalogEligible)
+                                                                isLocalCatalogEligible: isLocalCatalogEligible,
+                                                                receiptSettingsAdminURL: receiptSettingsAdminURL)
         self.collectOrderPaymentAnalyticsTracker = collectOrderPaymentAnalyticsTracker
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = PointOfSaleItemsController(
@@ -253,6 +255,7 @@ public struct PointOfSaleEntryPointView: View {
         grdbManager: nil,
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
+        receiptSettingsAdminURL: nil,
         services: POSPreviewServices()
     )
 }

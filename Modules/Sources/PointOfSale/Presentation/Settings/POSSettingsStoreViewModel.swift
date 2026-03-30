@@ -4,7 +4,6 @@ import class Yosemite.SiteAddress
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import enum Yosemite.Plugin
-import enum Yosemite.POSReceiptField
 import struct Yosemite.SiteSetting
 import struct Yosemite.POSReceiptInformation
 import WooFoundationCore
@@ -13,15 +12,7 @@ final class POSSettingsStoreViewModel: ObservableObject {
     @Published var receiptInformation = POSReceiptInformation.empty
     @Published var shouldShowReceiptInformation: Bool = false
 
-    // MARK: - Editing state
-    @Published var isEditing: Bool = false
-    @Published var isSaving: Bool = false
-    @Published var saveError: String?
-    @Published var editableStoreName: String = ""
-    @Published var editableStoreAddress: String = ""
-    @Published var editablePhone: String = ""
-    @Published var editableEmail: String = ""
-    @Published var editableRefundReturnsPolicy: String = ""
+    let receiptSettingsAdminURL: URL?
 
     private let siteID: Int64
     private let settingsService: PointOfSaleSettingsServiceProtocol
@@ -33,12 +24,14 @@ final class POSSettingsStoreViewModel: ObservableObject {
          settingsService: PointOfSaleSettingsServiceProtocol,
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String?,
-         siteSettings: [SiteSetting]) {
+         siteSettings: [SiteSetting],
+         receiptSettingsAdminURL: URL?) {
         self.siteID = siteID
         self.settingsService = settingsService
         self.pluginsService = pluginsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
+        self.receiptSettingsAdminURL = receiptSettingsAdminURL
     }
 
     var storeName: String {
@@ -59,68 +52,6 @@ final class POSSettingsStoreViewModel: ObservableObject {
         } else {
             return "\(address1)\n\(address2)"
         }
-    }
-
-    var hasChanges: Bool {
-        editableStoreName != (receiptInformation.storeName ?? "") ||
-        editableStoreAddress != (receiptInformation.storeAddress ?? "") ||
-        editablePhone != (receiptInformation.phone ?? "") ||
-        editableEmail != (receiptInformation.email ?? "") ||
-        editableRefundReturnsPolicy != (receiptInformation.refundReturnsPolicy ?? "")
-    }
-
-    func startEditing() {
-        editableStoreName = receiptInformation.storeName ?? ""
-        editableStoreAddress = receiptInformation.storeAddress ?? ""
-        editablePhone = receiptInformation.phone ?? ""
-        editableEmail = receiptInformation.email ?? ""
-        editableRefundReturnsPolicy = receiptInformation.refundReturnsPolicy ?? ""
-        saveError = nil
-        isEditing = true
-    }
-
-    func cancelEditing() {
-        isEditing = false
-        saveError = nil
-    }
-
-    @MainActor
-    func saveReceiptInformation() async {
-        var changes: [POSReceiptField: String] = [:]
-
-        if editableStoreName != (receiptInformation.storeName ?? "") {
-            changes[.storeName] = editableStoreName
-        }
-        if editableStoreAddress != (receiptInformation.storeAddress ?? "") {
-            changes[.storeAddress] = editableStoreAddress
-        }
-        if editablePhone != (receiptInformation.phone ?? "") {
-            changes[.phone] = editablePhone
-        }
-        if editableEmail != (receiptInformation.email ?? "") {
-            changes[.email] = editableEmail
-        }
-        if editableRefundReturnsPolicy != (receiptInformation.refundReturnsPolicy ?? "") {
-            changes[.refundReturnsPolicy] = editableRefundReturnsPolicy
-        }
-
-        guard !changes.isEmpty else {
-            isEditing = false
-            return
-        }
-
-        isSaving = true
-        saveError = nil
-
-        do {
-            receiptInformation = try await settingsService.updatePointOfSaleSettings(changes)
-            isEditing = false
-        } catch {
-            DDLogError("Failed to save POS receipt settings: \(error)")
-            saveError = Localization.saveErrorMessage
-        }
-
-        isSaving = false
     }
 
     @MainActor
@@ -161,12 +92,6 @@ private extension POSSettingsStoreViewModel {
             "pointOfSaleSettingsService.storeNameNotSet",
             value: "Not set",
             comment: "Text displayed on Point of Sale settings when store has not been provided."
-        )
-
-        static let saveErrorMessage = NSLocalizedString(
-            "pointOfSaleSettingsStoreViewModel.saveError",
-            value: "Failed to save receipt information. Please try again.",
-            comment: "Error message displayed when saving POS receipt settings fails."
         )
     }
 }

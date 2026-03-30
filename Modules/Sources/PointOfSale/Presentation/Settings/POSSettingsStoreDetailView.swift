@@ -2,8 +2,11 @@ import SwiftUI
 
 struct POSSettingsStoreDetailView: View {
     @State private var isLoading: Bool = false
+    @State private var showingWebView: Bool = false
 
-    @ObservedObject var viewModel: POSSettingsStoreViewModel
+    @Environment(\.posExternalViews) private var externalViews
+
+    let viewModel: POSSettingsStoreViewModel
 
     init(viewModel: POSSettingsStoreViewModel) {
         self.viewModel = viewModel
@@ -63,19 +66,30 @@ struct POSSettingsStoreDetailView: View {
             VStack(spacing: POSSpacing.none) {
                 receiptSectionHeaderView
 
-                if viewModel.isEditing {
-                    editableReceiptFieldsView
-                } else {
-                    readOnlyReceiptFieldsView
+                VStack(spacing: POSSpacing.medium) {
+                    receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
+                    receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
+                    receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
+                    receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
+                    receiptFieldRowView(label: Localization.refundReturnsPolicy,
+                                        value: viewModel.receiptInformation.refundReturnsPolicy,
+                                        showSeparator: false)
                 }
-
-                if let error = viewModel.saveError {
-                    Text(error)
-                        .font(.posBodySmallRegular())
-                        .foregroundColor(.posError)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.vertical, POSPadding.small)
-                }
+                .padding(.bottom, POSPadding.medium)
+            }
+        }
+        .posSheet(isPresented: $showingWebView) {
+            if let adminURL = viewModel.receiptSettingsAdminURL {
+                externalViews.createAuthenticatedWebView(
+                    url: adminURL,
+                    title: Localization.editReceiptWebViewTitle) {
+                        showingWebView = false
+                        Task {
+                            isLoading = true
+                            await viewModel.retrievePOSReceiptSettings()
+                            isLoading = false
+                        }
+                    }
             }
         }
     }
@@ -91,65 +105,15 @@ struct POSSettingsStoreDetailView: View {
 
                 Spacer()
 
-                if viewModel.isEditing {
-                    HStack(spacing: POSSpacing.small) {
-                        Button(Localization.cancel) {
-                            viewModel.cancelEditing()
-                        }
-                        .font(.posBodyMediumRegular())
-
-                        Button {
-                            Task {
-                                await viewModel.saveReceiptInformation()
-                            }
-                        } label: {
-                            if viewModel.isSaving {
-                                ProgressView()
-                            } else {
-                                Text(Localization.save)
-                            }
-                        }
-                        .font(.posBodyMediumBold)
-                        .disabled(!viewModel.hasChanges || viewModel.isSaving)
-                    }
-                } else if !isLoading {
+                if !isLoading, viewModel.receiptSettingsAdminURL != nil {
                     Button(Localization.edit) {
-                        viewModel.startEditing()
+                        showingWebView = true
                     }
                     .font(.posBodyMediumRegular())
                 }
             }
             .padding(.vertical, POSPadding.small)
         }
-    }
-
-    @ViewBuilder
-    private var readOnlyReceiptFieldsView: some View {
-        VStack(spacing: POSSpacing.medium) {
-            receiptFieldRowView(label: Localization.receiptStoreName, value: viewModel.receiptInformation.storeName)
-            receiptFieldRowView(label: Localization.physicalAddress, value: viewModel.receiptInformation.storeAddress)
-            receiptFieldRowView(label: Localization.phoneNumber, value: viewModel.receiptInformation.phone)
-            receiptFieldRowView(label: Localization.email, value: viewModel.receiptInformation.email)
-            receiptFieldRowView(label: Localization.refundReturnsPolicy,
-                                value: viewModel.receiptInformation.refundReturnsPolicy,
-                                showSeparator: false)
-        }
-        .padding(.bottom, POSPadding.medium)
-    }
-
-    @ViewBuilder
-    private var editableReceiptFieldsView: some View {
-        VStack(spacing: POSSpacing.medium) {
-            editableFieldView(label: Localization.receiptStoreName, text: $viewModel.editableStoreName)
-            editableFieldView(label: Localization.physicalAddress, text: $viewModel.editableStoreAddress)
-            editableFieldView(label: Localization.phoneNumber, text: $viewModel.editablePhone)
-            editableFieldView(label: Localization.email, text: $viewModel.editableEmail)
-            editableFieldView(label: Localization.refundReturnsPolicy,
-                              text: $viewModel.editableRefundReturnsPolicy,
-                              isMultiline: true,
-                              showSeparator: false)
-        }
-        .padding(.bottom, POSPadding.medium)
     }
 
     @ViewBuilder
@@ -180,36 +144,6 @@ struct POSSettingsStoreDetailView: View {
     }
 
     @ViewBuilder
-    private func editableFieldView(label: String,
-                                   text: Binding<String>,
-                                   isMultiline: Bool = false,
-                                   showSeparator: Bool = true) -> some View {
-        VStack(alignment: .leading, spacing: POSPadding.small) {
-            Text(label)
-                .font(.posBodyMediumRegular())
-
-            if isMultiline {
-                TextEditor(text: text)
-                    .font(.posBodyMediumRegular())
-                    .frame(minHeight: Constants.multilineFieldMinHeight)
-                    .scrollContentBackground(.hidden)
-                    .background(Color.posSurfaceContainerLow)
-                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
-            } else {
-                TextField(Localization.notSet, text: text)
-                    .font(.posBodyMediumRegular())
-                    .textFieldStyle(.roundedBorder)
-            }
-
-            if showSeparator {
-                Divider()
-                    .padding(.top, POSPadding.small)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    @ViewBuilder
     private func settingValueView(for value: String?) -> some View {
         if isLoading {
             Rectangle()
@@ -229,7 +163,6 @@ private extension POSSettingsStoreDetailView {
     enum Constants {
         static let shimmeringTextWidth: CGFloat = 70
         static let shimmeringTextHeight: CGFloat = 16
-        static let multilineFieldMinHeight: CGFloat = 80
     }
 
     enum Localization {
@@ -302,19 +235,13 @@ private extension POSSettingsStoreDetailView {
         static let edit = NSLocalizedString(
             "pointOfSaleSettingsStoreDetailView.edit",
             value: "Edit",
-            comment: "Button to start editing receipt information in Point of Sale settings."
+            comment: "Button to edit receipt information in Point of Sale settings via web view."
         )
 
-        static let save = NSLocalizedString(
-            "pointOfSaleSettingsStoreDetailView.save",
-            value: "Save",
-            comment: "Button to save receipt information changes in Point of Sale settings."
-        )
-
-        static let cancel = NSLocalizedString(
-            "pointOfSaleSettingsStoreDetailView.cancel",
-            value: "Cancel",
-            comment: "Button to cancel editing receipt information in Point of Sale settings."
+        static let editReceiptWebViewTitle = NSLocalizedString(
+            "pointOfSaleSettingsStoreDetailView.editReceiptWebViewTitle",
+            value: "Receipt Settings",
+            comment: "Navigation title for the web view used to edit POS receipt information."
         )
     }
 }

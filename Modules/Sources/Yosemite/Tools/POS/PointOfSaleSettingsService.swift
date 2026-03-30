@@ -6,7 +6,6 @@ import struct NetworkingCore.JetpackSite
 
 public protocol PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation
-    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation
 }
 
 public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
@@ -34,28 +33,20 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
     public func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
         let siteSettings = try await settingStoreMethods.retrievePointOfSaleSettings(siteID: siteID)
         return POSReceiptInformation(
-            storeName: settingValue(from: siteSettings, settingID: POSReceiptField.storeName.rawValue),
-            storeAddress: settingValue(from: siteSettings, settingID: POSReceiptField.storeAddress.rawValue),
-            phone: settingValue(from: siteSettings, settingID: POSReceiptField.phone.rawValue),
-            email: settingValue(from: siteSettings, settingID: POSReceiptField.email.rawValue),
-            refundReturnsPolicy: settingValue(from: siteSettings, settingID: POSReceiptField.refundReturnsPolicy.rawValue)
+            storeName: settingValue(from: siteSettings, settingID: SettingIDs.storeName),
+            storeAddress: settingValue(from: siteSettings, settingID: SettingIDs.storeAddress),
+            phone: settingValue(from: siteSettings, settingID: SettingIDs.phone),
+            email: settingValue(from: siteSettings, settingID: SettingIDs.email),
+            refundReturnsPolicy: settingValue(from: siteSettings, settingID: SettingIDs.refundReturnsPolicy)
         )
     }
 
-    public func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for (field, value) in changes {
-                group.addTask {
-                    _ = try await self.settingStoreMethods.updatePointOfSaleSetting(
-                        siteID: self.siteID,
-                        settingID: field.rawValue,
-                        value: value
-                    )
-                }
-            }
-            try await group.waitForAll()
-        }
-        return try await retrievePointOfSaleSettings()
+    private enum SettingIDs {
+        static let storeName = "woocommerce_pos_store_name"
+        static let storeAddress = "woocommerce_pos_store_address"
+        static let phone = "woocommerce_pos_store_phone"
+        static let email = "woocommerce_pos_store_email"
+        static let refundReturnsPolicy = "woocommerce_pos_refund_returns_policy"
     }
 
     private func settingValue(from siteSettings: [SiteSetting], settingID: String) -> String? {

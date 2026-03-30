@@ -52,7 +52,6 @@ import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PointOfSaleCouponServiceProtocol
 import protocol Yosemite.PointOfSaleCouponFetchStrategy
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
-import enum Yosemite.POSReceiptField
 import protocol Yosemite.PointOfSaleItemFetchStrategyFactoryProtocol
 import protocol Yosemite.POSItemFetchAnalyticsTracking
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
@@ -938,10 +937,6 @@ final class PointOfSaleCouponServicePreview: PointOfSaleCouponServiceProtocol {
 
 final class PointOfSaleSettingsServicePreview: PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
-        .empty
-    }
-
-    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
         .empty
     }
 }

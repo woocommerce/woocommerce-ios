@@ -6,7 +6,6 @@ import struct Yosemite.SystemPlugin
 import protocol Yosemite.PluginsServiceProtocol
 import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import struct Yosemite.POSReceiptInformation
-import enum Yosemite.POSReceiptField
 import Observation
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
@@ -35,12 +34,14 @@ protocol POSSettingsControllerProtocol {
          siteSettings: [SiteSetting],
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
-         isLocalCatalogEligible: Bool) {
+         isLocalCatalogEligible: Bool,
+         receiptSettingsAdminURL: URL?) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
                                                         defaultSiteName: defaultSiteName,
-                                                        siteSettings: siteSettings)
+                                                        siteSettings: siteSettings,
+                                                        receiptSettingsAdminURL: receiptSettingsAdminURL)
         self.isLocalCatalogEligible = isLocalCatalogEligible
 
         if let catalogSyncCoordinator, let grdbManager {
@@ -84,7 +85,8 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
                                                                               settingsService: MockPointOfSaleSettingsService(),
                                                                               pluginsService: PluginsServicePreview(),
                                                                               defaultSiteName: "Sample Store",
-                                                                              siteSettings: [])
+                                                                              siteSettings: [],
+                                                                              receiptSettingsAdminURL: nil)
 
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 
@@ -95,10 +97,6 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
 
 final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
     func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
-        return .empty
-    }
-
-    func updatePointOfSaleSettings(_ changes: [POSReceiptField: String]) async throws -> POSReceiptInformation {
         return .empty
     }
 }

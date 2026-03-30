@@ -148,30 +148,6 @@ public class SiteSettingsRemote: Remote {
         }
     }
 
-    /// Updates a single point of sale setting for a given site.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site for which we'll update the setting.
-    ///   - settingID: ID of the setting (e.g. `woocommerce_pos_store_name`).
-    ///   - value: New value for the setting.
-    /// - Returns: The updated `SiteSetting`.
-    /// - Throws: Error if the request fails.
-    ///
-    public func updatePointOfSaleSetting(for siteID: Int64,
-                                          settingID: String,
-                                          value: String) async throws -> SiteSetting {
-        let parameters: [String: Any] = [Constants.valueParameter: value]
-        let path = Constants.siteSettingsPath + Constants.pointOfSaleSettingsGroup + "/" + settingID
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .put,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: parameters,
-                                     availableAsRESTRequest: true)
-        let mapper = SiteSettingMapper(siteID: siteID, settingsGroup: .pointOfSale)
-        return try await enqueue(request, mapper: mapper)
-    }
-
     /// Enables or disables a specific feature in the site WC settings.
     ///
     /// - Parameters:

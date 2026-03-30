@@ -1,13 +1,3 @@
-
-/// Identifies the individual POS receipt setting fields used in the WC REST API.
-public enum POSReceiptField: String, CaseIterable {
-    case storeName = "woocommerce_pos_store_name"
-    case storeAddress = "woocommerce_pos_store_address"
-    case phone = "woocommerce_pos_store_phone"
-    case email = "woocommerce_pos_store_email"
-    case refundReturnsPolicy = "woocommerce_pos_refund_returns_policy"
-}
-
 public struct POSReceiptInformation: Equatable {
     public let storeName: String?
     public let storeAddress: String?

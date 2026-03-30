@@ -153,19 +153,9 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
 
             return OrderItemRefund(
                 itemID: item.itemID,
-                name: "",
-                productID: 0,
-                variationID: 0,
-                refundedItemID: nil,
                 quantity: refundQuantity,
-                price: NSDecimalNumber.zero,
-                sku: nil,
-                subtotal: "",
-                subtotalTax: "",
-                taxClass: "",
                 taxes: refundTaxes,
-                total: refundTotal,
-                totalTax: ""
+                total: refundTotal
             )
         }
 

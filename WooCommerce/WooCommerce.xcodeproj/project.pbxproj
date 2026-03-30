@@ -50,10 +50,8 @@
 		3F2B4AEE2DDC31A200E5E49C /* XcodeTarget_WooCommerce in Frameworks */ = {isa = PBXBuildFile; productRef = 3F2B4AED2DDC31A200E5E49C /* XcodeTarget_WooCommerce */; };
 		5744BEB1248FE44D000A6FE2 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5744BEB0248FE44C000A6FE2 /* SwiftUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */ = {isa = PBXBuildFile; fileRef = 8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */; };
-		93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */ = {isa = PBXBuildFile; fileRef = 93BCF01E20DC2CE200EBF7A1 /* bash_secrets.tpl */; };
 		B559EBAF20A0BF8F00836CD4 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAD20A0BF8E00836CD4 /* README.md */; };
 		B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = B559EBAE20A0BF8F00836CD4 /* LICENSE */; };
-		B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */ = {isa = PBXBuildFile; fileRef = B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */; };
 		B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 		DE158D252F31BC8200161712 /* NotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DE158D1E2F31BC8200161712 /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -238,11 +236,9 @@
 		B559EBAE20A0BF8F00836CD4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B55D4BFA20B5CDE600D7A50F /* ApiCredentials.tpl */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; fileEncoding = 4; path = ApiCredentials.tpl; sourceTree = "<group>"; };
 		B55D4BFB20B5CDE600D7A50F /* replace_secrets.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = replace_secrets.rb; sourceTree = "<group>"; };
-
 		B56DB3C62049BFAA00D4AA8E /* WooCommerce.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WooCommerce.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ApiCredentials.swift; path = DerivedSources/ApiCredentials.swift; sourceTree = SOURCE_ROOT; };
-
 		CCDC49CA23FFFFF4003166BA /* WooCommerceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE158D1E2F31BC8200161712 /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1156,10 +1152,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				8CD41D4A21F8A7E300CF3C2B /* RELEASE-NOTES.txt in Resources */,
-				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1463,7 +1457,6 @@
 				CODE_SIGN_STYLE = Manual;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
-
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1506,7 +1499,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -2120,7 +2112,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -2130,7 +2121,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "$(inherited)";
 			};
@@ -2268,7 +2258,6 @@
 				CODE_SIGN_STYLE = Manual;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
-
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2297,7 +2286,6 @@
 				CODE_SIGN_STYLE = Manual;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
-
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

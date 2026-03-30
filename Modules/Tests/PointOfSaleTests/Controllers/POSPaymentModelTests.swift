@@ -651,6 +651,40 @@ struct POSPaymentModelTests {
         #expect(sut.cardPresentPaymentAlertViewModel == nil)
     }
 
+    // MARK: - Cash Payment and Reader Connection
+
+    @Test("startCashPayment while disconnected prevents card collection on reconnect")
+    @MainActor
+    func startCashPayment_whenDisconnected_preventsCardCollectionOnReconnect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        // Start payment while disconnected - installs startPaymentOnCardReaderConnection
+        await sut.startPayment()
+        #expect(service.collectPaymentWasCalled == false)
+
+        // When: enter cash payment while still disconnected
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // Then: reconnecting the reader should NOT trigger card collection
+        service.collectPaymentWasCalled = false
+        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+
+        // Give the Combine chain a chance to fire (if it were still active)
+        try? await Task.sleep(nanoseconds: 50_000_000)
+
+        #expect(service.collectPaymentWasCalled == false)
+        #expect(sut.paymentState.cash == .collectingCash)
+    }
+
     @Test("connection success alert is shown when not waiting to start payment")
     @MainActor
     func connectionSuccessAlert_isShown_whenNotWaitingToStartPayment() async {

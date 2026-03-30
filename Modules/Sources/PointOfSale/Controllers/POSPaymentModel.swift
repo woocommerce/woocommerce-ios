@@ -217,6 +217,10 @@ extension POSPaymentModel {
         DDLogInfo("💵 [CashPayment] startCashPayment called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
         analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
 
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+
         paymentState.cash = .collectingCash
 
         Task { [weak self] in

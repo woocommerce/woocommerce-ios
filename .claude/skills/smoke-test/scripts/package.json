@@ -1,0 +1,10 @@
+{
+  "name": "woo-credentials-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local MCP server for WooCommerce smoke test credential management",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}

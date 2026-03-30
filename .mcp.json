@@ -3,6 +3,10 @@
     "mobile-mcp": {
       "command": "npx",
       "args": ["-y", "@mobilenext/mobile-mcp@latest"]
+    },
+    "woo-credentials": {
+      "command": "node",
+      "args": [".claude/skills/smoke-test/scripts/woo-credentials-mcp.js"]
     }
   }
 }

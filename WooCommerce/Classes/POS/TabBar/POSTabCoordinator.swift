@@ -277,8 +277,12 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
-                let isBookingsEligible = storesManager.sessionManager.defaultSite
+                let isCIAB = storesManager.sessionManager.defaultSite
                     .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+                let isBookingsEligible = isCIAB
+
+                let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite
+                    .flatMap { Self.receiptSettingsAdminURL(siteURL: $0.url, isCIAB: isCIAB) }
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
@@ -315,6 +319,7 @@ private extension POSTabCoordinator {
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
+                    receiptSettingsAdminURL: receiptSettingsAdminURL,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )
@@ -323,6 +328,19 @@ private extension POSTabCoordinator {
                 hostingController.modalPresentationStyle = .fullScreen
                 viewControllerToPresent.present(hostingController, animated: true)
             }
+        }
+    }
+}
+
+extension POSTabCoordinator {
+    /// Constructs the admin URL for editing POS receipt settings.
+    /// CIAB sites use the next-admin page; non-CIAB sites use the classic wc-settings page.
+    static func receiptSettingsAdminURL(siteURL: String, isCIAB: Bool) -> URL? {
+        let trimmedSiteURL = siteURL.hasSuffix("/") ? String(siteURL.dropLast()) : siteURL
+        if isCIAB {
+            return URL(string: "\(trimmedSiteURL)/wp-admin/admin.php?page=next-admin&p=%2Fwoocommerce%2Fsettings%2Fpayments%2Fpos")
+        } else {
+            return URL(string: "\(trimmedSiteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale")
         }
     }
 }

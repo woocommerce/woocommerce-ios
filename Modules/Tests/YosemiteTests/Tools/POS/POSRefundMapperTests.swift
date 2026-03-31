@@ -155,15 +155,11 @@ private extension POSRefundMapperTests {
                         total: String = "-10.00") -> OrderItemRefund {
         OrderItemRefund(itemID: 0,
                         name: name,
-                        productID: 0,
-                        variationID: 0,
                         refundedItemID: refundedItemID,
                         quantity: quantity,
                         price: price,
-                        sku: nil,
                         subtotal: total,
                         subtotalTax: "0.00",
-                        taxClass: "",
                         taxes: [],
                         total: total,
                         totalTax: "0.00")
@@ -177,15 +173,11 @@ private extension POSRefundMapperTests {
                                totalTax: String = "-2.00") -> OrderItemRefund {
         OrderItemRefund(itemID: 0,
                         name: name,
-                        productID: 0,
-                        variationID: 0,
                         refundedItemID: refundedItemID,
                         quantity: quantity,
                         price: price,
-                        sku: nil,
                         subtotal: total,
                         subtotalTax: "0.00",
-                        taxClass: "",
                         taxes: [],
                         total: total,
                         totalTax: totalTax)

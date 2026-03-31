@@ -52,7 +52,7 @@ final class POSPaymentModel {
     /// `startPaymentOnCardReaderConnection` callbacks (which may already
     /// have been enqueued as Tasks) can detect they've been superseded.
     private var startPaymentGeneration: Int = 0
-    private var cashCancelTask: Task<Void, Never>?
+    private var cardPaymentCancelTask: Task<Void, Never>?
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
@@ -224,7 +224,7 @@ extension POSPaymentModel {
 
         paymentState.cash = .collectingCash
 
-        cashCancelTask = Task { [weak self] in
+        cardPaymentCancelTask = Task { [weak self] in
             try? await self?.cardPresentPaymentService.cancelPayment()
         }
     }
@@ -235,8 +235,8 @@ extension POSPaymentModel {
         paymentState.card = .idle
         cardPresentPaymentInlineMessage = nil
 
-        await cashCancelTask?.value
-        cashCancelTask = nil
+        await cardPaymentCancelTask?.value
+        cardPaymentCancelTask = nil
 
         if case .connected = cardReaderConnectionStatus {
             await startPayment()

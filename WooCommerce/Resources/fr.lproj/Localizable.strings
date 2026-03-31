@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-10 16:55:53+0000 */
+/* Translation-Revision-Date: 2026-03-24 17:57:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -296,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Acceptez les conditions d’utilisation pendant la configuration.";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Accédez aux réductions sur les tarifs de livraison. Disponible actuellement avec DHL et USPS, et d’autres à venir !";
-
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
@@ -365,9 +362,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Ajouter un fichier téléchargeable";
-
-/* Button in the CTA View for installing WCShip extension */
-"Add Extension To Store" = "Ajouter l’extension à ma boutique";
 
 /* Title for the Fee screen during order creation */
 "Add Fee" = "Ajouter frais";
@@ -977,9 +971,6 @@ which should be translated separately and considered part of this sentence. */
 /* Location row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.locationRow.title" = "Lieu";
 
-/* Price row title in appointment details section in booking details view. */
-"BookingDetailsView.appointmentDetails.priceRow.title" = "Prix";
-
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Heure";
 
@@ -1155,9 +1146,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Acheter le produit";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Buy postage when you need it" = "Achetez l’affranchissement quand vous en avez besoin";
-
 /* Terms of service format on the account creation form. */
 "By continuing, you agree to our %1$@." = "En poursuivant, vous acceptez nos %1$@.";
 
@@ -1327,9 +1315,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Impossible de dupliquer le produit";
-
-/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
-"Cannot find information about your site's WP-Admin. Please try again." = "Informations à propos du WP-Admin de votre site introuvables. Veuillez réessayer.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1557,8 +1542,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form */
 "Close" = "Fermer";
 
 /* Button to close account on the Account Settings screen */
@@ -1759,8 +1743,7 @@ which should be translated separately and considered part of this sentence. */
 /* Contact Email title */
 "Contact Email" = "Adresse e-mail de contact";
 
-/* Action button to contact support when Jetpack install fails
-   Button to contact support for login
+/* Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
@@ -2196,9 +2179,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Commandes avec réduction";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Discounted rates" = "Tarifs avantageux";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Remises indisponibles";
 
@@ -2299,7 +2279,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit the product selector without any product selected.
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
-   Done button on the Jetpack Install Progress screen.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2995,9 +2974,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "De l’achat à l’exécution, gérez l’ensemble du processus de commande via l’application.";
 
-/* Title of the CTA view for installing WCShip extension */
-"Fulfill your orders with WooCommerce Shipping" = "Exécutez vos commandes avec WooCommerce Shipping";
-
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Les fonds sont disponibles après avoir passé %1$d jours en attente.";
 
@@ -3043,12 +3019,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "Allemagne";
 
-/* Title of install action in the Jetpack Install view.
-   View title for initial auth views. */
+/* View title for initial auth views. */
 "Get Started" = "Commencer";
-
-/* Action of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Get WooCommerce Shipping" = "Obtenir WooCommerce Shipping";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Obtenir un lien de connexion par e-mail";
@@ -3443,9 +3415,7 @@ which should be translated separately and considered part of this sentence. */
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title of install action in the Jetpack benefits view.
-   Title of the Install Jetpack intro view
-   Title of the Install Jetpack view */
+   Title of install action in the Jetpack benefits view. */
 "Install Jetpack" = "Installer Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
@@ -3456,12 +3426,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Installer WooCommerce Payments";
-
-/* Accessibility label for the Install WCShip banner in the Order Detail */
-"Install the WCShip extension." = "Installez l’extension WooCommerce Shipping.";
-
-/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Installez l’extension Jetpack gratuite sur %1$@ pour profiter de la meilleure expérience mobile qui soit.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Installez la nouvelle extension Jetpack gratuite pour profiter de la meilleure expérience mobile qui soit.";
@@ -4219,9 +4183,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Nauru" = "Nauru";
 
-/* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Need a shipping label?" = "Vous avez besoin d’une étiquette de livraison ?";
-
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
 "Need help finding the required email?" = "Besoin d’aide pour trouver l’adresse e-mail obligatoire ?";
 
@@ -4388,9 +4349,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder when there's no customer name in the list */
 "No name" = "Pas de nom";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"No need to wonder where that stampbook went" = "Inutile de vous demander où sont passés les timbres";
-
 /* Placeholder when there are no component options to show in the Component Settings view */
 "No options selected" = "Aucune option sélectionnée";
 
@@ -4460,7 +4418,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Not grouped" = "Non groupés";
 
 /* Action title to dismiss enabling Analytics for a store
-   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Pas maintenant";
 
@@ -4565,9 +4522,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Ouvrir le menu";
-
-/* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
-"Open the flow for installing the WCShip extension." = "Ouvrez votre flux pour installer l’extension WooCommerce Shipping.";
 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "Ouvrir le tableau de bord";
@@ -4927,9 +4881,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Sélectionner la boutique à laquelle se connecter";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Pick up an order, then just pay, print, package, and post." = "Passez une commande, puis payez, imprimez, emballez et postez.";
-
 /* Country option for a site address. */
 "Pitcairn" = "Îles Pitcairn";
 
@@ -5086,9 +5037,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle on the connectivity tool screen */
 "Please wait while we attempt to identify your connection issue." = "Veuillez patienter pendant que nous tentons d’identifier votre problème de connexion.";
 
-/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Veuillez patienter pendant que nous connectons votre site %1$@ à Jetpack.";
-
 /* Message on the Jetpack setup screen. The %1$@ is the site address. */
 "Please wait while we connect your store %1$@ with Jetpack." = "Veuillez patienter pendant que nous connectons votre boutique %1$@ à Jetpack.";
 
@@ -5241,12 +5189,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "Imprimer à partir de votre appareil mobile";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Print from your phone" = "Imprimer depuis votre téléphone";
-
-/* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Print labels from your phone, with WooCommerce Shipping." = "Imprimez des étiquettes depuis votre téléphone avec WooCommerce Shipping.";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Imprimer le reçu";
@@ -5554,9 +5496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the refund detail cell when the refund was done manually. */
 "Refunded manually" = "Remboursé manuellement";
 
-/* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "Remboursement effectué manuellement via %@";
-
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "Remboursement effectué via %@";
 
@@ -5852,9 +5791,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "Enregistrer le reçu et continuer";
-
-/* Title of the CTA view for installing WCShip extension */
-"Save time and money" = "Gain de temps et d’argent";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Enregistrement de votre produit…";
@@ -6360,9 +6296,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, site addresses must have letters too!" = "L'adresse du site doit également contenir des lettres !";
-
-/* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Désolé, un problème est survenu lors de l’installation.";
 
 /* Error shown when there is a problem retrieving the dates for the selected date range. */
 "Sorry, something went wrong. We can't load analytics for the selected date range." = "Désolé, un problème est survenu. Impossible de charger l’analyse pour la plage de dates sélectionnée.";
@@ -8239,9 +8172,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Qu’est-ce que la remise WooCommerce Services ?";
 
-/* Button in the CTA View about what is the WCShip extension */
-"What is WooCommerce Shipping?" = "En quoi consiste WooCommerce Shipping ?";
-
 /* Navigates to page with details about What is WordPress.com. */
 "What is WordPress.com?" = "Qu’est-ce que WordPress.com ?";
 
@@ -9698,6 +9628,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the booking list view */
 "bookingListView.view.title" = "Réservations";
+
+/* Badge label for a booking where the payment authorization has been voided. */
+"bookingPaymentStatus.authorizationVoided" = "Autorisation annulée";
+
+/* Badge label for a booking with an authorized but not yet captured payment. */
+"bookingPaymentStatus.authorized" = "Autorisation accordée";
 
 /* Badge label for a booking with a failed payment. */
 "bookingPaymentStatus.failed" = "Échec";
@@ -12539,12 +12475,6 @@ which should be translated separately and considered part of this sentence. */
 /* Menu action to cancel a booking from the POS booking detail view. */
 "pos.bookingDetailView.cancelBookingAction" = "Annuler la réservation";
 
-/* Subtitle shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.subtitle" = "Veuillez réessayer.";
-
-/* Title shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.title" = "Impossible d’annuler la réservation";
-
 /* Button to initiate payment collection for a booking. */
 "pos.bookingDetailView.collectPaymentButton" = "Percevoir le paiement";
 
@@ -12650,6 +12580,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when saving a booking note fails. */
 "pos.bookingNoteView.saveError" = "Impossible d’enregistrer la note. Veuillez réessayer.";
 
+/* POS booking payment status label when the booking order payment authorization has been voided. */
+"pos.bookingPaymentStatus.authorizationVoided" = "Autorisation annulée";
+
+/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
+"pos.bookingPaymentStatus.authorized" = "Autorisation accordée";
+
 /* POS booking payment status label when the booking order payment failed. */
 "pos.bookingPaymentStatus.failed" = "Échec";
 
@@ -12662,14 +12598,14 @@ which should be translated separately and considered part of this sentence. */
 /* POS booking payment status label when the booking is unpaid. */
 "pos.bookingPaymentStatus.unpaid" = "Non payé";
 
+/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
+"pos.bookingsContainer.cancelBookingSuccess.notice" = "Réservation annulée.";
+
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "La réservation n°%1$@ pour %2$@ le %3$@ sera annulée.";
 
 /* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "La réservation n°%1$@ pour %2$@ le %3$@ pour %4$@ sera annulée.";
-
-/* Title shown while a booking cancellation is being processed in POS. */
-"pos.cancelBookingConfirmation.canceling.processingTitle" = "Annulation de la réservation...";
 
 /* Accessibility label for close button on cancel booking confirmation modal. */
 "pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Fermer";
@@ -12680,26 +12616,14 @@ which should be translated separately and considered part of this sentence. */
 /* Secondary message informing that the customer will receive an email notification about the cancellation. */
 "pos.cancelBookingConfirmation.customerNotificationMessage" = "Le client sera averti par e-mail.";
 
+/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
+"pos.cancelBookingConfirmation.inlineErrorMessage" = "Impossible d’annuler la réservation. Veuillez réessayer.";
+
 /* Button to dismiss the cancel booking confirmation and keep the booking. */
 "pos.cancelBookingConfirmation.keepButton" = "Non, la garder";
 
-/* Message shown while the booking cancellation is being processed. */
-"pos.cancelBookingConfirmation.processingMessage" = "Veuillez patienter pendant que nous annulons la réservation.";
-
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "Annuler cette réservation ?";
-
-/* Message shown after a booking is successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.message" = "La réservation a bien été annulée.";
-
-/* Title shown when a booking has been successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.title" = "Réservation annulée";
-
-/* Accessibility label for close button on cancel booking success screen. */
-"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "Fermer";
-
-/* Button to dismiss the cancel booking success screen in POS. */
-"pos.cancelBookingSuccess.doneButton" = "Terminé";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Appuyer sur un produit pour \n l’ajouter au panier, ou ";
@@ -12923,8 +12847,17 @@ which should be translated separately and considered part of this sentence. */
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
+/* Title for refund detail dialog header. %1$d is the refund number. */
+"pos.orderDetailsView.refundTitle" = "Remboursement numéro %1$d";
+
+/* Section title for the refunded products list in order details */
+"pos.orderDetailsView.refundedProductsTitle" = "Produits remboursés";
+
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totaux";
+
+/* Payment method description shown in refund detail dialog. %1$@ is the payment method name. */
+"pos.orderDetailsView.viaPaymentMethod" = "Via %1$@";
 
 /* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
 "pos.orderList.failedToLoadOrdersNextPageTitle" = "Impossible de charger plus de commandes";
@@ -13039,6 +12972,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Remboursement %@";
+
+/* Accessibility label for close button on refund detail dialog */
+"pos.refundDetailView.closeButton.accessibilityLabel" = "Fermer";
+
+/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.plural" = "Sous-total des articles (%1$d articles)";
+
+/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.singular" = "Sous-total des articles (%1$d article)";
+
+/* Label for refund total row in refund detail */
+"pos.refundDetailView.refundTotalLabel" = "Total du remboursement";
+
+/* Label for tax row in refund detail */
+"pos.refundDetailView.taxLabel" = "Taxe";
 
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Annuler";
@@ -13173,6 +13121,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "Remboursement effectué";
 
+/* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
+"pos.refundedProductRow.accessibilityLabel" = "%1$@, %2$@ articles à %3$@ par article, remboursement de %4$@";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Supprimer la recherche";
 
@@ -13206,9 +13160,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.totalsSectionView.netPayment.accessibilityLabel" = "Paiement net : %1$@";
 
-/* Label for net payment amount after refunds. */
-"pos.totalsSectionView.netPaymentLabel" = "Paiement net";
-
 /* Accessibility label for total paid. %1$@ is the paid amount. */
 "pos.totalsSectionView.paid.accessibilityLabel" = "Total des paiements : %1$@";
 
@@ -13218,17 +13169,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the paid amount in the totals breakdown. */
 "pos.totalsSectionView.paidLabel" = "Paiement total";
 
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.totalsSectionView.reasonLabel" = "Motif : %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.totalsSectionView.refund.accessibilityLabel" = "Remboursé : %1$@";
-
 /* Reason portion of refund accessibility label. %1$@ is the refund reason. */
 "pos.totalsSectionView.refund.accessibilityLabel.reason" = "Motif : %1$@";
 
-/* Label for a refund entry in the totals breakdown. */
-"pos.totalsSectionView.refundLabel" = "Remboursé";
+/* Accessibility label for refund entry. %1$d is the refund number, %2$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel.v2" = "Remboursement numéro %1$d: %2$@";
+
+/* Title for a refund entry in the totals breakdown. %1$d is the refund number. */
+"pos.totalsSectionView.refundTitle" = "Remboursement numéro %1$d";
 
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
@@ -13238,6 +13186,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total amount in the totals breakdown. */
 "pos.totalsSectionView.totalLabel" = "Total";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.totalNetPaymentLabel" = "Total net";
+
+/* Link label to view refund details in the totals breakdown. */
+"pos.totalsSectionView.viewDetailsLabel" = "Voir les détails";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Reçu par e-mail";
@@ -13758,6 +13712,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Rembourser les montants personnalisés";
 
+/* Primary learn more button in the What's New screen */
+"reportList.learnMore.link" = "Lire la suite";
+
+/* Secondary not now button in the What's New screen */
+"reportList.notNow.button" = "Plus tard";
+
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Masquer les avis";
 
@@ -13894,6 +13854,27 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d articles de %2$@";
 
+/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
+"significantChangeConsent.ageRatingChange.description" = "Classification d’âge de l’application modifiée. Nouvelle valeur : %1$d.";
+
+/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
+"significantChangeConsent.manual.description" = "Mise à jour importante de l’application : %1$@.";
+
+/* Error message shown when the site info check and API discovery both fail. */
+"siteAddress.siteConnectionError" = "Nous avons rencontré des problèmes de connexion à ce site. Veuillez vérifier l’adresse du site et réessayer.";
+
+/* Button title to dismiss the site info failure alert. */
+"siteAddress.siteInfoFailed.alert.cancel" = "Annuler";
+
+/* Button title to proceed to site credentials login when site info check fails. */
+"siteAddress.siteInfoFailed.alert.loginWithSiteCredentials" = "Se connecter avec les identifiants de connexion au site";
+
+/* Message for the alert shown when the site info check fails but API discovery finds a WordPress REST API. */
+"siteAddress.siteInfoFailed.alert.message" = "Nous n’avons pas pu vérifier les détails de votre site. Vous pouvez essayer de vous connecter avec les identifiants de connexion de votre site.";
+
+/* Title for the alert shown when the site info check fails but the site appears to be a WordPress site. */
+"siteAddress.siteInfoFailed.alert.title" = "Problème de connexion";
+
 /* Error message explaining login failure due to an unexpected authentication challenge. */
 "siteCredentialLoginError.failedAuthenticationChallenge.message" = "Impossible de se connecter en raison d’une mesure de sécurité inattendue sur votre boutique. Contactez l’assistance afin de résoudre le problème.";
 
@@ -13948,14 +13929,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Masquer les performances";
 
+/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
+"storePerformanceView.netSales" = "Ventes nettes";
+
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Pas de revenus pour les dates sélectionnées";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Commandes";
-
-/* Revenue stat label on dashboard. */
-"storePerformanceView.revenue" = "Revenus";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Impossible d’afficher les performances de votre boutique";
@@ -13988,7 +13969,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "Revenus sélectionnés";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValue" = "Revenus";
+"storeStatsChart.yValueNetSales" = "Ventes nettes";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "Pas de revenus";
@@ -14008,11 +13989,11 @@ which should be translated separately and considered part of this sentence. */
 /* Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Conversion";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.infoView.netSales" = "Ventes nettes";
+
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Commandes";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.infoView.revenue" = "Revenu";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "Dernière mise à jour : %1$@";
@@ -14035,11 +14016,11 @@ which should be translated separately and considered part of this sentence. */
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "Revenus : %1$@";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.storeInfoRectangularWidget.netSales" = "Ventes nettes";
+
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Aucune donnée";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.storeInfoRectangularWidget.revenue" = "Revenu";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Impossible de récupérer les statistiques du jour";
@@ -14432,11 +14413,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "Échec du chargement des données de la boutique";
 
+/* Net sales title on the watch store stats screen. */
+"watch.mystore.netSales.title" = "Ventes nettes";
+
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Réessayer";
-
-/* Revenue title on the watch store stats screen. */
-"watch.mystore.revenue.title" = "Revenus";
 
 /* Format of the updated time in the watch store stats screen. */
 "watch.mystore.time.format" = "Au %@";
@@ -15550,6 +15531,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Main description text of the WordPress.com Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Connectez votre boutique à WordPress.com pour recevoir des notifications push concernant les nouvelles commandes, les avis et plus encore.";
+
+/* Description text on the Push Notifications Benefits View when the site is connected and plugin is up to date */
+"wpcomPushNotificationsBenefitsViewModel.setupDescription" = "Plus qu’une étape pour recevoir des notifications concernant les nouvelles commandes, les avis et plus encore.";
 
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "partager des informations";

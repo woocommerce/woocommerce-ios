@@ -255,7 +255,11 @@ private extension SupportFormViewModel {
     enum Localization {
         static let mobileApp = NSLocalizedString("Mobile App", comment: "Title of the mobile app support area option")
         static let ipp = NSLocalizedString("Card Reader / In-Person Payments", comment: "Title of the card reader support area option")
-        static let wcPayments = NSLocalizedString("WooCommerce Payments", comment: "Title of the WooCommerce Payments support area option")
+        static let wcPayments = NSLocalizedString(
+            "supportFormViewModel.wooPayments",
+            value: "WooPayments",
+            comment: "Title of the WooPayments support area option"
+        )
         static let wcPlugin = NSLocalizedString("WooCommerce Plugin", comment: "Title of the WooCommerce Plugin support area option")
         static let otherPlugin = NSLocalizedString("Other Extension / Plugin", comment: "Title of the Other Plugin support area option")
         static let badIdentityError = NSLocalizedString(

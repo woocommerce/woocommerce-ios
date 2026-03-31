@@ -592,7 +592,7 @@ final class POSOrderListControllerTests {
         sut.clearRefundSelection()
 
         // Then
-        #expect(sut.refundSelectableItems.count == 0)
+        #expect(sut.refundSelectableItems.isEmpty)
     }
 
     @MainActor
@@ -993,7 +993,7 @@ final class POSOrderListControllerTests {
         try await sut.processRefund(reason: .none)
 
         // Then
-        #expect(sut.refundSelectableItems.count == 0)
+        #expect(sut.refundSelectableItems.isEmpty)
     }
 
     @MainActor
@@ -1265,6 +1265,92 @@ final class POSOrderListControllerTests {
         // Then: selectedOrder should still be Order B, not overwritten by Order A's result
         #expect(sut.selectedOrder?.id == 2)
         #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
+    }
+
+    @MainActor
+    @Test func test_displayedLineItems_when_loading_refunds_then_returns_all_items() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+
+        // When — refunds are still loading
+        refundsService.shouldSuspendLoadOrderRefunds = true
+        let loadTask = Task { @MainActor in
+            await sut.loadOrderRefunds()
+        }
+        await refundsService.awaitLoadOrderRefundsCall()
+
+        // Then
+        #expect(sut.displayedLineItems.count == 2)
+
+        refundsService.resumeLoadOrderRefunds()
+        await loadTask.value
+    }
+
+    @MainActor
+    @Test func test_displayedLineItems_when_refunds_loaded_then_filters_fully_refunded_items() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let items = [makePOSOrderItem(itemID: 1, quantity: 2), makePOSOrderItem(itemID: 2, quantity: 1)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 2,
+                              quantity: -1,
+                              name: "Item B",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then — item 2 is fully refunded, only item 1 remains
+        #expect(sut.displayedLineItems.count == 1)
+        #expect(sut.displayedLineItems.first?.itemID == 1)
+    }
+
+    @MainActor
+    @Test func test_displayedLineItems_when_partially_refunded_then_includes_item() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = true
+        let items = [makePOSOrderItem(itemID: 1, quantity: 3)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then — item 1 is only partially refunded, still displayed
+        #expect(sut.displayedLineItems.count == 1)
+        #expect(sut.displayedLineItems.first?.itemID == 1)
+    }
+
+    @MainActor
+    @Test func test_displayedLineItems_when_feature_flag_disabled_then_returns_all_items() async throws {
+        // Given
+        featureFlags.isPointOfSaleRefundsi1Enabled = false
+        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
+        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+
+        // When/Then — all items returned regardless of refunds
+        #expect(sut.displayedLineItems.count == 2)
     }
 }
 

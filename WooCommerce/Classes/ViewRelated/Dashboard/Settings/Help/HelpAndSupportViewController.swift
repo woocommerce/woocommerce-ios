@@ -31,7 +31,7 @@ final class HelpAndSupportViewController: UIViewController {
     }
 
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
-    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    /// e.g. WooPayments, but eventually other in-person payment accounts too
     ///
     private var paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>? = {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {

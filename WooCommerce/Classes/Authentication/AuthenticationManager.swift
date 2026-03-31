@@ -16,6 +16,7 @@ import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
+import struct NetworkingCore.WordPressAPIDiscovery
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -334,8 +335,37 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
+        // Check if the site already belongs to the current account before showing
+        // an error. The user may have typed a URL for a site they already have.
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+        if let matchedSite = matcher.matchedSite(originalURL: site.url) {
+            if matchedSite.isWooCommerceActive {
+                switchToAlreadyConnectedSite(matchedSite, in: navigationController)
+                return
+            } else {
+                let noWoo = noWooUI(for: matchedSite,
+                                    with: matcher,
+                                    navigationController: navigationController,
+                                    onStorePickerDismiss: {})
+                navigationController.show(noWoo, sender: nil)
+                return
+            }
+        }
+
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
+    }
+
+    /// Navigates back to the store picker and selects the site that the user
+    /// entered via site discovery, as if they had tapped it in the list.
+    private func switchToAlreadyConnectedSite(_ site: Site, in navigationController: UINavigationController) {
+        navigationController.popToRootViewController(animated: true)
+        if let storePicker = navigationController.viewControllers
+            .compactMap({ $0 as? StorePickerViewController })
+            .first {
+            storePicker.selectSite(site)
+        }
     }
 
     /// Handles site credential login
@@ -539,6 +569,19 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
+        DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
+
+        let discovery = WordPressAPIDiscovery()
+        Task { @MainActor in
+            let discoveredRoot = await discovery.discoverRESTAPIRootURL(for: siteURL)
+            let hasRESTAPI = discoveredRoot != nil
+
+            DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
+            completion(hasRESTAPI)
+        }
     }
 
     /// Tracks a given Analytics Event.

@@ -27,7 +27,7 @@ final class SubscriptionListMapperTests: XCTestCase {
         let subscriptions = try mapLoadSubscriptionListResponseWithDataEnvelope()
 
         // Then
-        XCTAssertTrue(subscriptions.count > 0)
+        XCTAssertTrue(!subscriptions.isEmpty)
         for subscription in subscriptions {
             XCTAssertEqual(subscription.siteID, sampleSiteID)
         }

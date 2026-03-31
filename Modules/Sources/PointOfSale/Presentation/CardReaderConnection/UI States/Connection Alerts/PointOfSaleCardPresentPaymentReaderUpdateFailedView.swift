@@ -11,7 +11,7 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
     }
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: 0) {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
@@ -23,13 +23,16 @@ struct PointOfSaleCardPresentPaymentReaderUpdateFailedView: View {
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
             .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
+
+            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
 
             Button(viewModel.retryButtonViewModel.title,
                    action: viewModel.retryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
-        .scrollVerticallyIfNeeded()
+        .frame(maxHeight: .infinity)
         .posModalCloseButton(action: viewModel.cancelButtonViewModel.actionHandler,
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)

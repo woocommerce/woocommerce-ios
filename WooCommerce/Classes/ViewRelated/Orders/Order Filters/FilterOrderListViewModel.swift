@@ -42,7 +42,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         var readableString: String {
             var readable: [String] = []
-            if let orderStatus = orderStatus, orderStatus.count > 0 {
+            if let orderStatus = orderStatus, !orderStatus.isEmpty {
                 readable = orderStatus.map { $0.rawValue.capitalized }
             }
             if let dateRange = dateRange {
@@ -295,7 +295,7 @@ extension Array: FilterType where Element == OrderStatusEnum {
     /// Returns the localized text version of the array
     ///
     var description: String {
-        if self.count == 0 {
+        if self.isEmpty {
             return NSLocalizedString("Any", comment: "Display label for all order statuses selected in Order Filters")
         }
         else if self.count == 1 {

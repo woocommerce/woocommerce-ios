@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-03 11:55:45+0000 */
+/* Translation-Revision-Date: 2026-03-24 13:57:06+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -296,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Terima Ketentuan Layanan selama penyiapan.";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Akses tarif diskon pengiriman. Saat ini tersedia dengan DHL dan USPS, dan akan segera hadir lebih banyak lagi!";
-
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
@@ -365,9 +362,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Tambahkan File Dapat Diunduh";
-
-/* Button in the CTA View for installing WCShip extension */
-"Add Extension To Store" = "Tambahkan Ekstensi Ke Toko";
 
 /* Title for the Fee screen during order creation */
 "Add Fee" = "Tambahkan Biaya";
@@ -977,9 +971,6 @@ which should be translated separately and considered part of this sentence. */
 /* Location row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.locationRow.title" = "Lokasi";
 
-/* Price row title in appointment details section in booking details view. */
-"BookingDetailsView.appointmentDetails.priceRow.title" = "Harga";
-
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Waktu";
 
@@ -1054,6 +1045,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "Pembayaran";
+
+/* Title for 'Refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.refund.title" = "Pengembalian dana";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "Layanan";
@@ -1151,9 +1145,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Beli produk";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Buy postage when you need it" = "Beli perangko seperlunya";
 
 /* Terms of service format on the account creation form. */
 "By continuing, you agree to our %1$@." = "Dengan melanjutkan, Anda menyetujui %1$@ kami.";
@@ -1324,9 +1315,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Tidak dapat menduplikasi produk";
-
-/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
-"Cannot find information about your site's WP-Admin. Please try again." = "Informasi tentang WP-Admin situs Anda tidak dapat ditemukan. Mohon ulangi.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1554,8 +1542,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form */
 "Close" = "Tutup";
 
 /* Button to close account on the Account Settings screen */
@@ -1756,8 +1743,7 @@ which should be translated separately and considered part of this sentence. */
 /* Contact Email title */
 "Contact Email" = "Hubungi via Email";
 
-/* Action button to contact support when Jetpack install fails
-   Button to contact support for login
+/* Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
@@ -2193,9 +2179,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Pesanan yang Didiskon";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Discounted rates" = "Tarif diskon";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Diskon tidak tersedia";
 
@@ -2296,7 +2279,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit the product selector without any product selected.
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
-   Done button on the Jetpack Install Progress screen.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2992,9 +2974,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Dari pembelian sampai penyelesaian – kelola seluruh proses pemesanan via aplikasi.";
 
-/* Title of the CTA view for installing WCShip extension */
-"Fulfill your orders with WooCommerce Shipping" = "Penuhi pesanan Anda dengan WooCommerce Shipping";
-
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Dana telah tersedia setelah tertunda selama %1$d hari.";
 
@@ -3040,12 +3019,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "Jerman";
 
-/* Title of install action in the Jetpack Install view.
-   View title for initial auth views. */
+/* View title for initial auth views. */
 "Get Started" = "Memulai";
-
-/* Action of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Get WooCommerce Shipping" = "Dapatkan WooCommerce Shipping";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Dapatkan tautan login lewat email";
@@ -3440,9 +3415,7 @@ which should be translated separately and considered part of this sentence. */
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title of install action in the Jetpack benefits view.
-   Title of the Install Jetpack intro view
-   Title of the Install Jetpack view */
+   Title of install action in the Jetpack benefits view. */
 "Install Jetpack" = "Instal Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
@@ -3453,12 +3426,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Instal WooCommerce Payments";
-
-/* Accessibility label for the Install WCShip banner in the Order Detail */
-"Install the WCShip extension." = "Instal ekstensi WCShip.";
-
-/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Instal plugin Jetpack gratis ke %1$@ dan dapatkan pengalaman seluler terbaik.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Instal plugin Jetpack gratis untuk mendapatkan pengalaman seluler terbaik.";
@@ -4216,9 +4183,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Nauru" = "Nauru";
 
-/* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Need a shipping label?" = "Perlu label pengiriman?";
-
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
 "Need help finding the required email?" = "Perlu bantuan untuk menemukan email yang dibutuhkan?";
 
@@ -4385,9 +4349,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder when there's no customer name in the list */
 "No name" = "Tanpa nama";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"No need to wonder where that stampbook went" = "Tidak perlu repot menstok perangko";
-
 /* Placeholder when there are no component options to show in the Component Settings view */
 "No options selected" = "Tidak ada pilihan yang ditentukan";
 
@@ -4457,7 +4418,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Not grouped" = "Tidak dikelompokkan";
 
 /* Action title to dismiss enabling Analytics for a store
-   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Jangan sekarang";
 
@@ -4562,9 +4522,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Buka menu";
-
-/* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
-"Open the flow for installing the WCShip extension." = "Buka alur untuk menginstal ekstensi WCShip.";
 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "Buka wp-admin";
@@ -4924,9 +4881,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Pilih Toko yang akan Dihubungkan";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Pick up an order, then just pay, print, package, and post." = "Terima pesanan, kemudian cukup bayar, cetak, kemas, lalu kirim.";
-
 /* Country option for a site address. */
 "Pitcairn" = "Pitcairn";
 
@@ -5083,9 +5037,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle on the connectivity tool screen */
 "Please wait while we attempt to identify your connection issue." = "Harap tunggu selama kami mencoba mengidentifikasi masalah koneksi Anda.";
 
-/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Harap tunggu sembari kami menghubungkan situs %1$@ Anda dengan Jetpack.";
-
 /* Message on the Jetpack setup screen. The %1$@ is the site address. */
 "Please wait while we connect your store %1$@ with Jetpack." = "Harap tunggu sembari kami menyambungkan toko %1$@ Anda dengan Jetpack.";
 
@@ -5238,12 +5189,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "Cetak dari perangkat seluler Anda";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Print from your phone" = "Cetak dari Telepon Anda";
-
-/* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Print labels from your phone, with WooCommerce Shipping." = "Cetak label dari ponsel dengan WooCommerce Shipping.";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Cetak tanda terima";
@@ -5551,9 +5496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the refund detail cell when the refund was done manually. */
 "Refunded manually" = "Dana dikembalikan manual";
 
-/* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "Dikembalikan dananya secara manual melalui %@";
-
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "Dana dikembalikan melalui %@";
 
@@ -5849,9 +5791,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "Simpan tanda terima dan lanjutkan";
-
-/* Title of the CTA view for installing WCShip extension */
-"Save time and money" = "Hemat waktu dan uang";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Menyimpan produk Anda...";
@@ -6357,9 +6296,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, site addresses must have letters too!" = "Maaf, alamat situs harus mengandung huruf juga!";
-
-/* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Maaf, terjadi kesalahan selama instalasi";
 
 /* Error shown when there is a problem retrieving the dates for the selected date range. */
 "Sorry, something went wrong. We can't load analytics for the selected date range." = "Maaf, terjadi kesalahan. Kami tidak dapat memuat analitik untuk rentang tanggal yang dipilih.";
@@ -8236,9 +8172,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Apa itu diskon Layanan WooCommerce?";
 
-/* Button in the CTA View about what is the WCShip extension */
-"What is WooCommerce Shipping?" = "Apa itu WooCommerce Shipping?";
-
 /* Navigates to page with details about What is WordPress.com. */
 "What is WordPress.com?" = "Apa itu WordPress.com?";
 
@@ -9693,6 +9626,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "Pemesanan";
 
+/* Badge label for a booking where the payment authorization has been voided. */
+"bookingPaymentStatus.authorizationVoided" = "Otorisasi Dibatalkan";
+
+/* Badge label for a booking with an authorized but not yet captured payment. */
+"bookingPaymentStatus.authorized" = "Diotorisasi";
+
 /* Badge label for a booking with a failed payment. */
 "bookingPaymentStatus.failed" = "Gagal";
 
@@ -10026,6 +9965,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "Konfigurasi selesai";
+
+/* Button to hide the Connect WPCom card from the My Store screen */
+"connectWPComCard.hideButton" = "Sembunyikan konten ini";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"connectWPComCard.subtitle" = "Aktifkan pemberitahuan push untuk tetap mendapatkan pesanan dan tinjauan baru.";
+
+/* Title of the Connect WPCom card on My Store screen */
+"connectWPComCard.title" = "Jangan lewatkan pesanan baru";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Memecahkan Masalah Koneksi";
@@ -11573,6 +11521,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Pesanan dibayar dengan uang tunai. Pelanggan membayar %1$@. Kembalian terutang sebesar %2$@.";
 
+/* Note added to order when Scan to Pay is used. */
+"paymentMethods.scanToPayNoteText.note" = "Tautan pembayaran dibagikan melalui Pindai untuk Membayar. Lakukan verifikasi pembayaran sebelum memenuhi pesanan.";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "pembayaran, ketuk untuk membayar, woocommerce, woo, pembayaran langsung, pembayaran langsung, terima pembayaran, pembayaran, pembaca, pembaca kartu, pesan pembaca kartu";
 
@@ -12521,17 +12472,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu action to cancel a booking from the POS booking detail view. */
 "pos.bookingDetailView.cancelBookingAction" = "Batalkan Pemesanan";
 
-/* Subtitle shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.subtitle" = "Coba lagi.";
-
-/* Title shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.title" = "Gagal membatalkan pemesanan";
-
 /* Button to initiate payment collection for a booking. */
 "pos.bookingDetailView.collectPaymentButton" = "Terima pembayaran";
 
 /* Accessibility label for the copy email button in booking details. */
 "pos.bookingDetailView.copyEmail.accessibilityLabel" = "Salin alamat email";
+
+/* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Salin nomor telepon";
 
 /* Section title for the customer details in booking details. */
 "pos.bookingDetailView.customerTitle" = "Pelanggan";
@@ -12629,6 +12577,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when saving a booking note fails. */
 "pos.bookingNoteView.saveError" = "Gagal menyimpan catatan. Coba lagi.";
 
+/* POS booking payment status label when the booking order payment authorization has been voided. */
+"pos.bookingPaymentStatus.authorizationVoided" = "Otorisasi Dibatalkan";
+
+/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
+"pos.bookingPaymentStatus.authorized" = "Diotorisasi";
+
 /* POS booking payment status label when the booking order payment failed. */
 "pos.bookingPaymentStatus.failed" = "Gagal";
 
@@ -12641,14 +12595,14 @@ which should be translated separately and considered part of this sentence. */
 /* POS booking payment status label when the booking is unpaid. */
 "pos.bookingPaymentStatus.unpaid" = "Belum dibayar";
 
+/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
+"pos.bookingsContainer.cancelBookingSuccess.notice" = "Pemesanan berhasil dibatalkan.";
+
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "Pemesanan #%1$@ untuk %2$@ pada %3$@ akan dibatalkan.";
 
 /* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "Pemesanan #%1$@ untuk %2$@ pada %3$@ untuk %4$@ akan dibatalkan.";
-
-/* Title shown while a booking cancellation is being processed in POS. */
-"pos.cancelBookingConfirmation.canceling.processingTitle" = "Membatalkan pemesanan...";
 
 /* Accessibility label for close button on cancel booking confirmation modal. */
 "pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Tutup";
@@ -12659,26 +12613,14 @@ which should be translated separately and considered part of this sentence. */
 /* Secondary message informing that the customer will receive an email notification about the cancellation. */
 "pos.cancelBookingConfirmation.customerNotificationMessage" = "Pelanggan akan diberi tahu melalui email.";
 
+/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
+"pos.cancelBookingConfirmation.inlineErrorMessage" = "Tidak dapat membatalkan pemesanan. Coba lagi.";
+
 /* Button to dismiss the cancel booking confirmation and keep the booking. */
 "pos.cancelBookingConfirmation.keepButton" = "Tidak, pertahankan";
 
-/* Message shown while the booking cancellation is being processed. */
-"pos.cancelBookingConfirmation.processingMessage" = "Harap tunggu selagi kami membatalkan pemesanan.";
-
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "Batalkan pemesanan ini?";
-
-/* Message shown after a booking is successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.message" = "Pemesanan berhasil dibatalkan.";
-
-/* Title shown when a booking has been successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.title" = "Pemesanan dibatalkan";
-
-/* Accessibility label for close button on cancel booking success screen. */
-"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "Tutup";
-
-/* Button to dismiss the cancel booking success screen in POS. */
-"pos.cancelBookingSuccess.doneButton" = "Selesai";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Ketuk produk untuk \n menambahkannya ke keranjang, atau ";
@@ -12902,8 +12844,17 @@ which should be translated separately and considered part of this sentence. */
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
+/* Title for refund detail dialog header. %1$d is the refund number. */
+"pos.orderDetailsView.refundTitle" = "Pengembalian Dana #%1$d";
+
+/* Section title for the refunded products list in order details */
+"pos.orderDetailsView.refundedProductsTitle" = "Produk yang dananya dikembalikan";
+
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Jumlah";
+
+/* Payment method description shown in refund detail dialog. %1$@ is the payment method name. */
+"pos.orderDetailsView.viaPaymentMethod" = "Melalui %1$@";
 
 /* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
 "pos.orderList.failedToLoadOrdersNextPageTitle" = "Tidak dapat memuat lebih banyak pesanan";
@@ -13018,6 +12969,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Kembalikan dana %@";
+
+/* Accessibility label for close button on refund detail dialog */
+"pos.refundDetailView.closeButton.accessibilityLabel" = "Tutup";
+
+/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.plural" = "Subtotal item (%1$d item)";
+
+/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.singular" = "Subtotal item (%1$d item)";
+
+/* Label for refund total row in refund detail */
+"pos.refundDetailView.refundTotalLabel" = "Total pengembalian dana";
+
+/* Label for tax row in refund detail */
+"pos.refundDetailView.taxLabel" = "Pajak";
 
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Batalkan";
@@ -13152,6 +13118,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "Pengembalian dana selesai";
 
+/* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
+"pos.refundedProductRow.accessibilityLabel" = "%1$@, Jumlah: %2$@ seharga masing-masing %3$@, Dana Dikembalikan %4$@";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Hapus Pencarian";
 
@@ -13185,9 +13157,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.totalsSectionView.netPayment.accessibilityLabel" = "Pembayaran bersih: %1$@";
 
-/* Label for net payment amount after refunds. */
-"pos.totalsSectionView.netPaymentLabel" = "Pembayaran Bersih";
-
 /* Accessibility label for total paid. %1$@ is the paid amount. */
 "pos.totalsSectionView.paid.accessibilityLabel" = "Jumlah yang telah dibayarkan: %1$@";
 
@@ -13197,17 +13166,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the paid amount in the totals breakdown. */
 "pos.totalsSectionView.paidLabel" = "Jumlah yang telah dibayarkan";
 
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.totalsSectionView.reasonLabel" = "Alasan: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.totalsSectionView.refund.accessibilityLabel" = "Dana dikembalikan: %1$@ ";
-
 /* Reason portion of refund accessibility label. %1$@ is the refund reason. */
 "pos.totalsSectionView.refund.accessibilityLabel.reason" = "Alasan: %1$@";
 
-/* Label for a refund entry in the totals breakdown. */
-"pos.totalsSectionView.refundLabel" = "Dana dikembalikan";
+/* Accessibility label for refund entry. %1$d is the refund number, %2$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel.v2" = "Nomor pengembalian dana %1$d: %2$@";
+
+/* Title for a refund entry in the totals breakdown. %1$d is the refund number. */
+"pos.totalsSectionView.refundTitle" = "Pengembalian Dana #%1$d";
 
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
@@ -13217,6 +13183,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total amount in the totals breakdown. */
 "pos.totalsSectionView.totalLabel" = "Total";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.totalNetPaymentLabel" = "Total bersih";
+
+/* Link label to view refund details in the totals breakdown. */
+"pos.totalsSectionView.viewDetailsLabel" = "Lihat rincian";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Email tanda terima";
@@ -13737,6 +13709,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Kembalikan Dana Sebesar Jumlah Kustom";
 
+/* Primary learn more button in the What's New screen */
+"reportList.learnMore.link" = "Baca selengkapnya";
+
+/* Secondary not now button in the What's New screen */
+"reportList.notNow.button" = "Lain kali";
+
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Sembunyikan Ulasan";
 
@@ -13873,6 +13851,27 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d item dari %2$@";
 
+/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
+"significantChangeConsent.ageRatingChange.description" = "Batas usia aplikasi berubah menjadi %1$d.";
+
+/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
+"significantChangeConsent.manual.description" = "Pembaruan besar aplikasi: %1$@.";
+
+/* Error message shown when the site info check and API discovery both fail. */
+"siteAddress.siteConnectionError" = "Kami mengalami kendala saat menghubungkan ke situs ini. Silakan periksa alamat situs dan coba lagi.";
+
+/* Button title to dismiss the site info failure alert. */
+"siteAddress.siteInfoFailed.alert.cancel" = "Batalkan";
+
+/* Button title to proceed to site credentials login when site info check fails. */
+"siteAddress.siteInfoFailed.alert.loginWithSiteCredentials" = "Login dengan Kredensial Situs";
+
+/* Message for the alert shown when the site info check fails but API discovery finds a WordPress REST API. */
+"siteAddress.siteInfoFailed.alert.message" = "Kami tidak dapat memverifikasi rincian situs Anda. Sebagai gantinya, Anda dapat mencoba login dengan kredensial situs Anda.";
+
+/* Title for the alert shown when the site info check fails but the site appears to be a WordPress site. */
+"siteAddress.siteInfoFailed.alert.title" = "Masalah Koneksi";
+
 /* Error message explaining login failure due to an unexpected authentication challenge. */
 "siteCredentialLoginError.failedAuthenticationChallenge.message" = "Tidak dapat login karena ada tindakan keamanan yang tidak terduga di toko Anda. Silakan hubungi dukungan untuk pemecahan masalah.";
 
@@ -13927,14 +13926,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Sembunyikan Performa";
 
+/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
+"storePerformanceView.netSales" = "Penjualan bersih";
+
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Tidak ada pendapatan untuk tanggal terpilih";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Pesanan";
-
-/* Revenue stat label on dashboard. */
-"storePerformanceView.revenue" = "Pendapatan";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Performa toko Anda tidak dapat ditampilkan";
@@ -13967,7 +13966,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "Pendatan yang Dipilih";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValue" = "Pendapatan";
+"storeStatsChart.yValueNetSales" = "Penjualan bersih";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "Pendapatan Nol";
@@ -13987,11 +13986,11 @@ which should be translated separately and considered part of this sentence. */
 /* Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Konversi";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.infoView.netSales" = "Penjualan bersih";
+
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Pesanan";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.infoView.revenue" = "Pendapatan";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "Sejak %1$@";
@@ -14014,11 +14013,11 @@ which should be translated separately and considered part of this sentence. */
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "Pendapatan: %1$@";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.storeInfoRectangularWidget.netSales" = "Penjualan bersih";
+
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Tidak Ada Data";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.storeInfoRectangularWidget.revenue" = "Pendapatan";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Tidak dapat mengambil statistik hari ini";
@@ -14411,11 +14410,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "Gagal memuat data toko";
 
+/* Net sales title on the watch store stats screen. */
+"watch.mystore.netSales.title" = "Penjualan bersih";
+
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Coba lagi";
-
-/* Revenue title on the watch store stats screen. */
-"watch.mystore.revenue.title" = "Pendapatan";
 
 /* Format of the updated time in the watch store stats screen. */
 "watch.mystore.time.format" = "Sejak %@";
@@ -15437,6 +15436,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
 "wpComConnectionSetupViewModel.message" = "Harap tunggu hingga kami selesai menghubungkan toko Anda %1$@ ke WordPress.com.";
 
+/* Title for the WPCom connection setup screen when the site is not yet connected. */
+"wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "Hubungkan ke WordPress.com";
+
+/* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Menyiapkan pemberitahuan push";
+
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Coba lagi";
 
@@ -15521,6 +15526,12 @@ which should be translated separately and considered part of this sentence. */
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "Apa itu WordPress.com?";
 
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Hubungkan toko Anda ke WordPress.com agar mendapatkan akses ke pemberitahuan push untuk pesanan, tinjauan, dan lainnya.";
+
+/* Description text on the Push Notifications Benefits View when the site is connected and plugin is up to date */
+"wpcomPushNotificationsBenefitsViewModel.setupDescription" = "Satu langkah lagi untuk mendapatkan pemberitahuan pesanan baru, ulasan, dan lainnya.";
+
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "membagikan detail";
 
@@ -15529,6 +15540,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Ketentuan Layanan";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.title" = "Dapatkan pemberitahuan push dengan WordPress.com";
+
+/* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Toko Anda sudah terhubung ke akun WordPress.com, tetapi Anda perlu memperbarui plugin WooCommerce guna mengaktifkan pemberitahuan push untuk pesanan, tinjauan baru, dan masih banyak lagi.";
+
+/* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Dapatkan pemberitahuan push untuk toko Anda";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "Kami tidak dapat menyelesaikan penyiapan pemberitahuan push. Silakan hubungi dukungan untuk mendapatkan bantuan.";

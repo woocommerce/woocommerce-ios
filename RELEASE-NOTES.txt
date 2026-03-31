@@ -1,7 +1,12 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+24.5
+-----
+
+
 24.4
 -----
+- [*] Fix site discovery showing errors for stores already connected to the account [https://github.com/woocommerce/woocommerce-ios/pull/16835]
 - [*] Remove the flashing empty state in booking list when updating filters [https://github.com/woocommerce/woocommerce-ios/pull/16824]
 - [*] Fix My Store dashboard showing different revenue numbers than wp-admin by respecting the store's date type setting [https://github.com/woocommerce/woocommerce-ios/pull/16812]
 - [Internal] Skip Jetpack benefits screen during setup when self driven push notifications feature is enabled [https://github.com/woocommerce/woocommerce-ios/pull/16791]
@@ -11,12 +16,14 @@
 - [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
 - [Internal] Unify Jetpack setup flow for JCP sites [https://github.com/woocommerce/woocommerce-ios/pull/16816]
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
-- [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
 - [Internal] Treat ecommerce garden sites as having WooCommerce by default [https://github.com/woocommerce/woocommerce-ios/pull/16820]
 - [*] Remove the redundant Price row from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16821]
 - [*] Fix sheet/popover presentation showing trimmed content on iPad [https://github.com/woocommerce/woocommerce-ios/pull/16817]
 - [*] Hide edit status button in order details and order edit form for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16827]
+- [*] Offer site credentials login when the site info check fails but the site has a WordPress REST API [https://github.com/woocommerce/woocommerce-ios/pull/16832]
 - [*] Display booking location from product data in booking details [https://github.com/woocommerce/woocommerce-ios/pull/16826]
+- [*] Fix product duplication missing custom fields [https://github.com/woocommerce/woocommerce-ios/pull/16831]
+- [*] Fix sheets with being dismissable [https://github.com/woocommerce/woocommerce-ios/pull/16836]
 
 
 24.3

@@ -141,10 +141,7 @@ final class OrderPaymentDetailsViewModel {
             return dateFormatter.string(from: refund.dateCreated)
         }()
 
-        let hasRefundGateway = refund.isAutomated ?? false
-
-        // Yes, we're making the assumption that the payment method is the same as the refund method.
-        let refundType = hasRefundGateway ? order.paymentMethodTitle : NSLocalizedString(
+        let refundType = order.refundShowsPaymentMethod(refund) ? order.paymentMethodTitle : NSLocalizedString(
             "manual refund",
             comment: "A manual refund is one where the store owner has given the purchaser alternative funds" +
                 " (cash, check, ACH) instead of using the payment gateway to create a refund " +

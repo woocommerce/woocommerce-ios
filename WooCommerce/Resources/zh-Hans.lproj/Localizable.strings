@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-03 11:54:30+0000 */
+/* Translation-Revision-Date: 2026-03-24 11:55:10+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -296,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "在设置期间接受服务条款。";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "访问折扣运费。 目前可通过 DHL 和 USPS 运输，即将推出更多！";
-
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
@@ -365,9 +362,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "添加可下载文件";
-
-/* Button in the CTA View for installing WCShip extension */
-"Add Extension To Store" = "将扩展程序添加到商店";
 
 /* Title for the Fee screen during order creation */
 "Add Fee" = "手续费";
@@ -977,9 +971,6 @@ which should be translated separately and considered part of this sentence. */
 /* Location row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.locationRow.title" = "位置";
 
-/* Price row title in appointment details section in booking details view. */
-"BookingDetailsView.appointmentDetails.priceRow.title" = "价格";
-
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "时间";
 
@@ -1054,6 +1045,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Header title for the 'Payment' section in the booking details screen. */
 "BookingDetailsView.payment.headerTitle" = "付款";
+
+/* Title for 'Refund' button in payment section in booking details view. */
+"BookingDetailsView.payment.refund.title" = "退款";
 
 /* Service row title in payment section in booking details view. */
 "BookingDetailsView.payment.serviceRow.title" = "服务";
@@ -1151,9 +1145,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "购买产品";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Buy postage when you need it" = "需要的时候再买邮票";
 
 /* Terms of service format on the account creation form. */
 "By continuing, you agree to our %1$@." = "继续即表示您同意我们的“%1$@”。";
@@ -1324,9 +1315,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "无法复制产品";
-
-/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
-"Cannot find information about your site's WP-Admin. Please try again." = "无法找到有关您站点 WP-Admin 的信息。 请重试。";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1554,8 +1542,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form */
 "Close" = "关闭";
 
 /* Button to close account on the Account Settings screen */
@@ -1756,8 +1743,7 @@ which should be translated separately and considered part of this sentence. */
 /* Contact Email title */
 "Contact Email" = "联系电子邮件地址";
 
-/* Action button to contact support when Jetpack install fails
-   Button to contact support for login
+/* Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
@@ -2193,9 +2179,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "享受折扣的订单";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Discounted rates" = "折扣率";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "折扣不可用";
 
@@ -2296,7 +2279,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit the product selector without any product selected.
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
-   Done button on the Jetpack Install Progress screen.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2992,9 +2974,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "从购买到履行 – 通过此应用程序管理整个订单流程。";
 
-/* Title of the CTA view for installing WCShip extension */
-"Fulfill your orders with WooCommerce Shipping" = "使用 WooCommerce Shipping 履行您的订单";
-
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "资金将在等待 %1$d 天后到账。";
 
@@ -3040,12 +3019,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "德国";
 
-/* Title of install action in the Jetpack Install view.
-   View title for initial auth views. */
+/* View title for initial auth views. */
 "Get Started" = "开始";
-
-/* Action of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Get WooCommerce Shipping" = "获取 WooCommerce Shipping";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "通过电子邮件获取登录链接";
@@ -3440,9 +3415,7 @@ which should be translated separately and considered part of this sentence. */
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title of install action in the Jetpack benefits view.
-   Title of the Install Jetpack intro view
-   Title of the Install Jetpack view */
+   Title of install action in the Jetpack benefits view. */
 "Install Jetpack" = "安装 Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
@@ -3453,12 +3426,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "安装 WooCommerce Payments";
-
-/* Accessibility label for the Install WCShip banner in the Order Detail */
-"Install the WCShip extension." = "安装 WCShip 扩展。";
-
-/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "将 Jetpack 免费插件安装至 %1$@，获享最佳移动体验。";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "免费安装 Jetpack 插件，获享最佳移动体验。";
@@ -4216,9 +4183,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Nauru" = "瑙鲁";
 
-/* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Need a shipping label?" = "是否需要货运标签？";
-
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
 "Need help finding the required email?" = "需要查找所需电子邮件方面的帮助？";
 
@@ -4385,9 +4349,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder when there's no customer name in the list */
 "No name" = "无名称";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"No need to wonder where that stampbook went" = "无需在意那本邮票册放哪了";
-
 /* Placeholder when there are no component options to show in the Component Settings view */
 "No options selected" = "未选择任何选项";
 
@@ -4457,7 +4418,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Not grouped" = "未分组";
 
 /* Action title to dismiss enabling Analytics for a store
-   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "现在不行";
 
@@ -4562,9 +4522,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "打开菜单";
-
-/* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
-"Open the flow for installing the WCShip extension." = "打开安装 WCShip 扩展的流程。";
 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "打开 wp-admin";
@@ -4924,9 +4881,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "选择要关联的商店";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Pick up an order, then just pay, print, package, and post." = "选择订单，然后只需付款，打印，包装和邮寄。";
-
 /* Country option for a site address. */
 "Pitcairn" = "皮特凯恩";
 
@@ -5083,9 +5037,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle on the connectivity tool screen */
 "Please wait while we attempt to identify your connection issue." = "我们将尝试确定您的连接问题，请稍等。";
 
-/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "正在将您的站点 %1$@ 与 Jetpack 连接，请稍候。";
-
 /* Message on the Jetpack setup screen. The %1$@ is the site address. */
 "Please wait while we connect your store %1$@ with Jetpack." = "正在将您的商店 %1$@ 连接到 Jetpack，请稍候。";
 
@@ -5238,12 +5189,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "从您的移动设备打印";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Print from your phone" = "通过手机打印";
-
-/* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Print labels from your phone, with WooCommerce Shipping." = "通过 WooCommerce Shipping 从手机打印标签。";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "打印收据";
@@ -5551,9 +5496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the refund detail cell when the refund was done manually. */
 "Refunded manually" = "手动退款";
 
-/* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "已通过 %@ 手动退款";
-
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "已通过 %@ 退款";
 
@@ -5849,9 +5791,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "保存收据并继续";
-
-/* Title of the CTA view for installing WCShip extension */
-"Save time and money" = "节省时间和金钱";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "正在保存您的产品...";
@@ -6357,9 +6296,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, site addresses must have letters too!" = "抱歉，站点地址必须包含字母！";
-
-/* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "抱歉，安装期间出错了";
 
 /* Error shown when there is a problem retrieving the dates for the selected date range. */
 "Sorry, something went wrong. We can't load analytics for the selected date range." = "抱歉，出错了。 我们无法加载选中日期范围的分析。";
@@ -8236,9 +8172,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "WooCommerce 服务折扣是什么？";
 
-/* Button in the CTA View about what is the WCShip extension */
-"What is WooCommerce Shipping?" = "什么是 WooCommerce Shipping？";
-
 /* Navigates to page with details about What is WordPress.com. */
 "What is WordPress.com?" = "什么是 WordPress.com？";
 
@@ -9696,6 +9629,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "预订";
 
+/* Badge label for a booking where the payment authorization has been voided. */
+"bookingPaymentStatus.authorizationVoided" = "授权已失效";
+
+/* Badge label for a booking with an authorized but not yet captured payment. */
+"bookingPaymentStatus.authorized" = "已授权";
+
 /* Badge label for a booking with a failed payment. */
 "bookingPaymentStatus.failed" = "失败";
 
@@ -10029,6 +9968,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the error notice when the bundle configuration is currently valid in the bundle product configuration screen. */
 "configureBundleProductValidationSuccess.title" = "配置完成";
+
+/* Button to hide the Connect WPCom card from the My Store screen */
+"connectWPComCard.hideButton" = "隐藏此内容";
+
+/* Subtitle of the Connect WPCom card on My Store screen */
+"connectWPComCard.subtitle" = "启用推送通知，随时掌握新订单和评论动态。";
+
+/* Title of the Connect WPCom card on My Store screen */
+"connectWPComCard.title" = "不错过任何新订单";
 
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "排查连接故障";
@@ -11576,6 +11524,9 @@ which should be translated separately and considered part of this sentence. */
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "该笔订单采用现金付款。 客户已支付 %1$@。 找零 %2$@。";
 
+/* Note added to order when Scan to Pay is used. */
+"paymentMethods.scanToPayNoteText.note" = "通过“扫码支付”功能共享的付款链接。 请先验证付款，然后再履行订单。";
+
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "付款, 点按付款, woocommerce, woo, 现场付款, 收款, 付款, 读卡器, 读卡器, 订单读卡器";
 
@@ -12524,17 +12475,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu action to cancel a booking from the POS booking detail view. */
 "pos.bookingDetailView.cancelBookingAction" = "取消预订";
 
-/* Subtitle shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.subtitle" = "请重试。";
-
-/* Title shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.title" = "取消预订失败";
-
 /* Button to initiate payment collection for a booking. */
 "pos.bookingDetailView.collectPaymentButton" = "收款";
 
 /* Accessibility label for the copy email button in booking details. */
 "pos.bookingDetailView.copyEmail.accessibilityLabel" = "复制电子邮件地址";
+
+/* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "复制电话号码";
 
 /* Section title for the customer details in booking details. */
 "pos.bookingDetailView.customerTitle" = "客户";
@@ -12632,6 +12580,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when saving a booking note fails. */
 "pos.bookingNoteView.saveError" = "保存备注失败。 请重试。";
 
+/* POS booking payment status label when the booking order payment authorization has been voided. */
+"pos.bookingPaymentStatus.authorizationVoided" = "授权已失效";
+
+/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
+"pos.bookingPaymentStatus.authorized" = "已授权";
+
 /* POS booking payment status label when the booking order payment failed. */
 "pos.bookingPaymentStatus.failed" = "失败";
 
@@ -12644,14 +12598,14 @@ which should be translated separately and considered part of this sentence. */
 /* POS booking payment status label when the booking is unpaid. */
 "pos.bookingPaymentStatus.unpaid" = "未支付";
 
+/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
+"pos.bookingsContainer.cancelBookingSuccess.notice" = "预订取消成功。";
+
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%2$@ 的预订 #%1$@（日期：%3$@）将被取消。";
 
 /* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "%2$@ 的预订 #%1$@（日期：%3$@，时长：%4$@）将被取消。";
-
-/* Title shown while a booking cancellation is being processed in POS. */
-"pos.cancelBookingConfirmation.canceling.processingTitle" = "正在取消预订…";
 
 /* Accessibility label for close button on cancel booking confirmation modal. */
 "pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "关闭";
@@ -12662,26 +12616,14 @@ which should be translated separately and considered part of this sentence. */
 /* Secondary message informing that the customer will receive an email notification about the cancellation. */
 "pos.cancelBookingConfirmation.customerNotificationMessage" = "客户将通过电子邮件收到通知。";
 
+/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
+"pos.cancelBookingConfirmation.inlineErrorMessage" = "无法取消预订。 请重试。";
+
 /* Button to dismiss the cancel booking confirmation and keep the booking. */
 "pos.cancelBookingConfirmation.keepButton" = "否，保留";
 
-/* Message shown while the booking cancellation is being processed. */
-"pos.cancelBookingConfirmation.processingMessage" = "我们正在取消预订，请稍候。";
-
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "取消此预订？";
-
-/* Message shown after a booking is successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.message" = "预订已成功取消。";
-
-/* Title shown when a booking has been successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.title" = "预订已取消";
-
-/* Accessibility label for close button on cancel booking success screen. */
-"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "关闭";
-
-/* Button to dismiss the cancel booking success screen in POS. */
-"pos.cancelBookingSuccess.doneButton" = "完成";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "点击产品以 \n 将其添加到购物车，或者 ";
@@ -12905,8 +12847,17 @@ which should be translated separately and considered part of this sentence. */
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
+/* Title for refund detail dialog header. %1$d is the refund number. */
+"pos.orderDetailsView.refundTitle" = "退款 %1$d#";
+
+/* Section title for the refunded products list in order details */
+"pos.orderDetailsView.refundedProductsTitle" = "退款产品";
+
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "总计";
+
+/* Payment method description shown in refund detail dialog. %1$@ is the payment method name. */
+"pos.orderDetailsView.viaPaymentMethod" = "通过 %1$@";
 
 /* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
 "pos.orderList.failedToLoadOrdersNextPageTitle" = "无法加载更多订单";
@@ -13021,6 +12972,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "退款 %@";
+
+/* Accessibility label for close button on refund detail dialog */
+"pos.refundDetailView.closeButton.accessibilityLabel" = "关闭";
+
+/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.plural" = "商品小计（%1$d 件商品）";
+
+/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.singular" = "商品小计（%1$d 件商品）";
+
+/* Label for refund total row in refund detail */
+"pos.refundDetailView.refundTotalLabel" = "退款总计";
+
+/* Label for tax row in refund detail */
+"pos.refundDetailView.taxLabel" = "税费";
 
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "取消";
@@ -13155,6 +13121,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "退款完成";
 
+/* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
+"pos.refundedProductRow.accessibilityLabel" = "%1$@，数量：%2$@，每个 %3$@，已退款 %4$@";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "清除搜索";
 
@@ -13188,9 +13160,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.totalsSectionView.netPayment.accessibilityLabel" = "净付款：%1$@";
 
-/* Label for net payment amount after refunds. */
-"pos.totalsSectionView.netPaymentLabel" = "净付款";
-
 /* Accessibility label for total paid. %1$@ is the paid amount. */
 "pos.totalsSectionView.paid.accessibilityLabel" = "总付款：%1$@";
 
@@ -13200,17 +13169,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the paid amount in the totals breakdown. */
 "pos.totalsSectionView.paidLabel" = "总付款";
 
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.totalsSectionView.reasonLabel" = "原因：%1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.totalsSectionView.refund.accessibilityLabel" = "已退款：%1$@";
-
 /* Reason portion of refund accessibility label. %1$@ is the refund reason. */
 "pos.totalsSectionView.refund.accessibilityLabel.reason" = "原因：%1$@";
 
-/* Label for a refund entry in the totals breakdown. */
-"pos.totalsSectionView.refundLabel" = "已退款";
+/* Accessibility label for refund entry. %1$d is the refund number, %2$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel.v2" = "%1$d 号退款：%2$@";
+
+/* Title for a refund entry in the totals breakdown. %1$d is the refund number. */
+"pos.totalsSectionView.refundTitle" = "退款 %1$d#";
 
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
@@ -13220,6 +13186,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total amount in the totals breakdown. */
 "pos.totalsSectionView.totalLabel" = "总计";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.totalNetPaymentLabel" = "净额总计";
+
+/* Link label to view refund details in the totals breakdown. */
+"pos.totalsSectionView.viewDetailsLabel" = "查看详情";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "电子邮件收据";
@@ -13740,6 +13712,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "退还自定义金额";
 
+/* Primary learn more button in the What's New screen */
+"reportList.learnMore.link" = "了解更多";
+
+/* Secondary not now button in the What's New screen */
+"reportList.notNow.button" = "稍后再说";
+
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "隐藏评论";
 
@@ -13876,6 +13854,27 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d 件 %2$@";
 
+/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
+"significantChangeConsent.ageRatingChange.description" = "应用程序年龄评级已更改为 %1$d。";
+
+/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
+"significantChangeConsent.manual.description" = "重要应用程序更新：%1$@。";
+
+/* Error message shown when the site info check and API discovery both fail. */
+"siteAddress.siteConnectionError" = "连接此站点时遇到问题。 请检查站点地址，然后重试。";
+
+/* Button title to dismiss the site info failure alert. */
+"siteAddress.siteInfoFailed.alert.cancel" = "取消";
+
+/* Button title to proceed to site credentials login when site info check fails. */
+"siteAddress.siteInfoFailed.alert.loginWithSiteCredentials" = "使用站点凭据登录";
+
+/* Message for the alert shown when the site info check fails but API discovery finds a WordPress REST API. */
+"siteAddress.siteInfoFailed.alert.message" = "我们无法验证您的站点详细信息。 您可以改用站点凭据尝试登录。";
+
+/* Title for the alert shown when the site info check fails but the site appears to be a WordPress site. */
+"siteAddress.siteInfoFailed.alert.title" = "连接问题";
+
 /* Error message explaining login failure due to an unexpected authentication challenge. */
 "siteCredentialLoginError.failedAuthenticationChallenge.message" = "由于您的商店实施了意外的安全措施，无法登录。 请联系支持人员进行故障排除。";
 
@@ -13930,14 +13929,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "隐藏业绩";
 
+/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
+"storePerformanceView.netSales" = "净销售额";
+
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "选定的日期无收入";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "订单";
-
-/* Revenue stat label on dashboard. */
-"storePerformanceView.revenue" = "收益";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "无法显示您商店的业绩";
@@ -13970,7 +13969,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "选定收益";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValue" = "收益";
+"storeStatsChart.yValueNetSales" = "净销售额";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "零收益";
@@ -13990,11 +13989,11 @@ which should be translated separately and considered part of this sentence. */
 /* Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "转化";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.infoView.netSales" = "净销售额";
+
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "订单";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.infoView.revenue" = "收益";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "截至 %1$@";
@@ -14017,11 +14016,11 @@ which should be translated separately and considered part of this sentence. */
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "收益：%1$@";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.storeInfoRectangularWidget.netSales" = "净销售额";
+
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ 没有任何数据";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.storeInfoRectangularWidget.revenue" = "收益";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "无法获取今日统计数据";
@@ -14414,11 +14413,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "商店数据加载失败";
 
+/* Net sales title on the watch store stats screen. */
+"watch.mystore.netSales.title" = "净销售额";
+
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "重试";
-
-/* Revenue title on the watch store stats screen. */
-"watch.mystore.revenue.title" = "收益";
 
 /* Format of the updated time in the watch store stats screen. */
 "watch.mystore.time.format" = "截至 %@";
@@ -15440,6 +15439,12 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the WPCom connection setup screen. %1$@ is the store name. */
 "wpComConnectionSetupViewModel.message" = "我们正在完成将您的商店 %1$@ 连接到 WordPress.com 的过程，请稍候。";
 
+/* Title for the WPCom connection setup screen when the site is not yet connected. */
+"wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "连接到 WordPress.com";
+
+/* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "设置推送通知";
+
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "重试";
 
@@ -15524,6 +15529,12 @@ which should be translated separately and considered part of this sentence. */
 /* Link text explaining what WordPress.com is in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "什么是 WordPress.com？";
 
+/* Main description text of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "将您的商店连接到 WordPress.com，以获取新订单、评论等的推送通知。";
+
+/* Description text on the Push Notifications Benefits View when the site is connected and plugin is up to date */
+"wpcomPushNotificationsBenefitsViewModel.setupDescription" = "您只需再完成一步，即可接收新订单、评论等通知。";
+
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "共享详细信息";
 
@@ -15532,6 +15543,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* The terms to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "服务条款";
+
+/* Title of the WordPress.com Push Notifications Benefits View */
+"wpcomPushNotificationsBenefitsViewModel.title" = "通过 WordPress.com 解锁推送通知";
+
+/* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "您的商店已经连接到 WordPress.com 账户，但您需要更新 WooCommerce 插件，以启用新订单、评论等的推送通知。";
+
+/* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "获取您商店的推送通知";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "我们无法完成推送通知设置。 请联系支持人员以获取帮助。";

@@ -5,7 +5,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
     let animation: POSCardPresentPaymentAlertAnimation
 
     var body: some View {
-        VStack(spacing: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing) {
+        VStack(spacing: 0) {
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
                 Image(decorative: viewModel.imageName, bundle: .module)
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
@@ -24,6 +24,9 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
                 }
             }
             .frame(maxWidth: .infinity)
+            .scrollVerticallyIfNeeded()
+
+            Spacer(minLength: PointOfSaleReaderConnectionModalLayout.contentButtonSpacing)
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.buttonSpacing) {
                 Button(viewModel.connectButton.title,
@@ -36,7 +39,7 @@ struct PointOfSaleCardPresentPaymentFoundReaderView: View {
             }
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
-        .scrollVerticallyIfNeeded()
+        .frame(maxHeight: .infinity)
         .posModalCloseButton(action: viewModel.cancelSearchButton.actionHandler,
                              accessibilityLabel: viewModel.cancelSearchButton.title)
         .multilineTextAlignment(.center)

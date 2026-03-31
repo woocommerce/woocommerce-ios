@@ -328,6 +328,42 @@ final class StorePickerViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.displayedStores, [testSite2])
     }
+
+    @MainActor
+    func test_unhideStoreIfNeeded_removes_store_from_hidden_list_and_updates_displayedStores() async throws {
+        // Given
+        let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
+        let testSite2 = Site.fake().copy(siteID: 124, name: "def", isWooCommerceActive: true)
+        storageManager.insertSampleSite(readOnlySite: testSite1)
+        storageManager.insertSampleSite(readOnlySite: testSite2)
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .synchronizeSites(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+        userDefaults.saveHiddenStoreIDs([testSite1.siteID])
+
+        let viewModel = StorePickerViewModel(configuration: .switchingStores,
+                                             stores: stores,
+                                             storageManager: storageManager,
+                                             userDefaults: userDefaults)
+        await viewModel.refreshSites(currentlySelectedSiteID: nil)
+        XCTAssertEqual(viewModel.displayedStores, [testSite2])
+
+        // When
+        viewModel.unhideStoreIfNeeded(testSite1.siteID)
+
+        // Then
+        XCTAssertTrue(userDefaults.hiddenStoreIDs.isEmpty)
+        XCTAssertEqual(viewModel.displayedStores, [testSite1, testSite2])
+    }
 }
 
 private extension StorePickerViewModelTests {

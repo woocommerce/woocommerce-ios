@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-09 15:56:00+0000 */
+/* Translation-Revision-Date: 2026-03-25 09:55:51+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -296,9 +296,6 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to accept the Terms of Service from Apple */
 "Accept the Terms of Service during set up." = "Godkänn användarvillkoren under konfigurationen.";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Kom åt rabatterade fraktavgifter. För närvarande endast tillgängligt med DHL och USPS, men fler alternativ kommer snart.";
-
 /* My Store > Settings > Account Settings section
    Navigates to the Account Settings screen
    Title of the Account Settings screen */
@@ -365,9 +362,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Downloadable file screen navigation title */
 "Add Downloadable File" = "Lägg till nedladdningsbar fil";
-
-/* Button in the CTA View for installing WCShip extension */
-"Add Extension To Store" = "Lägg till utökning till butik";
 
 /* Title for the Fee screen during order creation */
 "Add Fee" = "Lägg till avgift";
@@ -977,9 +971,6 @@ which should be translated separately and considered part of this sentence. */
 /* Location row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.locationRow.title" = "Plats";
 
-/* Price row title in appointment details section in booking details view. */
-"BookingDetailsView.appointmentDetails.priceRow.title" = "Pris";
-
 /* Time row title in appointment details section in booking details view. */
 "BookingDetailsView.appointmentDetails.timeRow.title" = "Tid";
 
@@ -1155,9 +1146,6 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder of the text field for editing the button text for an external/affiliate product */
 "Buy Product" = "Köp produkt";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Buy postage when you need it" = "Köp porto när du behöver det";
-
 /* Terms of service format on the account creation form. */
 "By continuing, you agree to our %1$@." = "Genom att fortsätta godkänner du våra %1$@.";
 
@@ -1327,9 +1315,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Kan inte duplicera produkt";
-
-/* Error message when no URL to WP-Admin page is found during Jetpack install flow */
-"Cannot find information about your site's WP-Admin. Please try again." = "Det gick inte att hitta information om din webbplats WP-admin. Försök igen.";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1557,8 +1542,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the Coupon Creation Success screen
    Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
-   Text for the close button in the Edit Address Form
-   Title of the Close action on the Jetpack Install view */
+   Text for the close button in the Edit Address Form */
 "Close" = "Stäng";
 
 /* Button to close account on the Account Settings screen */
@@ -1759,8 +1743,7 @@ which should be translated separately and considered part of this sentence. */
 /* Contact Email title */
 "Contact Email" = "E-post för kontakt";
 
-/* Action button to contact support when Jetpack install fails
-   Button to contact support for login
+/* Button to contact support for login
    Close Account error alert button title - navigates the user to contact support.
    Contact Support button in the application password tutorial screen
    Contact support button in the connectivity tool screen
@@ -2196,9 +2179,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Rabatterade beställningar";
 
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Discounted rates" = "Rabatterade avgifter";
-
 /* Title text for the product discount row informational tooltip */
 "Discounts unavailable" = "Rabatter ej tillgängliga";
 
@@ -2299,7 +2279,6 @@ which should be translated separately and considered part of this sentence. */
    Button to submit the product selector without any product selected.
    Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
-   Done button on the Jetpack Install Progress screen.
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2995,9 +2974,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Från köp till fullföljande – hantera hela beställningsprocessen via appen.";
 
-/* Title of the CTA view for installing WCShip extension */
-"Fulfill your orders with WooCommerce Shipping" = "Fullfölj dina beställningar med WooCommerce Shipping";
-
 /* Hint regarding available/pending balances shown in the WooPayments Payouts View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
 "Funds become available after pending for %1$d days." = "Medlen blir tillgängliga efter att ha inväntat granskning i %1$d dagar.";
 
@@ -3043,12 +3019,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "Tyskland";
 
-/* Title of install action in the Jetpack Install view.
-   View title for initial auth views. */
+/* View title for initial auth views. */
 "Get Started" = "Kom igång";
-
-/* Action of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Get WooCommerce Shipping" = "Skaffa WooCommerce Shipping";
 
 /* The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password. */
 "Get a login link by email" = "Få en inloggningslänk via e-post";
@@ -3443,9 +3415,7 @@ which should be translated separately and considered part of this sentence. */
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title of install action in the Jetpack benefits view.
-   Title of the Install Jetpack intro view
-   Title of the Install Jetpack view */
+   Title of install action in the Jetpack benefits view. */
 "Install Jetpack" = "Installera Jetpack";
 
 /* Action button to install Jetpack on WP-Admin instead of on app */
@@ -3456,12 +3426,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when WooCommerce Payments is not installed */
 "Install WooCommerce Payments" = "Installera WooCommerce Payments";
-
-/* Accessibility label for the Install WCShip banner in the Order Detail */
-"Install the WCShip extension." = "Installera WCShip-utökningen.";
-
-/* Description of the Jetpack Install flow for the specified site. The %1$@ is the site address. */
-"Install the free Jetpack plugin to %1$@ and experience the best mobile experience." = "Installera det kostnadsfria Jetpack-tillägget för %1$@ och få den bästa möjliga mobilupplevelsen.";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Installera det kostnadsfria Jetpack-tillägget för den bästa mobilupplevelsen.";
@@ -4219,9 +4183,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Nauru" = "Nauru";
 
-/* Title of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Need a shipping label?" = "Behöver du en fraktetikett?";
-
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation */
 "Need help finding the required email?" = "Behöver du hjälp med att hitta e-postmeddelandet?";
 
@@ -4388,9 +4349,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Placeholder when there's no customer name in the list */
 "No name" = "Inget namn";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"No need to wonder where that stampbook went" = "Du behöver inte undra vart stämpelboken tog vägen";
-
 /* Placeholder when there are no component options to show in the Component Settings view */
 "No options selected" = "Inga alternativ valda";
 
@@ -4460,7 +4418,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 "Not grouped" = "Ej grupperad";
 
 /* Action title to dismiss enabling Analytics for a store
-   Button in the CTA View for installing WCShip extension for dismissing the view
    Title of dismiss action in the Jetpack benefits view. */
 "Not now" = "Inte nu";
 
@@ -4565,9 +4522,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Öppna meny";
-
-/* VoiceOver accessibility label for the Install WCShip banner in the Order Detail */
-"Open the flow for installing the WCShip extension." = "Öppna flödet för att installera WCShip-utökningen.";
 
 /* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
 "Open wp-admin" = "Öppna wp-admin";
@@ -4927,9 +4881,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Välj butik att ansluta";
 
-/* Subtitle of one of the elements in the CTA View for installing WCShip extension */
-"Pick up an order, then just pay, print, package, and post." = "Hämta en beställning och sedan är det bara att betala, skriva ut, paketera och skicka.";
-
 /* Country option for a site address. */
 "Pitcairn" = "Pitcairn";
 
@@ -5086,9 +5037,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subtitle on the connectivity tool screen */
 "Please wait while we attempt to identify your connection issue." = "Vänta medan vi försöker identifiera ditt anslutningsproblem.";
 
-/* Message on the Jetpack Install Progress screen. The %1$@ is the site address. */
-"Please wait while we connect your site %1$@ with Jetpack." = "Vänta medan vi ansluter din webbplats %1$@ till Jetpack.";
-
 /* Message on the Jetpack setup screen. The %1$@ is the site address. */
 "Please wait while we connect your store %1$@ with Jetpack." = "Vänta medan vi ansluter din butik %1$@ med Jetpack.";
 
@@ -5241,12 +5189,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Navigation bar title of shipping label printing instructions screen */
 "Print from your mobile device" = "Skriv ut från din mobila enhet";
-
-/* Title of one of the elements in the CTA View for installing WCShip extension */
-"Print from your phone" = "Skriv ut från din telefon";
-
-/* Body of the banner in the Order Detail for suggesting to install WCShip extension. */
-"Print labels from your phone, with WooCommerce Shipping." = "Skriv ut etiketter från din telefon, med WooCommerce Shipping.";
 
 /* Button to print receipts. Presented to users after a payment has been successfully collected */
 "Print receipt" = "Skriv ut kvitto";
@@ -5554,9 +5496,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the refund detail cell when the refund was done manually. */
 "Refunded manually" = "Återbetalad manuellt";
 
-/* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "Återbetald manuellt via %@";
-
 /* It reads, 'Refunded via <payment method>' */
 "Refunded via %@" = "Återbetald via %@";
 
@@ -5852,9 +5791,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Button when the user does not want to print or email receipt. Presented to users after a payment has been successfully collected
    Button when the user does not want to print the receipt. Presented to users after a payment has been successfully collected */
 "Save receipt and continue" = "Spara kvitto och fortsätt";
-
-/* Title of the CTA view for installing WCShip extension */
-"Save time and money" = "Spara tid och pengar";
 
 /* Title of the in-progress UI while saving a Product as draft remotely */
 "Saving your product..." = "Sparar din produkt …";
@@ -6360,9 +6296,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* No comment provided by engineer. */
 "Sorry, site addresses must have letters too!" = "En adress till en webbplats måste även innehålla bokstäver!";
-
-/* Error title when Jetpack install fails */
-"Sorry, something went wrong during install" = "Något gick fel under installationen";
 
 /* Error shown when there is a problem retrieving the dates for the selected date range. */
 "Sorry, something went wrong. We can't load analytics for the selected date range." = "Något gick fel. Vi kan inte ladda analysen för det valda datumintervallet.";
@@ -8239,9 +8172,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Vad innebär rabatt på WooCommerce-tjänster?";
 
-/* Button in the CTA View about what is the WCShip extension */
-"What is WooCommerce Shipping?" = "Vad är WooCommerce Shipping?";
-
 /* Navigates to page with details about What is WordPress.com. */
 "What is WordPress.com?" = "Vad är WordPress.com?";
 
@@ -9699,6 +9629,12 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the booking list view */
 "bookingListView.view.title" = "Bokningar";
 
+/* Badge label for a booking where the payment authorization has been voided. */
+"bookingPaymentStatus.authorizationVoided" = "Auktorisering ogiltigförklarad";
+
+/* Badge label for a booking with an authorized but not yet captured payment. */
+"bookingPaymentStatus.authorized" = "Auktoriserad";
+
 /* Badge label for a booking with a failed payment. */
 "bookingPaymentStatus.failed" = "Misslyckad";
 
@@ -10037,7 +9973,7 @@ which should be translated separately and considered part of this sentence. */
 "connectWPComCard.hideButton" = "Dölj detta innehåll";
 
 /* Subtitle of the Connect WPCom card on My Store screen */
-"connectWPComCard.subtitle" = "Aktivera push-notiser för att hålla koll på nya beställningar och recensioner.";
+"connectWPComCard.subtitle" = "Aktivera pushnotiser för att hålla koll på nya beställningar och recensioner.";
 
 /* Title of the Connect WPCom card on My Store screen */
 "connectWPComCard.title" = "Missa aldrig en ny beställning";
@@ -11589,7 +11525,7 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Beställningen betalades kontant. Kunden betalade %1$@. Växeln var %2$@.";
 
 /* Note added to order when Scan to Pay is used. */
-"paymentMethods.scanToPayNoteText.note" = "Betalningslänk delad via Skanna för att betala. Verifiera betalning innan du uppfyller beställningen.";
+"paymentMethods.scanToPayNoteText.note" = "Betalningslänk delad via Skanna för att betala. Verifiera betalning innan beställningen fullföljs.";
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Payments' screen. */
 "payments, tap to pay, woocommerce, woo, in-person payments, in person paymentscollect payment, payments, reader, card reader, order card reader" = "betalningar, tryck för att betala, woocommerce, woo, personliga betalningar, ta emot personliga betalningar, betalningar, läsare, kortläsare, beställ kortläsare";
@@ -12539,12 +12475,6 @@ which should be translated separately and considered part of this sentence. */
 /* Menu action to cancel a booking from the POS booking detail view. */
 "pos.bookingDetailView.cancelBookingAction" = "Avbryt bokning";
 
-/* Subtitle shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.subtitle" = "Försök igen.";
-
-/* Title shown when cancelling a booking from POS has failed. */
-"pos.bookingDetailView.cancelBookingError.title" = "Misslyckades att avbryta bokning";
-
 /* Button to initiate payment collection for a booking. */
 "pos.bookingDetailView.collectPaymentButton" = "Samla in betalning";
 
@@ -12650,6 +12580,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message shown when saving a booking note fails. */
 "pos.bookingNoteView.saveError" = "Misslyckades att spara anteckning. Försök igen.";
 
+/* POS booking payment status label when the booking order payment authorization has been voided. */
+"pos.bookingPaymentStatus.authorizationVoided" = "Auktorisering ogiltigförklarad";
+
+/* POS booking payment status label when the booking order payment is authorized but not yet captured. */
+"pos.bookingPaymentStatus.authorized" = "Auktoriserad";
+
 /* POS booking payment status label when the booking order payment failed. */
 "pos.bookingPaymentStatus.failed" = "Misslyckad";
 
@@ -12662,14 +12598,14 @@ which should be translated separately and considered part of this sentence. */
 /* POS booking payment status label when the booking is unpaid. */
 "pos.bookingPaymentStatus.unpaid" = "Obetald";
 
+/* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
+"pos.bookingsContainer.cancelBookingSuccess.notice" = "Bokningen har avbrutits.";
+
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "Bokning #%1$@ för %2$@ den %3$@ kommer att avbrytas.";
 
 /* Confirmation message with customer name shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time, %4$@ is the customer name. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessageWithCustomer" = "Bokning #%1$@ för %2$@ den %3$@ för %4$@ kommer att avbrytas.";
-
-/* Title shown while a booking cancellation is being processed in POS. */
-"pos.cancelBookingConfirmation.canceling.processingTitle" = "Avbryter bokning …";
 
 /* Accessibility label for close button on cancel booking confirmation modal. */
 "pos.cancelBookingConfirmation.closeButton.accessibilityLabel" = "Stäng";
@@ -12680,26 +12616,14 @@ which should be translated separately and considered part of this sentence. */
 /* Secondary message informing that the customer will receive an email notification about the cancellation. */
 "pos.cancelBookingConfirmation.customerNotificationMessage" = "Kunden kommer bli aviserad via e-post.";
 
+/* Error message shown inline in the cancel booking confirmation modal when cancellation fails. */
+"pos.cancelBookingConfirmation.inlineErrorMessage" = "Det går inte att avbryta bokningen. Försök igen.";
+
 /* Button to dismiss the cancel booking confirmation and keep the booking. */
 "pos.cancelBookingConfirmation.keepButton" = "Nej, behåll det";
 
-/* Message shown while the booking cancellation is being processed. */
-"pos.cancelBookingConfirmation.processingMessage" = "Vänta medan vi avbryter bokningen.";
-
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "Avbryt denna bokning?";
-
-/* Message shown after a booking is successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.message" = "Bokningen har avbrutits.";
-
-/* Title shown when a booking has been successfully canceled in POS. */
-"pos.cancelBookingSuccess.canceled.title" = "Bokning avbruten";
-
-/* Accessibility label for close button on cancel booking success screen. */
-"pos.cancelBookingSuccess.closeButton.accessibilityLabel" = "Stäng";
-
-/* Button to dismiss the cancel booking success screen in POS. */
-"pos.cancelBookingSuccess.doneButton" = "Klart";
 
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Klicka på en produkt för att \n lägga till den i varukorgen, eller ";
@@ -12923,8 +12847,17 @@ which should be translated separately and considered part of this sentence. */
 /* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
 "pos.orderDetailsView.quantityLabel" = "%1$d × %2$@";
 
+/* Title for refund detail dialog header. %1$d is the refund number. */
+"pos.orderDetailsView.refundTitle" = "Återbetalning av #%1$d";
+
+/* Section title for the refunded products list in order details */
+"pos.orderDetailsView.refundedProductsTitle" = "Återbetalda produkter";
+
 /* Section title for the order totals breakdown */
 "pos.orderDetailsView.totalsTitle" = "Totalt";
+
+/* Payment method description shown in refund detail dialog. %1$@ is the payment method name. */
+"pos.orderDetailsView.viaPaymentMethod" = "Via %1$@";
 
 /* Text appearing on the order list screen when there's an error loading a page of orders after the first. Shown inline with the previously loaded orders above. */
 "pos.orderList.failedToLoadOrdersNextPageTitle" = "Kan inte ladda fler beställningar";
@@ -13039,6 +12972,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the refund confirmation modal. %@ is the formatted refund amount. */
 "pos.refundConfirmationView.titleFormat" = "Återbetalning %@";
+
+/* Accessibility label for close button on refund detail dialog */
+"pos.refundDetailView.closeButton.accessibilityLabel" = "Stäng";
+
+/* Label for items subtotal row in refund detail when there are multiple items. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.plural" = "Delsumma objekt (%1$d objekt)";
+
+/* Label for items subtotal row in refund detail when there is 1 item. %1$d is the number of items. */
+"pos.refundDetailView.itemsSubtotalFormat.singular" = "Delsumma objekt (%1$d objekt)";
+
+/* Label for refund total row in refund detail */
+"pos.refundDetailView.refundTotalLabel" = "Återbetalningsbelopp";
+
+/* Label for tax row in refund detail */
+"pos.refundDetailView.taxLabel" = "Moms";
 
 /* Button to cancel and dismiss the refund error screen */
 "pos.refundErrorView.cancelButton" = "Avbryt";
@@ -13173,6 +13121,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title shown when a refund has been successfully processed */
 "pos.refundSuccessView.title" = "Återbetalning slutförd";
 
+/* Accessibility label for refunded product row. %1$@ is product name, %2$@ is quantity, %3$@ is unit price, %4$@ is refund total. */
+"pos.refundedProductRow.accessibilityLabel" = "%1$@, Antal: %2$@ för %3$@ styck, Återbetalat %4$@";
+
+/* Product quantity and price label. %1$d is the quantity, %2$@ is the unit price. */
+"pos.refundedProductRow.quantityLabel" = "%1$d × %2$@";
+
 /* Accessibility label for the clear button in the Point of Sale search screen. */
 "pos.searchview.searchField.clearButton.accessibilityLabel" = "Rensa sök";
 
@@ -13206,9 +13160,6 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for net payment. %1$@ is the net payment amount after refunds. */
 "pos.totalsSectionView.netPayment.accessibilityLabel" = "Nettobetalning: %1$@";
 
-/* Label for net payment amount after refunds. */
-"pos.totalsSectionView.netPaymentLabel" = "Nettobetalning";
-
 /* Accessibility label for total paid. %1$@ is the paid amount. */
 "pos.totalsSectionView.paid.accessibilityLabel" = "Totalt betalt: %1$@";
 
@@ -13218,17 +13169,14 @@ which should be translated separately and considered part of this sentence. */
 /* Label for the paid amount in the totals breakdown. */
 "pos.totalsSectionView.paidLabel" = "Totalt betalt";
 
-/* Label for refund reason. %1$@ is the reason text. */
-"pos.totalsSectionView.reasonLabel" = "Orsak: %1$@";
-
-/* Accessibility label for refunded amount. %1$@ is the refund amount. */
-"pos.totalsSectionView.refund.accessibilityLabel" = "Återbetalat: %1$@";
-
 /* Reason portion of refund accessibility label. %1$@ is the refund reason. */
 "pos.totalsSectionView.refund.accessibilityLabel.reason" = "Orsak: %1$@";
 
-/* Label for a refund entry in the totals breakdown. */
-"pos.totalsSectionView.refundLabel" = "Återbetald";
+/* Accessibility label for refund entry. %1$d is the refund number, %2$@ is the refund amount. */
+"pos.totalsSectionView.refund.accessibilityLabel.v2" = "Återbetalningsnummer %1$d: %2$@";
+
+/* Title for a refund entry in the totals breakdown. %1$d is the refund number. */
+"pos.totalsSectionView.refundTitle" = "Återbetalning av #%1$d";
 
 /* Accessibility label for a totals row. %1$@ is the row title, %2$@ is the amount. */
 "pos.totalsSectionView.row.accessibilityLabel" = "%1$@: %2$@";
@@ -13238,6 +13186,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for the total amount in the totals breakdown. */
 "pos.totalsSectionView.totalLabel" = "Totalt";
+
+/* Label for net payment amount after refunds. */
+"pos.totalsSectionView.totalNetPaymentLabel" = "Totalt netto";
+
+/* Link label to view refund details in the totals breakdown. */
+"pos.totalsSectionView.viewDetailsLabel" = "Visa detaljer";
 
 /* Button title for the receipt button */
 "pos.totalsView.button.sendReceipt" = "Kvitto via e-post";
@@ -13758,6 +13712,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the switch in the IssueRefund screen to refund customAmounts */
 "refundIssue.customAmounts.title" = "Återbetala anpassade belopp";
 
+/* Primary learn more button in the What's New screen */
+"reportList.learnMore.link" = "Lär dig mer";
+
+/* Secondary not now button in the What's New screen */
+"reportList.notNow.button" = "Inte nu";
+
 /* Menu item to dismiss the Reviews card on the Dashboard screen */
 "reviewsDashboardCard.hideCard" = "Dölj recensioner";
 
@@ -13894,6 +13854,27 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d artiklar av %2$@";
 
+/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
+"significantChangeConsent.ageRatingChange.description" = "Appens åldersklassificering ändrad till %1$d.";
+
+/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
+"significantChangeConsent.manual.description" = "Betydande appuppdatering: %1$@.";
+
+/* Error message shown when the site info check and API discovery both fail. */
+"siteAddress.siteConnectionError" = "Vi har problem med anslutningen till den här webbplatsen. Kontrollera webbplatsens adress och försök igen.";
+
+/* Button title to dismiss the site info failure alert. */
+"siteAddress.siteInfoFailed.alert.cancel" = "Avbryt";
+
+/* Button title to proceed to site credentials login when site info check fails. */
+"siteAddress.siteInfoFailed.alert.loginWithSiteCredentials" = "Logga in med dina autentiseringsuppgifter för webbplatsen.";
+
+/* Message for the alert shown when the site info check fails but API discovery finds a WordPress REST API. */
+"siteAddress.siteInfoFailed.alert.message" = "Vi kunde inte verifiera din webbplatsinformation. Du kan prova att logga in med dina autentiseringsuppgifter för webbplatsen istället.";
+
+/* Title for the alert shown when the site info check fails but the site appears to be a WordPress site. */
+"siteAddress.siteInfoFailed.alert.title" = "Anslutningsproblem";
+
 /* Error message explaining login failure due to an unexpected authentication challenge. */
 "siteCredentialLoginError.failedAuthenticationChallenge.message" = "Det gick inte att logga in på grund av en oväntad säkerhetsåtgärd i din butik. Kontakta supporten för felsökning.";
 
@@ -13948,14 +13929,14 @@ which should be translated separately and considered part of this sentence. */
 /* Menu item to dismiss the store performance section on the Dashboard screen */
 "storePerformanceView.hideCard" = "Dölj Prestanda";
 
+/* Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees. */
+"storePerformanceView.netSales" = "Nettoförsäljning";
+
 /* Text on the store stats chart on the Dashboard screen when there is no revenue */
 "storePerformanceView.noRevenueText" = "Inga intäkter för de valda datumen";
 
 /* Orders stat label on dashboard - should be plural. */
 "storePerformanceView.orders" = "Beställningar";
-
-/* Revenue stat label on dashboard. */
-"storePerformanceView.revenue" = "Intäkter";
 
 /* Title when the Performance card is disabled because the analytics feature is unavailable */
 "storePerformanceView.unavailableAnalyticsView.title" = "Det gick inte att visa din butiks prestanda";
@@ -13988,7 +13969,7 @@ which should be translated separately and considered part of this sentence. */
 "storeStatsChart.ySelectedValue" = "Valda intäkter";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen */
-"storeStatsChart.yValue" = "Intäkter";
+"storeStatsChart.yValueNetSales" = "Nettoförsäljning";
 
 /* Value for the y-Axis of the store stats chart on the Dashboard screen when there is no revenue */
 "storeStatsChart.zeroRevenue" = "Noll intäkter";
@@ -14008,11 +13989,11 @@ which should be translated separately and considered part of this sentence. */
 /* Conversion title label for the store info widget */
 "storeWidgets.infoView.conversion" = "Konvertering";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.infoView.netSales" = "Nettoförsäljning";
+
 /* Orders title label for the store info widget */
 "storeWidgets.infoView.orders" = "Beställningar";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.infoView.revenue" = "Intäkt";
 
 /* Displays the time when the widget was last updated. %1$@ is the time to render. */
 "storeWidgets.infoView.updatedAt" = "Per den %1$@";
@@ -14035,11 +14016,11 @@ which should be translated separately and considered part of this sentence. */
 /* Revenue title label for the store info widget. %1$@ is the revenue amount. */
 "storeWidgets.storeInfoInlineWidget.revenueTitle" = "Intäkter: %1$@";
 
+/* Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees. */
+"storeWidgets.storeInfoRectangularWidget.netSales" = "Nettoförsäljning";
+
 /* Label when the widget can't fetch data. */
 "storeWidgets.storeInfoRectangularWidget.noData" = "⚠ Inga data";
-
-/* Revenue title label for the store info widget */
-"storeWidgets.storeInfoRectangularWidget.revenue" = "Intäkter";
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan inte hämta dagens statistik";
@@ -14432,11 +14413,11 @@ which should be translated separately and considered part of this sentence. */
 /* Error title on the watch store stats screen. */
 "watch.mystore.error.title" = "Misslyckades att ladda butiksdata";
 
+/* Net sales title on the watch store stats screen. */
+"watch.mystore.netSales.title" = "Nettoförsäljning";
+
 /* Retry on the watch store stats screen. */
 "watch.mystore.retry.title" = "Försök igen";
-
-/* Revenue title on the watch store stats screen. */
-"watch.mystore.revenue.title" = "intäkt";
 
 /* Format of the updated time in the watch store stats screen. */
 "watch.mystore.time.format" = "Från och med %@";
@@ -15462,7 +15443,7 @@ which should be translated separately and considered part of this sentence. */
 "wpComConnectionSetupViewModel.titleConnectToWordPressCom" = "Anslut till WordPress.com";
 
 /* Title for the WPCom connection setup screen when the site is already connected to WordPress.com. */
-"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Push-notiser";
+"wpComConnectionSetupViewModel.titleSetUpPushNotifications" = "Konfigurera pushnotiser";
 
 /* Button title to retry the WPCom connection setup after a failure. */
 "wpComConnectionSetupViewModel.tryAgain" = "Försök igen";
@@ -15549,7 +15530,10 @@ which should be translated separately and considered part of this sentence. */
 "wpcomPushNotificationsBenefitsView.whatIsWPCom" = "Vad är WordPress.com?";
 
 /* Main description text of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Anslut din butik till WordPress.com för att få åtkomst till pushnotiser för nya beställningar, recensioner och mer.";
+"wpcomPushNotificationsBenefitsViewModel.mainDescription" = "Anslut din butik till WordPress.com för att få åtkomst till pushnotiser för nya beställningar, recensioner med mera.";
+
+/* Description text on the Push Notifications Benefits View when the site is connected and plugin is up to date */
+"wpcomPushNotificationsBenefitsViewModel.setupDescription" = "Du är ett steg ifrån att få aviseringar om nya beställningar, recensioner med mera.";
 
 /* The action to be agreed upon when tapping the Continue button on the Push Notifications Benefits View. */
 "wpcomPushNotificationsBenefitsViewModel.shareDetails" = "dela detaljer";
@@ -15561,13 +15545,13 @@ which should be translated separately and considered part of this sentence. */
 "wpcomPushNotificationsBenefitsViewModel.termsOfService" = "Användarvillkor";
 
 /* Title of the WordPress.com Push Notifications Benefits View */
-"wpcomPushNotificationsBenefitsViewModel.title" = "Lås upp push-notiser med WordPress.com";
+"wpcomPushNotificationsBenefitsViewModel.title" = "Lås upp pushnotiser med WordPress.com";
 
 /* Description text on the Push Notifications Benefits View when WooCommerce plugin is outdated */
-"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Din butik är redan ansluten till ett WordPress.com-konto, men du måste uppdatera WooCommerce-tillägget för att aktivera push-aviseringar för nya beställningar, recensioner och mer.";
+"wpcomPushNotificationsBenefitsViewModel.updatePluginDescription" = "Din butik är redan ansluten till ett WordPress.com-konto, men du måste uppdatera WooCommerce-tillägget för att aktivera pushnotiser för nya beställningar, recensioner med mera.";
 
 /* Title of the Push Notifications Benefits View when WooCommerce plugin is outdated */
-"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Få push-aviseringar för din butik";
+"wpcomPushNotificationsBenefitsViewModel.updatePluginTitle" = "Få pushnotiser för din butik";
 
 /* Generic error message in the Push Notifications Benefits View */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic" = "Vi kunde inte slutföra konfigurationen av push-notiser. Kontakta supporten för att få hjälp.";

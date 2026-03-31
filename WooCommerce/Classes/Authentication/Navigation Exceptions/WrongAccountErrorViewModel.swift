@@ -221,7 +221,7 @@ private extension WrongAccountErrorViewModel {
 
             switch result {
             case .success(let siteInfo):
-                self.isSelfHostedSite = !siteInfo.isWPCom
+                self.isSelfHostedSite = !siteInfo.isWPCom && !siteInfo.isCommerceGarden
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
             }

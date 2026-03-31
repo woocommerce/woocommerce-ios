@@ -229,4 +229,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Enables FedEx as a carrier option in WooShipping label creation
+    ///
+    case wooShippingFedEx
 }

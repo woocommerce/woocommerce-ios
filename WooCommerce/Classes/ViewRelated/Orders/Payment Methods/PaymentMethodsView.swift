@@ -24,6 +24,8 @@ struct PaymentMethodsView: View {
 
     @State private var showingScanToPayView = false
 
+    @State private var showingLearnMore = false
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
@@ -94,13 +96,14 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
-                    NavigationLink(destination: WebView(isPresented: .constant(true), url: viewModel.learnMoreViewModel.url)
-                                                .onAppear {
-                                                    viewModel.learnMoreViewModel.learnMoreTapped()
-                                                }
-                    ) {
+                    Button {
+                        showingLearnMore = true
+                        viewModel.learnMoreViewModel.learnMoreTapped()
+                    } label: {
                         AttributedText(viewModel.learnMoreViewModel.learnMoreAttributedString)
-                    }.padding(.horizontal)
+                            .allowsHitTesting(false)
+                    }
+                    .padding(.horizontal)
                 }
 
                 // Pushes content to the top
@@ -135,6 +138,12 @@ struct PaymentMethodsView: View {
                 }
             }
                 .background(FullScreenCoverClearBackgroundView())
+        }
+        .navigationDestination(isPresented: $showingLearnMore) {
+            AuthenticatableWebView(url: viewModel.learnMoreViewModel.url,
+                                   onDismiss: {
+                viewModel.syncSiteAndRefreshVisibility()
+            })
         }
         .navigationDestination(isPresented: $showingCashAlert) {
             CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total,

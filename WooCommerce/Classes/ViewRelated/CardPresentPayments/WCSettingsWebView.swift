@@ -1,22 +1,23 @@
 import SwiftUI
 
-/// Displays WooCommerce settings in a web view within a navigation view.
-struct WCSettingsWebView: View {
-    let adminUrl: URL
+/// Displays an authenticated web view with a navigation bar and a Done button.
+struct WCAuthenticatedWebView: View {
+    let url: URL
+    let title: String
     let completion: () -> Void
 
     var body: some View {
         NavigationView {
             AuthenticatedWebView(isPresented: .constant(true),
-                                 url: adminUrl)
-                                 .navigationTitle(Localization.adminWebviewTitle)
+                                 url: url)
+                                 .navigationTitle(title)
                                  .navigationBarTitleDisplayMode(.inline)
                                  .toolbar {
                                      ToolbarItem(placement: .confirmationAction) {
                                          Button(action: {
                                              completion()
                                          }, label: {
-                                             Text(Localization.doneButtonUpdateAddress)
+                                             Text(Localization.done)
                                          })
                                      }
                                  }
@@ -26,21 +27,16 @@ struct WCSettingsWebView: View {
     }
 }
 
-private extension WCSettingsWebView {
+private extension WCAuthenticatedWebView {
     enum Localization {
-        static let adminWebviewTitle = NSLocalizedString(
-            "WooCommerce Settings",
-            comment: "Navigation title of the webview which used by the merchant to update their store address"
-        )
-
-        static let doneButtonUpdateAddress = NSLocalizedString(
-            "Done",
-            comment: "The button title to indicate that the user has finished updating their store's address and is" +
-            "ready to close the webview. This also tries to connect to the reader again."
+        static let done = NSLocalizedString(
+            "wcAuthenticatedWebView.done.button.title",
+            value: "Done",
+            comment: "Button title to dismiss the authenticated web view"
         )
     }
 }
 
 #Preview {
-    WCSettingsWebView(adminUrl: WooConstants.URLs.wooPaymentsStartupGuide.asURL(), completion: {})
+    WCAuthenticatedWebView(url: WooConstants.URLs.wooPaymentsStartupGuide.asURL(), title: "Preview", completion: {})
 }

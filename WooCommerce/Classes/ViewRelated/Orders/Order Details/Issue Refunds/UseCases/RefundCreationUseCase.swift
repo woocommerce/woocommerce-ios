@@ -55,19 +55,9 @@ struct RefundCreationUseCase {
     private func createRefundItems() -> [OrderItemRefund] {
         var refundItems = items.map { refundable -> OrderItemRefund in
             OrderItemRefund(itemID: refundable.item.itemID,
-                            name: "",
-                            productID: .min,
-                            variationID: .min,
-                            refundedItemID: nil,
                             quantity: Decimal(refundable.quantity),
-                            price: .zero,
-                            sku: nil,
-                            subtotal: "",
-                            subtotalTax: "",
-                            taxClass: "",
                             taxes: createTaxes(from: refundable),
-                            total: calculateTotal(of: refundable),
-                            totalTax: "")
+                            total: calculateTotal(of: refundable))
         }
 
         if let shippingLine = shippingLine {
@@ -85,19 +75,9 @@ struct RefundCreationUseCase {
     ///
     private func createShippingItem(from shippingLine: ShippingLine) -> OrderItemRefund {
         OrderItemRefund(itemID: shippingLine.shippingID,
-                        name: "",
-                        productID: .min,
-                        variationID: .min,
-                        refundedItemID: nil,
                         quantity: .zero,
-                        price: .zero,
-                        sku: nil,
-                        subtotal: "",
-                        subtotalTax: "",
-                        taxClass: "",
                         taxes: createTaxes(from: shippingLine),
-                        total: shippingLine.total,
-                        totalTax: "")
+                        total: shippingLine.total)
     }
 
     /// Returns an `[OrderItemRefund]` based on the provided `[OrderFeeLine]`
@@ -105,19 +85,9 @@ struct RefundCreationUseCase {
     private func createFeeItems(from feeLines: [OrderFeeLine]) -> [OrderItemRefund] {
         feeLines.map { feeLine -> OrderItemRefund in
             OrderItemRefund(itemID: feeLine.feeID,
-                            name: "",
-                            productID: .min,
-                            variationID: .min,
-                            refundedItemID: nil,
                             quantity: .zero,
-                            price: .zero,
-                            sku: nil,
-                            subtotal: "",
-                            subtotalTax: "",
-                            taxClass: "",
                             taxes: createTaxes(from: feeLine),
-                            total: feeLine.total,
-                            totalTax: "")
+                            total: feeLine.total)
         }
 
     }

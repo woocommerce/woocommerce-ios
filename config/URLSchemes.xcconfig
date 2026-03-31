@@ -1,0 +1,5 @@
+// URL schemes for OAuth callbacks.
+// These are not secrets — they ship in every .ipa under CFBundleURLSchemes
+// and are public by design (RFC 8252, Google OAuth 2.0 for Native Apps).
+DOTCOM_AUTH_SCHEME = woocommerce
+GOOGLE_AUTH_SCHEME = com.googleusercontent.apps.108380595987-jbbnnqi7cad7uu6eg8l8eg30dpupmcpa

@@ -12,7 +12,7 @@ extension String {
         let urlComponents = latin.components(separatedBy: String.slugSafeCharacters.inverted)
         let result = urlComponents.filter { $0 != "" }.joined(separator: "-")
 
-        guard result.count > 0 else {
+        guard !result.isEmpty else {
             return nil
         }
 

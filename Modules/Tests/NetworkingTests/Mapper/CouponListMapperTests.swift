@@ -26,7 +26,7 @@ class CouponListMapperTests: XCTestCase {
     ///
     func test_CouponsList_map_includes_siteID_in_parsed_results() throws {
         let coupons = try mapLoadAllCouponsResponseWithDataEnvelope()
-        XCTAssertTrue(coupons.count > 0)
+        XCTAssertTrue(!coupons.isEmpty)
 
         for coupon in coupons {
             XCTAssertEqual(coupon.siteID, dummySiteID)

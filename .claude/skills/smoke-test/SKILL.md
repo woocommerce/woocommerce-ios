@@ -2,7 +2,7 @@
 name: smoke-test
 description: Run manual smoke tests on a real WooCommerce store via iOS simulator and mobile-mcp. Use when verifying app quality before a release, after major changes, or when asked to smoke test.
 user-invocable: true
-allowed-tools: "Bash, Read, Grep, Glob, Agent, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
+allowed-tools: "Bash, Read, Grep, Glob, Agent, SendMessage, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
 argument-hint: "[--skip-login] [--section <name>] [--phase <1|2>] [--device]"
 hooks:
   PostToolUse:
@@ -37,6 +37,8 @@ Mobile-mcp interaction patterns (tap strategy, text entry, screenshots, triage) 
 - `--section <name>` — Run only one section. Valid names: `installation`, `user-assisted-login`, `user-assisted-orders`, `push-notifications`, `payments-hardware`, `media-camera`, `login`, `dashboard`, `orders`, `products`, `hub-menu`, `pos`, `other`
 - `--phase <1|2>` — Run only Phase 1 (user-assisted) or Phase 2 (automated)
 - `--device` — Target a physical device instead of a simulator. Enables device-only tests (installation, push notifications, card reader, TTP, camera).
+- `--parallel` — Force parallel Phase 2 execution even if only 2 simulators are available. Default: auto (parallel if 2+ simulators, sequential otherwise).
+- `--sequential` — Force sequential execution on a single simulator, even if multiple are available.
 
 ## Test Phases
 

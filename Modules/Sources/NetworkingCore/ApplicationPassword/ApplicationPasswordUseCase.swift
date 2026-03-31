@@ -113,7 +113,7 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                                                                password: password,
                                                                loginURL: loginURL,
                                                                adminURL: adminURL)
-            self.network = WordPressOrgNetwork(configuration: config)
+            self.network = WordPressOrgNetwork(configuration: config, siteAddress: siteAddress)
             self.discoveryTask = Task {
                 guard rootCache.root(for: siteAddress) == nil else { return }
                 _ = await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: siteAddress)

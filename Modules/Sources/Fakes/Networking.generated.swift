@@ -329,6 +329,7 @@ extension Networking.Booking {
             allDay: .fake(),
             cost: .fake(),
             customerID: .fake(),
+            userID: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),
             endDate: .fake(),

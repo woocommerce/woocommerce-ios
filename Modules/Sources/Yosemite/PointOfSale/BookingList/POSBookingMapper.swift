@@ -61,6 +61,7 @@ struct POSBookingMapper {
         return POSBooking(
             id: booking.bookingID,
             customerID: booking.customerID,
+            userID: booking.userID,
             customerName: customerName,
             serviceName: serviceName,
             startDate: booking.startDate,

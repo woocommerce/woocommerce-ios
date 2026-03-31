@@ -62,6 +62,7 @@ extension Yosemite.POSBooking {
     public func copy(
         id: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
         customerName: NullableCopiableProp<String> = .copy,
         serviceName: CopiableProp<String> = .copy,
         startDate: CopiableProp<Date> = .copy,
@@ -85,6 +86,7 @@ extension Yosemite.POSBooking {
     ) -> Yosemite.POSBooking {
         let id = id ?? self.id
         let customerID = customerID ?? self.customerID
+        let userID = userID ?? self.userID
         let customerName = customerName ?? self.customerName
         let serviceName = serviceName ?? self.serviceName
         let startDate = startDate ?? self.startDate
@@ -109,6 +111,7 @@ extension Yosemite.POSBooking {
         return Yosemite.POSBooking(
             id: id,
             customerID: customerID,
+            userID: userID,
             customerName: customerName,
             serviceName: serviceName,
             startDate: startDate,

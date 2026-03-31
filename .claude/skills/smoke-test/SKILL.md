@@ -129,6 +129,8 @@ The completion hooks use `$RUN_DIR/progress.json` to structurally verify that se
 
 **The hooks enforce this**: if you call `TaskUpdate(status=completed)` for a section task but progress.json shows no screenshots or the section is still pending, the hook will block the update.
 
+**Parallel mode:** In parallel execution, each worker writes to `$RUN_DIR/progress-<worker-name>.json` instead of `progress.json`. The schema is identical. The coordinator merges these files when generating the report. The completion hook automatically scans all `progress*.json` files in the run folder.
+
 Compact each screenshot immediately after saving:
 ```bash
 sips -Z 1200 <file.png> --out <file.png>
@@ -224,17 +226,25 @@ Also ask:
 ## Step 2: Boot Simulator / Connect Device
 
 ### Simulator
-Use the `/simulator` skill approach:
 
+**Single-simulator mode** (when `--section` is specified or only one simulator available):
 ```bash
-# iPhone for most sections:
 UDID=$(Scripts/find-simulator.sh iphone)
-
-# iPad for POS section:
+# For POS section only:
 UDID=$(Scripts/find-simulator.sh ipad)
 ```
 
-If running all sections including POS, start with iPhone for everything else, then switch to iPad for POS.
+**Parallel mode** (default for full Phase 2 runs on simulator):
+Boot multiple simulators for parallel Phase 2 execution. The coordinator uses the first iPhone for Phase 1, then dispatches workers across all simulators for Phase 2.
+
+```bash
+# Boot 2 iPhones + 1 iPad
+IPHONE_A=$(Scripts/find-simulator.sh iphone)
+IPHONE_B=$(Scripts/find-simulator.sh iphone --second)
+IPAD=$(Scripts/find-simulator.sh ipad)
+```
+
+If the second iPhone simulator is not available (only one iPhone model installed), fall back to 1 iPhone + 1 iPad (2 workers instead of 3). If only one simulator is available total, fall back to single-simulator sequential mode.
 
 ### Physical device
 If `--device` is set, use mobile-mcp to discover connected devices:
@@ -253,6 +263,15 @@ xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
 For physical device, adjust the destination accordingly.
 
 If the build fails, report the error and stop. If the app is already installed from a previous build, the user may choose to skip the build step and test the installed version.
+
+In parallel mode, install the built app on all simulators after building:
+```bash
+xcrun simctl install $IPHONE_A com.automattic.woocommerce
+xcrun simctl install $IPHONE_B com.automattic.woocommerce
+xcrun simctl install $IPAD com.automattic.woocommerce
+```
+
+The build only needs to happen once — `simctl install` copies the built product to each simulator.
 
 ## Step 4: Launch and Login
 
@@ -322,6 +341,39 @@ Record evidence as you go:
 - Keep the created order number for the `orders` section
 - Save checkpoint screenshots at each `> SCREENSHOT:` directive in the checklist
 - Keep a running list of observations (see `.claude/rules/mobile-interaction.md`)
+
+### Parallel Phase 2 execution
+
+When running in parallel mode (multiple simulators booted, not `--section` or `--phase 1`):
+
+**After Phase 1 completes**, tell the user: "Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated across multiple simulators."
+
+**Section assignment:**
+- **Worker A** (iPhone A): `login`, `dashboard`, `orders` — gets login because it validates the login flow
+- **Worker B** (iPhone B): `products`, `hub-menu`, `other` — skips login, reuses existing session
+- **Worker C** (iPad): `pos` — iPad required for POS
+
+If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B assignments onto the single iPhone.
+
+**Dispatching workers:**
+1. Read the worker prompt template from `.claude/skills/smoke-test/references/worker-prompt.md`
+2. For each worker, fill in the template placeholders: `{{UDID}}`, `{{DEVICE_TYPE}}`, `{{WORKER_NAME}}`, `{{SECTIONS}}`, `{{RUN_DIR}}`, `{{EXPECTED_ORDER}}`, `{{SECTION_ENTRIES}}`, `{{LOGIN_INSTRUCTION}}`
+3. Set `{{LOGIN_INSTRUCTION}}` to the full login flow for Worker A, and to "The app should already be logged in from the build/install step. Verify the dashboard is visible. If not, perform the login flow." for other workers.
+4. Dispatch all workers simultaneously using the `Agent` tool. Each worker runs as a subagent (not a worktree).
+
+**Coordinator validation:**
+When each worker returns:
+1. Read its progress file (`$RUN_DIR/progress-<worker>.json`)
+2. Verify every assigned section is `"completed"` or `"skipped"` (with a valid `skip_reason`)
+3. Verify every completed section has at least one screenshot
+4. If any section is incomplete or missing evidence, send the worker back via `SendMessage`: "Sections X, Y are still pending/missing evidence. Continue from where you left off."
+5. Accept the worker's result only after validation passes
+
+**Merging results:**
+After all workers complete and pass validation:
+1. Read all `progress-*.json` files from the run folder
+2. Merge into a combined section map for report generation
+3. Generate the HTML report as normal (Step 6), covering all sections from all workers
 
 ## Step 6: Generate HTML Report
 

@@ -232,6 +232,8 @@ extension POSPaymentModel {
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
         paymentState.cash = .idle
+        paymentState.card = .idle
+        cardPresentPaymentInlineMessage = nil
 
         await cashCancelTask?.value
         cashCancelTask = nil

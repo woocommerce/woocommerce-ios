@@ -82,7 +82,7 @@ private extension SiteCredentialLoginViewModel {
         }
 
         // Clear old cookies to avoid reusing a previous session's nonce with new credentials.
-        clearAllCookies()
+        clearCookies(for: siteURL)
 
         // Prepares the authenticator with username and password
         let config = CookieNonceAuthenticatorConfiguration(username: username,
@@ -133,12 +133,9 @@ private extension SiteCredentialLoginViewModel {
         successHandler()
     }
 
-    func clearAllCookies() {
-        if let cookies = cookieJar.cookies {
-            for cookie in cookies {
-                cookieJar.deleteCookie(cookie)
-            }
-        }
+    func clearCookies(for siteURL: String) {
+        guard let url = URL(string: siteURL) else { return }
+        cookieJar.cookies(for: url)?.forEach { cookieJar.deleteCookie($0) }
     }
 }
 

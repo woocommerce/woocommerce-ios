@@ -2,7 +2,7 @@
 name: smoke-test
 description: Run manual smoke tests on a real WooCommerce store via iOS simulator and mobile-mcp. Use when verifying app quality before a release, after major changes, or when asked to smoke test.
 user-invocable: true
-allowed-tools: "Bash, Read, Grep, Glob, Agent, SendMessage, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
+allowed-tools: "Bash, Read, Grep, Glob, Agent, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
 argument-hint: "[--skip-login] [--section <name>] [--phase <1|2>] [--device]"
 hooks:
   PostToolUse:
@@ -352,11 +352,17 @@ When running in parallel mode (multiple simulators booted, not `--section` or `-
 
 **Dispatch Phase 2 workers BEFORE starting Phase 1.** Phase 2 sections are fully automated and don't depend on Phase 1. By dispatching workers immediately after build/install, they run in the background while the coordinator handles Phase 1 with the user. This significantly reduces total run time.
 
+**Prerequisites:** tmux must be installed. If not available:
+```bash
+# macOS
+brew install tmux
+```
+
 **Execution order:**
 1. Build app, install on all simulators (Step 3)
-2. Dispatch Phase 2 workers in the background (`run_in_background: true`)
-3. Run Phase 1 (user-assisted) on the coordinator's simulator
-4. After Phase 1, check on Phase 2 workers — they may already be done
+2. Set up tmux session and dispatch workers (see below)
+3. Run Phase 1 (user-assisted) in the current terminal
+4. After Phase 1, monitor worker progress files until all workers finish
 5. Validate all worker results, generate report
 
 **Section assignment:**
@@ -366,22 +372,65 @@ When running in parallel mode (multiple simulators booted, not `--section` or `-
 
 If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B assignments onto the single iPhone.
 
-**Dispatching workers:**
+**Setting up the tmux session:**
+
+Each worker runs as a separate `claude` CLI session in its own tmux pane, so the user can watch all workers in real time.
+
 1. Read the worker prompt template from `.claude/skills/smoke-test/references/worker-prompt.md`
 2. For each worker, fill in the template placeholders: `{{UDID}}`, `{{DEVICE_TYPE}}`, `{{WORKER_NAME}}`, `{{SECTIONS}}`, `{{RUN_DIR}}`, `{{EXPECTED_ORDER}}`, `{{SECTION_ENTRIES}}`, `{{LOGIN_INSTRUCTION}}`
 3. Set `{{LOGIN_INSTRUCTION}}` to the full login flow for all workers (each logs in independently on its own simulator).
-4. Dispatch all workers simultaneously using the `Agent` tool with `run_in_background: true`. Each worker runs as a subagent (not a worktree).
-5. Immediately proceed to Phase 1 on the coordinator's simulator — do not wait for workers.
+4. Write each worker's filled prompt to `$RUN_DIR/worker-<name>-prompt.txt`
+5. Create a tmux session and launch workers:
+
+```bash
+# Create the tmux session for smoke test workers
+tmux new-session -d -s smoke-test-workers -n worker-a
+
+# Worker A in first pane
+tmux send-keys -t smoke-test-workers:worker-a \
+  "cd $(pwd) && claude -p \"$(cat $RUN_DIR/worker-a-prompt.txt)\" --allowedTools 'Bash,Read,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
+
+# Worker B in second pane
+tmux new-window -t smoke-test-workers -n worker-b
+tmux send-keys -t smoke-test-workers:worker-b \
+  "cd $(pwd) && claude -p \"$(cat $RUN_DIR/worker-b-prompt.txt)\" --allowedTools 'Bash,Read,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
+
+# Worker C (iPad) in third pane
+tmux new-window -t smoke-test-workers -n worker-c
+tmux send-keys -t smoke-test-workers:worker-c \
+  "cd $(pwd) && claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
+```
+
+6. Tell the user: **"Workers are running in tmux session `smoke-test-workers`. You can watch them with `tmux attach -t smoke-test-workers` and switch between panes with `Ctrl-b n` (next) or `Ctrl-b p` (previous)."**
+7. Immediately proceed to Phase 1 in the current terminal — do not wait for workers.
+
+**Monitoring workers:**
+
+After Phase 1 completes, poll worker progress files until all are done:
+
+```bash
+# Check if all workers have finished (no "pending" or "in_progress" sections remain)
+for f in $RUN_DIR/progress-worker-*.json; do
+  REMAINING=$(jq '[.sections | to_entries[] | select(.value.status == "pending" or .value.status == "in_progress")] | length' "$f" 2>/dev/null)
+  if [ "$REMAINING" -gt 0 ]; then
+    echo "$(basename $f): $REMAINING sections remaining"
+  fi
+done
+```
+
+Poll every 30 seconds until all workers report zero remaining sections. Also check if the tmux panes are still alive — if a worker's pane has exited, read its progress file to determine whether it completed or crashed.
 
 **Coordinator validation:**
-After Phase 1 completes and all background workers return:
+
+After all workers finish:
 1. Read each worker's progress file (`$RUN_DIR/progress-<worker>.json`)
 2. Verify every assigned section is `"completed"` or `"skipped"` (with a valid `skip_reason`)
 3. Verify every completed section has at least one screenshot
-4. If any section is incomplete or missing evidence, send the worker back via `SendMessage`: "Sections X, Y are still pending/missing evidence. Continue from where you left off."
-5. Accept the worker's result only after validation passes
+4. If any section is incomplete or missing evidence, launch a new `claude -p` session in the tmux to finish the remaining sections
+5. Clean up: `tmux kill-session -t smoke-test-workers`
 
 **Merging results:**
+
 After all workers complete and pass validation:
 1. Read all `progress-*.json` files from the run folder
 2. Merge into a combined section map for report generation

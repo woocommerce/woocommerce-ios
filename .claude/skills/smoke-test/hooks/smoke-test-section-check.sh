@@ -29,7 +29,7 @@ fi
 
 # Find the run folder for THIS session
 RUN_DIR=""
-for dir in /tmp/woo-smoke-test-*; do
+for dir in .claude/smoke-test-runs/* /tmp/woo-smoke-test-*; do
   [ -d "$dir" ] || continue
   if [ -f "$dir/run.json" ]; then
     DIR_SESSION=$(jq -r '.session_id // empty' "$dir/run.json" 2>/dev/null)

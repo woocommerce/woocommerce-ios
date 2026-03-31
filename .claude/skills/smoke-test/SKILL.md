@@ -58,6 +58,26 @@ Steps in the checklist are marked with labels:
 - **(device-only)** — Requires a physical device. Skip on simulator, mark as "not tested (simulator)".
 - **(conditional)** — Only run if a prerequisite is met. Skip gracefully if not available.
 
+## System Sheets and Uncontrollable UI
+
+Some screens are presented by the system, not the app, and cannot be inspected or interacted with via mobile-mcp. These include:
+- **Sign in with Apple** (SIWA) sheets
+- **Tap to Pay** proximity card prompts and Apple ID terms
+- **Google sign-in** web views
+- **Save Password** system prompts
+- **Biometric/Face ID** prompts
+
+When you reach a step that triggers one of these and `list_elements_on_screen` returns an empty or unrecognizable element list, **do not try to read a screenshot to figure out what's on screen**. Instead:
+1. Assume the system UI has appeared as expected
+2. Ask the user via `AskUserQuestion` to complete the interaction
+3. After the user confirms, call `list_elements_on_screen` to verify the app has returned to a state you can interact with
+
+## Credential Security
+
+- **Never tap a "Show password" button** on any login screen. Passwords must remain redacted at all times — in the UI, in screenshots, and in element listings.
+- Never read credentials via Bash — no `security`, `cat`, `echo`, or any command that would expose values.
+- Never ask the user to provide credentials in the chat — they are already in the keychain.
+
 ## Safety
 
 This skill creates and refunds real orders when running the `orders` or `pos` sections against a live store.
@@ -94,15 +114,23 @@ Between test steps, proceed immediately to the next tool call. Do not pause to s
 
 ## Screenshots
 
-The checklist (`references/checklist.md`) defines **required** screenshot checkpoints inline with the test steps, marked with `> SCREENSHOT: <filename> — <label>`. Take each one using `save_screenshot` when you reach that step.
+**Take screenshots liberally.** The goal is a visual record of every step as it happened, not just success states. Take a screenshot:
+- At every `> SCREENSHOT:` checkpoint in the checklist (required)
+- Before and after every significant action (tap, navigation, form fill, scroll)
+- When an expected screen loads
+- When anything unexpected happens (double-take with a `FAIL-` prefix)
 
-Create the run folder at the start and write a `run.json` marker with the session ID (used by the stop hook to verify completion):
+The checklist defines **required** screenshot checkpoints marked with `> SCREENSHOT: <filename> — <label>`. These are the minimum. Take additional screenshots between them to capture the journey. Name additional screenshots sequentially within the section (e.g. `login-01-prologue.png`, `login-02-site-url-entered.png`, `login-03-email-screen.png`).
+
+Create the run folder at the start and write a `run.json` marker with the session ID (used by the stop hook to verify completion). Use a location inside the project directory to avoid sandbox permission issues:
 ```bash
-RUN_DIR=/tmp/woo-smoke-test-$(date +%Y%m%d-%H%M%S)
+RUN_DIR="$(pwd)/.claude/smoke-test-runs/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$RUN_DIR/screenshots"
 echo "{\"session_id\": \"$SESSION_ID\", \"started\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$RUN_DIR/run.json"
 ```
 The `$SESSION_ID` value comes from the current session context. If unavailable, use the conversation/session identifier.
+
+The `.claude/smoke-test-runs/` directory is gitignored. Run folders persist across sessions for reference but can be cleaned up manually.
 
 ### Progress tracking (progress.json)
 
@@ -140,7 +168,7 @@ sips -Z 1200 <file.png> --out <file.png>
 
 Keep a running list of `{ file, label }` pairs as you go — these feed directly into the HTML report flipbook at the end.
 
-You may take **additional** screenshots beyond the required checkpoints — especially for error states or unexpected behavior. Use a `FAIL-` prefix for failure triage screenshots (e.g. `FAIL-05-unexpected-error.png`).
+Use a `FAIL-` prefix for failure triage screenshots (e.g. `FAIL-05-unexpected-error.png`).
 
 ## Credentials
 
@@ -249,10 +277,32 @@ IPAD=$(Scripts/find-simulator.sh ipad)
 If the second iPhone simulator is not available (only one iPhone model installed), fall back to 1 iPhone + 1 iPad (2 workers instead of 3). If only one simulator is available total, fall back to single-simulator sequential mode.
 
 ### Physical device
-If `--device` is set, use mobile-mcp to discover connected devices:
-- List available devices and confirm the target device with the user
-- If no physical device appears, guide the user through `.claude/skills/smoke-test/references/device-setup.md`
-- Device-only tests (installation, push notifications, card reader, TTP, camera) are enabled
+If `--device` is set:
+
+1. Start the device tunnel and port forwarding if not already running:
+   ```bash
+   # Start go-ios tunnel (required for iOS 17+). Run in background.
+   ios tunnel start --userspace &
+   TUNNEL_PID=$!
+
+   # Get the device UDID
+   DEVICE_UDID=$(ios list | grep -oE '[0-9a-f]{40}' | head -1)
+
+   # Forward WDA port from device to localhost
+   ios forward 8100 8100 --udid=$DEVICE_UDID &
+   FORWARD_PID=$!
+   ```
+   If the tunnel fails with a permission error, tell the user to run `sudo ios tunnel start` manually.
+
+2. Use mobile-mcp to discover connected devices — list available devices and confirm the target device with the user
+3. If no physical device appears, guide the user through `.claude/skills/smoke-test/references/device-setup.md`
+4. Device-only tests (installation, push notifications, card reader, TTP, camera) are enabled
+
+**When done with the physical device**, stop the tunnel and port forwarding:
+```bash
+kill $FORWARD_PID 2>/dev/null
+kill $TUNNEL_PID 2>/dev/null
+```
 
 ## Step 3: Build the App
 

@@ -69,6 +69,27 @@ This skill creates and refunds real orders when running the `orders` or `pos` se
 These must be tested manually:
 - Watch app (separate target, paired Apple Watch required)
 
+## Pacing and Timing
+
+### Adaptive backoff
+
+Never use `sleep` longer than 2 seconds without checking for the expected state afterward. Use a poll loop:
+
+1. Sleep 1–2 seconds
+2. Check for the expected element via `list_elements_on_screen`
+3. If not ready, double the wait (2s → 4s → 8s), max 3 attempts
+4. If still not ready after 3 attempts, treat as a failure and follow the relevant error handling (connection drops, app crash, etc.)
+
+This applies to all waits: app launch settling, screen transitions, network responses, and connection retries.
+
+### Execution pacing
+
+Between test steps, proceed immediately to the next tool call. Do not pause to summarize, reflect, or plan unless genuinely unsure what to do next.
+
+- If unsure what to do next, call `list_elements_on_screen` to re-orient — do not stop to think.
+- Never output more than 2 sentences of commentary between tool calls during a test section.
+- Each checklist step may contain multiple actions. Execute all actions in a step as a single burst of tool calls without pausing between them.
+
 ## Screenshots
 
 The checklist (`references/checklist.md`) defines **required** screenshot checkpoints inline with the test steps, marked with `> SCREENSHOT: <filename> — <label>`. Take each one using `save_screenshot` when you reach that step.
@@ -245,7 +266,7 @@ Then launch the app:
 xcrun simctl launch $UDID com.automattic.woocommerce disable-animations
 ```
 
-Wait 5 seconds for the app to settle.
+Wait for the app to settle: sleep 2s, then call `list_elements_on_screen`. If the expected screen isn't showing, back off (3s, then 5s) and recheck. Max 3 attempts.
 
 **Login flow** (from `screen-identifiers.md`):
 1. Tap `Prologue Self Hosted Button`
@@ -264,7 +285,7 @@ mobile-mcp / WDA connections occasionally drop during a run. This is normal and 
 - **Never skip a section preemptively** because of a prior connection drop. A drop in section A does not predict a drop in section B.
 - **Never batch-skip remaining sections** after a connection issue. Each section gets its own chance.
 - When a mobile-mcp tool call fails with a connection/timeout error:
-  1. Wait 5 seconds, then retry the same call once.
+  1. Wait 2 seconds, then retry the same call. If it fails again, wait 4 seconds and retry once more.
   2. If it fails again, tell the user the connection dropped and ask them to restart WDA / mobile-mcp. Wait for confirmation, then resume from the step that failed.
   3. If the user restarts successfully, **continue the run from where you left off** — do not restart the current section from the beginning unless you lost app state (e.g. the app crashed or returned to the home screen).
 - If the user cannot restore the connection after two attempts, mark only the **current section** as "not tested (connection lost)" and move on to the next section. The next section starts with a fresh connection check.

@@ -2491,9 +2491,9 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedBooking.value(forKey: "location") as? String, updatedValue)
     }
 
-    func test_migrating_from_133_to_134_adds_fulfillmentStatusKey_attribute_to_order() throws {
+    func test_migrating_from_134_to_135_adds_fulfillmentStatusKey_attribute_to_order() throws {
         // Given
-        let sourceContainer = try startPersistentContainer("Model 133")
+        let sourceContainer = try startPersistentContainer("Model 134")
         let sourceContext = sourceContainer.viewContext
 
         let order = insertOrder(to: sourceContext)
@@ -2502,7 +2502,7 @@ final class MigrationTests: XCTestCase {
         XCTAssertNil(order.entity.attributesByName["fulfillmentStatusKey"], "Precondition. Attribute does not exist.")
 
         // When
-        let targetContainer = try migrate(sourceContainer, to: "Model 134")
+        let targetContainer = try migrate(sourceContainer, to: "Model 135")
 
         // Then
         let targetContext = targetContainer.viewContext

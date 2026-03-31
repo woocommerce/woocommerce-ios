@@ -1049,7 +1049,8 @@ private extension OrderDetailsDataSource {
         let cellViewModel = SummaryTableViewCellViewModel(
             order: order,
             status: lookUpOrderStatus(for: order),
-            isEditButtonVisible: isStatusEditingSupported
+            isEditButtonVisible: isStatusEditingSupported,
+            isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB
         )
 
         cell.configure(cellViewModel)

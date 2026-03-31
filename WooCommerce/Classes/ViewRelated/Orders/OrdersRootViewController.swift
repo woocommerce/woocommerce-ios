@@ -65,6 +65,7 @@ final class OrdersRootViewController: UIViewController {
     }()
 
     private let featureFlagService: FeatureFlagService
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let orderDurationRecorder: OrderDurationRecorderProtocol
 
@@ -83,6 +84,7 @@ final class OrdersRootViewController: UIViewController {
         self.siteID = siteID
         self.storageManager = storageManager
         self.featureFlagService = ServiceLocator.featureFlagService
+        self.ciabEligibilityChecker = CIABEligibilityChecker()
         self.orderDurationRecorder = orderDurationRecorder
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.switchDetailsHandler = switchDetailsHandler
@@ -310,7 +312,10 @@ final class OrdersRootViewController: UIViewController {
             DDLogError("⛔️ Unable to fetch stored statuses for Site \(siteID): \(error)")
         }
 
-        let allowedStatuses = statusResultsController.fetchedObjects.map { $0 }
+        let fetchedStatuses: [OrderStatus] = statusResultsController.fetchedObjects.map { $0 }
+        let allowedStatuses = ciabEligibilityChecker.isCurrentSiteCIAB
+            ? CIABOrderStatusMapper.mapFilterOptions(fetchedStatuses)
+            : fetchedStatuses
 
         let viewModel = FilterOrderListViewModel(filters: filters, allowedStatuses: allowedStatuses, siteID: siteID)
         let filterOrderListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in

@@ -58,7 +58,7 @@ struct OrderListSyncActionUseCase {
                    reason: SyncReason?,
                    lastFullSyncTimestamp: Date?,
                    completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
-        let statuses = (filters?.orderStatus ?? []).map { $0.rawValue }
+        let statuses = CIABOrderStatusMapper.resolveFilterStatuses(filters?.orderStatus ?? []).map { $0.rawValue }
         let startDate = filters?.dateRange?.computedStartDate
         let endDate = filters?.dateRange?.computedEndDate
         let productID = filters?.product?.id

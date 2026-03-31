@@ -81,6 +81,33 @@ echo "{\"session_id\": \"$SESSION_ID\", \"started\": \"$(date -u +%Y-%m-%dT%H:%M
 ```
 The `$SESSION_ID` value comes from the current session context. If unavailable, use the conversation/session identifier.
 
+### Progress tracking (progress.json)
+
+The completion hooks use `$RUN_DIR/progress.json` to structurally verify that sections are completed in order with evidence. **You must maintain this file throughout the run.** The hooks will block task completion if progress.json shows gaps.
+
+**Initialize** `progress.json` after creating the run folder, listing all sections that will be tested. Use the section names from the checklist, filtered by `--phase`, `--section`, and device type. Sections excluded by flags or device type should not appear at all (they aren't "skipped" — they were never in scope).
+
+```json
+{
+  "expected_order": ["installation", "user-assisted-login", "user-assisted-orders", "push-notifications", "payments-hardware", "media-camera", "login", "dashboard", "orders", "products", "hub-menu", "pos", "other"],
+  "sections": {
+    "login": { "status": "pending", "screenshots": [] },
+    "dashboard": { "status": "pending", "screenshots": [] },
+    "orders": { "status": "pending", "screenshots": [] }
+  }
+}
+```
+
+`expected_order` is the full canonical ordering (used by hooks to detect out-of-order completion). `sections` contains only the sections in scope for this run.
+
+**Section lifecycle** — update progress.json at each transition:
+- **Starting a section**: set `"status": "in_progress"` and `"started_at": "<ISO timestamp>"`
+- **Taking a screenshot**: append the filename to the section's `"screenshots"` array
+- **Completing a section**: set `"status": "completed"` and `"completed_at": "<ISO timestamp>"`. Do this BEFORE calling `TaskUpdate` to mark the task complete.
+- **Skipping a section**: set `"status": "skipped"` and `"skip_reason": "<reason>"`. Valid reasons: `"device-only on simulator"`, `"conditional prerequisite not met"`, `"user chose to skip"`, `"connection lost after retries"`. Do this BEFORE calling `TaskUpdate`.
+
+**The hooks enforce this**: if you call `TaskUpdate(status=completed)` for a section task but progress.json shows no screenshots or the section is still pending, the hook will block the update.
+
 Compact each screenshot immediately after saving:
 ```bash
 sips -Z 1200 <file.png> --out <file.png>
@@ -257,6 +284,15 @@ Execution rules:
 - Continue after a section failure when the app is still usable, and mark that section failed in the report
 - Stop only for blockers such as build failure, launch failure, inability to log in, or a crash that prevents further testing
 - On simulator, skip all `(device-only)` sections and mark them as "not tested (simulator)"
+
+**Section lifecycle** — for EVERY section, follow this sequence:
+1. Update `progress.json`: set section status to `"in_progress"`
+2. Run the section's test steps from the checklist
+3. Update `progress.json`: append screenshot filenames as you take them
+4. Update `progress.json`: set section status to `"completed"` (or `"skipped"` with `skip_reason`)
+5. THEN call `TaskUpdate` to mark the section's task complete
+
+The completion hook reads `progress.json` and will block `TaskUpdate` if evidence is missing. You cannot mark a section complete without screenshots, and you cannot skip ahead past pending sections without explicitly marking them skipped with a valid reason.
 
 After Phase 1 completes, tell the user: **"Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated."**
 

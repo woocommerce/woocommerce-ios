@@ -1,9 +1,12 @@
 #!/bin/bash
 #
-# PostToolUse hook for smoke test — section skip detection
+# PostToolUse hook for smoke test — evidence-based section completion check
 #
-# Fires after TaskUpdate calls. Checks that earlier tasks aren't being
-# skipped without justification when a later task is completed.
+# Fires after TaskUpdate calls. Instead of text-matching for skip language,
+# reads the progress.json state file to structurally verify:
+#   1. The section being completed was marked in_progress first
+#   2. At least one screenshot exists for the section
+#   3. No earlier sections were silently skipped (still pending)
 #
 # Scoped to the smoke-test skill via frontmatter — only runs during
 # smoke test execution.
@@ -12,49 +15,145 @@ set -euo pipefail
 
 INPUT=$(cat)
 
-# Extract the tool input (TaskUpdate arguments)
-TASK_STATUS=$(echo "$INPUT" | jq -r '.tool_input.status // empty')
-
 # Only check when a task is being marked completed
+TASK_STATUS=$(echo "$INPUT" | jq -r '.tool_input.status // empty')
 if [ "$TASK_STATUS" != "completed" ]; then
   exit 0
 fi
 
-TASK_ID=$(echo "$INPUT" | jq -r '.tool_input.taskId // empty')
-
-# If no task ID, nothing to check
-if [ -z "$TASK_ID" ]; then
+# Get session ID to find the run folder
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty')
+if [ -z "$SESSION_ID" ]; then
   exit 0
 fi
 
-# Check the tool response for the task list state
-# The TaskUpdate response includes info about the task, but we need to check
-# if prior tasks were skipped. We can infer this from the last_assistant_message
-# or from the tool response. Since we don't have the full task list in the hook
-# input, we check the assistant's recent messages for skip indicators.
+# Find the run folder for THIS session
+RUN_DIR=""
+for dir in /tmp/woo-smoke-test-*; do
+  [ -d "$dir" ] || continue
+  if [ -f "$dir/run.json" ]; then
+    DIR_SESSION=$(jq -r '.session_id // empty' "$dir/run.json" 2>/dev/null)
+    if [ "$DIR_SESSION" = "$SESSION_ID" ]; then
+      RUN_DIR="$dir"
+      break
+    fi
+  fi
+done
 
-LAST_MSG=$(echo "$INPUT" | jq -r '.tool_response // empty')
+# No run folder yet — might be early setup (credential checks, build).
+# Allow the task update.
+if [ -z "$RUN_DIR" ]; then
+  exit 0
+fi
 
-# Check if any earlier tasks are still pending by looking at the response
-# The tool_response for TaskUpdate just confirms the update. We need to rely
-# on the assistant message context for skip detection.
+# No progress.json yet — run hasn't started test sections.
+PROGRESS="$RUN_DIR/progress.json"
+if [ ! -f "$PROGRESS" ]; then
+  exit 0
+fi
 
-# For now, we output a reminder to the agent about valid skip reasons.
-# The real enforcement comes from the message content — if a task was
-# marked completed but the agent skipped running it, the lack of
-# screenshots/observations will be visible in the report.
+# --- Structural checks against progress.json ---
 
-# Check if the assistant message mentions skipping
-ASSISTANT_MSG=$(echo "$INPUT" | jq -r '.last_assistant_message // empty' 2>/dev/null || echo "")
+# Find the section currently marked "in_progress"
+CURRENT_SECTION=$(jq -r '
+  .sections | to_entries[]
+  | select(.value.status == "in_progress")
+  | .key
+' "$PROGRESS" 2>/dev/null || echo "")
 
-if echo "$ASSISTANT_MSG" | grep -qiE "skip|skipping|moving on|not testing|abandon"; then
-  cat <<'BLOCK'
+# Find sections still "pending"
+PENDING_SECTIONS=$(jq -r '
+  [.sections | to_entries[] | select(.value.status == "pending") | .key]
+  | join(", ")
+' "$PROGRESS" 2>/dev/null || echo "")
+
+# Find sections marked "completed"
+COMPLETED_COUNT=$(jq -r '
+  [.sections | to_entries[] | select(.value.status == "completed")] | length
+' "$PROGRESS" 2>/dev/null || echo "0")
+
+# Check 1: Is a section currently in_progress?
+# If no section is in_progress but a task is being completed, the agent
+# may be marking a section done without having started it in progress.json.
+if [ -z "$CURRENT_SECTION" ]; then
+  # Allow if this is a non-section task (setup, build, report generation)
+  # by checking if there are any sections at all yet
+  TOTAL_SECTIONS=$(jq -r '.sections | length' "$PROGRESS" 2>/dev/null || echo "0")
+  if [ "$TOTAL_SECTIONS" -gt 0 ] && [ "$COMPLETED_COUNT" -gt 0 ]; then
+    # Sections exist and some are completed, but none in_progress.
+    # This is fine — the agent finished one and is completing its task.
+    # But check if there are pending sections being skipped.
+    if [ -n "$PENDING_SECTIONS" ]; then
+      # Check ordering: are pending sections BEFORE completed ones?
+      FIRST_PENDING_ORDER=$(jq -r '
+        .expected_order as $order |
+        [.sections | to_entries[] | select(.value.status == "pending") | .key] |
+        map(. as $s | $order | to_entries[] | select(.value == $s) | .key) |
+        min
+      ' "$PROGRESS" 2>/dev/null || echo "999")
+
+      LAST_COMPLETED_ORDER=$(jq -r '
+        .expected_order as $order |
+        [.sections | to_entries[] | select(.value.status == "completed") | .key] |
+        map(. as $s | $order | to_entries[] | select(.value == $s) | .key) |
+        max
+      ' "$PROGRESS" 2>/dev/null || echo "0")
+
+      if [ "$FIRST_PENDING_ORDER" -lt "$LAST_COMPLETED_ORDER" ] 2>/dev/null; then
+        cat <<BLOCK
 {
   "decision": "block",
-  "reason": "It looks like you may be skipping a smoke test section. Before moving on, confirm this is for a valid reason:\n\n**Valid reasons to skip:**\n- (device-only) section running on simulator\n- (conditional) prerequisite not met\n- User explicitly chose to skip via AskUserQuestion\n- --section or --phase flag excluded it\n\n**NOT valid reasons (retry instead):**\n- WDA/connection flakiness — retry per the Connection Drops rules\n- 'Took too long' or 'was difficult'\n- Prior section failure (unless app crashed)\n- Framework timeouts\n\nIf you have a valid reason, state it clearly and continue. Otherwise, go back and complete the section."
+  "reason": "Sections were skipped out of order. These sections are still pending: $PENDING_SECTIONS\n\nYou completed later sections but skipped earlier ones. Go back and run the pending sections unless they have a valid skip reason:\n- (device-only) on simulator\n- (conditional) prerequisite not met\n- User explicitly chose to skip via AskUserQuestion\n- --section or --phase flag excluded it\n\nIf a section should be skipped, update progress.json with status 'skipped' and a skip_reason BEFORE marking its task complete."
+}
+BLOCK
+        exit 0
+      fi
+    fi
+  fi
+  exit 0
+fi
+
+# Check 2: Does the in_progress section have screenshot evidence?
+SCREENSHOT_COUNT=$(jq -r --arg s "$CURRENT_SECTION" '
+  .sections[$s].screenshots // [] | length
+' "$PROGRESS" 2>/dev/null || echo "0")
+
+if [ "$SCREENSHOT_COUNT" -eq 0 ]; then
+  cat <<BLOCK
+{
+  "decision": "block",
+  "reason": "No screenshots recorded for section '$CURRENT_SECTION' in progress.json. Every completed section needs at least one screenshot as evidence of testing.\n\nIf you completed the section's test steps, make sure you:\n1. Took screenshots at each SCREENSHOT checkpoint in the checklist\n2. Updated progress.json with the screenshot filenames\n3. Then mark the section completed in progress.json before completing the task\n\nIf this section should be skipped (device-only on simulator, conditional prerequisite not met, user chose to skip), set its status to 'skipped' with a skip_reason in progress.json instead of completing it."
 }
 BLOCK
   exit 0
 fi
 
+# Check 3: Are there pending sections earlier in the order than the current one?
+CURRENT_ORDER=$(jq -r --arg s "$CURRENT_SECTION" '
+  .expected_order as $order |
+  $order | to_entries[] | select(.value == $s) | .key
+' "$PROGRESS" 2>/dev/null || echo "999")
+
+EARLIER_PENDING=$(jq -r --arg current_order "$CURRENT_ORDER" '
+  .expected_order as $order |
+  [.sections | to_entries[]
+    | select(.value.status == "pending")
+    | .key as $s
+    | $order | to_entries[] | select(.value == $s)
+    | select((.key | tonumber) < ($current_order | tonumber))
+    | .value
+  ] | join(", ")
+' "$PROGRESS" 2>/dev/null || echo "")
+
+if [ -n "$EARLIER_PENDING" ]; then
+  cat <<BLOCK
+{
+  "decision": "block",
+  "reason": "Earlier sections are still pending: $EARLIER_PENDING\n\nYou are completing '$CURRENT_SECTION' but earlier sections haven't been started. Run sections in order, or explicitly skip them in progress.json with status 'skipped' and a valid skip_reason before moving ahead.\n\nValid skip reasons: (device-only) on simulator, (conditional) prerequisite not met, user explicitly chose to skip, --section/--phase flag excluded it.\n\nInvalid reasons: time efficiency, connection concerns, difficulty, prior section failure (unless app crashed)."
+}
+BLOCK
+  exit 0
+fi
+
+# All checks passed
 exit 0

@@ -6,7 +6,7 @@ public enum OrderPaymentMethod: RawRepresentable {
     /// Cash on Delivery
     case cod
 
-    /// WooCommerce Payments
+    /// WooPayments
     case woocommercePayments
 
     /// Stripe

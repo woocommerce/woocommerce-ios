@@ -336,7 +336,9 @@ Execution rules:
 
 The completion hook reads `progress.json` and will block `TaskUpdate` if evidence is missing. You cannot mark a section complete without screenshots, and you cannot skip ahead past pending sections without explicitly marking them skipped with a valid reason.
 
-After Phase 1 completes, tell the user: **"Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated."**
+In parallel mode, tell the user: **"Phase 2 workers are running in the background on separate simulators. Let's do Phase 1 together — once we're done, I'll check on the workers."**
+
+In sequential mode, after Phase 1 completes, tell the user: **"Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated."**
 
 Record evidence as you go:
 - Capture the device/simulator name and UDID used for each device class
@@ -348,11 +350,18 @@ Record evidence as you go:
 
 When running in parallel mode (multiple simulators booted, not `--section` or `--phase 1`):
 
-**After Phase 1 completes**, tell the user: "Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated across multiple simulators."
+**Dispatch Phase 2 workers BEFORE starting Phase 1.** Phase 2 sections are fully automated and don't depend on Phase 1. By dispatching workers immediately after build/install, they run in the background while the coordinator handles Phase 1 with the user. This significantly reduces total run time.
+
+**Execution order:**
+1. Build app, install on all simulators (Step 3)
+2. Dispatch Phase 2 workers in the background (`run_in_background: true`)
+3. Run Phase 1 (user-assisted) on the coordinator's simulator
+4. After Phase 1, check on Phase 2 workers — they may already be done
+5. Validate all worker results, generate report
 
 **Section assignment:**
-- **Worker A** (iPhone A): `login`, `dashboard`, `orders` — gets login because it validates the login flow
-- **Worker B** (iPhone B): `products`, `hub-menu`, `other` — skips login, reuses existing session
+- **Worker A** (iPhone A): `login`, `dashboard`, `orders` — gets login because it validates the login flow. Each worker logs in independently on its own simulator.
+- **Worker B** (iPhone B): `products`, `hub-menu`, `other` — logs in using stored credentials, then runs its sections.
 - **Worker C** (iPad): `pos` — iPad required for POS
 
 If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B assignments onto the single iPhone.
@@ -360,12 +369,13 @@ If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B ass
 **Dispatching workers:**
 1. Read the worker prompt template from `.claude/skills/smoke-test/references/worker-prompt.md`
 2. For each worker, fill in the template placeholders: `{{UDID}}`, `{{DEVICE_TYPE}}`, `{{WORKER_NAME}}`, `{{SECTIONS}}`, `{{RUN_DIR}}`, `{{EXPECTED_ORDER}}`, `{{SECTION_ENTRIES}}`, `{{LOGIN_INSTRUCTION}}`
-3. Set `{{LOGIN_INSTRUCTION}}` to the full login flow for Worker A, and to "The app should already be logged in from the build/install step. Verify the dashboard is visible. If not, perform the login flow." for other workers.
-4. Dispatch all workers simultaneously using the `Agent` tool. Each worker runs as a subagent (not a worktree).
+3. Set `{{LOGIN_INSTRUCTION}}` to the full login flow for all workers (each logs in independently on its own simulator).
+4. Dispatch all workers simultaneously using the `Agent` tool with `run_in_background: true`. Each worker runs as a subagent (not a worktree).
+5. Immediately proceed to Phase 1 on the coordinator's simulator — do not wait for workers.
 
 **Coordinator validation:**
-When each worker returns:
-1. Read its progress file (`$RUN_DIR/progress-<worker>.json`)
+After Phase 1 completes and all background workers return:
+1. Read each worker's progress file (`$RUN_DIR/progress-<worker>.json`)
 2. Verify every assigned section is `"completed"` or `"skipped"` (with a valid `skip_reason`)
 3. Verify every completed section has at least one screenshot
 4. If any section is incomplete or missing evidence, send the worker back via `SendMessage`: "Sections X, Y are still pending/missing evidence. Continue from where you left off."

@@ -6,6 +6,7 @@
 build/
 DerivedData/
 WooCommerce/DerivedSources/
+WooCommerce/Woo Watch App/DerivedSources/
 
 ## Various settings
 *.pbxuser

@@ -55,6 +55,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		09DC5835FB8C479E91310607 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B55D4C0F20B612F300D7A50F;
+			remoteInfo = GenerateCredentials;
+		};
 		260837132AA66E4B0004A12B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
@@ -758,6 +765,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				D3C8484B8E484A50958B3CF3 /* PBXTargetDependency */,
 				267A048F2C051C5300C91CB4 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
@@ -1350,6 +1358,11 @@
 			isa = PBXTargetDependency;
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 			targetProxy = CCDC49CF23FFFFF4003166BA /* PBXContainerItemProxy */;
+		};
+		D3C8484B8E484A50958B3CF3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
+			targetProxy = 09DC5835FB8C479E91310607 /* PBXContainerItemProxy */;
 		};
 		DE158D242F31BC8200161712 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

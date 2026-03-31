@@ -8,8 +8,15 @@ public struct Booking: Codable, GeneratedCopiable, Hashable, GeneratedFakeable {
     public let bookingID: Int64
     public let allDay: Bool
     public let cost: String
+
+    /// WooCommerce Customer ID.
+    /// Not the same as WordPress User ID — use `userID` for guest detection.
     public let customerID: Int64
+
+    /// WordPress User ID.
+    /// 0 means the booking was made by a guest (no WP account).
     public let userID: Int64
+
     public let dateCreated: Date?
     public let dateModified: Date?
     public let endDate: Date

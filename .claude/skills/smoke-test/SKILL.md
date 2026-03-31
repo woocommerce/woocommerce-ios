@@ -2,8 +2,21 @@
 name: smoke-test
 description: Run manual smoke tests on a real WooCommerce store via iOS simulator and mobile-mcp. Use when verifying app quality before a release, after major changes, or when asked to smoke test.
 user-invocable: true
-allowed-tools: "Bash, Read, Grep, Glob, Agent, AskUserQuestion, mcp__mobile-mcp__*"
+allowed-tools: "Bash, Read, Grep, Glob, Agent, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
 argument-hint: "[--skip-login] [--section <name>] [--phase <1|2>] [--device]"
+hooks:
+  PostToolUse:
+    - matcher: "TaskUpdate"
+      hooks:
+        - type: command
+          command: ".claude/skills/smoke-test/hooks/smoke-test-section-check.sh"
+          timeout: 10
+  Stop:
+    - matcher: ""
+      hooks:
+        - type: command
+          command: ".claude/skills/smoke-test/hooks/smoke-test-stop-check.sh"
+          timeout: 10
 ---
 
 # Smoke Test
@@ -60,10 +73,13 @@ These must be tested manually:
 
 The checklist (`references/checklist.md`) defines **required** screenshot checkpoints inline with the test steps, marked with `> SCREENSHOT: <filename> — <label>`. Take each one using `save_screenshot` when you reach that step.
 
-Create the run folder at the start:
+Create the run folder at the start and write a `run.json` marker with the session ID (used by the stop hook to verify completion):
 ```bash
-mkdir -p /tmp/woo-smoke-test-<timestamp>/screenshots
+RUN_DIR=/tmp/woo-smoke-test-$(date +%Y%m%d-%H%M%S)
+mkdir -p "$RUN_DIR/screenshots"
+echo "{\"session_id\": \"$SESSION_ID\", \"started\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$RUN_DIR/run.json"
 ```
+The `$SESSION_ID` value comes from the current session context. If unavailable, use the conversation/session identifier.
 
 Compact each screenshot immediately after saving:
 ```bash

@@ -61,18 +61,32 @@ if [ ${#PROGRESS_FILES[@]} -eq 0 ]; then
   exit 0  # No progress files yet — run hasn't started test sections.
 fi
 
-# Find the progress file that has an in_progress section (that's the active worker).
-# If none has in_progress, use the first file that has any sections.
-PROGRESS=""
+# Count how many progress files have an in_progress section.
+# In parallel mode, multiple workers may have in_progress simultaneously.
+IN_PROGRESS_FILES=()
 for f in "${PROGRESS_FILES[@]}"; do
   HAS_IN_PROGRESS=$(jq -r '[.sections | to_entries[] | select(.value.status == "in_progress")] | length' "$f" 2>/dev/null || echo "0")
   if [ "$HAS_IN_PROGRESS" -gt 0 ]; then
-    PROGRESS="$f"
-    break
+    IN_PROGRESS_FILES+=("$f")
   fi
 done
 
-# Fallback: use the first file with sections
+# If multiple files have in_progress sections, we're in parallel mode.
+# The hook can't determine which worker triggered this TaskUpdate, so skip
+# per-worker checks — the coordinator validates each worker's progress file
+# after it returns. This avoids false blocks where Worker B is fine but
+# Worker C (also running) hasn't taken screenshots yet.
+if [ ${#IN_PROGRESS_FILES[@]} -gt 1 ]; then
+  exit 0
+fi
+
+# Single in_progress file — use it for checks.
+PROGRESS=""
+if [ ${#IN_PROGRESS_FILES[@]} -eq 1 ]; then
+  PROGRESS="${IN_PROGRESS_FILES[0]}"
+fi
+
+# Fallback: no in_progress files, use the first file with sections
 if [ -z "$PROGRESS" ]; then
   for f in "${PROGRESS_FILES[@]}"; do
     HAS_SECTIONS=$(jq -r '.sections | length' "$f" 2>/dev/null || echo "0")

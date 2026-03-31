@@ -46,10 +46,45 @@ if [ -z "$RUN_DIR" ]; then
   exit 0
 fi
 
-# No progress.json yet — run hasn't started test sections.
-PROGRESS="$RUN_DIR/progress.json"
-if [ ! -f "$PROGRESS" ]; then
-  exit 0
+# Find progress files in the run folder.
+# Single-agent mode: progress.json
+# Parallel mode: progress-<worker>.json (one per worker)
+# The hook runs in the context of the agent that called TaskUpdate.
+# In parallel mode, each worker writes its own file. We check all of them
+# since we don't know which worker triggered this hook.
+PROGRESS_FILES=()
+for f in "$RUN_DIR"/progress*.json; do
+  [ -f "$f" ] && PROGRESS_FILES+=("$f")
+done
+
+if [ ${#PROGRESS_FILES[@]} -eq 0 ]; then
+  exit 0  # No progress files yet — run hasn't started test sections.
+fi
+
+# Find the progress file that has an in_progress section (that's the active worker).
+# If none has in_progress, use the first file that has any sections.
+PROGRESS=""
+for f in "${PROGRESS_FILES[@]}"; do
+  HAS_IN_PROGRESS=$(jq -r '[.sections | to_entries[] | select(.value.status == "in_progress")] | length' "$f" 2>/dev/null || echo "0")
+  if [ "$HAS_IN_PROGRESS" -gt 0 ]; then
+    PROGRESS="$f"
+    break
+  fi
+done
+
+# Fallback: use the first file with sections
+if [ -z "$PROGRESS" ]; then
+  for f in "${PROGRESS_FILES[@]}"; do
+    HAS_SECTIONS=$(jq -r '.sections | length' "$f" 2>/dev/null || echo "0")
+    if [ "$HAS_SECTIONS" -gt 0 ]; then
+      PROGRESS="$f"
+      break
+    fi
+  done
+fi
+
+if [ -z "$PROGRESS" ]; then
+  exit 0  # No progress files with sections yet.
 fi
 
 # --- Structural checks against progress.json ---

@@ -9,6 +9,7 @@ import class Networking.SystemStatusRemote
 import class Networking.OrdersRemote
 import class Networking.ProductsRemote
 import class Networking.UserAgent
+import protocol WooFoundation.Analytics
 
 final class ConnectivityToolViewModel {
 
@@ -36,6 +37,10 @@ final class ConnectivityToolViewModel {
     ///
     private let stores: StoresManager
 
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
     /// Site to be tested.
     ///
     private let siteID: Int64
@@ -43,7 +48,8 @@ final class ConnectivityToolViewModel {
     private var latestTestResult: [ConnectivityTestResult] = []
 
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
         self.announcementsRemote = AnnouncementsRemote(network: network)
@@ -51,6 +57,7 @@ final class ConnectivityToolViewModel {
         self.orderRemote = OrdersRemote(network: network)
         self.productsRemote = ProductsRemote(network: network)
         self.stores = stores
+        self.analytics = analytics
         self.siteID = session.defaultStoreID ?? .zero
 
         Task {
@@ -96,17 +103,14 @@ final class ConnectivityToolViewModel {
                                                            result: testResult,
                                                            timeTaken: timeTaken))
 
-            // Stop the pipeline on failure for connectivity tests. Configuration checks continue regardless.
-            if !testResult.isSuccess && testCase.stopsOnFailure {
+            // Only continue with another test if the current test was successful.
+            if !testResult.isSuccess {
                 return // Exit connectivity test.
             }
         }
 
         // Add no connections issues card if all tests are successful.
-        let allSuccessful = latestTestResult.allSatisfy { $0.result.isSuccess }
-        if allSuccessful {
-            cards.append(noConnectionsIssueState())
-        }
+        cards.append(noConnectionsIssueState())
     }
 
     /// This is not a user facing text but will be part of the Zendesk submission for troubleshooting.
@@ -139,18 +143,20 @@ final class ConnectivityToolViewModel {
         }
     }
 
-    /// Retries the last test case and the subsequent ones.
+    /// Retries the last failed test case and the subsequent ones.
     ///
-    private func retryLastTest() {
-        // Remove the last test result and card
-        guard let lastResult = latestTestResult.popLast() else {
-            return
+    private func retryTest(_ testCase: ConnectivityTest) {
+        // Remove the last test result and card.
+        if !latestTestResult.isEmpty {
+            latestTestResult.removeLast()
         }
-        cards.removeLast()
+        if !cards.isEmpty {
+            cards.removeLast()
+        }
 
-        // Run tests again from the last one.
+        // Run tests again from the failed one.
         Task {
-            await startConnectivityTest(sinceTest: lastResult.testCase)
+            await startConnectivityTest(sinceTest: testCase)
         }
     }
 
@@ -171,7 +177,7 @@ final class ConnectivityToolViewModel {
 
         let state: ConnectivityToolCard.ConnectivityState = reachable ?
             .success :
-            .error(Localization.ErrorMessage.noInternet, [self.retryAction()])
+            .error(Localization.ErrorMessage.noInternet, [self.retryAction(for: .internetConnection)])
 
         return state
     }
@@ -191,7 +197,7 @@ final class ConnectivityToolViewModel {
 
                 let state: ConnectivityToolCard.ConnectivityState = result.isSuccess ?
                     .success :
-                    .error(Localization.ErrorMessage.wpcomConnection, [self.retryAction()])
+                    .error(Localization.ErrorMessage.wpcomConnection, [self.retryAction(for: .wpComServers)])
                 continuation.resume(returning: state
                 )
             }
@@ -265,7 +271,8 @@ final class ConnectivityToolViewModel {
                                 self?.enableAnalytics()
                             }
                         )
-                        continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled, [enableAction, self.retryAction()]))
+                        continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled,
+                                                                    [enableAction, self.retryAction(for: .analyticsSetting)]))
                     }
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
@@ -275,7 +282,8 @@ final class ConnectivityToolViewModel {
                         systemImage: SystemImages.viewDetails.rawValue,
                         technicalDetails: technicalDetails
                     )
-                    continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed, [viewDetailsAction, self.retryAction()]))
+                    continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed,
+                                                                [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
                 }
             }
             stores.dispatch(action)
@@ -335,7 +343,7 @@ final class ConnectivityToolViewModel {
             testCase: .analyticsSetting,
             title: ConnectivityTest.analyticsSetting.title,
             icon: ConnectivityTest.analyticsSetting.icon,
-            state: .error(Localization.ErrorMessage.analyticsDisabled, [enableAction, retryAction()])
+            state: .error(Localization.ErrorMessage.analyticsDisabled, [enableAction, retryAction(for: .analyticsSetting)])
         )
     }
 
@@ -346,23 +354,23 @@ final class ConnectivityToolViewModel {
 
         let message: String
         let readMore = Localization.Action.readMore
-        let generalTroubleshootAction = {
+        let generalTroubleshootAction = { [weak self] in
             UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
+            self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
         var readMoreAction = ConnectivityToolCard.ConnectivityState.Action(title: readMore,
                                                                            systemImage: SystemImages.readMore.rawValue,
                                                                            action: generalTroubleshootAction)
-        let jetpackTroubleshootAction = {
+        let jetpackTroubleshootAction = { [weak self] in
             UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
-            ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
+            self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
 
         // Handle all types of errors but timeouts are specific.
         switch (error, error.isTimeoutError) {
         case (_, true):
             message = Localization.ErrorMessage.timeout
-            return .error(message, [readMoreAction, retryAction()])
+            return .error(message, [readMoreAction, retryAction(for: operation)])
 
         case (let decodingError as DecodingError, _):
             message = Localization.ErrorMessage.decodingError
@@ -373,12 +381,12 @@ final class ConnectivityToolViewModel {
                 systemImage: SystemImages.viewDetails.rawValue,
                 technicalDetails: technicalDetails
             )
-            return .error(message, [viewDetailsAction, readMoreAction, retryAction()])
+            return .error(message, [viewDetailsAction, readMoreAction, retryAction(for: operation)])
 
         case (DotcomError.jetpackNotConnected, _):
             message = Localization.ErrorMessage.noJetpackConnection
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: jetpackTroubleshootAction)
-            return .error(message, [readMoreAction, retryAction()])
+            return .error(message, [readMoreAction, retryAction(for: operation)])
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
@@ -390,14 +398,14 @@ final class ConnectivityToolViewModel {
                 technicalDetails: technicalDetails
             )
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
-            return .error(message, [viewDetailsAction, readMoreAction, retryAction()])
+            return .error(message, [viewDetailsAction, readMoreAction, retryAction(for: operation)])
         }
     }
 
-    private func retryAction() -> ConnectivityToolCard.ConnectivityState.Action {
+    private func retryAction(for testCase: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState.Action {
         let retryText = Localization.Action.retry
         return .init(title: retryText, systemImage: SystemImages.retry.rawValue, action: { [weak self] in
-            self?.retryLastTest()
+            self?.retryTest(testCase)
         })
     }
 
@@ -414,7 +422,7 @@ final class ConnectivityToolViewModel {
             case .analyticsSetting: return .analytics
             }
         }()
-        ServiceLocator.analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
     }
 
     private func noConnectionsIssueState() -> ConnectivityTool.Card {
@@ -698,17 +706,6 @@ extension ConnectivityToolViewModel {
                     .system("cart")
             case .analyticsSetting:
                     .system("chart.bar.xaxis")
-            }
-        }
-
-        /// Whether the pipeline should stop when this test fails.
-        /// Connectivity tests stop the pipeline, configuration checks do not.
-        var stopsOnFailure: Bool {
-            switch self {
-            case .analyticsSetting:
-                return false
-            default:
-                return true
             }
         }
 

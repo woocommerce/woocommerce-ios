@@ -189,15 +189,16 @@ Smoke testing can use either a **TestFlight build** (recommended — matches wha
 ### Upgrade from existing version (device-only)
 
 1. Ask the user via `AskUserQuestion`: "For the upgrade test, please ensure the **previous** App Store or TestFlight version of WooCommerce is installed on the device, logged in, and working. Confirm when ready."
-2. Verify the existing version is running — list elements and check the dashboard loads.
+2. Navigate to the About screen to capture the current version: Hub Menu (`tab-bar-menu-item`) → Settings (`dashboard-settings-button`) → About.
 
-> SCREENSHOT: 01a-existing-version.png — Previous version running, dashboard visible
+> SCREENSHOT: 01a-existing-version-about.png — About screen showing previous version number
 
 3. Ask the user via `AskUserQuestion`: "Please install the **new** TestFlight build over the existing version (or confirm it's ready to install). Let me know when the new version is installed."
 4. Launch the app after upgrade.
-5. Verify the user remains logged in and basic navigation works (dashboard, orders tab, products tab).
+5. Verify the user remains logged in — dashboard loads, basic navigation works.
+6. Navigate to the About screen again to confirm the version changed.
 
-> SCREENSHOT: 01b-upgrade-verified.png — App launched after upgrade, session preserved
+> SCREENSHOT: 01b-upgraded-version-about.png — About screen showing new version number after upgrade
 
 ### Fresh install (device-only)
 

@@ -75,6 +75,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         guard let site = viewModel.stores.sessionManager.defaultSite else { return }
         let coordinator = JetpackSetupCoordinator(site: site, rootViewController: self, onCompletion: { [weak self] in
             self?.viewModel.retryTest(.notifications)
+            self?.jetpackSetupCoordinator = nil
         })
         jetpackSetupCoordinator = coordinator
         coordinator.startSetup()

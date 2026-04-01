@@ -230,7 +230,7 @@ struct ConnectivityToolViewModelTests {
         assertState(result, is: .success)
     }
 
-    @Test func test_testNotifications_when_jetpack_not_active_then_returns_error_with_read_more() async {
+    @Test func test_testNotifications_when_jetpack_not_active_then_returns_error_with_setup_jetpack_action() async {
         // Given — self-hosted site (isWordPressComStore: false)
         let site = Site.fake().copy(isWordPressComStore: false)
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)

@@ -150,8 +150,15 @@ Requires a physical device with push notifications enabled.
    woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })
    ```
    Record the order number from the response.
-4. Wait up to 30 seconds for the push notification to appear. Check by calling `list_elements_on_screen` periodically — the notification banner should be visible.
-5. Verify the push notification appears on the device.
+4. Poll for the notification banner every 2 seconds for up to 30 seconds:
+   - Call `list_elements_on_screen` every 2s
+   - Look for elements containing the order number or "New order" text
+   - Take a screenshot immediately when the banner appears — it disappears quickly
+5. If the banner was missed (30s elapsed without seeing it), pull down the Notification Center:
+   - Swipe down from the very top of the screen with a long, fast gesture: start at y=0 (or as close to the top edge as possible), swipe to y=600+, use a fast speed/short duration
+   - Call `list_elements_on_screen` to check if the notification is in the Notification Center
+   - If the swipe doesn't open Notification Center (common issue — the gesture needs to start from the absolute top edge), try again from x=center, y=5 to y=700 with maximum speed
+6. Verify the push notification is visible (either as a banner or in Notification Center).
 
 > SCREENSHOT: 09-push-notification-received.png — Push notification for new order
 

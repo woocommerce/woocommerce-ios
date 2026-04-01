@@ -196,12 +196,18 @@ struct ConnectivityToolCard: View {
         /// Represents an action to could be performed when presenting an error.
         ///
         struct Action {
+            let id: String?
             let title: String
             let systemImage: String
             let action: () -> ()
             let technicalDetails: String?
 
-            init(title: String, systemImage: String, action: @escaping () -> Void = {}, technicalDetails: String? = nil) {
+            init(id: String? = nil,
+                 title: String,
+                 systemImage: String,
+                 action: @escaping () -> Void = {},
+                 technicalDetails: String? = nil) {
+                self.id = id
                 self.title = title
                 self.systemImage = systemImage
                 self.action = action

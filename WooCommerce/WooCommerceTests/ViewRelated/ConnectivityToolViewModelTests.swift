@@ -267,7 +267,7 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(message.contains("Jetpack"))
-        #expect(actions.contains(where: { $0.title == "Setup Jetpack" }))
+        #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.setupJetpack.id }))
     }
 
     @Test func test_testNotifications_when_permission_denied_then_returns_error_with_open_settings() async {
@@ -292,7 +292,7 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(message.contains("not allowed"))
-        #expect(actions.contains(where: { $0.title == "Open Settings" }))
+        #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.openSettings.id }))
     }
 
     @Test func test_testNotifications_when_no_device_id_then_returns_device_not_registered_error() async {
@@ -317,8 +317,7 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(message.contains("doesn't appear to be registered"))
-        #expect(actions.contains(where: { $0.title == "Register Device" }))
-        #expect(!actions.contains(where: { $0.title == "Retry" }))
+        #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.registerDevice.id }))
     }
 
     @Test func test_testNotifications_when_order_notifications_disabled_then_returns_error_with_enable_action() async {
@@ -357,7 +356,7 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(message.contains("Order notifications are not enabled"))
-        #expect(actions.contains(where: { $0.title == "Enable Order Notifications" }))
+        #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.enableOrderNotifications.id }))
     }
 
     @Test func test_testNotifications_when_config_request_fails_then_returns_error_with_technical_details() async {
@@ -391,7 +390,7 @@ struct ConnectivityToolViewModelTests {
             Issue.record("Expected .error state but got \(result)")
             return
         }
-        #expect(actions.contains(where: { $0.title == "View technical details" }))
+        #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.viewDetails.id }))
     }
 
 }

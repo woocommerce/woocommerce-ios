@@ -676,10 +676,19 @@ struct POSPaymentModelTests {
 
         // Then: reconnecting the reader should NOT trigger card collection
         service.collectPaymentWasCalled = false
-        service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
 
-        // Give the Combine chain a chance to fire (if it were still active)
-        try? await Task.sleep(nanoseconds: 50_000_000)
+        // Wait for cardReaderConnectionStatus to update, proving the Combine
+        // chain fully processed the connection event.
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                _ = sut.cardReaderConnectionStatus
+            } onChange: {
+                Task { @MainActor in
+                    continuation.resume()
+                }
+            }
+            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        }
 
         #expect(service.collectPaymentWasCalled == false)
         #expect(sut.paymentState.cash == .collectingCash)
@@ -959,6 +968,43 @@ struct POSPaymentModelTests {
         // When: cancel cash payment and restart card flow
         service.collectPaymentWasCalled = false
         await sut.cancelCashPayment()
+
+        #expect(service.collectPaymentWasCalled == true)
+    }
+
+    @Test("cancelCashPayment with disconnected reader sets up subscription to collect on connect")
+    @MainActor
+    func cancelCashPayment_when_readerDisconnected_then_collectsOnConnect() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        orderProvider.totalDecimalToReturn = 10
+
+        let sut = makePaymentController(
+            cardPresentPaymentService: service,
+            orderProvider: orderProvider)
+
+        // Start payment with no reader - sets up connection subscription
+        await sut.startPayment()
+        #expect(service.collectPaymentWasCalled == false)
+
+        // Enter cash flow - cancels the connection subscription
+        sut.startCashPayment()
+        #expect(sut.paymentState.cash == .collectingCash)
+
+        // When: cancel cash payment while reader is still disconnected
+        await sut.cancelCashPayment()
+
+        // Then: subscription should be restored - connecting a reader triggers payment
+        #expect(service.collectPaymentWasCalled == false)
+
+        await withCheckedContinuation { continuation in
+            service.onCollectPaymentCalled = {
+                continuation.resume()
+            }
+            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
+        }
 
         #expect(service.collectPaymentWasCalled == true)
     }

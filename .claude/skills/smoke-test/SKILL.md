@@ -505,12 +505,13 @@ When running in parallel mode (multiple simulators booted, not `--section` or `-
 4. After Phase 1, check on workers — they may already be done
 5. Validate all worker results, generate report
 
-**Section assignment:**
-- **Worker A** (iPhone A): `login`, `dashboard`, `orders` — gets login because it validates the login flow. Each worker logs in independently on its own simulator.
-- **Worker B** (iPhone B): `products`, `hub-menu`, `other` — logs in using stored credentials, then runs its sections.
-- **Worker C** (iPad): `pos` — iPad required for POS
+**Section assignment** (4 workers):
+- **Worker A** (iPhone): `login` only — this is the heaviest section (8 sub-flows including JN site creation). Each worker logs in independently on its own simulator.
+- **Worker B** (iPhone): `dashboard`, `orders` — orders is large (create, edit, refund, shipping labels, scan-to-pay, share payment link).
+- **Worker C** (iPhone): `products`, `hub-menu`, `other` — products is medium, hub-menu and other are lighter.
+- **Worker D** (iPad): `pos` — iPad required for POS.
 
-If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B assignments onto the single iPhone.
+If only 3 simulators are available, merge Workers B and C onto one iPhone. If only 2 (1 iPhone + 1 iPad), merge A+B+C onto the single iPhone.
 
 **Dispatching workers using agent teams:**
 

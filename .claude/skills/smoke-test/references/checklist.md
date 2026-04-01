@@ -301,10 +301,10 @@ Pass criteria: the app navigates from prologue through credentials to the dashbo
 
 ### No Jetpack site
 
-1. Create a Jurassic Ninja site with WooCommerce:
-   - **Playwright available:** Run `node .claude/skills/smoke-test/scripts/create-jn-site.js --no-jetpack` and parse the JSON output for URL/username/password. The user may need to authenticate with WordPress.com in the browser on first use.
-   - **No Playwright:** Open `https://jurassic.ninja/create?features=woocommerce,wc-smooth-generator` in the user's browser via `open`. Ask the user to paste the site URL and admin credentials.
-2. After the site is created, deactivate Jetpack via WP Admin or WP CLI.
+1. Create a Jurassic Ninja site with WooCommerce but without Jetpack:
+   - **Playwright available:** Run `node .claude/skills/smoke-test/scripts/create-jn-site.js --no-jetpack` and parse the JSON output for URL/username/password. The script verifies the WooCommerce checkbox is checked and unchecks Jetpack before creating the site. The user may need to authenticate with WordPress.com in the browser on first use.
+   - **No Playwright:** Open `https://jurassic.ninja/create?features=woocommerce,wc-smooth-generator` in the user's browser via `open`. Ask the user to uncheck Jetpack, verify WooCommerce is checked, click Create, and paste the site URL and admin credentials.
+2. Verify Jetpack is not active: navigate to `<site-url>/wp-admin/plugins.php` in the browser and confirm Jetpack is not in the active plugins list. If it is, deactivate it.
 3. Use WC Smooth Generator to generate test data (e.g. 100 products and orders).
 4. Log in to the app using the JN site credentials (ephemeral — use directly, no keychain needed).
 5. Verify onboarding tasks are shown.

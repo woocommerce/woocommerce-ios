@@ -97,6 +97,55 @@ async function main() {
       await page.goto(createUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
     }
 
+    // Step 3b: Verify feature checkboxes and click Create
+    // The ?features= URL param should pre-check these, but verify to be sure.
+    if (page.url().includes("/create")) {
+      process.stderr.write("🔍 Verifying feature checkboxes on create page...\n");
+
+      // Ensure WooCommerce is checked
+      const wooCheckbox = page.locator('input[value="woocommerce"], input[name="woocommerce"], input#woocommerce, label:has-text("WooCommerce") input[type="checkbox"]').first();
+      if (await wooCheckbox.count() > 0) {
+        if (!(await wooCheckbox.isChecked())) {
+          process.stderr.write("  ☐ WooCommerce was not checked — checking it now\n");
+          await wooCheckbox.check();
+        } else {
+          process.stderr.write("  ☑ WooCommerce is checked\n");
+        }
+      }
+
+      // Ensure WC Smooth Generator is checked
+      const smoothGenCheckbox = page.locator('input[value="wc-smooth-generator"], input[name="wc-smooth-generator"], label:has-text("Smooth Generator") input[type="checkbox"]').first();
+      if (await smoothGenCheckbox.count() > 0) {
+        if (!(await smoothGenCheckbox.isChecked())) {
+          process.stderr.write("  ☐ WC Smooth Generator was not checked — checking it now\n");
+          await smoothGenCheckbox.check();
+        } else {
+          process.stderr.write("  ☑ WC Smooth Generator is checked\n");
+        }
+      }
+
+      // Handle --no-jetpack: uncheck Jetpack if present
+      if (noJetpack) {
+        const jpCheckbox = page.locator('input[value="jetpack"], input[name="jetpack"], input#jetpack, label:has-text("Jetpack") input[type="checkbox"]').first();
+        if (await jpCheckbox.count() > 0) {
+          if (await jpCheckbox.isChecked()) {
+            process.stderr.write("  ☑ Jetpack is checked — unchecking for --no-jetpack\n");
+            await jpCheckbox.uncheck();
+          } else {
+            process.stderr.write("  ☐ Jetpack is already unchecked\n");
+          }
+        }
+      }
+
+      // Click the Create button if present (JN may auto-submit from URL params,
+      // but if the page shows a form with a button, we need to click it)
+      const createButton = page.locator('button:has-text("Create"), input[type="submit"][value*="Create"], a:has-text("Create")').first();
+      if (await createButton.count() > 0 && await createButton.isVisible()) {
+        process.stderr.write("🚀 Clicking Create button...\n");
+        await createButton.click();
+      }
+    }
+
     // Step 4: Wait for site provisioning
     // JN creates the site via AJAX and then either:
     // a) Redirects automatically to wp-admin, or
@@ -206,7 +255,7 @@ async function main() {
     process.stderr.write(`\n✅ Site created: ${siteUrl}\n`);
     if (noJetpack) {
       process.stderr.write(
-        "   Note: Deactivate Jetpack manually — JN installs it by default.\n"
+        "   Jetpack was unchecked during creation. Verify it's not active in wp-admin > Plugins.\n"
       );
     }
   } catch (error) {

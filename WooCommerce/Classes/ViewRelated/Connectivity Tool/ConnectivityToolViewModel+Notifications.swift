@@ -149,12 +149,13 @@ extension ConnectivityToolViewModel {
             return .failure(.deviceNotRegistered)
         }
 
+        let currentSiteID = siteID
+
         return await withCheckedContinuation { continuation in
-            let action = AccountAction.loadNotificationSettings(deviceID: numericDeviceID) { [weak self] result in
-                guard let self else { return }
+            let action = AccountAction.loadNotificationSettings(deviceID: numericDeviceID) { result in
                 switch result {
                 case .success(let settings):
-                    guard let blog = settings.blogs.first(where: { $0.blogID == self.siteID }),
+                    guard let blog = settings.blogs.first(where: { $0.blogID == currentSiteID }),
                           let device = blog.devices.first(where: { $0.deviceID == numericDeviceID }),
                           device.storeOrder else {
                         continuation.resume(returning: .failure(.orderNotificationsDisabled(settings: settings)))

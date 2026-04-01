@@ -565,13 +565,14 @@ After all sections complete, generate a self-contained HTML report file in the r
 
 The report file should be saved as `$RUN_DIR/report.html` and include:
 
-1. **Summary table** — section name, PASS/FAIL/SKIPPED badge, and notes for each section tested. Clicking a section name scrolls to that section's detail. Group sections by phase.
-2. **Section details** — one collapsible section per test, each containing:
+1. **Header** — total run time (from `run.json` `started` timestamp to now), date, number of sections passed/failed/skipped. Per-section times from progress.json `started_at`/`completed_at` timestamps.
+2. **Summary table** — section name, PASS/FAIL/SKIPPED badge, duration, and notes for each section tested. Clicking a section name scrolls to that section's detail. Group sections by phase.
+3. **Section details** — one collapsible section per test, each containing:
    - PASS/FAIL/SKIPPED badge and section title
    - A screenshot flipbook for that section's screenshots only (Previous/Next buttons, arrow keys navigate within the section's flipbook)
    - Any observations from that section, shown inline below the flipbook. Each observation shows the step, description, concern level (color-coded: grey for low, amber for medium, red for high), and any `FAIL-` screenshot.
-3. **Observations summary** — a collected list of all observations across all sections, for quick scanning. Each entry links back to the relevant section. Only include this if there are observations to report.
-4. **Not tested** — list of skipped items (device-only on simulator, conditional steps that didn't apply, manual-only items)
+4. **Observations summary** — a collected list of all observations across all sections, for quick scanning. Each entry links back to the relevant section. Only include this if there are observations to report.
+5. **Not tested** — list of skipped items (device-only on simulator, conditional steps that didn't apply, manual-only items)
 
 ### HTML report structure
 
@@ -594,7 +595,7 @@ open $RUN_DIR/report.html
 Also print a brief text summary to the console so the user sees results without needing the browser:
 
 ```
-Smoke Test: 8/11 sections passed, 2 skipped (simulator), 1 failed, 3 observations
+Smoke Test: 8/11 sections passed, 2 skipped (simulator), 1 failed — total time 47m 23s
 Report: $RUN_DIR/report.html (opened in browser)
 Failed: Orders (refund button not found)
 Skipped: Installation (simulator), Push Notifications (simulator)

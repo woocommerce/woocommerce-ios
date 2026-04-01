@@ -2,7 +2,7 @@
 name: smoke-test
 description: Run manual smoke tests on a real WooCommerce store via iOS simulator and mobile-mcp. Use when verifying app quality before a release, after major changes, or when asked to smoke test.
 user-invocable: true
-allowed-tools: "Bash, Read, Grep, Glob, Agent, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
+allowed-tools: "Bash, Read, Write, Grep, Glob, Agent, SendMessage, AskUserQuestion, mcp__mobile-mcp__*, mcp__woo-credentials__*"
 argument-hint: "[--skip-login] [--section <name>] [--phase <1|2>] [--device]"
 hooks:
   PostToolUse:
@@ -253,19 +253,15 @@ Credentials from JN sites are ephemeral (sites self-destruct after 7 days) and c
 
 ### Parallel mode prerequisites
 
-If running a full test (not `--section` or `--sequential`), check that parallel execution dependencies are available:
+Parallel mode uses Claude Code's built-in agent teams feature. Check that it's available:
 
 ```bash
-command -v tmux   # needed for visible worker terminals
 command -v claude # needed for worker sessions
 ```
 
-If either is missing, **offer to install** before falling back:
+If not available, tell the user to install from https://claude.ai/claude-code and fall back to sequential mode.
 
-- **tmux missing**: Ask the user: "tmux is needed for parallel mode (visible worker terminals). Install it now with `brew install tmux`?" If they agree, run `brew install tmux`. If they decline or it fails, fall back to sequential.
-- **claude CLI missing**: Tell the user: "The `claude` CLI is needed for parallel worker sessions. Install from https://claude.ai/claude-code" — this can't be auto-installed, so fall back to sequential if unavailable.
-
-Only fall back to sequential mode after offering installation and being declined or hitting a failure.
+Agent teams are experimental — they require the `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` env var to be set. The skill enables this automatically when dispatching workers.
 
 ### Credentials
 
@@ -502,13 +498,11 @@ When running in parallel mode (multiple simulators booted, not `--section` or `-
 
 **Dispatch Phase 2 workers BEFORE starting Phase 1.** Phase 2 sections are fully automated and don't depend on Phase 1. By dispatching workers immediately after build/install, they run in the background while the coordinator handles Phase 1 with the user. This significantly reduces total run time.
 
-**Prerequisites** (checked in Step 1): tmux and claude CLI must be available. If not, the run falls back to sequential mode automatically.
-
 **Execution order:**
 1. Build app, install on all simulators (Step 3)
-2. Set up tmux session and dispatch workers (see below)
-3. Run Phase 1 (user-assisted) in the current terminal
-4. After Phase 1, monitor worker progress files until all workers finish
+2. Dispatch Phase 2 workers as agent teammates (see below)
+3. Run Phase 1 (user-assisted) — workers run in parallel, visible in their own panes
+4. After Phase 1, check on workers — they may already be done
 5. Validate all worker results, generate report
 
 **Section assignment:**
@@ -518,71 +512,17 @@ When running in parallel mode (multiple simulators booted, not `--section` or `-
 
 If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B assignments onto the single iPhone.
 
-**Setting up the tmux session:**
+**Dispatching workers using agent teams:**
 
-Each worker runs as a separate `claude` CLI session in its own tmux pane, so the user can watch all workers in real time.
+Workers are dispatched using the `Agent` tool with `run_in_background: true`. Claude Code's agent teams feature handles session management and display — each worker appears in its own visible pane automatically.
 
 1. Read the worker prompt template from `.claude/skills/smoke-test/references/worker-prompt.md`
 2. For each worker, fill in the template placeholders: `{{UDID}}`, `{{DEVICE_TYPE}}`, `{{WORKER_NAME}}`, `{{SECTIONS}}`, `{{RUN_DIR}}`, `{{EXPECTED_ORDER}}`, `{{SECTION_ENTRIES}}`, `{{LOGIN_INSTRUCTION}}`
 3. Set `{{LOGIN_INSTRUCTION}}` to the full login flow for all workers (each logs in independently on its own simulator).
-4. Write each worker's filled prompt to `$RUN_DIR/worker-<name>-prompt.txt`
-5. Create a tmux session and launch workers:
+4. Dispatch all workers simultaneously using the `Agent` tool with `run_in_background: true`. Each worker runs as a subagent with its own visible pane.
+5. Immediately proceed to Phase 1 — do not wait for workers.
 
-```bash
-# Create a separate tmux session per worker — each agent is independent
-tmux new-session -d -s smoke-worker-a -c "$(pwd)"
-tmux send-keys -t smoke-worker-a \
-  "claude -p \"$(cat $RUN_DIR/worker-a-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
-
-tmux new-session -d -s smoke-worker-b -c "$(pwd)"
-tmux send-keys -t smoke-worker-b \
-  "claude -p \"$(cat $RUN_DIR/worker-b-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
-
-tmux new-session -d -s smoke-worker-c -c "$(pwd)"
-tmux send-keys -t smoke-worker-c \
-  "claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
-```
-
-6. Open the worker panes so the user can watch them. Ask: "Want me to open the worker terminals?" If they agree (or don't decline), open iTerm panes — one per worker, each attached to its tmux window:
-   ```bash
-   # iTerm: split into panes, each attached to a separate worker session
-   if [ -d "/Applications/iTerm.app" ]; then
-     osascript <<'APPLESCRIPT'
-   tell application "iTerm"
-     activate
-     tell current window
-       tell current session
-         set workerA to (split vertically with default profile)
-       end tell
-       tell workerA
-         write text "tmux attach -t smoke-worker-a"
-         set workerB to (split horizontally with default profile)
-       end tell
-       tell workerB
-         write text "tmux attach -t smoke-worker-b"
-         set workerC to (split horizontally with default profile)
-       end tell
-       tell workerC
-         write text "tmux attach -t smoke-worker-c"
-       end tell
-     end tell
-   end tell
-   APPLESCRIPT
-   else
-     # Terminal.app fallback — 3 separate windows
-     osascript <<'APPLESCRIPT'
-   tell application "Terminal"
-     activate
-     do script "tmux attach -t smoke-worker-a"
-     do script "tmux attach -t smoke-worker-b"
-     do script "tmux attach -t smoke-worker-c"
-   end tell
-   APPLESCRIPT
-   fi
-   ```
-
-   This gives a layout with the main agent on the left and 3 worker panes stacked on the right. Each pane is an independent tmux session. If fewer than 3 workers are dispatched, adjust the number of panes accordingly.
-7. Immediately proceed to Phase 1 in the current terminal — do not wait for workers.
+The user can see all workers running in real time via the agent teams display. Use `Shift+Down` to cycle between teammates, or if using tmux/iTerm2 split-pane mode, each worker gets its own pane automatically.
 
 **Monitoring workers:**
 
@@ -598,7 +538,7 @@ for f in $RUN_DIR/progress-worker-*.json; do
 done
 ```
 
-Poll every 30 seconds until all workers report zero remaining sections. Check if each worker's tmux session is still alive — `tmux has-session -t smoke-worker-a 2>/dev/null` returns 0 if alive. Check a worker's latest output with `tmux capture-pane -t smoke-worker-a -p | tail -5`. If a worker's pane shows a shell prompt (no claude running), read its progress file to determine whether it completed or crashed.
+Poll every 30 seconds until all workers report zero remaining sections. If a worker's progress file shows incomplete sections but the agent has returned, send it back via `SendMessage` to continue.
 
 **Coordinator validation:**
 
@@ -606,8 +546,8 @@ After all workers finish:
 1. Read each worker's progress file (`$RUN_DIR/progress-<worker>.json`)
 2. Verify every assigned section is `"completed"` or `"skipped"` (with a valid `skip_reason`)
 3. Verify every completed section has at least one screenshot
-4. If any section is incomplete or missing evidence, launch a new `claude -p` session in the tmux to finish the remaining sections
-5. Clean up: `tmux kill-session -t smoke-worker-a; tmux kill-session -t smoke-worker-b; tmux kill-session -t smoke-worker-c`
+4. If any section is incomplete or missing evidence, send the worker back via `SendMessage`: "Sections X, Y are still pending/missing evidence. Continue from where you left off."
+5. Accept the worker's result only after validation passes
 
 **Merging results:**
 

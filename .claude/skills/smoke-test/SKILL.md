@@ -482,7 +482,7 @@ Execution rules:
 
 The completion hook reads `progress.json` and will block `TaskUpdate` if evidence is missing. You cannot mark a section complete without screenshots, and you cannot skip ahead past pending sections without explicitly marking them skipped with a valid reason.
 
-In parallel mode, tell the user: **"Phase 2 workers are running in the background on separate simulators. Let's do Phase 1 together — once we're done, I'll check on the workers."**
+In parallel mode, tell the user: **"Phase 2 workers are running as teammates in their own panes. You can see their progress with Shift+Down. Let's do Phase 1 together — once we're done, I'll check on the workers."**
 
 In sequential mode, after Phase 1 completes, tell the user: **"Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated."**
 
@@ -496,7 +496,7 @@ Record evidence as you go:
 
 When running in parallel mode (multiple simulators booted, not `--section` or `--phase 1`):
 
-**Dispatch Phase 2 workers BEFORE starting Phase 1.** Phase 2 sections are fully automated and don't depend on Phase 1. By dispatching workers immediately after build/install, they run in the background while the coordinator handles Phase 1 with the user. This significantly reduces total run time.
+**Dispatch Phase 2 workers BEFORE starting Phase 1.** Phase 2 sections are fully automated and don't depend on Phase 1. Workers run as foreground agent teammates — each gets its own visible pane. The coordinator continues with Phase 1 concurrently.
 
 **Execution order:**
 1. Build app, install on all simulators (Step 3)
@@ -514,15 +514,15 @@ If only 2 simulators are available (1 iPhone + 1 iPad), merge Worker A and B ass
 
 **Dispatching workers using agent teams:**
 
-Workers are dispatched using the `Agent` tool with `run_in_background: true`. Claude Code's agent teams feature handles session management and display — each worker appears in its own visible pane automatically.
+Workers are dispatched as foreground agent teammates using the `Agent` tool (without `run_in_background`). Claude Code's agent teams feature gives each worker its own visible pane — the coordinator continues concurrently in its own pane.
 
 1. Read the worker prompt template from `.claude/skills/smoke-test/references/worker-prompt.md`
 2. For each worker, fill in the template placeholders: `{{UDID}}`, `{{DEVICE_TYPE}}`, `{{WORKER_NAME}}`, `{{SECTIONS}}`, `{{RUN_DIR}}`, `{{EXPECTED_ORDER}}`, `{{SECTION_ENTRIES}}`, `{{LOGIN_INSTRUCTION}}`
 3. Set `{{LOGIN_INSTRUCTION}}` to the full login flow for all workers (each logs in independently on its own simulator).
-4. Dispatch all workers simultaneously using the `Agent` tool with `run_in_background: true`. Each worker runs as a subagent with its own visible pane.
-5. Immediately proceed to Phase 1 — do not wait for workers.
+4. Dispatch all workers simultaneously in a single message with multiple `Agent` tool calls (no `run_in_background`). Each worker gets its own visible pane.
+5. Continue with Phase 1 — the coordinator runs concurrently with the workers.
 
-The user can see all workers running in real time via the agent teams display. Use `Shift+Down` to cycle between teammates, or if using tmux/iTerm2 split-pane mode, each worker gets its own pane automatically.
+The user can see all workers and the coordinator running in real time. Use `Shift+Down` to cycle between teammates, or with `--teammate-mode tmux`/iTerm2 each gets its own split pane automatically.
 
 **Monitoring workers:**
 

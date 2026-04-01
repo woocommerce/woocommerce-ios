@@ -150,11 +150,12 @@ Requires a physical device with push notifications enabled.
    woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })
    ```
    Record the order number from the response.
-4. Poll for the notification banner every 2 seconds for up to 30 seconds:
-   - Call `list_elements_on_screen` every 2s
+4. Poll aggressively for the notification banner — it disappears fast:
+   - Call `list_elements_on_screen` immediately after creating the order
+   - Then poll every 1 second for up to 10 seconds
    - Look for elements containing the order number or "New order" text
-   - Take a screenshot immediately when the banner appears — it disappears quickly
-5. If the banner was missed (30s elapsed without seeing it), pull down the Notification Center:
+   - Take a screenshot immediately when the banner appears
+5. If the banner was not caught after 10 seconds, pull down the Notification Center:
    - Swipe down from the very top of the screen with a long, fast gesture: start at y=0 (or as close to the top edge as possible), swipe to y=600+, use a fast speed/short duration
    - Call `list_elements_on_screen` to check if the notification is in the Notification Center
    - If the swipe doesn't open Notification Center (common issue — the gesture needs to start from the absolute top edge), try again from x=center, y=5 to y=700 with maximum speed

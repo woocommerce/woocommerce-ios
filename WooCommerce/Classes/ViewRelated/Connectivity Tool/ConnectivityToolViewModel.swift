@@ -55,7 +55,7 @@ final class ConnectivityToolViewModel {
 
     /// WordPress.com device identifier for notification settings.
     ///
-    let deviceID: String?
+    let pushNotesManager: PushNotesManager
 
     /// Credentials used for authenticating Jetpack connection requests.
     ///
@@ -77,7 +77,7 @@ final class ConnectivityToolViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
-         deviceID: String? = ServiceLocator.pushNotesManager.deviceID) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
         self.network = network
@@ -88,7 +88,7 @@ final class ConnectivityToolViewModel {
         self.stores = stores
         self.analytics = analytics
         self.userNotificationCenter = userNotificationCenter
-        self.deviceID = deviceID
+        self.pushNotesManager = pushNotesManager
         self.credentials = session.defaultCredentials
         self.siteURL = session.defaultSite?.url
         self.siteID = session.defaultStoreID ?? .zero

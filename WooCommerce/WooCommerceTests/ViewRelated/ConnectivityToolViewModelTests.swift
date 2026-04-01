@@ -318,11 +318,13 @@ struct ConnectivityToolViewModelTests {
         let result = await sut.testNotifications()
 
         // Then
-        guard case let .error(message, _) = result else {
+        guard case let .error(message, actions) = result else {
             Issue.record("Expected .error state but got \(result)")
             return
         }
-        #expect(message.contains("not appear to be registered"))
+        #expect(message.contains("doesn't appear to be registered"))
+        #expect(actions.contains(where: { $0.title == "Register Device" }))
+        #expect(!actions.contains(where: { $0.title == "Retry" }))
     }
 
     @Test func test_testNotifications_when_order_notifications_disabled_then_returns_error_with_enable_action() async {

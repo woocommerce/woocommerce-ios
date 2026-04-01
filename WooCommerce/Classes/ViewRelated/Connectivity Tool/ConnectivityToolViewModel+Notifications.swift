@@ -53,7 +53,14 @@ extension ConnectivityToolViewModel {
             DDLogInfo("Connectivity Tool: ⚠️ Notification config issue: \(configError)")
             switch configError {
             case .deviceNotRegistered:
-                return .error(Localization.ErrorMessage.deviceNotRegistered, [retryAction(for: .notifications)])
+                let registerAction = ConnectivityToolCard.ConnectivityState.Action(
+                    title: Localization.Action.registerDevice,
+                    systemImage: SystemImages.enableAction.rawValue,
+                    action: { [weak self] in
+                        self?.registerDeviceForNotifications()
+                    }
+                )
+                return .error(Localization.ErrorMessage.deviceNotRegistered, [registerAction])
             case .orderNotificationsDisabled(let settings):
                 let enableAction = ConnectivityToolCard.ConnectivityState.Action(
                     title: Localization.Action.enableOrderNotifications,
@@ -64,8 +71,6 @@ extension ConnectivityToolViewModel {
                 )
                 return .error(Localization.ErrorMessage.orderNotificationsDisabled,
                               [enableAction, retryAction(for: .notifications)])
-            case .siteNotFound:
-                return .error(Localization.ErrorMessage.notificationSiteNotFound, [retryAction(for: .notifications)])
             case .requestFailed(let error):
                 let technicalDetails = String(describing: error)
                 let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
@@ -129,7 +134,8 @@ extension ConnectivityToolViewModel {
     ///
     @MainActor
     func checkNotificationConfig() async -> Result<Void, NotificationConfigError> {
-        guard let deviceID, let numericDeviceID = Int64(deviceID) else {
+        guard let deviceID = pushNotesManager.deviceID,
+              let numericDeviceID = Int64(deviceID) else {
             return .failure(.deviceNotRegistered)
         }
 
@@ -138,19 +144,13 @@ extension ConnectivityToolViewModel {
                 guard let self else { return }
                 switch result {
                 case .success(let settings):
-                    guard let blog = settings.blogs.first(where: { $0.blogID == self.siteID }) else {
-                        continuation.resume(returning: .failure(.siteNotFound))
-                        return
-                    }
-                    guard let device = blog.devices.first(where: { $0.deviceID == numericDeviceID }) else {
-                        continuation.resume(returning: .failure(.deviceNotRegistered))
-                        return
-                    }
-                    if device.storeOrder {
-                        continuation.resume(returning: .success(()))
-                    } else {
+                    guard let blog = settings.blogs.first(where: { $0.blogID == self.siteID }),
+                          let device = blog.devices.first(where: { $0.deviceID == numericDeviceID }),
+                          device.storeOrder else {
                         continuation.resume(returning: .failure(.orderNotificationsDisabled(settings: settings)))
+                        return
                     }
+                    continuation.resume(returning: .success(()))
                 case .failure(let error):
                     continuation.resume(returning: .failure(.requestFailed(error)))
                 }
@@ -162,7 +162,8 @@ extension ConnectivityToolViewModel {
     /// Enables order notifications for the current site and device.
     ///
     func enableOrderNotifications(settings: NotificationSettings) {
-        guard let deviceID, let numericDeviceID = Int64(deviceID) else { return }
+        guard let deviceID = pushNotesManager.deviceID,
+              let numericDeviceID = Int64(deviceID) else { return }
 
         // Show loading indicator while enabling.
         if let cardIndex = cards.lastIndex(where: { $0.testCase == .notifications }) {
@@ -199,6 +200,34 @@ extension ConnectivityToolViewModel {
             }
         }
         stores.dispatch(action)
+    }
+
+    /// Registers the device for push notifications and re-runs the notifications check.
+    ///
+    func registerDeviceForNotifications() {
+        // Show loading indicator while registering.
+        if let cardIndex = cards.lastIndex(where: { $0.testCase == .notifications }) {
+            cards[cardIndex] = ConnectivityTest.notifications.inProgressCard
+        }
+
+        Task { @MainActor in
+            do {
+                _ = try await pushNotesManager.registerDeviceAndWaitForTokenAcceptance()
+                DDLogInfo("Connectivity Tool: ✅ Device registered for push notifications")
+            } catch {
+                DDLogError("Connectivity Tool: ❌ Failed to register device for push notifications\n\(error)")
+            }
+            // Re-run the full notifications check regardless of outcome.
+            let state = await testNotifications()
+            if let index = cards.lastIndex(where: { $0.testCase == .notifications }) {
+                cards[index] = ConnectivityTool.Card(
+                    testCase: .notifications,
+                    title: ConnectivityTest.notifications.title,
+                    icon: ConnectivityTest.notifications.icon,
+                    state: state
+                )
+            }
+        }
     }
 
     /// Restores the notifications card to its interactive error state after a failed enable attempt.
@@ -238,7 +267,6 @@ extension ConnectivityToolViewModel {
     enum NotificationConfigError: Error {
         case deviceNotRegistered
         case orderNotificationsDisabled(settings: NotificationSettings)
-        case siteNotFound
         case requestFailed(Error)
     }
 }
@@ -272,12 +300,6 @@ private extension ConnectivityToolViewModel {
                 "Enable them to receive alerts when new orders come in.",
                 comment: "Message when order notifications are disabled in the connectivity tool"
             )
-            static let notificationSiteNotFound = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.notificationSiteNotFound",
-                value: "Your store was not found in the notification settings.\n\n" +
-                "Try logging out and back in to re-register.",
-                comment: "Message when the site is not found in notification settings in the connectivity tool"
-            )
             static let notificationConfigCheckFailed = NSLocalizedString(
                 "connectivityToolViewModel.errorMessage.notificationConfigCheckFailed",
                 value: "We couldn't check your notification settings.\n\n" +
@@ -305,6 +327,11 @@ private extension ConnectivityToolViewModel {
                 "connectivityToolViewModel.action.openSettings",
                 value: "Open Settings",
                 comment: "Action button to open device notification settings in the connectivity tool"
+            )
+            static let registerDevice = NSLocalizedString(
+                "connectivityToolViewModel.action.registerDevice",
+                value: "Register Device",
+                comment: "Action button to register the device for push notifications in the connectivity tool"
             )
             static let enableOrderNotifications = NSLocalizedString(
                 "connectivityToolViewModel.action.enableOrderNotifications",

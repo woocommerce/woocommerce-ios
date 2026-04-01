@@ -180,7 +180,7 @@ final class ConnectivityToolViewModel {
 
     /// Retries the last failed test case and the subsequent ones.
     ///
-    private func retryTest(_ testCase: ConnectivityTest) {
+    func retryTest(_ testCase: ConnectivityTest) {
         // Remove the last test result and card.
         if !latestTestResult.isEmpty {
             latestTestResult.removeLast()

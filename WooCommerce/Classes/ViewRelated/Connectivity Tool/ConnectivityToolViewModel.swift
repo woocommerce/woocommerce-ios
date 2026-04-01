@@ -329,9 +329,7 @@ final class ConnectivityToolViewModel {
     ///
     private func enableAnalytics(retries: Int = 0) {
         // Hide card content and show loading indicator while enabling.
-        if let cardIndex = cards.lastIndex(where: { $0.testCase == .analyticsSetting }) {
-            cards[cardIndex] = ConnectivityTest.analyticsSetting.inProgressCard
-        }
+        updateCardState(for: .analyticsSetting, state: .inProgress)
 
         let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
             guard let self else { return }
@@ -339,14 +337,7 @@ final class ConnectivityToolViewModel {
             case .success:
                 DDLogInfo("Connectivity Tool: ✅ Analytics enabled successfully")
                 // Update the analytics setting card to show relaunch message.
-                if let index = self.cards.lastIndex(where: { $0.testCase == .analyticsSetting }) {
-                    self.cards[index] = ConnectivityTool.Card(
-                        testCase: .analyticsSetting,
-                        title: ConnectivityTest.analyticsSetting.title,
-                        icon: ConnectivityTest.analyticsSetting.icon,
-                        state: .empty(Localization.analyticsEnabledRelaunch)
-                    )
-                }
+                self.updateCardState(for: .analyticsSetting, state: .empty(Localization.analyticsEnabledRelaunch))
             case .failure(let error):
                 if retries < 1 {
                     // Retry once due to known API quirk where first request fails.
@@ -364,9 +355,6 @@ final class ConnectivityToolViewModel {
     /// Restores the analytics setting card to its interactive error state after a failed enable attempt.
     ///
     private func restoreAnalyticsCardActions() {
-        guard let index = cards.lastIndex(where: { $0.testCase == .analyticsSetting }) else {
-            return
-        }
         let enableAction = ConnectivityToolCard.ConnectivityState.Action(
             title: Localization.Action.enableAnalytics,
             systemImage: SystemImages.enableAction.rawValue,
@@ -374,12 +362,16 @@ final class ConnectivityToolViewModel {
                 self?.enableAnalytics()
             }
         )
-        cards[index] = ConnectivityTool.Card(
-            testCase: .analyticsSetting,
-            title: ConnectivityTest.analyticsSetting.title,
-            icon: ConnectivityTest.analyticsSetting.icon,
-            state: .error(Localization.ErrorMessage.analyticsDisabled, [enableAction, retryAction(for: .analyticsSetting)])
-        )
+        updateCardState(for: .analyticsSetting,
+                        state: .error(Localization.ErrorMessage.analyticsDisabled,
+                                      [enableAction, retryAction(for: .analyticsSetting)]))
+    }
+
+    /// Updates the state of the card matching the given test case.
+    ///
+    func updateCardState(for testCase: ConnectivityTest, state: ConnectivityToolCard.ConnectivityState) {
+        guard let index = cards.lastIndex(where: { $0.testCase == testCase }) else { return }
+        cards[index] = cards[index].updatingState(state)
     }
 
     private func stateForSiteResult<T>(_ result: Result<T, Error>, operation: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState {

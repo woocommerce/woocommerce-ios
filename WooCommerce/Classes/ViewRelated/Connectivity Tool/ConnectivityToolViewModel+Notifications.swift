@@ -35,9 +35,7 @@ extension ConnectivityToolViewModel {
                 title: Localization.Action.openSettings,
                 systemImage: SystemImages.openSettings.rawValue,
                 action: { [weak self] in
-                    if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
-                        self?.selectedURL = url
-                    }
+                    self?.selectedURL = URL(string: UIApplication.openNotificationSettingsURLString)
                 }
             )
             return .error(Localization.ErrorMessage.notificationsNotAuthorized, [openSettingsAction, retryAction(for: .notifications)])
@@ -166,9 +164,7 @@ extension ConnectivityToolViewModel {
               let numericDeviceID = Int64(deviceID) else { return }
 
         // Show loading indicator while enabling.
-        if let cardIndex = cards.lastIndex(where: { $0.testCase == .notifications }) {
-            cards[cardIndex] = ConnectivityTest.notifications.inProgressCard
-        }
+        updateCardState(for: .notifications, state: .inProgress)
 
         // Build updated settings with storeOrder enabled for this device/blog.
         let updatedBlogs: [NotificationSettings.Blog] = settings.blogs.map { blog in
@@ -186,14 +182,7 @@ extension ConnectivityToolViewModel {
             switch result {
             case .success:
                 DDLogInfo("Connectivity Tool: ✅ Order notifications enabled successfully")
-                if let index = self.cards.lastIndex(where: { $0.testCase == .notifications }) {
-                    self.cards[index] = ConnectivityTool.Card(
-                        testCase: .notifications,
-                        title: ConnectivityTest.notifications.title,
-                        icon: ConnectivityTest.notifications.icon,
-                        state: .success
-                    )
-                }
+                self.updateCardState(for: .notifications, state: .success)
             case .failure(let error):
                 DDLogError("Connectivity Tool: ❌ Failed to enable order notifications\n\(error)")
                 self.restoreNotificationsCardActions(settings: settings)
@@ -206,9 +195,7 @@ extension ConnectivityToolViewModel {
     ///
     func registerDeviceForNotifications() {
         // Show loading indicator while registering.
-        if let cardIndex = cards.lastIndex(where: { $0.testCase == .notifications }) {
-            cards[cardIndex] = ConnectivityTest.notifications.inProgressCard
-        }
+        updateCardState(for: .notifications, state: .inProgress)
 
         Task { @MainActor in
             do {
@@ -219,21 +206,13 @@ extension ConnectivityToolViewModel {
             }
             // Re-run the full notifications check regardless of outcome.
             let state = await testNotifications()
-            if let index = cards.lastIndex(where: { $0.testCase == .notifications }) {
-                cards[index] = ConnectivityTool.Card(
-                    testCase: .notifications,
-                    title: ConnectivityTest.notifications.title,
-                    icon: ConnectivityTest.notifications.icon,
-                    state: state
-                )
-            }
+            updateCardState(for: .notifications, state: state)
         }
     }
 
     /// Restores the notifications card to its interactive error state after a failed enable attempt.
     ///
     private func restoreNotificationsCardActions(settings: NotificationSettings) {
-        guard let index = cards.lastIndex(where: { $0.testCase == .notifications }) else { return }
         let enableAction = ConnectivityToolCard.ConnectivityState.Action(
             title: Localization.Action.enableOrderNotifications,
             systemImage: SystemImages.enableAction.rawValue,
@@ -241,12 +220,9 @@ extension ConnectivityToolViewModel {
                 self?.enableOrderNotifications(settings: settings)
             }
         )
-        cards[index] = ConnectivityTool.Card(
-            testCase: .notifications,
-            title: ConnectivityTest.notifications.title,
-            icon: ConnectivityTest.notifications.icon,
-            state: .error(Localization.ErrorMessage.orderNotificationsDisabled, [enableAction, retryAction(for: .notifications)])
-        )
+        updateCardState(for: .notifications,
+                        state: .error(Localization.ErrorMessage.orderNotificationsDisabled,
+                                      [enableAction, retryAction(for: .notifications)]))
     }
 
     /// Error types for the Jetpack plugin check.

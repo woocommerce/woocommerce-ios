@@ -293,6 +293,13 @@ Then verify via `list_elements_on_screen` that the field value updated. **Never 
 Also ask (unless already specified via arguments):
 1. **Which devices are available?** Options: simulator only, physical device only, or both. When both are available, use the physical device for device-only sections (installation, push notifications, payments, camera) and simulators for everything else. This is the recommended setup for maximum coverage.
 2. **Run Phase 1, Phase 2, or both?** (unless specified via `--phase`)
+3. **Test across multiple iOS versions?** List the installed simulator runtimes:
+   ```bash
+   xcrun simctl list runtimes available
+   ```
+   If multiple iOS versions are installed, offer to run Phase 2 across all of them for broader coverage. Each iOS version gets its own set of workers (e.g. 2 iPhones + 1 iPad per version). This multiplies the worker count but catches version-specific regressions.
+
+   If the user opts in, boot simulators for each iOS version and add them to the worker pool. Workers are tagged by iOS version in their progress file (`progress-worker-a-ios18.json`) and the report groups results by version.
 
 ## Step 2: Boot Simulator / Connect Device
 
@@ -308,6 +315,7 @@ UDID=$(Scripts/find-simulator.sh ipad)
 **Parallel mode** (default for full Phase 2 runs on simulator):
 Boot multiple simulators for parallel Phase 2 execution. **Do not rely on already-booted simulators** — boot all the ones you need.
 
+**Single iOS version** (default):
 ```bash
 # List available simulators (not just booted ones)
 xcrun simctl list devices available | grep -E "iPhone|iPad"
@@ -331,7 +339,24 @@ if [ -n "$IPHONE_B" ]; then
 fi
 ```
 
-If only one iPhone model is available, fall back to 1 iPhone + 1 iPad (2 workers). If only one simulator is available total, fall back to sequential mode.
+**Multi-iOS-version** (when user opted in at Step 1):
+Boot a set of simulators for each iOS version. Each version gets its own workers running the same test sections — this catches version-specific regressions.
+
+```bash
+# List available runtimes
+xcrun simctl list runtimes available
+# e.g. iOS 17.5, iOS 18.0, iOS 18.4
+
+# For each runtime, find an iPhone and iPad device, boot them
+# The simctl output groups devices by runtime — pick from each group
+xcrun simctl list devices available
+```
+
+For each iOS version, boot 1 iPhone + 1 iPad (or 2 iPhones + 1 iPad if models are available). Name workers by version: `worker-a-ios17`, `worker-b-ios18`, etc. Each worker's progress file is tagged: `progress-worker-a-ios17.json`.
+
+The section assignment is the same per version — each version's workers run the full Phase 2 section set independently. The report groups results by iOS version, showing pass/fail per section per version.
+
+If only one iPhone model is available per version, fall back to 1 iPhone + 1 iPad (2 workers per version). If only one simulator is available total, fall back to sequential mode.
 
 ### Physical device
 If `--device` is set:

@@ -226,9 +226,8 @@ struct PointOfSaleDashboardView: View {
             .offset(x: dashboardOffset)
             .onChange(of: posModel.paymentState.cash) { _, newValue in
                 if newValue == .collectingCash,
-                   navigationPath.isEmpty,
                    case .loaded(let totals) = posModel.orderState {
-                    navigationPath.append(.cashPayment(orderTotal: totals.orderTotal))
+                    navigationRouter.pushCash(orderTotal: totals.orderTotal)
                 }
             }
             .animation(.default, value: posModel.orderStage)

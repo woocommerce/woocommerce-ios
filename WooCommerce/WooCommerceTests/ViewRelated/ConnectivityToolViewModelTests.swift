@@ -172,25 +172,16 @@ struct ConnectivityToolViewModelTests {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case let .retrieveAnalyticsSetting(_, onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-        let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores, analytics: analytics)
 
-        // When — call testAnalyticsSetting() directly; tracking is done by the pipeline wrapper,
-        // so we verify the analytics event type maps to the "analytics" raw value that the
-        // trackResponseEvent method would pass to the provider.
-        _ = await sut.testAnalyticsSetting()
+        // When
+        analytics.track(event: .ConnectivityTool.requestResponse(test: .analytics, success: true, timeTaken: 0.5))
 
-        // Then — verify the analytics test type maps correctly.
-        // trackResponseEvent passes WooAnalyticsEvent.ConnectivityTool.Test.analytics as the test param.
-        #expect(WooAnalyticsEvent.ConnectivityTool.Test.analytics.rawValue == "analytics")
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("connectivity_tool_request_response"))
+        let properties = analyticsProvider.properties(for: "connectivity_tool_request_response")
+        #expect(properties?["test"] as? String == "analytics")
+        #expect(properties?["success"] as? Bool == true)
+        #expect(properties?["time_taken"] as? Double == 0.5)
     }
 
 }

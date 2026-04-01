@@ -22,16 +22,10 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { execSync, execFileSync, spawn } from "node:child_process";
+import { execSync, execFileSync } from "node:child_process";
 import https from "node:https";
 
 const SERVICE = "woo-smoke-test";
-
-// ── Device tunnel state ────────────────────────────────────────────────────
-
-let tunnelProcess = null;
-let forwardProcess = null;
-let tunnelDeviceUDID = null;
 
 // ── Known stores and their entries ──────────────────────────────────────────
 
@@ -213,116 +207,6 @@ function wcApiRequest(storeUrl, apiUsername, apiPassword, method, endpoint, data
   });
 }
 
-// ── Device tunnel management ────────────────────────────────────────────────
-
-function getDeviceUDID() {
-  try {
-    const output = execSync("ios list 2>/dev/null", { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
-    const match = output.match(/([0-9a-f]{40})/i) || output.match(/([0-9A-F]{8}-(?:[0-9A-F]{4}-){3}[0-9A-F]{12})/);
-    return match ? match[1] : null;
-  } catch {
-    return null;
-  }
-}
-
-function startTunnel() {
-  if (tunnelProcess && !tunnelProcess.killed) {
-    return { status: "already_running", pid: tunnelProcess.pid, udid: tunnelDeviceUDID };
-  }
-
-  // Check go-ios is available
-  try {
-    execSync("which ios", { stdio: ["pipe", "pipe", "pipe"] });
-  } catch {
-    return { status: "error", message: "go-ios not installed. Install with: npm install -g go-ios" };
-  }
-
-  const udid = getDeviceUDID();
-  if (!udid) {
-    return { status: "error", message: "No physical device found. Check USB connection." };
-  }
-  tunnelDeviceUDID = udid;
-
-  // Start tunnel
-  tunnelProcess = spawn("ios", ["tunnel", "start", "--userspace"], {
-    stdio: ["pipe", "pipe", "pipe"],
-    detached: false,
-  });
-  tunnelProcess.on("error", (err) => {
-    process.stderr.write(`Tunnel process error: ${err.message}\n`);
-    tunnelProcess = null;
-  });
-  tunnelProcess.on("exit", (code) => {
-    process.stderr.write(`Tunnel process exited with code ${code}\n`);
-    tunnelProcess = null;
-  });
-
-  // Wait a moment for tunnel to establish, then start port forwarding
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      forwardProcess = spawn("ios", ["forward", "8100", "8100", `--udid=${udid}`], {
-        stdio: ["pipe", "pipe", "pipe"],
-        detached: false,
-      });
-      forwardProcess.on("error", (err) => {
-        process.stderr.write(`Forward process error: ${err.message}\n`);
-        forwardProcess = null;
-      });
-      forwardProcess.on("exit", (code) => {
-        process.stderr.write(`Forward process exited with code ${code}\n`);
-        forwardProcess = null;
-      });
-
-      resolve({
-        status: "started",
-        udid,
-        tunnel_pid: tunnelProcess?.pid,
-        forward_pid: forwardProcess?.pid,
-      });
-    }, 3000);
-  });
-}
-
-function stopTunnel() {
-  const result = { status: "stopped", killed: [] };
-
-  if (forwardProcess && !forwardProcess.killed) {
-    forwardProcess.kill();
-    result.killed.push("forward");
-  }
-  if (tunnelProcess && !tunnelProcess.killed) {
-    tunnelProcess.kill();
-    result.killed.push("tunnel");
-  }
-
-  forwardProcess = null;
-  tunnelProcess = null;
-  tunnelDeviceUDID = null;
-
-  return result;
-}
-
-function tunnelStatus() {
-  const tunnelAlive = tunnelProcess && !tunnelProcess.killed;
-  const forwardAlive = forwardProcess && !forwardProcess.killed;
-
-  // Also check if WDA is reachable
-  let wdaReachable = false;
-  try {
-    execSync("curl -sf --max-time 2 http://localhost:8100/status", { stdio: ["pipe", "pipe", "pipe"] });
-    wdaReachable = true;
-  } catch {}
-
-  return {
-    tunnel: tunnelAlive ? "running" : "stopped",
-    forward: forwardAlive ? "running" : "stopped",
-    wda: wdaReachable ? "reachable" : "unreachable",
-    udid: tunnelDeviceUDID,
-    tunnel_pid: tunnelProcess?.pid || null,
-    forward_pid: forwardProcess?.pid || null,
-  };
-}
-
 // ── MCP Server ──────────────────────────────────────────────────────────────
 
 const server = new Server(
@@ -417,33 +301,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       name: "list_stores",
       description:
         "List all configured store aliases and their credential types.",
-      inputSchema: {
-        type: "object",
-        properties: {},
-      },
-    },
-    {
-      name: "start_device_tunnel",
-      description:
-        "Start the go-ios tunnel and port forwarding for a physical device. Detects the connected device, starts the tunnel, and forwards WDA port 8100 to localhost. Keeps processes alive for the session.",
-      inputSchema: {
-        type: "object",
-        properties: {},
-      },
-    },
-    {
-      name: "stop_device_tunnel",
-      description:
-        "Stop the go-ios tunnel and port forwarding. Call when done with the physical device.",
-      inputSchema: {
-        type: "object",
-        properties: {},
-      },
-    },
-    {
-      name: "device_tunnel_status",
-      description:
-        "Check the status of the device tunnel, port forwarding, and WDA reachability. Use to diagnose connection issues.",
       inputSchema: {
         type: "object",
         properties: {},
@@ -690,27 +547,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }),
           },
         ],
-      };
-    }
-
-    case "start_device_tunnel": {
-      const result = await startTunnel();
-      return {
-        content: [{ type: "text", text: JSON.stringify(result) }],
-      };
-    }
-
-    case "stop_device_tunnel": {
-      const result = stopTunnel();
-      return {
-        content: [{ type: "text", text: JSON.stringify(result) }],
-      };
-    }
-
-    case "device_tunnel_status": {
-      const result = tunnelStatus();
-      return {
-        content: [{ type: "text", text: JSON.stringify(result) }],
       };
     }
 

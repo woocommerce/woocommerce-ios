@@ -92,7 +92,7 @@ extension ConnectivityToolViewModel {
             return .success(())
         }
 
-        /// Authenticate the JetpackConnectionStore with WPCom credentials.
+        /// Authenticate the JetpackConnectionStore with current network.
         if let siteURL {
             stores.dispatch(JetpackConnectionAction.authenticate(siteURL: siteURL, network: network))
         }

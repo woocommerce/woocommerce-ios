@@ -57,10 +57,6 @@ final class ConnectivityToolViewModel {
     ///
     let pushNotesManager: PushNotesManager
 
-    /// Credentials used for authenticating Jetpack connection requests.
-    ///
-    private let credentials: Credentials?
-
     /// The site URL used for authenticating Jetpack connection requests.
     ///
     let siteURL: String?
@@ -89,7 +85,6 @@ final class ConnectivityToolViewModel {
         self.analytics = analytics
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
-        self.credentials = session.defaultCredentials
         self.siteURL = session.defaultSite?.url
         self.siteID = session.defaultStoreID ?? .zero
 

@@ -306,16 +306,32 @@ UDID=$(Scripts/find-simulator.sh ipad)
 ```
 
 **Parallel mode** (default for full Phase 2 runs on simulator):
-Boot multiple simulators for parallel Phase 2 execution. The coordinator uses the first iPhone for Phase 1, then dispatches workers across all simulators for Phase 2.
+Boot multiple simulators for parallel Phase 2 execution. **Do not rely on already-booted simulators** — boot all the ones you need.
 
 ```bash
-# Boot 2 iPhones + 1 iPad
-IPHONE_A=$(Scripts/find-simulator.sh iphone)
-IPHONE_B=$(Scripts/find-simulator.sh iphone --second)
-IPAD=$(Scripts/find-simulator.sh ipad)
+# List available simulators (not just booted ones)
+xcrun simctl list devices available | grep -E "iPhone|iPad"
+
+# Pick two different iPhone models and one iPad from the available list
+# Boot each one explicitly
+xcrun simctl boot <IPHONE_A_UDID>
+xcrun simctl boot <IPHONE_B_UDID>
+xcrun simctl boot <IPAD_UDID>
 ```
 
-If the second iPhone simulator is not available (only one iPhone model installed), fall back to 1 iPhone + 1 iPad (2 workers instead of 3). If only one simulator is available total, fall back to single-simulator sequential mode.
+Use `find-simulator.sh` to get the first iPhone and iPad, then find a second iPhone model from the available list:
+```bash
+IPHONE_A=$(Scripts/find-simulator.sh iphone)
+IPAD=$(Scripts/find-simulator.sh ipad)
+
+# Find a second iPhone — different model from IPHONE_A
+IPHONE_B=$(xcrun simctl list devices available | grep "iPhone" | grep -v "$(xcrun simctl list devices | grep "$IPHONE_A" | sed 's/ (.*//' | xargs)" | head -1 | grep -oE '[0-9A-F]{8}-([0-9A-F]{4}-){3}[0-9A-F]{12}')
+if [ -n "$IPHONE_B" ]; then
+  xcrun simctl boot "$IPHONE_B" 2>/dev/null || true  # may already be booted
+fi
+```
+
+If only one iPhone model is available, fall back to 1 iPhone + 1 iPad (2 workers). If only one simulator is available total, fall back to sequential mode.
 
 ### Physical device
 If `--device` is set:

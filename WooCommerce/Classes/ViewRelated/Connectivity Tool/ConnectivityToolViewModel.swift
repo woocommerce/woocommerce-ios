@@ -292,6 +292,7 @@ final class ConnectivityToolViewModel {
 
     /// Enables WooCommerce Analytics on the site with one automatic retry (known API quirk).
     ///
+    @MainActor
     private func enableAnalytics(retries: Int = 0) {
         // Hide card content and show loading indicator while enabling.
         if let cardIndex = cards.lastIndex(where: { $0.testCase == .analyticsSetting }) {
@@ -328,6 +329,7 @@ final class ConnectivityToolViewModel {
 
     /// Restores the analytics setting card to its interactive error state after a failed enable attempt.
     ///
+    @MainActor
     private func restoreAnalyticsCardActions() {
         guard let index = cards.lastIndex(where: { $0.testCase == .analyticsSetting }) else {
             return

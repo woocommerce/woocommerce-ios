@@ -5,6 +5,7 @@ import WooFoundation
 struct PointOfSaleCollectCashView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @Environment(\.posNavigationRouter) private var router
     @Environment(POSPaymentModel.self) private var paymentModel
     @FocusState private var isTextFieldFocused: Bool
 
@@ -41,6 +42,25 @@ struct PointOfSaleCollectCashView: View {
     }
 
     var body: some View {
+        collectCashContent
+            .onChange(of: paymentModel.paymentState.cash) { _, newValue in
+                if newValue == .paymentSuccess {
+                    popToSuccess()
+                }
+            }
+    }
+
+    /// Pops the cash view without animation so TotalsView's success screen
+    /// appears immediately in place, with no visible transition.
+    private func popToSuccess() {
+        var transaction = Transaction(animation: nil)
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
+            router.popToRoot()
+        }
+    }
+
+    private var collectCashContent: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
@@ -51,6 +71,7 @@ struct PointOfSaleCollectCashView: View {
                         isTextFieldFocused = false
                         Task { @MainActor in
                             await paymentModel.cancelCashPayment()
+                            router.popToRoot()
                         }
                     }))
 

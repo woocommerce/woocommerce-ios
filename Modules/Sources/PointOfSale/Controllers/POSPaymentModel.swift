@@ -238,9 +238,7 @@ extension POSPaymentModel {
         await cardPaymentCancelTask?.value
         cardPaymentCancelTask = nil
 
-        if case .connected = cardReaderConnectionStatus {
-            await startPayment()
-        }
+        await startPayment()
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {

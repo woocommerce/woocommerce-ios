@@ -5,8 +5,10 @@
 ## Build generated
 build/
 DerivedData/
-WooCommerce/Classes/DerivedSources/
-WooCommerce/Woo Watch App/DerivedSources/
+WooCommerce/Classes/DerivedSources/*
+!WooCommerce/Classes/DerivedSources/.gitkeep
+WooCommerce/Woo Watch App/DerivedSources/*
+!WooCommerce/Woo Watch App/DerivedSources/.gitkeep
 
 ## Various settings
 *.pbxuser

@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Yosemite
+import enum Networking.SitePluginStatusEnum
 @testable import WooCommerce
 
 @MainActor
@@ -191,6 +192,209 @@ struct ConnectivityToolViewModelTests {
         // Then — verify the analytics test type maps correctly.
         // trackResponseEvent passes WooAnalyticsEvent.ConnectivityTool.Test.analytics as the test param.
         #expect(WooAnalyticsEvent.ConnectivityTool.Test.analytics.rawValue == "analytics")
+    }
+
+    // MARK: - testNotifications
+
+    @Test func test_testNotifications_when_wpcom_site_authorized_and_config_ok_then_returns_success() async {
+        // Given
+        let site = Site.fake().copy(isWordPressComStore: true)
+        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let stores = MockStoresManager(sessionManager: session)
+        let mockNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockNotificationCenter.authorizationStatus = .authorized
+
+        let deviceID = "123"
+        let numericDeviceID = Int64(123)
+        let device = NotificationSettings.Device(deviceID: numericDeviceID, newComment: true, storeOrder: true)
+        let blog = NotificationSettings.Blog(blogID: site.siteID, devices: [device])
+        let settings = NotificationSettings(blogs: [blog])
+
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .loadNotificationSettings(_, onCompletion):
+                onCompletion(.success(settings))
+            default:
+                break
+            }
+        }
+
+        let sut = ConnectivityToolViewModel(session: session, stores: stores,
+                                            userNotificationCenter: mockNotificationCenter,
+                                            deviceID: deviceID)
+
+        // When
+        let result = await sut.testNotifications()
+
+        // Then
+        assertState(result, is: .success)
+    }
+
+    @Test func test_testNotifications_when_jetpack_not_active_then_returns_error_with_read_more() async {
+        // Given — self-hosted site (isWordPressComStore: false)
+        let site = Site.fake().copy(isWordPressComStore: false)
+        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let stores = MockStoresManager(sessionManager: session)
+        let mockNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockNotificationCenter.authorizationStatus = .authorized
+
+        let inactivePlugin = SitePlugin(siteID: site.siteID,
+                                        plugin: "jetpack/jetpack",
+                                        status: .inactive,
+                                        name: "Jetpack",
+                                        pluginUri: "",
+                                        author: "",
+                                        authorUri: "",
+                                        descriptionRaw: "",
+                                        descriptionRendered: "",
+                                        version: "1.0",
+                                        networkOnly: false,
+                                        requiresWPVersion: "",
+                                        requiresPHPVersion: "",
+                                        textDomain: "")
+
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .retrieveJetpackPluginDetails(_, completion):
+                completion(.success(inactivePlugin))
+            default:
+                break
+            }
+        }
+
+        let sut = ConnectivityToolViewModel(session: session, stores: stores,
+                                            userNotificationCenter: mockNotificationCenter,
+                                            deviceID: "123")
+
+        // When
+        let result = await sut.testNotifications()
+
+        // Then
+        guard case let .error(message, actions) = result else {
+            Issue.record("Expected .error state but got \(result)")
+            return
+        }
+        #expect(message.contains("Jetpack"))
+        #expect(actions.contains(where: { $0.title == "Read more" }))
+    }
+
+    @Test func test_testNotifications_when_permission_denied_then_returns_error_with_open_settings() async {
+        // Given — WPCom site to skip Jetpack check
+        let site = Site.fake().copy(isWordPressComStore: true)
+        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let stores = MockStoresManager(sessionManager: session)
+        let mockNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockNotificationCenter.authorizationStatus = .denied
+
+        let sut = ConnectivityToolViewModel(session: session, stores: stores,
+                                            userNotificationCenter: mockNotificationCenter,
+                                            deviceID: "123")
+
+        // When
+        let result = await sut.testNotifications()
+
+        // Then
+        guard case let .error(message, actions) = result else {
+            Issue.record("Expected .error state but got \(result)")
+            return
+        }
+        #expect(message.contains("not allowed"))
+        #expect(actions.contains(where: { $0.title == "Open Settings" }))
+    }
+
+    @Test func test_testNotifications_when_no_device_id_then_returns_device_not_registered_error() async {
+        // Given
+        let site = Site.fake().copy(isWordPressComStore: true)
+        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let stores = MockStoresManager(sessionManager: session)
+        let mockNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockNotificationCenter.authorizationStatus = .authorized
+
+        let sut = ConnectivityToolViewModel(session: session, stores: stores,
+                                            userNotificationCenter: mockNotificationCenter,
+                                            deviceID: nil)
+
+        // When
+        let result = await sut.testNotifications()
+
+        // Then
+        guard case let .error(message, _) = result else {
+            Issue.record("Expected .error state but got \(result)")
+            return
+        }
+        #expect(message.contains("not appear to be registered"))
+    }
+
+    @Test func test_testNotifications_when_order_notifications_disabled_then_returns_error_with_enable_action() async {
+        // Given
+        let site = Site.fake().copy(isWordPressComStore: true)
+        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let stores = MockStoresManager(sessionManager: session)
+        let mockNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockNotificationCenter.authorizationStatus = .authorized
+
+        let deviceID = "456"
+        let numericDeviceID = Int64(456)
+        let device = NotificationSettings.Device(deviceID: numericDeviceID, newComment: true, storeOrder: false)
+        let blog = NotificationSettings.Blog(blogID: site.siteID, devices: [device])
+        let settings = NotificationSettings(blogs: [blog])
+
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .loadNotificationSettings(_, onCompletion):
+                onCompletion(.success(settings))
+            default:
+                break
+            }
+        }
+
+        let sut = ConnectivityToolViewModel(session: session, stores: stores,
+                                            userNotificationCenter: mockNotificationCenter,
+                                            deviceID: deviceID)
+
+        // When
+        let result = await sut.testNotifications()
+
+        // Then
+        guard case let .error(message, actions) = result else {
+            Issue.record("Expected .error state but got \(result)")
+            return
+        }
+        #expect(message.contains("Order notifications are not enabled"))
+        #expect(actions.contains(where: { $0.title == "Enable Order Notifications" }))
+    }
+
+    @Test func test_testNotifications_when_config_request_fails_then_returns_error_with_technical_details() async {
+        // Given
+        let site = Site.fake().copy(isWordPressComStore: true)
+        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let stores = MockStoresManager(sessionManager: session)
+        let mockNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockNotificationCenter.authorizationStatus = .authorized
+
+        let testError = NSError(domain: "TestDomain", code: 500, userInfo: nil)
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            switch action {
+            case let .loadNotificationSettings(_, onCompletion):
+                onCompletion(.failure(testError))
+            default:
+                break
+            }
+        }
+
+        let sut = ConnectivityToolViewModel(session: session, stores: stores,
+                                            userNotificationCenter: mockNotificationCenter,
+                                            deviceID: "789")
+
+        // When
+        let result = await sut.testNotifications()
+
+        // Then
+        guard case let .error(_, actions) = result else {
+            Issue.record("Expected .error state but got \(result)")
+            return
+        }
+        #expect(actions.contains(where: { $0.title == "View technical details" }))
     }
 
 }

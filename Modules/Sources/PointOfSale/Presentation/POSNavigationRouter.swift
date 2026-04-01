@@ -24,24 +24,31 @@ struct POSNavigationRouter {
     }
 }
 
-// MARK: - View Modifiers
+// MARK: - Navigation Destination Wrappers
 
-private struct OnNewOrderClearNavigationModifier: ViewModifier {
-    let orderStage: PointOfSaleOrderStage
-    @Binding var navigationPath: [POSNavigationDestination]
+/// Thin wrapper that resolves environment dependencies for the cash payment NavigationStack destination.
+struct POSNavigationDestinationCashPaymentView: View {
+    let orderTotal: String
+    @Environment(\.posCurrencyProvider) private var currencyProvider
 
-    func body(content: Content) -> some View {
-        content
-            .onChange(of: orderStage) { _, newValue in
-                guard newValue == .building, !navigationPath.isEmpty else { return }
-                navigationPath.removeAll()
-            }
+    var body: some View {
+        PointOfSaleCollectCashView(orderTotal: orderTotal,
+                                   currencySettings: currencyProvider.currencySettings)
+        .navigationBarHidden(true)
     }
 }
 
-extension View {
-    func onNewOrderClearNavigation(orderStage: PointOfSaleOrderStage,
-                                   navigationPath: Binding<[POSNavigationDestination]>) -> some View {
-        modifier(OnNewOrderClearNavigationModifier(orderStage: orderStage, navigationPath: navigationPath))
+/// Thin wrapper that resolves environment dependencies for the email receipt NavigationStack destination.
+struct POSNavigationDestinationEmailReceiptView: View {
+    @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posNavigationRouter) private var router
+
+    var body: some View {
+        POSSendReceiptView(onDismiss: {
+            router.pop()
+        }) { email in
+            try await paymentModel.sendReceipt(to: email)
+        }
+        .navigationBarHidden(true)
     }
 }

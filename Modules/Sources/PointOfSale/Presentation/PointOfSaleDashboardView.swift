@@ -158,7 +158,6 @@ struct PointOfSaleDashboardView: View {
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
         }
-        .onNewOrderClearNavigation(orderStage: posModel.orderStage, navigationPath: $navigationPath)
         .ignoresSafeArea(.keyboard)
         .onAppear {
             trackTimeForInitialLoadingState()
@@ -332,35 +331,6 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
-    }
-}
-
-// MARK: - Navigation Destination Wrappers
-
-/// Thin wrapper that resolves environment dependencies for the cash payment NavigationStack destination.
-private struct POSNavigationDestinationCashPaymentView: View {
-    let orderTotal: String
-    @Environment(\.posCurrencyProvider) private var currencyProvider
-
-    var body: some View {
-        PointOfSaleCollectCashView(orderTotal: orderTotal,
-                                   currencySettings: currencyProvider.currencySettings)
-        .navigationBarHidden(true)
-    }
-}
-
-/// Thin wrapper that resolves environment dependencies for the email receipt NavigationStack destination.
-private struct POSNavigationDestinationEmailReceiptView: View {
-    @Environment(POSPaymentModel.self) private var paymentModel
-    @Environment(\.posNavigationRouter) private var router
-
-    var body: some View {
-        POSSendReceiptView(onDismiss: {
-            router.pop()
-        }) { email in
-            try await paymentModel.sendReceipt(to: email)
-        }
-        .navigationBarHidden(true)
     }
 }
 

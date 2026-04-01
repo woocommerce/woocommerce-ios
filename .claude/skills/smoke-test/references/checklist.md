@@ -264,42 +264,66 @@ Pass criteria: the app navigates from prologue through credentials to the dashbo
 
 ### Wrong credentials (error state)
 
-1. Log out if needed. Start login with the correct store URL.
-2. Enter the correct email.
-3. Enter an incorrect password.
-4. Tap Continue.
-5. List elements and verify an error message is shown.
+1. Log out if needed. Start login. Tap `Prologue Self Hosted Button`.
+2. Enter the correct store URL.
 
-> SCREENSHOT: 24-wrong-password-error.png — Wrong password error
+> SCREENSHOT: 24a-wrong-creds-site-url.png — Site URL entered (wrong credentials flow)
+
+3. Tap Continue. Enter the correct email. Tap Continue.
+
+> SCREENSHOT: 24b-wrong-creds-password-screen.png — Password screen (wrong credentials flow)
+
+4. Enter an incorrect password.
+5. Tap Continue.
+6. List elements and verify an error message is shown.
+
+> SCREENSHOT: 24c-wrong-password-error.png — Wrong password error
 
 ### Not a WordPress site (error state)
 
-1. Start login.
+1. Start login. Tap `Prologue Self Hosted Button`.
 2. Enter `google.com` as the site address.
+
+> SCREENSHOT: 25a-not-wp-site-url.png — Non-WordPress URL entered
+
 3. Tap Continue.
 4. List elements and verify an error indicates the site is not WordPress.
 
-> SCREENSHOT: 25-not-wordpress-error.png — Not a WordPress site error
+> SCREENSHOT: 25b-not-wordpress-error.png — Not a WordPress site error
 
 ### Not a WooCommerce store (error state)
 
-1. Start login.
+1. Start login. Tap `Prologue Self Hosted Button`.
 2. Enter `notawoostore.wordpress.com` as the site address.
-3. On the email screen, tap into the email field and call `type_credential(account: "not-woo.wpcom-email")`. Tap Continue.
-4. Tap into the password field and call `type_credential(account: "not-woo.wpcom-password")`. Tap Continue.
-5. Verify the app shows an appropriate error or messaging indicating the site does not have WooCommerce.
 
-> SCREENSHOT: 26-not-woo-store-error.png — Not a WooCommerce store error
+> SCREENSHOT: 26a-not-woo-site-url.png — Not-a-WooCommerce store URL entered
+
+3. Tap Continue. On the email screen, tap into the email field and call `type_credential(account: "not-woo.wpcom-email")`.
+
+> SCREENSHOT: 26b-not-woo-email.png — Email entered (not-WooCommerce flow)
+
+4. Tap Continue. Tap into the password field and call `type_credential(account: "not-woo.wpcom-password")`.
+5. Tap Continue.
+6. Verify the app shows an appropriate error or messaging indicating the site does not have WooCommerce.
+
+> SCREENSHOT: 26c-not-woo-store-error.png — Not a WooCommerce store error
 
 ### Wrong account for the store (error state)
 
-1. Start login.
+1. Start login. Tap `Prologue Self Hosted Button`.
 2. Enter site URL: `https://site-for-woocommerce12a3fasdf45dfs6789.mystagingwebsite.com/`
-3. On the email screen, tap into the email field and call `type_credential(account: "wrong-account.wpcom-email")`. Tap Continue.
-4. Tap into the password field and call `type_credential(account: "wrong-account.wpcom-password")`. Tap Continue.
-5. Verify the app shows an error indicating the account doesn't have access to the store.
 
-> SCREENSHOT: 27-wrong-account-error.png — Wrong account for store error
+> SCREENSHOT: 27a-wrong-account-site-url.png — Store URL entered (wrong account flow)
+
+3. Tap Continue. On the email screen, tap into the email field and call `type_credential(account: "wrong-account.wpcom-email")`.
+
+> SCREENSHOT: 27b-wrong-account-email.png — Email entered (wrong account flow)
+
+4. Tap Continue. Tap into the password field and call `type_credential(account: "wrong-account.wpcom-password")`.
+5. Tap Continue.
+6. Verify the app shows an error indicating the account doesn't have access to the store.
+
+> SCREENSHOT: 27c-wrong-account-error.png — Wrong account for store error
 
 ### No Jetpack site
 
@@ -309,21 +333,40 @@ Pass criteria: the app navigates from prologue through credentials to the dashbo
 2. Verify Jetpack is not active: navigate to `<site-url>/wp-admin/plugins.php` in the browser and confirm Jetpack is not in the active plugins list. If it is, deactivate it.
 3. Use WC Smooth Generator to generate test data (e.g. 100 products and orders).
 4. Log in to the app using the JN site credentials (ephemeral — use directly, no keychain needed).
-5. Verify onboarding tasks are shown.
-6. Verify the order list loads successfully.
-7. Verify the product list loads successfully.
 
-> SCREENSHOT: 28-no-jetpack-site.png — App loaded on no-Jetpack site
+> SCREENSHOT: 28a-jn-site-url.png — JN site URL entered
+
+5. Complete the login flow (email, password).
+
+> SCREENSHOT: 28b-jn-login-complete.png — JN site login completed
+
+6. Verify onboarding tasks are shown.
+
+> SCREENSHOT: 28c-jn-onboarding.png — Onboarding tasks on no-Jetpack site
+
+7. Verify the order list loads successfully.
+
+> SCREENSHOT: 28d-jn-orders.png — Orders list on no-Jetpack site
+
+8. Verify the product list loads successfully.
+
+> SCREENSHOT: 28e-jn-products.png — Products list on no-Jetpack site
 
 ### Jetpack not connected
 
 1. Using the same Jurassic Ninja site from the previous test, disconnect Jetpack (via WP Admin or WP CLI).
 2. Log in to the site in the app.
+
+> SCREENSHOT: 29a-jetpack-disconnected-login.png — Login to Jetpack-disconnected site
+
 3. Verify the app handles the disconnected Jetpack state appropriately.
+
+> SCREENSHOT: 29b-jetpack-disconnected-state.png — App state with disconnected Jetpack
+
 4. Connect Jetpack from the app after logging in.
 5. Verify the app transitions to the connected state successfully.
 
-> SCREENSHOT: 29-jetpack-reconnected.png — App after Jetpack reconnection
+> SCREENSHOT: 29c-jetpack-reconnected.png — App after Jetpack reconnection
 
 After finishing all login checks, log back in with the correct credentials to the primary test store before continuing to other sections.
 

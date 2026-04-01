@@ -30,7 +30,8 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         }
         .store(in: &subscriptions)
 
-        // Open selected URL in-app using Safari
+        // Open selected URL — system URLs (e.g. notification settings) via UIApplication,
+        // web URLs in-app using Safari.
         viewModel.$selectedURL
             .removeDuplicates()
             .compactMap { $0 }
@@ -38,7 +39,11 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             .sink { [weak self] url in
                 guard let self else { return }
                 self.viewModel.selectedURL = nil
-                WebviewHelper.launch(url, with: self)
+                if url.scheme == "http" || url.scheme == "https" {
+                    WebviewHelper.launch(url, with: self)
+                } else {
+                    UIApplication.shared.open(url)
+                }
             }
             .store(in: &subscriptions)
 

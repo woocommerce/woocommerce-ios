@@ -408,9 +408,9 @@ final class ConnectivityToolViewModel {
             let openSettingsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: Localization.Action.openSettings,
                 systemImage: SystemImages.openSettings.rawValue,
-                action: {
+                action: { [weak self] in
                     if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
-                        UIApplication.shared.open(url)
+                        self?.selectedURL = url
                     }
                 }
             )

@@ -19,6 +19,7 @@ struct TotalsView: View {
 
     /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
     /// by NavigationStack push. Success and idle are visible to TotalsView.
+    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
     private var displayPaymentState: PointOfSalePaymentState {
         let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash ? .idle : paymentModel.paymentState.cash
         return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)

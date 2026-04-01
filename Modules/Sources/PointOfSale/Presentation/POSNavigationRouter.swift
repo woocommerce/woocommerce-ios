@@ -34,6 +34,7 @@ struct POSNavigationDestinationCashPaymentView: View {
     var body: some View {
         PointOfSaleCollectCashView(orderTotal: orderTotal,
                                    currencySettings: currencyProvider.currencySettings)
+        .environment(\.floatingControlAreaSize, .zero)
         .navigationBarHidden(true)
     }
 }

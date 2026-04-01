@@ -156,4 +156,30 @@ struct CIABOrderStatusMapperTests {
     func test_resolveFilterStatuses_when_empty_then_returns_empty() {
         #expect(CIABOrderStatusMapper.resolveFilterStatuses([]).isEmpty)
     }
+
+    // MARK: - Filter persistence validation (resolveFilterStatuses used to validate stored filters)
+
+    @Test("Resolved open filter statuses all exist in API-returned statuses")
+    func test_resolveFilterStatuses_when_open_then_all_resolved_statuses_exist_in_api_statuses() {
+        // Given — API returns core statuses; stored filter is synthetic "open"
+        let apiStatuses: Set<OrderStatusEnum> = [.pending, .processing, .onHold, .failed, .completed, .cancelled, .refunded]
+        let storedFilter: [OrderStatusEnum] = [.custom(CIABOrderStatusMapper.openSlug)]
+
+        // When — resolve synthetic status to core statuses for validation
+        let resolved = CIABOrderStatusMapper.resolveFilterStatuses(storedFilter)
+
+        // Then — every resolved status exists in the API set
+        for status in resolved {
+            #expect(apiStatuses.contains(status), "Resolved status \(status) should exist in API statuses")
+        }
+    }
+
+    @Test("Unresolved open filter does not exist in API-returned statuses")
+    func test_custom_open_status_does_not_exist_in_api_statuses() {
+        // Given — API returns core statuses only
+        let apiStatuses: Set<OrderStatusEnum> = [.pending, .processing, .onHold, .failed, .completed, .cancelled, .refunded]
+
+        // Then — the synthetic "open" status is NOT in the API set (the bug scenario)
+        #expect(!apiStatuses.contains(.custom(CIABOrderStatusMapper.openSlug)))
+    }
 }

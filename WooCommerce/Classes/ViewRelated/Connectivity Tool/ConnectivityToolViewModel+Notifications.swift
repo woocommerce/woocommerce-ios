@@ -309,4 +309,11 @@ private extension ConnectivityToolViewModel {
             )
         }
     }
+
+    enum SystemImages: String {
+        case readMore = "arrow.up.forward.app"
+        case viewDetails = "info.circle"
+        case enableAction = "checkmark.circle"
+        case openSettings = "gear"
+    }
 }

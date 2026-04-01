@@ -666,13 +666,12 @@ private extension ConnectivityToolViewModel {
     }
 }
 
-extension ConnectivityToolViewModel {
+private extension ConnectivityToolViewModel {
     enum SystemImages: String {
         case retry = "arrow.clockwise"
         case readMore = "arrow.up.forward.app"
         case viewDetails = "info.circle"
         case enableAction = "checkmark.circle"
-        case openSettings = "gear"
     }
 }
 

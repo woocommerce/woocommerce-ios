@@ -225,7 +225,11 @@ extension POSPaymentModel {
         paymentState.cash = .collectingCash
 
         cardPaymentCancelTask = Task { [weak self] in
-            try? await self?.cardPresentPaymentService.cancelPayment()
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogWarn("💵 [CashPayment] failed to cancel card payment: \(error)")
+            }
         }
     }
 

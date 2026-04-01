@@ -256,22 +256,16 @@ Credentials from JN sites are ephemeral (sites self-destruct after 7 days) and c
 If running a full test (not `--section` or `--sequential`), check that parallel execution dependencies are available:
 
 ```bash
-# Check tmux
-if ! command -v tmux &>/dev/null; then
-  echo "tmux not found — parallel mode requires it."
-  echo "Install with: brew install tmux"
-  echo "Falling back to sequential mode."
-fi
-
-# Check claude CLI
-if ! command -v claude &>/dev/null; then
-  echo "claude CLI not found — parallel workers need it."
-  echo "Install from: https://claude.ai/claude-code"
-  echo "Falling back to sequential mode."
-fi
+command -v tmux   # needed for visible worker terminals
+command -v claude # needed for worker sessions
 ```
 
-If either is missing, tell the user what's needed and offer to install (`brew install tmux`). If the user declines or installation fails, fall back to sequential mode — parallel is an optimization, not a requirement.
+If either is missing, **offer to install** before falling back:
+
+- **tmux missing**: Ask the user: "tmux is needed for parallel mode (visible worker terminals). Install it now with `brew install tmux`?" If they agree, run `brew install tmux`. If they decline or it fails, fall back to sequential.
+- **claude CLI missing**: Tell the user: "The `claude` CLI is needed for parallel worker sessions. Install from https://claude.ai/claude-code" — this can't be auto-installed, so fall back to sequential if unavailable.
+
+Only fall back to sequential mode after offering installation and being declined or hitting a failure.
 
 ### Credentials
 

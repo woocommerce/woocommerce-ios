@@ -9,9 +9,7 @@ import class Networking.SystemStatusRemote
 import class Networking.OrdersRemote
 import class Networking.ProductsRemote
 import class Networking.UserAgent
-import enum Networking.SitePluginStatusEnum
 import protocol WooFoundation.Analytics
-import UserNotifications
 
 final class ConnectivityToolViewModel {
 
@@ -41,19 +39,19 @@ final class ConnectivityToolViewModel {
 
     /// Stores manager for dispatching Yosemite actions.
     ///
-    private let stores: StoresManager
+    let stores: StoresManager
 
     /// Analytics tracker.
     ///
-    private let analytics: Analytics
+    let analytics: Analytics
 
     /// Adapter for checking notification authorization status.
     ///
-    private let userNotificationCenter: UserNotificationsCenterAdapter
+    let userNotificationCenter: UserNotificationsCenterAdapter
 
     /// WordPress.com device identifier for notification settings.
     ///
-    private let deviceID: String?
+    let deviceID: String?
 
     /// Credentials used for authenticating Jetpack connection requests.
     ///
@@ -61,15 +59,15 @@ final class ConnectivityToolViewModel {
 
     /// The site URL used for authenticating Jetpack connection requests.
     ///
-    private let siteURL: String?
+    let siteURL: String?
 
     /// Site to be tested.
     ///
-    private let siteID: Int64
+    let siteID: Int64
 
     private var latestTestResult: [ConnectivityTestResult] = []
 
-    private let network: AlamofireNetwork
+    let network: AlamofireNetwork
 
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -380,242 +378,6 @@ final class ConnectivityToolViewModel {
         )
     }
 
-    // MARK: - Notifications Check
-
-    /// Test notification settings: Jetpack plugin status, iOS permission, and notification config.
-    ///
-    @MainActor
-    func testNotifications() async -> ConnectivityToolCard.ConnectivityState {
-        // Sub-check 1: Jetpack plugin is active.
-        let jetpackResult = await checkJetpackPluginActiveIfNeeded()
-        if case .failure(let error) = jetpackResult {
-            DDLogError("Connectivity Tool: ❌ Jetpack plugin check failed\n\(error)")
-            let readMoreAction = ConnectivityToolCard.ConnectivityState.Action(
-                title: Localization.Action.readMore,
-                systemImage: SystemImages.readMore.rawValue,
-                action: { [weak self] in
-                    self?.selectedURL = WooConstants.URLs.troubleshootJetpackConnection.asURL()
-                    self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
-                }
-            )
-            return .error(Localization.ErrorMessage.jetpackPluginNotActive, [readMoreAction, retryAction(for: .notifications)])
-        }
-
-        // Sub-check 2: iOS notification permission is authorized.
-        let permissionResult = await checkNotificationPermission()
-        if case .failure = permissionResult {
-            DDLogInfo("Connectivity Tool: ⚠️ Notifications not authorized")
-            let openSettingsAction = ConnectivityToolCard.ConnectivityState.Action(
-                title: Localization.Action.openSettings,
-                systemImage: SystemImages.openSettings.rawValue,
-                action: { [weak self] in
-                    if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
-                        self?.selectedURL = url
-                    }
-                }
-            )
-            return .error(Localization.ErrorMessage.notificationsNotAuthorized, [openSettingsAction, retryAction(for: .notifications)])
-        }
-
-        // Sub-check 3: Notification config — device registered and order notifications enabled.
-        let configResult = await checkNotificationConfig()
-        switch configResult {
-        case .success:
-            DDLogInfo("Connectivity Tool: ✅ Notification settings configured")
-            return .success
-        case .failure(let configError):
-            DDLogInfo("Connectivity Tool: ⚠️ Notification config issue: \(configError)")
-            switch configError {
-            case .deviceNotRegistered:
-                return .error(Localization.ErrorMessage.deviceNotRegistered, [retryAction(for: .notifications)])
-            case .orderNotificationsDisabled(let settings):
-                let enableAction = ConnectivityToolCard.ConnectivityState.Action(
-                    title: Localization.Action.enableOrderNotifications,
-                    systemImage: SystemImages.enableAction.rawValue,
-                    action: { [weak self] in
-                        self?.enableOrderNotifications(settings: settings)
-                    }
-                )
-                return .error(Localization.ErrorMessage.orderNotificationsDisabled,
-                              [enableAction, retryAction(for: .notifications)])
-            case .siteNotFound:
-                return .error(Localization.ErrorMessage.notificationSiteNotFound, [retryAction(for: .notifications)])
-            case .requestFailed(let error):
-                let technicalDetails = String(describing: error)
-                let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
-                    title: Localization.Action.viewDetails,
-                    systemImage: SystemImages.viewDetails.rawValue,
-                    technicalDetails: technicalDetails
-                )
-                return .error(Localization.ErrorMessage.notificationConfigCheckFailed,
-                              [viewDetailsAction, retryAction(for: .notifications)])
-            }
-        }
-    }
-
-    /// Authenticates and retrieves the Jetpack plugin details to verify it's active.
-    ///
-    @MainActor
-    private func checkJetpackPluginActiveIfNeeded() async -> Result<Void, JetpackCheckError> {
-        /// WPCom and CIAB sites have Jetpack by default so skip this check
-        guard stores.sessionManager.defaultSite?.isWordPressComStore == false,
-              stores.sessionManager.defaultSite?.isCIAB == false else {
-            return .success(())
-        }
-
-        /// Authenticate the JetpackConnectionStore with WPCom credentials.
-        if let siteURL {
-            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: siteURL, network: network))
-        }
-
-        return await withCheckedContinuation { continuation in
-            let action = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: siteID) { result in
-                switch result {
-                case .success(let plugin):
-                    if plugin.status == .active || plugin.status == .networkActive {
-                        continuation.resume(returning: .success(()))
-                    } else {
-                        continuation.resume(returning: .failure(.pluginNotActive(status: plugin.status)))
-                    }
-                case .failure(let error):
-                    continuation.resume(returning: .failure(.requestFailed(error)))
-                }
-            }
-            stores.dispatch(action)
-        }
-    }
-
-    /// Checks the iOS notification authorization status.
-    ///
-    private func checkNotificationPermission() async -> Result<Void, NotificationPermissionError> {
-        await withCheckedContinuation { continuation in
-            userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
-                if status == .authorized {
-                    continuation.resume(returning: .success(()))
-                } else {
-                    continuation.resume(returning: .failure(.notAuthorized(status: status)))
-                }
-            }
-        }
-    }
-
-    /// Checks that the device is registered for notifications and order notifications are enabled.
-    ///
-    @MainActor
-    private func checkNotificationConfig() async -> Result<Void, NotificationConfigError> {
-        guard let deviceID, let numericDeviceID = Int64(deviceID) else {
-            return .failure(.deviceNotRegistered)
-        }
-
-        return await withCheckedContinuation { continuation in
-            let action = AccountAction.loadNotificationSettings(deviceID: numericDeviceID) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success(let settings):
-                    guard let blog = settings.blogs.first(where: { $0.blogID == self.siteID }) else {
-                        continuation.resume(returning: .failure(.siteNotFound))
-                        return
-                    }
-                    guard let device = blog.devices.first(where: { $0.deviceID == numericDeviceID }) else {
-                        continuation.resume(returning: .failure(.deviceNotRegistered))
-                        return
-                    }
-                    if device.storeOrder {
-                        continuation.resume(returning: .success(()))
-                    } else {
-                        continuation.resume(returning: .failure(.orderNotificationsDisabled(settings: settings)))
-                    }
-                case .failure(let error):
-                    continuation.resume(returning: .failure(.requestFailed(error)))
-                }
-            }
-            stores.dispatch(action)
-        }
-    }
-
-    /// Enables order notifications for the current site and device.
-    ///
-    private func enableOrderNotifications(settings: NotificationSettings) {
-        guard let deviceID, let numericDeviceID = Int64(deviceID) else { return }
-
-        // Show loading indicator while enabling.
-        if let cardIndex = cards.lastIndex(where: { $0.testCase == .notifications }) {
-            cards[cardIndex] = ConnectivityTest.notifications.inProgressCard
-        }
-
-        // Build updated settings with storeOrder enabled for this device/blog.
-        let updatedBlogs: [NotificationSettings.Blog] = settings.blogs.map { blog in
-            guard blog.blogID == siteID else { return blog }
-            let updatedDevices: [NotificationSettings.Device] = blog.devices.map { device in
-                guard device.deviceID == numericDeviceID else { return device }
-                return device.copy(storeOrder: true)
-            }
-            return blog.copy(devices: updatedDevices)
-        }
-        let updatedSettings = settings.copy(blogs: updatedBlogs)
-
-        let action = AccountAction.updateNotificationSettings(notificationSettings: updatedSettings) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success:
-                DDLogInfo("Connectivity Tool: ✅ Order notifications enabled successfully")
-                if let index = self.cards.lastIndex(where: { $0.testCase == .notifications }) {
-                    self.cards[index] = ConnectivityTool.Card(
-                        testCase: .notifications,
-                        title: ConnectivityTest.notifications.title,
-                        icon: ConnectivityTest.notifications.icon,
-                        state: .success
-                    )
-                }
-            case .failure(let error):
-                DDLogError("Connectivity Tool: ❌ Failed to enable order notifications\n\(error)")
-                self.restoreNotificationsCardActions(settings: settings)
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    /// Restores the notifications card to its interactive error state after a failed enable attempt.
-    ///
-    private func restoreNotificationsCardActions(settings: NotificationSettings) {
-        guard let index = cards.lastIndex(where: { $0.testCase == .notifications }) else { return }
-        let enableAction = ConnectivityToolCard.ConnectivityState.Action(
-            title: Localization.Action.enableOrderNotifications,
-            systemImage: SystemImages.enableAction.rawValue,
-            action: { [weak self] in
-                self?.enableOrderNotifications(settings: settings)
-            }
-        )
-        cards[index] = ConnectivityTool.Card(
-            testCase: .notifications,
-            title: ConnectivityTest.notifications.title,
-            icon: ConnectivityTest.notifications.icon,
-            state: .error(Localization.ErrorMessage.orderNotificationsDisabled, [enableAction, retryAction(for: .notifications)])
-        )
-    }
-
-    /// Error types for the Jetpack plugin check.
-    ///
-    enum JetpackCheckError: Error {
-        case pluginNotActive(status: SitePluginStatusEnum)
-        case requestFailed(Error)
-    }
-
-    /// Error types for the notification permission check.
-    ///
-    enum NotificationPermissionError: Error {
-        case notAuthorized(status: UNAuthorizationStatus)
-    }
-
-    /// Error types for the notification config check.
-    ///
-    enum NotificationConfigError: Error {
-        case deviceNotRegistered
-        case orderNotificationsDisabled(settings: NotificationSettings)
-        case siteNotFound
-        case requestFailed(Error)
-    }
-
     private func stateForSiteResult<T>(_ result: Result<T, Error>, operation: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState {
         guard case let .failure(error) = result else {
             return .success
@@ -671,7 +433,7 @@ final class ConnectivityToolViewModel {
         }
     }
 
-    private func retryAction(for testCase: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState.Action {
+    func retryAction(for testCase: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState.Action {
         let retryText = Localization.Action.retry
         return .init(title: retryText, systemImage: SystemImages.retry.rawValue, action: { [weak self] in
             self?.retryTest(testCase)
@@ -878,42 +640,6 @@ private extension ConnectivityToolViewModel {
                 "Contact our support team for further assistance.",
                 comment: "Message when the analytics setting check fails in the connectivity tool"
             )
-            static let jetpackPluginNotActive = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.jetpackPluginNotActive",
-                value: "The Jetpack plugin doesn't appear to be active on your site.\n\n" +
-                "Push notifications require an active Jetpack connection.",
-                comment: "Message when Jetpack plugin is not active in the connectivity tool"
-            )
-            static let notificationsNotAuthorized = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.notificationsNotAuthorized",
-                value: "Push notifications are not allowed for this app.\n\n" +
-                "Enable them in your device Settings to receive order notifications.",
-                comment: "Message when iOS notification permission is denied in the connectivity tool"
-            )
-            static let deviceNotRegistered = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.deviceNotRegistered",
-                value: "Your device doesn't appear to be registered for push notifications.\n\n" +
-                "Try logging out and back in to re-register.",
-                comment: "Message when the device is not registered for push notifications in the connectivity tool"
-            )
-            static let orderNotificationsDisabled = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.orderNotificationsDisabled",
-                value: "Order notifications are not enabled for this store.\n\n" +
-                "Enable them to receive alerts when new orders come in.",
-                comment: "Message when order notifications are disabled in the connectivity tool"
-            )
-            static let notificationSiteNotFound = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.notificationSiteNotFound",
-                value: "Your store was not found in the notification settings.\n\n" +
-                "Try logging out and back in to re-register.",
-                comment: "Message when the site is not found in notification settings in the connectivity tool"
-            )
-            static let notificationConfigCheckFailed = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.notificationConfigCheckFailed",
-                value: "We couldn't check your notification settings.\n\n" +
-                "Contact our support team for further assistance.",
-                comment: "Message when the notification config check fails in the connectivity tool"
-            )
         }
         enum Action {
             static let readMore = NSLocalizedString(
@@ -936,21 +662,11 @@ private extension ConnectivityToolViewModel {
                 value: "Enable Analytics",
                 comment: "Action button to enable WooCommerce Analytics in the connectivity tool"
             )
-            static let openSettings = NSLocalizedString(
-                "connectivityToolViewModel.action.openSettings",
-                value: "Open Settings",
-                comment: "Action button to open device notification settings in the connectivity tool"
-            )
-            static let enableOrderNotifications = NSLocalizedString(
-                "connectivityToolViewModel.action.enableOrderNotifications",
-                value: "Enable Order Notifications",
-                comment: "Action button to enable order notifications in the connectivity tool"
-            )
         }
     }
 }
 
-private extension ConnectivityToolViewModel {
+extension ConnectivityToolViewModel {
     enum SystemImages: String {
         case retry = "arrow.clockwise"
         case readMore = "arrow.up.forward.app"

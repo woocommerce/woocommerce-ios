@@ -3,6 +3,7 @@
 24.5
 -----
 - [*] Add analytics setting check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16871]
+- [*] Add notification check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16875]
 
 
 24.4

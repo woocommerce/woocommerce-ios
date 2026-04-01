@@ -273,6 +273,10 @@ public extension Site {
     static func isCIAB(isGarden: Bool, gardenName: String?) -> Bool {
         isGarden && gardenName ==  Constants.commerceGardenName
     }
+
+    var isCIAB: Bool {
+        Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
+    }
 }
 
 /// Defines all of the Site CodingKeys.

@@ -69,6 +69,8 @@ final class ConnectivityToolViewModel {
 
     private var latestTestResult: [ConnectivityTestResult] = []
 
+    private let network: AlamofireNetwork
+
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -76,6 +78,7 @@ final class ConnectivityToolViewModel {
          deviceID: String? = ServiceLocator.pushNotesManager.deviceID) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
+        self.network = network
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
         self.orderRemote = OrdersRemote(network: network)
@@ -384,7 +387,7 @@ final class ConnectivityToolViewModel {
     @MainActor
     func testNotifications() async -> ConnectivityToolCard.ConnectivityState {
         // Sub-check 1: Jetpack plugin is active.
-        let jetpackResult = await checkJetpackPluginActive()
+        let jetpackResult = await checkJetpackPluginActiveIfNeeded()
         if case .failure(let error) = jetpackResult {
             DDLogError("Connectivity Tool: ❌ Jetpack plugin check failed\n\(error)")
             let readMoreAction = ConnectivityToolCard.ConnectivityState.Action(
@@ -453,10 +456,15 @@ final class ConnectivityToolViewModel {
     /// Authenticates and retrieves the Jetpack plugin details to verify it's active.
     ///
     @MainActor
-    private func checkJetpackPluginActive() async -> Result<Void, Error> {
-        // Authenticate the JetpackConnectionStore with WPCom credentials.
-        if let siteURL, let credentials {
-            let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+    private func checkJetpackPluginActiveIfNeeded() async -> Result<Void, Error> {
+        /// WPCom and CIAB sites have Jetpack by default so skip this check
+        guard stores.sessionManager.defaultSite?.isWordPressComStore == false,
+              stores.sessionManager.defaultSite?.isCIAB == false else {
+            return .success(())
+        }
+
+        /// Authenticate the JetpackConnectionStore with WPCom credentials.
+        if let siteURL {
             stores.dispatch(JetpackConnectionAction.authenticate(siteURL: siteURL, network: network))
         }
 

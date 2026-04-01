@@ -22,7 +22,7 @@ struct POSSettingsControllerTests {
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
                                                 isLocalCatalogEligible: true,
-                                                receiptSettingsAdminURL: nil)
+                                                receiptSettingsAdminURL: "")
 
         // When
         let cardReader = sut.connectedCardReader
@@ -43,7 +43,7 @@ struct POSSettingsControllerTests {
                                                 grdbManager: nil,
                                                 catalogSyncCoordinator: nil,
                                                 isLocalCatalogEligible: true,
-                                                receiptSettingsAdminURL: nil)
+                                                receiptSettingsAdminURL: "")
 
         // Initially nil
         #expect(sut.connectedCardReader == nil)
@@ -81,7 +81,7 @@ final class MockPOSSettingsController: POSSettingsControllerProtocol {
                                                                               pluginsService: MockPluginsService(),
                                                                               defaultSiteName: "Sample Store",
                                                                               siteSettings: [],
-                                                                              receiptSettingsAdminURL: nil)
+                                                                              receiptSettingsAdminURL: "")
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
     var isLocalCatalogEligible = true
 }

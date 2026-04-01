@@ -79,7 +79,7 @@ struct POSSettingsStoreDetailView: View {
             }
         }
         .posFullScreenCover(isPresented: $showingWebView) {
-            if let adminURL = viewModel.receiptSettingsAdminURL {
+            if let adminURL = URL(string: viewModel.receiptSettingsAdminURL) {
                 externalViews.createAuthenticatedWebView(
                     url: adminURL,
                     title: Localization.editReceiptWebViewTitle) {
@@ -105,7 +105,7 @@ struct POSSettingsStoreDetailView: View {
 
                 Spacer()
 
-                if viewModel.receiptSettingsAdminURL != nil {
+                if !viewModel.receiptSettingsAdminURL.isEmpty {
                     Button(Localization.edit) {
                         showingWebView = true
                     }

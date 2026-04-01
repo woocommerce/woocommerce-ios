@@ -20,7 +20,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -40,7 +40,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -60,7 +60,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -77,7 +77,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: nil,
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -106,7 +106,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         await sut.retrievePOSReceiptSettings()
@@ -126,7 +126,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: expectedStoreName,
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         let actualStoreName = sut.storeName
@@ -142,7 +142,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: nil,
                                             siteSettings: [],
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         let actualStoreName = sut.storeName
@@ -159,7 +159,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: siteSettings,
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         let storeAddress = sut.storeAddress
@@ -176,7 +176,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: siteSettings,
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         let storeAddress = sut.storeAddress
@@ -193,7 +193,7 @@ struct POSSettingsStoreViewModelTests {
                                             pluginsService: mockPluginService,
                                             defaultSiteName: "Test Store",
                                             siteSettings: siteSettings,
-                                            receiptSettingsAdminURL: nil)
+                                            receiptSettingsAdminURL: "")
 
         // When
         let storeAddress = sut.storeAddress

@@ -35,7 +35,7 @@ protocol POSSettingsControllerProtocol {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
-         receiptSettingsAdminURL: URL?) {
+         receiptSettingsAdminURL: String) {
         self.storeViewModel = POSSettingsStoreViewModel(siteID: siteID,
                                                         settingsService: settingsService,
                                                         pluginsService: pluginsService,
@@ -86,7 +86,7 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
                                                                               pluginsService: PluginsServicePreview(),
                                                                               defaultSiteName: "Sample Store",
                                                                               siteSettings: [],
-                                                                              receiptSettingsAdminURL: nil)
+                                                                              receiptSettingsAdminURL: "")
 
     var localCatalogViewModel: POSSettingsLocalCatalogViewModel?
 

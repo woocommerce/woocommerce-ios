@@ -77,7 +77,7 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
-         receiptSettingsAdminURL: URL?,
+         receiptSettingsAdminURL: String,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -255,7 +255,7 @@ public struct PointOfSaleEntryPointView: View {
         grdbManager: nil,
         catalogSyncCoordinator: nil,
         isLocalCatalogEligible: false,
-        receiptSettingsAdminURL: nil,
+        receiptSettingsAdminURL: "",
         services: POSPreviewServices()
     )
 }

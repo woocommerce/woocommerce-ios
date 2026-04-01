@@ -281,8 +281,7 @@ private extension POSTabCoordinator {
                     .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
                 let isBookingsEligible = isCIAB
 
-                let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite
-                    .flatMap { $0.receiptSettingsAdminURL(isCIAB: isCIAB) }
+                let receiptSettingsAdminURL = Site.receiptSettingsAdminURL(site: storesManager.sessionManager.defaultSite, isCIAB: isCIAB)
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,

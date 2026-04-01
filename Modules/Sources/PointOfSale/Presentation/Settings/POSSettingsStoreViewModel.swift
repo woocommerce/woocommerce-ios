@@ -12,7 +12,7 @@ final class POSSettingsStoreViewModel: ObservableObject {
     @Published var receiptInformation = POSReceiptInformation.empty
     @Published var shouldShowReceiptInformation: Bool = false
 
-    let receiptSettingsAdminURL: URL?
+    let receiptSettingsAdminURL: String
 
     private let siteID: Int64
     private let settingsService: PointOfSaleSettingsServiceProtocol
@@ -25,7 +25,7 @@ final class POSSettingsStoreViewModel: ObservableObject {
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String?,
          siteSettings: [SiteSetting],
-         receiptSettingsAdminURL: URL?) {
+         receiptSettingsAdminURL: String) {
         self.siteID = siteID
         self.settingsService = settingsService
         self.pluginsService = pluginsService

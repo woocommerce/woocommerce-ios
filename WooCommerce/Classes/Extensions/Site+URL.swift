@@ -1,5 +1,6 @@
-import Yosemite
+import CocoaLumberjackSwift
 import Foundation
+import Yosemite
 
 private extension CardPresentPaymentsPlugin {
     var setupURLSectionPath: String {
@@ -48,11 +49,16 @@ extension Site {
 
     /// Constructs the admin URL for editing POS receipt settings.
     /// CIAB sites use the next-admin page; non-CIAB sites use the classic wc-settings page.
-    func receiptSettingsAdminURL(isCIAB: Bool) -> URL? {
+    /// Returns an empty string if site is nil.
+    static func receiptSettingsAdminURL(site: Site?, isCIAB: Bool) -> String {
+        guard let site else {
+            DDLogError("⛔️ receiptSettingsAdminURL called without a site")
+            return ""
+        }
         if isCIAB {
-            return URL(string: adminURL + "admin.php?page=next-admin&p=%2Fwoocommerce%2Fsettings%2Fpayments%2Fpos")
+            return site.adminURL + "admin.php?page=next-admin&p=%2Fwoocommerce%2Fsettings%2Fpayments%2Fpos"
         } else {
-            return URL(string: adminURL + "admin.php?page=wc-settings&tab=point-of-sale")
+            return site.adminURL + "admin.php?page=wc-settings&tab=point-of-sale"
         }
     }
 

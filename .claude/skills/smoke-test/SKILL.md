@@ -91,6 +91,13 @@ This skill creates and refunds real orders when running the `orders` or `pos` se
 These must be tested manually:
 - Watch app (separate target, paired Apple Watch required)
 
+## Tool Usage
+
+- **Write files** (progress.json, report.html) with the **Write tool**, not Bash heredocs.
+- **Never chain Bash commands with `&&`** — it triggers permission prompts. Use separate Bash calls for each command, or use `;` if you must combine them.
+- **Read files** with the Read tool, not `cat`.
+- **Search** with Grep/Glob, not `grep`/`find`.
+
 ## Pacing and Timing
 
 ### Adaptive backoff
@@ -551,7 +558,9 @@ After all workers complete and pass validation:
 
 After all sections complete, generate a self-contained HTML report file in the run folder and open it in the browser.
 
-The report file should be saved as `/tmp/woo-smoke-test-<timestamp>/report.html` and include:
+**Use the Write tool** to create the report file — do not use Bash with heredoc or `&&` chaining (triggers permission prompts). Similarly, use individual Bash calls for any file operations like copying screenshots — never chain commands with `&&`.
+
+The report file should be saved as `$RUN_DIR/report.html` and include:
 
 1. **Summary table** — section name, PASS/FAIL/SKIPPED badge, and notes for each section tested. Clicking a section name scrolls to that section's detail. Group sections by phase.
 2. **Section details** — one collapsible section per test, each containing:
@@ -574,7 +583,7 @@ Generate a single HTML file with inline CSS and JS (no external dependencies). K
 
 After writing the file, open it:
 ```bash
-open /tmp/woo-smoke-test-<timestamp>/report.html
+open $RUN_DIR/report.html
 ```
 
 ### Console summary
@@ -583,7 +592,7 @@ Also print a brief text summary to the console so the user sees results without 
 
 ```
 Smoke Test: 8/11 sections passed, 2 skipped (simulator), 1 failed, 3 observations
-Report: /tmp/woo-smoke-test-<timestamp>/report.html (opened in browser)
+Report: $RUN_DIR/report.html (opened in browser)
 Failed: Orders (refund button not found)
 Skipped: Installation (simulator), Push Notifications (simulator)
 Observations: Login password entry needed 3 retries (medium), WDA timed out during orders (low), Blaze webview slow to load (low)

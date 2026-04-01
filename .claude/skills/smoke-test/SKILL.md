@@ -555,9 +555,8 @@ tmux send-keys -t smoke-test-workers:worker-c \
    tell application "iTerm"
      activate
      tell current window
-       create tab with default profile
        tell current session
-         write text "tmux attach -t smoke-test-workers"
+         split vertically with default profile command "tmux attach -t smoke-test-workers"
        end tell
      end tell
    end tell

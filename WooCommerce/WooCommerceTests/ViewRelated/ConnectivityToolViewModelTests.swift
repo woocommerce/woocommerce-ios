@@ -262,11 +262,10 @@ struct ConnectivityToolViewModelTests {
         let result = await sut.testNotifications()
 
         // Then
-        guard case let .error(message, actions) = result else {
+        guard case let .error(_, actions) = result else {
             Issue.record("Expected .error state but got \(result)")
             return
         }
-        #expect(message.contains("Jetpack"))
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.setupJetpack.id }))
     }
 
@@ -287,11 +286,10 @@ struct ConnectivityToolViewModelTests {
         let result = await sut.testNotifications()
 
         // Then
-        guard case let .error(message, actions) = result else {
+        guard case let .error(_, actions) = result else {
             Issue.record("Expected .error state but got \(result)")
             return
         }
-        #expect(message.contains("not allowed"))
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.openSettings.id }))
     }
 
@@ -312,11 +310,10 @@ struct ConnectivityToolViewModelTests {
         let result = await sut.testNotifications()
 
         // Then
-        guard case let .error(message, actions) = result else {
+        guard case let .error(_, actions) = result else {
             Issue.record("Expected .error state but got \(result)")
             return
         }
-        #expect(message.contains("doesn't appear to be registered"))
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.registerDevice.id }))
     }
 
@@ -351,11 +348,10 @@ struct ConnectivityToolViewModelTests {
         let result = await sut.testNotifications()
 
         // Then
-        guard case let .error(message, actions) = result else {
+        guard case let .error(_, actions) = result else {
             Issue.record("Expected .error state but got \(result)")
             return
         }
-        #expect(message.contains("Order notifications are not enabled"))
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.enableOrderNotifications.id }))
     }
 

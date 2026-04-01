@@ -182,19 +182,18 @@ After completing the user-assisted sections above, tell the user: **"All tests r
 
 ## Section: Installation (device-only)
 
-These checks verify the upgrade and fresh install paths on a physical device. The goal is to test what real users experience — upgrading from the current release to the new build.
+These checks verify the upgrade and fresh install paths on a physical device. The goal is to test what real users experience — upgrading from the previous release to the new version.
 
-**Note:** All smoke testing should ideally use a TestFlight build, not a dev build from Xcode. TestFlight builds match what users will get (signed, optimized, with the correct bundle ID for upgrades).
+Smoke testing can use either a **TestFlight build** (recommended — matches what users get) or a **dev build** from Xcode. The user chooses at the start of the run. For upgrade testing, the previous version must use the same bundle ID as the new version — TestFlight → TestFlight or App Store → TestFlight works; dev builds use a different bundle ID and can't test the real upgrade path.
 
 ### Upgrade from existing version (device-only)
 
-1. Ensure the current App Store or TestFlight version is installed on the device. If not:
-   - Ask the user via `AskUserQuestion`: "Please install the current App Store or TestFlight version of WooCommerce on the device, log in, and confirm when ready."
-2. Log in to the existing version and verify it works (dashboard loads).
+1. Ask the user via `AskUserQuestion`: "For the upgrade test, please ensure the **previous** App Store or TestFlight version of WooCommerce is installed on the device, logged in, and working. Confirm when ready."
+2. Verify the existing version is running — list elements and check the dashboard loads.
 
-> SCREENSHOT: 01a-existing-version.png — Current version running, dashboard visible
+> SCREENSHOT: 01a-existing-version.png — Previous version running, dashboard visible
 
-3. Install the new build over the existing version (via TestFlight or `xcrun devicectl`).
+3. Ask the user via `AskUserQuestion`: "Please install the **new** TestFlight build over the existing version (or confirm it's ready to install). Let me know when the new version is installed."
 4. Launch the app after upgrade.
 5. Verify the user remains logged in and basic navigation works (dashboard, orders tab, products tab).
 
@@ -203,14 +202,14 @@ These checks verify the upgrade and fresh install paths on a physical device. Th
 ### Fresh install (device-only)
 
 1. Uninstall the app completely from the device.
-2. Install the new build.
+2. Install the new build (TestFlight or dev build, whichever the user is testing).
 3. Verify the app launches to the prologue/login screen.
 
 > SCREENSHOT: 02-fresh-install-prologue.png — Fresh install prologue screen
 
 If running on simulator, skip this section entirely — the build step in SKILL.md handles fresh installation. Mark as "not tested (simulator)".
 
-Pass criteria: upgrade from the current release preserves session and data, fresh install shows prologue.
+Pass criteria: upgrade from the previous release preserves session and data, fresh install shows prologue.
 
 ## Section: Push Notifications (device-only)
 

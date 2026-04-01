@@ -547,31 +547,44 @@ tmux send-keys -t smoke-test-workers:worker-c \
   "cd $(pwd) && claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
 ```
 
-6. Open the tmux session so the user can watch workers. Ask the user: "Want me to open the worker terminals so you can watch them?" If they agree (or don't decline), open them:
+6. Open the worker panes so the user can watch them. Ask: "Want me to open the worker terminals?" If they agree (or don't decline), open iTerm panes — one per worker, each attached to its tmux window:
    ```bash
-   # Prefer iTerm2 if available, fall back to Terminal.app
+   # iTerm: split into panes, each attached to a specific tmux worker window
    if [ -d "/Applications/iTerm.app" ]; then
-     osascript <<'APPLESCRIPT'
+     osascript <<APPLESCRIPT
    tell application "iTerm"
      activate
      tell current window
        tell current session
-         split vertically with default profile command "tmux attach -t smoke-test-workers"
+         set workerA to (split vertically with default profile)
+       end tell
+       tell workerA
+         write text "tmux attach -t smoke-test-workers:worker-a"
+         set workerB to (split horizontally with default profile)
+       end tell
+       tell workerB
+         write text "tmux attach -t smoke-test-workers:worker-b"
+         set workerC to (split horizontally with default profile)
+       end tell
+       tell workerC
+         write text "tmux attach -t smoke-test-workers:worker-c"
        end tell
      end tell
    end tell
    APPLESCRIPT
    else
+     # Terminal.app fallback — single window attached to tmux session
      osascript <<'APPLESCRIPT'
    tell application "Terminal"
      activate
      do script "tmux attach -t smoke-test-workers"
    end tell
    APPLESCRIPT
+     echo "Workers running in tmux. Switch windows with Ctrl-b n/p, list with Ctrl-b w."
    fi
    ```
 
-   If the user is unfamiliar with tmux, briefly explain: **"Switch between workers with `Ctrl-b n`/`Ctrl-b p`, or `Ctrl-b w` for the window list. `Ctrl-b d` detaches back to your terminal."**
+   This gives a layout with the main agent on the left and 3 worker panes stacked on the right. Each pane shows one worker's live output. If fewer than 3 workers are dispatched, adjust the number of panes accordingly.
 7. Immediately proceed to Phase 1 in the current terminal — do not wait for workers.
 
 **Monitoring workers:**

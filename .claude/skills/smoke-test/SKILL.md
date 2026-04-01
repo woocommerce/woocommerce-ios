@@ -207,6 +207,9 @@ The `woo-credentials` MCP server (configured in `.mcp.json`) provides these tool
 - **`create_order`** — create a WooCommerce order using keychain API credentials. Returns only order ID/status.
 - **`list_products`** — list published products from a store using keychain API credentials. Returns product IDs, names, types, and prices. Use this to get a real product ID for `create_order`.
 - **`list_stores`** — list configured store aliases and their credential types.
+- **`start_device_tunnel`** — start go-ios tunnel + port forwarding for a physical device. Detects the device, starts both background processes, returns device UDID and PIDs.
+- **`stop_device_tunnel`** — stop the tunnel and port forwarding. Call when done with the physical device.
+- **`device_tunnel_status`** — check if tunnel, port forwarding, and WDA are alive. Use to diagnose connection issues — if the tunnel died, call `start_device_tunnel` to restart it.
 
 **CRITICAL — credential security rules:**
 - **Never call `security find-generic-password` directly** — not even as a fallback if `type_credential` fails.
@@ -317,29 +320,25 @@ If the second iPhone simulator is not available (only one iPhone model installed
 ### Physical device
 If `--device` is set:
 
-1. Start the device tunnel and port forwarding if not already running:
-   ```bash
-   # Start go-ios tunnel (required for iOS 17+). Run in background.
-   ios tunnel start --userspace &
-   TUNNEL_PID=$!
-
-   # Get the device UDID
-   DEVICE_UDID=$(ios list | grep -oE '[0-9a-f]{40}' | head -1)
-
-   # Forward WDA port from device to localhost
-   ios forward 8100 8100 --udid=$DEVICE_UDID &
-   FORWARD_PID=$!
+1. Start the device tunnel via the MCP server:
    ```
-   If the tunnel fails with a permission error, tell the user to run `sudo ios tunnel start` manually.
+   woo-credentials: start_device_tunnel()
+   ```
+   This detects the connected device, starts the go-ios tunnel and port forwarding, and returns the device UDID. If it fails with a permission error, tell the user to run `sudo ios tunnel start` manually, then retry.
 
 2. Use mobile-mcp to discover connected devices — list available devices and confirm the target device with the user
 3. If no physical device appears, guide the user through `.claude/skills/smoke-test/references/device-setup.md`
 4. Device-only tests (installation, push notifications, card reader, TTP, camera) are enabled
 
-**When done with the physical device**, stop the tunnel and port forwarding:
-```bash
-kill $FORWARD_PID 2>/dev/null
-kill $TUNNEL_PID 2>/dev/null
+**If the tunnel drops during the run**, check status and restart:
+```
+woo-credentials: device_tunnel_status()
+woo-credentials: start_device_tunnel()
+```
+
+**When done with the physical device**, stop the tunnel:
+```
+woo-credentials: stop_device_tunnel()
 ```
 
 ## Step 3: Build the App
@@ -395,7 +394,8 @@ mobile-mcp / WDA connections occasionally drop during a run. This is normal and 
 - **Never batch-skip remaining sections** after a connection issue. Each section gets its own chance.
 - When a mobile-mcp tool call fails with a connection/timeout error:
   1. Wait 2 seconds, then retry the same call. If it fails again, wait 4 seconds and retry once more.
-  2. If it fails again, tell the user the connection dropped and ask them to restart WDA / mobile-mcp. Wait for confirmation, then resume from the step that failed.
+  2. If on a physical device, check the tunnel: `woo-credentials: device_tunnel_status()`. If tunnel or forward is stopped, restart with `start_device_tunnel()` and retry.
+  3. If it still fails, tell the user the connection dropped and ask them to restart WDA / mobile-mcp. Wait for confirmation, then resume from the step that failed.
   3. If the user restarts successfully, **continue the run from where you left off** — do not restart the current section from the beginning unless you lost app state (e.g. the app crashed or returned to the home screen).
 - If the user cannot restore the connection after two attempts, mark only the **current section** as "not tested (connection lost)" and move on to the next section. The next section starts with a fresh connection check.
 - Record every connection drop as a low-concern observation. If the same section requires 3+ retries, escalate to medium concern.

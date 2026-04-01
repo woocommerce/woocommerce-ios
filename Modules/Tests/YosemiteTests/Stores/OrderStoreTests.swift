@@ -552,7 +552,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderTaxLine.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderGiftCard.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -1737,13 +1737,15 @@ private extension OrderStoreTests {
                                  paymentMethodID: "stripe",
                                  paymentMethodTitle: "Credit Card (Stripe)",
                                  paymentURL: URL(string: "http://www.automattic.com"),
+                                 fulfillmentStatus: .unknown,
                                  items: sampleItems(),
                                  billingAddress: sampleAddress(),
                                  shippingAddress: sampleAddress(),
                                  shippingLines: sampleShippingLines(),
                                  coupons: sampleCoupons(),
+                                 fees: sampleFeeLines(),
                                  taxes: sampleOrderTaxLines(),
-                                 customFields: sampleCustomFields())
+                                 customFields: [])
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -1813,12 +1815,26 @@ private extension OrderStoreTests {
         return [coupon1, coupon2]
     }
 
+    func sampleFeeLines() -> [Networking.OrderFeeLine] {
+        let fee = OrderFeeLine(feeID: 60,
+                               name: "$125.50 fee",
+                               taxClass: "",
+                               taxStatus: .taxable,
+                               total: "125.50",
+                               totalTax: "0.00",
+                               taxes: [],
+                               attributes: [])
+        return [fee]
+    }
+
     func sampleOrderTaxLine() -> Networking.OrderTaxLine {
         OrderTaxLine.fake().copy(taxID: 1330,
                                  rateCode: "US-NY-STATE-2",
                                  rateID: 6,
                                  label: "State",
+                                 isCompoundTaxRate: true,
                                  totalTax: "7.71",
+                                 totalShippingTax: "0.00",
                                  ratePercent: 4.5)
     }
 

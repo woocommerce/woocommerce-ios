@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 import enum Networking.SitePluginStatusEnum
-import protocol WooFoundation.Analytics
 import UserNotifications
 
 // MARK: - Notifications Check

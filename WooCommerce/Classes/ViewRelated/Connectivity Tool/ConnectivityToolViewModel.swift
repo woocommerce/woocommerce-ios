@@ -47,7 +47,7 @@ final class ConnectivityToolViewModel {
 
     /// Analytics tracker.
     ///
-    let analytics: Analytics
+    private let analytics: Analytics
 
     /// Adapter for checking notification authorization status.
     ///

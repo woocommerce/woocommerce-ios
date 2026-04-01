@@ -106,10 +106,13 @@ struct POSSettingsStoreDetailView: View {
                 Spacer()
 
                 if !viewModel.receiptSettingsAdminURL.isEmpty {
-                    Button(Localization.edit) {
+                    Button {
                         showingWebView = true
+                    } label: {
+                        Image(systemName: "square.and.pencil")
+                            .font(.posBodyLargeBold)
+                            .foregroundStyle(Color.posPrimary)
                     }
-                    .font(.posBodyMediumRegular())
                     .disabled(isLoading)
                 }
             }
@@ -231,12 +234,6 @@ private extension POSSettingsStoreDetailView {
             "pointOfSaleSettingsStoreDetailView.refundReturnsPolicy",
             value: "Refund & Returns Policy",
             comment: "Label for refund and returns policy field in Point of Sale settings."
-        )
-
-        static let edit = NSLocalizedString(
-            "pointOfSaleSettingsStoreDetailView.edit",
-            value: "Edit",
-            comment: "Button to edit receipt information in Point of Sale settings via web view."
         )
 
         static let editReceiptWebViewTitle = NSLocalizedString(

@@ -137,16 +137,16 @@ Requires a physical device with push notifications enabled.
 
 ### Push notification for new order (device-only)
 
-1. Create an order via the WooCommerce REST API:
-   ```bash
-   curl -X POST "https://<store_url>/wp-json/wc/v3/orders" \
-     -u "<consumer_key>:<consumer_secret>" \
-     -H "Content-Type: application/json" \
-     -d '{"status": "processing", "line_items": [{"product_id": <known_product_id>, "quantity": 1}]}'
+1. Background the app first so the notification banner is visible:
+   - Press the Home button via `mobile_press_button(button: "home")`
+   - Verify the app is no longer in the foreground (home screen or another app is showing)
+2. Create an order via the `woo-credentials` MCP server:
+   ```
+   woo-credentials: create_order({ store: "primary" })
    ```
    Record the order number from the response.
-2. Wait up to 30 seconds for the push notification to appear.
-3. Verify the push notification appears on the device.
+3. Wait up to 30 seconds for the push notification to appear. Check by calling `list_elements_on_screen` periodically — the notification banner should be visible.
+4. Verify the push notification appears on the device.
 
 > SCREENSHOT: 09-push-notification-received.png — Push notification for new order
 
@@ -159,8 +159,10 @@ Requires a physical device with push notifications enabled.
 
 ### Long press push notification (device-only)
 
-1. If another notification is available (create a second order via REST API if needed), long-press the notification.
-2. Verify the expanded notification view shows order details.
+1. Background the app again via `mobile_press_button(button: "home")`.
+2. Create another order via `woo-credentials: create_order({ store: "primary" })` to trigger a new notification.
+3. When the notification appears, long-press it.
+4. Verify the expanded notification view shows order details.
 
 > SCREENSHOT: 11-push-notification-long-press.png — Expanded push notification
 

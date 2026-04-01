@@ -287,7 +287,7 @@ woo-credentials: type_credential({ account: "primary.wpcom-email" })
 Then verify via `list_elements_on_screen` that the field value updated. **Never use `security find-generic-password` directly.**
 
 Also ask (unless already specified via arguments):
-1. **Which devices are available?** Check for both a physical device (`ios list`) and simulators (`xcrun simctl list devices available`). **Default to "both" if a physical device is connected** — use the physical device for device-only sections (installation, push notifications, payments, camera) and simulators for everything else. Only offer "simulator only" if no physical device is detected. Only offer "physical device only" if the user specifically requests it.
+1. **Which devices do you want to test on?** Always ask. Options: **(a) Both physical device + simulators (recommended)** — physical device for device-only sections (installation, push notifications, payments, camera), simulators for everything else. Maximum coverage. **(b) Simulator only** — skips device-only sections. **(c) Physical device only**.
 2. **Run Phase 1, Phase 2, or both?** (unless specified via `--phase`)
 3. **Test across multiple iOS versions?** List the installed simulator runtimes:
    ```bash

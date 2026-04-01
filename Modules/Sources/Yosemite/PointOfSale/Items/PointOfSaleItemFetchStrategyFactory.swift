@@ -22,7 +22,6 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     private let itemMapper: PointOfSaleItemMapperProtocol?
     private let isLocalCatalogEnabled: Bool
     private let isFTSSearchEnabled: Bool
-    private let posProductsOnlyEnabled: Bool
 
     public init(siteID: Int64,
                 credentials: Credentials?,
@@ -32,8 +31,7 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                 currencySettings: CurrencySettings,
                 itemMapper: PointOfSaleItemMapperProtocol? = nil,
                 isLocalCatalogEnabled: Bool = false,
-                isFTSSearchEnabled: Bool = false,
-                posProductsOnlyEnabled: Bool = false) {
+                isFTSSearchEnabled: Bool = false) {
         self.siteID = siteID
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
@@ -44,15 +42,13 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
         self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
         self.isLocalCatalogEnabled = isLocalCatalogEnabled
         self.isFTSSearchEnabled = isFTSSearchEnabled
-        self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
     public func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSaleDefaultPurchasableItemFetchStrategy(siteID: siteID,
                                                        productsRemote: productsRemote,
                                                        variationsRemote: variationsRemote,
-                                                       analytics: analytics,
-                                                       posProductsOnly: posProductsOnlyEnabled)
+                                                       analytics: analytics)
     }
     public func searchStrategy(searchTerm: String,
                                analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy {
@@ -65,7 +61,6 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                                                                       variationsRemote: variationsRemote,
                                                                       itemMapper: itemMapper,
                                                                       analytics: analytics,
-                                                                      posProductsOnly: posProductsOnlyEnabled,
                                                                       isFTSSearchEnabled: isFTSSearchEnabled)
         }
         // Fall back to remote API search
@@ -73,16 +68,14 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
                                                             searchTerm: searchTerm,
                                                             productsRemote: productsRemote,
                                                             variationsRemote: variationsRemote,
-                                                            analytics: analytics,
-                                                            posProductsOnly: posProductsOnlyEnabled)
+                                                            analytics: analytics)
     }
 
     public func popularStrategy(pageSize: Int = 10) -> PointOfSalePurchasableItemFetchStrategy {
         PointOfSalePopularPurchasableItemFetchStrategy(siteID: siteID,
                                                        pageSize: pageSize,
                                                        productsRemote: productsRemote,
-                                                       variationsRemote: variationsRemote,
-                                                       posProductsOnly: posProductsOnlyEnabled)
+                                                       variationsRemote: variationsRemote)
     }
 }
 

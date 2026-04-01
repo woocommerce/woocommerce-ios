@@ -42,6 +42,7 @@ const STORE_ENTRIES = {
   passwordless: ["wpcom-email"],
   "not-woo": ["wpcom-email", "wpcom-password"],
   "wrong-account": ["wpcom-email", "wpcom-password"],
+  twofactor: ["store-url", "wpcom-email", "wpcom-password"],
   mailosaur: ["api-key"],
 };
 

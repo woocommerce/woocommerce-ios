@@ -30,6 +30,18 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         }
         .store(in: &subscriptions)
 
+        // Open selected URL in-app using Safari
+        viewModel.$selectedURL
+            .removeDuplicates()
+            .compactMap { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] url in
+                guard let self else { return }
+                self.viewModel.selectedURL = nil
+                WebviewHelper.launch(url, with: self)
+            }
+            .store(in: &subscriptions)
+
         // Listen to the contact support button
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()

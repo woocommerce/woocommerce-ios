@@ -44,8 +44,14 @@ struct PointOfSaleCollectCashView: View {
     var body: some View {
         collectCashContent
             .onChange(of: paymentModel.paymentState.cash) { _, newValue in
-                if newValue == .paymentSuccess {
+                switch newValue {
+                case .paymentSuccess:
                     popToSuccess()
+                case .idle:
+                    // Card event forced exit from cash (e.g. card tapped during cash flow).
+                    router.popToRoot()
+                case .collectingCash:
+                    break
                 }
             }
     }

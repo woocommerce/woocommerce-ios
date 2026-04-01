@@ -5,7 +5,7 @@ if [[ $ACTION == 'indexbuild' ]]; then
   exit 0
 fi
 
-DERIVED_PATH=${SOURCE_ROOT}/DerivedSources
+DERIVED_PATH=${SOURCE_ROOT}/Classes/DerivedSources
 WATCH_DERIVED_PATH="${SOURCE_ROOT}/Woo Watch App/DerivedSources"
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 

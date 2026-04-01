@@ -131,13 +131,13 @@ The checklist defines **required** screenshot checkpoints marked with `> SCREENS
 
 Create the run folder at the start and write a `run.json` marker with the session ID (used by the stop hook to verify completion). Use a location inside the project directory to avoid sandbox permission issues:
 ```bash
-RUN_DIR="$(pwd)/.claude/smoke-test-runs/$(date +%Y%m%d-%H%M%S)"
+RUN_DIR="$(pwd)/.smoke-test-runs/$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$RUN_DIR/screenshots"
 echo "{\"session_id\": \"$SESSION_ID\", \"started\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$RUN_DIR/run.json"
 ```
 The `$SESSION_ID` value comes from the current session context. If unavailable, use the conversation/session identifier.
 
-The `.claude/smoke-test-runs/` directory is gitignored. Run folders persist across sessions for reference but can be cleaned up manually.
+The `.smoke-test-runs/` directory is gitignored. Run folders persist across sessions for reference but can be cleaned up manually.
 
 ### Progress tracking (progress.json)
 

@@ -30,7 +30,7 @@ fi
 # Find the run folder for THIS session by checking run.json markers.
 # The skill writes run.json with the session_id at the start of each run.
 RUN_DIR=""
-for dir in .claude/smoke-test-runs/*; do
+for dir in .smoke-test-runs/*; do
   [ -d "$dir" ] || continue
   if [ -f "$dir/run.json" ]; then
     DIR_SESSION=$(jq -r '.session_id // empty' "$dir/run.json" 2>/dev/null)

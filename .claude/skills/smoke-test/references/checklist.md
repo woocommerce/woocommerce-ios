@@ -112,9 +112,23 @@ Pass criteria: barcode scanner opens and successfully adds products when a barco
 
 Requires a physical device and payment hardware. The agent drives the UI; the user handles the physical card/reader interaction.
 
+**Stripe test card amounts:** When using Stripe physical test cards, the **cents/pence** portion of the order total determines the payment outcome. The total must end in `.00` for the payment to succeed. Avoid these cent values — they trigger declines:
+
+| Cents | Result |
+|-------|--------|
+| 01 | `call_issuer` decline |
+| 02 | `offline_pin_required` |
+| 03 | `online_or_offline_pin_required` |
+| 05 | `generic_decline` |
+| 55 | `incorrect_pin` |
+| 65 | `withdrawal_count_limit_exceeded` |
+| 75 | `pin_try_exceeded` |
+
+When creating orders for payment tests, ensure the total ends in `.00` (e.g. $25.00, not $25.05). If the order total has non-zero cents from product prices/tax, adjust the line items or quantity to get a round total.
+
 ### Collect payment via card reader (device-only, user-assisted)
 
-1. Create a new order or use an existing unpaid order.
+1. Create a new order or use an existing unpaid order. **Ensure the total ends in .00** (see test card amounts above).
 2. Tap Collect Payment, then select the card reader option.
 3. After tapping, watch for permission prompts (Bluetooth, location) and onboarding screens (card reader setup, terms acceptance). Tap through these as they appear — list elements after each to check for the next prompt.
 4. Ask the user via `AskUserQuestion`: "Please connect the card reader and present a test card when prompted. Let me know when payment is complete."
@@ -125,7 +139,7 @@ Requires a physical device and payment hardware. The agent drives the UI; the us
 
 ### Collect payment via Tap to Pay (device-only, user-assisted)
 
-1. Create a new order or use an existing unpaid order.
+1. Create a new order or use an existing unpaid order. **Ensure the total ends in .00** (see test card amounts above).
 2. Tap Collect Payment, then select Tap to Pay.
 3. After tapping, watch for permission prompts and onboarding screens (TTP terms acceptance via Apple ID, setup steps). Tap through these as they appear. If an Apple ID prompt requires user interaction, ask via `AskUserQuestion`.
 4. Ask the user via `AskUserQuestion`: "Please present a test card for Tap to Pay when prompted. Let me know when payment is complete."

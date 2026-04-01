@@ -75,9 +75,12 @@ Never sleep longer than 2 seconds without checking for expected state. Poll loop
 
 You MUST complete ALL assigned sections. Do not return until every section in your list is completed or explicitly skipped in your progress file with a valid reason.
 
-Valid skip reasons: `"device-only on simulator"`, `"conditional prerequisite not met"`, `"connection lost after retries"`.
+The ONLY valid skip reasons are:
+- `"device-only on simulator"` — section is marked (device-only) and you're on simulator
+- `"user chose to skip"` — user explicitly said to skip
+- `"connection lost after retries"` — WDA failed after retry protocol
 
-Invalid reasons: time efficiency, difficulty, prior section failure (unless app crashed).
+NOT valid: time constraints, difficulty, "requires rebuild", "already tested elsewhere", or any reason you invented. If a section needs setup (JN site, iPad, locale change), do the setup.
 
 Your progress file will be audited by the coordinator. If sections are missing evidence, you will be sent back to complete them.
 

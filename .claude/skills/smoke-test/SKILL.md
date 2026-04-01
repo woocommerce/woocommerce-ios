@@ -155,7 +155,19 @@ The completion hooks use `$RUN_DIR/progress.json` to structurally verify that se
 - **Starting a section**: set `"status": "in_progress"` and `"started_at": "<ISO timestamp>"`
 - **Taking a screenshot**: append the filename to the section's `"screenshots"` array
 - **Completing a section**: set `"status": "completed"` and `"completed_at": "<ISO timestamp>"`. Do this BEFORE calling `TaskUpdate` to mark the task complete.
-- **Skipping a section**: set `"status": "skipped"` and `"skip_reason": "<reason>"`. Valid reasons: `"device-only on simulator"`, `"conditional prerequisite not met"`, `"user chose to skip"`, `"connection lost after retries"`. Do this BEFORE calling `TaskUpdate`.
+- **Skipping a section**: set `"status": "skipped"` and `"skip_reason": "<reason>"`. Do this BEFORE calling `TaskUpdate`. Valid skip reasons are **exhaustive** — if your reason isn't on this list, it's not valid:
+  - `"device-only on simulator"` — section is marked `(device-only)` and you're on simulator
+  - `"user chose to skip"` — user explicitly said to skip via `AskUserQuestion`
+  - `"connection lost after retries"` — WDA/mobile-mcp connection failed after retry protocol
+
+  **These are NOT valid skip reasons** (complete the section instead):
+  - Time constraints, time efficiency, or running long
+  - Difficulty or complexity
+  - "Requires iPad rebuild" — boot an iPad simulator and build for it
+  - "Already tested on another device" — each device class gets its own test
+  - Prior section failure (unless the app crashed and won't relaunch)
+  - "Conditional prerequisite not met" for things you can set up (JN sites, locale changes, widgets)
+  - Any justification you invented that isn't in the valid list above
 
 **The hooks enforce this**: if you call `TaskUpdate(status=completed)` for a section task but progress.json shows no screenshots or the section is still pending, the hook will block the update.
 
@@ -208,6 +220,7 @@ The `woo-credentials` MCP server (configured in `.mcp.json`) provides these tool
 - `apple` — Apple sign-in test store. Store URL only (auth handled by user in Apple sheet).
 - `google` — Google sign-in test store. Store URL only (auth handled by user in Google sheet).
 - `passwordless` — Passwordless login test store. Mailosaur-routed WP.com email only.
+- `twofactor` — 2FA login test. Store URL + WP.com creds (account has 2FA enabled). The user provides the TOTP code via `AskUserQuestion`.
 - `not-woo` — Not-a-WooCommerce store error test. WP.com creds only.
 - `wrong-account` — Wrong-account error test. WP.com creds only.
 - `mailosaur` — Mailosaur API key for magic link retrieval.

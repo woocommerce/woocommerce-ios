@@ -29,7 +29,7 @@ fi
 
 # Find the run folder for THIS session
 RUN_DIR=""
-for dir in .claude/smoke-test-runs/* /tmp/woo-smoke-test-*; do
+for dir in .claude/smoke-test-runs/*; do
   [ -d "$dir" ] || continue
   if [ -f "$dir/run.json" ]; then
     DIR_SESSION=$(jq -r '.session_id // empty' "$dir/run.json" 2>/dev/null)
@@ -152,7 +152,7 @@ if [ -z "$CURRENT_SECTION" ]; then
         cat <<BLOCK
 {
   "decision": "block",
-  "reason": "Sections were skipped out of order. These sections are still pending: $PENDING_SECTIONS\n\nYou completed later sections but skipped earlier ones. Go back and run the pending sections unless they have a valid skip reason:\n- (device-only) on simulator\n- (conditional) prerequisite not met\n- User explicitly chose to skip via AskUserQuestion\n- --section or --phase flag excluded it\n\nIf a section should be skipped, update progress.json with status 'skipped' and a skip_reason BEFORE marking its task complete."
+  "reason": "Sections were skipped out of order. These sections are still pending: $PENDING_SECTIONS\n\nYou completed later sections but skipped earlier ones. Go back and run them. The ONLY valid skip reasons are:\n- 'device-only on simulator' — section is marked (device-only) and you're on simulator\n- 'user chose to skip' — user explicitly said to skip\n- 'connection lost after retries' — WDA failed after retry protocol\n\nNOT valid: time constraints, difficulty, 'requires rebuild', 'already tested elsewhere', or any reason you invented."
 }
 BLOCK
         exit 0
@@ -171,7 +171,7 @@ if [ "$SCREENSHOT_COUNT" -eq 0 ]; then
   cat <<BLOCK
 {
   "decision": "block",
-  "reason": "No screenshots recorded for section '$CURRENT_SECTION' in progress.json. Every completed section needs at least one screenshot as evidence of testing.\n\nIf you completed the section's test steps, make sure you:\n1. Took screenshots at each SCREENSHOT checkpoint in the checklist\n2. Updated progress.json with the screenshot filenames\n3. Then mark the section completed in progress.json before completing the task\n\nIf this section should be skipped (device-only on simulator, conditional prerequisite not met, user chose to skip), set its status to 'skipped' with a skip_reason in progress.json instead of completing it."
+  "reason": "No screenshots recorded for section '$CURRENT_SECTION' in progress.json. Every completed section needs screenshots as evidence.\n\n1. Take screenshots at each step (not just SCREENSHOT checkpoints)\n2. Update progress.json with the filenames\n3. Set status to 'completed' in progress.json before completing the task\n\nTo skip instead, set status to 'skipped' with one of these reasons ONLY: 'device-only on simulator', 'user chose to skip', 'connection lost after retries'. No other reasons are valid."
 }
 BLOCK
   exit 0
@@ -198,7 +198,7 @@ if [ -n "$EARLIER_PENDING" ]; then
   cat <<BLOCK
 {
   "decision": "block",
-  "reason": "Earlier sections are still pending: $EARLIER_PENDING\n\nYou are completing '$CURRENT_SECTION' but earlier sections haven't been started. Run sections in order, or explicitly skip them in progress.json with status 'skipped' and a valid skip_reason before moving ahead.\n\nValid skip reasons: (device-only) on simulator, (conditional) prerequisite not met, user explicitly chose to skip, --section/--phase flag excluded it.\n\nInvalid reasons: time efficiency, connection concerns, difficulty, prior section failure (unless app crashed)."
+  "reason": "Earlier sections are still pending: $EARLIER_PENDING\n\nYou are completing '$CURRENT_SECTION' but earlier sections haven't been started. Run them in order. The ONLY valid skip reasons are:\n- 'device-only on simulator'\n- 'user chose to skip'\n- 'connection lost after retries'\n\nNOT valid: time constraints, difficulty, 'requires rebuild', 'already tested elsewhere', or any reason you invented. If a section needs setup (JN site, iPad, locale change), do the setup."
 }
 BLOCK
   exit 0

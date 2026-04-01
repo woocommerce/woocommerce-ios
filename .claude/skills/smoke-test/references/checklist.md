@@ -94,10 +94,12 @@ These login flows require user interaction for authentication steps the agent ca
 ### Login with 2FA (user-assisted)
 
 1. Log out if needed. Start login.
-2. Enter the store URL and credentials for a 2FA-enabled account.
-3. Ask the user via `AskUserQuestion`: "Please provide the current 2FA code from your authenticator app."
-4. Enter the 2FA code and tap Continue.
-5. Verify the app reaches the dashboard.
+2. Tap into the site address field, then call `type_credential(account: "twofactor.store-url")` to type the store URL. Tap Continue.
+3. Tap into the email field, then call `type_credential(account: "twofactor.wpcom-email")`. Tap Continue.
+4. Tap into the password field, then call `type_credential(account: "twofactor.wpcom-password")`. Tap Continue.
+5. Ask the user via `AskUserQuestion`: "Please provide the current 2FA code from your authenticator app for the 2FA test account."
+6. Enter the 2FA code and tap Continue.
+7. Verify the app reaches the dashboard.
 
 > SCREENSHOT: 06-2fa-login-success.png — Dashboard after 2FA login
 
@@ -109,9 +111,13 @@ Pass criteria: all user-assisted login methods reach the dashboard successfully.
 
 The test store has a "Barcode Product" with SKU `12345678911`. The user needs a scannable barcode image — link them to: https://barcode.tec-it.com/en/UPCA?data=12345678911
 
-1. From the orders list, tap the barcode scan button (`create-new-order-by-product-scanning`) to start order creation via barcode.
-2. Ask the user via `AskUserQuestion`: "The barcode scanner is open. Please present the barcode for SKU 12345678911 to the camera. You can display it from this link on another screen: https://barcode.tec-it.com/en/UPCA?data=12345678911 — Confirm when done."
-3. Verify the scanned product is recognized and an order creation form appears with the product added.
+1. Before tapping the scan button, open the barcode in the user's browser so it's ready to present:
+   ```bash
+   open "https://barcode.tec-it.com/en/UPCA?data=12345678911"
+   ```
+2. From the orders list, tap the barcode scan button (`create-new-order-by-product-scanning`) to start order creation via barcode.
+3. Ask the user via `AskUserQuestion`: "The barcode scanner is open and the barcode is displayed in your browser. Please present it to the camera. Confirm when done."
+4. Verify the scanned product is recognized and an order creation form appears with the product added.
 
 > SCREENSHOT: 07-barcode-order-creation.png — Order created from barcode scan
 

@@ -142,24 +142,20 @@ Requires a physical device with push notifications enabled.
    woo-credentials: list_products({ store: "primary", per_page: 1 })
    ```
    Use the first product's `id` for creating orders.
-2. Background the app so the notification banner is visible:
+2. Background the app and open Notification Center:
    - Press the Home button via `mobile_press_button(button: "home")`
-   - Verify the app is no longer in the foreground (home screen or another app is showing)
-3. Create an order using the real product ID:
+   - Verify the app is no longer in the foreground
+   - Pull down Notification Center: swipe down from the very top of the screen with a long, fast gesture (start at y=0 or y=5, swipe to y=600+, fast speed). If the first swipe doesn't open it, retry from x=center, y=5 to y=700 with maximum speed.
+   - Verify Notification Center is open via `list_elements_on_screen`
+3. With Notification Center open, create an order:
    ```
    woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })
    ```
    Record the order number from the response.
-4. Poll aggressively for the notification banner — it disappears fast:
-   - Call `list_elements_on_screen` immediately after creating the order
-   - Then poll every 1 second for up to 10 seconds
+4. Wait for the notification to appear in Notification Center:
+   - Call `list_elements_on_screen` immediately, then every 1 second for up to 10 seconds
    - Look for elements containing the order number or "New order" text
-   - Take a screenshot immediately when the banner appears
-5. If the banner was not caught after 10 seconds, pull down the Notification Center:
-   - Swipe down from the very top of the screen with a long, fast gesture: start at y=0 (or as close to the top edge as possible), swipe to y=600+, use a fast speed/short duration
-   - Call `list_elements_on_screen` to check if the notification is in the Notification Center
-   - If the swipe doesn't open Notification Center (common issue — the gesture needs to start from the absolute top edge), try again from x=center, y=5 to y=700 with maximum speed
-6. Verify the push notification is visible (either as a banner or in Notification Center).
+5. Verify the push notification is visible in Notification Center.
 
 > SCREENSHOT: 09-push-notification-received.png — Push notification for new order
 

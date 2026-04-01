@@ -405,8 +405,14 @@ private extension OrdersRootViewController {
     ///
     func resetFiltersIfAnyStatusFilterIsNoMoreExisting(orderStatuses: [OrderStatus]) {
         guard let storedOrderFilters = filters.orderStatus else { return }
-        for storedOrderFilter in storedOrderFilters {
-            if !orderStatuses.map({$0.status}).contains(storedOrderFilter) {
+        let availableStatuses = Set(orderStatuses.map { $0.status })
+        // On CIAB sites, resolve synthetic statuses (e.g. "open") to their underlying core statuses
+        // before checking validity, since the API only returns core statuses.
+        let resolvedFilters = ciabEligibilityChecker.isCurrentSiteCIAB
+            ? CIABOrderStatusMapper.resolveFilterStatuses(storedOrderFilters)
+            : storedOrderFilters
+        for resolvedFilter in resolvedFilters {
+            if !availableStatuses.contains(resolvedFilter) {
                 clearFilters()
                 break
             }

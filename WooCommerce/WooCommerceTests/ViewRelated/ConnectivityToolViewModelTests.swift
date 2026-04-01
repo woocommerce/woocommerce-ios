@@ -25,7 +25,7 @@ struct ConnectivityToolViewModelTests {
         let result = await sut.testAnalyticsSetting()
 
         // Then
-        #expect(result == .success)
+        assertState(result, is: .success)
     }
 
     @Test func test_testAnalyticsSetting_when_analytics_disabled_then_returns_error_with_enable_action() async {
@@ -195,11 +195,13 @@ struct ConnectivityToolViewModelTests {
 
 }
 
-// MARK: - ConnectivityToolCard.ConnectivityState: Equatable
+// MARK: - Helpers
 
-extension ConnectivityToolCard.ConnectivityState: @retroactive Equatable {
-    public static func == (lhs: ConnectivityToolCard.ConnectivityState, rhs: ConnectivityToolCard.ConnectivityState) -> Bool {
-        switch (lhs, rhs) {
+private func assertState(_ actual: ConnectivityToolCard.ConnectivityState,
+                          is expected: ConnectivityToolCard.ConnectivityState,
+                          sourceLocation: SourceLocation = #_sourceLocation) {
+    let matches: Bool = {
+        switch (actual, expected) {
         case (.inProgress, .inProgress):
             return true
         case (.success, .success):
@@ -211,5 +213,6 @@ extension ConnectivityToolCard.ConnectivityState: @retroactive Equatable {
         default:
             return false
         }
-    }
+    }()
+    #expect(matches, "Expected \(expected) but got \(actual)", sourceLocation: sourceLocation)
 }

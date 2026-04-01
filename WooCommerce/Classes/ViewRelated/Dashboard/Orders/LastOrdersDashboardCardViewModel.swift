@@ -193,7 +193,10 @@ private extension LastOrdersDashboardCardViewModel {
         return try await withCheckedThrowingContinuation { continuation in
             let resolvedStatuses: [String] = {
                 guard let status else { return [] }
-                return CIABOrderStatusMapper.resolveFilterStatuses([status]).map { $0.rawValue }
+                if ciabEligibilityChecker.isCurrentSiteCIAB {
+                    return CIABOrderStatusMapper.resolveFilterStatuses([status]).map { $0.rawValue }
+                }
+                return [status.rawValue]
             }()
             stores.dispatch(OrderAction.fetchFilteredOrders(
                 siteID: siteID,

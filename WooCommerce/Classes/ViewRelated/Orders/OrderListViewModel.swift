@@ -144,7 +144,8 @@ final class OrderListViewModel {
         self.ciabEligibilityChecker = ciabEligibilityChecker
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
-                                                                                                    filters: filters))
+                                                                                                    filters: filters,
+                                                                                                    isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB))
     }
 
     deinit {
@@ -219,7 +220,8 @@ final class OrderListViewModel {
                                lastFullSyncTimestamp: Date?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 filters: filters)
+                                                 filters: filters,
+                                                 ciabEligibilityChecker: ciabEligibilityChecker)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -229,11 +231,13 @@ final class OrderListViewModel {
         })
     }
 
-    private static func createQuery(siteID: Int64, filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+    private static func createQuery(siteID: Int64,
+                                     filters: FilterOrderListViewModel.Filters?,
+                                     isCIAB: Bool) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = filters?.orderStatus.map { statuses in
-                let resolved = CIABOrderStatusMapper.resolveFilterStatuses(statuses)
+                let resolved = isCIAB ? CIABOrderStatusMapper.resolveFilterStatuses(statuses) : statuses
                 return NSPredicate(format: "statusKey IN %@", resolved.map { $0.rawValue })
             }
 

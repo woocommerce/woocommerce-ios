@@ -522,14 +522,17 @@ tmux send-keys -t smoke-test-workers:worker-c \
   "cd $(pwd) && claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
 ```
 
-6. Tell the user:
+6. Open a Terminal window showing the tmux session so the user can watch workers:
+   ```bash
+   open -a Terminal
+   ```
+   Then in that new terminal, attach to the session:
+   ```bash
+   tmux attach -t smoke-test-workers
+   ```
+   Alternatively, ask the user: "Want me to open the worker terminals so you can watch them?" If they decline, just tell them the session name.
 
-   **"Phase 2 workers are running in a tmux session. To watch them:**
-   - **Open a new terminal** and run: `tmux attach -t smoke-test-workers`
-   - **Switch between workers**: `Ctrl-b n` (next window) or `Ctrl-b p` (previous)
-   - **Window list**: `Ctrl-b w` shows all workers — use arrow keys to select
-   - **Detach** (return to this terminal): `Ctrl-b d`
-   - Workers are named `worker-a`, `worker-b`, `worker-c` in the window bar at the bottom.**"**
+   If the user is unfamiliar with tmux, briefly explain: **"Switch between workers with `Ctrl-b n`/`Ctrl-b p`, or `Ctrl-b w` for the window list. `Ctrl-b d` detaches back to your terminal."**
 7. Immediately proceed to Phase 1 in the current terminal — do not wait for workers.
 
 **Monitoring workers:**

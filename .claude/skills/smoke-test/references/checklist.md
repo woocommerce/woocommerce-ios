@@ -137,16 +137,17 @@ Requires a physical device with push notifications enabled.
 
 ### Push notification for new order (device-only)
 
-1. Background the app first so the notification banner is visible:
+1. Before backgrounding, get a real product ID from the store. Navigate to the Products tab, call `list_elements_on_screen`, and note a product ID from the list (or tap a product and read its ID from the detail screen URL/elements). You'll need this for creating orders.
+2. Background the app so the notification banner is visible:
    - Press the Home button via `mobile_press_button(button: "home")`
    - Verify the app is no longer in the foreground (home screen or another app is showing)
-2. Create an order via the `woo-credentials` MCP server:
+3. Create an order using the real product ID:
    ```
-   woo-credentials: create_order({ store: "primary" })
+   woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })
    ```
    Record the order number from the response.
-3. Wait up to 30 seconds for the push notification to appear. Check by calling `list_elements_on_screen` periodically — the notification banner should be visible.
-4. Verify the push notification appears on the device.
+4. Wait up to 30 seconds for the push notification to appear. Check by calling `list_elements_on_screen` periodically — the notification banner should be visible.
+5. Verify the push notification appears on the device.
 
 > SCREENSHOT: 09-push-notification-received.png — Push notification for new order
 
@@ -160,7 +161,7 @@ Requires a physical device with push notifications enabled.
 ### Long press push notification (device-only)
 
 1. Background the app again via `mobile_press_button(button: "home")`.
-2. Create another order via `woo-credentials: create_order({ store: "primary" })` to trigger a new notification.
+2. Create another order using the same product ID: `woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })`.
 3. When the notification appears, long-press it.
 4. Verify the expanded notification view shows order details.
 

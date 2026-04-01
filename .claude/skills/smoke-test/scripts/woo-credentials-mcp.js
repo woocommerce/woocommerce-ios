@@ -278,6 +278,26 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       },
     },
     {
+      name: "list_products",
+      description:
+        "List products from a WooCommerce store using REST API credentials from the keychain. Returns product IDs and names — never the API credentials.",
+      inputSchema: {
+        type: "object",
+        properties: {
+          store: {
+            type: "string",
+            description: "Store alias (e.g. 'primary')",
+          },
+          per_page: {
+            type: "number",
+            description: "Number of products to return (default: 5)",
+            default: 5,
+          },
+        },
+        required: ["store"],
+      },
+    },
+    {
       name: "list_stores",
       description:
         "List all configured store aliases and their credential types.",
@@ -435,6 +455,72 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
               text: JSON.stringify({
                 status: "error",
                 message: `Failed to create order: ${err.message}`,
+              }),
+            },
+          ],
+        };
+      }
+    }
+
+    case "list_products": {
+      const { store, per_page = 5 } = args;
+
+      const storeUrl = readKeychain(`${store}.store-url`);
+      const consumerKey = readKeychain(`${store}.consumer-key`);
+      const consumerSecret = readKeychain(`${store}.consumer-secret`);
+
+      if (!storeUrl || !consumerKey || !consumerSecret) {
+        const missing = [];
+        if (!storeUrl) missing.push("store-url");
+        if (!consumerKey) missing.push("consumer-key");
+        if (!consumerSecret) missing.push("consumer-secret");
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                status: "error",
+                message: `Missing keychain entries for store '${store}': ${missing.join(", ")}`,
+              }),
+            },
+          ],
+        };
+      }
+
+      try {
+        const products = await wcApiRequest(
+          storeUrl,
+          consumerKey,
+          consumerSecret,
+          "GET",
+          `/products?per_page=${per_page}&status=publish`,
+          null
+        );
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                status: "ok",
+                products: products.map((p) => ({
+                  id: p.id,
+                  name: p.name,
+                  type: p.type,
+                  price: p.price,
+                })),
+              }),
+            },
+          ],
+        };
+      } catch (err) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify({
+                status: "error",
+                message: `Failed to list products: ${err.message}`,
               }),
             },
           ],

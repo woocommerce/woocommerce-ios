@@ -137,7 +137,11 @@ Requires a physical device with push notifications enabled.
 
 ### Push notification for new order (device-only)
 
-1. Before backgrounding, get a real product ID from the store. Navigate to the Products tab, call `list_elements_on_screen`, and note a product ID from the list (or tap a product and read its ID from the detail screen URL/elements). You'll need this for creating orders.
+1. Before backgrounding, get a real product ID from the store via the REST API:
+   ```
+   woo-credentials: list_products({ store: "primary", per_page: 1 })
+   ```
+   Use the first product's `id` for creating orders.
 2. Background the app so the notification banner is visible:
    - Press the Home button via `mobile_press_button(button: "home")`
    - Verify the app is no longer in the foreground (home screen or another app is showing)

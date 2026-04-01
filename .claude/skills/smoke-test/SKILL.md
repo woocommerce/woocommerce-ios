@@ -205,6 +205,7 @@ The `woo-credentials` MCP server (configured in `.mcp.json`) provides these tool
 - **`check_credentials`** — check which keychain entries exist for a store. Returns missing entry names.
 - **`type_credential`** — type a keychain value into the focused field on a device. Returns only `{ status: "typed" }`.
 - **`create_order`** — create a WooCommerce order using keychain API credentials. Returns only order ID/status.
+- **`list_products`** — list published products from a store using keychain API credentials. Returns product IDs, names, types, and prices. Use this to get a real product ID for `create_order`.
 - **`list_stores`** — list configured store aliases and their credential types.
 
 **CRITICAL — credential security rules:**

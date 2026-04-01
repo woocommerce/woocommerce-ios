@@ -106,6 +106,17 @@ setup_wrong_account() {
   store_entry "wrong-account.wpcom-password" "WP.com password" true
 }
 
+setup_twofactor() {
+  echo ""
+  echo "── 2FA login test account ──"
+  echo "Used for: testing login with two-factor authentication"
+  echo "Requires a WP.com account with 2FA enabled (TOTP authenticator app)"
+  echo ""
+  store_entry "twofactor.store-url"      "Store URL (e.g. https://example.wpcomstaging.com)"
+  store_entry "twofactor.wpcom-email"    "WP.com email (2FA-enabled account)"
+  store_entry "twofactor.wpcom-password" "WP.com password" true
+}
+
 setup_mailosaur() {
   echo ""
   echo "── Mailosaur (magic link email retrieval) ──"
@@ -142,6 +153,11 @@ do_check() {
   check_entry "wrong-account.wpcom-email"
   check_entry "wrong-account.wpcom-password"
   echo ""
+  echo "2FA account:"
+  check_entry "twofactor.store-url"
+  check_entry "twofactor.wpcom-email"
+  check_entry "twofactor.wpcom-password"
+  echo ""
   echo "Mailosaur:"
   check_entry "mailosaur.api-key"
 }
@@ -156,6 +172,7 @@ do_clear() {
     "passwordless.wpcom-email"
     "not-woo.wpcom-email" "not-woo.wpcom-password"
     "wrong-account.wpcom-email" "wrong-account.wpcom-password"
+    "twofactor.store-url" "twofactor.wpcom-email" "twofactor.wpcom-password"
     "mailosaur.api-key"
   )
   for acct in "${accounts[@]}"; do
@@ -192,10 +209,11 @@ do_setup() {
     passwordless)   setup_passwordless ;;
     not-woo)        setup_not_woo ;;
     wrong-account)  setup_wrong_account ;;
+    twofactor)      setup_twofactor ;;
     mailosaur)      setup_mailosaur ;;
     *)
       echo "Unknown store: $store"
-      echo "Valid stores: primary, apple, google, passwordless, not-woo, wrong-account, mailosaur"
+      echo "Valid stores: primary, apple, google, passwordless, not-woo, wrong-account, twofactor, mailosaur"
       exit 1
       ;;
   esac
@@ -213,7 +231,7 @@ case "${1:-}" in
   "")       do_setup all ;;
   *)
     echo "Usage: $0 [--store <name>] [--check] [--clear]"
-    echo "Stores: primary, passwordless, not-woo, wrong-account, mailosaur"
+    echo "Stores: primary, apple, google, passwordless, not-woo, wrong-account, twofactor, mailosaur"
     exit 1
     ;;
 esac

@@ -14,6 +14,7 @@ struct PointOfSaleDashboardView: View {
     @State private var showSettings: Bool = false
     @State private var waitingTimeTracker: WaitingTimeTracker?
 
+    @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
 
     private var viewStateCoordinator: PointOfSaleViewStateCoordinator {
@@ -157,6 +158,7 @@ struct PointOfSaleDashboardView: View {
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
         }
+        .onNewOrderClearNavigation(orderStage: posModel.orderStage, navigationPath: $navigationPath)
         .ignoresSafeArea(.keyboard)
         .onAppear {
             trackTimeForInitialLoadingState()
@@ -169,32 +171,73 @@ struct PointOfSaleDashboardView: View {
         }
     }
 
+    private var navigationRouter: POSNavigationRouter {
+        POSNavigationRouter(navigationPath: $navigationPath)
+    }
+
     private var contentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
+            // Fixed widths ensure views don't resize during offset-based transitions.
+            let productsWidth = geometry.size.width * (1 - Constants.cartWidth)
+            let cartWidth = geometry.size.width * Constants.cartWidth
+            let checkoutWidth = geometry.size.width * (1 - Constants.cartWidth)
+            let dashboardWidth = productsWidth + cartWidth + checkoutWidth
+            let dashboardOffset: CGFloat = posModel.orderStage == .building ? 0 : -productsWidth
+
             HStack(spacing: POSSpacing.none) {
-                if posModel.orderStage == .building {
-                    ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                                 searchTerm: $viewStateCoordinator.searchTerm)
-                        .accessibilitySortPriority(2)
-                        .transition(.move(edge: .leading))
-                }
+                ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                             searchTerm: $viewStateCoordinator.searchTerm)
+                    .frame(width: productsWidth)
+                    .accessibilitySortPriority(posModel.orderStage == .building ? 2 : 0)
+                    .allowsHitTesting(posModel.orderStage == .building)
 
-                if !posModel.paymentState.shownFullScreen {
-                    CartView()
-                        .accessibilitySortPriority(1)
-                        .frame(width: geometry.size.width * Constants.cartWidth)
-                }
+                NavigationStack(path: $navigationPath) {
+                    HStack(spacing: POSSpacing.none) {
+                        if !posModel.paymentState.card.shownFullScreen
+                            && posModel.paymentState.cash != .paymentSuccess {
+                            CartView()
+                                .frame(width: cartWidth)
+                                .accessibilitySortPriority(1)
+                        }
 
-                if posModel.orderStage == .finalizing {
-                    TotalsView()
-                        .accessibilitySortPriority(2)
-                        .transition(.move(edge: .trailing))
+                        TotalsView()
+                            .background(Color.posSurface)
+                            .frame(width: posModel.paymentState.card.shownFullScreen
+                                    || posModel.paymentState.cash == .paymentSuccess
+                                   ? cartWidth + checkoutWidth
+                                   : checkoutWidth)
+                            .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
+                            .allowsHitTesting(posModel.orderStage == .finalizing)
+                    }
+                    .navigationDestination(for: POSNavigationDestination.self) { destination in
+                        switch destination {
+                        case .cashPayment(let orderTotal):
+                            POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+                        case .emailReceipt:
+                            POSNavigationDestinationEmailReceiptView()
+                        }
+                    }
+                }
+                .scrollContentBackground(.hidden)
+                .background(Color.posSurface)
+                .frame(width: cartWidth + checkoutWidth)
+            }
+            .frame(width: dashboardWidth, alignment: .leading)
+            .offset(x: dashboardOffset)
+            .onChange(of: posModel.paymentState.cash) { _, newValue in
+                if newValue == .collectingCash,
+                   navigationPath.isEmpty,
+                   case .loaded(let totals) = posModel.orderState {
+                    navigationPath.append(.cashPayment(orderTotal: totals.orderTotal))
                 }
             }
             .animation(.default, value: posModel.orderStage)
-            .animation(.default, value: posModel.paymentState.shownFullScreen)
+            .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
+        .ignoresSafeArea()
+        .background(Color.posSurface.ignoresSafeArea())
+        .environment(\.posNavigationRouter, navigationRouter)
     }
 
     private var backgroundAppearance: POSBackgroundAppearanceKey.Appearance {
@@ -289,6 +332,35 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
+    }
+}
+
+// MARK: - Navigation Destination Wrappers
+
+/// Thin wrapper that resolves environment dependencies for the cash payment NavigationStack destination.
+private struct POSNavigationDestinationCashPaymentView: View {
+    let orderTotal: String
+    @Environment(\.posCurrencyProvider) private var currencyProvider
+
+    var body: some View {
+        PointOfSaleCollectCashView(orderTotal: orderTotal,
+                                   currencySettings: currencyProvider.currencySettings)
+        .navigationBarHidden(true)
+    }
+}
+
+/// Thin wrapper that resolves environment dependencies for the email receipt NavigationStack destination.
+private struct POSNavigationDestinationEmailReceiptView: View {
+    @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.posNavigationRouter) private var router
+
+    var body: some View {
+        POSSendReceiptView(onDismiss: {
+            router.pop()
+        }) { email in
+            try await paymentModel.sendReceipt(to: email)
+        }
+        .navigationBarHidden(true)
     }
 }
 

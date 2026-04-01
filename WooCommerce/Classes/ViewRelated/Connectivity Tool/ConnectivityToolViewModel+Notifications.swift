@@ -16,14 +16,27 @@ extension ConnectivityToolViewModel {
         let jetpackResult = await checkJetpackPluginActiveIfNeeded()
         if case .failure(let error) = jetpackResult {
             DDLogError("Connectivity Tool: ❌ Jetpack plugin check failed\n\(error)")
-            let setupJetpackAction = ConnectivityToolCard.ConnectivityState.Action(
-                title: Localization.Action.setupJetpack,
-                systemImage: SystemImages.setupJetpack.rawValue,
-                action: { [weak self] in
-                    self?.shouldStartJetpackSetup = true
-                }
-            )
-            return .error(Localization.ErrorMessage.jetpackPluginNotActive, [setupJetpackAction, retryAction(for: .notifications)])
+            switch error {
+            case .pluginNotActive:
+                let setupJetpackAction = ConnectivityToolCard.ConnectivityState.Action(
+                    title: Localization.Action.setupJetpack,
+                    systemImage: SystemImages.setupJetpack.rawValue,
+                    action: { [weak self] in
+                        self?.shouldStartJetpackSetup = true
+                    }
+                )
+                return .error(Localization.ErrorMessage.jetpackPluginNotActive,
+                              [setupJetpackAction, retryAction(for: .notifications)])
+            case .requestFailed(let underlyingError):
+                let technicalDetails = String(describing: underlyingError)
+                let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
+                    title: Localization.Action.viewDetails,
+                    systemImage: SystemImages.viewDetails.rawValue,
+                    technicalDetails: technicalDetails
+                )
+                return .error(Localization.ErrorMessage.notificationConfigCheckFailed,
+                              [viewDetailsAction, retryAction(for: .notifications)])
+            }
         }
 
         // Sub-check 2: iOS notification permission is authorized.

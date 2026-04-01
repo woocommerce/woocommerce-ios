@@ -17,15 +17,14 @@ extension ConnectivityToolViewModel {
         let jetpackResult = await checkJetpackPluginActiveIfNeeded()
         if case .failure(let error) = jetpackResult {
             DDLogError("Connectivity Tool: ❌ Jetpack plugin check failed\n\(error)")
-            let readMoreAction = ConnectivityToolCard.ConnectivityState.Action(
-                title: Localization.Action.readMore,
-                systemImage: SystemImages.readMore.rawValue,
+            let setupJetpackAction = ConnectivityToolCard.ConnectivityState.Action(
+                title: Localization.Action.setupJetpack,
+                systemImage: SystemImages.setupJetpack.rawValue,
                 action: { [weak self] in
-                    self?.selectedURL = WooConstants.URLs.troubleshootJetpackConnection.asURL()
-                    self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
+                    self?.shouldStartJetpackSetup = true
                 }
             )
-            return .error(Localization.ErrorMessage.jetpackPluginNotActive, [readMoreAction, retryAction(for: .notifications)])
+            return .error(Localization.ErrorMessage.jetpackPluginNotActive, [setupJetpackAction, retryAction(for: .notifications)])
         }
 
         // Sub-check 2: iOS notification permission is authorized.
@@ -297,6 +296,11 @@ private extension ConnectivityToolViewModel {
                 value: "View technical details",
                 comment: "Button to view technical error details in the connectivity tool"
             )
+            static let setupJetpack = NSLocalizedString(
+                "connectivityToolViewModel.action.setupJetpack",
+                value: "Setup Jetpack",
+                comment: "Action button to start the Jetpack setup flow in the connectivity tool"
+            )
             static let openSettings = NSLocalizedString(
                 "connectivityToolViewModel.action.openSettings",
                 value: "Open Settings",
@@ -311,9 +315,9 @@ private extension ConnectivityToolViewModel {
     }
 
     enum SystemImages: String {
-        case readMore = "arrow.up.forward.app"
         case viewDetails = "info.circle"
         case enableAction = "checkmark.circle"
         case openSettings = "gear"
+        case setupJetpack = "bolt.fill"
     }
 }

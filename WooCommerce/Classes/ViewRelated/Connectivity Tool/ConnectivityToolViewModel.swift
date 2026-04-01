@@ -21,6 +21,10 @@ final class ConnectivityToolViewModel {
     ///
     @Published var selectedURL: URL?
 
+    /// Set to `true` when the user taps "Setup Jetpack" to signal the view layer to start the Jetpack setup flow.
+    ///
+    @Published var shouldStartJetpackSetup = false
+
     /// Remote used to check the connection to WPCom servers.
     ///
     private let announcementsRemote: AnnouncementsRemote

@@ -13,6 +13,10 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Retains the Jetpack setup coordinator while the flow is active.
+    ///
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
 
     init() {
         viewModel = ConnectivityToolViewModel()
@@ -47,6 +51,16 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
             }
             .store(in: &subscriptions)
 
+        // Start Jetpack setup when requested
+        viewModel.$shouldStartJetpackSetup
+            .filter { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.viewModel.shouldStartJetpackSetup = false
+                self?.startJetpackSetup()
+            }
+            .store(in: &subscriptions)
+
         // Listen to the contact support button
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
@@ -55,6 +69,13 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func startJetpackSetup() {
+        guard let site = viewModel.stores.sessionManager.defaultSite else { return }
+        let coordinator = JetpackSetupCoordinator(site: site, rootViewController: self)
+        jetpackSetupCoordinator = coordinator
+        coordinator.startSetup()
     }
 
     private func showContactSupportForm() {

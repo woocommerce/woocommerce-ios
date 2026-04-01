@@ -275,7 +275,7 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(message.contains("Jetpack"))
-        #expect(actions.contains(where: { $0.title == "Read more" }))
+        #expect(actions.contains(where: { $0.title == "Setup Jetpack" }))
     }
 
     @Test func test_testNotifications_when_permission_denied_then_returns_error_with_open_settings() async {

@@ -239,7 +239,31 @@ For tests that need a throwaway WooCommerce site (no-Jetpack, Jetpack-disconnect
 
 Credentials from JN sites are ephemeral (sites self-destruct after 7 days) and can be used directly by the agent without keychain storage.
 
-## Step 1: Check Credentials
+## Step 1: Check Prerequisites and Credentials
+
+### Parallel mode prerequisites
+
+If running a full test (not `--section` or `--sequential`), check that parallel execution dependencies are available:
+
+```bash
+# Check tmux
+if ! command -v tmux &>/dev/null; then
+  echo "tmux not found — parallel mode requires it."
+  echo "Install with: brew install tmux"
+  echo "Falling back to sequential mode."
+fi
+
+# Check claude CLI
+if ! command -v claude &>/dev/null; then
+  echo "claude CLI not found — parallel workers need it."
+  echo "Install from: https://claude.ai/claude-code"
+  echo "Falling back to sequential mode."
+fi
+```
+
+If either is missing, tell the user what's needed and offer to install (`brew install tmux`). If the user declines or installation fails, fall back to sequential mode — parallel is an optimization, not a requirement.
+
+### Credentials
 
 At startup, use the `woo-credentials` MCP server to check that the required keychain entries exist:
 
@@ -415,11 +439,7 @@ When running in parallel mode (multiple simulators booted, not `--section` or `-
 
 **Dispatch Phase 2 workers BEFORE starting Phase 1.** Phase 2 sections are fully automated and don't depend on Phase 1. By dispatching workers immediately after build/install, they run in the background while the coordinator handles Phase 1 with the user. This significantly reduces total run time.
 
-**Prerequisites:** tmux must be installed. If not available:
-```bash
-# macOS
-brew install tmux
-```
+**Prerequisites** (checked in Step 1): tmux and claude CLI must be available. If not, the run falls back to sequential mode automatically.
 
 **Execution order:**
 1. Build app, install on all simulators (Step 3)
@@ -464,7 +484,14 @@ tmux send-keys -t smoke-test-workers:worker-c \
   "cd $(pwd) && claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
 ```
 
-6. Tell the user: **"Workers are running in tmux session `smoke-test-workers`. You can watch them with `tmux attach -t smoke-test-workers` and switch between panes with `Ctrl-b n` (next) or `Ctrl-b p` (previous)."**
+6. Tell the user:
+
+   **"Phase 2 workers are running in a tmux session. To watch them:**
+   - **Open a new terminal** and run: `tmux attach -t smoke-test-workers`
+   - **Switch between workers**: `Ctrl-b n` (next window) or `Ctrl-b p` (previous)
+   - **Window list**: `Ctrl-b w` shows all workers — use arrow keys to select
+   - **Detach** (return to this terminal): `Ctrl-b d`
+   - Workers are named `worker-a`, `worker-b`, `worker-c` in the window bar at the bottom.**"**
 7. Immediately proceed to Phase 1 in the current terminal — do not wait for workers.
 
 **Monitoring workers:**

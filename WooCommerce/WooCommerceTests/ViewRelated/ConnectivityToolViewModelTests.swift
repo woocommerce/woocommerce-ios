@@ -204,7 +204,7 @@ struct ConnectivityToolViewModelTests {
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .authorized
 
-        let deviceID = "123"
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123")
         let numericDeviceID = Int64(123)
         let device = NotificationSettings.Device(deviceID: numericDeviceID, newComment: true, storeOrder: true)
         let blog = NotificationSettings.Blog(blogID: site.siteID, devices: [device])
@@ -221,7 +221,7 @@ struct ConnectivityToolViewModelTests {
 
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            deviceID: deviceID)
+                                            pushNotesManager: mockPushNotesManager)
 
         // When
         let result = await sut.testNotifications()
@@ -262,9 +262,10 @@ struct ConnectivityToolViewModelTests {
             }
         }
 
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            deviceID: "123")
+                                            pushNotesManager: mockPushNotesManager)
 
         // When
         let result = await sut.testNotifications()
@@ -286,9 +287,10 @@ struct ConnectivityToolViewModelTests {
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .denied
 
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            deviceID: "123")
+                                            pushNotesManager: mockPushNotesManager)
 
         // When
         let result = await sut.testNotifications()
@@ -310,9 +312,10 @@ struct ConnectivityToolViewModelTests {
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .authorized
 
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: nil)
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            deviceID: nil)
+                                            pushNotesManager: mockPushNotesManager)
 
         // When
         let result = await sut.testNotifications()
@@ -335,7 +338,7 @@ struct ConnectivityToolViewModelTests {
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .authorized
 
-        let deviceID = "456"
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "456")
         let numericDeviceID = Int64(456)
         let device = NotificationSettings.Device(deviceID: numericDeviceID, newComment: true, storeOrder: false)
         let blog = NotificationSettings.Blog(blogID: site.siteID, devices: [device])
@@ -352,7 +355,7 @@ struct ConnectivityToolViewModelTests {
 
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            deviceID: deviceID)
+                                            pushNotesManager: mockPushNotesManager)
 
         // When
         let result = await sut.testNotifications()
@@ -384,9 +387,10 @@ struct ConnectivityToolViewModelTests {
             }
         }
 
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "789")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            deviceID: "789")
+                                            pushNotesManager: mockPushNotesManager)
 
         // When
         let result = await sut.testNotifications()

@@ -130,8 +130,10 @@ let package = Package(
         .target(
             name: "Experiments",
             dependencies: [
+                "Codegen",
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
             ]
         ),
         .target(
@@ -158,11 +160,14 @@ let package = Package(
                 "Codegen",
                 "NetworkingCore",
                 "WooFoundation",
+                "WooFoundationCore",
                 "WordPressShared",
                 .product(name: "Alamofire", package: "Alamofire"),
                 .product(name: "Aztec", package: "AztecEditor-iOS"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "HTMLParser", package: "AztecEditor-iOS"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
             ]
         ),
         .target(
@@ -180,7 +185,10 @@ let package = Package(
             dependencies: [
                 "Codegen",
                 "WooFoundation",
-                .product(name: "GRDB", package: "GRDB.swift")
+                "WooFoundationCore",
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
             ],
             exclude: ["Model/Migrations.md"],
             resources: [.process("Resources")]
@@ -199,8 +207,10 @@ let package = Package(
         .target(
             name: "WooFoundation",
             dependencies: [
+                "Codegen",
                 "WooFoundationCore",
-                .product(name: "Kingfisher", package: "Kingfisher")
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
             ],
             resources: [.process("Resources")]
         ),
@@ -239,13 +249,18 @@ let package = Package(
                 "Codegen",
                 "Hardware",
                 "Networking",
+                "NetworkingCore",
                 "Storage",
                 "WooFoundation",
+                "WooFoundationCore",
                 "WordPressShared",
                 .product(name: "Alamofire", package: "Alamofire"),
                 .product(name: "Aztec", package: "AztecEditor-iOS"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "HTMLParser", package: "AztecEditor-iOS"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
+                .product(name: "Kingfisher", package: "Kingfisher"),
                 .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                 .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
             ]
@@ -257,12 +272,26 @@ let package = Package(
         .target(
             name: "PointOfSale",
             dependencies: [
+                "Codegen",
                 "Experiments",
+                "Hardware",
+                "Networking",
+                "NetworkingCore",
+                "Storage",
                 "WooFoundation",
+                "WooFoundationCore",
+                "WordPressShared",
                 "Yosemite",
+                .product(name: "Alamofire", package: "Alamofire"),
+                .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
+                .product(name: "AutomatticEncryptedLogs", package: "Automattic-Tracks-iOS"),
+                .product(name: "Aztec", package: "AztecEditor-iOS"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
-                .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
+                .product(name: "GRDB", package: "GRDB.swift"),
+                .product(name: "HTMLParser", package: "AztecEditor-iOS"),
+                .product(name: "KeychainAccess", package: "KeychainAccess"),
                 .product(name: "Kingfisher", package: "Kingfisher"),
+                .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
             ],
             resources: [.process("Resources")]
         ),

@@ -60,8 +60,8 @@ setup_primary() {
   store_entry "primary.store-url"       "Store URL (e.g. inpersonpayments.wpcomstaging.com)"
   store_entry "primary.wpcom-email"     "WP.com email"
   store_entry "primary.wpcom-password"  "WP.com password" true
-  store_entry "primary.consumer-key"    "WC REST API consumer key"
-  store_entry "primary.consumer-secret" "WC REST API consumer secret" true
+  store_entry "primary.api-username"    "WordPress application password username"
+  store_entry "primary.api-password"    "WordPress application password" true
 }
 
 setup_apple() {
@@ -133,8 +133,8 @@ do_check() {
   check_entry "primary.store-url"
   check_entry "primary.wpcom-email"
   check_entry "primary.wpcom-password"
-  check_entry "primary.consumer-key"
-  check_entry "primary.consumer-secret"
+  check_entry "primary.api-username"
+  check_entry "primary.api-password"
   echo ""
   echo "Apple sign-in store:"
   check_entry "apple.store-url"
@@ -166,7 +166,7 @@ do_clear() {
   echo "Removing all keychain entries for service: $SERVICE"
   local accounts=(
     "primary.store-url" "primary.wpcom-email" "primary.wpcom-password"
-    "primary.consumer-key" "primary.consumer-secret"
+    "primary.api-username" "primary.api-password"
     "apple.store-url"
     "google.store-url"
     "passwordless.wpcom-email"

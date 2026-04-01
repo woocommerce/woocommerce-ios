@@ -217,7 +217,7 @@ The `woo-credentials` MCP server (configured in `.mcp.json`) provides these tool
 
 ### Stores
 
-- `primary` — Main smoke test store. Store URL + WP.com creds + WC REST API keys.
+- `primary` — Main smoke test store. Store URL + WP.com creds + WordPress application password (for REST API).
 - `apple` — Apple sign-in test store. Store URL only (auth handled by user in Apple sheet).
 - `google` — Google sign-in test store. Store URL only (auth handled by user in Google sheet).
 - `passwordless` — Passwordless login test store. Mailosaur-routed WP.com email only.

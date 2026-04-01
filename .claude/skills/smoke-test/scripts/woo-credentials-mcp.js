@@ -34,8 +34,8 @@ const STORE_ENTRIES = {
     "store-url",
     "wpcom-email",
     "wpcom-password",
-    "consumer-key",
-    "consumer-secret",
+    "api-username",
+    "api-password",
   ],
   apple: ["store-url"],
   google: ["store-url"],
@@ -174,10 +174,10 @@ function typeViaWDA(value, preferredPort) {
 
 // ── WooCommerce REST API helper ─────────────────────────────────────────────
 
-function wcApiRequest(storeUrl, consumerKey, consumerSecret, method, endpoint, data) {
+function wcApiRequest(storeUrl, apiUsername, apiPassword, method, endpoint, data) {
   return new Promise((resolve, reject) => {
     const url = new URL(`/wp-json/wc/v3${endpoint}`, `https://${storeUrl}`);
-    const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64");
+    const auth = Buffer.from(`${apiUsername}:${apiPassword}`).toString("base64");
 
     const options = {
       method,
@@ -398,14 +398,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { store, product_id, status: orderStatus = "processing" } = args;
 
       const storeUrl = readKeychain(`${store}.store-url`);
-      const consumerKey = readKeychain(`${store}.consumer-key`);
-      const consumerSecret = readKeychain(`${store}.consumer-secret`);
+      const apiUsername = readKeychain(`${store}.api-username`);
+      const apiPassword = readKeychain(`${store}.api-password`);
 
-      if (!storeUrl || !consumerKey || !consumerSecret) {
+      if (!storeUrl || !apiUsername || !apiPassword) {
         const missing = [];
         if (!storeUrl) missing.push("store-url");
-        if (!consumerKey) missing.push("consumer-key");
-        if (!consumerSecret) missing.push("consumer-secret");
+        if (!apiUsername) missing.push("api-username");
+        if (!apiPassword) missing.push("api-password");
         return {
           content: [
             {
@@ -422,8 +422,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         const order = await wcApiRequest(
           storeUrl,
-          consumerKey,
-          consumerSecret,
+          apiUsername,
+          apiPassword,
           "POST",
           "/orders",
           {
@@ -466,14 +466,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const { store, per_page = 5 } = args;
 
       const storeUrl = readKeychain(`${store}.store-url`);
-      const consumerKey = readKeychain(`${store}.consumer-key`);
-      const consumerSecret = readKeychain(`${store}.consumer-secret`);
+      const apiUsername = readKeychain(`${store}.api-username`);
+      const apiPassword = readKeychain(`${store}.api-password`);
 
-      if (!storeUrl || !consumerKey || !consumerSecret) {
+      if (!storeUrl || !apiUsername || !apiPassword) {
         const missing = [];
         if (!storeUrl) missing.push("store-url");
-        if (!consumerKey) missing.push("consumer-key");
-        if (!consumerSecret) missing.push("consumer-secret");
+        if (!apiUsername) missing.push("api-username");
+        if (!apiPassword) missing.push("api-password");
         return {
           content: [
             {
@@ -490,12 +490,18 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
         const products = await wcApiRequest(
           storeUrl,
-          consumerKey,
-          consumerSecret,
+          apiUsername,
+          apiPassword,
           "GET",
           `/products?per_page=${per_page}&status=publish`,
           null
         );
+
+        if (!Array.isArray(products)) {
+          throw new Error(
+            `API returned non-array response: ${JSON.stringify(products).slice(0, 200)}`
+          );
+        }
 
         return {
           content: [

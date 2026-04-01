@@ -18,14 +18,14 @@ extension ConnectivityToolViewModel {
         if case .failure(let error) = jetpackResult {
             DDLogError("Connectivity Tool: ❌ Jetpack plugin check failed\n\(error)")
             let readMoreAction = ConnectivityToolCard.ConnectivityState.Action(
-                title: NotificationLocalization.Action.readMore,
+                title: Localization.Action.readMore,
                 systemImage: SystemImages.readMore.rawValue,
                 action: { [weak self] in
                     self?.selectedURL = WooConstants.URLs.troubleshootJetpackConnection.asURL()
                     self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
                 }
             )
-            return .error(NotificationLocalization.ErrorMessage.jetpackPluginNotActive, [readMoreAction, retryAction(for: .notifications)])
+            return .error(Localization.ErrorMessage.jetpackPluginNotActive, [readMoreAction, retryAction(for: .notifications)])
         }
 
         // Sub-check 2: iOS notification permission is authorized.
@@ -33,7 +33,7 @@ extension ConnectivityToolViewModel {
         if case .failure = permissionResult {
             DDLogInfo("Connectivity Tool: ⚠️ Notifications not authorized")
             let openSettingsAction = ConnectivityToolCard.ConnectivityState.Action(
-                title: NotificationLocalization.Action.openSettings,
+                title: Localization.Action.openSettings,
                 systemImage: SystemImages.openSettings.rawValue,
                 action: { [weak self] in
                     if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
@@ -41,7 +41,7 @@ extension ConnectivityToolViewModel {
                     }
                 }
             )
-            return .error(NotificationLocalization.ErrorMessage.notificationsNotAuthorized, [openSettingsAction, retryAction(for: .notifications)])
+            return .error(Localization.ErrorMessage.notificationsNotAuthorized, [openSettingsAction, retryAction(for: .notifications)])
         }
 
         // Sub-check 3: Notification config — device registered and order notifications enabled.
@@ -54,27 +54,27 @@ extension ConnectivityToolViewModel {
             DDLogInfo("Connectivity Tool: ⚠️ Notification config issue: \(configError)")
             switch configError {
             case .deviceNotRegistered:
-                return .error(NotificationLocalization.ErrorMessage.deviceNotRegistered, [retryAction(for: .notifications)])
+                return .error(Localization.ErrorMessage.deviceNotRegistered, [retryAction(for: .notifications)])
             case .orderNotificationsDisabled(let settings):
                 let enableAction = ConnectivityToolCard.ConnectivityState.Action(
-                    title: NotificationLocalization.Action.enableOrderNotifications,
+                    title: Localization.Action.enableOrderNotifications,
                     systemImage: SystemImages.enableAction.rawValue,
                     action: { [weak self] in
                         self?.enableOrderNotifications(settings: settings)
                     }
                 )
-                return .error(NotificationLocalization.ErrorMessage.orderNotificationsDisabled,
+                return .error(Localization.ErrorMessage.orderNotificationsDisabled,
                               [enableAction, retryAction(for: .notifications)])
             case .siteNotFound:
-                return .error(NotificationLocalization.ErrorMessage.notificationSiteNotFound, [retryAction(for: .notifications)])
+                return .error(Localization.ErrorMessage.notificationSiteNotFound, [retryAction(for: .notifications)])
             case .requestFailed(let error):
                 let technicalDetails = String(describing: error)
                 let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
-                    title: NotificationLocalization.Action.viewDetails,
+                    title: Localization.Action.viewDetails,
                     systemImage: SystemImages.viewDetails.rawValue,
                     technicalDetails: technicalDetails
                 )
-                return .error(NotificationLocalization.ErrorMessage.notificationConfigCheckFailed,
+                return .error(Localization.ErrorMessage.notificationConfigCheckFailed,
                               [viewDetailsAction, retryAction(for: .notifications)])
             }
         }
@@ -207,7 +207,7 @@ extension ConnectivityToolViewModel {
     private func restoreNotificationsCardActions(settings: NotificationSettings) {
         guard let index = cards.lastIndex(where: { $0.testCase == .notifications }) else { return }
         let enableAction = ConnectivityToolCard.ConnectivityState.Action(
-            title: NotificationLocalization.Action.enableOrderNotifications,
+            title: Localization.Action.enableOrderNotifications,
             systemImage: SystemImages.enableAction.rawValue,
             action: { [weak self] in
                 self?.enableOrderNotifications(settings: settings)
@@ -217,7 +217,7 @@ extension ConnectivityToolViewModel {
             testCase: .notifications,
             title: ConnectivityTest.notifications.title,
             icon: ConnectivityTest.notifications.icon,
-            state: .error(NotificationLocalization.ErrorMessage.orderNotificationsDisabled, [enableAction, retryAction(for: .notifications)])
+            state: .error(Localization.ErrorMessage.orderNotificationsDisabled, [enableAction, retryAction(for: .notifications)])
         )
     }
 
@@ -247,7 +247,7 @@ extension ConnectivityToolViewModel {
 // MARK: - Localization
 
 private extension ConnectivityToolViewModel {
-    enum NotificationLocalization {
+    enum Localization {
         enum ErrorMessage {
             static let jetpackPluginNotActive = NSLocalizedString(
                 "connectivityToolViewModel.errorMessage.jetpackPluginNotActive",

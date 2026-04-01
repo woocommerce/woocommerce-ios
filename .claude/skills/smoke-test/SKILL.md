@@ -169,6 +169,8 @@ The completion hooks use `$RUN_DIR/progress.json` to structurally verify that se
   - "Conditional prerequisite not met" for things you can set up (JN sites, locale changes, widgets)
   - Any justification you invented that isn't in the valid list above
 
+**Always use the Write tool** (not Bash with heredoc/cat) to update progress.json. Bash commands with heredocs and `&&` chaining trigger permission prompts. The Write tool writes the file directly without shell interpretation.
+
 **The hooks enforce this**: if you call `TaskUpdate(status=completed)` for a section task but progress.json shows no screenshots or the section is still pending, the hook will block the update.
 
 **Parallel mode:** In parallel execution, each worker writes to `$RUN_DIR/progress-<worker-name>.json` instead of `progress.json`. The schema is identical. The coordinator merges these files when generating the report. The completion hook automatically scans all `progress*.json` files in the run folder.

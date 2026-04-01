@@ -529,25 +529,23 @@ Each worker runs as a separate `claude` CLI session in its own tmux pane, so the
 5. Create a tmux session and launch workers:
 
 ```bash
-# Create one tmux session with a window per worker
-tmux new-session -d -s smoke-test-workers -n worker-a
-tmux send-keys -t smoke-test-workers:worker-a \
-  "cd $(pwd); claude -p \"$(cat $RUN_DIR/worker-a-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
+# Create a separate tmux session per worker — each agent is independent
+tmux new-session -d -s smoke-worker-a -c "$(pwd)"
+tmux send-keys -t smoke-worker-a \
+  "claude -p \"$(cat $RUN_DIR/worker-a-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
 
-tmux new-window -t smoke-test-workers -n worker-b
-tmux send-keys -t smoke-test-workers:worker-b \
-  "cd $(pwd); claude -p \"$(cat $RUN_DIR/worker-b-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
+tmux new-session -d -s smoke-worker-b -c "$(pwd)"
+tmux send-keys -t smoke-worker-b \
+  "claude -p \"$(cat $RUN_DIR/worker-b-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
 
-tmux new-window -t smoke-test-workers -n worker-c
-tmux send-keys -t smoke-test-workers:worker-c \
-  "cd $(pwd); claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
+tmux new-session -d -s smoke-worker-c -c "$(pwd)"
+tmux send-keys -t smoke-worker-c \
+  "claude -p \"$(cat $RUN_DIR/worker-c-prompt.txt)\" --allowedTools 'Bash,Read,Write,Grep,Glob,mcp__mobile-mcp__*,mcp__woo-credentials__*'" Enter
 ```
 
 6. Open the worker panes so the user can watch them. Ask: "Want me to open the worker terminals?" If they agree (or don't decline), open iTerm panes — one per worker, each attached to its tmux window:
    ```bash
-   # iTerm: split into panes, each showing a different worker window.
-   # Uses tmux "linked sessions" — lightweight views of the same session
-   # that can independently select which window to display.
+   # iTerm: split into panes, each attached to a separate worker session
    if [ -d "/Applications/iTerm.app" ]; then
      osascript <<'APPLESCRIPT'
    tell application "iTerm"
@@ -557,32 +555,33 @@ tmux send-keys -t smoke-test-workers:worker-c \
          set workerA to (split vertically with default profile)
        end tell
        tell workerA
-         write text "tmux new-session -d -s view-a -t smoke-test-workers && tmux select-window -t view-a:worker-a && tmux attach -t view-a"
+         write text "tmux attach -t smoke-worker-a"
          set workerB to (split horizontally with default profile)
        end tell
        tell workerB
-         write text "tmux new-session -d -s view-b -t smoke-test-workers && tmux select-window -t view-b:worker-b && tmux attach -t view-b"
+         write text "tmux attach -t smoke-worker-b"
          set workerC to (split horizontally with default profile)
        end tell
        tell workerC
-         write text "tmux new-session -d -s view-c -t smoke-test-workers && tmux select-window -t view-c:worker-c && tmux attach -t view-c"
+         write text "tmux attach -t smoke-worker-c"
        end tell
      end tell
    end tell
    APPLESCRIPT
    else
-     # Terminal.app fallback — single window, switch with Ctrl-b n/p
+     # Terminal.app fallback — 3 separate windows
      osascript <<'APPLESCRIPT'
    tell application "Terminal"
      activate
-     do script "tmux attach -t smoke-test-workers"
+     do script "tmux attach -t smoke-worker-a"
+     do script "tmux attach -t smoke-worker-b"
+     do script "tmux attach -t smoke-worker-c"
    end tell
    APPLESCRIPT
-     echo "Workers running in tmux. Switch windows with Ctrl-b n/p, list with Ctrl-b w."
    fi
    ```
 
-   This gives a layout with the main agent on the left and 3 worker panes stacked on the right. Each pane shows a different worker independently via tmux linked sessions. If fewer than 3 workers are dispatched, adjust the number of panes accordingly.
+   This gives a layout with the main agent on the left and 3 worker panes stacked on the right. Each pane is an independent tmux session. If fewer than 3 workers are dispatched, adjust the number of panes accordingly.
 7. Immediately proceed to Phase 1 in the current terminal — do not wait for workers.
 
 **Monitoring workers:**
@@ -599,7 +598,7 @@ for f in $RUN_DIR/progress-worker-*.json; do
 done
 ```
 
-Poll every 30 seconds until all workers report zero remaining sections. Also check if the tmux session is still alive — `tmux has-session -t smoke-test-workers 2>/dev/null` returns 0 if alive. Check individual workers with `tmux capture-pane -t smoke-test-workers:worker-a -p | tail -5` to see their latest output. If a worker's pane shows a shell prompt (no claude running), read its progress file to determine whether it completed or crashed.
+Poll every 30 seconds until all workers report zero remaining sections. Check if each worker's tmux session is still alive — `tmux has-session -t smoke-worker-a 2>/dev/null` returns 0 if alive. Check a worker's latest output with `tmux capture-pane -t smoke-worker-a -p | tail -5`. If a worker's pane shows a shell prompt (no claude running), read its progress file to determine whether it completed or crashed.
 
 **Coordinator validation:**
 
@@ -608,7 +607,7 @@ After all workers finish:
 2. Verify every assigned section is `"completed"` or `"skipped"` (with a valid `skip_reason`)
 3. Verify every completed section has at least one screenshot
 4. If any section is incomplete or missing evidence, launch a new `claude -p` session in the tmux to finish the remaining sections
-5. Clean up: `tmux kill-session -t smoke-test-workers` (also cleans up linked view sessions)
+5. Clean up: `tmux kill-session -t smoke-worker-a; tmux kill-session -t smoke-worker-b; tmux kill-session -t smoke-worker-c`
 
 **Merging results:**
 

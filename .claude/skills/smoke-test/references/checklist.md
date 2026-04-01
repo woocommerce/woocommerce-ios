@@ -182,18 +182,27 @@ After completing the user-assisted sections above, tell the user: **"All tests r
 
 ## Section: Installation (device-only)
 
-These checks verify the upgrade and fresh install paths. Only run on a physical device. No user interaction needed.
+These checks verify the upgrade and fresh install paths on a physical device. The goal is to test what real users experience — upgrading from the current release to the new build.
+
+**Note:** All smoke testing should ideally use a TestFlight build, not a dev build from Xcode. TestFlight builds match what users will get (signed, optimized, with the correct bundle ID for upgrades).
 
 ### Upgrade from existing version (device-only)
 
-1. If the device has the current App Store / TestFlight version installed, install the new build over it.
-2. Verify the app launches, the user remains logged in, and basic navigation works.
+1. Ensure the current App Store or TestFlight version is installed on the device. If not:
+   - Ask the user via `AskUserQuestion`: "Please install the current App Store or TestFlight version of WooCommerce on the device, log in, and confirm when ready."
+2. Log in to the existing version and verify it works (dashboard loads).
 
-> SCREENSHOT: 01-upgrade-verified.png — App launched after upgrade, session preserved
+> SCREENSHOT: 01a-existing-version.png — Current version running, dashboard visible
+
+3. Install the new build over the existing version (via TestFlight or `xcrun devicectl`).
+4. Launch the app after upgrade.
+5. Verify the user remains logged in and basic navigation works (dashboard, orders tab, products tab).
+
+> SCREENSHOT: 01b-upgrade-verified.png — App launched after upgrade, session preserved
 
 ### Fresh install (device-only)
 
-1. Uninstall the app completely.
+1. Uninstall the app completely from the device.
 2. Install the new build.
 3. Verify the app launches to the prologue/login screen.
 
@@ -201,7 +210,7 @@ These checks verify the upgrade and fresh install paths. Only run on a physical 
 
 If running on simulator, skip this section entirely — the build step in SKILL.md handles fresh installation. Mark as "not tested (simulator)".
 
-Pass criteria: upgrade preserves session, fresh install shows prologue.
+Pass criteria: upgrade from the current release preserves session and data, fresh install shows prologue.
 
 ## Section: Push Notifications (device-only)
 

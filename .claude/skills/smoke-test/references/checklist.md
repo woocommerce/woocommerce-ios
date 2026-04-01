@@ -30,30 +30,7 @@ Steps are marked with one of these labels:
 
 # Phase 1: User-Assisted Tests
 
-Run these first while the user is present. After Phase 1 completes, tell the user they can step away.
-
-## Section: Installation (device-only)
-
-These checks verify the upgrade and fresh install paths. Only run on a physical device.
-
-### Upgrade from existing version (device-only)
-
-1. If the device has the current App Store / TestFlight version installed, install the new build over it.
-2. Verify the app launches, the user remains logged in, and basic navigation works.
-
-> SCREENSHOT: 01-upgrade-verified.png — App launched after upgrade, session preserved
-
-### Fresh install (device-only)
-
-1. Uninstall the app completely.
-2. Install the new build.
-3. Verify the app launches to the prologue/login screen.
-
-> SCREENSHOT: 02-fresh-install-prologue.png — Fresh install prologue screen
-
-If running on simulator, skip this section entirely — the build step in SKILL.md handles fresh installation. Mark as "not tested (simulator)".
-
-Pass criteria: upgrade preserves session, fresh install shows prologue.
+Run these first while the user is present. Sections are ordered so that all tests requiring user interaction come first — once those are done, tell the user they can step away. The remaining device-only sections in Phase 1 run without user input.
 
 ## Section: User-Assisted Login Flows
 
@@ -131,54 +108,6 @@ The test store has a "Barcode Product" with SKU `12345678911`. The user needs a 
 
 Pass criteria: barcode scanner opens and successfully adds products when a barcode is presented.
 
-## Section: Push Notifications (device-only)
-
-Requires a physical device with push notifications enabled.
-
-### Push notification for new order (device-only)
-
-1. Before backgrounding, get a real product ID from the store via the REST API:
-   ```
-   woo-credentials: list_products({ store: "primary", per_page: 1 })
-   ```
-   Use the first product's `id` for creating orders.
-2. Background the app and open Notification Center:
-   - Press the Home button via `mobile_press_button(button: "home")`
-   - Verify the app is no longer in the foreground
-   - Pull down Notification Center: swipe down from the very top of the screen with a long, fast gesture (start at y=0 or y=5, swipe to y=600+, fast speed). If the first swipe doesn't open it, retry from x=center, y=5 to y=700 with maximum speed.
-   - Verify Notification Center is open via `list_elements_on_screen`
-3. With Notification Center open, create an order:
-   ```
-   woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })
-   ```
-   Record the order number from the response.
-4. Wait for the notification to appear in Notification Center:
-   - Call `list_elements_on_screen` immediately, then every 1 second for up to 10 seconds
-   - Look for elements containing the order number or "New order" text
-5. Verify the push notification is visible in Notification Center.
-
-> SCREENSHOT: 09-push-notification-received.png — Push notification for new order
-
-### Tap push notification (device-only)
-
-1. Tap the push notification.
-2. Verify the app opens the correct order detail screen matching the order number.
-
-> SCREENSHOT: 10-push-notification-opened.png — Order detail opened from push notification
-
-### Long press push notification (device-only)
-
-1. Background the app again via `mobile_press_button(button: "home")`.
-2. Create another order using the same product ID: `woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })`.
-3. When the notification appears, long-press it.
-4. Verify the expanded notification view shows order details.
-
-> SCREENSHOT: 11-push-notification-long-press.png — Expanded push notification
-
-If running on simulator, skip this section. Mark as "not tested (simulator)".
-
-Pass criteria: push notifications arrive, tapping opens the correct order, long press shows expanded view.
-
 ## Section: Payments — Card Reader & Tap to Pay (device-only, user-assisted)
 
 Requires a physical device and payment hardware. The agent drives the UI; the user handles the physical card/reader interaction.
@@ -233,7 +162,80 @@ Pass criteria: camera capture adds an image to the product.
 
 ---
 
-After completing Phase 1, tell the user: **"Phase 1 (user-assisted tests) is complete. You can step away — Phase 2 runs fully automated."**
+After completing the user-assisted sections above, tell the user: **"All tests requiring your interaction are done. You can step away — everything from here runs automatically."**
+
+---
+
+## Section: Installation (device-only)
+
+These checks verify the upgrade and fresh install paths. Only run on a physical device. No user interaction needed.
+
+### Upgrade from existing version (device-only)
+
+1. If the device has the current App Store / TestFlight version installed, install the new build over it.
+2. Verify the app launches, the user remains logged in, and basic navigation works.
+
+> SCREENSHOT: 01-upgrade-verified.png — App launched after upgrade, session preserved
+
+### Fresh install (device-only)
+
+1. Uninstall the app completely.
+2. Install the new build.
+3. Verify the app launches to the prologue/login screen.
+
+> SCREENSHOT: 02-fresh-install-prologue.png — Fresh install prologue screen
+
+If running on simulator, skip this section entirely — the build step in SKILL.md handles fresh installation. Mark as "not tested (simulator)".
+
+Pass criteria: upgrade preserves session, fresh install shows prologue.
+
+## Section: Push Notifications (device-only)
+
+Requires a physical device with push notifications enabled. No user interaction needed — the agent creates orders via API and verifies notifications appear.
+
+### Push notification for new order (device-only)
+
+1. Before backgrounding, get a real product ID from the store via the REST API:
+   ```
+   woo-credentials: list_products({ store: "primary", per_page: 1 })
+   ```
+   Use the first product's `id` for creating orders.
+2. Background the app and open Notification Center:
+   - Press the Home button via `mobile_press_button(button: "home")`
+   - Verify the app is no longer in the foreground
+   - Pull down Notification Center: swipe down from the very top of the screen with a long, fast gesture (start at y=0 or y=5, swipe to y=600+, fast speed). If the first swipe doesn't open it, retry from x=center, y=5 to y=700 with maximum speed.
+   - Verify Notification Center is open via `list_elements_on_screen`
+3. With Notification Center open, create an order:
+   ```
+   woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })
+   ```
+   Record the order number from the response.
+4. Wait for the notification to appear in Notification Center:
+   - Call `list_elements_on_screen` immediately, then every 1 second for up to 10 seconds
+   - Look for elements containing the order number or "New order" text
+5. Verify the push notification is visible in Notification Center.
+
+> SCREENSHOT: 09-push-notification-received.png — Push notification for new order
+
+### Tap push notification (device-only)
+
+1. Tap the push notification.
+2. Verify the app opens the correct order detail screen matching the order number.
+
+> SCREENSHOT: 10-push-notification-opened.png — Order detail opened from push notification
+
+### Long press push notification (device-only)
+
+1. Background the app again via `mobile_press_button(button: "home")`.
+2. Create another order using the same product ID: `woo-credentials: create_order({ store: "primary", product_id: <real_product_id> })`.
+3. When the notification appears, long-press it.
+4. Verify the expanded notification view shows order details.
+
+> SCREENSHOT: 11-push-notification-long-press.png — Expanded push notification
+
+If running on simulator, skip this section. Mark as "not tested (simulator)".
+
+Pass criteria: push notifications arrive, tapping opens the correct order, long press shows expanded view.
 
 ---
 

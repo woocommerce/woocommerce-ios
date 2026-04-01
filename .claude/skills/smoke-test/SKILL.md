@@ -140,7 +140,7 @@ The completion hooks use `$RUN_DIR/progress.json` to structurally verify that se
 
 ```json
 {
-  "expected_order": ["installation", "user-assisted-login", "user-assisted-orders", "push-notifications", "payments-hardware", "media-camera", "login", "dashboard", "orders", "products", "hub-menu", "pos", "other"],
+  "expected_order": ["user-assisted-login", "user-assisted-orders", "payments-hardware", "media-camera", "installation", "push-notifications", "login", "dashboard", "orders", "products", "hub-menu", "pos", "other"],
   "sections": {
     "login": { "status": "pending", "screenshots": [] },
     "dashboard": { "status": "pending", "screenshots": [] },

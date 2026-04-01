@@ -66,9 +66,20 @@ struct ConnectivityTool: View {
     /// Dependency object.
     ///
     struct Card {
+        let testCase: ConnectivityToolViewModel.ConnectivityTest?
         let title: String
         let icon: ConnectivityToolCard.Icon
         let state: ConnectivityToolCard.ConnectivityState
+
+        init(testCase: ConnectivityToolViewModel.ConnectivityTest? = nil,
+             title: String,
+             icon: ConnectivityToolCard.Icon,
+             state: ConnectivityToolCard.ConnectivityState) {
+            self.testCase = testCase
+            self.title = title
+            self.icon = icon
+            self.state = state
+        }
     }
 
     /// Tool cards.

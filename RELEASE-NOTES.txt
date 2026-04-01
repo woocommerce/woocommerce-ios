@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.5
 -----
+- [*] Add analytics setting check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16871]
 
 
 24.4

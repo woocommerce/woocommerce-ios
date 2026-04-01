@@ -456,7 +456,7 @@ final class ConnectivityToolViewModel {
     /// Authenticates and retrieves the Jetpack plugin details to verify it's active.
     ///
     @MainActor
-    private func checkJetpackPluginActiveIfNeeded() async -> Result<Void, Error> {
+    private func checkJetpackPluginActiveIfNeeded() async -> Result<Void, JetpackCheckError> {
         /// WPCom and CIAB sites have Jetpack by default so skip this check
         guard stores.sessionManager.defaultSite?.isWordPressComStore == false,
               stores.sessionManager.defaultSite?.isCIAB == false else {
@@ -475,13 +475,10 @@ final class ConnectivityToolViewModel {
                     if plugin.status == .active || plugin.status == .networkActive {
                         continuation.resume(returning: .success(()))
                     } else {
-                        let error = NSError(domain: "ConnectivityTool",
-                                            code: 0,
-                                            userInfo: [NSLocalizedDescriptionKey: "Jetpack plugin is installed but not active (status: \(plugin.status))"])
-                        continuation.resume(returning: .failure(error))
+                        continuation.resume(returning: .failure(.pluginNotActive(status: plugin.status)))
                     }
                 case .failure(let error):
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(returning: .failure(.requestFailed(error)))
                 }
             }
             stores.dispatch(action)
@@ -490,16 +487,13 @@ final class ConnectivityToolViewModel {
 
     /// Checks the iOS notification authorization status.
     ///
-    private func checkNotificationPermission() async -> Result<Void, Error> {
+    private func checkNotificationPermission() async -> Result<Void, NotificationPermissionError> {
         await withCheckedContinuation { continuation in
             userNotificationCenter.loadAuthorizationStatus(queue: .main) { status in
                 if status == .authorized {
                     continuation.resume(returning: .success(()))
                 } else {
-                    let error = NSError(domain: "ConnectivityTool",
-                                        code: 0,
-                                        userInfo: [NSLocalizedDescriptionKey: "Notification permission status: \(status.rawValue)"])
-                    continuation.resume(returning: .failure(error))
+                    continuation.resume(returning: .failure(.notAuthorized(status: status)))
                 }
             }
         }
@@ -598,6 +592,19 @@ final class ConnectivityToolViewModel {
             icon: ConnectivityTest.notifications.icon,
             state: .error(Localization.ErrorMessage.orderNotificationsDisabled, [enableAction, retryAction(for: .notifications)])
         )
+    }
+
+    /// Error types for the Jetpack plugin check.
+    ///
+    enum JetpackCheckError: Error {
+        case pluginNotActive(status: SitePluginStatusEnum)
+        case requestFailed(Error)
+    }
+
+    /// Error types for the notification permission check.
+    ///
+    enum NotificationPermissionError: Error {
+        case notAuthorized(status: UNAuthorizationStatus)
     }
 
     /// Error types for the notification config check.

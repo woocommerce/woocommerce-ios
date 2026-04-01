@@ -282,7 +282,7 @@ private extension POSTabCoordinator {
                 let isBookingsEligible = isCIAB
 
                 let receiptSettingsAdminURL = storesManager.sessionManager.defaultSite
-                    .flatMap { Self.receiptSettingsAdminURL(siteURL: $0.url, isCIAB: isCIAB) }
+                    .flatMap { $0.receiptSettingsAdminURL(isCIAB: isCIAB) }
 
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
@@ -332,18 +332,6 @@ private extension POSTabCoordinator {
     }
 }
 
-extension POSTabCoordinator {
-    /// Constructs the admin URL for editing POS receipt settings.
-    /// CIAB sites use the next-admin page; non-CIAB sites use the classic wc-settings page.
-    static func receiptSettingsAdminURL(siteURL: String, isCIAB: Bool) -> URL? {
-        let trimmedSiteURL = siteURL.hasSuffix("/") ? String(siteURL.dropLast()) : siteURL
-        if isCIAB {
-            return URL(string: "\(trimmedSiteURL)/wp-admin/admin.php?page=next-admin&p=%2Fwoocommerce%2Fsettings%2Fpayments%2Fpos")
-        } else {
-            return URL(string: "\(trimmedSiteURL)/wp-admin/admin.php?page=wc-settings&tab=point-of-sale")
-        }
-    }
-}
 
 private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {

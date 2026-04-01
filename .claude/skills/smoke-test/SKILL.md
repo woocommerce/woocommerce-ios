@@ -296,8 +296,8 @@ woo-credentials: type_credential({ account: "primary.wpcom-email" })
 
 Then verify via `list_elements_on_screen` that the field value updated. **Never use `security find-generic-password` directly.**
 
-Also ask:
-1. **Running on device or simulator?** (determines which tests to run)
+Also ask (unless already specified via arguments):
+1. **Which devices are available?** Options: simulator only, physical device only, or both. When both are available, use the physical device for device-only sections (installation, push notifications, payments, camera) and simulators for everything else. This is the recommended setup for maximum coverage.
 2. **Run Phase 1, Phase 2, or both?** (unless specified via `--phase`)
 
 ## Step 2: Boot Simulator / Connect Device

@@ -46,7 +46,7 @@ struct PointOfSaleCollectCashView: View {
             .onChange(of: paymentModel.paymentState.cash) { _, newValue in
                 switch newValue {
                 case .paymentSuccess:
-                    popToSuccess()
+                    router.popToRoot()
                 case .idle:
                     // Card event forced exit from cash (e.g. card tapped during cash flow).
                     router.popToRoot()
@@ -54,16 +54,6 @@ struct PointOfSaleCollectCashView: View {
                     break
                 }
             }
-    }
-
-    /// Pops the cash view without animation so TotalsView's success screen
-    /// appears immediately in place, with no visible transition.
-    private func popToSuccess() {
-        var transaction = Transaction(animation: nil)
-        transaction.disablesAnimations = true
-        withTransaction(transaction) {
-            router.popToRoot()
-        }
     }
 
     private var collectCashContent: some View {

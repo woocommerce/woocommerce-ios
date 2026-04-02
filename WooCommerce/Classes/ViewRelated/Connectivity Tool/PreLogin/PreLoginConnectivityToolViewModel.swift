@@ -166,9 +166,9 @@ private extension PreLoginConnectivityToolViewModel {
 
 // MARK: - Test Implementations
 //
-private extension PreLoginConnectivityToolViewModel {
+extension PreLoginConnectivityToolViewModel {
 
-    enum Endpoint {
+    private enum Endpoint {
         static let siteInfoBase = "https://public-api.wordpress.com/rest/v1.1/connect/site-info/?url="
         static let wooCommerceAPI = "wc/v3"
         static let applicationPasswords = "wp/v2/users/me/application-passwords"

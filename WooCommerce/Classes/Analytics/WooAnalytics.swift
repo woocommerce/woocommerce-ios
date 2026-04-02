@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import Experiments
 import Foundation
 import UIKit
@@ -182,11 +183,21 @@ extension Analytics {
     }
 }
 
-// MARK: - Site Property Enrichment
+// MARK: - EventHorizon Trackable Bridge
 
 extension Analytics {
+    /// Track a codegen'd Trackable event through the existing analytics pipeline.
+    func track(_ event: some Trackable) {
+        let properties = event.analyticsProperties as [AnyHashable: Any]
+        let enrichedProperties = appendSiteProperties(to: properties)
+        track(event.analyticsName, properties: enrichedProperties, error: nil)
+    }
+}
+
+// MARK: - Site Property Enrichment
+
+fileprivate extension Analytics {
     /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary.
-    /// Shared by both the WooAnalyticsStat pipeline and the EventHorizon Trackable bridge.
     func appendSiteProperties(to properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
         guard ServiceLocator.stores.isAuthenticated else {
             return properties

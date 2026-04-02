@@ -34,7 +34,7 @@ extension BookingAttendanceStatus {
 
 // MARK: - Filter analytics
 
-enum BookingFilterAnalyticsKey: String {
+private enum BookingFilterAnalyticsKey: String {
     case attendanceStatus = "attendance_status"
     case customer = "customer"
     case dateTime = "date_time"

@@ -332,6 +332,8 @@ public class AppSettingsStore: Store {
             setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
         case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
             getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
+        case .dangerCheckTest:
+            break
         }
     }
 }

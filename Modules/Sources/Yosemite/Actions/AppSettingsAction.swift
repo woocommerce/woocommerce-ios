@@ -437,4 +437,7 @@ public enum AppSettingsAction: Action {
 
     /// Gets whether we should allow cellular data use downloading POS catalogs for a specific site
     case getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void)
+
+    /// Temp
+    case dangerCheckTest
 }

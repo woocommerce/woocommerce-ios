@@ -37,9 +37,9 @@ mock_handler_files = git.modified_files.select { |f| f.start_with?('Modules/Sour
 if action_files.any? && mock_handler_files.empty?
   warn(
     "Action enum(s) modified (`#{action_files.map { |f| File.basename(f) }.join('`, `')}`) " \
-    "without updating mock handlers. If new action cases were added, update the corresponding " \
-    "MockActionHandler in `Modules/Sources/Yosemite/Model/Mocks/ActionHandlers/` to avoid " \
-    "breaking screenshot tests."
+    'without updating mock handlers. If new action cases were added, update the corresponding ' \
+    'MockActionHandler in `Modules/Sources/Yosemite/Model/Mocks/ActionHandlers/` to avoid ' \
+    'breaking screenshot tests.'
   )
 end
 

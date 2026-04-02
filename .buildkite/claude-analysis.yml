@@ -11,7 +11,7 @@ steps:
     key: claude-analysis
     if: build.state == "failing"
     soft_fail: true
-    command: "exit 1"
+    command: .buildkite/commands/check-real-failures.sh
     artifact_paths:
       - "/tmp/claude_debug_${BUILDKITE_BUILD_ID}.txt"
       - "/tmp/claude_response_${BUILDKITE_BUILD_ID}.json"

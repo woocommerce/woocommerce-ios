@@ -83,14 +83,15 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         self.siteURL = siteURL
         self.session = session
         self.connectivityObserver = connectivityObserver
-        Task {
-            await startConnectivityTests()
-        }
     }
 
     /// Runs all connectivity tests sequentially.
     ///
     func startConnectivityTests() async {
+        cards = []
+        diagnosticLogs = []
+        restAPIRootURL = nil
+
         for testCase in ConnectivityTest.allCases {
             let cardIndex = cards.count
             cards.append(testCase.inProgressCard)
@@ -138,7 +139,7 @@ private extension PreLoginConnectivityToolViewModel {
 extension PreLoginConnectivityToolViewModel {
 
     private enum Endpoint {
-        static let siteInfoBase = "https://public-api.wordpress.com/rest/v1.1/connect/site-info/?url="
+        static let siteInfoPath = "/rest/v1.1/connect/site-info/"
         static let wooCommerceAPI = "wc/v3"
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
     }
@@ -156,9 +157,14 @@ extension PreLoginConnectivityToolViewModel {
     // MARK: Test 2: Site Info
 
     func testSiteInfo() async -> PreLoginCheckResult {
-        let siteInfoURLString = Endpoint.siteInfoBase + siteURL.absoluteString
-        guard let url = URL(string: siteInfoURLString) else {
-            return (.error(Localization.ErrorMessage.siteInfoFailed), "Invalid URL: \(siteInfoURLString)")
+        var components = URLComponents()
+        components.scheme = "https"
+        components.host = "public-api.wordpress.com"
+        components.path = Endpoint.siteInfoPath
+        components.queryItems = [URLQueryItem(name: "url", value: siteURL.absoluteString)]
+
+        guard let url = components.url else {
+            return (.error(Localization.ErrorMessage.siteInfoFailed), "Invalid URL for site: \(siteURL.absoluteString)")
         }
 
         switch await performRequest(url: url) {
@@ -189,6 +195,7 @@ extension PreLoginConnectivityToolViewModel {
                     "API root: \(rootURLString)\nTime: \(timeFormatted)")
         }
 
+        restAPIRootURL = nil
         return (.error(Localization.ErrorMessage.apiDiscoveryFailed),
                 "Site: \(siteURL.absoluteString)\nTime: \(timeFormatted)")
     }
@@ -362,7 +369,14 @@ private extension PreLoginConnectivityToolViewModel {
                 throw URLError(.badServerResponse)
             }
             let body = String(data: data, encoding: .utf8) ?? ""
-            let headers = httpResponse.allHeaderFields as? [String: String] ?? [:]
+            let sensitiveHeaders: Set<String> = ["set-cookie", "cookie", "authorization"]
+            let headers = Dictionary(uniqueKeysWithValues:
+                httpResponse.allHeaderFields.compactMap { key, value -> (String, String)? in
+                    let name = String(describing: key)
+                    guard !sensitiveHeaders.contains(name.lowercased()) else { return nil }
+                    return (name, String(describing: value))
+                }
+            )
             let detail = RequestDetail(url: url.absoluteString,
                                        timeTaken: Date().timeIntervalSince(startTime),
                                        statusCode: httpResponse.statusCode,

@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-import protocol WooFoundation.Analytics
 import struct Yosemite.Booking
 
 /// Hosting view for `BookingsTabView`
@@ -40,7 +39,6 @@ struct BookingsTabView: View {
     @State private var visibility: NavigationSplitViewVisibility = .all
     @StateObject private var bookingListContainerViewModel: BookingListContainerViewModel
     @StateObject private var connectivityMonitor = ConnectivityMonitor()
-    private let analytics: Analytics = ServiceLocator.analytics
 
     init(siteID: Int64) {
         _bookingListContainerViewModel = StateObject(wrappedValue: BookingListContainerViewModel(siteID: siteID))
@@ -65,9 +63,6 @@ struct BookingsTabView: View {
                 OfflineBannerViewRepresentable()
                     .frame(height: OfflineBannerView.height)
             }
-        }
-        .onAppear {
-            analytics.track(EhBookingsTabViewedEvent(totalBookingsCount: 42))
         }
         .onChange(of: selectedBooking) { _, newValue in
             bookingListContainerViewModel.selectedBookingChanged()

@@ -182,11 +182,13 @@ extension Analytics {
     }
 }
 
-private extension Analytics {
-    /// This function appends any additional properties to the provided properties dict if needed.
-    ///
-    func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
-        guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
+// MARK: - Site Property Enrichment
+
+extension Analytics {
+    /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary.
+    /// Shared by both the WooAnalyticsStat pipeline and the EventHorizon Trackable bridge.
+    func appendSiteProperties(to properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        guard ServiceLocator.stores.isAuthenticated else {
             return properties
         }
 
@@ -207,6 +209,15 @@ private extension Analytics {
             }
         }
         return updatedProperties
+    }
+}
+
+private extension Analytics {
+    func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        guard stat.shouldSendSiteProperties else {
+            return properties
+        }
+        return appendSiteProperties(to: properties)
     }
 
     func combinedProperties(from error: Error?, with passedProperties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {

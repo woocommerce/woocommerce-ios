@@ -1,8 +1,9 @@
+import EventHorizonSDK
 import Foundation
+import SwiftUI
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
-import SwiftUI
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
@@ -75,12 +76,6 @@ final class BookingDetailsViewModel: ObservableObject {
         configureEntityListener()
 
         updateDisplayProperties(from: booking)
-
-        analytics.track(EhBookingDetailOpenedEvent(
-            bookingId: Int(booking.bookingID),
-            source: .bookingList,
-            isUpcoming: booking.startDate > Date()
-        ))
     }
 }
 
@@ -260,11 +255,11 @@ extension BookingDetailsViewModel {
             }
         }
         stores.dispatch(action)
-        analytics.track(event: .BookingsDetail.attendanceStatusUpdate(status: newStatus))
+        analytics.track(BookingDetailAttendanceStatusUpdateEvent(bookingStatus: newStatus.analyticsValue))
     }
 
     func notesTapped() {
-        analytics.track(event: .BookingsDetail.addNoteTap())
+        analytics.track(BookingDetailAddNoteTapEvent())
     }
 
     @MainActor
@@ -328,7 +323,7 @@ extension BookingDetailsViewModel {
                     analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .cancelBooking, error: error))
                 } else {
                     continuation.resume(returning: ())
-                    analytics.track(event: .BookingsDetail.bookingCancelled())
+                    analytics.track(BookingDetailCancelBookingEvent())
                 }
             })
         }
@@ -441,13 +436,13 @@ extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func navigateToOrderDetails() {
-        analytics.track(event: .BookingsDetail.viewLinkedOrderTap())
+        analytics.track(BookingDetailViewLinkedOrderTapEvent())
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
     }
 
     @MainActor
     func issueRefund() async {
-        analytics.track(event: .BookingsDetail.refundTap())
+        analytics.track(BookingDetailRefundTapEvent())
 
         guard let order = storage.viewStorage.loadOrder(siteID: booking.siteID, orderID: booking.orderID)?.toReadOnly() else {
             DDLogError("⛔️ Order not found in storage for booking \(booking.bookingID)")

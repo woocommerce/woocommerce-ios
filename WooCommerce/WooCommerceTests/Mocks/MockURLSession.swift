@@ -1,6 +1,5 @@
 import Foundation
-@testable import WooCommerce
-import NetworkingCore
+import protocol NetworkingCore.URLSessionProtocol
 
 final class MockURLSession: URLSessionProtocol {
     var responses: [String: (Data, URLResponse)] = [:]

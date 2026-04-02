@@ -7,6 +7,7 @@ struct PointOfSaleCollectCashView: View {
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
     @Environment(\.posNavigationRouter) private var router
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
@@ -21,7 +22,6 @@ struct PointOfSaleCollectCashView: View {
     private let orderTotal: String
 
     @State private var buttonFrame: CGRect = .zero
-    @State private var keyboardFrame: CGRect = .zero
     @State private var shouldMinimizePadding: Bool = false
 
     private var formattedOrderTotal: String {
@@ -119,9 +119,9 @@ struct PointOfSaleCollectCashView: View {
                         .disabled(!isButtonEnabled)
                     }
                     .padding([.horizontal])
-                    .padding(.bottom, max(keyboardFrame.height - geometry.safeAreaInsets.bottom,
-                                          floatingControlAreaSize.height) + Constants.bottomPadding
-                    )
+                    .padding(.bottom, keyboardObserver.isKeyboardVisible
+                             ? Constants.bottomPadding
+                             : floatingControlAreaSize.height + Constants.bottomPadding)
                 }
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)
@@ -131,13 +131,13 @@ struct PointOfSaleCollectCashView: View {
                     updateChangeDueMessage()
                 }
                 .onReceive(Publishers.keyboardFrame) {
-                    keyboardFrame = $0
                     shouldMinimizePadding = $0.intersects(buttonFrame)
                 }
                 .animation(.default, value: shouldMinimizePadding)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea([])
     }
 
     private func markComplete() async throws {

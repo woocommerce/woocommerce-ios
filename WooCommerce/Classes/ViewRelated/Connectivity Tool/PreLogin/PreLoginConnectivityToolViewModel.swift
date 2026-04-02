@@ -394,7 +394,7 @@ private extension PreLoginConnectivityToolViewModel {
     }
 }
 
-// MARK: - Supporting Types
+// MARK: - Result details to send to Zendesk, no localization needed.
 //
 private struct PreLoginTestResult {
     let testCase: PreLoginConnectivityToolViewModel.ConnectivityTest
@@ -496,87 +496,43 @@ extension PreLoginConnectivityToolViewModel.ConnectivityTest {
 // MARK: - Localization
 //
 private extension PreLoginConnectivityToolViewModel {
-
-    // swiftlint:disable nesting
     enum Localization {
         enum ErrorMessage {
-            static var noInternet: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.noInternet",
-                    value: "It looks like you're not connected to the internet.",
-                    comment: "Error message when there is no internet connection in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.noInternetDetail",
-                    value: "Ensure your Wi-Fi is turned on. If you're using mobile data, make sure it's enabled in your device settings.",
-                    comment: "Additional guidance for no internet connection error in the pre-login connectivity tool"
-                )
-            }
-            static var siteInfoFailed: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.siteInfoFailed",
-                    value: "Could not retrieve site information.",
-                    comment: "Error message when site info lookup fails in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.siteInfoFailedDetail",
-                    value: "Please check the URL is correct and that your site is online.",
-                    comment: "Additional guidance for site info failure in the pre-login connectivity tool"
-                )
-            }
-            static var apiDiscoveryFailed: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.apiDiscoveryFailed",
-                    value: "Could not discover the REST API endpoint for your site.",
-                    comment: "Error message when REST API discovery fails in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.apiDiscoveryFailedDetail",
-                    value: "The site may not have a WordPress REST API or it may be disabled.",
-                    comment: "Additional guidance for API discovery failure in the pre-login connectivity tool"
-                )
-            }
-            static var noRESTAPI: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.noRESTAPI",
-                    value: "The WordPress REST API is not available on your site.",
-                    comment: "Error message when REST API is unavailable in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.noRESTAPIDetail",
-                    value: "Ensure pretty permalinks are enabled, or contact your hosting provider.",
-                    comment: "Additional guidance for REST API unavailable in the pre-login connectivity tool"
-                )
-            }
-            static var noWooCommerce: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.noWooCommerce",
-                    value: "WooCommerce doesn't appear to be active on your site.",
-                    comment: "Error message when WooCommerce is not active in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.noWooCommerceDetail",
-                    value: "Make sure the WooCommerce plugin is installed and activated.",
-                    comment: "Additional guidance for WooCommerce not active in the pre-login connectivity tool"
-                )
-            }
-            static var applicationPasswordsDisabled: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.appPasswordsDisabled",
-                    value: "Application Passwords are disabled on your site.",
-                    comment: "Error message when application passwords are disabled in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.appPasswordsDisabledDetail",
-                    value: "This feature is required for the WooCommerce app. Please enable it or contact your hosting provider.",
-                    comment: "Additional guidance for application passwords disabled in the pre-login connectivity tool"
-                )
-            }
-            static var applicationPasswordsUnavailable: String {
-                NSLocalizedString(
-                    "preLoginConnectivityTool.error.appPasswordsUnavailable",
-                    value: "Application Passwords are not available on your site.",
-                    comment: "Error message when application passwords are not available in the pre-login connectivity tool"
-                ) + "\n\n" + NSLocalizedString(
-                    "preLoginConnectivityTool.error.appPasswordsUnavailableDetail",
-                    value: "This feature requires WordPress 5.6 or later. Please update WordPress.",
-                    comment: "Additional guidance for application passwords unavailable in the pre-login connectivity tool"
-                )
-            }
+            static let noInternet = NSLocalizedString(
+                "preLoginConnectivityTool.error.noInternet",
+                value: "No internet connection detected.",
+                comment: "Error message when there is no internet connection in the pre-login connectivity tool"
+            )
+            static let siteInfoFailed = NSLocalizedString(
+                "preLoginConnectivityTool.error.siteInfoFailed",
+                value: "Could not retrieve site information.",
+                comment: "Error message when site info lookup fails in the pre-login connectivity tool"
+            )
+            static let apiDiscoveryFailed = NSLocalizedString(
+                "preLoginConnectivityTool.error.apiDiscoveryFailed",
+                value: "REST API endpoint not found.",
+                comment: "Error message when REST API discovery fails in the pre-login connectivity tool"
+            )
+            static let noRESTAPI = NSLocalizedString(
+                "preLoginConnectivityTool.error.noRESTAPI",
+                value: "WordPress REST API is not accessible on your site.",
+                comment: "Error message when REST API is unavailable in the pre-login connectivity tool"
+            )
+            static let noWooCommerce = NSLocalizedString(
+                "preLoginConnectivityTool.error.noWooCommerce",
+                value: "WooCommerce API is not accessible on your site.",
+                comment: "Error message when WooCommerce is not active in the pre-login connectivity tool"
+            )
+            static let applicationPasswordsDisabled = NSLocalizedString(
+                "preLoginConnectivityTool.error.appPasswordsDisabled",
+                value: "Application Passwords are disabled.",
+                comment: "Error message when application passwords are disabled in the pre-login connectivity tool"
+            )
+            static let applicationPasswordsUnavailable = NSLocalizedString(
+                "preLoginConnectivityTool.error.appPasswordsUnavailable",
+                value: "Application Passwords not available.",
+                comment: "Error message when application passwords are not available in the pre-login connectivity tool"
+            )
         }
 
         enum SuccessInfo {
@@ -645,5 +601,4 @@ private extension PreLoginConnectivityToolViewModel {
             )
         }
     }
-    // swiftlint:enable nesting
 }

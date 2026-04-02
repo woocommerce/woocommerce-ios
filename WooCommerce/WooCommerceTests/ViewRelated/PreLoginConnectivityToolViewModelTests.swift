@@ -133,11 +133,7 @@ struct PreLoginConnectivityToolViewModelTests {
     @Test func test_testAPIDiscovery_when_link_header_present_then_returns_success_and_sets_rootURL() async {
         // Given
         let mockSession = MockURLSession()
-        mockSession.simulateResponse(
-            for: "https://example.com",
-            statusCode: 200,
-            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
-        )
+        simulateDiscoveryResponse(on: mockSession)
         let sut = makeSUT(session: mockSession)
 
         // When
@@ -167,10 +163,10 @@ struct PreLoginConnectivityToolViewModelTests {
     @Test func test_testWordPressRESTAPI_when_valid_json_then_returns_success() async {
         // Given
         let mockSession = MockURLSession()
+        simulateDiscoveryResponse(on: mockSession)
         let json = #"{"name":"My Site","namespaces":["wp/v2","wc/v3"]}"#
         mockSession.simulateResponse(for: "https://example.com/wp-json/", data: json.data(using: .utf8)!)
-        let sut = makeSUT(session: mockSession)
-        sut.restAPIRootURL = URL(string: "https://example.com/wp-json/")
+        let sut = await makeSUTWithDiscovery(session: mockSession)
 
         // When
         let result = await sut.testWordPressRESTAPI()
@@ -193,9 +189,9 @@ struct PreLoginConnectivityToolViewModelTests {
     @Test func test_testWordPressRESTAPI_when_404_then_returns_error() async {
         // Given
         let mockSession = MockURLSession()
+        simulateDiscoveryResponse(on: mockSession)
         mockSession.simulateResponse(for: "https://example.com/wp-json/", statusCode: 404)
-        let sut = makeSUT(session: mockSession)
-        sut.restAPIRootURL = URL(string: "https://example.com/wp-json/")
+        let sut = await makeSUTWithDiscovery(session: mockSession)
 
         // When
         let result = await sut.testWordPressRESTAPI()
@@ -209,10 +205,10 @@ struct PreLoginConnectivityToolViewModelTests {
     @Test func test_testWooCommerceAPI_when_wc_namespace_present_then_returns_success() async {
         // Given
         let mockSession = MockURLSession()
+        simulateDiscoveryResponse(on: mockSession)
         let json = #"{"namespace":"wc/v3","routes":{"/wc/v3":{}}}"#
         mockSession.simulateResponse(for: "https://example.com/wp-json/wc/v3", data: json.data(using: .utf8)!)
-        let sut = makeSUT(session: mockSession)
-        sut.restAPIRootURL = URL(string: "https://example.com/wp-json/")
+        let sut = await makeSUTWithDiscovery(session: mockSession)
 
         // When
         let result = await sut.testWooCommerceAPI()
@@ -237,14 +233,14 @@ struct PreLoginConnectivityToolViewModelTests {
     @Test func test_testApplicationPasswords_when_401_standard_challenge_then_returns_success() async {
         // Given
         let mockSession = MockURLSession()
+        simulateDiscoveryResponse(on: mockSession)
         let json = #"{"code":"rest_not_logged_in","message":"Not logged in"}"#
         mockSession.simulateResponse(
             for: "https://example.com/wp-json/wp/v2/users/me/application-passwords",
             data: json.data(using: .utf8)!,
             statusCode: 401
         )
-        let sut = makeSUT(session: mockSession)
-        sut.restAPIRootURL = URL(string: "https://example.com/wp-json/")
+        let sut = await makeSUTWithDiscovery(session: mockSession)
 
         // When
         let result = await sut.testApplicationPasswords()
@@ -256,14 +252,14 @@ struct PreLoginConnectivityToolViewModelTests {
     @Test func test_testApplicationPasswords_when_disabled_then_returns_error() async {
         // Given
         let mockSession = MockURLSession()
+        simulateDiscoveryResponse(on: mockSession)
         let json = #"{"code":"application_passwords_disabled","message":"Disabled"}"#
         mockSession.simulateResponse(
             for: "https://example.com/wp-json/wp/v2/users/me/application-passwords",
             data: json.data(using: .utf8)!,
             statusCode: 401
         )
-        let sut = makeSUT(session: mockSession)
-        sut.restAPIRootURL = URL(string: "https://example.com/wp-json/")
+        let sut = await makeSUTWithDiscovery(session: mockSession)
 
         // When
         let result = await sut.testApplicationPasswords()
@@ -309,6 +305,24 @@ private extension PreLoginConnectivityToolViewModelTests {
             siteURL: siteURL,
             session: session,
             connectivityObserver: connectivityObserver
+        )
+    }
+
+    /// Creates a SUT with API discovery already completed, so `restAPIRootURL` is set.
+    ///
+    func makeSUTWithDiscovery(session: MockURLSession) async -> PreLoginConnectivityToolViewModel {
+        let sut = makeSUT(session: session)
+        _ = await sut.testAPIDiscovery()
+        return sut
+    }
+
+    /// Configures the mock session to return a valid Link header for API discovery.
+    ///
+    func simulateDiscoveryResponse(on session: MockURLSession) {
+        session.simulateResponse(
+            for: "https://example.com",
+            statusCode: 200,
+            headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
         )
     }
 

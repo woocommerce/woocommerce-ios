@@ -93,9 +93,10 @@ struct POSPaymentContentView: View {
     private var paymentContentView: some View {
         switch displayPaymentState.activePaymentMethod {
         case .cash:
-            POSCashPaymentContentView(
-                cashPaymentState: displayPaymentState.cash,
-                formattedOrderTotal: formattedTotal)
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .cash)))
         case .card:
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
@@ -259,31 +260,6 @@ struct POSCardPaymentContentView: View {
                   case .idle = paymentState.card,
                   case .connected = cardReaderConnectionStatus {
             POSPaymentLoadingView()
-        }
-    }
-}
-
-// MARK: - Shared Cash Payment Content
-
-/// Shared cash payment content rendering used by both cart and bookings flows.
-struct POSCashPaymentContentView: View {
-    let cashPaymentState: PointOfSaleCashPaymentState
-    let formattedOrderTotal: String
-    @Environment(\.posCurrencyProvider) private var currencyProvider
-
-    var body: some View {
-        switch cashPaymentState {
-        case .collectingCash:
-            PointOfSaleCollectCashView(orderTotal: formattedOrderTotal,
-                                       currencySettings: currencyProvider.currencySettings)
-                .transition(.move(edge: .trailing))
-        case .paymentSuccess:
-            PointOfSaleCardPresentPaymentInLineMessage(
-                messageType: .paymentSuccess(
-                    viewModel: .init(formattedOrderTotal: formattedOrderTotal,
-                                     paymentMethod: .cash)))
-        case .idle:
-            EmptyView()
         }
     }
 }

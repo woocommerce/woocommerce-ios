@@ -436,9 +436,10 @@ private struct PaymentViewContent: View {
 
     @ViewBuilder private var paymentView: some View {
         if paymentState.cash == .paymentSuccess, case .loaded(let total) = orderState {
-            POSCashPaymentContentView(
-                cashPaymentState: .paymentSuccess,
-                formattedOrderTotal: total.orderTotal)
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .cash)))
         } else {
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: cardReaderConnectionStatus,

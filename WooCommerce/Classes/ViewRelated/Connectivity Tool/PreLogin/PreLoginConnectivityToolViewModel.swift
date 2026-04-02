@@ -296,17 +296,25 @@ private extension PreLoginConnectivityToolViewModel {
                 if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any],
                    let code = json["code"] as? String,
                    code == "application_passwords_disabled" {
-                    return .error(summary: Localization.ErrorMessage.withDetail(.applicationPasswordsDisabled, .applicationPasswordsDisabledDetail), detail: result.detail.formatted)
+                    let summary = Localization.ErrorMessage.withDetail(.applicationPasswordsDisabled,
+                                                                      .applicationPasswordsDisabledDetail)
+                    return .error(summary: summary, detail: result.detail.formatted)
                 }
-                return .success(summary: Localization.SuccessInfo.applicationPasswordsAvailable, detail: result.detail.formatted)
+                return .success(summary: Localization.SuccessInfo.applicationPasswordsAvailable,
+                                detail: result.detail.formatted)
             case 200...299:
-                return .success(summary: Localization.SuccessInfo.applicationPasswordsAvailable, detail: result.detail.formatted)
+                return .success(summary: Localization.SuccessInfo.applicationPasswordsAvailable,
+                                detail: result.detail.formatted)
             default:
-                return .error(summary: Localization.ErrorMessage.withDetail(.applicationPasswordsUnavailable, .applicationPasswordsUnavailableDetail), detail: result.detail.formatted)
+                let summary = Localization.ErrorMessage.withDetail(.applicationPasswordsUnavailable,
+                                                                   .applicationPasswordsUnavailableDetail)
+                return .error(summary: summary, detail: result.detail.formatted)
             }
 
         case .failure(let detail):
-            return .error(summary: Localization.ErrorMessage.withDetail(.applicationPasswordsUnavailable, .applicationPasswordsUnavailableDetail), detail: detail.formatted)
+            let summary = Localization.ErrorMessage.withDetail(.applicationPasswordsUnavailable,
+                                                               .applicationPasswordsUnavailableDetail)
+            return .error(summary: summary, detail: detail.formatted)
         }
     }
 }

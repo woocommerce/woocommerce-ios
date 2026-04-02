@@ -23,7 +23,7 @@ enum PreLoginCheckState {
 
 /// Captures technical detail about an HTTP request/response for display in a check result.
 ///
-struct PreLoginCheckDetail {
+struct PreLoginCheckDetail: Error {
     let url: String
     let timeTaken: TimeInterval
     let statusCode: Int?

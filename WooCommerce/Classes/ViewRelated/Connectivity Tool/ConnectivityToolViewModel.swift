@@ -17,6 +17,14 @@ final class ConnectivityToolViewModel {
     ///
     @Published var cards: [ConnectivityTool.Card] = []
 
+    /// URL selected by an action button, to be opened in-app by the view layer.
+    ///
+    @Published var selectedURL: URL?
+
+    /// Set to `true` when the user taps "Setup Jetpack" to signal the view layer to start the Jetpack setup flow.
+    ///
+    @Published var shouldStartJetpackSetup = false
+
     /// Remote used to check the connection to WPCom servers.
     ///
     private let announcementsRemote: AnnouncementsRemote
@@ -35,29 +43,49 @@ final class ConnectivityToolViewModel {
 
     /// Stores manager for dispatching Yosemite actions.
     ///
-    private let stores: StoresManager
+    let stores: StoresManager
 
     /// Analytics tracker.
     ///
     private let analytics: Analytics
 
+    /// Adapter for checking notification authorization status.
+    ///
+    let userNotificationCenter: UserNotificationsCenterAdapter
+
+    /// WordPress.com device identifier for notification settings.
+    ///
+    let pushNotesManager: PushNotesManager
+
+    /// The site URL used for authenticating Jetpack connection requests.
+    ///
+    let siteURL: String?
+
     /// Site to be tested.
     ///
-    private let siteID: Int64
+    let siteID: Int64
 
     private var latestTestResult: [ConnectivityTestResult] = []
 
+    let network: AlamofireNetwork
+
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
+        self.network = network
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
         self.orderRemote = OrdersRemote(network: network)
         self.productsRemote = ProductsRemote(network: network)
         self.stores = stores
         self.analytics = analytics
+        self.userNotificationCenter = userNotificationCenter
+        self.pushNotesManager = pushNotesManager
+        self.siteURL = session.defaultSite?.url
         self.siteID = session.defaultStoreID ?? .zero
 
         Task {
@@ -71,7 +99,7 @@ final class ConnectivityToolViewModel {
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
             if stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting]
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
             } else {
                 [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }
@@ -140,12 +168,14 @@ final class ConnectivityToolViewModel {
             return await testFetchingProducts()
         case .analyticsSetting:
             return await testAnalyticsSetting()
+        case .notifications:
+            return await testNotifications()
         }
     }
 
     /// Retries the last failed test case and the subsequent ones.
     ///
-    private func retryTest(_ testCase: ConnectivityTest) {
+    func retryTest(_ testCase: ConnectivityTest) {
         // Remove the last test result and card.
         if !latestTestResult.isEmpty {
             latestTestResult.removeLast()
@@ -295,9 +325,7 @@ final class ConnectivityToolViewModel {
     @MainActor
     private func enableAnalytics(retries: Int = 0) {
         // Hide card content and show loading indicator while enabling.
-        if let cardIndex = cards.lastIndex(where: { $0.testCase == .analyticsSetting }) {
-            cards[cardIndex] = ConnectivityTest.analyticsSetting.inProgressCard
-        }
+        updateCardState(for: .analyticsSetting, state: .inProgress)
 
         let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
             guard let self else { return }
@@ -305,14 +333,7 @@ final class ConnectivityToolViewModel {
             case .success:
                 DDLogInfo("Connectivity Tool: ✅ Analytics enabled successfully")
                 // Update the analytics setting card to show relaunch message.
-                if let index = self.cards.lastIndex(where: { $0.testCase == .analyticsSetting }) {
-                    self.cards[index] = ConnectivityTool.Card(
-                        testCase: .analyticsSetting,
-                        title: ConnectivityTest.analyticsSetting.title,
-                        icon: ConnectivityTest.analyticsSetting.icon,
-                        state: .empty(Localization.analyticsEnabledRelaunch)
-                    )
-                }
+                self.updateCardState(for: .analyticsSetting, state: .empty(Localization.analyticsEnabledRelaunch))
             case .failure(let error):
                 if retries < 1 {
                     // Retry once due to known API quirk where first request fails.
@@ -331,9 +352,6 @@ final class ConnectivityToolViewModel {
     ///
     @MainActor
     private func restoreAnalyticsCardActions() {
-        guard let index = cards.lastIndex(where: { $0.testCase == .analyticsSetting }) else {
-            return
-        }
         let enableAction = ConnectivityToolCard.ConnectivityState.Action(
             title: Localization.Action.enableAnalytics,
             systemImage: SystemImages.enableAction.rawValue,
@@ -341,12 +359,16 @@ final class ConnectivityToolViewModel {
                 self?.enableAnalytics()
             }
         )
-        cards[index] = ConnectivityTool.Card(
-            testCase: .analyticsSetting,
-            title: ConnectivityTest.analyticsSetting.title,
-            icon: ConnectivityTest.analyticsSetting.icon,
-            state: .error(Localization.ErrorMessage.analyticsDisabled, [enableAction, retryAction(for: .analyticsSetting)])
-        )
+        updateCardState(for: .analyticsSetting,
+                        state: .error(Localization.ErrorMessage.analyticsDisabled,
+                                      [enableAction, retryAction(for: .analyticsSetting)]))
+    }
+
+    /// Updates the state of the card matching the given test case.
+    ///
+    func updateCardState(for testCase: ConnectivityTest, state: ConnectivityToolCard.ConnectivityState) {
+        guard let index = cards.lastIndex(where: { $0.testCase == testCase }) else { return }
+        cards[index] = cards[index].updatingState(state)
     }
 
     private func stateForSiteResult<T>(_ result: Result<T, Error>, operation: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState {
@@ -357,14 +379,14 @@ final class ConnectivityToolViewModel {
         let message: String
         let readMore = Localization.Action.readMore
         let generalTroubleshootAction = { [weak self] in
-            UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
+            self?.selectedURL = WooConstants.URLs.troubleshootErrorLoadingData.asURL()
             self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
         var readMoreAction = ConnectivityToolCard.ConnectivityState.Action(title: readMore,
                                                                            systemImage: SystemImages.readMore.rawValue,
                                                                            action: generalTroubleshootAction)
         let jetpackTroubleshootAction = { [weak self] in
-            UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
+            self?.selectedURL = WooConstants.URLs.troubleshootJetpackConnection.asURL()
             self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
 
@@ -404,7 +426,7 @@ final class ConnectivityToolViewModel {
         }
     }
 
-    private func retryAction(for testCase: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState.Action {
+    func retryAction(for testCase: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState.Action {
         let retryText = Localization.Action.retry
         return .init(title: retryText, systemImage: SystemImages.retry.rawValue, action: { [weak self] in
             self?.retryTest(testCase)
@@ -422,6 +444,7 @@ final class ConnectivityToolViewModel {
             case .siteOrders: return .orders
             case .loadingProducts: return .products
             case .analyticsSetting: return .analytics
+            case .notifications: return .notifications
             }
         }()
         analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
@@ -528,6 +551,7 @@ fileprivate struct ConnectivityTestResult {
         case .siteOrders: "Fetching your site orders"
         case .loadingProducts: "Fetching products in your store"
         case .analyticsSetting: "Checking analytics setting"
+        case .notifications: "Checking notification settings"
         }
     }
 
@@ -652,6 +676,7 @@ extension ConnectivityToolViewModel {
         case siteOrders
         case loadingProducts
         case analyticsSetting
+        case notifications
 
         var title: String {
             switch self {
@@ -691,6 +716,12 @@ extension ConnectivityToolViewModel {
                     value: "Checking analytics setting",
                     comment: "Title for the analytics setting check in the connectivity tool"
                 )
+            case .notifications:
+                NSLocalizedString(
+                    "connectivityToolViewModel.connectivityTest.notifications",
+                    value: "Checking notification settings",
+                    comment: "Title for the notification settings check in the connectivity tool"
+                )
             }
         }
 
@@ -708,6 +739,8 @@ extension ConnectivityToolViewModel {
                     .system("cart")
             case .analyticsSetting:
                     .system("chart.bar.xaxis")
+            case .notifications:
+                    .system("bell.badge")
             }
         }
 

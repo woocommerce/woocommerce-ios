@@ -23,7 +23,7 @@ enum PreLoginCheckState {
 
 /// Captures technical detail about an HTTP request/response for display in a check result.
 ///
-struct PreLoginCheckDetail: Error {
+struct PreLoginCheckDetail {
     let url: String
     let timeTaken: TimeInterval
     let statusCode: Int?
@@ -353,6 +353,11 @@ private extension PreLoginConnectivityToolViewModel {
 //
 private extension PreLoginConnectivityToolViewModel {
 
+    enum RequestOutcome {
+        case success(RequestResult)
+        case failure(PreLoginCheckDetail)
+    }
+
     struct RequestResult {
         let data: Data
         let statusCode: Int
@@ -361,7 +366,7 @@ private extension PreLoginConnectivityToolViewModel {
         let detail: PreLoginCheckDetail
     }
 
-    func performRequest(url: URL, method: String = "GET") async -> Result<RequestResult, PreLoginCheckDetail> {
+    func performRequest(url: URL, method: String = "GET") async -> RequestOutcome {
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.timeoutInterval = Self.requestTimeout

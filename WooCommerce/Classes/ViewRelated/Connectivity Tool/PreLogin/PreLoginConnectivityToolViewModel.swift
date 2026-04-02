@@ -71,6 +71,10 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private let connectivityObserver: ConnectivityObserver
 
+    /// Discovers the REST API root URL for a site. Injectable for testing.
+    ///
+    private let discoverAPIRoot: (String) async -> String?
+
     /// Diagnostic logs for each completed test, used for Zendesk support attachment.
     ///
     private var diagnosticLogs: [String] = []
@@ -79,10 +83,14 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 
     init(siteURL: URL,
          session: URLSessionProtocol = URLSession.shared,
-         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+         discoverAPIRoot: @escaping (String) async -> String? = {
+             await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: $0)
+         }) {
         self.siteURL = siteURL
         self.session = session
         self.connectivityObserver = connectivityObserver
+        self.discoverAPIRoot = discoverAPIRoot
     }
 
     /// Runs all connectivity tests sequentially.
@@ -184,9 +192,8 @@ extension PreLoginConnectivityToolViewModel {
     // MARK: Test 3: API Discovery
 
     func testAPIDiscovery() async -> PreLoginCheckResult {
-        let discovery = WordPressAPIDiscovery(session: session)
         let startTime = Date()
-        let rootURLString = await discovery.discoverRESTAPIRootURL(for: siteURL.absoluteString)
+        let rootURLString = await discoverAPIRoot(siteURL.absoluteString)
         let timeFormatted = String(format: "%.0fms", Date().timeIntervalSince(startTime) * 1000)
 
         if let rootURLString, let rootURL = URL(string: rootURLString) {

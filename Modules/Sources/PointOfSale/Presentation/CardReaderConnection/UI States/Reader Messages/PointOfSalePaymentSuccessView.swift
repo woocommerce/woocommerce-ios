@@ -28,7 +28,7 @@ struct PointOfSalePaymentSuccessView: View {
         .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
             Task { @MainActor in
-                withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+                withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
                     isViewLoaded = true
                 }
             }

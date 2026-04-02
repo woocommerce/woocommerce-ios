@@ -1,6 +1,5 @@
 import Foundation
 
-#error("Temporary build break to test Claude analysis gating — will be reverted")
 
 /// WooCommerce Constants
 ///

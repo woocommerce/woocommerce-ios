@@ -5,7 +5,10 @@
 ## Build generated
 build/
 DerivedData/
-WooCommerce/DerivedSources/
+# Any folder named DerivedSources, regardless of the location, so that if we move it, we won't risk accidentally committing it
+DerivedSources/
+# Any file named ApiCredentials.swift, regardless of the location, so that if we move it, we won't risk accidentally committing it
+ApiCredentials.swift
 
 ## Various settings
 *.pbxuser

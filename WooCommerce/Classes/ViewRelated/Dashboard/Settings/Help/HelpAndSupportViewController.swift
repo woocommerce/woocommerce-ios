@@ -70,7 +70,8 @@ final class HelpAndSupportViewController: UIViewController {
         isAuthenticated: ServiceLocator.stores.isAuthenticated,
         isZendeskEnabled: ZendeskProvider.shared.zendeskEnabled,
         isMacCatalyst: isMacCatalyst,
-        developerFFPanelEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
+        developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
     )
 
     private var isMacCatalyst: Bool {

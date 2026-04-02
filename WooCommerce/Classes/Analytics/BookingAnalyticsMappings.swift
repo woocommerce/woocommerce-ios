@@ -32,26 +32,34 @@ extension BookingAttendanceStatus {
     }
 }
 
-// MARK: - Filter string computation (extracted from BookingList+Analytics.swift)
+// MARK: - Filter analytics
+
+enum BookingFilterAnalyticsKey: String {
+    case attendanceStatus = "attendance_status"
+    case customer = "customer"
+    case dateTime = "date_time"
+    case serviceEvents = "service_events"
+    case teamMember = "team_member"
+}
 
 extension BookingFiltersViewModel.Filters {
     var analyticsFilterString: String {
-        var appliedFilters = [String]()
+        var appliedFilters = [BookingFilterAnalyticsKey]()
         if attendanceStatus != nil {
-            appliedFilters.append("attendance_status")
+            appliedFilters.append(.attendanceStatus)
         }
         if bookingFilters.customerIDs.isNotEmpty {
-            appliedFilters.append("customer")
+            appliedFilters.append(.customer)
         }
         if dateRange != nil {
-            appliedFilters.append("date_time")
+            appliedFilters.append(.dateTime)
         }
         if products.isNotEmpty {
-            appliedFilters.append("service_events")
+            appliedFilters.append(.serviceEvents)
         }
         if teamMembers.isNotEmpty {
-            appliedFilters.append("team_member")
+            appliedFilters.append(.teamMember)
         }
-        return appliedFilters.joined(separator: ",")
+        return appliedFilters.map(\.rawValue).joined(separator: ",")
     }
 }

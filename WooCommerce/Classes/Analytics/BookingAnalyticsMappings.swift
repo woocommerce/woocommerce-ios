@@ -1,5 +1,5 @@
 import EventHorizonSDK
-import enum Networking.BookingAttendanceStatus
+import enum Yosemite.BookingAttendanceStatus
 
 // MARK: - App type → Generated analytics enum mappings
 

@@ -18,7 +18,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = sut.testInternetConnectivity()
 
         // Then
-        assertSuccess(result)
+        assertSuccess(result.state)
     }
 
     @Test func test_testInternetConnectivity_when_not_reachable_then_returns_error() {
@@ -31,7 +31,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = sut.testInternetConnectivity()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     // MARK: - Site Info
@@ -54,7 +54,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testSiteInfo()
 
         // Then
-        guard case .success(let summary, _) = result else {
+        guard case .success(let summary) = result.state else {
             Issue.record("Expected .success but got \(result)")
             return
         }
@@ -80,7 +80,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testSiteInfo()
 
         // Then
-        guard case .success(let summary, _) = result else {
+        guard case .success(let summary) = result.state else {
             Issue.record("Expected .success but got \(result)")
             return
         }
@@ -105,7 +105,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testSiteInfo()
 
         // Then
-        guard case .success(let summary, _) = result else {
+        guard case .success(let summary) = result.state else {
             Issue.record("Expected .success but got \(result)")
             return
         }
@@ -125,7 +125,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testSiteInfo()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     // MARK: - API Discovery
@@ -140,7 +140,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testAPIDiscovery()
 
         // Then
-        assertSuccess(result)
+        assertSuccess(result.state)
         #expect(sut.restAPIRootURL?.absoluteString == "https://example.com/wp-json/")
     }
 
@@ -154,7 +154,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testAPIDiscovery()
 
         // Then
-        assertError(result)
+        assertError(result.state)
         #expect(sut.restAPIRootURL == nil)
     }
 
@@ -172,7 +172,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testWordPressRESTAPI()
 
         // Then
-        assertSuccess(result)
+        assertSuccess(result.state)
     }
 
     @Test func test_testWordPressRESTAPI_when_no_api_root_then_returns_error() async {
@@ -183,7 +183,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testWordPressRESTAPI()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     @Test func test_testWordPressRESTAPI_when_404_then_returns_error() async {
@@ -197,7 +197,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testWordPressRESTAPI()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     // MARK: - WooCommerce API
@@ -214,7 +214,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testWooCommerceAPI()
 
         // Then
-        assertSuccess(result)
+        assertSuccess(result.state)
     }
 
     @Test func test_testWooCommerceAPI_when_no_api_root_then_returns_error() async {
@@ -225,7 +225,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testWooCommerceAPI()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     // MARK: - Application Passwords
@@ -246,7 +246,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testApplicationPasswords()
 
         // Then
-        assertSuccess(result)
+        assertSuccess(result.state)
     }
 
     @Test func test_testApplicationPasswords_when_disabled_then_returns_error() async {
@@ -265,7 +265,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testApplicationPasswords()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     @Test func test_testApplicationPasswords_when_no_api_root_then_returns_error() async {
@@ -276,7 +276,7 @@ struct PreLoginConnectivityToolViewModelTests {
         let result = await sut.testApplicationPasswords()
 
         // Then
-        assertError(result)
+        assertError(result.state)
     }
 
     // MARK: - Troubleshooting Description
@@ -308,16 +308,12 @@ private extension PreLoginConnectivityToolViewModelTests {
         )
     }
 
-    /// Creates a SUT with API discovery already completed, so `restAPIRootURL` is set.
-    ///
     func makeSUTWithDiscovery(session: MockURLSession) async -> PreLoginConnectivityToolViewModel {
         let sut = makeSUT(session: session)
         _ = await sut.testAPIDiscovery()
         return sut
     }
 
-    /// Configures the mock session to return a valid Link header for API discovery.
-    ///
     func simulateDiscoveryResponse(on session: MockURLSession) {
         session.simulateResponse(
             for: "https://example.com",

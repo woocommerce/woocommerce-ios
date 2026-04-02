@@ -7,13 +7,10 @@ import class WordPressAuthenticator.WordPressComSiteInfo
 
 /// Represents the state of a pre-login connectivity check.
 ///
-/// - `summary`: A user-facing description of the result.
-/// - `detail`: Technical detail including the request URL, time taken, HTTP status, and response body.
-///
 enum PreLoginCheckState {
     case inProgress
-    case success(summary: String, detail: String)
-    case error(summary: String, detail: String)
+    case success(String)
+    case error(String)
 
     var isSuccess: Bool {
         if case .success = self { return true }
@@ -21,37 +18,9 @@ enum PreLoginCheckState {
     }
 }
 
-/// Captures technical detail about an HTTP request/response for display in a check result.
+/// The result of a connectivity check: a UI state and a diagnostic log for Zendesk.
 ///
-struct PreLoginCheckDetail {
-    let url: String
-    let timeTaken: TimeInterval
-    let statusCode: Int?
-    let headers: [String: String]
-    let responseBody: String
-
-    var formatted: String {
-        var lines: [String] = []
-        lines.append("URL: \(url)")
-        lines.append("Time: \(String(format: "%.0fms", timeTaken * 1000))")
-        if let statusCode {
-            lines.append("Status: \(statusCode)")
-        }
-        if !headers.isEmpty {
-            let headerLines = headers.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n  ")
-            lines.append("Headers:\n  \(headerLines)")
-        }
-        if !responseBody.isEmpty {
-            let truncated = responseBody.prefix(500)
-            lines.append("Response: \(truncated)")
-        }
-        return lines.joined(separator: "\n")
-    }
-
-    static func local(_ info: String) -> String {
-        info
-    }
-}
+typealias PreLoginCheckResult = (state: PreLoginCheckState, diagnosticLog: String)
 
 /// A single card in the pre-login connectivity tool.
 ///
@@ -102,7 +71,10 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private let connectivityObserver: ConnectivityObserver
 
-    private var latestTestResults: [PreLoginTestResult] = []
+    /// Diagnostic logs for each completed test, used for Zendesk support attachment.
+    ///
+    private var diagnosticLogs: [String] = []
+
     private static let requestTimeout: TimeInterval = 15
 
     init(siteURL: URL,
@@ -123,22 +95,17 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
             let cardIndex = cards.count
             cards.append(testCase.inProgressCard)
 
-            let startTime = Date()
-            let testResult = await runTest(for: testCase)
-            let timeTaken = Date().timeIntervalSince(startTime)
-
-            cards[cardIndex] = cards[cardIndex].updatingState(testResult)
-            latestTestResults.append(PreLoginTestResult(testCase: testCase, result: testResult, timeTaken: timeTaken))
+            let (state, log) = await runTest(for: testCase)
+            cards[cardIndex] = cards[cardIndex].updatingState(state)
+            diagnosticLogs.append("## \(testCase.title)\n\(log)")
         }
     }
 
     /// Generates a text description of test results for support attachment.
     ///
     func troubleshootingDescription() -> String? {
-        guard !latestTestResults.isEmpty else { return nil }
-        return latestTestResults.enumerated().map { index, result in
-            "## \(index + 1). " + result.description()
-        }.joined()
+        guard !diagnosticLogs.isEmpty else { return nil }
+        return diagnosticLogs.joined(separator: "\n\n")
     }
 }
 
@@ -146,7 +113,9 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 //
 private extension PreLoginConnectivityToolViewModel {
 
-    func runTest(for testCase: ConnectivityTest) async -> PreLoginCheckState {
+    /// Returns the check state for the UI and a diagnostic log string for Zendesk.
+    ///
+    func runTest(for testCase: ConnectivityTest) async -> PreLoginCheckResult {
         switch testCase {
         case .internetConnection:
             return testInternetConnectivity()
@@ -176,116 +145,109 @@ extension PreLoginConnectivityToolViewModel {
 
     // MARK: Test 1: Internet Connectivity
 
-    func testInternetConnectivity() -> PreLoginCheckState {
+    func testInternetConnectivity() -> PreLoginCheckResult {
         let status = connectivityObserver.currentStatus
         if case .reachable = status {
-            return .success(summary: Localization.SuccessInfo.internetConnected,
-                            detail: PreLoginCheckDetail.local("Status: reachable"))
+            return (.success(Localization.SuccessInfo.internetConnected), "Status: reachable")
         }
-        let summary = Localization.ErrorMessage.noInternet
-        return .error(summary: summary, detail: PreLoginCheckDetail.local("Status: \(status)"))
+        return (.error(Localization.ErrorMessage.noInternet), "Status: \(status)")
     }
 
     // MARK: Test 2: Site Info
 
-    func testSiteInfo() async -> PreLoginCheckState {
+    func testSiteInfo() async -> PreLoginCheckResult {
         let siteInfoURLString = Endpoint.siteInfoBase + siteURL.absoluteString
         guard let url = URL(string: siteInfoURLString) else {
-            let summary = Localization.ErrorMessage.siteInfoFailed
-            return .error(summary: summary, detail: PreLoginCheckDetail.local("Invalid URL: \(siteInfoURLString)"))
+            return (.error(Localization.ErrorMessage.siteInfoFailed), "Invalid URL: \(siteInfoURLString)")
         }
 
         switch await performRequest(url: url) {
         case .success(let result):
             guard (200...299).contains(result.statusCode),
                   let json = try? JSONSerialization.jsonObject(with: result.data) as? [AnyHashable: Any] else {
-                return .error(summary: Localization.ErrorMessage.siteInfoFailed, detail: result.detail.formatted)
+                return (.error(Localization.ErrorMessage.siteInfoFailed), result.detail.formatted)
             }
             let summary = formatSiteInfoSummary(WordPressComSiteInfo(remote: json))
-            return .success(summary: summary, detail: result.detail.formatted)
+            return (.success(summary), result.detail.formatted)
 
         case .failure(let detail):
-            return .error(summary: Localization.ErrorMessage.siteInfoFailed, detail: detail.formatted)
+            return (.error(Localization.ErrorMessage.siteInfoFailed), detail.formatted)
         }
     }
 
     // MARK: Test 3: API Discovery
 
-    func testAPIDiscovery() async -> PreLoginCheckState {
+    func testAPIDiscovery() async -> PreLoginCheckResult {
         let discovery = WordPressAPIDiscovery(session: session)
         let startTime = Date()
         let rootURLString = await discovery.discoverRESTAPIRootURL(for: siteURL.absoluteString)
-        let timeTaken = Date().timeIntervalSince(startTime)
-        let timeFormatted = String(format: "%.0fms", timeTaken * 1000)
+        let timeFormatted = String(format: "%.0fms", Date().timeIntervalSince(startTime) * 1000)
 
         if let rootURLString, let rootURL = URL(string: rootURLString) {
             restAPIRootURL = rootURL
-            return .success(summary: Localization.SuccessInfo.apiDiscovered,
-                            detail: PreLoginCheckDetail.local("API root: \(rootURLString)\nTime: \(timeFormatted)"))
+            return (.success(Localization.SuccessInfo.apiDiscovered),
+                    "API root: \(rootURLString)\nTime: \(timeFormatted)")
         }
 
-        return .error(summary: Localization.ErrorMessage.apiDiscoveryFailed,
-                      detail: PreLoginCheckDetail.local("Site: \(siteURL.absoluteString)\nTime: \(timeFormatted)"))
+        return (.error(Localization.ErrorMessage.apiDiscoveryFailed),
+                "Site: \(siteURL.absoluteString)\nTime: \(timeFormatted)")
     }
 
     // MARK: Test 4: WordPress REST API
 
-    func testWordPressRESTAPI() async -> PreLoginCheckState {
+    func testWordPressRESTAPI() async -> PreLoginCheckResult {
         guard let apiRoot = restAPIRootURL else {
-            return .error(summary: Localization.ErrorMessage.noRESTAPI,
-                          detail: PreLoginCheckDetail.local("No API root URL available from discovery"))
+            return (.error(Localization.ErrorMessage.noRESTAPI), "No API root URL from discovery")
         }
 
         switch await performRequest(url: apiRoot) {
         case .success(let result):
             guard (200...299).contains(result.statusCode) else {
-                return .error(summary: Localization.ErrorMessage.noRESTAPI, detail: result.detail.formatted)
+                return (.error(Localization.ErrorMessage.noRESTAPI), result.detail.formatted)
             }
             if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any],
                json["namespaces"] != nil || json["name"] != nil {
-                return .success(summary: Localization.SuccessInfo.restAPIAvailable, detail: result.detail.formatted)
+                return (.success(Localization.SuccessInfo.restAPIAvailable), result.detail.formatted)
             }
-            return .error(summary: Localization.ErrorMessage.noRESTAPI, detail: result.detail.formatted)
+            return (.error(Localization.ErrorMessage.noRESTAPI), result.detail.formatted)
 
         case .failure(let detail):
-            return .error(summary: Localization.ErrorMessage.noRESTAPI, detail: detail.formatted)
+            return (.error(Localization.ErrorMessage.noRESTAPI), detail.formatted)
         }
     }
 
     // MARK: Test 5: WooCommerce API
 
-    func testWooCommerceAPI() async -> PreLoginCheckState {
+    func testWooCommerceAPI() async -> PreLoginCheckResult {
         guard let apiRoot = restAPIRootURL else {
-            return .error(summary: Localization.ErrorMessage.noWooCommerce,
-                          detail: PreLoginCheckDetail.local("No API root URL available from discovery"))
+            return (.error(Localization.ErrorMessage.noWooCommerce), "No API root URL from discovery")
         }
 
         let wcURL = apiRoot.appending(path: Endpoint.wooCommerceAPI)
         switch await performRequest(url: wcURL) {
         case .success(let result):
             guard (200...299).contains(result.statusCode) else {
-                return .error(summary: Localization.ErrorMessage.noWooCommerce, detail: result.detail.formatted)
+                return (.error(Localization.ErrorMessage.noWooCommerce), result.detail.formatted)
             }
             if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any] {
                 let hasWCNamespace = (json["namespace"] as? String)?.contains("wc") == true
                 let hasWCRoutes = (json["routes"] as? [String: Any])?.keys.contains(where: { $0.contains("/wc/") }) == true
                 if hasWCNamespace || hasWCRoutes {
-                    return .success(summary: Localization.SuccessInfo.wooCommerceActive, detail: result.detail.formatted)
+                    return (.success(Localization.SuccessInfo.wooCommerceActive), result.detail.formatted)
                 }
             }
-            return .error(summary: Localization.ErrorMessage.noWooCommerce, detail: result.detail.formatted)
+            return (.error(Localization.ErrorMessage.noWooCommerce), result.detail.formatted)
 
         case .failure(let detail):
-            return .error(summary: Localization.ErrorMessage.noWooCommerce, detail: detail.formatted)
+            return (.error(Localization.ErrorMessage.noWooCommerce), detail.formatted)
         }
     }
 
     // MARK: Test 6: Application Passwords
 
-    func testApplicationPasswords() async -> PreLoginCheckState {
+    func testApplicationPasswords() async -> PreLoginCheckResult {
         guard let apiRoot = restAPIRootURL else {
-            return .error(summary: Localization.ErrorMessage.applicationPasswordsUnavailable,
-                          detail: PreLoginCheckDetail.local("No API root URL available from discovery"))
+            return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), "No API root URL from discovery")
         }
 
         let url = apiRoot.appending(path: Endpoint.applicationPasswords)
@@ -296,22 +258,17 @@ extension PreLoginConnectivityToolViewModel {
                 if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any],
                    let code = json["code"] as? String,
                    code == "application_passwords_disabled" {
-                    return .error(summary: Localization.ErrorMessage.applicationPasswordsDisabled,
-                                  detail: result.detail.formatted)
+                    return (.error(Localization.ErrorMessage.applicationPasswordsDisabled), result.detail.formatted)
                 }
-                return .success(summary: Localization.SuccessInfo.applicationPasswordsAvailable,
-                                detail: result.detail.formatted)
+                return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), result.detail.formatted)
             case 200...299:
-                return .success(summary: Localization.SuccessInfo.applicationPasswordsAvailable,
-                                detail: result.detail.formatted)
+                return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), result.detail.formatted)
             default:
-                return .error(summary: Localization.ErrorMessage.applicationPasswordsUnavailable,
-                              detail: result.detail.formatted)
+                return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), result.detail.formatted)
             }
 
         case .failure(let detail):
-            return .error(summary: Localization.ErrorMessage.applicationPasswordsUnavailable,
-                          detail: detail.formatted)
+            return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), detail.formatted)
         }
     }
 }
@@ -355,15 +312,40 @@ private extension PreLoginConnectivityToolViewModel {
 
     enum RequestOutcome {
         case success(RequestResult)
-        case failure(PreLoginCheckDetail)
+        case failure(RequestDetail)
     }
 
     struct RequestResult {
         let data: Data
         let statusCode: Int
-        let body: String
+        let detail: RequestDetail
+    }
+
+    /// Diagnostic detail for an HTTP request, used for Zendesk support attachment. Not user-facing.
+    ///
+    struct RequestDetail {
+        let url: String
+        let timeTaken: TimeInterval
+        let statusCode: Int?
         let headers: [String: String]
-        let detail: PreLoginCheckDetail
+        let responseBody: String
+
+        var formatted: String {
+            var lines: [String] = []
+            lines.append("URL: \(url)")
+            lines.append("Time: \(String(format: "%.0fms", timeTaken * 1000))")
+            if let statusCode {
+                lines.append("Status: \(statusCode)")
+            }
+            if !headers.isEmpty {
+                let headerLines = headers.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n  ")
+                lines.append("Headers:\n  \(headerLines)")
+            }
+            if !responseBody.isEmpty {
+                lines.append("Response: \(String(responseBody.prefix(500)))")
+            }
+            return lines.joined(separator: "\n")
+        }
     }
 
     func performRequest(url: URL, method: String = "GET") async -> RequestOutcome {
@@ -381,55 +363,19 @@ private extension PreLoginConnectivityToolViewModel {
             }
             let body = String(data: data, encoding: .utf8) ?? ""
             let headers = httpResponse.allHeaderFields as? [String: String] ?? [:]
-            let detail = PreLoginCheckDetail(url: url.absoluteString,
-                                             timeTaken: Date().timeIntervalSince(startTime),
-                                             statusCode: httpResponse.statusCode,
-                                             headers: headers,
-                                             responseBody: body)
-            return .success(RequestResult(data: data, statusCode: httpResponse.statusCode,
-                                          body: body, headers: headers, detail: detail))
+            let detail = RequestDetail(url: url.absoluteString,
+                                       timeTaken: Date().timeIntervalSince(startTime),
+                                       statusCode: httpResponse.statusCode,
+                                       headers: headers,
+                                       responseBody: body)
+            return .success(RequestResult(data: data, statusCode: httpResponse.statusCode, detail: detail))
         } catch {
-            let detail = PreLoginCheckDetail(url: url.absoluteString,
-                                             timeTaken: Date().timeIntervalSince(startTime),
-                                             statusCode: nil,
-                                             headers: [:],
-                                             responseBody: String(describing: error))
+            let detail = RequestDetail(url: url.absoluteString,
+                                       timeTaken: Date().timeIntervalSince(startTime),
+                                       statusCode: nil,
+                                       headers: [:],
+                                       responseBody: String(describing: error))
             return .failure(detail)
-        }
-    }
-}
-
-// MARK: - Result details to send to Zendesk, no localization needed.
-//
-private struct PreLoginTestResult {
-    let testCase: PreLoginConnectivityToolViewModel.ConnectivityTest
-    let result: PreLoginCheckState
-    let timeTaken: TimeInterval
-
-    func description() -> String {
-        [caseName, "Took: \(formattedTimeTaken)", "Result: \(resultDescription)", ""].joined(separator: "\n")
-    }
-
-    private var formattedTimeTaken: String {
-        String(format: "%.0fms", timeTaken * 1000)
-    }
-
-    private var caseName: String {
-        switch testCase {
-        case .internetConnection: "Internet Connection"
-        case .siteInfo: "Site Info"
-        case .apiDiscovery: "API Discovery"
-        case .wordPressRESTAPI: "WordPress REST API"
-        case .wooCommerceAPI: "WooCommerce API"
-        case .applicationPasswords: "Application Passwords"
-        }
-    }
-
-    private var resultDescription: String {
-        switch result {
-        case .inProgress: return "In progress"
-        case .success(let summary, let detail): return "\(summary)\n\(detail)"
-        case .error(let summary, let detail): return "\(summary)\n\(detail)"
         }
     }
 }

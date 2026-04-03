@@ -9,6 +9,9 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
     private(set) var trashedProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
+    // Results returned for the unfiltered request (used during dual-request hidden product detection)
+    private(set) var allProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
+
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
 
@@ -81,6 +84,11 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         for (index, pagedItems) in results.enumerated() {
             trashedProductResults[index + 1] = .success(pagedItems)
         }
+    }
+
+    // MARK: - Setup Methods for unfiltered product requests (hidden product detection)
+    func setAllProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
+        allProductResults[pageNumber] = result
     }
 
     // MARK: - Protocol Methods - Incremental Sync

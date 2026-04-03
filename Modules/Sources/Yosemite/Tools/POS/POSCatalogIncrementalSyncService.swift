@@ -88,8 +88,24 @@ private extension POSCatalogIncrementalSyncService {
                      syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
         let syncStartDate = Date.now
 
+        // Dual-request: Detect products/variations hidden from POS.
+        // Products hidden from POS don't appear in the pos_products_only=true response (hardcoded in the remote),
+        // they're simply omitted. To detect these, we compare against a second request without the flag:
+        // products present there but missing from the filtered response have been hidden and should be removed
+        // from the local DB.
+
         // Fetch POS-filtered products (excluding trash) — the remote always sends pos_products_only=true
         async let posProductsTask = batchedLoader.loadAll(
+            makeRequest: { pageNumber in
+                try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
+                                                  siteID: siteID,
+                                                  pageNumber: pageNumber,
+                                                  includeStatus: nil)
+            }
+        )
+
+        // Fetch ALL products (excluding trash) to compare and find hidden ones
+        async let allProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
                 try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
                                                   siteID: siteID,
@@ -117,16 +133,31 @@ private extension POSCatalogIncrementalSyncService {
             }
         )
 
-        let (posProducts, trashedProducts, posVariations) = try await (
-            posProductsTask, trashedProductsTask, posVariationsTask
+        let (posProducts, allProducts, trashedProducts, posVariations) = try await (
+            posProductsTask, allProductsTask, trashedProductsTask, posVariationsTask
         )
 
-        // Aggregate regular and trashed products before persisting
+        // Find products hidden from POS: present in "all" but missing from "POS"
+        let hiddenProductIDs = findHiddenProductIDs(posProducts: posProducts, allProducts: allProducts)
+
+        // Aggregate regular and trashed products before persist them
         let productsToSync = posProducts + trashedProducts
 
         return POSCatalog(products: productsToSync,
                           variations: posVariations,
-                          syncDate: syncStartDate)
+                          syncDate: syncStartDate,
+                          productsToRemove: hiddenProductIDs)
+    }
+}
+
+private extension POSCatalogIncrementalSyncService {
+    /// Finds product IDs that are present in the unfiltered response but missing from the POS-filtered response.
+    /// These products have been hidden from POS and should be removed from the local catalog.
+    func findHiddenProductIDs(posProducts: [POSProduct], allProducts: [POSProduct]) -> [Int64] {
+        let posProductIDs = Set(posProducts.map { $0.productID })
+        return allProducts
+            .filter { !posProductIDs.contains($0.productID) }
+            .map { $0.productID }
     }
 }
 

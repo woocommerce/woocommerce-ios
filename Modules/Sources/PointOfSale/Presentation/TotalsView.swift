@@ -72,8 +72,8 @@ struct TotalsView: View {
                         startCashPaymentAction: { paymentModel.startCashPayment() }
                     )
                 }
-                .animation(.default, value: isShowingPaymentView)
                 .scrollVerticallyIfNeeded()
+                .animation(.default, value: isShowingPaymentView)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -87,7 +87,6 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: displayPaymentState.card)
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
@@ -95,7 +94,6 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
-        .geometryGroup()
     }
 
     private var backgroundColor: Color {
@@ -423,6 +421,7 @@ private struct PaymentViewContent: View {
 
     var body: some View {
         paymentView
+            .animation(.default, value: paymentState.card)
             .font(.title)
             .if(viewHelper.shouldApplyPadding(paymentState: paymentState)) {
                 $0.paymentViewPadding(layout: cardReaderViewLayout)
@@ -432,7 +431,6 @@ private struct PaymentViewContent: View {
             .background(backgroundColor.ignoresSafeArea(.all))
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
-            .geometryGroup()
     }
 
     @ViewBuilder private var paymentView: some View {

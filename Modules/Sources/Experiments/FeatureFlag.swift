@@ -217,10 +217,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case selfDrivenPushTokenAppPasswords
 
-    /// Enables POS-only products filtering
-    ///
-    case pointOfSaleOnlyProducts
-
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner

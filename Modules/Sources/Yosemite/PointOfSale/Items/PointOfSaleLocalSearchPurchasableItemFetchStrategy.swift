@@ -17,7 +17,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
-    private let posProductsOnly: Bool
     private let isFTSSearchEnabled: Bool
 
     init(siteID: Int64,
@@ -27,7 +26,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
          itemMapper: PointOfSaleItemMapperProtocol,
          analytics: POSItemFetchAnalyticsTracking,
          pageSize: Int = 25,
-         posProductsOnly: Bool = false,
          isFTSSearchEnabled: Bool = true) {
         self.siteID = siteID
         self.searchTerm = searchTerm
@@ -36,7 +34,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         self.itemMapper = itemMapper
         self.analytics = analytics
         self.pageSize = pageSize
-        self.posProductsOnly = posProductsOnly
         self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 

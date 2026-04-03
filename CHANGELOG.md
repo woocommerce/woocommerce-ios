@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.5
+The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.
+
 ## 24.4
 This update improves reliability and consistency across your store management experience. We fixed site connection issues, aligned revenue with wp-admin, smoothed bookings and dashboard behavior, improved iPad layouts, and resolved product duplication gaps. Plus several UI polish and stability fixes throughout.
 

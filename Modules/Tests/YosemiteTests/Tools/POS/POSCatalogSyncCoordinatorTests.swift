@@ -595,8 +595,7 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
 
     func startFullSync(for siteID: Int64,
                         regenerateCatalog: Bool,
-                        allowCellular: Bool,
-                        posProductsOnly: Bool) async throws -> POSCatalog {
+                        allowCellular: Bool) async throws -> POSCatalog {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular

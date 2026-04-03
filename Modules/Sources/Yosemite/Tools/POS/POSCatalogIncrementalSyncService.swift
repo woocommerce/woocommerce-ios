@@ -88,19 +88,20 @@ private extension POSCatalogIncrementalSyncService {
                      syncRemote: POSCatalogSyncRemoteProtocol) async throws -> POSCatalog {
         let syncStartDate = Date.now
 
-        // Dual-request: Detect products/variations hidden from POS.
-        // Products hidden from POS don't appear in the pos_products_only=true response (hardcoded in the remote),
-        // they're simply omitted. To detect these, we compare against a second request without the flag:
-        // products present there but missing from the filtered response have been hidden and should be removed
-        // from the local DB.
+        // Dual-request: Detect products hidden from POS.
+        // Products hidden from POS don't appear in the pos_products_only=true response,
+        // they're simply omitted. To detect these, we compare against a second request
+        // with pos_products_only=false: products present there but missing from the
+        // filtered response have been hidden and should be removed from the local DB.
 
-        // Fetch POS-filtered products (excluding trash) — the remote always sends pos_products_only=true
+        // Fetch POS-filtered products (excluding trash)
         async let posProductsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
                 try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
                                                   siteID: siteID,
                                                   pageNumber: pageNumber,
-                                                  includeStatus: nil)
+                                                  includeStatus: nil,
+                                                  posProductsOnly: true)
             }
         )
 
@@ -110,7 +111,8 @@ private extension POSCatalogIncrementalSyncService {
                 try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
                                                   siteID: siteID,
                                                   pageNumber: pageNumber,
-                                                  includeStatus: nil)
+                                                  includeStatus: nil,
+                                                  posProductsOnly: false)
             }
         )
 
@@ -120,7 +122,8 @@ private extension POSCatalogIncrementalSyncService {
                 try await syncRemote.loadProducts(modifiedAfter: modifiedAfter,
                                                   siteID: siteID,
                                                   pageNumber: pageNumber,
-                                                  includeStatus: ProductStatus.trash.rawValue)
+                                                  includeStatus: ProductStatus.trash.rawValue,
+                                                  posProductsOnly: true)
             }
         )
 

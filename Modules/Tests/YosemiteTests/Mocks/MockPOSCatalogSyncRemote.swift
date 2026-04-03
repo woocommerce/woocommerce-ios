@@ -96,10 +96,11 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     func loadProducts(modifiedAfter: Date,
                       siteID: Int64,
                       pageNumber: Int,
-                      includeStatus: String?) async throws -> PagedItems<POSProduct> {
+                      includeStatus: String?,
+                      posProductsOnly: Bool) async throws -> PagedItems<POSProduct> {
         await includeStatusTracker.append(includeStatus)
 
-        // Route to appropriate results based on includeStatus
+        // Route to appropriate results based on includeStatus and posProductsOnly
         if includeStatus == "trash" {
             await loadTrashedProductsCallCount.increment()
             lastTrashedProductsModifiedAfter = modifiedAfter
@@ -112,6 +113,18 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                     throw error
                 }
             }
+        } else if !posProductsOnly {
+            // Unfiltered request (posProductsOnly=false) — used for hidden product detection.
+            // Uses allProductResults if configured, otherwise returns fallback.
+            if let result = allProductResults[pageNumber] {
+                switch result {
+                case .success(let pagedItems):
+                    return pagedItems
+                case .failure(let error):
+                    throw error
+                }
+            }
+            return fallbackResult
         } else {
             await loadIncrementalProductsCallCount.increment()
             lastIncrementalProductsModifiedAfter = modifiedAfter

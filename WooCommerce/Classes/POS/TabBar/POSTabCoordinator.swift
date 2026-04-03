@@ -50,7 +50,6 @@ final class POSTabCoordinator {
 
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
-        let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
         let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                                    credentials: credentials,
@@ -59,8 +58,7 @@ final class POSTabCoordinator {
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
                                                    currencySettings: currencySettings,
                                                    isLocalCatalogEnabled: isLocalCatalogEnabled,
-                                                   isFTSSearchEnabled: isFTSSearchEnabled,
-                                                   posProductsOnlyEnabled: posProductsOnlyEnabled)
+                                                   isFTSSearchEnabled: isFTSSearchEnabled)
     }
 
     /// Creates popular item fetch strategy factory with current local catalog eligibility
@@ -108,13 +106,11 @@ final class POSTabCoordinator {
                                                      currencySettings: currencySettings)
         } else {
             // Fall back to remote barcode scanning
-            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
             return PointOfSaleBarcodeScanService(siteID: siteID,
                                                 credentials: credentials,
                                                 selectedSite: defaultSitePublisher,
                                                 appPasswordSupportState: isAppPasswordSupported,
-                                                currencySettings: currencySettings,
-                                                posProductsOnly: posProductsOnlyEnabled)
+                                                currencySettings: currencySettings)
         }
     }
 

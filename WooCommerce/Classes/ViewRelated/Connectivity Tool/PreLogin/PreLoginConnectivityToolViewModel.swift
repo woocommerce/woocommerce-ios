@@ -71,6 +71,10 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private(set) var restAPIRootURL: URL?
 
+    /// The parsed JSON from the REST API root response, shared by Tests 3–5.
+    ///
+    private(set) var restAPIRootJSON: [String: Any]?
+
     /// Session for making HTTP requests (injectable for testing).
     ///
     private let session: URLSessionProtocol
@@ -96,6 +100,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     func startConnectivityTests() async {
         cards = []
         restAPIRootURL = nil
+        restAPIRootJSON = nil
 
         for testCase in ConnectivityTest.allCases {
             let cardIndex = cards.count
@@ -146,11 +151,17 @@ private extension PreLoginConnectivityToolViewModel {
 //
 extension PreLoginConnectivityToolViewModel {
 
-    private enum Endpoint {
+    private enum Constants {
         static let siteInfoPath = "/rest/v1.1/connect/site-info/"
-        static let wooCommerceAPI = "wc/v3"
-        static let applicationPasswords = "wp/v2/users/me/application-passwords"
-        static let defaultRoot = "?rest_route=/"
+        static let siteInfoHost = "public-api.wordpress.com"
+        static let wooCommerceNamespace = "wc/v3"
+        static let restRouteKey = "rest_route"
+        static let namespacesKey = "namespaces"
+        static let nameKey = "name"
+        static let authenticationKey = "authentication"
+        static let applicationPasswordsKey = "application-passwords"
+        static let endpointsKey = "endpoints"
+        static let authorizationKey = "authorization"
     }
 
     // MARK: Test 1: Site Info
@@ -158,8 +169,8 @@ extension PreLoginConnectivityToolViewModel {
     func testSiteInfo() async -> PreLoginCheckResult {
         var components = URLComponents()
         components.scheme = "https"
-        components.host = "public-api.wordpress.com"
-        components.path = Endpoint.siteInfoPath
+        components.host = Constants.siteInfoHost
+        components.path = Constants.siteInfoPath
         components.queryItems = [URLQueryItem(name: "url", value: siteURL.absoluteString)]
 
         guard let url = components.url else {
@@ -194,8 +205,10 @@ extension PreLoginConnectivityToolViewModel {
         }
 
         // Fall back to ?rest_route=/ so subsequent checks can still run.
-        let normalizedSiteURL = siteURL.absoluteString.hasSuffix("/") ? siteURL : siteURL.appending(path: "/")
-        restAPIRootURL = URL(string: normalizedSiteURL.absoluteString + Endpoint.defaultRoot)
+        var components = URLComponents(url: siteURL, resolvingAgainstBaseURL: false)
+        components?.path = "/"
+        components?.queryItems = [URLQueryItem(name: Constants.restRouteKey, value: "/")]
+        restAPIRootURL = components?.url
         return (.error(Localization.ErrorMessage.apiDiscoveryFailed),
                 "Site: \(siteURL.absoluteString)\nFallback: ?rest_route=/\nTime: \(timeFormatted)")
     }
@@ -213,7 +226,8 @@ extension PreLoginConnectivityToolViewModel {
                 return (.error(Localization.ErrorMessage.noRESTAPI), result.detail.formatted)
             }
             if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any],
-               json["namespaces"] != nil || json["name"] != nil {
+               json[Constants.namespacesKey] != nil || json[Constants.nameKey] != nil {
+                restAPIRootJSON = json
                 return (.success(Localization.SuccessInfo.restAPIAvailable), result.detail.formatted)
             }
             return (.error(Localization.ErrorMessage.noRESTAPI), result.detail.formatted)
@@ -226,55 +240,30 @@ extension PreLoginConnectivityToolViewModel {
     // MARK: Test 4: WooCommerce API
 
     func testWooCommerceAPI() async -> PreLoginCheckResult {
-        guard let apiRoot = restAPIRootURL,
-              let wcURL = URL(string: apiRoot.absoluteString + Endpoint.wooCommerceAPI) else {
-            return (.error(Localization.ErrorMessage.noWooCommerce), "No API root URL from discovery")
+        guard let json = restAPIRootJSON else {
+            return (.error(Localization.ErrorMessage.noWooCommerce), "No REST API root response")
         }
-        switch await performRequest(url: wcURL) {
-        case .success(let result):
-            guard (200...299).contains(result.statusCode) else {
-                return (.error(Localization.ErrorMessage.noWooCommerce), result.detail.formatted)
-            }
-            if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any] {
-                let hasWCNamespace = (json["namespace"] as? String)?.contains("wc") == true
-                let hasWCRoutes = (json["routes"] as? [String: Any])?.keys.contains(where: { $0.contains("/wc/") }) == true
-                if hasWCNamespace || hasWCRoutes {
-                    return (.success(Localization.SuccessInfo.wooCommerceActive), result.detail.formatted)
-                }
-            }
-            return (.error(Localization.ErrorMessage.noWooCommerce), result.detail.formatted)
-
-        case .failure(let detail):
-            return (.error(Localization.ErrorMessage.noWooCommerce), detail.formatted)
+        let namespaces = json[Constants.namespacesKey] as? [String] ?? []
+        if namespaces.contains(Constants.wooCommerceNamespace) {
+            return (.success(Localization.SuccessInfo.wooCommerceActive), "Found \(Constants.wooCommerceNamespace) in namespaces")
         }
+        return (.error(Localization.ErrorMessage.noWooCommerce), "Namespaces: \(namespaces)")
     }
 
     // MARK: Test 5: Application Passwords
 
     func testApplicationPasswords() async -> PreLoginCheckResult {
-        guard let apiRoot = restAPIRootURL,
-              let url = URL(string: apiRoot.absoluteString + Endpoint.applicationPasswords) else {
-            return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), "No API root URL from discovery")
+        guard let json = restAPIRootJSON else {
+            return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), "No REST API root response")
         }
-        switch await performRequest(url: url) {
-        case .success(let result):
-            switch result.statusCode {
-            case 401:
-                if let json = try? JSONSerialization.jsonObject(with: result.data) as? [String: Any],
-                   let code = json["code"] as? String,
-                   code == "application_passwords_disabled" {
-                    return (.error(Localization.ErrorMessage.applicationPasswordsDisabled), result.detail.formatted)
-                }
-                return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), result.detail.formatted)
-            case 200...299:
-                return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), result.detail.formatted)
-            default:
-                return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), result.detail.formatted)
-            }
-
-        case .failure(let detail):
-            return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), detail.formatted)
+        let authentication = json[Constants.authenticationKey] as? [String: Any]
+        let appPasswords = authentication?[Constants.applicationPasswordsKey] as? [String: Any]
+        let endpoints = appPasswords?[Constants.endpointsKey] as? [String: Any]
+        if endpoints?[Constants.authorizationKey] != nil {
+            return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), "Authorization endpoint found")
         }
+        return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable),
+                "authentication field: \(authentication != nil ? "present" : "missing")")
     }
 }
 
@@ -503,9 +492,9 @@ private extension PreLoginConnectivityToolViewModel {
                 comment: "Success info when WooCommerce check passes in the pre-login connectivity tool"
             )
             static let applicationPasswordsAvailable = NSLocalizedString(
-                "preLoginConnectivityTool.success.applicationPasswordsAvailable",
-                value: "Application Passwords are supported.",
-                comment: "Success info when application passwords are available in the pre-login connectivity tool"
+                "preLoginConnectivityTool.success.applicationPasswordsLikelyAvailable",
+                value: "Application Passwords appear to be supported.",
+                comment: "Success info when application passwords are likely available in the pre-login connectivity tool"
             )
         }
 

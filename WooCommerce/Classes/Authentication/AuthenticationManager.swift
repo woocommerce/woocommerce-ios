@@ -492,7 +492,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL? = nil) {
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
         presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: siteURL)
     }
 
@@ -508,7 +508,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                         sourceTag: WordPressSupportSourceTag,
                         lastStep: AuthenticatorAnalyticsTracker.Step,
                         lastFlow: AuthenticatorAnalyticsTracker.Flow,
-                        siteURL: String? = nil) {
+                        siteURL: String?) {
         let parsedURL = siteURL.flatMap { URL(string: $0) }
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
             presentSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: parsedURL)

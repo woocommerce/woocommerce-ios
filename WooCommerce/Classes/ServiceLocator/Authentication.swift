@@ -19,7 +19,7 @@ protocol Authentication {
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag)
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?)
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///

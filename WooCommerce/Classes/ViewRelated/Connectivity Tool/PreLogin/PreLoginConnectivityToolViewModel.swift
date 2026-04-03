@@ -2,7 +2,6 @@ import Foundation
 import class Networking.UserAgent
 import struct NetworkingCore.WordPressAPIDiscovery
 import protocol NetworkingCore.URLSessionProtocol
-import protocol WooFoundation.ConnectivityObserver
 import class WordPressAuthenticator.WordPressComSiteInfo
 
 /// Represents the state of a pre-login connectivity check.
@@ -52,7 +51,6 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     /// Tests run sequentially in this order.
     ///
     enum ConnectivityTest: Int, CaseIterable {
-        case internetConnection
         case siteInfo
         case apiDiscovery
         case wordPressRESTAPI
@@ -76,10 +74,6 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private let session: URLSessionProtocol
 
-    /// Connectivity observer for internet check.
-    ///
-    private let connectivityObserver: ConnectivityObserver
-
     /// Discovers the REST API root URL for a site. Injectable for testing.
     ///
     private let discoverAPIRoot: (String) async -> String?
@@ -88,13 +82,11 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 
     init(siteURL: URL,
          session: URLSessionProtocol = URLSession.shared,
-         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          discoverAPIRoot: @escaping (String) async -> String? = {
              await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: $0)
          }) {
         self.siteURL = siteURL
         self.session = session
-        self.connectivityObserver = connectivityObserver
         self.discoverAPIRoot = discoverAPIRoot
     }
 
@@ -135,8 +127,6 @@ private extension PreLoginConnectivityToolViewModel {
     ///
     func runTest(for testCase: ConnectivityTest) async -> PreLoginCheckResult {
         switch testCase {
-        case .internetConnection:
-            return testInternetConnectivity()
         case .siteInfo:
             return await testSiteInfo()
         case .apiDiscovery:
@@ -161,17 +151,7 @@ extension PreLoginConnectivityToolViewModel {
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
     }
 
-    // MARK: Test 1: Internet Connectivity
-
-    func testInternetConnectivity() -> PreLoginCheckResult {
-        let status = connectivityObserver.currentStatus
-        if case .reachable = status {
-            return (.success(Localization.SuccessInfo.internetConnected), "Status: reachable")
-        }
-        return (.error(Localization.ErrorMessage.noInternet), "Status: \(status)")
-    }
-
-    // MARK: Test 2: Site Info
+    // MARK: Test 1: Site Info
 
     func testSiteInfo() async -> PreLoginCheckResult {
         var components = URLComponents()
@@ -198,7 +178,7 @@ extension PreLoginConnectivityToolViewModel {
         }
     }
 
-    // MARK: Test 3: API Discovery
+    // MARK: Test 2: API Discovery
 
     func testAPIDiscovery() async -> PreLoginCheckResult {
         let startTime = Date()
@@ -216,7 +196,7 @@ extension PreLoginConnectivityToolViewModel {
                 "Site: \(siteURL.absoluteString)\nTime: \(timeFormatted)")
     }
 
-    // MARK: Test 4: WordPress REST API
+    // MARK: Test 3: WordPress REST API
 
     func testWordPressRESTAPI() async -> PreLoginCheckResult {
         guard let apiRoot = restAPIRootURL else {
@@ -239,7 +219,7 @@ extension PreLoginConnectivityToolViewModel {
         }
     }
 
-    // MARK: Test 5: WooCommerce API
+    // MARK: Test 4: WooCommerce API
 
     func testWooCommerceAPI() async -> PreLoginCheckResult {
         guard let apiRoot = restAPIRootURL else {
@@ -266,7 +246,7 @@ extension PreLoginConnectivityToolViewModel {
         }
     }
 
-    // MARK: Test 6: Application Passwords
+    // MARK: Test 5: Application Passwords
 
     func testApplicationPasswords() async -> PreLoginCheckResult {
         guard let apiRoot = restAPIRootURL else {
@@ -365,7 +345,7 @@ private extension PreLoginConnectivityToolViewModel {
                 lines.append("- **Headers:**\n\(headerLines)")
             }
             if !responseBody.isEmpty {
-                lines.append("- **Response:**\n```\n\(String(responseBody.prefix(500)))\n```")
+                lines.append("- **Response:**\n```\n\(String(responseBody))\n```")
             }
             return lines.joined(separator: "\n")
         }
@@ -416,7 +396,6 @@ extension PreLoginConnectivityToolViewModel.ConnectivityTest {
 
     var title: String {
         switch self {
-        case .internetConnection: Localization.internetConnection
         case .siteInfo: Localization.siteInfo
         case .apiDiscovery: Localization.apiDiscovery
         case .wordPressRESTAPI: Localization.wordPressRESTAPI
@@ -426,11 +405,6 @@ extension PreLoginConnectivityToolViewModel.ConnectivityTest {
     }
 
     private enum Localization {
-        static let internetConnection = NSLocalizedString(
-            "preLoginConnectivityTool.test.internetConnection",
-            value: "Internet Connection",
-            comment: "Title for the internet connection test card in the pre-login connectivity tool"
-        )
         static let siteInfo = NSLocalizedString(
             "preLoginConnectivityTool.test.siteInfo",
             value: "Site Info",
@@ -460,7 +434,6 @@ extension PreLoginConnectivityToolViewModel.ConnectivityTest {
 
     var icon: ConnectivityToolCard.Icon {
         switch self {
-        case .internetConnection: .system("wifi")
         case .siteInfo: .system("info.circle")
         case .apiDiscovery: .system("magnifyingglass")
         case .wordPressRESTAPI: .system("arrow.left.arrow.right")
@@ -479,11 +452,6 @@ extension PreLoginConnectivityToolViewModel.ConnectivityTest {
 private extension PreLoginConnectivityToolViewModel {
     enum Localization {
         enum ErrorMessage {
-            static let noInternet = NSLocalizedString(
-                "preLoginConnectivityTool.error.noInternet",
-                value: "No internet connection detected.",
-                comment: "Error message when there is no internet connection in the pre-login connectivity tool"
-            )
             static let siteInfoFailed = NSLocalizedString(
                 "preLoginConnectivityTool.error.siteInfoFailed",
                 value: "Could not retrieve site information.",
@@ -517,11 +485,6 @@ private extension PreLoginConnectivityToolViewModel {
         }
 
         enum SuccessInfo {
-            static let internetConnected = NSLocalizedString(
-                "preLoginConnectivityTool.success.internetConnected",
-                value: "Your device is connected to the internet.",
-                comment: "Success info when internet connectivity check passes in the pre-login connectivity tool"
-            )
             static let apiDiscovered = NSLocalizedString(
                 "preLoginConnectivityTool.success.apiDiscovered",
                 value: "REST API endpoint discovered.",

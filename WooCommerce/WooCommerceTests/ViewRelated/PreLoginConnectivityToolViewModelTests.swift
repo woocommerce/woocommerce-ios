@@ -6,34 +6,6 @@ import WooFoundation
 @MainActor
 struct PreLoginConnectivityToolViewModelTests {
 
-    // MARK: - Internet Connectivity
-
-    @Test func test_testInternetConnectivity_when_reachable_then_returns_success() {
-        // Given
-        let connectivityObserver = MockConnectivityObserver()
-        connectivityObserver.setStatus(.reachable(type: .ethernetOrWiFi))
-        let sut = makeSUT(connectivityObserver: connectivityObserver)
-
-        // When
-        let result = sut.testInternetConnectivity()
-
-        // Then
-        assertSuccess(result.state)
-    }
-
-    @Test func test_testInternetConnectivity_when_not_reachable_then_returns_error() {
-        // Given
-        let connectivityObserver = MockConnectivityObserver()
-        connectivityObserver.setStatus(.notReachable)
-        let sut = makeSUT(connectivityObserver: connectivityObserver)
-
-        // When
-        let result = sut.testInternetConnectivity()
-
-        // Then
-        assertError(result.state)
-    }
-
     // MARK: - Site Info
 
     @Test func test_testSiteInfo_when_wordpress_site_with_jetpack_then_returns_success_with_info() async {
@@ -289,17 +261,11 @@ private extension PreLoginConnectivityToolViewModelTests {
 
     func makeSUT(siteURL: URL = URL(string: "https://example.com")!,
                  session: MockURLSession = MockURLSession(),
-                 connectivityObserver: MockConnectivityObserver = {
-                     let observer = MockConnectivityObserver()
-                     observer.setStatus(.reachable(type: .ethernetOrWiFi))
-                     return observer
-                 }(),
                  discoverAPIRoot: @escaping (String) async -> String? = { _ in nil }
     ) -> PreLoginConnectivityToolViewModel {
         PreLoginConnectivityToolViewModel(
             siteURL: siteURL,
             session: session,
-            connectivityObserver: connectivityObserver,
             discoverAPIRoot: discoverAPIRoot
         )
     }

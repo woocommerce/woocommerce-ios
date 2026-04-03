@@ -417,6 +417,7 @@ private struct PaymentViewContent: View {
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
+    @Namespace private var paymentMessageNamespace
 
     private let viewHelper = POSPaymentViewHelper()
 
@@ -439,7 +440,8 @@ private struct PaymentViewContent: View {
             PointOfSaleCardPresentPaymentInLineMessage(
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                     paymentMethod: .cash)))
+                                     paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
         } else {
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: cardReaderConnectionStatus,

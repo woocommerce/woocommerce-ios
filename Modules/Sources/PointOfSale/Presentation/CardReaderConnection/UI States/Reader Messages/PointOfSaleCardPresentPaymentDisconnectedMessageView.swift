@@ -3,17 +3,21 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
     private let connectCardReader: () -> Void
+    private let animation: POSCardPresentPaymentInLineMessageAnimation
     @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var width: CGFloat = 0
 
-    init(connectCardReader: @escaping () -> Void) {
+    init(animation: POSCardPresentPaymentInLineMessageAnimation,
+         connectCardReader: @escaping () -> Void) {
+        self.animation = animation
         self.connectCardReader = connectCardReader
     }
 
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.none) {
             POSCardPresentPaymentMessageViewImage(imageName: PointOfSaleAssets.readerDisconnected.imageName)
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
             Spacer()
                 .frame(height: dynamicSpacing(PointOfSaleCardPresentPaymentLayout.imageAndTextSpacing))
@@ -23,10 +27,12 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.instruction)
                     .font(.posBodyLargeRegular())
                     .foregroundStyle(Color.posOnSurface)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
             .padding(.horizontal, PointOfSaleCardPresentPaymentLayout.horizontalPadding)
 
@@ -59,6 +65,9 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
 
 #if DEBUG
 #Preview {
-    PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(connectCardReader: {})
+    @Previewable @Namespace var namespace
+    PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(
+        animation: .init(namespace: namespace),
+        connectCardReader: {})
 }
 #endif

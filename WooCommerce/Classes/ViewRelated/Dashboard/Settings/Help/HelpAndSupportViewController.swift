@@ -380,7 +380,10 @@ private extension HelpAndSupportViewController {
     /// Site compatibility action
     ///
     func siteCompatibilityWasPressed() {
-        guard let loginSiteURL else { return }
+        guard let loginSiteURL else {
+            DDLogWarn("⚠️ Site compatibility tapped but loginSiteURL is nil")
+            return
+        }
         let controller = PreLoginConnectivityToolViewController(siteURL: loginSiteURL)
         navigationController?.pushViewController(controller, animated: true)
     }

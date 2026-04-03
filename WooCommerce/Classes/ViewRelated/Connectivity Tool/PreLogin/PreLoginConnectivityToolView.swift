@@ -1,5 +1,4 @@
 import SwiftUI
-import Combine
 
 // MARK: - Hosting Controller
 
@@ -8,7 +7,6 @@ import Combine
 final class PreLoginConnectivityToolViewController: UIHostingController<PreLoginConnectivityToolView> {
 
     private let viewModel: PreLoginConnectivityToolViewModel
-    private var subscriptions: Set<AnyCancellable> = []
 
     init(siteURL: URL) {
         viewModel = PreLoginConnectivityToolViewModel(siteURL: siteURL)
@@ -22,13 +20,6 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
-        }
-
-        rootView.onStartTests = { [weak self] in
-            guard let self else { return }
-            Task {
-                await self.viewModel.startConnectivityTests()
-            }
         }
     }
 
@@ -62,9 +53,6 @@ struct PreLoginConnectivityToolView: View {
     /// Closure invoked when the "Contact Support" button is tapped.
     var onContactSupportTapped: (() -> Void)?
 
-    /// Closure invoked when the view appears to start running tests.
-    var onStartTests: (() -> Void)?
-
     var body: some View {
         VStack(spacing: .zero) {
             ScrollView {
@@ -94,8 +82,8 @@ struct PreLoginConnectivityToolView: View {
         .background(Color(uiColor: .listBackground))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            onStartTests?()
+        .task {
+            await viewModel.startConnectivityTests()
         }
     }
 }

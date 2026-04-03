@@ -8,11 +8,16 @@ struct POSSendReceiptView: View {
     @State private var errorMessage: String?
     @Environment(\.posAnalytics) private var analytics
 
-    @Binding private(set) var isShowingSendReceiptView: Bool
+    private let onDismiss: () -> Void
     private let onSendReceipt: (String) async throws -> Void
 
     init(isShowingSendReceiptView: Binding<Bool>, onSendReceipt: @escaping (String) async throws -> Void) {
-        self._isShowingSendReceiptView = isShowingSendReceiptView
+        self.onDismiss = { isShowingSendReceiptView.wrappedValue = false }
+        self.onSendReceipt = onSendReceipt
+    }
+
+    init(onDismiss: @escaping () -> Void = {}, onSendReceipt: @escaping (String) async throws -> Void) {
+        self.onDismiss = onDismiss
         self.onSendReceipt = onSendReceipt
     }
 
@@ -31,7 +36,7 @@ struct POSSendReceiptView: View {
             isButtonEnabled: true,
             onSubmit: { sendReceipt() },
             onClose: {
-                isShowingSendReceiptView = false
+                onDismiss()
             },
             keyboardType: .emailAddress,
             autocapitalization: .never,
@@ -54,7 +59,7 @@ struct POSSendReceiptView: View {
                 withAnimation {
                     buttonState = .success
                 } completion: {
-                    isShowingSendReceiptView = false
+                    onDismiss()
                 }
             } catch {
                 errorMessage = Localization.sendReceiptErrorText

@@ -240,7 +240,7 @@ extension PreLoginConnectivityToolViewModel {
         components?.queryItems = [URLQueryItem(name: Constants.restRouteKey, value: "/")]
         restAPIRootURL = components?.url
         return (.error(Localization.ErrorMessage.apiDiscoveryFailed),
-                "Site: \(siteURL.absoluteString)\nFallback: ?rest_route=/\nTime: \(timeFormatted)")
+                "No REST API Link header found for \(siteURL.absoluteString)\nFallback: \(String(describing: restAPIRootURL))\nTime: \(timeFormatted)")
     }
 
     // MARK: Test 3: WordPress REST API
@@ -274,8 +274,9 @@ extension PreLoginConnectivityToolViewModel {
             return (.error(Localization.ErrorMessage.noWooCommerce), "No REST API root response")
         }
         let namespaces = json[Constants.namespacesKey] as? [String] ?? []
-        if namespaces.contains(Constants.wooCommerceNamespace) {
-            return (.success(Localization.SuccessInfo.wooCommerceActive), "Found \(Constants.wooCommerceNamespace) in namespaces")
+        let wcNamespaces = namespaces.filter { $0.hasPrefix(Constants.wooCommerceNamespace) }
+        if wcNamespaces.isEmpty == false {
+            return (.success(Localization.SuccessInfo.wooCommerceActive), "WooCommerce namespaces: \(wcNamespaces.joined(separator: ", "))")
         }
         return (.error(Localization.ErrorMessage.noWooCommerce), "Namespaces: \(namespaces)")
     }
@@ -289,11 +290,11 @@ extension PreLoginConnectivityToolViewModel {
         let authentication = json[Constants.authenticationKey] as? [String: Any]
         let appPasswords = authentication?[Constants.applicationPasswordsKey] as? [String: Any]
         let endpoints = appPasswords?[Constants.endpointsKey] as? [String: Any]
-        if endpoints?[Constants.authorizationKey] != nil {
-            return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), "Authorization endpoint found")
+        if let authorization = endpoints?[Constants.authorizationKey] {
+            return (.success(Localization.SuccessInfo.applicationPasswordsAvailable), "Authorization endpoint: \(authorization)")
         }
         return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable),
-                "authentication field: \(authentication != nil ? "present" : "missing")")
+                "No application-passwords authorization endpoint found in the REST API root response")
     }
 }
 

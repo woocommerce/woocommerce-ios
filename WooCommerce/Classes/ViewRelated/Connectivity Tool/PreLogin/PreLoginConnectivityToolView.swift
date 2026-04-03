@@ -34,8 +34,8 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
             return [
                 ZendeskAttachment(
                     data: data,
-                    filename: "prelogin_connectivitytest_log.txt",
-                    contentType: "text/plain"
+                    filename: "prelogin_connectivitytest_log.md",
+                    contentType: "text/markdown"
                 )
             ]
         }()
@@ -57,7 +57,7 @@ struct PreLoginConnectivityToolView: View {
         VStack(spacing: .zero) {
             ScrollView {
                 Text(Localization.subtitle)
-                    .bodyStyle(opacity: 0.8)
+                    .secondaryBodyStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
@@ -67,11 +67,9 @@ struct PreLoginConnectivityToolView: View {
 
                     Divider()
                         .padding(.leading)
-                        .padding(.vertical, 8)
+                        .padding(.vertical)
                 }
             }
-
-            Divider().ignoresSafeArea()
 
             Button(Localization.contactSupport) {
                 onContactSupportTapped?()
@@ -95,16 +93,14 @@ private struct PreLoginCheckCardView: View {
     let card: PreLoginCheckCard
 
     @State private var selectedDiagnosticLog: TechnicalDetailsItem?
-
-    private static let iconSize: CGFloat = 24
-    private static let verticalSpacing: CGFloat = 16
+    @ScaledMetric private var scale = 1.0
 
     var body: some View {
-        VStack(spacing: Self.verticalSpacing) {
+        VStack(spacing: Layout.verticalSpacing) {
             HStack {
                 card.icon.buildAsset()
                     .foregroundColor(Color(uiColor: .text))
-                    .frame(width: Self.iconSize, height: Self.iconSize)
+                    .frame(width: Layout.iconSize * scale, height: Layout.iconSize * scale)
 
                 Text(card.title)
                     .bodyStyle()
@@ -158,6 +154,11 @@ private struct PreLoginCheckCardView: View {
             Image(uiImage: .exclamationFilledImage)
                 .foregroundColor(Color(uiColor: .error))
         }
+    }
+
+    private enum Layout {
+        static let iconSize: CGFloat = 24
+        static let verticalSpacing: CGFloat = 16
     }
 
     private enum Localization {

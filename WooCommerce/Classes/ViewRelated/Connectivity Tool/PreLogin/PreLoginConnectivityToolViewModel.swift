@@ -118,10 +118,12 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     func troubleshootingDescription() -> String? {
         let logs = cards.compactMap { card -> String? in
             guard let log = card.diagnosticLog else { return nil }
-            return "## \(card.title)\n\(log)"
+            let statusIcon = card.state.isSuccess ? "✅" : "❌"
+            return "### \(statusIcon) \(card.title)\n\(log)"
         }
         guard !logs.isEmpty else { return nil }
-        return logs.joined(separator: "\n\n")
+        let header = "# Connectivity Diagnosis Report\n**Site:** \(siteURL.absoluteString)"
+        return header + "\n\n" + logs.joined(separator: "\n\n")
     }
 }
 
@@ -353,17 +355,17 @@ private extension PreLoginConnectivityToolViewModel {
 
         var formatted: String {
             var lines: [String] = []
-            lines.append("URL: \(url)")
-            lines.append("Time: \(String(format: "%.0fms", timeTaken * 1000))")
+            lines.append("- **URL:** \(url)")
+            lines.append("- **Time:** \(String(format: "%.0fms", timeTaken * 1000))")
             if let statusCode {
-                lines.append("Status: \(statusCode)")
+                lines.append("- **Status:** \(statusCode)")
             }
             if !headers.isEmpty {
-                let headerLines = headers.map { "\($0.key): \($0.value)" }.sorted().joined(separator: "\n  ")
-                lines.append("Headers:\n  \(headerLines)")
+                let headerLines = headers.map { "  - `\($0.key)`: \($0.value)" }.sorted().joined(separator: "\n")
+                lines.append("- **Headers:**\n\(headerLines)")
             }
             if !responseBody.isEmpty {
-                lines.append("Response: \(String(responseBody.prefix(500)))")
+                lines.append("- **Response:**\n```\n\(String(responseBody.prefix(500)))\n```")
             }
             return lines.joined(separator: "\n")
         }

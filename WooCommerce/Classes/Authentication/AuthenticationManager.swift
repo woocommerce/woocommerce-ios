@@ -992,7 +992,7 @@ private extension AuthenticationManager {
     func presentHelpAndSupport(from sourceViewController: UIViewController,
                                customHelpCenterContent: CustomHelpCenterContent? = nil,
                                sourceTag: WordPressSupportSourceTag?,
-                               siteURL: URL? = nil) {
+                               siteURL: URL?) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in

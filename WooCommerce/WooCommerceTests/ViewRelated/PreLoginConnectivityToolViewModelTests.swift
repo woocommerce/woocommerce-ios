@@ -251,6 +251,80 @@ struct PreLoginConnectivityToolViewModelTests {
         // When / Then
         #expect(sut.troubleshootingDescription() == nil)
     }
+
+    // MARK: - Analytics Tracking
+
+    @Test func test_startConnectivityTests_tracks_analytics_for_each_test() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let mockSession = MockURLSession()
+
+        // Site info succeeds
+        let siteInfoJSON = """
+        {"name":"Store","urlAfterRedirects":"https://example.com",\
+        "hasJetpack":false,"isJetpackActive":false,"isJetpackConnected":false,\
+        "isWordPressDotCom":false,"isCommerceGarden":false,"isWordPress":true,"exists":true}
+        """
+        mockSession.simulateResponse(
+            for: "https://public-api.wordpress.com/rest/v1.1/connect/site-info/?url=https://example.com",
+            data: siteInfoJSON.data(using: .utf8)!
+        )
+
+        // REST API root returns valid JSON
+        let restJSON = #"{"name":"Site","namespaces":["wp/v2","wc/v3"]}"#
+        mockSession.simulateResponse(for: "https://example.com/wp-json/", data: restJSON.data(using: .utf8)!)
+
+        // WooCommerce API returns valid JSON
+        let wcJSON = #"{"namespace":"wc/v3","routes":{"/wc/v3":{}}}"#
+        mockSession.simulateResponse(for: "https://example.com/wp-json/wc/v3", data: wcJSON.data(using: .utf8)!)
+
+        // Application passwords returns 401 (standard challenge = success)
+        let appPassJSON = #"{"code":"rest_not_logged_in","message":"Not logged in"}"#
+        mockSession.simulateResponse(
+            for: "https://example.com/wp-json/wp/v2/users/me/application-passwords",
+            data: appPassJSON.data(using: .utf8)!,
+            statusCode: 401
+        )
+
+        let sut = makeSUT(session: mockSession, analytics: analytics, discoverAPIRoot: { _ in
+            "https://example.com/wp-json/"
+        })
+
+        // When
+        await sut.startConnectivityTests()
+
+        // Then
+        let trackedEvents = analyticsProvider.receivedEvents.filter { $0 == "pre_login_connectivity_tool_request_response" }
+        #expect(trackedEvents.count == 5)
+    }
+
+    @Test func test_startConnectivityTests_when_test_fails_then_tracks_failure() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let mockSession = MockURLSession()
+
+        // Site info fails
+        mockSession.simulateError(
+            for: "https://public-api.wordpress.com/rest/v1.1/connect/site-info/?url=https://example.com",
+            error: URLError(.timedOut)
+        )
+
+        let sut = makeSUT(session: mockSession, analytics: analytics)
+
+        // When
+        await sut.startConnectivityTests()
+
+        // Then
+        let trackedEvents = analyticsProvider.receivedEvents.filter { $0 == "pre_login_connectivity_tool_request_response" }
+        #expect(trackedEvents.count == 5)
+
+        let firstProperties = analyticsProvider.properties(for: "pre_login_connectivity_tool_request_response")
+        #expect(firstProperties?["test"] as? String == "site_info")
+        #expect(firstProperties?["success"] as? Bool == false)
+        #expect(firstProperties?["time_taken"] as? Double != nil)
+    }
 }
 
 // MARK: - Helpers
@@ -261,11 +335,13 @@ private extension PreLoginConnectivityToolViewModelTests {
 
     func makeSUT(siteURL: URL = URL(string: "https://example.com")!,
                  session: MockURLSession = MockURLSession(),
+                 analytics: Analytics = ServiceLocator.analytics,
                  discoverAPIRoot: @escaping (String) async -> String? = { _ in nil }
     ) -> PreLoginConnectivityToolViewModel {
         PreLoginConnectivityToolViewModel(
             siteURL: siteURL,
             session: session,
+            analytics: analytics,
             discoverAPIRoot: discoverAPIRoot
         )
     }

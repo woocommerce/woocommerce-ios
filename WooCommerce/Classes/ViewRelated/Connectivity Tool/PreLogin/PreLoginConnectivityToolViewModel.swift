@@ -3,6 +3,7 @@ import class Networking.UserAgent
 import struct NetworkingCore.WordPressAPIDiscovery
 import protocol NetworkingCore.URLSessionProtocol
 import class WordPressAuthenticator.WordPressComSiteInfo
+import protocol WooFoundation.Analytics
 
 /// Represents the state of a pre-login connectivity check.
 ///
@@ -78,15 +79,21 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private let discoverAPIRoot: (String) async -> String?
 
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
     private static let requestTimeout: TimeInterval = 15
 
     init(siteURL: URL,
          session: URLSessionProtocol = URLSession.shared,
+         analytics: Analytics = ServiceLocator.analytics,
          discoverAPIRoot: @escaping (String) async -> String? = {
              await WordPressAPIDiscovery().discoverRESTAPIRootURL(for: $0)
          }) {
         self.siteURL = siteURL
         self.session = session
+        self.analytics = analytics
         self.discoverAPIRoot = discoverAPIRoot
     }
 
@@ -100,8 +107,13 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
             let cardIndex = cards.count
             cards.append(testCase.inProgressCard)
 
+            let startTime = Date()
             let (state, log) = await runTest(for: testCase)
+            let timeTaken = Date().timeIntervalSince(startTime)
+
             cards[cardIndex] = cards[cardIndex].updatingState(state, diagnosticLog: log)
+
+            trackResponseEvent(for: testCase, success: state.isSuccess, timeTaken: timeTaken)
         }
     }
 
@@ -116,6 +128,24 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         guard !logs.isEmpty else { return nil }
         let header = "# Connectivity Diagnosis Report\n**Site:** \(siteURL.absoluteString)"
         return header + "\n\n" + logs.joined(separator: "\n\n")
+    }
+}
+
+// MARK: - Analytics
+//
+private extension PreLoginConnectivityToolViewModel {
+
+    func trackResponseEvent(for test: ConnectivityTest, success: Bool, timeTaken: Double) {
+        let eventTest: WooAnalyticsEvent.ConnectivityTool.PreLoginTest = {
+            switch test {
+            case .siteInfo: return .siteInfo
+            case .apiDiscovery: return .apiDiscovery
+            case .wordPressRESTAPI: return .wordPressRESTAPI
+            case .wooCommerceAPI: return .wooCommerceAPI
+            case .applicationPasswords: return .applicationPasswords
+            }
+        }()
+        analytics.track(event: .ConnectivityTool.preLoginRequestResponse(test: eventTest, success: success, timeTaken: timeTaken))
     }
 }
 

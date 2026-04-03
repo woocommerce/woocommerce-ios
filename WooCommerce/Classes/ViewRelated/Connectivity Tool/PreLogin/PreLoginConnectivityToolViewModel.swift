@@ -153,7 +153,7 @@ extension PreLoginConnectivityToolViewModel {
         static let siteInfoPath = "/rest/v1.1/connect/site-info/"
         static let siteInfoHost = "public-api.wordpress.com"
         static let wooCommerceNamespace = "wc/v3"
-        static let defaultRoot = "?rest_route=/"
+        static let restRouteKey = "rest_route"
         static let namespacesKey = "namespaces"
         static let nameKey = "name"
         static let authenticationKey = "authentication"
@@ -203,8 +203,10 @@ extension PreLoginConnectivityToolViewModel {
         }
 
         // Fall back to ?rest_route=/ so subsequent checks can still run.
-        let normalizedSiteURL = siteURL.absoluteString.hasSuffix("/") ? siteURL : siteURL.appending(path: "/")
-        restAPIRootURL = URL(string: normalizedSiteURL.absoluteString + Constants.defaultRoot)
+        var components = URLComponents(url: siteURL, resolvingAgainstBaseURL: false)
+        components?.path = "/"
+        components?.queryItems = [URLQueryItem(name: Constants.restRouteKey, value: "/")]
+        restAPIRootURL = components?.url
         return (.error(Localization.ErrorMessage.apiDiscoveryFailed),
                 "Site: \(siteURL.absoluteString)\nFallback: ?rest_route=/\nTime: \(timeFormatted)")
     }

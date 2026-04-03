@@ -67,6 +67,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     let siteURL: URL
 
     /// The discovered REST API root URL, set by the `apiDiscovery` test.
+    /// Falls back to `?rest_route=/` when discovery fails.
     ///
     private(set) var restAPIRootURL: URL?
 
@@ -149,6 +150,7 @@ extension PreLoginConnectivityToolViewModel {
         static let siteInfoPath = "/rest/v1.1/connect/site-info/"
         static let wooCommerceAPI = "wc/v3"
         static let applicationPasswords = "wp/v2/users/me/application-passwords"
+        static let defaultRoot = "?rest_route=/"
     }
 
     // MARK: Test 1: Site Info
@@ -191,9 +193,11 @@ extension PreLoginConnectivityToolViewModel {
                     "API root: \(rootURLString)\nTime: \(timeFormatted)")
         }
 
-        restAPIRootURL = nil
+        // Fall back to ?rest_route=/ so subsequent checks can still run.
+        let normalizedSiteURL = siteURL.absoluteString.hasSuffix("/") ? siteURL : siteURL.appending(path: "/")
+        restAPIRootURL = URL(string: normalizedSiteURL.absoluteString + Endpoint.defaultRoot)
         return (.error(Localization.ErrorMessage.apiDiscoveryFailed),
-                "Site: \(siteURL.absoluteString)\nTime: \(timeFormatted)")
+                "Site: \(siteURL.absoluteString)\nFallback: ?rest_route=/\nTime: \(timeFormatted)")
     }
 
     // MARK: Test 3: WordPress REST API
@@ -222,11 +226,10 @@ extension PreLoginConnectivityToolViewModel {
     // MARK: Test 4: WooCommerce API
 
     func testWooCommerceAPI() async -> PreLoginCheckResult {
-        guard let apiRoot = restAPIRootURL else {
+        guard let apiRoot = restAPIRootURL,
+              let wcURL = URL(string: apiRoot.absoluteString + Endpoint.wooCommerceAPI) else {
             return (.error(Localization.ErrorMessage.noWooCommerce), "No API root URL from discovery")
         }
-
-        let wcURL = apiRoot.appending(path: Endpoint.wooCommerceAPI)
         switch await performRequest(url: wcURL) {
         case .success(let result):
             guard (200...299).contains(result.statusCode) else {
@@ -249,11 +252,10 @@ extension PreLoginConnectivityToolViewModel {
     // MARK: Test 5: Application Passwords
 
     func testApplicationPasswords() async -> PreLoginCheckResult {
-        guard let apiRoot = restAPIRootURL else {
+        guard let apiRoot = restAPIRootURL,
+              let url = URL(string: apiRoot.absoluteString + Endpoint.applicationPasswords) else {
             return (.error(Localization.ErrorMessage.applicationPasswordsUnavailable), "No API root URL from discovery")
         }
-
-        let url = apiRoot.appending(path: Endpoint.applicationPasswords)
         switch await performRequest(url: url) {
         case .success(let result):
             switch result.statusCode {

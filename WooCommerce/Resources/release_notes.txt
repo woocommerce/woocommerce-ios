@@ -1,2 +1,1 @@
-- [*] Add analytics setting check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16871]
-- [*] Add notification check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16875]
+The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.

@@ -28,6 +28,12 @@ struct PointOfSaleCollectCashView: View {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
     }
 
+    private var bottomPadding: CGFloat {
+        keyboardObserver.isKeyboardVisible
+            ? Constants.bottomPadding
+            : floatingControlAreaSize.height + Constants.bottomPadding
+    }
+
     private var isButtonEnabled: Bool {
         viewHelper.isPaymentButtonEnabled(orderTotal: orderTotal,
                                           textFieldAmountInput: textFieldAmountInput,
@@ -119,9 +125,7 @@ struct PointOfSaleCollectCashView: View {
                         .disabled(!isButtonEnabled)
                     }
                     .padding([.horizontal])
-                    .padding(.bottom, keyboardObserver.isKeyboardVisible
-                             ? Constants.bottomPadding
-                             : floatingControlAreaSize.height + Constants.bottomPadding)
+                    .padding(.bottom, bottomPadding)
                 }
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)

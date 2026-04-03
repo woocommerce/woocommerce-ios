@@ -112,7 +112,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .wooShippingFedEx:
             return false
         case .loggedOutFFPanel:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return !buildConfig.isProduction
         default:
             return true
         }

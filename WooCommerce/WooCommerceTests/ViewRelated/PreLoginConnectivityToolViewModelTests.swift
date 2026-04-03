@@ -114,7 +114,7 @@ struct PreLoginConnectivityToolViewModelTests {
         #expect(sut.restAPIRootURL?.absoluteString == Self.discoveredAPIRoot)
     }
 
-    @Test func test_testAPIDiscovery_when_not_discovered_then_returns_error() async {
+    @Test func test_testAPIDiscovery_when_not_discovered_then_returns_error_and_falls_back_to_rest_route() async {
         // Given
         let sut = makeSUT(discoverAPIRoot: { _ in nil })
 
@@ -123,7 +123,7 @@ struct PreLoginConnectivityToolViewModelTests {
 
         // Then
         assertError(result.state)
-        #expect(sut.restAPIRootURL == nil)
+        #expect(sut.restAPIRootURL?.absoluteString == "https://example.com/?rest_route=/")
     }
 
     // MARK: - WordPress REST API
@@ -134,6 +134,20 @@ struct PreLoginConnectivityToolViewModelTests {
         let json = #"{"name":"My Site","namespaces":["wp/v2","wc/v3"]}"#
         mockSession.simulateResponse(for: "https://example.com/wp-json/", data: json.data(using: .utf8)!)
         let sut = await makeSUTWithDiscovery(session: mockSession)
+
+        // When
+        let result = await sut.testWordPressRESTAPI()
+
+        // Then
+        assertSuccess(result.state)
+    }
+
+    @Test func test_testWordPressRESTAPI_when_fallback_rest_route_then_uses_fallback_url() async {
+        // Given
+        let mockSession = MockURLSession()
+        let json = #"{"name":"My Site","namespaces":["wp/v2","wc/v3"]}"#
+        mockSession.simulateResponse(for: "https://example.com/?rest_route=/", data: json.data(using: .utf8)!)
+        let sut = await makeSUTWithFallbackDiscovery(session: mockSession)
 
         // When
         let result = await sut.testWordPressRESTAPI()
@@ -170,10 +184,9 @@ struct PreLoginConnectivityToolViewModelTests {
 
     @Test func test_testWooCommerceAPI_when_wc_namespace_present_then_returns_success() async {
         // Given
-        let mockSession = MockURLSession()
-        let json = #"{"namespace":"wc/v3","routes":{"/wc/v3":{}}}"#
-        mockSession.simulateResponse(for: "https://example.com/wp-json/wc/v3", data: json.data(using: .utf8)!)
-        let sut = await makeSUTWithDiscovery(session: mockSession)
+        let sut = await makeSUTWithRESTAPIResponse(
+            #"{"name":"My Site","namespaces":["wp/v2","wc/v3"]}"#
+        )
 
         // When
         let result = await sut.testWooCommerceAPI()
@@ -182,7 +195,20 @@ struct PreLoginConnectivityToolViewModelTests {
         assertSuccess(result.state)
     }
 
-    @Test func test_testWooCommerceAPI_when_no_api_root_then_returns_error() async {
+    @Test func test_testWooCommerceAPI_when_wc_namespace_missing_then_returns_error() async {
+        // Given
+        let sut = await makeSUTWithRESTAPIResponse(
+            #"{"name":"My Site","namespaces":["wp/v2"]}"#
+        )
+
+        // When
+        let result = await sut.testWooCommerceAPI()
+
+        // Then
+        assertError(result.state)
+    }
+
+    @Test func test_testWooCommerceAPI_when_no_rest_api_response_then_returns_error() async {
         // Given
         let sut = makeSUT()
 
@@ -195,16 +221,13 @@ struct PreLoginConnectivityToolViewModelTests {
 
     // MARK: - Application Passwords
 
-    @Test func test_testApplicationPasswords_when_401_standard_challenge_then_returns_success() async {
+    @Test func test_testApplicationPasswords_when_authorization_endpoint_present_then_returns_success() async {
         // Given
-        let mockSession = MockURLSession()
-        let json = #"{"code":"rest_not_logged_in","message":"Not logged in"}"#
-        mockSession.simulateResponse(
-            for: "https://example.com/wp-json/wp/v2/users/me/application-passwords",
-            data: json.data(using: .utf8)!,
-            statusCode: 401
-        )
-        let sut = await makeSUTWithDiscovery(session: mockSession)
+        let json = """
+        {"name":"My Site","namespaces":["wp/v2"],\
+        "authentication":{"application-passwords":{"endpoints":{"authorization":"https://example.com/wp-login.php?action=authorize_application"}}}}
+        """
+        let sut = await makeSUTWithRESTAPIResponse(json)
 
         // When
         let result = await sut.testApplicationPasswords()
@@ -213,16 +236,11 @@ struct PreLoginConnectivityToolViewModelTests {
         assertSuccess(result.state)
     }
 
-    @Test func test_testApplicationPasswords_when_disabled_then_returns_error() async {
+    @Test func test_testApplicationPasswords_when_authentication_missing_then_returns_error() async {
         // Given
-        let mockSession = MockURLSession()
-        let json = #"{"code":"application_passwords_disabled","message":"Disabled"}"#
-        mockSession.simulateResponse(
-            for: "https://example.com/wp-json/wp/v2/users/me/application-passwords",
-            data: json.data(using: .utf8)!,
-            statusCode: 401
+        let sut = await makeSUTWithRESTAPIResponse(
+            #"{"name":"My Site","namespaces":["wp/v2"]}"#
         )
-        let sut = await makeSUTWithDiscovery(session: mockSession)
 
         // When
         let result = await sut.testApplicationPasswords()
@@ -231,7 +249,7 @@ struct PreLoginConnectivityToolViewModelTests {
         assertError(result.state)
     }
 
-    @Test func test_testApplicationPasswords_when_no_api_root_then_returns_error() async {
+    @Test func test_testApplicationPasswords_when_no_rest_api_response_then_returns_error() async {
         // Given
         let sut = makeSUT()
 
@@ -346,9 +364,25 @@ private extension PreLoginConnectivityToolViewModelTests {
         )
     }
 
+    func makeSUTWithFallbackDiscovery(session: MockURLSession) async -> PreLoginConnectivityToolViewModel {
+        let sut = makeSUT(session: session, discoverAPIRoot: { _ in nil })
+        _ = await sut.testAPIDiscovery()
+        return sut
+    }
+
     func makeSUTWithDiscovery(session: MockURLSession) async -> PreLoginConnectivityToolViewModel {
         let sut = makeSUT(session: session, discoverAPIRoot: { _ in Self.discoveredAPIRoot })
         _ = await sut.testAPIDiscovery()
+        return sut
+    }
+
+    /// Creates a SUT with discovery done and the REST API root response already fetched (Test 3 complete).
+    func makeSUTWithRESTAPIResponse(_ json: String) async -> PreLoginConnectivityToolViewModel {
+        let mockSession = MockURLSession()
+        mockSession.simulateResponse(for: Self.discoveredAPIRoot, data: json.data(using: .utf8)!)
+        let sut = makeSUT(session: mockSession, discoverAPIRoot: { _ in Self.discoveredAPIRoot })
+        _ = await sut.testAPIDiscovery()
+        _ = await sut.testWordPressRESTAPI()
         return sut
     }
 

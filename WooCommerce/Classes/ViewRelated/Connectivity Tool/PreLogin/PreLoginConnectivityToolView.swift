@@ -77,7 +77,7 @@ struct PreLoginConnectivityToolView: View {
             .buttonStyle(SecondaryButtonStyle())
             .padding()
         }
-        .background(Color(uiColor: .listBackground))
+        .background(Color(uiColor: .listForeground(modal: false)))
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .task {

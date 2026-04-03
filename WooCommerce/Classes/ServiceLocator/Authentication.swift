@@ -15,7 +15,7 @@ protocol Authentication {
     ///     - from: UIViewController instance from which to present the support interface
     ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
     ///
-    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen)
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen, siteURL: URL?)
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
@@ -45,4 +45,10 @@ protocol Authentication {
                              credentials: AuthenticatorCredentials?,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController?
+}
+
+extension Authentication {
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+        presentSupport(from: sourceViewController, screen: screen, siteURL: nil)
+    }
 }

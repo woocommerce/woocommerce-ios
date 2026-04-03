@@ -65,10 +65,15 @@ final class HelpAndSupportViewController: UIViewController {
     ///
     private let sourceTag: String?
 
+    /// Site URL for the pre-login connectivity tool. Set when accessed from the login flow.
+    ///
+    private let loginSiteURL: URL?
+
     private lazy var viewModel = HelpAndSupportViewModel(
         isAuthenticated: ServiceLocator.stores.isAuthenticated,
         isZendeskEnabled: ZendeskProvider.shared.zendeskEnabled,
-        isMacCatalyst: isMacCatalyst
+        isMacCatalyst: isMacCatalyst,
+        hasLoginSiteURL: loginSiteURL != nil
     )
 
     private var isMacCatalyst: Bool {
@@ -79,21 +84,24 @@ final class HelpAndSupportViewController: UIViewController {
         #endif
     }
 
-    init?(customHelpCenterContent: CustomHelpCenterContent, sourceTag: String? = nil, coder: NSCoder) {
+    init?(customHelpCenterContent: CustomHelpCenterContent, sourceTag: String? = nil, loginSiteURL: URL? = nil, coder: NSCoder) {
         self.customHelpCenterContent = customHelpCenterContent
         self.sourceTag = sourceTag
+        self.loginSiteURL = loginSiteURL
         super.init(coder: coder)
     }
 
-    init?(sourceTag: String, coder: NSCoder) {
+    init?(sourceTag: String? = nil, loginSiteURL: URL? = nil, coder: NSCoder) {
         self.customHelpCenterContent = nil
         self.sourceTag = sourceTag
+        self.loginSiteURL = loginSiteURL
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
         self.customHelpCenterContent = nil
         self.sourceTag = nil
+        self.loginSiteURL = nil
         super.init(coder: coder)
     }
 
@@ -211,6 +219,8 @@ private extension HelpAndSupportViewController {
             configureApplicationLog(cell: cell)
         case let cell as ValueOneTableViewCell where row == .systemStatusReport:
             configureSystemStatusReport(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .siteCompatibility:
+            configureSiteCompatibility(cell: cell)
         default:
             fatalError()
         }
@@ -255,6 +265,23 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString(
             "Advanced tool to review the app status",
             comment: "Cell subtitle explaining why you might want to navigate to view the application log."
+        )
+    }
+
+    /// Site Compatibility cell
+    ///
+    func configureSiteCompatibility(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.siteCompatibility.title",
+            value: "Check Site Compatibility",
+            comment: "Title for the site compatibility check row on the Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.siteCompatibility.subtitle",
+            value: "Test if your site works with the app",
+            comment: "Subtitle for the site compatibility check row on the Help screen"
         )
     }
 
@@ -350,6 +377,14 @@ private extension HelpAndSupportViewController {
         navigationController?.pushViewController(applicationLogVC, animated: true)
     }
 
+    /// Site compatibility action
+    ///
+    func siteCompatibilityWasPressed() {
+        guard let loginSiteURL else { return }
+        let controller = PreLoginConnectivityToolViewController(siteURL: loginSiteURL)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     /// System status report action
     ///
     func systemStatusReportWasPressed() {
@@ -417,6 +452,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             applicationLogWasPressed()
         case .systemStatusReport:
             systemStatusReportWasPressed()
+        case .siteCompatibility:
+            siteCompatibilityWasPressed()
         }
     }
 }
@@ -441,10 +478,11 @@ enum HelpAndSupportRow: CaseIterable {
     case contactEmail
     case applicationLog
     case systemStatusReport
+    case siteCompatibility
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport:
+        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .siteCompatibility:
             return ValueOneTableViewCell.self
         }
     }

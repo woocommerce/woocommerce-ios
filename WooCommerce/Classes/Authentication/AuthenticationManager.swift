@@ -484,10 +484,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///     - from: UIViewController instance from which to present the support interface
     ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
     ///
-    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen, siteURL: URL? = nil) {
         let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
                                                               flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil, siteURL: siteURL)
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
@@ -507,13 +507,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func presentSupport(from sourceViewController: UIViewController,
                         sourceTag: WordPressSupportSourceTag,
                         lastStep: AuthenticatorAnalyticsTracker.Step,
-                        lastFlow: AuthenticatorAnalyticsTracker.Flow) {
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow,
+                        siteURL: String? = nil) {
+        let parsedURL = siteURL.flatMap { URL(string: $0) }
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
             presentSupport(from: sourceViewController, sourceTag: sourceTag)
             return
         }
 
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag, siteURL: parsedURL)
     }
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
@@ -989,18 +991,20 @@ private extension AuthenticationManager {
 
     func presentHelpAndSupport(from sourceViewController: UIViewController,
                                customHelpCenterContent: CustomHelpCenterContent? = nil,
-                               sourceTag: WordPressSupportSourceTag?) {
+                               sourceTag: WordPressSupportSourceTag?,
+                               siteURL: URL? = nil) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
-            guard let customHelpCenterContent = customHelpCenterContent else {
-                /// Returning nil as we don't need to customise the HelpAndSupportViewController
-                /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
-                ///
-                return nil
+            if let customHelpCenterContent {
+                return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent,
+                                                    sourceTag: sourceTag?.origin,
+                                                    loginSiteURL: siteURL,
+                                                    coder: coder)
             }
-
-            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag?.origin, coder: coder)
+            return HelpAndSupportViewController(sourceTag: sourceTag?.origin,
+                                                loginSiteURL: siteURL,
+                                                coder: coder)
         })
         supportViewController.displaysDismissAction = true
 

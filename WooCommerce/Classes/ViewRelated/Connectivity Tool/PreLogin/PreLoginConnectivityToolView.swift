@@ -1,0 +1,258 @@
+import SwiftUI
+import Combine
+
+// MARK: - Hosting Controller
+
+/// Presents the pre-login connectivity tool.
+///
+final class PreLoginConnectivityToolViewController: UIHostingController<PreLoginConnectivityToolView> {
+
+    private let viewModel: PreLoginConnectivityToolViewModel
+    private var subscriptions: Set<AnyCancellable> = []
+
+    init(siteURL: URL) {
+        viewModel = PreLoginConnectivityToolViewModel(siteURL: siteURL)
+        let view = PreLoginConnectivityToolView(viewModel: viewModel)
+        super.init(rootView: view)
+        self.hidesBottomBarWhenPushed = true
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        rootView.onContactSupportTapped = { [weak self] in
+            self?.showContactSupportForm()
+        }
+
+        rootView.onStartTests = { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.viewModel.startConnectivityTests()
+            }
+        }
+    }
+
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func showContactSupportForm() {
+        let attachments: [ZendeskAttachment] = {
+            guard let description = viewModel.troubleshootingDescription(),
+                  let data = description.data(using: .utf8) else { return [] }
+            return [
+                ZendeskAttachment(
+                    data: data,
+                    filename: "prelogin_connectivitytest_log.txt",
+                    contentType: "text/plain"
+                )
+            ]
+        }()
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
+        supportController.show(from: self)
+    }
+}
+
+// MARK: - Main View
+
+struct PreLoginConnectivityToolView: View {
+
+    @ObservedObject var viewModel: PreLoginConnectivityToolViewModel
+
+    /// Closure invoked when the "Contact Support" button is tapped.
+    var onContactSupportTapped: (() -> Void)?
+
+    /// Closure invoked when the view appears to start running tests.
+    var onStartTests: (() -> Void)?
+
+    var body: some View {
+        VStack(spacing: .zero) {
+            ScrollView {
+                Text(Localization.subtitle)
+                    .bodyStyle(opacity: 0.8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+
+                ForEach(viewModel.cards) { card in
+                    PreLoginCheckCardView(card: card)
+                        .padding(.horizontal)
+
+                    Divider()
+                        .padding(.leading)
+                        .padding(.vertical, 8)
+                }
+            }
+
+            Divider().ignoresSafeArea()
+
+            Button(Localization.contactSupport) {
+                onContactSupportTapped?()
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .padding()
+        }
+        .background(Color(uiColor: .listBackground))
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            onStartTests?()
+        }
+    }
+}
+
+// MARK: - Card View
+
+private struct PreLoginCheckCardView: View {
+
+    let card: PreLoginCheckCard
+
+    @State private var selectedDiagnosticLog: TechnicalDetailsItem?
+
+    private static let iconSize: CGFloat = 24
+    private static let verticalSpacing: CGFloat = 16
+
+    var body: some View {
+        VStack(spacing: Self.verticalSpacing) {
+            HStack {
+                card.icon.buildAsset()
+                    .foregroundColor(Color(uiColor: .text))
+                    .frame(width: Self.iconSize, height: Self.iconSize)
+
+                Text(card.title)
+                    .bodyStyle()
+                    .bold()
+
+                Spacer()
+
+                stateIndicator
+            }
+
+            switch card.state {
+            case .success(let summary):
+                Text(summary)
+                    .foregroundColor(Color(uiColor: .text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+            case .error(let summary):
+                Text(summary)
+                    .foregroundColor(Color(uiColor: .text))
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                if card.diagnosticLog != nil {
+                    Button(Localization.viewDetails, systemImage: "info.circle") {
+                        selectedDiagnosticLog = TechnicalDetailsItem(details: card.diagnosticLog ?? "")
+                    }
+                    .foregroundColor(Color(uiColor: .accent))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+            case .inProgress:
+                EmptyView()
+            }
+        }
+        .sheet(item: $selectedDiagnosticLog) { item in
+            TechnicalDetailsView(technicalDetails: item.details)
+                .presentationDetents([.medium, .large])
+        }
+    }
+
+    @ViewBuilder
+    private var stateIndicator: some View {
+        switch card.state {
+        case .inProgress:
+            ProgressView()
+        case .success:
+            Image(uiImage: .checkCircleImage)
+                .environment(\.colorScheme, .light)
+        case .error:
+            Image(uiImage: .exclamationFilledImage)
+                .foregroundColor(Color(uiColor: .error))
+        }
+    }
+
+    private enum Localization {
+        static let viewDetails = NSLocalizedString(
+            "preLoginConnectivityToolView.viewDetails",
+            value: "View details",
+            comment: "Button to view technical diagnostic details for a failed connectivity check"
+        )
+    }
+}
+
+// MARK: - Localization
+
+private extension PreLoginConnectivityToolView {
+    enum Localization {
+        static let title = NSLocalizedString(
+            "preLoginConnectivityToolView.title",
+            value: "Site Compatibility",
+            comment: "Navigation title for the pre-login connectivity tool"
+        )
+        static let subtitle = NSLocalizedString(
+            "preLoginConnectivityToolView.subtitle",
+            value: "Checking your site's compatibility with the WooCommerce app.",
+            comment: "Subtitle on the pre-login connectivity tool screen"
+        )
+        static let contactSupport = NSLocalizedString(
+            "preLoginConnectivityToolView.contactSupport",
+            value: "Contact Support",
+            comment: "Contact support button in the pre-login connectivity tool"
+        )
+    }
+}
+
+// MARK: - Previews
+
+#Preview("All Success") {
+    NavigationView {
+        PreLoginConnectivityToolView(
+            viewModel: {
+                let vm = PreLoginConnectivityToolViewModel(siteURL: URL(string: "https://example.com")!)
+                vm.cards = [
+                    .init(title: "Internet Connection", icon: .system("wifi"),
+                          state: .success("Your device is connected to the internet.")),
+                    .init(title: "Site Info", icon: .system("info.circle"),
+                          state: .success("WordPress site detected.\nJetpack is installed and connected.")),
+                    .init(title: "API Discovery", icon: .system("magnifyingglass"),
+                          state: .success("REST API endpoint discovered.")),
+                    .init(title: "WordPress REST API", icon: .system("arrow.left.arrow.right"),
+                          state: .success("The WordPress REST API is available.")),
+                    .init(title: "WooCommerce Plugin", icon: .system("storefront"),
+                          state: .success("WooCommerce is active on your site.")),
+                    .init(title: "Application Passwords", icon: .system("key"),
+                          state: .success("Application Passwords are supported."))
+                ]
+                return vm
+            }()
+        )
+    }
+}
+
+#Preview("Mixed Results") {
+    NavigationView {
+        PreLoginConnectivityToolView(
+            viewModel: {
+                let vm = PreLoginConnectivityToolViewModel(siteURL: URL(string: "https://example.com")!)
+                vm.cards = [
+                    .init(title: "Internet Connection", icon: .system("wifi"),
+                          state: .success("Your device is connected to the internet.")),
+                    .init(title: "Site Info", icon: .system("info.circle"),
+                          state: .success("WordPress site detected.\nJetpack is not installed.")),
+                    .init(title: "API Discovery", icon: .system("magnifyingglass"),
+                          state: .error("REST API endpoint not found."),
+                          diagnosticLog: "URL: https://example.com\nTime: 342ms\nStatus: 200\nNo Link header found"),
+                    .init(title: "WordPress REST API", icon: .system("arrow.left.arrow.right"),
+                          state: .error("WordPress REST API is not accessible on your site."),
+                          diagnosticLog: "No API root URL from discovery"),
+                    .init(title: "WooCommerce Plugin", icon: .system("storefront"),
+                          state: .inProgress),
+                    .init(title: "Application Passwords", icon: .system("key"),
+                          state: .inProgress)
+                ]
+                return vm
+            }()
+        )
+    }
+}

@@ -39,6 +39,16 @@ struct PointOfSalePaymentState: Equatable {
             return false
         }
     }
+
+    var allowsCashPayment: Bool {
+        switch card {
+        case .idle, .validatingOrderError, .paymentIntentCreationError, .acceptingCard:
+            return true
+        case .validatingOrder, .preparingReader, .cardInserted, .processingPayment,
+             .paymentError, .cardPaymentSuccessful:
+            return false
+        }
+    }
 }
 
 enum PointOfSaleCardPaymentState: Equatable {
@@ -111,6 +121,26 @@ extension PointOfSaleCardPaymentState {
                 .preparingReader,
                 .acceptingCard,
                 .cardInserted:
+            return false
+        }
+    }
+
+    var requiresCashExit: Bool {
+        switch self {
+        case .cardInserted, .processingPayment, .cardPaymentSuccessful:
+            return true
+        case .idle, .validatingOrder, .validatingOrderError, .paymentIntentCreationError,
+             .preparingReader, .acceptingCard, .paymentError:
+            return false
+        }
+    }
+
+    var resetsToIdleOnDisconnect: Bool {
+        switch self {
+        case .preparingReader, .acceptingCard, .validatingOrder:
+            return true
+        case .idle, .validatingOrderError, .paymentIntentCreationError,
+             .cardInserted, .processingPayment, .paymentError, .cardPaymentSuccessful:
             return false
         }
     }

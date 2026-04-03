@@ -60,7 +60,7 @@ struct TotalsView: View {
                         orderState: posModel.orderState,
                         paymentState: paymentModel.paymentState,
                         cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                        startCashPaymentAction: { await paymentModel.startCashPayment() }
+                        startCashPaymentAction: { paymentModel.startCashPayment() }
                     )
                 }
                 .animation(.default, value: isShowingPaymentView)
@@ -466,15 +466,13 @@ private struct CashPaymentButton: View {
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
-    let startCashPaymentAction: () async -> Void
+    let startCashPaymentAction: () -> Void
 
     private let viewHelper = TotalsViewHelper()
 
     var body: some View {
         Button(action: {
-            Task { @MainActor in
-                await startCashPaymentAction()
-            }
+            startCashPaymentAction()
         }, label: {
             Text(TotalsView.Localization.cashPaymentButtonTitle)
                 .font(POSFontStyle.posBodyLargeBold)

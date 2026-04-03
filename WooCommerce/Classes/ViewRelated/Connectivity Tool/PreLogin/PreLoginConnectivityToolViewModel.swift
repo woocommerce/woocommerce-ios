@@ -24,13 +24,22 @@ typealias PreLoginCheckResult = (state: PreLoginCheckState, diagnosticLog: Strin
 
 /// A single card in the pre-login connectivity tool.
 ///
-struct PreLoginCheckCard {
+struct PreLoginCheckCard: Identifiable {
+    let id = UUID()
     let title: String
     let icon: ConnectivityToolCard.Icon
     let state: PreLoginCheckState
+    let diagnosticLog: String?
 
-    func updatingState(_ newState: PreLoginCheckState) -> PreLoginCheckCard {
-        PreLoginCheckCard(title: title, icon: icon, state: newState)
+    init(title: String, icon: ConnectivityToolCard.Icon, state: PreLoginCheckState, diagnosticLog: String? = nil) {
+        self.title = title
+        self.icon = icon
+        self.state = state
+        self.diagnosticLog = diagnosticLog
+    }
+
+    func updatingState(_ newState: PreLoginCheckState, diagnosticLog: String? = nil) -> PreLoginCheckCard {
+        PreLoginCheckCard(title: title, icon: icon, state: newState, diagnosticLog: diagnosticLog)
     }
 }
 
@@ -75,10 +84,6 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     private let discoverAPIRoot: (String) async -> String?
 
-    /// Diagnostic logs for each completed test, used for Zendesk support attachment.
-    ///
-    private var diagnosticLogs: [String] = []
-
     private static let requestTimeout: TimeInterval = 15
 
     init(siteURL: URL,
@@ -97,7 +102,6 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     func startConnectivityTests() async {
         cards = []
-        diagnosticLogs = []
         restAPIRootURL = nil
 
         for testCase in ConnectivityTest.allCases {
@@ -105,16 +109,19 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
             cards.append(testCase.inProgressCard)
 
             let (state, log) = await runTest(for: testCase)
-            cards[cardIndex] = cards[cardIndex].updatingState(state)
-            diagnosticLogs.append("## \(testCase.title)\n\(log)")
+            cards[cardIndex] = cards[cardIndex].updatingState(state, diagnosticLog: log)
         }
     }
 
     /// Generates a text description of test results for support attachment.
     ///
     func troubleshootingDescription() -> String? {
-        guard !diagnosticLogs.isEmpty else { return nil }
-        return diagnosticLogs.joined(separator: "\n\n")
+        let logs = cards.compactMap { card -> String? in
+            guard let log = card.diagnosticLog else { return nil }
+            return "## \(card.title)\n\(log)"
+        }
+        guard !logs.isEmpty else { return nil }
+        return logs.joined(separator: "\n\n")
     }
 }
 

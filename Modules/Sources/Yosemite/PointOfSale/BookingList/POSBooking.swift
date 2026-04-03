@@ -13,7 +13,15 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
     }
 
     public let id: Int64
+
+    /// WooCommerce Customer ID.
+    /// Not the same as WordPress User ID — use `userID` for guest detection.
     public let customerID: Int64
+
+    /// WordPress User ID.
+    /// 0 means the booking was made by a guest (no WP account).
+    public let userID: Int64
+
     public let customerName: String?
     public let serviceName: String
     public let startDate: Date
@@ -37,6 +45,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
 
     public init(id: Int64,
                 customerID: Int64 = 0,
+                userID: Int64 = 0,
                 customerName: String?,
                 serviceName: String,
                 startDate: Date,
@@ -59,6 +68,7 @@ public struct POSBooking: Equatable, Hashable, Identifiable, GeneratedCopiable {
                 order: POSOrder) {
         self.id = id
         self.customerID = customerID
+        self.userID = userID
         self.customerName = customerName
         self.serviceName = serviceName
         self.startDate = startDate

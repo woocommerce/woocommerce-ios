@@ -1,7 +1,13 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+24.6
+-----
+
+
 24.5
 -----
+- [*] Add analytics setting check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16871]
+- [*] Add notification check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16875]
 
 
 24.4
@@ -16,7 +22,6 @@
 - [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
 - [Internal] Unify Jetpack setup flow for JCP sites [https://github.com/woocommerce/woocommerce-ios/pull/16816]
 - [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
-- [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
 - [Internal] Treat ecommerce garden sites as having WooCommerce by default [https://github.com/woocommerce/woocommerce-ios/pull/16820]
 - [*] Remove the redundant Price row from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16821]
 - [*] Fix sheet/popover presentation showing trimmed content on iPad [https://github.com/woocommerce/woocommerce-ios/pull/16817]

@@ -217,10 +217,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case selfDrivenPushTokenAppPasswords
 
-    /// Enables POS-only products filtering
-    ///
-    case pointOfSaleOnlyProducts
-
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner
@@ -229,4 +225,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Enables FedEx as a carrier option in WooShipping label creation
+    ///
+    case wooShippingFedEx
 }

@@ -103,11 +103,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .selfDrivenPushTokenAppPasswords:
             return false
-        case .pointOfSaleOnlyProducts:
-            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
+            return false
+        case .wooShippingFedEx:
             return false
         default:
             return true

@@ -422,7 +422,7 @@ struct POSBookingDetailView: View {
 
 private extension POSBooking {
     var isGuest: Bool {
-        customerID == 0
+        userID == 0
     }
 }
 

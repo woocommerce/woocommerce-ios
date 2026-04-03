@@ -85,6 +85,12 @@ private extension LastOrderDashboardRow {
 struct LastOrderDashboardRowViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     let order: Order
+    private let isCIAB: Bool
+
+    init(order: Order, isCIAB: Bool = false) {
+        self.order = order
+        self.isCIAB = isCIAB
+    }
 
     var isPOSOrder: Bool {
         order.salesChannel == .pointOfSale
@@ -106,7 +112,7 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusDescription: String {
-        order.status.description
+        isCIAB ? CIABOrderStatusMapper.displayName(for: order.status) : order.status.description
     }
 
     /// The value will only include the year if the `createdDate` is not from the current year.
@@ -127,7 +133,8 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusBackgroundColor: Color {
-        Color(uiColor: order.status.backgroundColor)
+        let displayStatus = isCIAB ? CIABOrderStatusMapper.displayStatus(for: order.status) : order.status
+        return Color(uiColor: displayStatus.backgroundColor)
     }
 }
 

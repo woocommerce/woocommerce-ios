@@ -332,6 +332,14 @@ extension OrderDetailsViewModel {
         }
 
         group.enter()
+        Task { @MainActor in
+            defer {
+                group.leave()
+            }
+            await syncOrderFulfillments()
+        }
+
+        group.enter()
         syncSavedReceipts {_ in
             group.leave()
         }
@@ -412,6 +420,26 @@ extension OrderDetailsViewModel {
 
                                                                    continuation.resume(returning: ())
                                                                }
+            )
+        }
+    }
+
+    /// Syncs order fulfillments from the fulfillments endpoint.
+    @MainActor
+    func syncOrderFulfillments() async {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(
+                OrderFulfillmentAction.synchronizeOrderFulfillments(
+                    siteID: siteID,
+                    orderID: orderID
+                ) { error in
+                    if let error {
+                        DDLogError("⛔️ Error synchronizing order fulfillments: \(error.localizedDescription)")
+                    }
+                    continuation.resume(returning: ())
+                }
             )
         }
     }

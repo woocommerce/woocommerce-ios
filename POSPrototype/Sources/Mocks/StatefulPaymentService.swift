@@ -11,17 +11,15 @@ enum PaymentControlMode {
     case manual
 }
 
-final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
+final class StatefulPaymentService: CardPresentPaymentFacade {
     let configuration: MockConfiguration
 
     let paymentEventSubject = CurrentValueSubject<CardPresentPaymentEvent, Never>(.idle)
     let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
     private let cardReaderUpdateStateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
 
-    /// When manual, collectPayment waits for the control panel to resolve the payment.
     var controlMode: PaymentControlMode = .manual
 
-    /// Continuation for manual mode - control panel calls this to complete payment.
     private var manualPaymentContinuation: CheckedContinuation<CardPresentPaymentResult, Error>?
 
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
@@ -79,45 +77,43 @@ final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
     }
 
     func cancelPayment() {
-        if let continuation = manualPaymentContinuation {
-            continuation.resume(returning: .cancellation)
-            manualPaymentContinuation = nil
-        }
+        let continuation = manualPaymentContinuation
+        manualPaymentContinuation = nil
+        continuation?.resume(returning: .cancellation)
         paymentEventSubject.send(.idle)
     }
 
     func cancelPayment() async throws {
-        if let continuation = manualPaymentContinuation {
-            continuation.resume(returning: .cancellation)
-            manualPaymentContinuation = nil
-        }
+        let continuation = manualPaymentContinuation
+        manualPaymentContinuation = nil
+        continuation?.resume(returning: .cancellation)
         paymentEventSubject.send(.idle)
     }
 
-    // MARK: - Manual mode
+    // MARK: - Manual mode control
 
-    /// Called by the control panel to complete a manual payment with success.
     func resolveManualPayment() {
-        manualPaymentContinuation?.resume(returning: .success(CardPresentPaymentTransaction()))
+        let continuation = manualPaymentContinuation
         manualPaymentContinuation = nil
+        continuation?.resume(returning: .success(CardPresentPaymentTransaction()))
     }
 
-    /// Called by the control panel to fail a manual payment.
     func failManualPayment(message: String) {
+        let continuation = manualPaymentContinuation
+        manualPaymentContinuation = nil
         let error = NSError(domain: "POSPrototype", code: 2,
                             userInfo: [NSLocalizedDescriptionKey: message])
-        manualPaymentContinuation?.resume(throwing: error)
-        manualPaymentContinuation = nil
-    }
-
-    /// Whether a manual payment is currently awaiting resolution.
-    var isAwaitingManualResolution: Bool {
-        manualPaymentContinuation != nil
+        continuation?.resume(throwing: error)
     }
 
     // MARK: - Private
 
     private func runManualPayment() async throws -> CardPresentPaymentResult {
+        // Cancel any previous pending continuation before starting a new one
+        let previous = manualPaymentContinuation
+        manualPaymentContinuation = nil
+        previous?.resume(returning: .cancellation)
+
         paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
 
         return try await withCheckedThrowingContinuation { continuation in
@@ -145,72 +141,54 @@ final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
 
         paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
         try await Task.sleep(nanoseconds: stepDelay)
-
         paymentEventSubject.send(.show(eventDetails: .preparingForPayment(cancelPayment: {})))
         try await Task.sleep(nanoseconds: stepDelay)
-
         paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [], cancelPayment: {})))
         try await Task.sleep(nanoseconds: stepDelay)
-
         paymentEventSubject.send(.show(eventDetails: .cardInserted(cancelPayment: {})))
         try await Task.sleep(nanoseconds: stepDelay)
-
         paymentEventSubject.send(.show(eventDetails: .processing))
         try await Task.sleep(nanoseconds: stepDelay)
-
         paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
         try await Task.sleep(nanoseconds: stepDelay)
-
         paymentEventSubject.send(.idle)
         return .success(CardPresentPaymentTransaction())
     }
 
     private func runFailSequence(failAtStep: PaymentStep, message: String) async throws -> CardPresentPaymentResult {
         let stepDelay: UInt64 = 400_000_000
-        let steps: [PaymentStep] = [.scanning, .connecting, .preparingReader, .acceptingCard, .cardInserted, .processing, .success]
+        let steps: [PaymentStep] = PaymentStep.allCases
 
         for step in steps {
             if step == failAtStep {
-                let error = NSError(domain: "POSPrototype", code: 2, userInfo: [
-                    NSLocalizedDescriptionKey: message
-                ])
+                let error = NSError(domain: "POSPrototype", code: 2,
+                                    userInfo: [NSLocalizedDescriptionKey: message])
                 paymentEventSubject.send(.show(eventDetails: .paymentError(
-                    error: error,
-                    retryApproach: .tryAgain(retryAction: {}),
-                    cancelPayment: {}
-                )))
+                    error: error, retryApproach: .tryAgain(retryAction: {}), cancelPayment: {})))
                 throw error
             }
             publishEventForStep(step)
             try await Task.sleep(nanoseconds: stepDelay)
         }
-
-        paymentEventSubject.send(.idle)
         return .success(CardPresentPaymentTransaction())
     }
 
     private func runDisconnectSequence(disconnectAtStep: PaymentStep) async throws -> CardPresentPaymentResult {
         let stepDelay: UInt64 = 400_000_000
-        let steps: [PaymentStep] = [.scanning, .connecting, .preparingReader, .acceptingCard, .cardInserted, .processing, .success]
+        let steps: [PaymentStep] = PaymentStep.allCases
 
         for step in steps {
             if step == disconnectAtStep {
                 readerConnectionStatusSubject.send(.disconnected)
-                let error = NSError(domain: "POSPrototype", code: 3, userInfo: [
-                    NSLocalizedDescriptionKey: "Card reader disconnected"
-                ])
+                let error = NSError(domain: "POSPrototype", code: 3,
+                                    userInfo: [NSLocalizedDescriptionKey: "Card reader disconnected"])
                 paymentEventSubject.send(.show(eventDetails: .paymentError(
-                    error: error,
-                    retryApproach: .tryAgain(retryAction: {}),
-                    cancelPayment: {}
-                )))
+                    error: error, retryApproach: .tryAgain(retryAction: {}), cancelPayment: {})))
                 throw error
             }
             publishEventForStep(step)
             try await Task.sleep(nanoseconds: stepDelay)
         }
-
-        paymentEventSubject.send(.idle)
         return .success(CardPresentPaymentTransaction())
     }
 

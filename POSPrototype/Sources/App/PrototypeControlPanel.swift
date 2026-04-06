@@ -2,335 +2,406 @@ import SwiftUI
 import Combine
 import PointOfSale
 
-// MARK: - FAB Entry Point
+// MARK: - Entry Point
 
 struct PrototypeControlPanel: View {
     let paymentService: StatefulPaymentService
-    @State private var showSheet = false
+    @State private var isExpanded = false
+    @State private var selectedTab: ControlTab = .payment
 
     var body: some View {
-        Button {
-            showSheet = true
-        } label: {
-            Image(systemName: "slider.horizontal.3")
-                .font(.title3)
-                .fontWeight(.semibold)
-                .foregroundStyle(.white)
-                .frame(width: 48, height: 48)
-                .background(Color.blue)
-                .clipShape(Circle())
-                .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
+        VStack(spacing: 0) {
+            if isExpanded {
+                expandedPanel
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            toggleBar
         }
-        .padding(.trailing, 20)
-        .padding(.bottom, 16)
-        .frame(maxWidth: .infinity, alignment: .trailing)
-        .sheet(isPresented: $showSheet) {
-            ControlStationView(paymentService: paymentService)
+        .animation(.easeInOut(duration: 0.25), value: isExpanded)
+    }
+
+    // MARK: - Toggle Bar
+
+    private var toggleBar: some View {
+        HStack {
+            if !isExpanded {
+                Button {
+                    isExpanded = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "slider.horizontal.3")
+                            .font(.subheadline.bold())
+                        Text("Controls")
+                            .font(.caption.bold())
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 8)
+                    .background(Color.blue)
+                    .clipShape(Capsule())
+                    .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
+                }
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 8)
+    }
+
+    // MARK: - Expanded Panel
+
+    private var expandedPanel: some View {
+        VStack(spacing: 0) {
+            // Header with close
+            HStack {
+                Picker("", selection: $selectedTab) {
+                    ForEach(ControlTab.allCases) { tab in
+                        Text(tab.label).tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                Button {
+                    isExpanded = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title3)
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.leading, 8)
+            }
+            .padding(.horizontal, 12)
+            .padding(.top, 10)
+            .padding(.bottom, 6)
+
+            Divider()
+
+            // Tab content
+            ScrollView {
+                switch selectedTab {
+                case .payment:
+                    PaymentTabContent(paymentService: paymentService)
+                case .reader:
+                    ReaderTabContent(paymentService: paymentService)
+                case .errors:
+                    ErrorsTabContent(paymentService: paymentService)
+                }
+            }
+            .frame(maxHeight: 260)
+        }
+        .background(.ultraThinMaterial)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(radius: 8)
+        .padding(.horizontal, 12)
+    }
+}
+
+// MARK: - Tabs
+
+private enum ControlTab: String, CaseIterable, Identifiable {
+    case payment
+    case reader
+    case errors
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .payment: "Payment"
+        case .reader: "Reader"
+        case .errors: "Errors"
         }
     }
 }
 
-// MARK: - Control Station Sheet
+// MARK: - Payment Tab
 
-private struct ControlStationView: View {
+private struct PaymentTabContent: View {
     let paymentService: StatefulPaymentService
-    @Environment(\.dismiss) private var dismiss
+    @State private var isManual = true
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    NavigationLink {
-                        PaymentControlView(paymentService: paymentService)
-                    } label: {
-                        Label("Payment Flow", systemImage: "creditcard")
-                    }
-
-                    NavigationLink {
-                        ReaderControlView(paymentService: paymentService)
-                    } label: {
-                        Label("Card Reader", systemImage: "wave.3.right")
-                    }
-
-                    NavigationLink {
-                        ErrorCatalogView(paymentService: paymentService)
-                    } label: {
-                        Label("Error Catalog", systemImage: "exclamationmark.triangle")
-                    }
-                } header: {
-                    Text("Controls")
-                }
-
-                Section {
-                    Button("Run Full Payment (slow)") {
-                        paymentService.controlMode = .automatic
-                        dismiss()
-                    }
-
-                    Button("Disconnect Reader") {
-                        paymentService.readerConnectionStatusSubject.send(.disconnected)
-                    }
-                    .foregroundStyle(.orange)
-
-                    Button("Reset to Idle") {
-                        paymentService.paymentEventSubject.send(.idle)
-                        let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
-                        paymentService.readerConnectionStatusSubject.send(.connected(reader))
-                    }
-                } header: {
-                    Text("Quick Actions")
-                }
-            }
-            .navigationTitle("Control Station")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Done") { dismiss() }
-                }
-            }
-        }
-    }
-}
-
-// MARK: - Payment Control
-
-private struct PaymentControlView: View {
-    let paymentService: StatefulPaymentService
-    @State private var isManual: Bool = true
-
-    var body: some View {
-        List {
-            Section {
-                Toggle("Manual Control", isOn: $isManual)
-                    .onChange(of: isManual) { _, newValue in
-                        paymentService.controlMode = newValue ? .manual : .automatic
-                    }
-
-                if !isManual {
-                    Text("Payment will auto-progress when checkout is tapped.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else {
-                    Text("Use the steps below to drive each payment state. Checkout will wait for you.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } header: {
+        VStack(alignment: .leading, spacing: 12) {
+            // Mode toggle
+            HStack {
                 Text("Mode")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+                Spacer()
+                Picker("", selection: $isManual) {
+                    Text("Manual").tag(true)
+                    Text("Auto").tag(false)
+                }
+                .pickerStyle(.segmented)
+                .frame(width: 160)
+                .onChange(of: isManual) { _, newValue in
+                    paymentService.controlMode = newValue ? .manual : .automatic
+                }
             }
 
-            Section {
-                PaymentStepButton(label: "Validating Order", icon: "doc.text.magnifyingglass") {
+            // Payment steps
+            Text("Steps")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+
+            FlowLayout(spacing: 6) {
+                StepChip("Validating", icon: "doc.text.magnifyingglass") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .validatingOrder(cancelPayment: {})))
                 }
-                PaymentStepButton(label: "Preparing Reader", icon: "antenna.radiowaves.left.and.right") {
+                StepChip("Preparing", icon: "antenna.radiowaves.left.and.right") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .preparingForPayment(cancelPayment: {})))
                 }
-                PaymentStepButton(label: "Tap / Swipe / Insert", icon: "creditcard.and.123") {
+                StepChip("Tap/Swipe", icon: "creditcard") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [], cancelPayment: {})))
                 }
-                PaymentStepButton(label: "Card Inserted", icon: "rectangle.and.arrow.up.right.and.arrow.down.left") {
+                StepChip("Inserted", icon: "arrow.down.doc") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .cardInserted(cancelPayment: {})))
                 }
-                PaymentStepButton(label: "Processing", icon: "arrow.triangle.2.circlepath") {
+                StepChip("Processing", icon: "arrow.triangle.2.circlepath") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .processing))
                 }
-            } header: {
-                Text("Payment Steps")
             }
 
-            Section {
-                PaymentStepButton(label: "Payment Success", icon: "checkmark.circle.fill", tint: .green) {
+            // Resolve
+            Text("Resolve")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+
+            HStack(spacing: 8) {
+                Button {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .paymentSuccess(done: {})))
                     paymentService.resolveManualPayment()
+                } label: {
+                    Label("Success", systemImage: "checkmark.circle.fill")
+                        .font(.caption.bold())
                 }
-                PaymentStepButton(label: "Payment Failed", icon: "xmark.circle.fill", tint: .red) {
+                .buttonStyle(.borderedProminent)
+                .tint(.green)
+                .controlSize(.small)
+
+                Button {
                     let error = NSError(domain: "POSPrototype", code: 99,
-                                        userInfo: [NSLocalizedDescriptionKey: "Simulated payment failure"])
+                                        userInfo: [NSLocalizedDescriptionKey: "Payment declined"])
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .paymentError(
                             error: error,
                             retryApproach: .tryAgain(retryAction: {}),
                             cancelPayment: {})))
-                    paymentService.failManualPayment(message: "Simulated payment failure")
+                    paymentService.failManualPayment(message: "Payment declined")
+                } label: {
+                    Label("Fail", systemImage: "xmark.circle.fill")
+                        .font(.caption.bold())
                 }
-                PaymentStepButton(label: "Cancel Payment", icon: "stop.circle", tint: .orange) {
-                    paymentService.cancelPayment()
-                }
-            } header: {
-                Text("Resolve Payment")
-            }
+                .buttonStyle(.borderedProminent)
+                .tint(.red)
+                .controlSize(.small)
 
-            Section {
-                PaymentStepButton(label: "Idle", icon: "moon") {
-                    paymentService.paymentEventSubject.send(.idle)
+                Button {
+                    paymentService.cancelPayment()
+                } label: {
+                    Label("Cancel", systemImage: "stop.circle")
+                        .font(.caption.bold())
                 }
-            } header: {
-                Text("Reset")
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+
+                Button {
+                    paymentService.paymentEventSubject.send(.idle)
+                } label: {
+                    Label("Reset", systemImage: "arrow.counterclockwise")
+                        .font(.caption.bold())
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
             }
         }
-        .navigationTitle("Payment Flow")
+        .padding(12)
         .onAppear {
             isManual = paymentService.controlMode == .manual
         }
     }
 }
 
-// MARK: - Reader Control
+// MARK: - Reader Tab
 
-private struct ReaderControlView: View {
+private struct ReaderTabContent: View {
     let paymentService: StatefulPaymentService
 
     var body: some View {
-        List {
-            Section {
-                ReaderButton(label: "Connected", subtitle: "Reader ready for payments", icon: "checkmark.circle.fill", tint: .green) {
-                    let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
-                    paymentService.readerConnectionStatusSubject.send(.connected(reader))
-                }
-                ReaderButton(label: "Connected (Low Battery)", subtitle: "Battery at 15%", icon: "battery.25percent", tint: .orange) {
-                    let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.15)
-                    paymentService.readerConnectionStatusSubject.send(.connected(reader))
-                }
-                ReaderButton(label: "Disconnected", subtitle: "No reader connected", icon: "xmark.circle", tint: .red) {
-                    paymentService.readerConnectionStatusSubject.send(.disconnected)
-                }
-                ReaderButton(label: "Disconnecting", subtitle: "Reader shutting down", icon: "ellipsis.circle", tint: .orange) {
-                    paymentService.readerConnectionStatusSubject.send(.disconnecting)
-                }
-                ReaderButton(label: "Cancelling Connection", subtitle: "Connection attempt cancelled", icon: "stop.circle", tint: .secondary) {
-                    paymentService.readerConnectionStatusSubject.send(.cancellingConnection)
-                }
-            } header: {
-                Text("Connection Status")
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Connection Status")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+
+            ReaderRow(label: "Connected", subtitle: "Ready, 92% battery",
+                      icon: "checkmark.circle.fill", tint: .green) {
+                let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
+                paymentService.readerConnectionStatusSubject.send(.connected(reader))
+            }
+            ReaderRow(label: "Connected (Low Battery)", subtitle: "15% battery",
+                      icon: "battery.25percent", tint: .orange) {
+                let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.15)
+                paymentService.readerConnectionStatusSubject.send(.connected(reader))
+            }
+            ReaderRow(label: "Disconnected", subtitle: "No reader",
+                      icon: "xmark.circle", tint: .red) {
+                paymentService.readerConnectionStatusSubject.send(.disconnected)
+            }
+            ReaderRow(label: "Disconnecting", subtitle: "Shutting down",
+                      icon: "ellipsis.circle", tint: .orange) {
+                paymentService.readerConnectionStatusSubject.send(.disconnecting)
+            }
+            ReaderRow(label: "Cancelling Connection", subtitle: "Aborting",
+                      icon: "stop.circle", tint: .secondary) {
+                paymentService.readerConnectionStatusSubject.send(.cancellingConnection)
             }
         }
-        .navigationTitle("Card Reader")
+        .padding(12)
     }
 }
 
-// MARK: - Error Catalog
+// MARK: - Errors Tab
 
-private struct ErrorCatalogView: View {
+private struct ErrorsTabContent: View {
     let paymentService: StatefulPaymentService
 
     var body: some View {
-        List {
-            Section {
-                ErrorButton(label: "Scanning Failed", subtitle: "Reader not found during scan") {
-                    let error = NSError(domain: "POSPrototype", code: 10,
+        VStack(alignment: .leading, spacing: 12) {
+            Group {
+                Text("Scanning")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+
+                ErrorRow(label: "Scanning Failed") {
+                    let error = NSError(domain: "Mock", code: 10,
                                         userInfo: [NSLocalizedDescriptionKey: "No readers found"])
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .scanningFailed(error: error, endSearch: {})))
                 }
-                ErrorButton(label: "Bluetooth Required", subtitle: "Bluetooth is turned off") {
-                    let error = NSError(domain: "POSPrototype", code: 11,
-                                        userInfo: [NSLocalizedDescriptionKey: "Bluetooth is required"])
+                ErrorRow(label: "Bluetooth Required") {
+                    let error = NSError(domain: "Mock", code: 11,
+                                        userInfo: [NSLocalizedDescriptionKey: "Bluetooth is off"])
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .bluetoothRequired(error: error, endSearch: {})))
                 }
-            } header: {
-                Text("Scanning Errors")
             }
 
-            Section {
-                ErrorButton(label: "Connection Failed (Retryable)", subtitle: "Temporary connection failure") {
-                    let error = NSError(domain: "POSPrototype", code: 20,
-                                        userInfo: [NSLocalizedDescriptionKey: "Connection timed out"])
+            Group {
+                Text("Connection")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+
+                ErrorRow(label: "Connection Failed (Retryable)") {
+                    let error = NSError(domain: "Mock", code: 20,
+                                        userInfo: [NSLocalizedDescriptionKey: "Timed out"])
                     paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .connectingFailed(error: error, retrySearch: {}, endSearch: {})))
+                        .show(eventDetails: .connectingFailed(
+                            error: error, retrySearch: {}, endSearch: {})))
                 }
-                ErrorButton(label: "Connection Failed (Non-Retryable)", subtitle: "Hardware incompatible") {
-                    let error = NSError(domain: "POSPrototype", code: 21,
+                ErrorRow(label: "Connection Failed (Non-Retryable)") {
+                    let error = NSError(domain: "Mock", code: 21,
                                         userInfo: [NSLocalizedDescriptionKey: "Unsupported reader"])
                     paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .connectingFailedNonRetryable(error: error, endSearch: {})))
+                        .show(eventDetails: .connectingFailedNonRetryable(
+                            error: error, endSearch: {})))
                 }
-                ErrorButton(label: "Charge Reader Required", subtitle: "Reader battery too low") {
+                ErrorRow(label: "Charge Reader Required") {
                     paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .connectingFailedChargeReader(retrySearch: {}, endSearch: {})))
+                        .show(eventDetails: .connectingFailedChargeReader(
+                            retrySearch: {}, endSearch: {})))
                 }
-                ErrorButton(label: "Update Postal Code", subtitle: "Store address incomplete") {
-                    paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .connectingFailedUpdatePostalCode(retrySearch: {}, endSearch: {})))
-                }
-            } header: {
-                Text("Connection Errors")
             }
 
-            Section {
-                ErrorButton(label: "Payment Error (Generic)", subtitle: "Card declined or processing error") {
-                    let error = NSError(domain: "POSPrototype", code: 30,
-                                        userInfo: [NSLocalizedDescriptionKey: "Card declined - insufficient funds"])
+            Group {
+                Text("Payment")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+
+                ErrorRow(label: "Card Declined") {
+                    let error = NSError(domain: "Mock", code: 30,
+                                        userInfo: [NSLocalizedDescriptionKey: "Insufficient funds"])
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .paymentError(
                             error: error,
                             retryApproach: .tryAgain(retryAction: {}),
                             cancelPayment: {})))
                 }
-                ErrorButton(label: "Payment Intent Creation Error", subtitle: "Server rejected payment request") {
-                    let error = NSError(domain: "POSPrototype", code: 31,
-                                        userInfo: [NSLocalizedDescriptionKey: "Could not create payment intent"])
+                ErrorRow(label: "Intent Creation Error") {
+                    let error = NSError(domain: "Mock", code: 31,
+                                        userInfo: [NSLocalizedDescriptionKey: "Server rejected"])
                     paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .paymentIntentCreationError(error: error, cancelPayment: {})))
+                        .show(eventDetails: .paymentIntentCreationError(
+                            error: error, cancelPayment: {})))
                 }
-                ErrorButton(label: "Payment Capture Error", subtitle: "Payment captured but confirmation failed") {
+                ErrorRow(label: "Capture Error") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .paymentCaptureError(cancelPayment: {})))
                 }
-                ErrorButton(label: "Cancelled on Reader", subtitle: "Customer cancelled on the reader device") {
+                ErrorRow(label: "Cancelled on Reader") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .cancelledOnReader))
                 }
-            } header: {
-                Text("Payment Errors")
             }
 
-            Section {
-                ErrorButton(label: "Update Failed (Retryable)", subtitle: "Firmware update failed, can retry") {
+            Group {
+                Text("Firmware")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+
+                ErrorRow(label: "Update Failed (Retryable)") {
                     paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .updateFailed(tryAgain: {}, cancelUpdate: {})))
+                        .show(eventDetails: .updateFailed(
+                            tryAgain: {}, cancelUpdate: {})))
                 }
-                ErrorButton(label: "Update Failed (Non-Retryable)", subtitle: "Firmware update permanently failed") {
-                    paymentService.paymentEventSubject.send(
-                        .show(eventDetails: .updateFailedNonRetryable(cancelUpdate: {})))
-                }
-                ErrorButton(label: "Update Failed (Low Battery)", subtitle: "Battery too low for firmware update") {
+                ErrorRow(label: "Update Failed (Low Battery)") {
                     paymentService.paymentEventSubject.send(
                         .show(eventDetails: .updateFailedLowBattery(
                             batteryLevel: 0.05, retrySearch: {}, cancelUpdate: {})))
                 }
-            } header: {
-                Text("Firmware Update Errors")
             }
         }
-        .navigationTitle("Error Catalog")
+        .padding(12)
     }
 }
 
-// MARK: - Reusable Row Components
+// MARK: - Reusable Components
 
-private struct PaymentStepButton: View {
+private struct StepChip: View {
     let label: String
     let icon: String
-    var tint: Color = .blue
     let action: () -> Void
+
+    init(_ label: String, icon: String, action: @escaping () -> Void) {
+        self.label = label
+        self.icon = icon
+        self.action = action
+    }
 
     var body: some View {
         Button(action: action) {
-            Label(label, systemImage: icon)
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 10))
+                Text(label)
+                    .font(.caption2.bold())
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(Color.blue.opacity(0.12))
+            .foregroundStyle(.blue)
+            .clipShape(Capsule())
         }
-        .tint(tint)
     }
 }
 
-private struct ReaderButton: View {
+private struct ReaderRow: View {
     let label: String
     let subtitle: String
     let icon: String
@@ -339,36 +410,89 @@ private struct ReaderButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 10) {
                 Image(systemName: icon)
                     .foregroundStyle(tint)
-                    .frame(width: 24)
-                VStack(alignment: .leading) {
-                    Text(label)
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    .frame(width: 20)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(label).font(.caption.bold())
+                    Text(subtitle).font(.caption2).foregroundStyle(.secondary)
                 }
+                Spacer()
             }
+            .padding(.vertical, 2)
         }
-        .tint(.primary)
+        .buttonStyle(.plain)
     }
 }
 
-private struct ErrorButton: View {
+private struct ErrorRow: View {
     let label: String
-    let subtitle: String
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 2) {
+            HStack {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
                 Text(label)
-                Text(subtitle)
+                    .font(.caption)
+                Spacer()
+                Image(systemName: "play.circle")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            .padding(.vertical, 2)
         }
-        .tint(.primary)
+        .buttonStyle(.plain)
+    }
+}
+
+// MARK: - Flow Layout
+
+private struct FlowLayout: Layout {
+    var spacing: CGFloat = 6
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let result = arrange(proposal: proposal, subviews: subviews)
+        return result.size
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let result = arrange(proposal: proposal, subviews: subviews)
+        for (index, position) in result.positions.enumerated() {
+            subviews[index].place(at: CGPoint(x: bounds.minX + position.x, y: bounds.minY + position.y),
+                                  proposal: .unspecified)
+        }
+    }
+
+    private struct ArrangeResult {
+        var size: CGSize
+        var positions: [CGPoint]
+    }
+
+    private func arrange(proposal: ProposedViewSize, subviews: Subviews) -> ArrangeResult {
+        let maxWidth = proposal.width ?? .infinity
+        var positions: [CGPoint] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        var totalHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(.unspecified)
+            if x + size.width > maxWidth, x > 0 {
+                x = 0
+                y += rowHeight + spacing
+                rowHeight = 0
+            }
+            positions.append(CGPoint(x: x, y: y))
+            rowHeight = max(rowHeight, size.height)
+            x += size.width + spacing
+            totalHeight = max(totalHeight, y + rowHeight)
+        }
+
+        return ArrangeResult(size: CGSize(width: maxWidth, height: totalHeight), positions: positions)
     }
 }

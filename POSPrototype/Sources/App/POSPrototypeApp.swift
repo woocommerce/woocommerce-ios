@@ -3,10 +3,10 @@ import SwiftUI
 @main
 struct POSPrototypeApp: App {
     private let scenarios: [any POSPrototypeScenario] = [
-        SmallCafeScenario(),
-        BusyRetailScenario(),
-        PaymentFailureScenario(),
-        PhoneCheckoutScenario(),
+        SimpleStoreScenario(),
+        LargeCatalogScenario(),
+        NoReaderScenario(),
+        PhoneLayoutScenario(),
     ]
 
     var body: some Scene {

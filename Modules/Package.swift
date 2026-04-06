@@ -379,6 +379,7 @@ enum XcodeTargetNames {
     static let wooCommerceWatchApp = "Woo Watch App"
     static let wordPressAuthenticator = "WordPressAuthenticator"
     static let wordPressAuthenticatorTests = "WordPressAuthenticatorTests"
+    static let posPrototype = "POSPrototype"
 }
 
 enum XcodeSupport {
@@ -394,6 +395,7 @@ enum XcodeSupport {
             XcodeTargetNames.wooCommerceWatchApp,
             XcodeTargetNames.wordPressAuthenticator,
             XcodeTargetNames.wordPressAuthenticatorTests,
+            XcodeTargetNames.posPrototype,
         ].map { .supportingProduct(forXcodeTarget: $0) }
     }
 
@@ -519,6 +521,17 @@ enum XcodeSupport {
                     .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
                     .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
                     XcodeTargetNames.wordPressAuthenticator.asDependency,
+                ]
+            ),
+            .xcodeTarget(
+                XcodeTargetNames.posPrototype,
+                dependencies: [
+                    "Experiments",
+                    "Networking",
+                    "PointOfSale",
+                    "WooFoundation",
+                    "WooFoundationCore",
+                    "Yosemite",
                 ]
             ),
         ]

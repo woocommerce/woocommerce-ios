@@ -820,6 +820,17 @@ private extension StorePickerViewController {
             return
         }
 
+        // For WP.com authenticated users, skip the role check gate.
+        // Role eligibility is verified in the background on relaunch.
+        if case .wpcom = ServiceLocator.stores.sessionManager.defaultCredentials {
+            delegate.didSelectStore(with: site.siteID) { [weak self] in
+                self?.dismiss()
+            }
+            return
+        }
+
+        // For non-WP.com auth (site credentials, application passwords),
+        // keep the hard gate — role verification is critical.
         updateActionButtonAndTableState(animating: true, enabled: false)
 
         viewModel.checkEligibility(for: site.siteID) { [weak self] result in

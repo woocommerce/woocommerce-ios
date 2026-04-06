@@ -697,7 +697,7 @@ struct POSCatalogSyncRemoteTests {
 
         // Then
         #expect(catalog.products.count == 2)
-        #expect(catalog.variations.count == 2)
+        #expect(catalog.variations.count == 3)
 
         let simpleProduct = try #require(catalog.products.first { $0.productType == .simple })
         #expect(simpleProduct.siteID == sampleSiteID)
@@ -732,23 +732,24 @@ struct POSCatalogSyncRemoteTests {
                   options: ["19", "8", "9", "At", "Reiciendis"])
         ])
 
-        let variation = try #require(catalog.variations.first)
-        #expect(variation.siteID == sampleSiteID)
-        #expect(variation.productVariationID == 32)
-        #expect(variation.productID == 31)
-        #expect(variation.sku == "")
-        #expect(variation.globalUniqueID == "")
-        #expect(variation.price == "330.34")
-        #expect(variation.attributes.count == 3)
-        #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
-        #expect(variation.attributes == [
+        let firstVariation = try #require(catalog.variations.first)
+        #expect(firstVariation.variation.siteID == sampleSiteID)
+        #expect(firstVariation.variation.productVariationID == 32)
+        #expect(firstVariation.variation.productID == 31)
+        #expect(firstVariation.variation.sku == "")
+        #expect(firstVariation.variation.globalUniqueID == "")
+        #expect(firstVariation.variation.price == "330.34")
+        #expect(firstVariation.variation.attributes.count == 3)
+        #expect(firstVariation.variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
+        #expect(firstVariation.variation.attributes == [
             .init(id: 1, name: "Size", option: "Earum"),
             .init(id: 0, name: "ab", option: "deserunt"),
             .init(id: 2, name: "Numeric Size", option: "19")
         ])
+        #expect(firstVariation.typeKey == "variation")
     }
 
-    @Test func downloadCatalog_filters_unsupported_product_types() async throws {
+    @Test func downloadCatalog_decodes_subscription_variation_as_variation() async throws {
         // Given
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
@@ -760,12 +761,54 @@ struct POSCatalogSyncRemoteTests {
         // When
         let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
-        // Then: only simple, variable products and variations are included
-        // subscription_variation (id: 99) should be filtered out
+        // Then: subscription_variation (id: 99) is decoded as a variation with its original typeKey
         #expect(catalog.products.count == 2)
-        #expect(catalog.variations.count == 2)
+        #expect(catalog.variations.count == 3)
         #expect(catalog.products.contains { $0.productID == 99 } == false)
-        #expect(catalog.variations.contains { $0.productVariationID == 99 } == false)
+
+        let subscriptionVariation = try #require(catalog.variations.first { $0.variation.productVariationID == 99 })
+        #expect(subscriptionVariation.typeKey == "subscription_variation")
+        #expect(subscriptionVariation.variation.productID == 50)
+        #expect(subscriptionVariation.variation.price == "10")
+    }
+
+    @Test func downloadCatalog_when_item_has_malformed_data_then_skips_item_without_failing() async throws {
+        // Given
+        let remote = createRemote()
+        let downloadURL = "https://example.com/catalog.json"
+
+        let malformedCatalog = """
+        [
+          {
+            "type": "simple",
+            "data": {
+              "id": 1, "sku": "valid", "global_unique_id": "", "name": "Valid Product",
+              "short_description": "", "description": "", "stock_status": "instock",
+              "manage_stock": false, "stock_quantity": null, "price": 10,
+              "images": [], "parent_id": 0, "attributes": [],
+              "downloadable": false, "status": "publish", "type": "simple"
+            }
+          },
+          {
+            "type": "simple",
+            "data": { "id": 2 }
+          },
+          {
+            "type": "variation",
+            "data": { "id": 3 }
+          }
+        ]
+        """
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: malformedCatalog)
+        mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
+
+        // When
+        let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
+
+        // Then: malformed items are skipped, valid item is parsed
+        #expect(catalog.products.count == 1)
+        #expect(catalog.products.first?.productID == 1)
+        #expect(catalog.variations.isEmpty)
     }
 
     @Test func downloadCatalog_handles_empty_catalog() async throws {

@@ -125,7 +125,7 @@ private extension POSCatalogIncrementalSyncService {
         let productsToSync = posProducts + trashedProducts
 
         return POSCatalog(products: productsToSync,
-                          variations: posVariations,
+                          variations: posVariations.map { (variation: $0, typeKey: "variation") },
                           syncDate: syncStartDate)
     }
 }

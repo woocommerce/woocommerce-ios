@@ -268,14 +268,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let items = try mapper.map(response: data)
 
         var products: [POSProduct] = []
-        var variations: [POSProductVariation] = []
+        var variations: [(variation: POSProductVariation, typeKey: String)] = []
 
         for item in items {
             switch item {
             case .product(let product):
                 products.append(product)
-            case .variation(let variation):
-                variations.append(variation)
+            case .variation(let variation, let typeKey):
+                variations.append((variation: variation, typeKey: typeKey))
             case .unsupported:
                 continue
             }
@@ -507,8 +507,8 @@ public enum POSCatalogStatus: String, Decodable {
 /// Decodes the type-tagged wrapper and directly parses the nested data in a single pass.
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
-    case variation(POSProductVariation)
-    /// Items with unsupported types (e.g., `subscription_variation`) are skipped during parsing
+    case variation(POSProductVariation, typeKey: String)
+    /// Items with malformed data that fail to decode are skipped during parsing
     case unsupported
 
     private enum CodingKeys: String, CodingKey {
@@ -520,13 +520,18 @@ public enum POSCatalogItem: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
 
-        switch type {
-        case "simple", "variable":
-            self = .product(try container.decode(POSProduct.self, forKey: .data))
-        case "variation":
-            self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
-        default:
-            self = .unsupported
+        if type.contains("variation") {
+            do {
+                self = .variation(try container.decode(POSProductVariation.self, forKey: .data), typeKey: type)
+            } catch {
+                self = .unsupported
+            }
+        } else {
+            do {
+                self = .product(try container.decode(POSProduct.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
         }
     }
 }
@@ -534,7 +539,7 @@ public enum POSCatalogItem: Decodable {
 /// POS catalog from download.
 public struct POSCatalogResponse {
     public let products: [POSProduct]
-    public let variations: [POSProductVariation]
+    public let variations: [(variation: POSProductVariation, typeKey: String)]
 }
 
 // MARK: - POS Catalog Sync Constants

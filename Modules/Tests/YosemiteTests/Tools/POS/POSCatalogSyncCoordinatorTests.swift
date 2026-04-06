@@ -34,7 +34,7 @@ struct POSCatalogSyncCoordinatorTests {
         // Given
         let expectedCatalog = POSCatalog(
             products: [POSProduct.fake()],
-            variations: [POSProductVariation.fake()],
+            variations: [POSProductVariation.fake()].map { (variation: $0, typeKey: "variation") },
             syncDate: .now
         )
         mockSyncService.startFullSyncResult = .success(expectedCatalog)
@@ -1230,7 +1230,7 @@ extension POSCatalogSyncCoordinatorTests {
         let syncedProducts = [POSProduct.fake(), POSProduct.fake(), POSProduct.fake()]
         let syncedVariations = [POSProductVariation.fake()]
         mockSyncService.startFullSyncResult = .success(
-            POSCatalog(products: syncedProducts, variations: syncedVariations, syncDate: .now)
+            POSCatalog(products: syncedProducts, variations: syncedVariations.map { (variation: $0, typeKey: "variation") }, syncDate: .now)
         )
 
         // When
@@ -1351,7 +1351,7 @@ extension POSCatalogSyncCoordinatorTests {
         let syncedProducts = [POSProduct.fake(), POSProduct.fake()]
         let syncedVariations = [POSProductVariation.fake(), POSProductVariation.fake(), POSProductVariation.fake()]
         mockIncrementalSyncService.startIncrementalSyncResult = .success(
-            POSCatalog(products: syncedProducts, variations: syncedVariations, syncDate: .now)
+            POSCatalog(products: syncedProducts, variations: syncedVariations.map { (variation: $0, typeKey: "variation") }, syncDate: .now)
         )
 
         // When

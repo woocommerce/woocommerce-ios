@@ -272,10 +272,10 @@ private extension POSCatalogPersistenceService {
     /// This can happen when the API returns public variations but their parent products are not public.
     func filterOrphanedVariations(from catalog: POSCatalog) -> POSCatalog {
         let productIDs = catalog.products.map { $0.productID }
-        let variations = catalog.variations.filter { variation in
-            let parentExists = productIDs.contains { $0 == variation.productID }
+        let variations = catalog.variations.filter { entry in
+            let parentExists = productIDs.contains { $0 == entry.variation.productID }
             if !parentExists {
-                DDLogWarn("Variation \(variation.productVariationID) references missing product \(variation.productID) - it will not be available in POS.")
+                DDLogWarn("Variation \(entry.variation.productVariationID) references missing product \(entry.variation.productID) - it will not be available in POS.")
             }
             return parentExists
         }
@@ -293,9 +293,9 @@ private extension POSCatalog {
             product.images.map { PersistedImage.make(from: $0, siteID: product.siteID) }
         }
 
-        let variationImages = variations.compactMap { variation -> PersistedImage? in
-            guard let image = variation.image else { return nil }
-            return PersistedImage.make(from: image, siteID: variation.siteID)
+        let variationImages = variations.compactMap { entry -> PersistedImage? in
+            guard let image = entry.variation.image else { return nil }
+            return PersistedImage.make(from: image, siteID: entry.variation.siteID)
         }
 
         return deduplicateImages(productImages + variationImages)
@@ -331,23 +331,23 @@ private extension POSCatalog {
     }
 
     var variationsToPersist: [PersistedProductVariation] {
-        variations.map { PersistedProductVariation(from: $0) }
+        variations.map { PersistedProductVariation(from: $0.variation, productTypeKey: $0.typeKey) }
     }
 
     // Join table entries for variation-image relationships
     var variationImagesToPersist: [PersistedProductVariationImage] {
-        variations.compactMap { variation in
-            variation.image.map { PersistedProductVariationImage(siteID: variation.siteID,
-                                                                 productVariationID: variation.productVariationID,
-                                                                 imageID: $0.imageID) }
+        variations.compactMap { entry in
+            entry.variation.image.map { PersistedProductVariationImage(siteID: entry.variation.siteID,
+                                                                       productVariationID: entry.variation.productVariationID,
+                                                                       imageID: $0.imageID) }
         }
     }
 
     var variationAttributesToPersist: [PersistedProductVariationAttribute] {
-        variations.flatMap { variation in
-            variation.attributes.map { PersistedProductVariationAttribute(from: $0,
-                                                                          siteID: variation.siteID,
-                                                                          productVariationID: variation.productVariationID) }
+        variations.flatMap { entry in
+            entry.variation.attributes.map { PersistedProductVariationAttribute(from: $0,
+                                                                                siteID: entry.variation.siteID,
+                                                                                productVariationID: entry.variation.productVariationID) }
         }
     }
 }

@@ -31,7 +31,7 @@ public protocol POSCatalogFullSyncServiceProtocol {
 // periphery:ignore
 public struct POSCatalog {
     public let products: [POSProduct]
-    public let variations: [POSProductVariation]
+    public let variations: [(variation: POSProductVariation, typeKey: String)]
     public let syncDate: Date
 
     /// Product IDs to remove from local catalog when these should be hidden when performing an incremental sync.
@@ -41,7 +41,7 @@ public struct POSCatalog {
     public let productsToRemove: [Int64]
 
     public init(products: [POSProduct],
-                variations: [POSProductVariation],
+                variations: [(variation: POSProductVariation, typeKey: String)],
                 syncDate: Date,
                 productsToRemove: [Int64] = []) {
         self.products = products
@@ -168,7 +168,9 @@ private extension POSCatalogFullSyncService {
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
+        return POSCatalog(products: products,
+                          variations: variations.map { (variation: $0, typeKey: "variation") },
+                          syncDate: syncStartDate)
     }
 
     func loadCatalogFromCatalogAPI(for siteID: Int64,

@@ -10,7 +10,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var trashedProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
-    var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
+    var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: [] as [(variation: POSProductVariation, typeKey: String)]))
 
     let loadProductsCallCount = Counter()
     let loadProductVariationsCallCount = Counter()
@@ -194,7 +194,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
-    var parseDownloadedCatalogResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
+    var parseDownloadedCatalogResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: [] as [(variation: POSProductVariation, typeKey: String)]))
     private(set) var parseDownloadedCatalogCallCount = 0
     private(set) var lastParsedFileURL: URL?
     private(set) var lastParsedSiteID: Int64?

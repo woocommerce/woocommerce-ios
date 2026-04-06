@@ -99,7 +99,7 @@ def dependency_failed(component)
 end
 
 def swiftlint(additional_args: [])
-  run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
+  run_package_plugin(cmd: "swiftlint --working-directory .. --quiet --use-alternative-excluding #{additional_args.join(' ')}")
 end
 
 def run_package_plugin(cmd:)

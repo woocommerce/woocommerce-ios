@@ -9,6 +9,15 @@ struct OverrideFeatureFlagsView: View {
     @State private var searchText = ""
     private let defaultFeatureFlagService = DefaultFeatureFlagService()
 
+    /// Whether to fetch and display remote feature flag values.
+    /// When `false`, the remote section is still shown but rows skip the network
+    /// fetch and hide the "Remote: ..." status line. Useful in logged-out context.
+    private let loadsRemoteValues: Bool
+
+    init(loadsRemoteValues: Bool = true) {
+        self.loadsRemoteValues = loadsRemoteValues
+    }
+
     private var filteredFeatureFlags: [FeatureFlag] {
         let allFlags = FeatureFlag.allCases
         guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
@@ -33,7 +42,7 @@ struct OverrideFeatureFlagsView: View {
         List {
             Section("Remote Feature Flags") {
                 ForEach(filteredRemoteFeatureFlags, id: \.self) { flag in
-                    RemoteFeatureFlagRow(featureFlag: flag)
+                    RemoteFeatureFlagRow(featureFlag: flag, loadsRemoteValue: loadsRemoteValues)
                 }
             }
 
@@ -138,10 +147,13 @@ fileprivate struct FeatureFlagRow: View {
 fileprivate struct RemoteFeatureFlagRow: View {
     let featureFlag: RemoteFeatureFlag
     let stores: StoresManager
+    let loadsRemoteValue: Bool
 
     init(featureFlag: RemoteFeatureFlag,
+         loadsRemoteValue: Bool = true,
          stores: StoresManager = ServiceLocator.stores) {
         self.featureFlag = featureFlag
+        self.loadsRemoteValue = loadsRemoteValue
         self.stores = stores
         _overrideValue = State(initialValue: ServiceLocator.remoteFeatureFlagOverrideStore?.overrideValue(for: featureFlag))
     }
@@ -173,7 +185,7 @@ fileprivate struct RemoteFeatureFlagRow: View {
                     Text("Remote: \(remoteValue ? "Enabled" : "Disabled")")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                } else {
+                } else if loadsRemoteValue {
                     Text("Remote: Loading...")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -198,7 +210,9 @@ fileprivate struct RemoteFeatureFlagRow: View {
             )) { EmptyView() }
         }
         .onAppear {
-            fetchRemoteValueIfNeeded()
+            if loadsRemoteValue {
+                fetchRemoteValueIfNeeded()
+            }
         }
     }
 
@@ -215,8 +229,9 @@ fileprivate struct RemoteFeatureFlagRow: View {
     private func resetValue() {
         overrideValue = nil
         ServiceLocator.remoteFeatureFlagOverrideStore?.setOverrideValue(nil, for: featureFlag)
-        // Fetch remote value now that override is cleared
-        fetchRemoteValueIfNeeded()
+        if loadsRemoteValue {
+            fetchRemoteValueIfNeeded()
+        }
     }
 }
 

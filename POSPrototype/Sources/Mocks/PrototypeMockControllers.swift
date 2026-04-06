@@ -33,7 +33,8 @@ struct PrototypePurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStr
     let products: [POSItem]
 
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        try await Task.sleep(for: .milliseconds(50))
+        return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
@@ -59,7 +60,9 @@ struct PrototypeCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactor
 
 struct PrototypeCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        // Small delay to avoid racing the AsyncPaginationTracker
+        try await Task.sleep(for: .milliseconds(50))
+        return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func fetchLocalCoupons() async throws -> [POSItem] {
@@ -85,7 +88,8 @@ struct PrototypeOrderListFetchStrategy: POSOrderListFetchStrategy {
     var showsCachedDataWhileLoading: Bool { false }
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
-        PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        try await Task.sleep(for: .milliseconds(50))
+        return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func loadOrder(orderID: Int64) async throws -> POSOrder {

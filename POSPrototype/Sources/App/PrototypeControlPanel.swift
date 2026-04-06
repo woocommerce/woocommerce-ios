@@ -3,8 +3,6 @@ import Combine
 import PointOfSale
 import enum Yosemite.CardReaderSoftwareUpdateState
 
-/// A collapsible debug overlay for manually driving POS payment states,
-/// reader connection, and other mock behaviors during prototyping.
 struct PrototypeControlPanel: View {
     let paymentService: StatefulPaymentService
     @State private var isExpanded = false
@@ -12,11 +10,43 @@ struct PrototypeControlPanel: View {
     @State private var selectedPaymentEvent: PaymentEventOption = .idle
 
     var body: some View {
-        VStack(spacing: 0) {
-            toggleBar
-            if isExpanded {
-                controlContent
+        if isExpanded {
+            expandedPanel
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+        } else {
+            fab
+                .transition(.scale.combined(with: .opacity))
+        }
+    }
+
+    // MARK: - Floating Action Button
+
+    private var fab: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.25)) {
+                isExpanded = true
             }
+        } label: {
+            Image(systemName: "slider.horizontal.3")
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundStyle(.white)
+                .frame(width: 48, height: 48)
+                .background(Color.blue)
+                .clipShape(Circle())
+                .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
+        }
+        .padding(.trailing, 20)
+        .padding(.bottom, 16)
+        .frame(maxWidth: .infinity, alignment: .trailing)
+    }
+
+    // MARK: - Expanded Panel
+
+    private var expandedPanel: some View {
+        VStack(spacing: 0) {
+            panelHeader
+            controlContent
         }
         .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -25,23 +55,26 @@ struct PrototypeControlPanel: View {
         .padding(.bottom, 8)
     }
 
-    private var toggleBar: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                isExpanded.toggle()
+    private var panelHeader: some View {
+        HStack {
+            Image(systemName: "slider.horizontal.3")
+            Text("Prototype Controls")
+                .font(.subheadline.bold())
+            Spacer()
+            Button {
+                withAnimation(.easeInOut(duration: 0.25)) {
+                    isExpanded = false
+                }
+            } label: {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title3)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.secondary)
             }
-        } label: {
-            HStack {
-                Image(systemName: "slider.horizontal.3")
-                Text("Prototype Controls")
-                    .font(.subheadline.bold())
-                Spacer()
-                Image(systemName: isExpanded ? "chevron.down" : "chevron.up")
-            }
-            .foregroundStyle(.primary)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
         }
+        .foregroundStyle(.primary)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 
     private var controlContent: some View {

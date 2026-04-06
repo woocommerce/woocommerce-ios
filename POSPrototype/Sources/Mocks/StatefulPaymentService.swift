@@ -137,26 +137,29 @@ final class StatefulPaymentService: CardPresentPaymentFacade {
     }
 
     private func runSuccessSequence(totalDelay: TimeInterval) async throws -> CardPresentPaymentResult {
-        let stepDelay = UInt64(totalDelay / 6.0 * 1_000_000_000)
-
+        // Realistic per-step delays (not equally divided)
         paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
-        try await Task.sleep(nanoseconds: stepDelay)
+        try await Task.sleep(for: .seconds(1.0))
+
         paymentEventSubject.send(.show(eventDetails: .preparingForPayment(cancelPayment: {})))
-        try await Task.sleep(nanoseconds: stepDelay)
+        try await Task.sleep(for: .seconds(1.5))
+
         paymentEventSubject.send(.show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [], cancelPayment: {})))
-        try await Task.sleep(nanoseconds: stepDelay)
+        try await Task.sleep(for: .seconds(totalDelay))
+
         paymentEventSubject.send(.show(eventDetails: .cardInserted(cancelPayment: {})))
-        try await Task.sleep(nanoseconds: stepDelay)
+        try await Task.sleep(for: .seconds(1.0))
+
         paymentEventSubject.send(.show(eventDetails: .processing))
-        try await Task.sleep(nanoseconds: stepDelay)
+        try await Task.sleep(for: .seconds(2.0))
+
         paymentEventSubject.send(.show(eventDetails: .paymentSuccess(done: {})))
-        try await Task.sleep(nanoseconds: stepDelay)
-        paymentEventSubject.send(.idle)
+        // Don't send .idle - let the POS views handle the success state transition
         return .success(CardPresentPaymentTransaction())
     }
 
     private func runFailSequence(failAtStep: PaymentStep, message: String) async throws -> CardPresentPaymentResult {
-        let stepDelay: UInt64 = 400_000_000
+        let stepDelay: UInt64 = 1_000_000_000
         let steps: [PaymentStep] = PaymentStep.allCases
 
         for step in steps {
@@ -174,7 +177,7 @@ final class StatefulPaymentService: CardPresentPaymentFacade {
     }
 
     private func runDisconnectSequence(disconnectAtStep: PaymentStep) async throws -> CardPresentPaymentResult {
-        let stepDelay: UInt64 = 400_000_000
+        let stepDelay: UInt64 = 1_000_000_000
         let steps: [PaymentStep] = PaymentStep.allCases
 
         for step in steps {

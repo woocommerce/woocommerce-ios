@@ -761,6 +761,24 @@ extension Networking.Media {
         )
     }
 }
+extension Networking.OrderFulfillment {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderFulfillment {
+        .init(
+            siteID: .fake(),
+            orderID: .fake(),
+            fulfillmentID: .fake(),
+            status: .fake(),
+            isFulfilled: .fake(),
+            dateUpdated: .fake(),
+            dateFulfilled: .fake(),
+            trackingNumber: .fake(),
+            shipmentProvider: .fake(),
+            trackingURL: .fake()
+        )
+    }
+}
 extension Networking.POSProduct {
     /// Returns a "ready to use" type filled with fake values.
     ///

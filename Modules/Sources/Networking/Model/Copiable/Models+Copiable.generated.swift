@@ -1304,6 +1304,45 @@ extension Networking.NotificationSettings.Device {
     }
 }
 
+extension Networking.OrderFulfillment {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        fulfillmentID: CopiableProp<Int64> = .copy,
+        status: NullableCopiableProp<String> = .copy,
+        isFulfilled: CopiableProp<Bool> = .copy,
+        dateUpdated: NullableCopiableProp<Date> = .copy,
+        dateFulfilled: NullableCopiableProp<Date> = .copy,
+        trackingNumber: NullableCopiableProp<String> = .copy,
+        shipmentProvider: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy
+    ) -> Networking.OrderFulfillment {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let fulfillmentID = fulfillmentID ?? self.fulfillmentID
+        let status = status ?? self.status
+        let isFulfilled = isFulfilled ?? self.isFulfilled
+        let dateUpdated = dateUpdated ?? self.dateUpdated
+        let dateFulfilled = dateFulfilled ?? self.dateFulfilled
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let shipmentProvider = shipmentProvider ?? self.shipmentProvider
+        let trackingURL = trackingURL ?? self.trackingURL
+
+        return Networking.OrderFulfillment(
+            siteID: siteID,
+            orderID: orderID,
+            fulfillmentID: fulfillmentID,
+            status: status,
+            isFulfilled: isFulfilled,
+            dateUpdated: dateUpdated,
+            dateFulfilled: dateFulfilled,
+            trackingNumber: trackingNumber,
+            shipmentProvider: shipmentProvider,
+            trackingURL: trackingURL
+        )
+    }
+}
+
 extension Networking.POSProduct {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

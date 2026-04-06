@@ -31,33 +31,27 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     private let productsRemote: ProductsRemoteProtocol
     private let siteID: Int64
     private let itemResolver: POSProductOrVariationResolver
-    private let posProductsOnly: Bool
 
     init (siteID: Int64,
           productsRemote: ProductsRemoteProtocol,
-          currencySettings: CurrencySettings,
-          posProductsOnly: Bool = false) {
+          currencySettings: CurrencySettings) {
         self.siteID = siteID
         self.productsRemote = productsRemote
-        self.posProductsOnly = posProductsOnly
         self.itemResolver = POSProductOrVariationResolver(productsRemote: productsRemote,
-                                                          currencySettings: currencySettings,
-                                                          posProductsOnly: posProductsOnly)
+                                                          currencySettings: currencySettings)
     }
 
     public convenience init(siteID: Int64,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,
-                            currencySettings: CurrencySettings,
-                            posProductsOnly: Bool = false) {
+                            currencySettings: CurrencySettings) {
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   productsRemote: ProductsRemote(network: network),
-                  currencySettings: currencySettings,
-                  posProductsOnly: posProductsOnly)
+                  currencySettings: currencySettings)
     }
 
     /// Looks up a POSItem using a barcode scan string
@@ -75,8 +69,7 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     private func loadPOSProduct(barcode: String) async throws(PointOfSaleBarcodeScanError) -> POSProduct {
         do {
             return try await productsRemote.loadPOSProductByGlobalUniqueIdentifier(for: siteID,
-                                                                                   globalUniqueID: barcode,
-                                                                                   posProductsOnly: posProductsOnly)
+                                                                                   globalUniqueID: barcode)
         } catch NetworkError.notFound {
             throw .notFound(scannedCode: barcode)
         } catch {

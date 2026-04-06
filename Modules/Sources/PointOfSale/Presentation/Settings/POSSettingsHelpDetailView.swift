@@ -13,43 +13,41 @@ struct POSSettingsHelpDetailView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: POSSpacing.none) {
-                POSPageHeaderView(title: Localization.helpTitle)
-                    .foregroundColor(.posSurface)
-                    .accessibilityAddTraits(.isHeader)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(title: Localization.helpTitle)
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
 
-                ScrollView {
-                    VStack(spacing: POSSpacing.small) {
-                        POSSettingsCard(
-                            title: Localization.productRestrictionsInfo,
-                            subtitle: Localization.productRestrictionsInfoSubtitle,
-                            action: {
-                                showProductRestrictions = true
-                            }
-                        )
+            ScrollView {
+                VStack(spacing: POSSpacing.small) {
+                    POSSettingsCard(
+                        title: Localization.productRestrictionsInfo,
+                        subtitle: Localization.productRestrictionsInfoSubtitle,
+                        action: {
+                            showProductRestrictions = true
+                        }
+                    )
 
-                        POSSettingsCard(
-                            title: Localization.documentationTitle,
-                            subtitle: Localization.documentationSubtitle,
-                            action: {
-                                showDocumentation = true
-                            }
-                        )
+                    POSSettingsCard(
+                        title: Localization.documentationTitle,
+                        subtitle: Localization.documentationSubtitle,
+                        action: {
+                            showDocumentation = true
+                        }
+                    )
 
-                        POSSettingsCard(
-                            title: Localization.getSupportTitle,
-                            subtitle: Localization.getSupportSubtitle,
-                            action: {
-                                showSupport = true
-                            }
-                        )
-                    }
-                    .padding(.horizontal, POSPadding.medium)
+                    POSSettingsCard(
+                        title: Localization.getSupportTitle,
+                        subtitle: Localization.getSupportSubtitle,
+                        action: {
+                            showSupport = true
+                        }
+                    )
                 }
+                .padding(.horizontal, POSPadding.medium)
             }
-            .background(backgroundColor)
         }
+        .background(backgroundColor)
         .posModal(isPresented: $showProductRestrictions) {
             // TODO: Remove copy on POSFloatingControlView.documentationView
             // WOOMOB-1168

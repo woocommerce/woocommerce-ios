@@ -94,7 +94,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let sitesResultsController: ResultsController<StorageSite>
 
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
-    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    /// e.g. WooPayments, but eventually other in-person payment accounts too
     ///
     private let paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>?
 
@@ -104,6 +104,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -116,13 +117,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
+        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -231,6 +234,11 @@ private extension SettingsViewModel {
             // Show the plugins section only if the user has an `admin` role for the default store site.
             //
             guard stores.sessionManager.defaultRoles.contains(.administrator) else {
+                return nil
+            }
+
+            // Hide plugins section for CIAB sites
+            guard !ciabEligibilityChecker.isCurrentSiteCIAB else {
                 return nil
             }
 

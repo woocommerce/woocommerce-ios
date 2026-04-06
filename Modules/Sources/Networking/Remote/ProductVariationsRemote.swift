@@ -14,8 +14,7 @@ public protocol ProductVariationsRemoteProtocol {
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
-                                      pageNumber: Int,
-                                      posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation>
+                                      pageNumber: Int) async throws -> PagedItems<POSProductVariation>
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
                                 productID: Int64,
@@ -80,8 +79,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     /// - Returns: Variations for the provided parent product.
     public func loadVariationsForPointOfSale(for siteID: Int64,
                                              parentProductID: Int64,
-                                             pageNumber: Int = Default.pageNumber,
-                                             posProductsOnly: Bool = false) async throws -> PagedItems<POSProductVariation> {
+                                             pageNumber: Int = Default.pageNumber) async throws -> PagedItems<POSProductVariation> {
         let request = productVariationsRequest(for: siteID,
                                                productID: parentProductID,
                                                variationIDs: [],
@@ -93,7 +91,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                context: nil,
                                                pageNumber: pageNumber,
                                                pageSize: POSConstants.variationsPerPage,
-                                               posProductsOnly: posProductsOnly)
+                                               posProductsOnly: true)
         // N.B. POS is only available for WC 9.6 and later.
         // `parent_id` was added in WC 8.3, so we don't need to pass the parent product ID to the decoder.
         // https://github.com/woocommerce/woocommerce/pull/40606

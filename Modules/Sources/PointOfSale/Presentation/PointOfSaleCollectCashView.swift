@@ -5,7 +5,9 @@ import WooFoundation
 struct PointOfSaleCollectCashView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize
+    @Environment(\.posNavigationRouter) private var router
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(\.keyboardObserver) private var keyboardObserver
     @FocusState private var isTextFieldFocused: Bool
 
     private let viewHelper: CollectCashViewHelper
@@ -20,11 +22,16 @@ struct PointOfSaleCollectCashView: View {
     private let orderTotal: String
 
     @State private var buttonFrame: CGRect = .zero
-    @State private var keyboardFrame: CGRect = .zero
     @State private var shouldMinimizePadding: Bool = false
 
     private var formattedOrderTotal: String {
         String.localizedStringWithFormat(Localization.backNavigationSubtitle, orderTotal)
+    }
+
+    private var bottomPadding: CGFloat {
+        keyboardObserver.isKeyboardVisible
+            ? Constants.bottomPadding
+            : floatingControlAreaSize.height + Constants.bottomPadding
     }
 
     private var isButtonEnabled: Bool {
@@ -41,6 +48,21 @@ struct PointOfSaleCollectCashView: View {
     }
 
     var body: some View {
+        collectCashContent
+            .onChange(of: paymentModel.paymentState.cash) { _, newValue in
+                switch newValue {
+                case .paymentSuccess:
+                    router.popToRoot()
+                case .idle:
+                    // Card event forced exit from cash (e.g. card tapped during cash flow).
+                    router.popToRoot()
+                case .collectingCash:
+                    break
+                }
+            }
+    }
+
+    private var collectCashContent: some View {
         GeometryReader { geometry in
             ScrollView {
                 VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
@@ -51,6 +73,7 @@ struct PointOfSaleCollectCashView: View {
                         isTextFieldFocused = false
                         Task { @MainActor in
                             await paymentModel.cancelCashPayment()
+                            router.popToRoot()
                         }
                     }))
 
@@ -102,9 +125,7 @@ struct PointOfSaleCollectCashView: View {
                         .disabled(!isButtonEnabled)
                     }
                     .padding([.horizontal])
-                    .padding(.bottom, max(keyboardFrame.height - geometry.safeAreaInsets.bottom,
-                                          floatingControlAreaSize.height) + Constants.bottomPadding
-                    )
+                    .padding(.bottom, bottomPadding)
                 }
                 .frame(minHeight: geometry.size.height)
                 .animation(.easeInOut, value: errorMessage)
@@ -114,13 +135,13 @@ struct PointOfSaleCollectCashView: View {
                     updateChangeDueMessage()
                 }
                 .onReceive(Publishers.keyboardFrame) {
-                    keyboardFrame = $0
                     shouldMinimizePadding = $0.intersects(buttonFrame)
                 }
                 .animation(.default, value: shouldMinimizePadding)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea([])
     }
 
     private func markComplete() async throws {

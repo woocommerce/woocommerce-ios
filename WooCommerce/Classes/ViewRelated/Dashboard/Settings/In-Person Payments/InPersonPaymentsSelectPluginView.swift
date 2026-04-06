@@ -63,7 +63,7 @@ struct InPersonPaymentsSelectPluginView: View {
                         .bodyStyle()
 
                     VStack(alignment: .leading, spacing: 16) {
-                        InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: "WooCommerce Payments", selected: selectedPlugin == .wcPay)
+                        InPersonPaymentsSelectPluginRow(icon: .wcpayIcon, name: CardPresentPaymentsPlugin.wcPay.pluginName, selected: selectedPlugin == .wcPay)
                             .onTapGesture {
                                 selectedPlugin = .wcPay
                             }

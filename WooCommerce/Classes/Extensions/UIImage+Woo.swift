@@ -893,7 +893,7 @@ extension UIImage {
         return UIImage(named: "stripe-payments-plugin")!
     }
 
-    /// WooCommerce Payments plugin
+    /// WooPayments plugin
     ///
     static var wcPayPlugin: UIImage {
         return UIImage(named: "woo-payments-plugin")!

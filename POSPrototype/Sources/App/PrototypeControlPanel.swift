@@ -1,31 +1,16 @@
 import SwiftUI
 import Combine
 import PointOfSale
-import enum Yosemite.CardReaderSoftwareUpdateState
+
+// MARK: - FAB Entry Point
 
 struct PrototypeControlPanel: View {
     let paymentService: StatefulPaymentService
-    @State private var isExpanded = false
-    @State private var selectedReaderStatus: ReaderStatusOption = .connected
-    @State private var selectedPaymentEvent: PaymentEventOption = .idle
+    @State private var showSheet = false
 
     var body: some View {
-        if isExpanded {
-            expandedPanel
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-        } else {
-            fab
-                .transition(.scale.combined(with: .opacity))
-        }
-    }
-
-    // MARK: - Floating Action Button
-
-    private var fab: some View {
         Button {
-            withAnimation(.easeInOut(duration: 0.25)) {
-                isExpanded = true
-            }
+            showSheet = true
         } label: {
             Image(systemName: "slider.horizontal.3")
                 .font(.title3)
@@ -39,257 +24,351 @@ struct PrototypeControlPanel: View {
         .padding(.trailing, 20)
         .padding(.bottom, 16)
         .frame(maxWidth: .infinity, alignment: .trailing)
-    }
-
-    // MARK: - Expanded Panel
-
-    private var expandedPanel: some View {
-        VStack(spacing: 0) {
-            panelHeader
-            controlContent
+        .sheet(isPresented: $showSheet) {
+            ControlStationView(paymentService: paymentService)
         }
-        .background(.ultraThinMaterial)
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(radius: 8)
-        .padding(.horizontal, 16)
-        .padding(.bottom, 8)
     }
+}
 
-    private var panelHeader: some View {
-        HStack {
-            Image(systemName: "slider.horizontal.3")
-            Text("Prototype Controls")
-                .font(.subheadline.bold())
-            Spacer()
-            Button {
-                withAnimation(.easeInOut(duration: 0.25)) {
-                    isExpanded = false
-                }
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title3)
-                    .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .foregroundStyle(.primary)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-    }
+// MARK: - Control Station Sheet
 
-    private var controlContent: some View {
-        VStack(spacing: 16) {
-            Divider()
+private struct ControlStationView: View {
+    let paymentService: StatefulPaymentService
+    @Environment(\.dismiss) private var dismiss
 
-            // Reader Connection Status
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Card Reader")
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
-
-                HStack(spacing: 8) {
-                    ForEach(ReaderStatusOption.allCases) { option in
-                        Button {
-                            selectedReaderStatus = option
-                            applyReaderStatus(option)
-                        } label: {
-                            Text(option.label)
-                                .font(.caption)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(selectedReaderStatus == option
-                                            ? Color.blue : Color.secondary.opacity(0.15))
-                                .foregroundStyle(selectedReaderStatus == option
-                                                 ? .white : .primary)
-                                .clipShape(Capsule())
-                        }
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    NavigationLink {
+                        PaymentControlView(paymentService: paymentService)
+                    } label: {
+                        Label("Payment Flow", systemImage: "creditcard")
                     }
+
+                    NavigationLink {
+                        ReaderControlView(paymentService: paymentService)
+                    } label: {
+                        Label("Card Reader", systemImage: "wave.3.right")
+                    }
+
+                    NavigationLink {
+                        ErrorCatalogView(paymentService: paymentService)
+                    } label: {
+                        Label("Error Catalog", systemImage: "exclamationmark.triangle")
+                    }
+                } header: {
+                    Text("Controls")
+                }
+
+                Section {
+                    Button("Run Full Payment (slow)") {
+                        paymentService.controlMode = .automatic
+                        dismiss()
+                    }
+
+                    Button("Disconnect Reader") {
+                        paymentService.readerConnectionStatusSubject.send(.disconnected)
+                    }
+                    .foregroundStyle(.orange)
+
+                    Button("Reset to Idle") {
+                        paymentService.paymentEventSubject.send(.idle)
+                        let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
+                        paymentService.readerConnectionStatusSubject.send(.connected(reader))
+                    }
+                } header: {
+                    Text("Quick Actions")
                 }
             }
-
-            // Payment State
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Payment Event")
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
-
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 6) {
-                        ForEach(PaymentEventOption.allCases) { option in
-                            Button {
-                                selectedPaymentEvent = option
-                                applyPaymentEvent(option)
-                            } label: {
-                                Text(option.label)
-                                    .font(.caption)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 6)
-                                    .background(selectedPaymentEvent == option
-                                                ? Color.blue : Color.secondary.opacity(0.15))
-                                    .foregroundStyle(selectedPaymentEvent == option
-                                                     ? .white : .primary)
-                                    .clipShape(Capsule())
-                            }
-                        }
-                    }
+            .navigationTitle("Control Station")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
                 }
-            }
-
-            // Quick Actions
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Sequences")
-                    .font(.caption.bold())
-                    .foregroundStyle(.secondary)
-
-                HStack(spacing: 8) {
-                    Button("Run Payment (slow)") {
-                        Task { await runSlowPaymentSequence() }
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-
-                    Button("Fail Payment") {
-                        Task { await runFailSequence() }
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                    .tint(.red)
-
-                    Button("Disconnect") {
-                        applyReaderStatus(.disconnected)
-                        selectedReaderStatus = .disconnected
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
-                    .tint(.orange)
-                }
-            }
-
-            Spacer().frame(height: 4)
-        }
-        .padding(.horizontal, 16)
-    }
-
-    // MARK: - Actions
-
-    private func applyReaderStatus(_ option: ReaderStatusOption) {
-        switch option {
-        case .disconnected:
-            paymentService.readerConnectionStatusSubject.send(.disconnected)
-        case .connected:
-            let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
-            paymentService.readerConnectionStatusSubject.send(.connected(reader))
-        case .disconnecting:
-            paymentService.readerConnectionStatusSubject.send(.disconnecting)
-        }
-    }
-
-    private func applyPaymentEvent(_ option: PaymentEventOption) {
-        let event: CardPresentPaymentEvent
-        switch option {
-        case .idle:
-            event = .idle
-        case .validatingOrder:
-            event = .show(eventDetails: .validatingOrder(cancelPayment: {}))
-        case .preparing:
-            event = .show(eventDetails: .preparingForPayment(cancelPayment: {}))
-        case .tapSwipeInsert:
-            event = .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [], cancelPayment: {}))
-        case .cardInserted:
-            event = .show(eventDetails: .cardInserted(cancelPayment: {}))
-        case .processing:
-            event = .show(eventDetails: .processing)
-        case .success:
-            event = .show(eventDetails: .paymentSuccess(done: {}))
-        case .error:
-            let error = NSError(domain: "POSPrototype", code: 99,
-                                userInfo: [NSLocalizedDescriptionKey: "Simulated payment error"])
-            event = .show(eventDetails: .paymentError(
-                error: error,
-                retryApproach: .tryAgain(retryAction: {}),
-                cancelPayment: {}
-            ))
-        }
-        paymentService.paymentEventSubject.send(event)
-    }
-
-    private func runSlowPaymentSequence() async {
-        let steps: [(PaymentEventOption, UInt64)] = [
-            (.validatingOrder, 1_500_000_000),
-            (.preparing, 1_500_000_000),
-            (.tapSwipeInsert, 3_000_000_000),
-            (.cardInserted, 1_500_000_000),
-            (.processing, 2_000_000_000),
-            (.success, 0),
-        ]
-
-        for (step, delay) in steps {
-            selectedPaymentEvent = step
-            applyPaymentEvent(step)
-            if delay > 0 {
-                try? await Task.sleep(nanoseconds: delay)
-            }
-        }
-    }
-
-    private func runFailSequence() async {
-        let steps: [(PaymentEventOption, UInt64)] = [
-            (.validatingOrder, 1_000_000_000),
-            (.preparing, 1_500_000_000),
-            (.tapSwipeInsert, 2_000_000_000),
-            (.error, 0),
-        ]
-
-        for (step, delay) in steps {
-            selectedPaymentEvent = step
-            applyPaymentEvent(step)
-            if delay > 0 {
-                try? await Task.sleep(nanoseconds: delay)
             }
         }
     }
 }
 
-// MARK: - Options
+// MARK: - Payment Control
 
-enum ReaderStatusOption: String, CaseIterable, Identifiable {
-    case disconnected
-    case connected
-    case disconnecting
+private struct PaymentControlView: View {
+    let paymentService: StatefulPaymentService
+    @State private var isManual: Bool = true
 
-    var id: String { rawValue }
+    var body: some View {
+        List {
+            Section {
+                Toggle("Manual Control", isOn: $isManual)
+                    .onChange(of: isManual) { _, newValue in
+                        paymentService.controlMode = newValue ? .manual : .automatic
+                    }
 
-    var label: String {
-        switch self {
-        case .disconnected: "Disconnected"
-        case .connected: "Connected"
-        case .disconnecting: "Disconnecting"
+                if !isManual {
+                    Text("Payment will auto-progress when checkout is tapped.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Use the steps below to drive each payment state. Checkout will wait for you.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("Mode")
+            }
+
+            Section {
+                PaymentStepButton(label: "Validating Order", icon: "doc.text.magnifyingglass") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .validatingOrder(cancelPayment: {})))
+                }
+                PaymentStepButton(label: "Preparing Reader", icon: "antenna.radiowaves.left.and.right") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .preparingForPayment(cancelPayment: {})))
+                }
+                PaymentStepButton(label: "Tap / Swipe / Insert", icon: "creditcard.and.123") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .tapSwipeOrInsertCard(inputMethods: [], cancelPayment: {})))
+                }
+                PaymentStepButton(label: "Card Inserted", icon: "rectangle.and.arrow.up.right.and.arrow.down.left") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .cardInserted(cancelPayment: {})))
+                }
+                PaymentStepButton(label: "Processing", icon: "arrow.triangle.2.circlepath") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .processing))
+                }
+            } header: {
+                Text("Payment Steps")
+            }
+
+            Section {
+                PaymentStepButton(label: "Payment Success", icon: "checkmark.circle.fill", tint: .green) {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .paymentSuccess(done: {})))
+                    paymentService.resolveManualPayment()
+                }
+                PaymentStepButton(label: "Payment Failed", icon: "xmark.circle.fill", tint: .red) {
+                    let error = NSError(domain: "POSPrototype", code: 99,
+                                        userInfo: [NSLocalizedDescriptionKey: "Simulated payment failure"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .paymentError(
+                            error: error,
+                            retryApproach: .tryAgain(retryAction: {}),
+                            cancelPayment: {})))
+                    paymentService.failManualPayment(message: "Simulated payment failure")
+                }
+                PaymentStepButton(label: "Cancel Payment", icon: "stop.circle", tint: .orange) {
+                    paymentService.cancelPayment()
+                }
+            } header: {
+                Text("Resolve Payment")
+            }
+
+            Section {
+                PaymentStepButton(label: "Idle", icon: "moon") {
+                    paymentService.paymentEventSubject.send(.idle)
+                }
+            } header: {
+                Text("Reset")
+            }
+        }
+        .navigationTitle("Payment Flow")
+        .onAppear {
+            isManual = paymentService.controlMode == .manual
         }
     }
 }
 
-enum PaymentEventOption: String, CaseIterable, Identifiable {
-    case idle
-    case validatingOrder
-    case preparing
-    case tapSwipeInsert
-    case cardInserted
-    case processing
-    case success
-    case error
+// MARK: - Reader Control
 
-    var id: String { rawValue }
+private struct ReaderControlView: View {
+    let paymentService: StatefulPaymentService
 
-    var label: String {
-        switch self {
-        case .idle: "Idle"
-        case .validatingOrder: "Validating"
-        case .preparing: "Preparing"
-        case .tapSwipeInsert: "Tap/Swipe"
-        case .cardInserted: "Inserted"
-        case .processing: "Processing"
-        case .success: "Success"
-        case .error: "Error"
+    var body: some View {
+        List {
+            Section {
+                ReaderButton(label: "Connected", subtitle: "Reader ready for payments", icon: "checkmark.circle.fill", tint: .green) {
+                    let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
+                    paymentService.readerConnectionStatusSubject.send(.connected(reader))
+                }
+                ReaderButton(label: "Connected (Low Battery)", subtitle: "Battery at 15%", icon: "battery.25percent", tint: .orange) {
+                    let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.15)
+                    paymentService.readerConnectionStatusSubject.send(.connected(reader))
+                }
+                ReaderButton(label: "Disconnected", subtitle: "No reader connected", icon: "xmark.circle", tint: .red) {
+                    paymentService.readerConnectionStatusSubject.send(.disconnected)
+                }
+                ReaderButton(label: "Disconnecting", subtitle: "Reader shutting down", icon: "ellipsis.circle", tint: .orange) {
+                    paymentService.readerConnectionStatusSubject.send(.disconnecting)
+                }
+                ReaderButton(label: "Cancelling Connection", subtitle: "Connection attempt cancelled", icon: "stop.circle", tint: .secondary) {
+                    paymentService.readerConnectionStatusSubject.send(.cancellingConnection)
+                }
+            } header: {
+                Text("Connection Status")
+            }
         }
+        .navigationTitle("Card Reader")
+    }
+}
+
+// MARK: - Error Catalog
+
+private struct ErrorCatalogView: View {
+    let paymentService: StatefulPaymentService
+
+    var body: some View {
+        List {
+            Section {
+                ErrorButton(label: "Scanning Failed", subtitle: "Reader not found during scan") {
+                    let error = NSError(domain: "POSPrototype", code: 10,
+                                        userInfo: [NSLocalizedDescriptionKey: "No readers found"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .scanningFailed(error: error, endSearch: {})))
+                }
+                ErrorButton(label: "Bluetooth Required", subtitle: "Bluetooth is turned off") {
+                    let error = NSError(domain: "POSPrototype", code: 11,
+                                        userInfo: [NSLocalizedDescriptionKey: "Bluetooth is required"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .bluetoothRequired(error: error, endSearch: {})))
+                }
+            } header: {
+                Text("Scanning Errors")
+            }
+
+            Section {
+                ErrorButton(label: "Connection Failed (Retryable)", subtitle: "Temporary connection failure") {
+                    let error = NSError(domain: "POSPrototype", code: 20,
+                                        userInfo: [NSLocalizedDescriptionKey: "Connection timed out"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .connectingFailed(error: error, retrySearch: {}, endSearch: {})))
+                }
+                ErrorButton(label: "Connection Failed (Non-Retryable)", subtitle: "Hardware incompatible") {
+                    let error = NSError(domain: "POSPrototype", code: 21,
+                                        userInfo: [NSLocalizedDescriptionKey: "Unsupported reader"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .connectingFailedNonRetryable(error: error, endSearch: {})))
+                }
+                ErrorButton(label: "Charge Reader Required", subtitle: "Reader battery too low") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .connectingFailedChargeReader(retrySearch: {}, endSearch: {})))
+                }
+                ErrorButton(label: "Update Postal Code", subtitle: "Store address incomplete") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .connectingFailedUpdatePostalCode(retrySearch: {}, endSearch: {})))
+                }
+            } header: {
+                Text("Connection Errors")
+            }
+
+            Section {
+                ErrorButton(label: "Payment Error (Generic)", subtitle: "Card declined or processing error") {
+                    let error = NSError(domain: "POSPrototype", code: 30,
+                                        userInfo: [NSLocalizedDescriptionKey: "Card declined - insufficient funds"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .paymentError(
+                            error: error,
+                            retryApproach: .tryAgain(retryAction: {}),
+                            cancelPayment: {})))
+                }
+                ErrorButton(label: "Payment Intent Creation Error", subtitle: "Server rejected payment request") {
+                    let error = NSError(domain: "POSPrototype", code: 31,
+                                        userInfo: [NSLocalizedDescriptionKey: "Could not create payment intent"])
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .paymentIntentCreationError(error: error, cancelPayment: {})))
+                }
+                ErrorButton(label: "Payment Capture Error", subtitle: "Payment captured but confirmation failed") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .paymentCaptureError(cancelPayment: {})))
+                }
+                ErrorButton(label: "Cancelled on Reader", subtitle: "Customer cancelled on the reader device") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .cancelledOnReader))
+                }
+            } header: {
+                Text("Payment Errors")
+            }
+
+            Section {
+                ErrorButton(label: "Update Failed (Retryable)", subtitle: "Firmware update failed, can retry") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .updateFailed(tryAgain: {}, cancelUpdate: {})))
+                }
+                ErrorButton(label: "Update Failed (Non-Retryable)", subtitle: "Firmware update permanently failed") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .updateFailedNonRetryable(cancelUpdate: {})))
+                }
+                ErrorButton(label: "Update Failed (Low Battery)", subtitle: "Battery too low for firmware update") {
+                    paymentService.paymentEventSubject.send(
+                        .show(eventDetails: .updateFailedLowBattery(
+                            batteryLevel: 0.05, retrySearch: {}, cancelUpdate: {})))
+                }
+            } header: {
+                Text("Firmware Update Errors")
+            }
+        }
+        .navigationTitle("Error Catalog")
+    }
+}
+
+// MARK: - Reusable Row Components
+
+private struct PaymentStepButton: View {
+    let label: String
+    let icon: String
+    var tint: Color = .blue
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(label, systemImage: icon)
+        }
+        .tint(tint)
+    }
+}
+
+private struct ReaderButton: View {
+    let label: String
+    let subtitle: String
+    let icon: String
+    let tint: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundStyle(tint)
+                    .frame(width: 24)
+                VStack(alignment: .leading) {
+                    Text(label)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .tint(.primary)
+    }
+}
+
+private struct ErrorButton: View {
+    let label: String
+    let subtitle: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label)
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .tint(.primary)
     }
 }

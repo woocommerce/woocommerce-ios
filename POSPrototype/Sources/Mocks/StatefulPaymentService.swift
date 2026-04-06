@@ -6,12 +6,23 @@ import enum Yosemite.PaymentChannel
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.CardReaderInput
 
+enum PaymentControlMode {
+    case automatic
+    case manual
+}
+
 final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
     let configuration: MockConfiguration
 
     let paymentEventSubject = CurrentValueSubject<CardPresentPaymentEvent, Never>(.idle)
     let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
     private let cardReaderUpdateStateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
+
+    /// When manual, collectPayment waits for the control panel to resolve the payment.
+    var controlMode: PaymentControlMode = .manual
+
+    /// Continuation for manual mode - control panel calls this to complete payment.
+    private var manualPaymentContinuation: CheckedContinuation<CardPresentPaymentResult, Error>?
 
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {
         paymentEventSubject.eraseToAnyPublisher()
@@ -54,13 +65,67 @@ final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
         paymentEventSubject.send(.idle)
     }
 
-    func updateCardReaderSoftware() async throws {
-        // no-op for prototype
-    }
+    func updateCardReaderSoftware() async throws {}
 
     func collectPayment(for order: Order,
                         using connectionMethod: CardReaderConnectionMethod,
                         channel: PaymentChannel) async throws -> CardPresentPaymentResult {
+        switch controlMode {
+        case .automatic:
+            return try await runAutomaticPayment()
+        case .manual:
+            return try await runManualPayment()
+        }
+    }
+
+    func cancelPayment() {
+        if let continuation = manualPaymentContinuation {
+            continuation.resume(returning: .cancellation)
+            manualPaymentContinuation = nil
+        }
+        paymentEventSubject.send(.idle)
+    }
+
+    func cancelPayment() async throws {
+        if let continuation = manualPaymentContinuation {
+            continuation.resume(returning: .cancellation)
+            manualPaymentContinuation = nil
+        }
+        paymentEventSubject.send(.idle)
+    }
+
+    // MARK: - Manual mode
+
+    /// Called by the control panel to complete a manual payment with success.
+    func resolveManualPayment() {
+        manualPaymentContinuation?.resume(returning: .success(CardPresentPaymentTransaction()))
+        manualPaymentContinuation = nil
+    }
+
+    /// Called by the control panel to fail a manual payment.
+    func failManualPayment(message: String) {
+        let error = NSError(domain: "POSPrototype", code: 2,
+                            userInfo: [NSLocalizedDescriptionKey: message])
+        manualPaymentContinuation?.resume(throwing: error)
+        manualPaymentContinuation = nil
+    }
+
+    /// Whether a manual payment is currently awaiting resolution.
+    var isAwaitingManualResolution: Bool {
+        manualPaymentContinuation != nil
+    }
+
+    // MARK: - Private
+
+    private func runManualPayment() async throws -> CardPresentPaymentResult {
+        paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
+
+        return try await withCheckedThrowingContinuation { continuation in
+            self.manualPaymentContinuation = continuation
+        }
+    }
+
+    private func runAutomaticPayment() async throws -> CardPresentPaymentResult {
         switch configuration.paymentSequence {
         case .successAfterDelay(let totalDelay):
             return try await runSuccessSequence(totalDelay: totalDelay)
@@ -75,19 +140,7 @@ final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
         }
     }
 
-    func cancelPayment() {
-        paymentEventSubject.send(.idle)
-    }
-
-    func cancelPayment() async throws {
-        paymentEventSubject.send(.idle)
-    }
-}
-
-// MARK: - Payment Sequences
-
-private extension StatefulPaymentService {
-    func runSuccessSequence(totalDelay: TimeInterval) async throws -> CardPresentPaymentResult {
+    private func runSuccessSequence(totalDelay: TimeInterval) async throws -> CardPresentPaymentResult {
         let stepDelay = UInt64(totalDelay / 6.0 * 1_000_000_000)
 
         paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))
@@ -112,9 +165,8 @@ private extension StatefulPaymentService {
         return .success(CardPresentPaymentTransaction())
     }
 
-    func runFailSequence(failAtStep: PaymentStep, message: String) async throws -> CardPresentPaymentResult {
+    private func runFailSequence(failAtStep: PaymentStep, message: String) async throws -> CardPresentPaymentResult {
         let stepDelay: UInt64 = 400_000_000
-
         let steps: [PaymentStep] = [.scanning, .connecting, .preparingReader, .acceptingCard, .cardInserted, .processing, .success]
 
         for step in steps {
@@ -137,9 +189,8 @@ private extension StatefulPaymentService {
         return .success(CardPresentPaymentTransaction())
     }
 
-    func runDisconnectSequence(disconnectAtStep: PaymentStep) async throws -> CardPresentPaymentResult {
+    private func runDisconnectSequence(disconnectAtStep: PaymentStep) async throws -> CardPresentPaymentResult {
         let stepDelay: UInt64 = 400_000_000
-
         let steps: [PaymentStep] = [.scanning, .connecting, .preparingReader, .acceptingCard, .cardInserted, .processing, .success]
 
         for step in steps {
@@ -163,7 +214,7 @@ private extension StatefulPaymentService {
         return .success(CardPresentPaymentTransaction())
     }
 
-    func publishEventForStep(_ step: PaymentStep) {
+    private func publishEventForStep(_ step: PaymentStep) {
         switch step {
         case .scanning:
             paymentEventSubject.send(.show(eventDetails: .validatingOrder(cancelPayment: {})))

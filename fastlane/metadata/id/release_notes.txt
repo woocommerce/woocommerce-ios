@@ -1,1 +1,0 @@
-Pembaruan ini meningkatkan keandalan dan konsistensi dalam pengelolaan toko Anda. Kami memperbaiki kendala koneksi situs, menyelaraskan pendapatan dengan wp-admin, memperlancar pemesanan dan perilaku dasbor, meningkatkan tata letak iPad, dan mengatasi celah duplikasi produk. Ditambah beberapa penyempurnaan UI dan perbaikan stabilitas secara keseluruhan.

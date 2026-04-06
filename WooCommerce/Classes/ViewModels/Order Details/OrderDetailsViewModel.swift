@@ -18,6 +18,7 @@ final class OrderDetailsViewModel {
     private let currencyFormatter: CurrencyFormatter
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private(set) var order: Order
 
@@ -38,7 +39,8 @@ final class OrderDetailsViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-         pluginsService: PluginsServiceProtocol? = nil) {
+         pluginsService: PluginsServiceProtocol? = nil,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -50,6 +52,7 @@ final class OrderDetailsViewModel {
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
         self.pluginsService = pluginsService ?? PluginsService(storageManager: storageManager)
+        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     func update(order newOrder: Order) {
@@ -331,12 +334,16 @@ extension OrderDetailsViewModel {
             onReloadSections?()
         }
 
-        group.enter()
-        Task { @MainActor in
-            defer {
-                group.leave()
+        /// Temporary `ciabEligibilityChecker.isCurrentSiteCIAB`
+        // TODO: Rework CIAB gating in favour of new approach.
+        if ciabEligibilityChecker.isCurrentSiteCIAB {
+            group.enter()
+            Task { @MainActor in
+                defer {
+                    group.leave()
+                }
+                await syncOrderFulfillments()
             }
-            await syncOrderFulfillments()
         }
 
         group.enter()

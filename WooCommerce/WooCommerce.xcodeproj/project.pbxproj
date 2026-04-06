@@ -850,14 +850,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B56DB3E62049BFAA00D4AA8E /* Build configuration list for PBXNativeTarget "WooCommerce" */;
 			buildPhases = (
-				57CCFFD4249D2A5700825FCF /* SwiftLint */,
-				3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */,
 				B56DB3C22049BFAA00D4AA8E /* Sources */,
 				B56DB3C32049BFAA00D4AA8E /* Frameworks */,
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				3F1FA85028B60126009E246C /* Embed Foundation Extensions */,
 				26F81B232BE433A4009EC58E /* Embed Watch Content */,
+				57CCFFD4249D2A5700825FCF /* SwiftLint */,
+				3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */,
 			);
 			buildRules = (
 			);
@@ -1179,22 +1179,25 @@
 /* Begin PBXShellScriptBuildPhase section */
 		3F50FE4528CAEE9F00C89201 /* Enforce AppLocalizedString usages */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/../Scripts/build-phases/LintAppLocalizedStringsUsage.sh",
+				"$(SRCROOT)/../Scripts/build-phases/LintAppLocalizedStringsUsage.swift",
+				"$(PROJECT_FILE_PATH)/project.pbxproj",
 			);
 			name = "Enforce AppLocalizedString usages";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/lint-app-localized-strings-stamp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"$SRCROOT/../Scripts/build-phases/LintAppLocalizedStringsUsage.sh\"\n";
+			shellScript = "\"$SRCROOT/../Scripts/build-phases/LintAppLocalizedStringsUsage.sh\" && touch \"${DERIVED_FILE_DIR}/lint-app-localized-strings-stamp\"\n";
 			showEnvVarsInLog = 0;
 		};
 		57CCFFD4249D2A5700825FCF /* SwiftLint */ = {
@@ -1205,15 +1208,17 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/../.swiftlint.yml",
 			);
 			name = SwiftLint;
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/swiftlint-stamp",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
+			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh && touch \"${DERIVED_FILE_DIR}/swiftlint-stamp\"\n";
 		};
 		B55D4C1320B612FE00D7A50F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

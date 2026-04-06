@@ -122,6 +122,7 @@ private extension CookieNonceAuthenticator {
 
     func successfulLoginSequence() {
         DDLogInfo("Completed Cookie+Nonce login sequence for \(loginURL)")
+        state.resetAfterSuccess()
         completeRequests(true)
     }
 
@@ -133,7 +134,7 @@ private extension CookieNonceAuthenticator {
                 allowRetry = true
             }
         }
-        state.invalidate(canRetry: allowRetry)
+        state.invalidate(allowRetry: allowRetry)
         DDLogInfo("Aborting Cookie+Nonce login sequence for \(loginURL)")
         completeRequests(false)
     }
@@ -189,9 +190,15 @@ private extension CookieNonceAuthenticator {
             }
         }
 
-        func invalidate(canRetry: Bool) {
+        func resetAfterSuccess() {
             queue.sync {
-                _canRetry = canRetry
+                _isAuthenticating = false
+            }
+        }
+
+        func invalidate(allowRetry: Bool) {
+            queue.sync {
+                _canRetry = allowRetry
                 _isAuthenticating = false
             }
         }

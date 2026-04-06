@@ -6,9 +6,12 @@ struct PrototypeContainerView: View {
     let scenario: any POSPrototypeScenario
 
     @Environment(\.dismiss) private var dismiss
+    @State private var paymentService: StatefulPaymentService?
 
     var body: some View {
         let config = scenario.makeMockConfiguration()
+        let payment = paymentService ?? makePaymentService(config)
+
         ZStack(alignment: .topLeading) {
             PointOfSaleEntryPointView(
                 siteID: 1,
@@ -22,7 +25,7 @@ struct PrototypeContainerView: View {
                 orderService: StatefulOrderService(configuration: config),
                 refundsService: PrototypeRefundsService(),
                 onPointOfSaleModeActiveStateChange: { _ in },
-                cardPresentPaymentService: StatefulPaymentService(configuration: config),
+                cardPresentPaymentService: payment,
                 receiptService: PrototypeReceiptService(),
                 pluginsService: PrototypePluginsService(),
                 settingsService: PrototypeSettingsService(storeName: config.storeName),
@@ -40,6 +43,7 @@ struct PrototypeContainerView: View {
                 itemProvider: StatefulItemService(configuration: config)
             )
 
+            // Dismiss button
             Button {
                 dismiss()
             } label: {
@@ -50,5 +54,17 @@ struct PrototypeContainerView: View {
                     .padding(16)
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            PrototypeControlPanel(paymentService: payment)
+        }
+        .onAppear {
+            if paymentService == nil {
+                paymentService = makePaymentService(config)
+            }
+        }
+    }
+
+    private func makePaymentService(_ config: MockConfiguration) -> StatefulPaymentService {
+        StatefulPaymentService(configuration: config)
     }
 }

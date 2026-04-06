@@ -6,11 +6,11 @@ import enum Yosemite.PaymentChannel
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.CardReaderInput
 
-final class StatefulPaymentService: CardPresentPaymentFacade {
-    private let configuration: MockConfiguration
+final class StatefulPaymentService: CardPresentPaymentFacade, Observable {
+    let configuration: MockConfiguration
 
-    private let paymentEventSubject = CurrentValueSubject<CardPresentPaymentEvent, Never>(.idle)
-    private let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
+    let paymentEventSubject = CurrentValueSubject<CardPresentPaymentEvent, Never>(.idle)
+    let readerConnectionStatusSubject: CurrentValueSubject<CardPresentPaymentReaderConnectionStatus, Never>
     private let cardReaderUpdateStateSubject = CurrentValueSubject<CardReaderSoftwareUpdateState, Never>(.none)
 
     var paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> {

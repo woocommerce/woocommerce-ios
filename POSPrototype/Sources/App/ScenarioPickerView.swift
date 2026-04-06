@@ -1,7 +1,9 @@
 import SwiftUI
+import Inject
 
 struct ScenarioPickerView: View {
     let scenarios: [any POSPrototypeScenario]
+    @ObserveInjection var inject
 
     @State private var selectedScenarioID: String?
 
@@ -28,6 +30,7 @@ struct ScenarioPickerView: View {
                 }
             }
             .navigationTitle("POS Prototype")
+            .enableInjection()
             .fullScreenCover(isPresented: showCoverBinding) {
                 if let scenario = selectedScenario {
                     PrototypeContainerView(scenario: scenario)

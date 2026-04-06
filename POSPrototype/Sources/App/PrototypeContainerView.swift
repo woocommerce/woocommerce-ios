@@ -4,14 +4,32 @@ import Yosemite
 
 struct PrototypeContainerView: View {
     let scenario: any POSPrototypeScenario
-
     @Environment(\.dismiss) private var dismiss
-    @State private var paymentService: StatefulPaymentService?
 
     var body: some View {
         let config = scenario.makeMockConfiguration()
-        let payment = paymentService ?? makePaymentService(config)
+        PrototypeContainerContent(
+            config: config,
+            onDismiss: { dismiss() }
+        )
+    }
+}
 
+/// Inner view that owns the payment service via @State so there's
+/// exactly one instance shared between POS views and the control panel.
+private struct PrototypeContainerContent: View {
+    let config: MockConfiguration
+    let onDismiss: () -> Void
+
+    @State private var paymentService: StatefulPaymentService
+
+    init(config: MockConfiguration, onDismiss: @escaping () -> Void) {
+        self.config = config
+        self.onDismiss = onDismiss
+        self._paymentService = State(initialValue: StatefulPaymentService(configuration: config))
+    }
+
+    var body: some View {
         ZStack(alignment: .topLeading) {
             PointOfSaleEntryPointView(
                 siteID: 1,
@@ -25,7 +43,7 @@ struct PrototypeContainerView: View {
                 orderService: StatefulOrderService(configuration: config),
                 refundsService: PrototypeRefundsService(),
                 onPointOfSaleModeActiveStateChange: { _ in },
-                cardPresentPaymentService: payment,
+                cardPresentPaymentService: paymentService,
                 receiptService: PrototypeReceiptService(),
                 pluginsService: PrototypePluginsService(),
                 settingsService: PrototypeSettingsService(storeName: config.storeName),
@@ -43,10 +61,8 @@ struct PrototypeContainerView: View {
                 itemProvider: StatefulItemService(configuration: config)
             )
 
-            // Dismiss button
-            Button {
-                dismiss()
-            } label: {
+            // Dismiss button - floating, doesn't affect POS layout
+            Button(action: onDismiss) {
                 Image(systemName: "xmark.circle.fill")
                     .font(.title)
                     .symbolRenderingMode(.palette)
@@ -54,17 +70,8 @@ struct PrototypeContainerView: View {
                     .padding(16)
             }
         }
-        .safeAreaInset(edge: .bottom) {
-            PrototypeControlPanel(paymentService: payment)
+        .overlay(alignment: .bottom) {
+            PrototypeControlPanel(paymentService: paymentService)
         }
-        .onAppear {
-            if paymentService == nil {
-                paymentService = makePaymentService(config)
-            }
-        }
-    }
-
-    private func makePaymentService(_ config: MockConfiguration) -> StatefulPaymentService {
-        StatefulPaymentService(configuration: config)
     }
 }

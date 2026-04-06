@@ -2,10 +2,13 @@ import SwiftUI
 
 @main
 struct POSPrototypeApp: App {
+    private let scenarios: [any POSPrototypeScenario] = [
+        SmallCafeScenario(),
+    ]
+
     var body: some Scene {
         WindowGroup {
-            Text("POS Prototype")
-                .font(.largeTitle)
+            ScenarioPickerView(scenarios: scenarios)
         }
     }
 }

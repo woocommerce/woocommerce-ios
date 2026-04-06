@@ -13,11 +13,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
     private let password: String
     private let loginURL: URL
     private let adminURL: URL
-    private var nonce: String?
-
-    private var canRetry = true
-    private var isAuthenticating = false
-    private var requestsToRetry = [(RetryResult) -> Void]()
+    private let state = CookieNonceAuthenticatorState()
 
     init(configuration: CookieNonceAuthenticatorConfiguration) {
         self.username = configuration.username
@@ -28,7 +24,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
 
     // MARK: Request Adapter
     func adapt(_ urlRequest: URLRequest, for session: Alamofire.Session, completion: @escaping (Result<URLRequest, Swift.Error>) -> Void) {
-        guard let nonce else {
+        guard let nonce = state.nonce else {
             return completion(.success(urlRequest))
         }
         var adaptedRequest = urlRequest
@@ -39,7 +35,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
     // MARK: Retrier
     func retry(_ request: Alamofire.Request, for session: Alamofire.Session, dueTo error: Swift.Error, completion: @escaping (RetryResult) -> Void) {
         guard
-            canRetry,
+            state.canRetry,
             // Only retry once
             request.retryCount == 0,
             // And don't retry the login request
@@ -50,8 +46,8 @@ final class CookieNonceAuthenticator: RequestInterceptor {
             return completion(.doNotRetry)
         }
 
-        requestsToRetry.append(completion)
-        if !isAuthenticating {
+        let shouldStartAuthentication = state.enqueueRetry(completion)
+        if shouldStartAuthentication {
             startLoginSequence(session: session)
         }
     }
@@ -80,7 +76,7 @@ private extension CookieNonceAuthenticator {
                 guard let nonce = readNonceFromAjaxAction(html: page) else {
                     throw CookieNonceAuthenticator.Error.missingNonce
                 }
-                self.nonce = nonce
+                self.state.nonce = nonce
                 successfulLoginSequence()
             } catch let error as CookieNonceAuthenticator.Error {
                 invalidateLoginSequence(error: error)
@@ -130,24 +126,24 @@ private extension CookieNonceAuthenticator {
     }
 
     func invalidateLoginSequence(error: Error) {
-        canRetry = false
+        var allowRetry = false
         if case .postLoginFailed(let originalError) = error {
             let nsError = originalError as NSError
             if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorNotConnectedToInternet {
-                canRetry = true
+                allowRetry = true
             }
         }
+        state.invalidate(canRetry: allowRetry)
         DDLogInfo("Aborting Cookie+Nonce login sequence for \(loginURL)")
         completeRequests(false)
-        isAuthenticating = false
     }
 
     func completeRequests(_ shouldRetry: Bool) {
         let result: RetryResult = shouldRetry ? .retryWithDelay(0) : .doNotRetry
-        requestsToRetry.forEach { (completion) in
+        let pendingCompletions = state.drainPendingRetries()
+        pendingCompletions.forEach { completion in
             completion(result)
         }
-        requestsToRetry.removeAll()
     }
 
     func readNonceFromAjaxAction(html: String) -> String? {
@@ -156,6 +152,57 @@ private extension CookieNonceAuthenticator {
 
     func buildNonceRequestURL(base: URL) -> URL? {
         URL(string: "admin-ajax.php?action=rest-nonce", relativeTo: base)
+    }
+}
+
+// MARK: State
+private extension CookieNonceAuthenticator {
+    final class CookieNonceAuthenticatorState: @unchecked Sendable {
+        private var _nonce: String?
+        private var _canRetry = true
+        private var _isAuthenticating = false
+        private var _requestsToRetry = [(RetryResult) -> Void]()
+
+        private let queue = DispatchQueue(
+            label: "com.woocommerce.networking.cookie-nonce-authenticator.state-queue",
+            qos: .userInitiated
+        )
+
+        var nonce: String? {
+            get { queue.sync { _nonce } }
+            set { queue.sync { _nonce = newValue } }
+        }
+
+        var canRetry: Bool {
+            queue.sync { _canRetry }
+        }
+
+        /// Enqueues a retry completion and returns `true` if authentication should start.
+        func enqueueRetry(_ completion: @escaping (RetryResult) -> Void) -> Bool {
+            queue.sync {
+                _requestsToRetry.append(completion)
+                if _isAuthenticating {
+                    return false
+                }
+                _isAuthenticating = true
+                return true
+            }
+        }
+
+        func invalidate(canRetry: Bool) {
+            queue.sync {
+                _canRetry = canRetry
+                _isAuthenticating = false
+            }
+        }
+
+        func drainPendingRetries() -> [(RetryResult) -> Void] {
+            queue.sync {
+                let completions = _requestsToRetry
+                _requestsToRetry.removeAll()
+                return completions
+            }
+        }
     }
 }
 

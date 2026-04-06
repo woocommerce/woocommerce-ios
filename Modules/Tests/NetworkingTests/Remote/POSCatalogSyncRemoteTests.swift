@@ -777,29 +777,8 @@ struct POSCatalogSyncRemoteTests {
         let remote = createRemote()
         let downloadURL = "https://example.com/catalog.json"
 
-        let malformedCatalog = """
-        [
-          {
-            "type": "simple",
-            "data": {
-              "id": 1, "sku": "valid", "global_unique_id": "", "name": "Valid Product",
-              "short_description": "", "description": "", "stock_status": "instock",
-              "manage_stock": false, "stock_quantity": null, "price": 10,
-              "images": [], "parent_id": 0, "attributes": [],
-              "downloadable": false, "status": "publish", "type": "simple"
-            }
-          },
-          {
-            "type": "simple",
-            "data": { "id": 2 }
-          },
-          {
-            "type": "variation",
-            "data": { "id": 3 }
-          }
-        ]
-        """
-        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: malformedCatalog)
+        let mockContent = loadMockData(filename: "pos-catalog-download-malformed")
+        let mockFileURL = mockBackgroundDownloader.createMockDownloadFile(withContent: mockContent)
         mockBackgroundDownloader.mockSuccessfulDownload(fileURL: mockFileURL)
 
         // When

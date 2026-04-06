@@ -276,7 +276,7 @@ private extension POSCatalogPersistenceService {
         let variations = catalog.variations.filter { entry in
             let parentExists = productIDs.contains { $0 == entry.variation.productID }
             if !parentExists {
-                DDLogWarn("Variation \(entry.variation.productVariationID) references missing product \(entry.variation.productID) - it will not be available in POS.")
+                DDLogWarn("Variation \(entry.variation.productVariationID) references missing product \(entry.variation.productID).")
             }
             return parentExists
         }

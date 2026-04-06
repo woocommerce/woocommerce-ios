@@ -1,6 +1,8 @@
 import Foundation
 import Yosemite
 import struct Networking.Order
+import struct Networking.OrderItem
+import struct Networking.OrderItemProductImage
 import enum WooFoundation.CurrencyCode
 
 final class StatefulOrderService: POSOrderServiceProtocol {
@@ -21,17 +23,57 @@ final class StatefulOrderService: POSOrderServiceProtocol {
         }
 
         orderCounter += 1
+
+        // Compute totals from cart items
+        var subtotal: Decimal = 0
+        var orderItems: [OrderItem] = []
+        for (index, cartItem) in cart.items.enumerated() {
+            let price = Decimal(string: cartItem.item.formattedPrice
+                .replacingOccurrences(of: "$", with: "")
+                .replacingOccurrences(of: ",", with: "")) ?? 0
+            let lineTotal = price * cartItem.quantity
+            subtotal += lineTotal
+
+            orderItems.append(OrderItem(
+                itemID: Int64(index + 1),
+                name: cartItem.item.name,
+                productID: 0,
+                variationID: 0,
+                quantity: cartItem.quantity,
+                price: price as NSDecimalNumber,
+                sku: nil,
+                subtotal: "\(lineTotal)",
+                subtotalTax: "0.00",
+                taxClass: "",
+                taxes: [],
+                total: "\(lineTotal)",
+                totalTax: "0.00",
+                attributes: [],
+                addOns: [],
+                image: nil,
+                parent: nil,
+                bundleConfiguration: []
+            ))
+        }
+
+        let tax = subtotal * configuration.taxRate
+        let total = subtotal + tax
+
         return Order.empty.copy(
             siteID: 1,
             orderID: orderCounter,
+            needsPayment: true,
+            number: "\(orderCounter)",
             status: .pending,
             currency: configuration.currencyCode,
-            total: "0.00"
+            total: "\(total)",
+            totalTax: "\(tax)",
+            items: orderItems
         )
     }
 
     func loadOrder(orderID: Int64) async throws -> Order {
-        Order.empty.copy(siteID: 1, orderID: orderID)
+        Order.empty.copy(siteID: 1, orderID: orderID, needsPayment: true, total: "10.00")
     }
 
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {

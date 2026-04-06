@@ -312,13 +312,22 @@ struct POSCatalogIncrementalSyncServiceTests {
         // Given
         let lastFullSyncDate = Date(timeIntervalSince1970: 1000)
 
-        // Products visible in POS (filtered response)
+        // Products visible in POS (posProductsOnly=true response)
         let posProduct1 = POSProduct.fake().copy(productID: 1)
         let posProduct2 = POSProduct.fake().copy(productID: 2)
+
+        // All products (posProductsOnly=false response) - includes a product hidden from POS
+        let allProduct1 = POSProduct.fake().copy(productID: 1)
+        let allProduct2 = POSProduct.fake().copy(productID: 2)
+        let hiddenProduct = POSProduct.fake().copy(productID: 3) // Hidden from POS
 
         mockSyncRemote.setIncrementalProductResult(
             pageNumber: 1,
             result: .success(PagedItems(items: [posProduct1, posProduct2], hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setAllProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [allProduct1, allProduct2, hiddenProduct], hasMorePages: false, totalItems: 3))
         )
         mockSyncRemote.setTrashedProductResult(
             pageNumber: 1,
@@ -334,9 +343,11 @@ struct POSCatalogIncrementalSyncServiceTests {
                                            lastFullSyncDate: lastFullSyncDate,
                                            lastIncrementalSyncDate: nil)
 
-        // Then
+        // Then - Hidden product ID should be in productsToRemove
         let persistedCatalog = try #require(mockPersistenceService.persistIncrementalCatalogDataLastPersistedCatalog)
         #expect(persistedCatalog.products.count == 2)
+        #expect(persistedCatalog.productsToRemove.contains(3))
+        #expect(persistedCatalog.productsToRemove.count == 1)
     }
 
     @Test func startIncrementalSync_handles_no_hidden_products_when_all_products_are_in_POS() async throws {
@@ -348,6 +359,10 @@ struct POSCatalogIncrementalSyncServiceTests {
         let product2 = POSProduct.fake().copy(productID: 2)
 
         mockSyncRemote.setIncrementalProductResult(
+            pageNumber: 1,
+            result: .success(PagedItems(items: [product1, product2], hasMorePages: false, totalItems: 2))
+        )
+        mockSyncRemote.setAllProductResult(
             pageNumber: 1,
             result: .success(PagedItems(items: [product1, product2], hasMorePages: false, totalItems: 2))
         )

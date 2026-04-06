@@ -268,14 +268,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let items = try mapper.map(response: data)
 
         var products: [POSProduct] = []
-        var variations: [(variation: POSProductVariation, typeKey: String)] = []
+        var variations: [POSTypedVariation] = []
 
         for item in items {
             switch item {
             case .product(let product):
                 products.append(product)
             case .variation(let variation, let typeKey):
-                variations.append((variation: variation, typeKey: typeKey))
+                variations.append(POSTypedVariation(variation: variation, typeKey: typeKey))
             case .unsupported:
                 continue
             }
@@ -536,10 +536,20 @@ public enum POSCatalogItem: Decodable {
     }
 }
 
+public struct POSTypedVariation {
+    public let variation: POSProductVariation
+    public let typeKey: String
+
+    public init(variation: POSProductVariation, typeKey: String) {
+        self.variation = variation
+        self.typeKey = typeKey
+    }
+}
+
 /// POS catalog from download.
 public struct POSCatalogResponse {
     public let products: [POSProduct]
-    public let variations: [(variation: POSProductVariation, typeKey: String)]
+    public let variations: [POSTypedVariation]
 }
 
 // MARK: - POS Catalog Sync Constants

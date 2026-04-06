@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+@testable import Networking
 @testable import Storage
 @testable import Yosemite
 
@@ -977,8 +978,8 @@ struct POSCatalogPersistenceServiceTests {
 }
 
 /// Wraps plain variations with the default "variation" typeKey for use in POSCatalog test data.
-private func typedVariations(_ variations: [POSProductVariation]) -> [(variation: POSProductVariation, typeKey: String)] {
-    variations.map { (variation: $0, typeKey: "variation") }
+private func typedVariations(_ variations: [POSProductVariation]) -> [POSTypedVariation] {
+    variations.map { POSTypedVariation(variation: $0, typeKey: "variation") }
 }
 
 private extension POSCatalogPersistenceServiceTests {

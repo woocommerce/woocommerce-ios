@@ -2,6 +2,7 @@
 import Foundation
 import Storage
 import GRDB
+import struct Networking.POSTypedVariation
 
 protocol POSCatalogPersistenceServiceProtocol {
     /// Clears existing data and persists new catalog data

@@ -45,6 +45,7 @@ extension WooShippingNormalizeAddressViewModel {
     static var sampleEnteredAddress: WooShippingAddress {
         WooShippingAddress(company: "",
                            name: "",
+                           email: "",
                            phone: "",
                            country: "US",
                            state: "NY",
@@ -57,6 +58,7 @@ extension WooShippingNormalizeAddressViewModel {
     static var sampleSuggestedAddress: WooShippingAddress {
         WooShippingAddress(company: "",
                            name: "",
+                           email: "",
                            phone: "",
                            country: "US",
                            state: "NY",

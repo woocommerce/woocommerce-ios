@@ -50,14 +50,15 @@ final class POSTabCoordinator {
 
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
-        let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
+        let isFTSSearchEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleFTSSearch)
         return PointOfSaleItemFetchStrategyFactory(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    grdbManager: isLocalCatalogEnabled ? ServiceLocator.grdbManager : nil,
+                                                   currencySettings: currencySettings,
                                                    isLocalCatalogEnabled: isLocalCatalogEnabled,
-                                                   posProductsOnlyEnabled: posProductsOnlyEnabled)
+                                                   isFTSSearchEnabled: isFTSSearchEnabled)
     }
 
     /// Creates popular item fetch strategy factory with current local catalog eligibility
@@ -84,6 +85,17 @@ final class POSTabCoordinator {
                                         storage: storageManager)
     }()
 
+    private lazy var posBookingListFetchStrategyFactory: POSBookingListFetchStrategyFactory = {
+        POSBookingListFetchStrategyFactory(
+            siteID: siteID,
+            credentials: credentials,
+            selectedSite: defaultSitePublisher,
+            appPasswordSupportState: isAppPasswordSupported,
+            currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+            siteSettings: ServiceLocator.selectedSiteSettings.siteSettings
+        )
+    }()
+
     /// Creates the appropriate barcode scan service based on local catalog availability
     private func createBarcodeScanService(isLocalCatalogEligible: Bool,
                                           grdbManager: GRDBManagerProtocol?) -> any PointOfSaleBarcodeScanServiceProtocol {
@@ -94,13 +106,11 @@ final class POSTabCoordinator {
                                                      currencySettings: currencySettings)
         } else {
             // Fall back to remote barcode scanning
-            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
             return PointOfSaleBarcodeScanService(siteID: siteID,
                                                 credentials: credentials,
                                                 selectedSite: defaultSitePublisher,
                                                 appPasswordSupportState: isAppPasswordSupported,
-                                                currencySettings: currencySettings,
-                                                posProductsOnly: posProductsOnlyEnabled)
+                                                currencySettings: currencySettings)
         }
     }
 
@@ -237,7 +247,8 @@ private extension POSTabCoordinator {
             let refundsService = POSRefundsService(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
-                                                   appPasswordSupportState: isAppPasswordSupported)
+                                                   appPasswordSupportState: isAppPasswordSupported,
+                                                   currencySettings: currencySettings)
 
             if let receiptService = POSReceiptService(siteID: siteID,
                                                       credentials: credentials,
@@ -262,6 +273,9 @@ private extension POSTabCoordinator {
                     itemProvider = PointOfSaleItemServiceScreenshotMock()
                 }
 
+                let isBookingsEligible = storesManager.sessionManager.defaultSite
+                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+
                 let posView = PointOfSaleEntryPointView(
                     siteID: siteID,
                     itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
@@ -276,6 +290,8 @@ private extension POSTabCoordinator {
                         currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
                         analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
                     ),
+                    bookingListFetchStrategyFactory: posBookingListFetchStrategyFactory,
+                    isBookingsEligible: isBookingsEligible,
                     orderService: orderService,
                     refundsService: refundsService,
                     onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in

@@ -169,7 +169,7 @@ struct InboxNoteRow_Previews: PreviewProvider {
                              content: """
   Increase your conversion rate by letting your customers know that you accept Apple Pay.
   It’s seamless to <a href=\"https://woocommerce.com/document/payments/apple-pay/\">
-  enable Apple Pay with WooCommerce Payments</a> and easy to communicate it with
+  enable Apple Pay with WooPayments</a> and easy to communicate it with
   this <a href=\"https://developer.apple.com/apple-pay/marketing/\">marketing guide</a>.
 """,
                              isRemoved: false,

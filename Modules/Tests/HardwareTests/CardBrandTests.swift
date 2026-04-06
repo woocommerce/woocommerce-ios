@@ -83,7 +83,7 @@ final class CardBrandTests: XCTestCase {
 
     func test_card_brand_has_icon_data_for_all_brands() throws {
         for cardBrand in Hardware.CardBrand.allCases {
-            XCTAssert(cardBrand.iconData.count > 0)
+            XCTAssert(!cardBrand.iconData.isEmpty)
         }
     }
 

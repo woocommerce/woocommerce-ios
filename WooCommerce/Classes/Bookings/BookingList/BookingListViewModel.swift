@@ -35,6 +35,7 @@ final class BookingListViewModel: ObservableObject {
     private let storage: StorageManagerType
     private var currentOrder: SortBy = .newestToOldest
 
+    private let tabDateFilters: BookingFilters
     private var filters: BookingFilters
 
     private static let refreshCacheReason = "refresh-cache"
@@ -57,10 +58,9 @@ final class BookingListViewModel: ObservableObject {
 
     /// Booking ResultsController.
     private lazy var resultsController: ResultsController<StorageBooking> = {
-        let combinedPredicate = NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
         let sortDescriptorByDate = NSSortDescriptor(key: "startDate", ascending: false)
         let resultsController = ResultsController<StorageBooking>(storageManager: storage,
-                                                                  matching: combinedPredicate,
+                                                                  matching: currentPredicate,
                                                                   sortedBy: [sortDescriptorByDate])
         return resultsController
     }()
@@ -79,17 +79,8 @@ final class BookingListViewModel: ObservableObject {
         self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
-        self.filters = {
-            switch type {
-            case .all:
-                BookingFilters()
-            case .today, .upcoming:
-                BookingFilters(
-                    startDateBefore: type.startDateBefore(currentDate: currentDate)?.ISO8601Format(),
-                    startDateAfter: type.startDateAfter(currentDate: currentDate)?.ISO8601Format()
-                )
-            }
-        }()
+        self.tabDateFilters = type.remoteFilters(currentDate: currentDate)
+        self.filters = tabDateFilters
 
         configureResultsController()
         configurePaginationTracker()
@@ -131,17 +122,20 @@ final class BookingListViewModel: ObservableObject {
     }
 
     func updateFilters(_ filters: BookingFiltersViewModel.Filters) {
-        /// Only support filters for All tab
-        guard type == .all else { return }
         hasFilters = filters.numberOfActiveFilters > 0
-        self.filters = filters.bookingFilters
-        resultsController.updatePredicate(siteID: siteID, filters: self.filters)
+        self.filters = tabDateFilters.mergingDates(with: filters.bookingFilters)
+        syncState = .syncingFirstPage
+        resultsController.predicate = currentPredicate
         paginationTracker.resync(reason: Self.refreshCacheReason) {}
     }
 
     /// Converts SortBy to BookingsRemote.Order
     private func remoteOrder(from sortBy: SortBy) -> BookingsRemote.Order {
         sortBy == .oldestToNewest ? .ascending : .descending
+    }
+
+    private var currentPredicate: NSPredicate {
+        NSPredicate.createBookingPredicate(siteID: siteID, filters: filters)
     }
 }
 
@@ -169,9 +163,13 @@ private extension BookingListViewModel {
     }
 
     /// Updates row view models and sync state.
-    func updateResults() {
+    /// - Parameter afterSync: Whether this is called after a sync completes.
+    ///   When `false` (e.g. from a results controller callback), the state
+    ///   will not transition to `.empty` to avoid flashing the empty state
+    ///   while a sync is still in progress.
+    func updateResults(afterSync: Bool = false) {
         bookings = resultsController.fetchedObjects
-        transitionToResultsUpdatedState()
+        transitionToResultsUpdatedState(afterSync: afterSync)
     }
 }
 
@@ -203,7 +201,7 @@ extension BookingListViewModel: PaginationTrackerDelegate {
                 onCompletion?(.failure(error))
             }
 
-            self?.updateResults()
+            self?.updateResults(afterSync: true)
         }
         stores.dispatch(action)
     }
@@ -227,10 +225,17 @@ extension BookingListViewModel {
         }
     }
 
-    /// Update states after sync is complete.
-    func transitionToResultsUpdatedState() {
+    /// Update states after results change.
+    /// - Parameter afterSync: When `true`, allows transitioning to `.empty`
+    ///   state. When `false` (results controller callback), only transitions
+    ///   to `.results` to avoid flashing the empty state during a sync.
+    func transitionToResultsUpdatedState(afterSync: Bool = false) {
         shouldShowBottomActivityIndicator = false
-        syncState = bookings.isNotEmpty ? .results : .empty
+        if bookings.isNotEmpty {
+            syncState = .results
+        } else if afterSync {
+            syncState = .empty
+        }
     }
 }
 

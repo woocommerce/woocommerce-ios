@@ -44,6 +44,8 @@ public enum NotificationAction: Action {
     case registerDeviceForSelfDrivenPushNotifications(siteID: Int64,
                                                       device: APNSDevice,
                                                       applicationID: String,
+                                                      deviceLocale: String,
+                                                      appVersion: String,
                                                       onCompletion: (Result<Int64, Error>) -> Void)
 
     /// Removes a given tokenID from the the self-driven push notification system.

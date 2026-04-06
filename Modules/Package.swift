@@ -12,6 +12,10 @@ let package = Package(
     ],
     products: XcodeSupport.products + [
         .library(
+            name: "APIMocks",
+            targets: ["APIMocks"]
+        ),
+        .library(
             name: "Codegen",
             targets: ["Codegen"]
         ),
@@ -68,6 +72,14 @@ let package = Package(
             targets: ["Yosemite"]
         ),
         .library(
+            name: "NetworkingTestsResponsesFixtures",
+            targets: ["NetworkingTestsResponsesFixtures"]
+        ),
+        .library(
+            name: "YosemiteTestHelpers",
+            targets: ["YosemiteTestHelpers"]
+        ),
+        .library(
             name: "PointOfSale",
             targets: ["PointOfSale"]
         ),
@@ -78,15 +90,14 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-async-algorithms", exact: "1.0.4"),
         .package(url: "https://github.com/Automattic/AutomatticAbout-swift.git", from: "1.1.5"),
-        .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "3.5.2"),
+        .package(url: "https://github.com/Automattic/Automattic-Tracks-iOS.git", from: "4.2.0"),
         .package(url: "https://github.com/Automattic/Gridicons-iOS", revision: "c904cb73e26e86463a78e1335c6f4fd54a9e9223"),
         .package(url: "https://github.com/Automattic/ScreenObject", from: "0.3.0"),
-        .package(url: "https://github.com/buildkite/test-collector-swift", from: "0.3.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.8.5"),
         .package(url: "https://github.com/danielgindi/Charts.git", from: "5.1.0"),
         .package(url: "https://github.com/envoy/Embassy", from: "4.1.2"),
         // FIXME: This should be available via Tracks, but Tracks does not compile for watchOS
-        .package(url: "https://github.com/getsentry/sentry-cocoa", from: "8.46.0"),
+        .package(url: "https://github.com/getsentry/sentry-cocoa", from: "9.4.0"),
         .package(url: "https://github.com/groue/GRDB.swift", from: "7.0.0"),
         .package(url: "https://github.com/jonreid/ViewControllerPresentationSpy", from: "7.0.0"),
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
@@ -108,6 +119,10 @@ let package = Package(
         .package(url: "https://github.com/zendesk/support_sdk_ios", from: "9.0.0"),
     ],
     targets: XcodeSupport.targets + [
+        .target(
+            name: "APIMocks",
+            resources: [.process("Resources")]
+        ),
         .target(
             name: "Codegen",
             exclude: ["README.md", "Sourcery"] // Relative to sources path
@@ -236,6 +251,10 @@ let package = Package(
             ]
         ),
         .target(
+            name: "YosemiteTestHelpers",
+            dependencies: ["Yosemite"]
+        ),
+        .target(
             name: "PointOfSale",
             dependencies: [
                 "Experiments",
@@ -246,6 +265,11 @@ let package = Package(
                 .product(name: "Kingfisher", package: "Kingfisher"),
             ],
             resources: [.process("Resources")]
+        ),
+        .target(
+            name: "NetworkingTestsResponsesFixtures",
+            path: "Tests/NetworkingTestsResponsesFixtures",
+            resources: [.process("Responses")]
         ),
         .testTarget(
             name: "ExperimentsTests",
@@ -266,12 +290,12 @@ let package = Package(
                 "Codegen",
                 "Fakes",
                 "Networking",
+                "NetworkingTestsResponsesFixtures",
                 "TestKit",
                 "WooFoundation",
                 "WordPressShared",
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
-            ],
-            resources: [.process("Responses")]
+            ]
         ),
         .testTarget(
             name: "StorageTests",
@@ -303,14 +327,15 @@ let package = Package(
             dependencies: [
                 "Codegen",
                 "Fakes",
+                "NetworkingTestsResponsesFixtures",
                 "TestKit",
                 "WooFoundation",
                 "WordPressShared",
-                "Yosemite"
+                "Yosemite",
+                "YosemiteTestHelpers",
             ],
             resources: [
                 .process("Resources"),
-                .process("../NetworkingTests/Responses")
             ]
         ),
         .testTarget(
@@ -345,6 +370,7 @@ let package = Package(
 enum XcodeTargetNames {
     static let fakes = "Fakes"
     static let notificationExtension = "NotificationExtension"
+    static let notificationServiceExtension = "NotificationServiceExtension"
     static let storeWidgetsExtension = "StoreWidgetsExtension"
     static let wooCommerce = "WooCommerce"
     static let wooCommerceScreenshots = "WooCommerceScreenshots"
@@ -359,6 +385,7 @@ enum XcodeSupport {
     static var products: [Product] {
         [
             XcodeTargetNames.notificationExtension,
+            XcodeTargetNames.notificationServiceExtension,
             XcodeTargetNames.storeWidgetsExtension,
             XcodeTargetNames.wooCommerce,
             XcodeTargetNames.wooCommerceScreenshots,
@@ -379,6 +406,10 @@ enum XcodeSupport {
                     "WooFoundation",
                     .product(name: "KeychainAccess", package: "KeychainAccess"),
                 ]
+            ),
+            .xcodeTarget(
+                XcodeTargetNames.notificationServiceExtension,
+                dependencies: []
             ),
             .xcodeTarget(
                 XcodeTargetNames.storeWidgetsExtension,
@@ -438,10 +469,11 @@ enum XcodeSupport {
                 dependencies: [
                     "Codegen",
                     "Fakes",
+                    "NetworkingTestsResponsesFixtures",
                     "TestKit",
                     "WordPressShared",
+                    "YosemiteTestHelpers",
                     .product(name: "Aztec", package: "AztecEditor-iOS"),
-                    .product(name: "BuildkiteTestCollector", package: "test-collector-swift"),
                     .product(name: "ViewControllerPresentationSpy", package: "ViewControllerPresentationSpy"),
                     .product(name: "ViewInspector", package: "ViewInspector"),
                     .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
@@ -451,6 +483,7 @@ enum XcodeSupport {
             .xcodeTarget(
                 XcodeTargetNames.wooCommerceUITests,
                 dependencies: [
+                    "APIMocks",
                     "UITestsFoundation",
                     .product(name: "ScreenObject", package: "ScreenObject"),
                     XcodeTargetNames.wooCommerce.asDependency

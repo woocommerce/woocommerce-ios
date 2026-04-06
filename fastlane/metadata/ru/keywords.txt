@@ -1,1 +1,1 @@
-Woocommerce, приложение woocommerce, мобильный woocommerce, приложение woo, wordpress магазин
+woo,заказ,эл.коммерция,pos,точка продажи,wordpress,магазин,платёж,карта,доставка,запасы

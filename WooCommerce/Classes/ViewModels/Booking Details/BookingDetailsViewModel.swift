@@ -6,8 +6,12 @@ import SwiftUI
 
 final class BookingDetailsViewModel: ObservableObject {
     private let stores: StoresManager
+    private let storage: StorageManagerType
 
     private var bookingResource: BookingResource?
+    private var bookingLocation: String?
+    private var isLoadingResource = false
+    private var isLoadingLocation = false
     private var booking: Booking {
         didSet {
             updateDisplayProperties(from: booking)
@@ -17,7 +21,6 @@ final class BookingDetailsViewModel: ObservableObject {
     private let headerContent = HeaderContent()
     private let customerContent = CustomerContent()
     private let appointmentDetailsContent = AppointmentDetailsContent()
-    private let attendanceContent = AttendanceContent()
     private let paymentContent = PaymentContent()
     private let notesContent = NotesContent()
     private let analytics: Analytics
@@ -37,17 +40,36 @@ final class BookingDetailsViewModel: ObservableObject {
         booking.attendanceStatus
     }
 
+    var shouldShowAttendanceButton: Bool {
+        booking.bookingStatus != .cancelled
+    }
+
+    var attendanceButtonTitle: String {
+        booking.attendanceStatus == .attended
+            ? Localization.markAsUnattended
+            : Localization.markAsAttended
+    }
+
+    var targetAttendanceStatus: BookingAttendanceStatus {
+        booking.attendanceStatus == .attended ? .unattended : .attended
+    }
+
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.booking = booking
         self.stores = stores
+        self.storage = storage
         self.analytics = analytics
         self.bookingResource = storage.viewStorage.loadBookingResource(
             siteID: booking.siteID,
             resourceID: booking.resourceID
         )?.toReadOnly()
+        self.bookingLocation = storage.viewStorage.loadBooking(
+            siteID: booking.siteID,
+            bookingID: booking.bookingID
+        )?.location
 
         setupSections()
         configureEntityListener()
@@ -101,10 +123,11 @@ private extension BookingDetailsViewModel {
             customerContent.update(with: customerInfo)
         }
 
-        appointmentDetailsContent.update(with: booking, resource: bookingResource)
-
-        setupAttendanceSectionVisibility()
-        attendanceContent.update(with: booking)
+        appointmentDetailsContent.update(with: booking,
+                                        resource: bookingResource,
+                                        bookingLocation: bookingLocation,
+                                        isLoadingResource: isLoadingResource,
+                                        isLoadingLocation: isLoadingLocation)
 
         paymentContent.update(with: booking)
         notesContent.update(with: booking)
@@ -116,39 +139,6 @@ private extension BookingDetailsViewModel {
         } else {
             deleteCustomerSectionIfPresent()
         }
-    }
-
-    func setupAttendanceSectionVisibility() {
-        if booking.attendanceStatus == .cancelled || booking.bookingStatus == .cancelled {
-            deleteAttendanceSectionIfPresent()
-        } else {
-            insertAttendanceSectionIfAbsent()
-        }
-    }
-
-    func insertAttendanceSectionIfAbsent() {
-        guard let insertAfterIndex = sections.firstIndex(where: {
-            if case .customer = $0.content {
-                return true
-            }
-            return false
-        }) ?? sections.firstIndex(where: {
-            if case .appointmentDetails = $0.content {
-                return true
-            }
-            return false
-        }) else {
-            return
-        }
-
-        insertSectionIfAbsent(
-            section: Section(
-                header: .title(Localization.attendanceSectionHeaderTitle.uppercased()),
-                footerText: Localization.attendanceSectionFooterText,
-                content: .attendance(attendanceContent)
-            ),
-            at: insertAfterIndex + 1
-        )
     }
 
     func insertCustomerSectionIfAbsent() {
@@ -188,21 +178,6 @@ private extension BookingDetailsViewModel {
         }
     }
 
-    func deleteAttendanceSectionIfPresent() {
-        guard let attendanceSectionIndex = sections.firstIndex(where: {
-            if case .attendance = $0.content {
-                return true
-            }
-            return false
-        }) else {
-            return
-        }
-
-        withAnimation {
-            _ = sections.remove(at: attendanceSectionIndex)
-        }
-    }
-
     func deleteCustomerSectionIfPresent() {
         guard let customerSectionIndex = sections.firstIndex(where: {
             if case .customer = $0.content {
@@ -229,11 +204,33 @@ private extension BookingDetailsViewModel {
 // MARK: Syncing
 
 extension BookingDetailsViewModel {
+    @MainActor
     func syncData() async {
-        if let resource = await fetchResource() {
-            self.bookingResource = resource // only update resource if fetching succeeds
+        isLoadingResource = bookingResource == nil && booking.resourceID > 0
+        isLoadingLocation = bookingLocation == nil
+        updateDisplayProperties(from: booking)
+
+        // Parallel network fetches
+        async let resourceResult = fetchResource()
+        async let bookingSync: Void = fetchBooking()
+        async let locationResult = fetchBookingLocation()
+
+        // Sequential updates
+        if let resource = await resourceResult {
+            self.bookingResource = resource
         }
-        await fetchBooking()
+        isLoadingResource = false
+
+        _ = await bookingSync
+
+        self.bookingLocation = await locationResult
+        isLoadingLocation = false
+
+        // Persist location after booking sync completes
+        // to avoid Core Data context race.
+        persistBookingLocation(bookingLocation)
+
+        updateDisplayProperties(from: booking)
     }
 }
 
@@ -257,11 +254,11 @@ extension BookingDetailsViewModel {
             }
         }
         stores.dispatch(action)
-        analytics.track(event: .BookingsDetail.bookingAttenceStatusUpdated(status: newStatus))
+        analytics.track(event: .BookingsDetail.attendanceStatusUpdate(status: newStatus))
     }
 
     func notesTapped() {
-        analytics.track(event: .BookingsDetail.bookingAddNoteTapped())
+        analytics.track(event: .BookingsDetail.addNoteTap())
     }
 
     @MainActor
@@ -344,39 +341,6 @@ extension BookingDetailsViewModel {
     }
 }
 
-/// Mark booking as paid
-extension BookingDetailsViewModel {
-    var shouldShowMarkAsPaid: Bool {
-        booking.isEligibleForMarkAsPaid
-    }
-
-    @MainActor
-    func markBookingAsPaid() async throws {
-        analytics.track(event: .BookingsDetail.bookingMarkAsPaidTapped())
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            stores.dispatch(BookingAction.markBookingAsPaid(siteID: booking.siteID, bookingID: booking.bookingID) { [analytics] error in
-                if let error {
-                    analytics.track(event: .BookingsDetail.failedToUpdateBookingDetails(action: .markAsPaid, error: error))
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume(returning: ())
-                }
-            })
-        }
-    }
-
-    func displayMarkingAsPaidErrorNotice(onRetry: @escaping () -> Void) {
-        let text = String.localizedStringWithFormat(
-            Localization.bookingMarkAsPaidFailedMessage,
-            booking.bookingID
-        )
-        self.notice = Notice(
-            message: text,
-            feedbackType: .error,
-            actionTitle: Localization.retryActionTitle
-        ) { onRetry() }
-    }
-}
 
 private extension BookingDetailsViewModel {
     @MainActor
@@ -399,6 +363,26 @@ private extension BookingDetailsViewModel {
     }
 
     @MainActor
+    func fetchBookingLocation() async -> String? {
+        await withCheckedContinuation { continuation in
+            let action = BookingAction.fetchBookingLocationResponse(
+                siteID: booking.siteID,
+                bookingID: booking.bookingID,
+                productID: booking.productID
+            ) { result in
+                switch result {
+                case .success(let location):
+                    continuation.resume(returning: location)
+                case .failure(let error):
+                    DDLogError("⛔️ Error fetching booking location: \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
     func fetchBooking() async {
         do {
             try await withCheckedThrowingContinuation { continuation in
@@ -413,6 +397,15 @@ private extension BookingDetailsViewModel {
         } catch {
             DDLogError("⛔️ Error synchronizing Booking: \(error)")
         }
+    }
+
+    func persistBookingLocation(_ location: String?) {
+        let siteID = booking.siteID
+        let bookingID = booking.bookingID
+        storage.performAndSave({ storage in
+            guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else { return }
+            storageBooking.location = location
+        }, completion: {}, on: .main)
     }
 }
 
@@ -442,8 +435,37 @@ extension BookingDetailsViewModel {
 
 extension BookingDetailsViewModel {
     func navigateToOrderDetails() {
-        analytics.track(event: .BookingsDetail.bookingViewLinkedOrderTapped())
+        analytics.track(event: .BookingsDetail.viewLinkedOrderTap())
         MainTabBarController.navigateToOrderDetails(with: booking.orderID, siteID: booking.siteID)
+    }
+
+    @MainActor
+    func issueRefund() async {
+        analytics.track(event: .BookingsDetail.refundTap())
+
+        guard let order = storage.viewStorage.loadOrder(siteID: booking.siteID, orderID: booking.orderID)?.toReadOnly() else {
+            DDLogError("⛔️ Order not found in storage for booking \(booking.bookingID)")
+            assertionFailure("Order should be in storage after syncData()")
+            return
+        }
+
+        let refunds = storage.viewStorage.loadRefunds(siteID: booking.siteID, orderID: booking.orderID).map { $0.toReadOnly() }
+        presentRefundFlow(order: order, refunds: refunds)
+    }
+}
+
+private extension BookingDetailsViewModel {
+    func presentRefundFlow(order: Order, refunds: [Refund]) {
+        let refundController = IssueRefundCoordinatingController(order: order, refunds: refunds)
+        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else {
+            return
+        }
+        refundController.onDismissCallback = { [weak self] in
+            Task {
+                await self?.syncData()
+            }
+        }
+        presenter.present(refundController, animated: true)
     }
 }
 
@@ -466,22 +488,22 @@ private extension BookingDetailsViewModel {
             comment: "Header title for the 'Appointment Details' section in the booking details screen."
         )
 
-        static let attendanceSectionHeaderTitle = NSLocalizedString(
-            "BookingDetailsView.attendance.headerTitle",
-            value: "Attendance",
-            comment: "Header title for the 'Attendance' section in the booking details screen."
-        )
-
         static let customerSectionHeaderTitle = NSLocalizedString(
             "BookingDetailsView.customer.headerTitle",
             value: "Customer",
             comment: "Header title for the 'Customer' section in the booking details screen."
         )
 
-        static let attendanceSectionFooterText = NSLocalizedString(
-            "BookingDetailsView.attendance.footerText",
-            value: "Mark attendance to keep your reports accurate and spot booking trends.",
-            comment: "Footer text for the 'Attendance' section in the booking details screen."
+        static let markAsAttended = NSLocalizedString(
+            "BookingDetailsView.attendance.markAsAttended",
+            value: "Mark as attended",
+            comment: "Button title to mark a booking's attendance as attended."
+        )
+
+        static let markAsUnattended = NSLocalizedString(
+            "BookingDetailsView.attendance.markAsUnattended",
+            value: "Mark as unattended",
+            comment: "Button title to mark a booking's attendance as unattended."
         )
 
         static let paymentSectionHeaderTitle = NSLocalizedString(
@@ -538,18 +560,11 @@ private extension BookingDetailsViewModel {
             + "Parameters: %1$d - Booking number"
         )
 
-        static let bookingMarkAsPaidFailedMessage = NSLocalizedString(
-            "BookingDetailsView.markAsPaid.failureMessage",
-            value: "Unable to mark Booking #%1$d as paid.",
-            comment: "Content of error presented when cancelling a Booking fails. "
-            + "It reads: Unable to mark Booking #{Booking number} as paid. "
-            + "Parameters: %1$d - Booking number"
-        )
-
         static let retryActionTitle = NSLocalizedString(
             "BookingDetailsView.retry.action",
             value: "Retry",
             comment: "Retry Action"
         )
+
     }
 }

@@ -5,6 +5,7 @@ import protocol Storage.StorageType
 import XCTest
 import Yosemite
 import WooFoundation
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class StoreStatsPeriodViewModelTests: XCTestCase {
@@ -56,7 +57,7 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
         // When
         let orderStats = OrderStatsV4(siteID: siteID,
                                       granularity: timeRange.intervalGranularity,
-                                      totals: .fake().copy(totalOrders: 3, grossRevenue: 6220.7),
+                                      totals: .fake().copy(totalOrders: 3, netRevenue: 6220.7),
                                       intervals: [.fake()])
         insertOrderStats(orderStats, timeRange: timeRange)
 

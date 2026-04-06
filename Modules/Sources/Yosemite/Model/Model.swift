@@ -79,6 +79,7 @@ public typealias OrderItemRefund = Networking.OrderItemRefund
 public typealias OrderItemTaxRefund = Networking.OrderItemTaxRefund
 public typealias OrderStatusEnum = Networking.OrderStatusEnum
 public typealias OrderCouponLine = Networking.OrderCouponLine
+public typealias OrderFulfillmentStatus = Networking.OrderFulfillmentStatus
 public typealias OrderFeeLine = Networking.OrderFeeLine
 public typealias OrderFeeTaxStatus = Networking.OrderFeeTaxStatus
 public typealias OrderGiftCard = Networking.OrderGiftCard

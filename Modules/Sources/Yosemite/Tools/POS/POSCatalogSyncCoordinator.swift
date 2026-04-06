@@ -70,6 +70,9 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - variationIDs: Variation IDs to delete
     ///   - siteID: The site ID
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws
+
+    /// Starts background FTS rebuild if needed (products exist but index empty)
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async
 }
 
 public extension POSCatalogSyncCoordinatorProtocol {
@@ -113,7 +116,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
-    private let posProductsOnlyEnabled: Bool
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
@@ -124,6 +126,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     /// Tracks ongoing incremental sync tasks by site ID for cancellation
     private var ongoingIncrementalSyncTasks: [Int64: Task<POSCatalog, Error>] = [:]
 
+    /// Tracks background FTS rebuild tasks by site ID
+    private var backgroundFTSRebuildTasks: [Int64: Task<Void, Never>] = [:]
+
     /// Observable model for full sync state updates
     public nonisolated let fullSyncStateModel: POSCatalogSyncStateModel = .init()
 
@@ -133,8 +138,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
-                connectivityObserver: ConnectivityObserver? = nil,
-                posProductsOnlyEnabled: Bool = false) {
+                connectivityObserver: ConnectivityObserver? = nil) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -142,7 +146,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
-        self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
@@ -164,7 +167,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         let isFirstSync = await lastFullSyncDate(for: siteID) == nil
 
-        emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
+        await emitSyncState(isFirstSync ? .initialSyncStarted(siteID: siteID) : .syncStarted(siteID: siteID))
 
         // Track sync started analytics
         let connectionType = getConnectionType()
@@ -179,8 +182,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncTask = Task<POSCatalog, Error> {
             try await fullSyncService.startFullSync(for: siteID,
                                                     regenerateCatalog: regenerateCatalog,
-                                                    allowCellular: allowCellular,
-                                                    posProductsOnly: posProductsOnlyEnabled)
+                                                    allowCellular: allowCellular)
         }
 
         // Store the task for potential cancellation
@@ -192,7 +194,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         do {
             let syncedCatalog = try await syncTask.value
-            emitSyncState(.syncCompleted(siteID: siteID))
+            await emitSyncState(.syncCompleted(siteID: siteID))
 
             // Track sync completed analytics
             let syncDurationMs = Int(Date().timeIntervalSince(syncStartTime) * 1000)
@@ -207,9 +209,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
-                emitSyncState(.initialSyncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                await emitSyncState(.initialSyncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             } else {
-                emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
             }
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
@@ -221,9 +223,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete sync for site \(siteID): \(error)")
             if isFirstSync {
-                emitSyncState(.initialSyncFailed(siteID: siteID, error: error))
+                await emitSyncState(.initialSyncFailed(siteID: siteID, error: error))
             } else {
-                emitSyncState(.syncFailed(siteID: siteID, error: error))
+                await emitSyncState(.syncFailed(siteID: siteID, error: error))
             }
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
@@ -296,7 +298,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     private func fullSyncInProgress(for siteID: Int64) async -> Bool {
-        switch fullSyncStateModel.state[siteID] {
+        switch await fullSyncStateModel.state[siteID] {
         case .syncStarted, .initialSyncStarted:
             return true
         default:
@@ -357,8 +359,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncTask = Task<POSCatalog, Error> {
             try await incrementalSyncService.startIncrementalSync(for: siteID,
                                                                   lastFullSyncDate: lastFullSyncDate,
-                                                                  lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID),
-                                                                  posProductsOnly: posProductsOnlyEnabled)
+                                                                  lastIncrementalSyncDate: await lastIncrementalSyncDate(for: siteID))
         }
 
         // Store the task for potential cancellation
@@ -466,7 +467,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     public func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        if let cached = fullSyncStateModel.state[siteID] {
+        if let cached = await fullSyncStateModel.state[siteID] {
             return cached
         }
 
@@ -478,7 +479,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             state = .syncCompleted(siteID: siteID)
         }
 
-        fullSyncStateModel.state[siteID] = state
+        await fullSyncStateModel.updateState(state, for: siteID)
         return state
     }
 
@@ -530,10 +531,10 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Update sync state to reflect that syncs are being stopped
         // This will prevent new syncs from starting for this site
-        if let currentState = fullSyncStateModel.state[siteID] {
+        if let currentState = await fullSyncStateModel.state[siteID] {
             switch currentState {
             case .initialSyncStarted, .syncStarted:
-                emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
+                await emitSyncState(.syncFailed(siteID: siteID, error: POSCatalogSyncError.requestCancelled))
                 DDLogInfo("🛑 POSCatalogSyncCoordinator: Updated sync state to cancelled for site \(siteID)")
             default:
                 break
@@ -550,7 +551,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         DDLogInfo("✅ Background catalog processed: \(catalog.products.count) products, \(catalog.variations.count) variations")
 
         // Update sync state to completed
-        emitSyncState(.syncCompleted(siteID: siteID))
+        await emitSyncState(.syncCompleted(siteID: siteID))
 
         // Record first sync date if needed
         recordFirstSyncIfNeeded(for: siteID)
@@ -667,12 +668,51 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
         try await persistenceService.deleteProducts(productIDs, variationIDs: variationIDs, siteID: siteID)
     }
+
+    // MARK: - FTS Rebuild
+
+    public func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
+        do {
+            let needsRebuild = try await grdbManager.databaseConnection.read { db in
+                try POSSearchIndexBuilder.needsRebuild(for: siteID, in: db)
+            }
+
+            guard needsRebuild else {
+                DDLogInfo("📋 POSCatalogSyncCoordinator: FTS rebuild not needed for site \(siteID)")
+                return
+            }
+
+            DDLogInfo("🔄 POSCatalogSyncCoordinator: Starting background FTS rebuild for site \(siteID)")
+
+            let task = Task {
+                defer {
+                    backgroundFTSRebuildTasks.removeValue(forKey: siteID)
+                }
+                do {
+                    try await POSSearchIndexBuilder.rebuildIndex(for: siteID, in: grdbManager.databaseConnection)
+                    DDLogInfo("✅ POSCatalogSyncCoordinator: Background FTS rebuild complete for site \(siteID)")
+                } catch {
+                    DDLogError("⛔️ POSCatalogSyncCoordinator: Background FTS rebuild failed for site \(siteID): \(error)")
+                }
+            }
+            backgroundFTSRebuildTasks[siteID] = task
+        } catch {
+            DDLogError("⛔️ POSCatalogSyncCoordinator: Failed to check FTS rebuild need: \(error)")
+        }
+    }
+
+    /// Waits for any pending background FTS rebuild task to complete.
+    public func awaitBackgroundFTSRebuild(for siteID: Int64) async {
+        guard let task = backgroundFTSRebuildTasks[siteID] else { return }
+        await task.value
+    }
+
 }
 
 // MARK: - Syncing State
 
 private extension POSCatalogSyncCoordinator {
-    func emitSyncState(_ state: POSCatalogSyncState) {
+    func emitSyncState(_ state: POSCatalogSyncState) async {
         let siteID: Int64 = switch state {
         case .initialSyncStarted(let id),
                 .syncStarted(let id),
@@ -683,15 +723,20 @@ private extension POSCatalogSyncCoordinator {
             id
         }
 
-        fullSyncStateModel.state[siteID] = state
+        await fullSyncStateModel.updateState(state, for: siteID)
     }
 }
 
 @Observable
+@MainActor
 public class POSCatalogSyncStateModel {
     public var state: [Int64: POSCatalogSyncState] = [:]
 
-    public init() {}
+    nonisolated public init() {}
+
+    public func updateState(_ newState: POSCatalogSyncState, for siteID: Int64) {
+        state[siteID] = newState
+    }
 }
 
 

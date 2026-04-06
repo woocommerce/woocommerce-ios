@@ -26,10 +26,19 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     public func providePointOfSaleItems(pageNumber: Int = 1,
                                         fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
+            // Check if strategy provides mixed items (e.g., FTS search returning products and variations together)
+            if let mixedItems = try await fetchStrategy.fetchMixedItems(pageNumber: pageNumber) {
+                if pageNumber != 1 && mixedItems.items.isEmpty {
+                    return .init(items: [], hasMorePages: false, totalItems: 0)
+                }
+                return mixedItems
+            }
+
+            // Fall back to product-only fetch with mapping
             let pagedProducts = try await fetchStrategy.fetchProducts(pageNumber: pageNumber)
             let products = pagedProducts.items
 
-            if pageNumber != 1 && products.count == 0 {
+            if pageNumber != 1 && products.isEmpty {
                 return .init(items: [], hasMorePages: false, totalItems: 0)
             }
 

@@ -3,6 +3,7 @@ import enum Networking.DotcomError
 import enum Networking.SiteCreationError
 import enum Networking.WordPressApiError
 import struct NetworkingCore.Site
+import YosemiteTestHelpers
 @testable import class Networking.MockNetwork
 @testable import Yosemite
 @testable import Storage

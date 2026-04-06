@@ -5,53 +5,44 @@ extension WooAnalyticsEvent {
     enum BookingsDetail {
         private enum Properties {
             static let bookingStatus = "booking_status"
+            static let action = "action"
+        }
+
+        enum Action: String {
+            case cancelBooking = "cancel_booking"
+            case updateAttendance = "update_attendance"
         }
 
         static func bookingCancelled() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingCancelled)
+            WooAnalyticsEvent(statName: .bookingDetailCancelBooking)
         }
 
-        static func bookingAttenceStatusUpdated(status: BookingAttendanceStatus) -> WooAnalyticsEvent {
+        static func attendanceStatusUpdate(status: BookingAttendanceStatus) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
-                statName: .bookingAttenceStatusUpdated,
+                statName: .bookingDetailAttendanceStatusUpdate,
                 properties: [Properties.bookingStatus: status.rawValue]
             )
         }
 
-        static func bookingAddNoteTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingAddNoteTapped)
+        static func addNoteTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailAddNoteTap)
         }
 
-        static func bookingMarkAsPaidTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingMarkAsPaidTapped)
+        static func viewLinkedOrderTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailViewLinkedOrderTap)
         }
 
-        static func bookingViewLinkedOrderTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .bookingViewLinkedOrderTapped)
+        static func refundTap() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .bookingDetailRefundTap)
         }
 
         static func failedToUpdateBookingDetails(action: Action, error: Error) -> WooAnalyticsEvent {
             let properties: [String: WooAnalyticsEventPropertyType] = [
-                BookingProperties.action: action.rawValue
+                Properties.action: action.rawValue
             ]
             return  WooAnalyticsEvent(statName: .bookingListFailedToUpdateBookingDetails,
                                       properties: properties,
                                       error: error)
         }
-    }
-}
-
-fileprivate extension WooAnalyticsEvent.BookingsDetail {
-    enum BookingProperties {
-        static let bookingStatus = "booking_status"
-        static let action = "action"
-    }
-}
-
-extension WooAnalyticsEvent.BookingsDetail {
-    enum Action: String {
-        case cancelBooking = "cancel_booking"
-        case updateAttendance = "update_attendance"
-        case markAsPaid = "mark_as_paid"
     }
 }

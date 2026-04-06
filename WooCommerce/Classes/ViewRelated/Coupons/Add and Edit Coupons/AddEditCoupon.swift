@@ -23,7 +23,7 @@ final class AddEditCouponHostingController: UIHostingController<AddEditCoupon> {
                 self.presentedViewController?.dismiss(animated: true, completion: nil)
             }
             let bottomSheet = BottomSheetListSelectorViewController(viewProperties: viewProperties, command: command, onDismiss: nil)
-            let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet)
+            let bottomSheetViewController = BottomSheetViewController(childViewController: bottomSheet, initialPosition: .expanded)
             bottomSheetViewController.show(from: self)
         }
     }

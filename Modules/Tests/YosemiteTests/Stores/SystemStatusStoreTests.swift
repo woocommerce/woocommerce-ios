@@ -1,6 +1,7 @@
 import XCTest
 import Fakes
 
+import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
@@ -104,7 +105,7 @@ final class SystemStatusStoreTests: XCTestCase {
     func test_fetchSystemPluginWithPath_returns_plugin_when_matching_plugin_is_in_storage() {
         // Given
         let systemPlugin1 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
-        systemPlugin1.name = "WCPay"
+        systemPlugin1.name = "WooPayments"
         systemPlugin1.plugin = "woocommerce-payments/woocommerce-payments.php"
         systemPlugin1.siteID = sampleSiteID
 
@@ -131,7 +132,7 @@ final class SystemStatusStoreTests: XCTestCase {
     func test_fetchSystemPluginWithPath_returns_nil_when_no_matching_plugin() {
         // Given
         let systemPlugin = viewStorage.insertNewObject(ofType: SystemPlugin.self)
-        systemPlugin.name = "WCPay"
+        systemPlugin.name = "WooPayments"
         systemPlugin.plugin = "woocommerce-payments/woocommerce-payments.php"
         systemPlugin.siteID = sampleSiteID
 

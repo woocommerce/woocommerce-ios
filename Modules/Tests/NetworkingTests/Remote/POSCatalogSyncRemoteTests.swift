@@ -214,7 +214,7 @@ struct POSCatalogSyncRemoteTests {
         let pagedVariations = try await remote.loadProductVariations(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: 1)
 
         // Then
-        #expect(pagedVariations.items.count > 0)
+        #expect(!pagedVariations.items.isEmpty)
 
         let firstVariation = try #require(pagedVariations.items.first)
         #expect(firstVariation.siteID == sampleSiteID)
@@ -781,8 +781,8 @@ struct POSCatalogSyncRemoteTests {
         let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then
-        #expect(catalog.products.count == 0)
-        #expect(catalog.variations.count == 0)
+        #expect(catalog.products.isEmpty)
+        #expect(catalog.variations.isEmpty)
     }
 
     @Test func downloadCatalog_throws_error_for_empty_url() async throws {
@@ -1007,6 +1007,8 @@ struct POSCatalogSyncRemoteTests {
     }
 }
 
+import NetworkingTestsResponsesFixtures
+
 private extension POSCatalogSyncRemoteTests {
     func createRemote() -> POSCatalogSyncRemote {
         POSCatalogSyncRemote(network: network, backgroundDownloader: mockBackgroundDownloader, fileManager: mockFileManager)
@@ -1014,7 +1016,8 @@ private extension POSCatalogSyncRemoteTests {
 
     /// Loads test data from bundle response file.
     func loadMockData(filename: String) -> String {
-        guard let url = Bundle.module.url(forResource: filename, withExtension: "json"),
+        let fixturesBundle = NetworkingTestsResponsesFixtures.bundle
+        guard let url = fixturesBundle.url(forResource: filename, withExtension: "json"),
               let data = try? Data(contentsOf: url),
               let string = String(data: data, encoding: .utf8) else {
             fatalError("Could not load test data from \(filename).json")

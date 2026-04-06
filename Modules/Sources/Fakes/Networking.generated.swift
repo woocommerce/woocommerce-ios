@@ -329,6 +329,7 @@ extension Networking.Booking {
             allDay: .fake(),
             cost: .fake(),
             customerID: .fake(),
+            userID: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),
             endDate: .fake(),
@@ -757,39 +758,6 @@ extension Networking.Media {
             alt: .fake(),
             height: .fake(),
             width: .fake()
-        )
-    }
-}
-extension Networking.OrderItemRefund {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItemRefund {
-        .init(
-            itemID: .fake(),
-            name: .fake(),
-            productID: .fake(),
-            variationID: .fake(),
-            refundedItemID: .fake(),
-            quantity: .fake(),
-            price: .fake(),
-            sku: .fake(),
-            subtotal: .fake(),
-            subtotalTax: .fake(),
-            taxClass: .fake(),
-            taxes: .fake(),
-            total: .fake(),
-            totalTax: .fake()
-        )
-    }
-}
-extension Networking.OrderItemTaxRefund {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.OrderItemTaxRefund {
-        .init(
-            taxID: .fake(),
-            subtotal: .fake(),
-            total: .fake()
         )
     }
 }
@@ -1422,25 +1390,6 @@ extension Networking.Receipt {
         )
     }
 }
-extension Networking.Refund {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Refund {
-        .init(
-            refundID: .fake(),
-            orderID: .fake(),
-            siteID: .fake(),
-            dateCreated: .fake(),
-            amount: .fake(),
-            reason: .fake(),
-            refundedByUserID: .fake(),
-            isAutomated: .fake(),
-            createAutomated: .fake(),
-            items: .fake(),
-            shippingLines: .fake()
-        )
-    }
-}
 extension Networking.RemoteReaderLocation {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1798,40 +1747,6 @@ extension Networking.ShippingLabelStoreOptions {
         )
     }
 }
-extension Networking.Site {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.Site {
-        .init(
-            siteID: .fake(),
-            name: .fake(),
-            description: .fake(),
-            url: .fake(),
-            adminURL: .fake(),
-            loginURL: .fake(),
-            isSiteOwner: .fake(),
-            frameNonce: .fake(),
-            plan: .fake(),
-            isAIAssistantFeatureActive: .fake(),
-            isJetpackThePluginInstalled: .fake(),
-            isJetpackConnected: .fake(),
-            isWooCommerceActive: .fake(),
-            isWordPressComStore: .fake(),
-            jetpackConnectionActivePlugins: .fake(),
-            timezone: .fake(),
-            gmtOffset: .fake(),
-            visibility: .fake(),
-            canBlaze: .fake(),
-            isAdmin: .fake(),
-            wasEcommerceTrial: .fake(),
-            hasSSOEnabled: .fake(),
-            applicationPasswordAvailable: .fake(),
-            isGarden: .fake(),
-            gardenName: .fake(),
-            gardenPartner: .fake()
-        )
-    }
-}
 extension Networking.SiteAPI {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -1901,13 +1816,6 @@ extension Networking.SiteSettingGroup {
     ///
     public static func fake() -> Networking.SiteSettingGroup {
         .general
-    }
-}
-extension Networking.SiteVisibility {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.SiteVisibility {
-        .privateSite
     }
 }
 extension Networking.StateOfACountry {
@@ -2327,6 +2235,7 @@ extension Networking.WooShippingAddress {
         .init(
             company: .fake(),
             name: .fake(),
+            email: .fake(),
             phone: .fake(),
             country: .fake(),
             state: .fake(),
@@ -2418,6 +2327,7 @@ extension Networking.WooShippingNormalizedAddress {
             company: .fake(),
             firstName: .fake(),
             lastName: .fake(),
+            email: .fake(),
             phone: .fake(),
             country: .fake(),
             state: .fake(),

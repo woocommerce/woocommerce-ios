@@ -14,6 +14,10 @@ struct OrderStatusSection: View {
     ///
     private(set) var topDivider: Bool = true
 
+    /// Whether the edit status button should be displayed.
+    ///
+    private(set) var isEditButtonVisible: Bool = true
+
     var body: some View {
         Divider()
             .renderedIf(topDivider)
@@ -45,6 +49,7 @@ struct OrderStatusSection: View {
                         viewModel.updateOrderStatus(newStatus: newStatus)
                     }.ignoresSafeArea()
                 }
+                .renderedIf(isEditButtonVisible)
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)

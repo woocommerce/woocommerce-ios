@@ -7,6 +7,7 @@ import WooFoundation
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 /// Test cases for `OrderDetailsDataSourceTests`
@@ -306,85 +307,6 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             XCTFail("Product section should show more button on the header for eligible order without refunded labels")
             return
         }
-    }
-
-    func test_WCShip_installation_section_is_not_visible_when_WCShip_plugin_is_installed_and_active() throws {
-        // Given
-        let sampleSiteID: Int64 = 1234
-        let order = makeOrder()
-        let activePlugin = SitePlugin.fake().copy(siteID: sampleSiteID,
-                                                  plugin: SitePlugin.SupportedPluginPath.LegacyWCShip,
-                                                  status: .active)
-        insert(activePlugin)
-
-        let currencySettings = CurrencySettings(currencyCode: .USD,
-                                                currencyPosition: .leftSpace,
-                                                thousandSeparator: "",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 3)
-        let siteSetting = SiteSetting.fake()
-            .copy(
-                siteID: sampleSiteID,
-                settingID: "woocommerce_default_country",
-                value: CountryCode.US.rawValue,
-                settingGroupKey: SiteSettingGroup.general.rawValue
-            )
-
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                currencySettings: currencySettings,
-                                                siteSettings: [siteSetting],
-                                                featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        let wcShipSection = section(withCategory: .installWCShip, from: dataSource)
-        XCTAssertNil(wcShipSection)
-    }
-
-    func test_WCShip_installation_section_is_visible_for_eligible_order() throws {
-        // Given
-        let sampleSiteID: Int64 = 1234
-        let order = makeOrder()
-
-        let currencySettings = CurrencySettings(currencyCode: .USD,
-                                                currencyPosition: .leftSpace,
-                                                thousandSeparator: "",
-                                                decimalSeparator: ".",
-                                                numberOfDecimals: 3)
-        let siteSetting = SiteSetting.fake()
-            .copy(
-                siteID: sampleSiteID,
-                settingID: "woocommerce_default_country",
-                value: CountryCode.US.rawValue,
-                settingGroupKey: SiteSettingGroup.general.rawValue
-            )
-
-        let dataSource = OrderDetailsDataSource(order: order,
-                                                storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: .US),
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                currencySettings: currencySettings,
-                                                siteSettings: [siteSetting],
-                                                userIsAdmin: true,
-                                                featureFlags: MockFeatureFlagService(shippingLabelsOnboardingM1: true))
-        dataSource.configureResultsControllers { }
-
-        // When
-        dataSource.reloadSections()
-
-        // Then
-        guard let wcShipSection = section(withCategory: .installWCShip, from: dataSource) else {
-            XCTFail("WCShip install section should be visible")
-            return
-        }
-        let wcShipRow = row(row: .installWCShip, in: wcShipSection)
-        XCTAssertNotNil(wcShipRow)
     }
 
     func test_more_button_is_visible_in_product_section_for_eligible_order_with_refunded_labels() throws {

@@ -1,6 +1,7 @@
 import Foundation
 import Testing
 import Networking
+import YosemiteTestHelpers
 @testable import Storage
 @testable import Yosemite
 
@@ -84,6 +85,7 @@ struct FetchStrategyDebouncingTests {
     private let mockProductsRemote = MockProductsRemote()
     private let mockVariationsRemote = MockProductVariationsRemote()
     private let mockCouponStoreMethods = MockCouponStoreMethods()
+    private let mockItemMapper = MockPointOfSaleItemMapper()
 
     // MARK: - Local Search Strategy Tests
 
@@ -101,6 +103,7 @@ struct FetchStrategyDebouncingTests {
             searchTerm: "test",
             grdbManager: grdbManager,
             variationsRemote: mockVariationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 

@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 require 'fileutils'
-require 'tmpdir'
 require 'rake/clean'
-require 'yaml'
-require 'digest'
 
 PROJECT_DIR = __dir__
 XCODE_WORKSPACE = 'WooCommerce.xcworkspace'
-XCODE_SCHEME = 'WooCommerce'
-XCODE_CONFIGURATION = 'Debug'
-
-task default: %w[test]
 
 desc 'Install required dependencies'
 task dependencies: %w[dependencies:check]
@@ -45,9 +38,7 @@ namespace :dependencies do
     end
 
     task :install do
-      fold('install.bundler') do
-        sh 'bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}'
-      end
+      sh 'bundle install --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}'
     end
     CLOBBER << 'vendor/bundle'
     CLOBBER << '.bundle'
@@ -66,38 +57,7 @@ CLOBBER << 'vendor'
 
 desc 'Mocks'
 task :mocks do
-  sh './WooCommerce/WooCommerceUITests/Mocks/scripts/start.sh'
-end
-
-desc "Build #{XCODE_SCHEME}"
-task build: [:dependencies] do
-  xcodebuild(:build)
-end
-
-desc "Profile build #{XCODE_SCHEME}"
-task buildprofile: [:dependencies] do
-  ENV['verbose'] = '1'
-  xcodebuild(:build,
-             "OTHER_SWIFT_FLAGS='-Xfrontend -debug-time-compilation -Xfrontend -debug-time-expression-type-checking'")
-end
-
-task timed_build: [:clean] do
-  require 'benchmark'
-  time = Benchmark.measure do
-    Rake::Task['build'].invoke
-  end
-  puts "CPU Time: #{time.total}"
-  puts "Wall Time: #{time.real}"
-end
-
-desc 'Run test suite'
-task test: [:dependencies] do
-  xcodebuild(:build, :test)
-end
-
-desc 'Remove any temporary products'
-task :clean do
-  xcodebuild(:clean)
+  sh './API-Mocks/scripts/start.sh'
 end
 
 desc 'Checks the source for style errors'
@@ -123,33 +83,6 @@ task :generate do
   run_package_plugin(cmd: 'sourcery-command --disableCache')
 end
 
-def fold(label)
-  puts "travis_fold:start:#{label}" if travis?
-  yield
-  puts "travis_fold:end:#{label}" if travis?
-end
-
-def travis?
-  !ENV['TRAVIS'].nil?
-end
-
-def xcodebuild(*build_cmds)
-  cmd = 'xcodebuild'
-  cmd += " -destination 'platform=iOS Simulator,name=iPhone 6s'"
-  cmd += ' -sdk iphonesimulator'
-  cmd += " -workspace #{XCODE_WORKSPACE}"
-  cmd += " -scheme #{XCODE_SCHEME}"
-  cmd += " -configuration #{xcode_configuration}"
-  cmd += ' '
-  cmd += build_cmds.map(&:to_s).join(' ')
-  cmd += ' | bundle exec xcpretty -f `bundle exec xcpretty-travis-formatter` && exit ${PIPESTATUS[0]}' unless ENV['verbose']
-  sh(cmd)
-end
-
-def xcode_configuration
-  ENV['XCODE_CONFIGURATION'] || XCODE_CONFIGURATION
-end
-
 def command?(command)
   system("which #{command} > /dev/null 2>&1")
 end
@@ -162,16 +95,6 @@ def dependency_failed(component)
   else
     msg += 'Installing...'
     puts msg
-  end
-end
-
-def check_dependencies_hook
-  ENV['DRY_RUN'] = '1'
-  begin
-    Rake::Task['dependencies'].invoke
-  rescue StandardError => e
-    puts e.message
-    exit 1
   end
 end
 

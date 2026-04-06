@@ -348,9 +348,9 @@ private extension StorePerformanceView {
             comment: "Title of the custom time range on the store performance card on the Dashboard screen"
         )
         static let revenue = NSLocalizedString(
-            "storePerformanceView.revenue",
-            value: "Revenue",
-            comment: "Revenue stat label on dashboard."
+            "storePerformanceView.netSales",
+            value: "Net sales",
+            comment: "Net sales stat label on dashboard — shows revenue excluding taxes, shipping, and fees."
         )
         static let noRevenueText = NSLocalizedString(
             "storePerformanceView.noRevenueText",

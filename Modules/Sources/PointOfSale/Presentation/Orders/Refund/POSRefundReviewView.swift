@@ -10,7 +10,7 @@ struct POSRefundReviewView: View {
     let refundReason: String?
     let onAddReason: () -> Void
     let onContinue: () -> Void
-    let onEditRefund: () -> Void
+    let onEditRefund: (() -> Void)?
 
     @Environment(\.posModalParentSize) private var parentSize
 
@@ -111,7 +111,7 @@ private extension POSRefundReviewView {
             }
             Text(refundReason ?? Localization.reasonPlaceholder)
                 .font(.posBodyMediumRegular())
-                .foregroundColor(.posOnSurfaceVariantHighest)
+                .foregroundColor(refundReason != nil ? .posOnSurfaceVariantHighest : .posOnSurfaceVariantLowest)
         }
     }
 
@@ -120,8 +120,10 @@ private extension POSRefundReviewView {
             Button(Localization.continueButton, action: onContinue)
                 .buttonStyle(POSFilledButtonStyle(size: .normal))
 
-            Button(Localization.editRefundButton, action: onEditRefund)
-                .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            if let onEditRefund {
+                Button(Localization.editRefundButton, action: onEditRefund)
+                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            }
         }
         .padding(POSPadding.xLarge)
     }

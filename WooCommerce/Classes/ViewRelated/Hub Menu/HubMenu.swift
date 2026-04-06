@@ -1,5 +1,6 @@
 import SwiftUI
 import Kingfisher
+import WooFoundation
 import Yosemite
 
 /// This view will be embedded inside the `HubMenuViewController`
@@ -15,6 +16,8 @@ struct HubMenu: View {
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
+
+    @State private var safariSheetURL: URL?
 
     init(viewModel: HubMenuViewModel) {
         self.viewModel = viewModel
@@ -42,6 +45,14 @@ struct HubMenu: View {
         switch menu.id {
         case HubMenuViewModel.GoogleAds.id:
             googleAdsCampaignHandler()
+        case HubMenuViewModel.WoocommerceAdmin.id:
+            // On CIAB sites, open WC Admin in a Safari sheet instead of the in-app webview.
+            // The in-app webview hides the Admin navigation sidebar, which breaks WC Admin
+            // navigation on CIAB sites where the full admin experience is expected.
+            if viewModel.isCIABSite() {
+                safariSheetURL = viewModel.woocommerceAdminURL
+                return
+            }
         case HubMenuViewModel.Settings.id:
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:
@@ -96,6 +107,7 @@ private extension HubMenu {
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
+        .safariSheet(url: $safariSheetURL)
     }
 
     @ViewBuilder
@@ -126,6 +138,8 @@ private extension HubMenu {
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:
+                // Note: On CIAB sites, WC Admin is opened in a Safari sheet instead (see handleTap).
+                // This in-app webview path is only used for non-CIAB sites.
                 webView(url: viewModel.woocommerceAdminURL,
                         title: HubMenuViewModel.Localization.woocommerceAdmin,
                         shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
@@ -143,6 +157,9 @@ private extension HubMenu {
                 couponListView
             case .customers:
                 CustomersListView(viewModel: .init(siteID: viewModel.siteID))
+            case .bookings:
+                BookingsTabView(siteID: viewModel.siteID)
+                    .navigationTitle(HubMenuViewModel.Localization.bookings)
             case .reviewDetails(let parcel):
                 reviewDetailView(parcel: parcel)
             case .blazeCampaignDetails(let campaignID):

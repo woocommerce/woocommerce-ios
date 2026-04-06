@@ -54,6 +54,7 @@ MAIN_BUNDLE_IDENTIFIERS = [
   APP_STORE_VERSION_BUNDLE_IDENTIFIER,
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.storewidgets",
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.notificationcontentextension",
+  "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.NotificationServiceExtension",
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp",
   "#{APP_STORE_VERSION_BUNDLE_IDENTIFIER}.watchkitapp.widgets"
 ].freeze
@@ -167,7 +168,7 @@ before_all do |lane|
   ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '120'
 
   # Skip these checks/steps for test lane (not needed for testing)
-  next if lane == :test_without_building
+  next if %i[test test_without_building].include?(lane)
 
   # Check for Release Toolkit updates
   check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
@@ -943,7 +944,7 @@ platform :ios do
 
     UI.user_error!("Unable to run on devices: \"#{devices}\"") if devices.empty?
 
-    puts "Creating screenshots for #{languages} on #{devices}"
+    UI.message("Creating screenshots for #{languages} on #{devices}")
 
     # Erase the simulator between runs in order to get everything back to a default state
     rebuild_screenshot_devices
@@ -1142,7 +1143,7 @@ platform :ios do
   end
 
   desc 'Create Promo Screenshots'
-  lane :create_promo_screenshots do |options|
+  lane :create_promo_screenshots do |force: false, commit: false, push: false|
     unless Fastlane::Helper::GitHelper.has_git_lfs?
       UI.user_error!('LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.')
     end
@@ -1187,12 +1188,23 @@ platform :ios do
       UI.message('Done')
     end
 
+    # Remove previously-tracked promo screenshots so that obsolete files
+    # (e.g. dropped device or reduced screenshot count) are captured by the
+    # commit as deletions rather than silently kept around.
+    if commit || push
+      existing_images = Dir.glob(File.join(output_directory, '**', '*.png'))
+      unless existing_images.empty?
+        UI.message('Removing existing promo screenshots before regeneration...')
+        existing_images.each { |f| FileUtils.rm_f(f) }
+      end
+    end
+
     begin
       promo_screenshots(
         orig_folder: original_screenshot_directory,
         metadata_folder: FASTLANE_METADATA_FOLDER,
         output_folder: output_directory,
-        force: options[:force]
+        force: force
       )
     ensure
       next if files_to_copy.empty?
@@ -1201,6 +1213,20 @@ platform :ios do
       files_to_copy.each { |f| FileUtils.rm_f(f[:destination]) }
       UI.message('Done')
     end
+
+    next unless commit || push
+
+    git_add(
+      path: output_directory,
+      shell_escape: false
+    )
+    git_commit(
+      path: output_directory,
+      message: 'Track new promo screenshots',
+      allow_nothing_to_commit: true
+    )
+
+    push_to_git_remote(tags: false) if push
   end
 
   ########################################################################
@@ -1282,9 +1308,12 @@ platform :ios do
         'Modules/Sources/WordPress*/',
         'Modules/Sources/PointOfSale/',
         'Modules/Sources/WPMediaPicker/',
-        'Storage/Storage/',
-        'Networking/Networking/',
-        'Hardware/Hardware/'
+        'Modules/Sources/Storage/',
+        'Modules/Sources/Networking/',
+        'Modules/Sources/NetworkingCore/',
+        'Modules/Sources/Yosemite/',
+        'Modules/Sources/WooFoundation/',
+        'Modules/Sources/Hardware/'
       ],
       exclude: [
         '*Vendor*',
@@ -1339,6 +1368,29 @@ end
 ########################################################################
 # Test Lanes
 ########################################################################
+
+#####################################################################################
+# test
+#
+# Usage:
+# bundle exec fastlane test
+# bundle exec fastlane test only_testing:WooCommerceTests/MyClass
+# bundle exec fastlane test scheme:WooCommerce clean:true
+#####################################################################################
+desc 'Run tests locally'
+lane :test do |scheme: TEST_SCHEME, device: 'iPhone 16', ios_version: nil, only_testing: nil, clean: false|
+  run_tests(
+    workspace: WORKSPACE_PATH,
+    scheme: scheme,
+    device: device,
+    derived_data_path: DERIVED_DATA_DIR,
+    deployment_target_version: ios_version,
+    only_testing: only_testing,
+    clean: clean,
+    skip_package_dependencies_resolution: !clean
+  )
+end
+
 #####################################################################################
 # test_without_building
 # -----------------------------------------------------------------------------------
@@ -1362,14 +1414,11 @@ lane :test_without_building do |options|
 
   UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}") unless !xctestrun_path.nil? && File.exist?(xctestrun_path)
 
-  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
-
   # Only run UI tests in parallel.
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
   parallel_testing_value = options[:name] == 'UITests'
 
-  # Capture the result of run_tests
-  tests_result = run_tests(
+  run_tests(
     workspace: WORKSPACE_PATH,
     scheme: TEST_SCHEME,
     device: options[:device],
@@ -1381,19 +1430,8 @@ lane :test_without_building do |options|
     test_without_building: true,
     xctestrun: xctestrun_path,
     result_bundle: true,
-    # settings for XML test report generation via `trainer`
-    output_types: '',
-    fail_build: false
+    output_types: 'junit'
   )
-
-  trainer(
-    path: lane_context[SharedValues::SCAN_GENERATED_XCRESULT_PATH],
-    output_remove_retry_attempts: true,
-    fail_build: true
-  )
-
-  # `trainer` sometimes doesn't detect test failures, so we manually throw an error in the lane if there are failures to make sure there are no false positives
-  UI.user_error!("Tests failed with #{tests_result[:number_of_failures_excluding_retries]} failures.") if tests_result[:number_of_failures_excluding_retries].positive?
 end
 
 # -----------------------------------------------------------------------------------
@@ -1432,24 +1470,6 @@ def trigger_buildkite_release_build(branch:, beta:)
 
     UI.success("Release build triggered on #{branch}: #{build_url}")
   end
-end
-
-def inject_buildkite_analytics_environment(xctestrun_path:)
-  require 'plist'
-
-  xctestrun = Plist.parse_xml(xctestrun_path)
-  xctestrun['TestConfigurations'].each do |configuration|
-    configuration['TestTargets'].each do |target|
-      TEST_ANALYTICS_ENVIRONMENT.each do |key|
-        value = ENV.fetch(key)
-        next if value.nil?
-
-        target['EnvironmentVariables'][key] = value
-      end
-    end
-  end
-
-  File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
 end
 
 # -----------------------------------------------------------------------------------
@@ -1527,10 +1547,6 @@ def commit_version_bump
   )
 end
 
-def buildkite_ci?
-  ENV.fetch('BUILDKITE', false)
-end
-
 def prompt_user_for_app_store_connect_credentials
   require 'credentials_manager'
 
@@ -1541,18 +1557,6 @@ def prompt_user_for_app_store_connect_credentials
   # to check it so we have to do it anyway.
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 end
-
-# https://buildkite.com/docs/test-analytics/ci-environments
-TEST_ANALYTICS_ENVIRONMENT = %w[
-  BUILDKITE_ANALYTICS_TOKEN
-  BUILDKITE_BUILD_ID
-  BUILDKITE_BUILD_NUMBER
-  BUILDKITE_JOB_ID
-  BUILDKITE_BRANCH
-  BUILDKITE_COMMIT
-  BUILDKITE_MESSAGE
-  BUILDKITE_BUILD_URL
-].freeze
 
 # -----------------------------------------------------------------------------------
 # Release Management Utils

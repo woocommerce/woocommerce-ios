@@ -11,6 +11,8 @@ extension WooAnalyticsEvent {
             case site
             case orders
             case products
+            case analytics
+            case notifications
         }
 
         static func automaticTimeoutRetry() -> WooAnalyticsEvent {

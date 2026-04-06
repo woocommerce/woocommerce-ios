@@ -112,10 +112,10 @@ struct POSOrderListStateTests {
         #expect(inlineErrorState.orders.count == 2)
 
         let emptyState = POSOrderListState.empty
-        #expect(emptyState.orders.count == 0)
+        #expect(emptyState.orders.isEmpty)
 
         let fullErrorState = POSOrderListState.error(errorState)
-        #expect(fullErrorState.orders.count == 0)
+        #expect(fullErrorState.orders.isEmpty)
     }
 }
 
@@ -124,14 +124,14 @@ private extension POSOrderListStateTests {
         [
             POSOrder(id: 1, number: "1001", dateCreated: Date(), status: .completed,
                      formattedTotal: "$10.00", formattedSubtotal: "$10.00", customerEmail: "test1@example.com",
-                     paymentMethodTitle: "Credit Card", lineItems: [],
+                     paymentMethodID: "woocommerce_payments", paymentMethodTitle: "Credit Card", lineItems: [],
                      refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
-                     formattedPaymentTotal: "$10.00", formattedNetAmount: nil),
+                     formattedPaymentTotal: "$10.00", formattedNetAmount: nil, datePaid: Date()),
             POSOrder(id: 2, number: "1002", dateCreated: Date(), status: .completed,
                      formattedTotal: "$20.00", formattedSubtotal: "$20.00", customerEmail: "test2@example.com",
-                     paymentMethodTitle: "Cash", lineItems: [],
+                     paymentMethodID: "cod", paymentMethodTitle: "Cash", lineItems: [],
                      refunds: [], formattedDiscountTotal: nil, formattedTotalTax: "$0.00",
-                     formattedPaymentTotal: "$20.00", formattedNetAmount: nil)
+                     formattedPaymentTotal: "$20.00", formattedNetAmount: nil, datePaid: Date())
         ]
     }
 }

@@ -115,6 +115,11 @@ final class MainTabBarControllerTests: XCTestCase {
                 completion()
             }
         }
+        storesManager.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            if case let .reset(completion) = action {
+                completion()
+            }
+        }
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController, isAnInstanceOf: HubMenuViewController.self)
@@ -437,6 +442,7 @@ final class MainTabBarControllerTests: XCTestCase {
         TestingAppDelegate.mockTabBarController = nil
     }
 
+    @MainActor
     func test_pos_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
         // Given
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
@@ -509,6 +515,7 @@ final class MainTabBarControllerTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_pos_tab_visibility_is_cached_after_eligibility_check() throws {
         // Given
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()
@@ -667,6 +674,7 @@ final class MainTabBarControllerTests: XCTestCase {
                        "POS tab should not be visible for Site B")
     }
 
+    @MainActor
     func test_bookings_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
         // Given
         let mockBookingsEligibilityChecker = MockAsyncBookingsEligibilityChecker()
@@ -785,7 +793,8 @@ extension MainTabBarController {
     }
 }
 
-private final class MockAsyncPOSEligibilityChecker: POSTabVisibilityCheckerProtocol {
+@MainActor
+private final class MockAsyncPOSEligibilityChecker: @preconcurrency POSTabVisibilityCheckerProtocol {
     var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
@@ -808,15 +817,12 @@ private final class MockAsyncPOSEligibilityChecker: POSTabVisibilityCheckerProto
         }
         return await withCheckedContinuation { continuation in
             visibilityContinuation = continuation
-            // If we already have a result, return it immediately.
-            if visibilityContinuation == nil {
-                continuation.resume(returning: visibilityResult ?? true)
-            }
         }
     }
 }
 
-private final class MockAsyncBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
+@MainActor
+private final class MockAsyncBookingsEligibilityChecker: @preconcurrency BookingsTabEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?
@@ -839,10 +845,6 @@ private final class MockAsyncBookingsEligibilityChecker: BookingsTabEligibilityC
         }
         return await withCheckedContinuation { continuation in
             visibilityContinuation = continuation
-            // If we already have a result, return it immediately.
-            if visibilityContinuation == nil {
-                continuation.resume(returning: visibilityResult ?? true)
-            }
         }
     }
 }

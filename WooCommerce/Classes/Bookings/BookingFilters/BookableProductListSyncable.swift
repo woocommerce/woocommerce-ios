@@ -92,19 +92,19 @@ struct BookableProductListSyncable: ListSyncable {
 private extension BookableProductListSyncable {
     enum Localization {
         static let title = NSLocalizedString(
-            "bookingServiceEventSelectorView.title",
-            value: "Service / Event",
-            comment: "Title of the booking service/event selector view"
+            "bookingServiceSelectorView.title",
+            value: "Service",
+            comment: "Title of the booking service selector view"
         )
         static let noServiceFound = NSLocalizedString(
-            "bookingServiceEventSelectorView.noMembersFound",
-            value: "No service or event found",
-            comment: "Text on the empty view of the booking service/event selector view"
+            "bookingServiceSelectorView.noMembersFound",
+            value: "No service found",
+            comment: "Text on the empty view of the booking service selector view"
         )
         static let searchPrompt = NSLocalizedString(
-            "bookingServiceEventSelectorView.searchPrompt",
-            value: "Search service / event",
-            comment: "Prompt in the search bar of the booking service/event selector view"
+            "bookingServiceSelectorView.searchPrompt",
+            value: "Search service",
+            comment: "Prompt in the search bar of the booking service selector view"
         )
         static let emptySearchDescription = NSLocalizedString(
             "bookingServiceEventSelectorView.emptySearchDescription",

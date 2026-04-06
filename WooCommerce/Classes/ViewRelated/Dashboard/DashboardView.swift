@@ -337,6 +337,9 @@ private extension DashboardView {
                 viewModel.hideWPComConnectionSuggestion()
             }
         )
+        .onAppear {
+            viewModel.onConnectWPComCardAppear()
+        }
     }
 
     var newCardsNoticeCard: some View {

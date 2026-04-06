@@ -21,9 +21,20 @@ extension AgeRangeVerificationCoordinator {
 
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
     private let featureFlagService: FeatureFlagService
+    private let ageRangeVerificationService: AgeRangeVerificationServiceProtocol
+    private let significantChangeConsentCoordinator: SignificantChangeConsentCoordinator
+    private let ageRatingChangeDetector: AgeRatingChangeDetecting
 
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(
+        featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+        ageRangeVerificationService: AgeRangeVerificationServiceProtocol = ServiceLocator.ageRangeVerificationService,
+        significantChangeConsentCoordinator: SignificantChangeConsentCoordinator = SignificantChangeConsentCoordinator(),
+        ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector()
+    ) {
         self.featureFlagService = featureFlagService
+        self.ageRangeVerificationService = ageRangeVerificationService
+        self.significantChangeConsentCoordinator = significantChangeConsentCoordinator
+        self.ageRatingChangeDetector = ageRatingChangeDetector
     }
 
     /// Triggers the age range verification flow.
@@ -40,6 +51,15 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
+        performAgeVerification(hostingWindow: hostingWindow, onResult: onResult)
+    }
+}
+
+private extension AgeRangeVerificationCoordinator {
+    func performAgeVerification(
+        hostingWindow: UIWindow,
+        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
+    ) {
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
             // Allow flow to continue if we can't present the dialogue.
@@ -47,26 +67,45 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
-        ServiceLocator.ageRangeVerificationService.verifyAgeRange(
+        ageRangeVerificationService.verifyAgeRange(
             in: anchor,
             minimumAge: Constants.minimumTOSRequiredAge
         ) { result in
-            let decision: AppAccessDescision
             switch result {
-            case .eligible:
-                decision = .allow
+            case let .eligible(significantAppChangeApprovalRequired, isMinor):
+                DDLogInfo(
+                    "Age is eligible. significantAppChangeApprovalRequired: \(significantAppChangeApprovalRequired), isMinor: \(isMinor)"
+                )
+                guard isMinor, significantAppChangeApprovalRequired else {
+                    onResult(.allow, result)
+                    return
+                }
+
+                Task { @MainActor in
+                    let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
+                    let outcome = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
+                        in: anchor,
+                        ageRatingChange: ageRatingChange
+                    )
+                    switch outcome {
+                    case .denied:
+                        // TODO: decide on a dedicated result when consent is rejected.
+                        onResult(.denyAndLogout, .ineligible)
+                    case .granted, .notAvailable, .unknown:
+                        onResult(.allow, result)
+                    }
+                }
             case .ineligible:
-                decision = .denyAndLogout
+                onResult(.denyAndLogout, result)
             case .declinedSharing,
                  .featureUnavailable,
+                 .ineligibleForAgeFeatures,
                  .invalidUIState,
                  .sdkError,
                  .unknown:
                 // Non-deterministic/unavailable results are treated as allowed.
-                decision = .allow
+                onResult(.allow, result)
             }
-
-            onResult(decision, result)
         }
     }
 }

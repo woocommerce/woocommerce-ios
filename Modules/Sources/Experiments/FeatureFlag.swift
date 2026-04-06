@@ -26,10 +26,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case updateOrderOptimistically
 
-    /// Enable Shipping Labels Onboarding M1 (display the banner in Order Detail screen for installing the WCShip plugin)
-    ///
-    case shippingLabelsOnboardingM1
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU
@@ -192,14 +188,14 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleLocalCatalogi1
 
+    /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
+    /// Only has effect when pointOfSaleLocalCatalogi1 is also enabled.
+    ///
+    case pointOfSaleFTSSearch
+
     /// Enables a new Bookings tab for CIAB sites
     ///
     case ciabBookings
-
-    /// Represents CIAB environment availability overall
-    /// Has same underlying logic as `ciabBookings` flag.
-    ///
-    case ciab
 
     /// Enables using the catalog API endpoint for Point of Sale catalog full sync
     ///
@@ -209,6 +205,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
+    /// Enables the bookings functionality within POS
+    ///
+    case pointOfSaleBookings
+
     /// Enables self driven push token registration for users authenticated with WPCom
     ///
     case selfDrivenPushTokenWPCom
@@ -216,10 +216,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables self driven push token registration for users authenticated with app passwords
     ///
     case selfDrivenPushTokenAppPasswords
-
-    /// Enables POS-only products filtering
-    ///
-    case pointOfSaleOnlyProducts
 
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
@@ -229,4 +225,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Enables FedEx as a carrier option in WooShipping label creation
+    ///
+    case wooShippingFedEx
 }

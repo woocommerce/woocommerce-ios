@@ -7,20 +7,25 @@ import struct WooFoundation.WooAnalyticsEvent
 /// Protocol for handling actions on POS items
 protocol POSItemActionHandler {
     /// Handles a tap on an item
-    /// - Parameter item: The item that was tapped
-    func handleTap(_ item: POSItem)
+    /// - Parameters:
+    ///   - item: The item that was tapped
+    ///   - position: The position of the item in the list (0-based)
+    func handleTap(_ item: POSItem, position: Int)
 }
 
 extension POSItemActionHandler {
     /// Default implementation for analytics tracking
-    /// - Parameter item: The item that was tapped
-    /// - Parameter source: The source of the event
-    /// - Parameter sourceType: The type of the source
-    /// - Parameter using: The analytics service to track to
+    /// - Parameters:
+    ///   - item: The item that was tapped
+    ///   - sourceView: The source view of the event
+    ///   - sourceViewType: The type of the source view
+    ///   - resultPosition: The position of the item in the list (0-based)
+    ///   - analytics: The analytics service to track to
     func trackTapAnalytics(
         for item: POSItem,
         sourceView: WooAnalyticsEvent.PointOfSale.SourceView,
         sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
+        resultPosition: Int,
         using analytics: POSAnalyticsProviding
     ) {
         switch item {
@@ -30,16 +35,18 @@ extension POSItemActionHandler {
                     sourceView: sourceView,
                     sourceViewType: sourceViewType,
                     itemType: .product,
-                    productType: .simple
+                    productType: .simple,
+                    resultPosition: resultPosition
                 )
             )
-        case .variation:
+        case .variation, .searchResultVariation:
             analytics.track(
                 event: .PointOfSale.addItemToCart(
                     sourceView: sourceView,
                     sourceViewType: sourceViewType,
                     itemType: .product,
-                    productType: .variation
+                    productType: .variation,
+                    resultPosition: resultPosition
                 )
             )
         case .coupon:
@@ -47,7 +54,8 @@ extension POSItemActionHandler {
                 event: .PointOfSale.addItemToCart(
                     sourceView: sourceView,
                     sourceViewType: sourceViewType,
-                    itemType: .coupon
+                    itemType: .coupon,
+                    resultPosition: resultPosition
                 )
             )
         default:
@@ -83,7 +91,7 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
         self.analytics = analytics
     }
 
-    func handleTap(_ item: POSItem) {
+    func handleTap(_ item: POSItem, position: Int) {
         if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
@@ -93,6 +101,7 @@ final class StandardPOSItemActionHandler: POSItemActionHandler {
             for: item,
             sourceView: sourceView,
             sourceViewType: sourceViewType,
+            resultPosition: position,
             using: analytics
         )
     }
@@ -118,7 +127,7 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
         self.analytics = analytics
     }
 
-    func handleTap(_ item: POSItem) {
+    func handleTap(_ item: POSItem, position: Int) {
         if shouldSkipDuplicate(item, posModel: posModel) {
             return
         }
@@ -129,10 +138,13 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
 
         posModel.addToCart(item)
 
+        let sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType = searchTerm.isEmpty ? .preSearch : .search
+
         trackTapAnalytics(
             for: item,
             sourceView: sourceView,
-            sourceViewType: searchTerm.isEmpty ? .preSearch : .search,
+            sourceViewType: sourceViewType,
+            resultPosition: position,
             using: analytics
         )
     }

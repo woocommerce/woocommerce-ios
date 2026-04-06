@@ -5,7 +5,6 @@ import Codegen
 import Foundation
 import WooFoundation
 import struct Alamofire.JSONEncoding
-import struct NetworkingCore.JetpackSite
 
 // swiftlint:disable line_length
 
@@ -436,6 +435,7 @@ extension Networking.Booking {
         allDay: CopiableProp<Bool> = .copy,
         cost: CopiableProp<String> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
         dateCreated: NullableCopiableProp<Date> = .copy,
         dateModified: NullableCopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
@@ -458,6 +458,7 @@ extension Networking.Booking {
         let allDay = allDay ?? self.allDay
         let cost = cost ?? self.cost
         let customerID = customerID ?? self.customerID
+        let userID = userID ?? self.userID
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
         let endDate = endDate ?? self.endDate
@@ -481,6 +482,7 @@ extension Networking.Booking {
             allDay: allDay,
             cost: cost,
             customerID: customerID,
+            userID: userID,
             dateCreated: dateCreated,
             dateModified: dateModified,
             endDate: endDate,
@@ -1298,57 +1300,6 @@ extension Networking.NotificationSettings.Device {
             deviceID: deviceID,
             newComment: newComment,
             storeOrder: storeOrder
-        )
-    }
-}
-
-extension Networking.OrderItemRefund {
-    public func copy(
-        itemID: CopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
-        productID: CopiableProp<Int64> = .copy,
-        variationID: CopiableProp<Int64> = .copy,
-        refundedItemID: NullableCopiableProp<String> = .copy,
-        quantity: CopiableProp<Decimal> = .copy,
-        price: CopiableProp<NSDecimalNumber> = .copy,
-        sku: NullableCopiableProp<String> = .copy,
-        subtotal: CopiableProp<String> = .copy,
-        subtotalTax: CopiableProp<String> = .copy,
-        taxClass: CopiableProp<String> = .copy,
-        taxes: CopiableProp<[OrderItemTaxRefund]> = .copy,
-        total: CopiableProp<String> = .copy,
-        totalTax: CopiableProp<String> = .copy
-    ) -> Networking.OrderItemRefund {
-        let itemID = itemID ?? self.itemID
-        let name = name ?? self.name
-        let productID = productID ?? self.productID
-        let variationID = variationID ?? self.variationID
-        let refundedItemID = refundedItemID ?? self.refundedItemID
-        let quantity = quantity ?? self.quantity
-        let price = price ?? self.price
-        let sku = sku ?? self.sku
-        let subtotal = subtotal ?? self.subtotal
-        let subtotalTax = subtotalTax ?? self.subtotalTax
-        let taxClass = taxClass ?? self.taxClass
-        let taxes = taxes ?? self.taxes
-        let total = total ?? self.total
-        let totalTax = totalTax ?? self.totalTax
-
-        return Networking.OrderItemRefund(
-            itemID: itemID,
-            name: name,
-            productID: productID,
-            variationID: variationID,
-            refundedItemID: refundedItemID,
-            quantity: quantity,
-            price: price,
-            sku: sku,
-            subtotal: subtotal,
-            subtotalTax: subtotalTax,
-            taxClass: taxClass,
-            taxes: taxes,
-            total: total,
-            totalTax: totalTax
         )
     }
 }
@@ -2436,48 +2387,6 @@ extension Networking.Receipt {
     }
 }
 
-extension Networking.Refund {
-    public func copy(
-        refundID: CopiableProp<Int64> = .copy,
-        orderID: CopiableProp<Int64> = .copy,
-        siteID: CopiableProp<Int64> = .copy,
-        dateCreated: CopiableProp<Date> = .copy,
-        amount: CopiableProp<String> = .copy,
-        reason: CopiableProp<String> = .copy,
-        refundedByUserID: CopiableProp<Int64> = .copy,
-        isAutomated: NullableCopiableProp<Bool> = .copy,
-        createAutomated: NullableCopiableProp<Bool> = .copy,
-        items: CopiableProp<[OrderItemRefund]> = .copy,
-        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy
-    ) -> Networking.Refund {
-        let refundID = refundID ?? self.refundID
-        let orderID = orderID ?? self.orderID
-        let siteID = siteID ?? self.siteID
-        let dateCreated = dateCreated ?? self.dateCreated
-        let amount = amount ?? self.amount
-        let reason = reason ?? self.reason
-        let refundedByUserID = refundedByUserID ?? self.refundedByUserID
-        let isAutomated = isAutomated ?? self.isAutomated
-        let createAutomated = createAutomated ?? self.createAutomated
-        let items = items ?? self.items
-        let shippingLines = shippingLines ?? self.shippingLines
-
-        return Networking.Refund(
-            refundID: refundID,
-            orderID: orderID,
-            siteID: siteID,
-            dateCreated: dateCreated,
-            amount: amount,
-            reason: reason,
-            refundedByUserID: refundedByUserID,
-            isAutomated: isAutomated,
-            createAutomated: createAutomated,
-            items: items,
-            shippingLines: shippingLines
-        )
-    }
-}
-
 extension Networking.RemoteReaderLocation {
     public func copy(
         locationID: CopiableProp<String> = .copy,
@@ -2837,93 +2746,6 @@ extension Networking.ShippingLabelPurchase {
             productNames: productNames,
             shipmentID: shipmentID,
             refund: refund
-        )
-    }
-}
-
-extension Networking.Site {
-    public func copy(
-        siteID: CopiableProp<Int64> = .copy,
-        name: CopiableProp<String> = .copy,
-        description: CopiableProp<String> = .copy,
-        url: CopiableProp<String> = .copy,
-        adminURL: CopiableProp<String> = .copy,
-        loginURL: CopiableProp<String> = .copy,
-        isSiteOwner: CopiableProp<Bool> = .copy,
-        frameNonce: CopiableProp<String> = .copy,
-        plan: CopiableProp<String> = .copy,
-        isAIAssistantFeatureActive: CopiableProp<Bool> = .copy,
-        isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
-        isJetpackConnected: CopiableProp<Bool> = .copy,
-        isWooCommerceActive: CopiableProp<Bool> = .copy,
-        isWordPressComStore: CopiableProp<Bool> = .copy,
-        jetpackConnectionActivePlugins: CopiableProp<[String]> = .copy,
-        timezone: CopiableProp<String> = .copy,
-        gmtOffset: CopiableProp<Double> = .copy,
-        visibility: CopiableProp<SiteVisibility> = .copy,
-        canBlaze: CopiableProp<Bool> = .copy,
-        isAdmin: CopiableProp<Bool> = .copy,
-        wasEcommerceTrial: CopiableProp<Bool> = .copy,
-        hasSSOEnabled: CopiableProp<Bool> = .copy,
-        applicationPasswordAvailable: CopiableProp<Bool> = .copy,
-        isGarden: CopiableProp<Bool> = .copy,
-        gardenName: NullableCopiableProp<String> = .copy,
-        gardenPartner: NullableCopiableProp<String> = .copy
-    ) -> Networking.Site {
-        let siteID = siteID ?? self.siteID
-        let name = name ?? self.name
-        let description = description ?? self.description
-        let url = url ?? self.url
-        let adminURL = adminURL ?? self.adminURL
-        let loginURL = loginURL ?? self.loginURL
-        let isSiteOwner = isSiteOwner ?? self.isSiteOwner
-        let frameNonce = frameNonce ?? self.frameNonce
-        let plan = plan ?? self.plan
-        let isAIAssistantFeatureActive = isAIAssistantFeatureActive ?? self.isAIAssistantFeatureActive
-        let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
-        let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
-        let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
-        let isWordPressComStore = isWordPressComStore ?? self.isWordPressComStore
-        let jetpackConnectionActivePlugins = jetpackConnectionActivePlugins ?? self.jetpackConnectionActivePlugins
-        let timezone = timezone ?? self.timezone
-        let gmtOffset = gmtOffset ?? self.gmtOffset
-        let visibility = visibility ?? self.visibility
-        let canBlaze = canBlaze ?? self.canBlaze
-        let isAdmin = isAdmin ?? self.isAdmin
-        let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
-        let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
-        let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
-        let isGarden = isGarden ?? self.isGarden
-        let gardenName = gardenName ?? self.gardenName
-        let gardenPartner = gardenPartner ?? self.gardenPartner
-
-        return Networking.Site(
-            siteID: siteID,
-            name: name,
-            description: description,
-            url: url,
-            adminURL: adminURL,
-            loginURL: loginURL,
-            isSiteOwner: isSiteOwner,
-            frameNonce: frameNonce,
-            plan: plan,
-            isAIAssistantFeatureActive: isAIAssistantFeatureActive,
-            isJetpackThePluginInstalled: isJetpackThePluginInstalled,
-            isJetpackConnected: isJetpackConnected,
-            isWooCommerceActive: isWooCommerceActive,
-            isWordPressComStore: isWordPressComStore,
-            jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
-            timezone: timezone,
-            gmtOffset: gmtOffset,
-            visibility: visibility,
-            canBlaze: canBlaze,
-            isAdmin: isAdmin,
-            wasEcommerceTrial: wasEcommerceTrial,
-            hasSSOEnabled: hasSSOEnabled,
-            applicationPasswordAvailable: applicationPasswordAvailable,
-            isGarden: isGarden,
-            gardenName: gardenName,
-            gardenPartner: gardenPartner
         )
     }
 }
@@ -3562,6 +3384,7 @@ extension Networking.WooShippingAddress {
     public func copy(
         company: CopiableProp<String> = .copy,
         name: CopiableProp<String> = .copy,
+        email: NullableCopiableProp<String> = .copy,
         phone: CopiableProp<String> = .copy,
         country: CopiableProp<String> = .copy,
         state: CopiableProp<String> = .copy,
@@ -3572,6 +3395,7 @@ extension Networking.WooShippingAddress {
     ) -> Networking.WooShippingAddress {
         let company = company ?? self.company
         let name = name ?? self.name
+        let email = email ?? self.email
         let phone = phone ?? self.phone
         let country = country ?? self.country
         let state = state ?? self.state
@@ -3583,6 +3407,7 @@ extension Networking.WooShippingAddress {
         return Networking.WooShippingAddress(
             company: company,
             name: name,
+            email: email,
             phone: phone,
             country: country,
             state: state,
@@ -3713,6 +3538,7 @@ extension Networking.WooShippingNormalizedAddress {
         company: CopiableProp<String> = .copy,
         firstName: CopiableProp<String> = .copy,
         lastName: CopiableProp<String> = .copy,
+        email: NullableCopiableProp<String> = .copy,
         phone: CopiableProp<String> = .copy,
         country: CopiableProp<String> = .copy,
         state: CopiableProp<String> = .copy,
@@ -3724,6 +3550,7 @@ extension Networking.WooShippingNormalizedAddress {
         let company = company ?? self.company
         let firstName = firstName ?? self.firstName
         let lastName = lastName ?? self.lastName
+        let email = email ?? self.email
         let phone = phone ?? self.phone
         let country = country ?? self.country
         let state = state ?? self.state
@@ -3736,6 +3563,7 @@ extension Networking.WooShippingNormalizedAddress {
             company: company,
             firstName: firstName,
             lastName: lastName,
+            email: email,
             phone: phone,
             country: country,
             state: state,

@@ -7,6 +7,14 @@ public protocol FeatureFlagOverrideStore {
     /// Pass `nil` to clear the override for that flag.
     func setOverrideValue(_ value: Bool?, for featureFlag: FeatureFlag)
 
+    /// `nil` means "no override", caller should fall back to defaults.
+    /// Use this for any flag type by providing a string key.
+    func overrideValue(forKey key: String) -> Bool?
+
+    /// Pass `nil` to clear the override for that key.
+    /// Use this for any flag type by providing a string key.
+    func setOverrideValue(_ value: Bool?, forKey key: String)
+
     func removeAllOverrides()
 }
 
@@ -24,22 +32,30 @@ public final class UserDefaultsFeatureFlagOverrideStore: FeatureFlagOverrideStor
     }
 
     public func overrideValue(for featureFlag: FeatureFlag) -> Bool? {
-        queue.sync {
-            let key = storageKey(for: featureFlag)
-            guard userDefaults.object(forKey: key) != nil else {
-                return nil
-            }
-            return userDefaults.bool(forKey: key)
-        }
+        overrideValue(forKey: String(describing: featureFlag))
     }
 
     public func setOverrideValue(_ value: Bool?, for featureFlag: FeatureFlag) {
+        setOverrideValue(value, forKey: String(describing: featureFlag))
+    }
+
+    public func overrideValue(forKey key: String) -> Bool? {
         queue.sync {
-            let key = storageKey(for: featureFlag)
+            let fullKey = keyPrefix + key
+            guard userDefaults.object(forKey: fullKey) != nil else {
+                return nil
+            }
+            return userDefaults.bool(forKey: fullKey)
+        }
+    }
+
+    public func setOverrideValue(_ value: Bool?, forKey key: String) {
+        queue.sync {
+            let fullKey = keyPrefix + key
             if let value {
-                userDefaults.set(value, forKey: key)
+                userDefaults.set(value, forKey: fullKey)
             } else {
-                userDefaults.removeObject(forKey: key)
+                userDefaults.removeObject(forKey: fullKey)
             }
         }
     }
@@ -53,7 +69,4 @@ public final class UserDefaultsFeatureFlagOverrideStore: FeatureFlagOverrideStor
         }
     }
 
-    private func storageKey(for featureFlag: FeatureFlag) -> String {
-        keyPrefix + String(describing: featureFlag)
-    }
 }

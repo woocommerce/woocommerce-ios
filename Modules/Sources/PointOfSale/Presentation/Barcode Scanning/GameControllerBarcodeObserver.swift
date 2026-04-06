@@ -24,6 +24,13 @@ final class GameControllerBarcodeObserver {
     /// Tracks current shift state to be applied to the next character key
     private var isShiftPressed: Bool = false
 
+    /// Tracks which observer instance currently owns the coalesced keyboard's keyChangedHandler.
+    /// Since all keyboards are coalesced into a single GCKeyboard, multiple observers share
+    /// one keyChangedHandler slot. This token prevents an older observer's cleanup from
+    /// nilling out a handler that was set by a newer observer during SwiftUI view transitions.
+    private static var activeHandlerToken: UUID?
+    private var handlerToken: UUID?
+
     /// Initializes a new barcode scanner observer.
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
@@ -92,6 +99,10 @@ final class GameControllerBarcodeObserver {
         // Clean up any existing setup first
         cleanupKeyboard()
 
+        let token = UUID()
+        handlerToken = token
+        Self.activeHandlerToken = token
+
         coalescedKeyboard = keyboard
         barcodeParser = GameControllerBarcodeParser(
             configuration: configuration,
@@ -115,12 +126,18 @@ final class GameControllerBarcodeObserver {
     }
 
     /// Cleans up the coalesced keyboard and its parser.
+    /// Only nils the shared keyChangedHandler if this observer is still the active owner,
+    /// preventing cleanup of a stale observer from destroying a newer observer's handler.
     private func cleanupKeyboard() {
-        coalescedKeyboard?.keyboardInput?.keyChangedHandler = nil
+        if let handlerToken, handlerToken == Self.activeHandlerToken {
+            coalescedKeyboard?.keyboardInput?.keyChangedHandler = nil
+            Self.activeHandlerToken = nil
+        }
         barcodeParser?.cancel()
         coalescedKeyboard = nil
         barcodeParser = nil
         isShiftPressed = false
+        handlerToken = nil
     }
 
     private func handleScanResult(_ result: HIDBarcodeParserResult) {

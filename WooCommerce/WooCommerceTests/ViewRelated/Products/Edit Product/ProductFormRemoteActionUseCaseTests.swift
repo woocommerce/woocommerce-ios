@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class ProductFormRemoteActionUseCaseTests: XCTestCase {
@@ -471,6 +472,46 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
         XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
+    }
+
+    func test_duplicating_product_with_custom_fields_dispatches_metadata_update_action() throws {
+        // Given
+        let customFields = [
+            MetaData(metadataID: 1, key: "color", value: "red"),
+            MetaData(metadataID: 2, key: "size", value: "large")
+        ]
+        let product = Product.fake().copy(siteID: siteID, productID: 5, customFields: customFields)
+        let model = EditableProductModel(product: product)
+        let duplicatedProduct = Product.fake().copy(siteID: siteID, productID: 99)
+        mockAddProduct(result: .success(duplicatedProduct))
+
+        var receivedParentItemID: Int64?
+        var receivedMetadata: [[String: Any?]]?
+        storesManager.whenReceivingAction(ofType: MetaDataAction.self) { action in
+            if case let MetaDataAction.updateMetaData(_, parentItemID, _, metadata, onCompletion) = action {
+                receivedParentItemID = parentItemID
+                receivedMetadata = metadata
+                onCompletion(.success([]))
+            }
+        }
+
+        let useCase = ProductFormRemoteActionUseCase(stores: storesManager)
+
+        // When
+        var result: Result<ResultData, ProductUpdateError>?
+        useCase.duplicateProduct(originalProduct: model, password: nil) { result = $0 }
+
+        // Then
+        XCTAssertEqual(receivedParentItemID, 99)
+        XCTAssertEqual(receivedMetadata?.count, 2)
+        XCTAssertEqual(receivedMetadata?[0]["key"] as? String, "color")
+        XCTAssertEqual(receivedMetadata?[0]["value"] as? String, "red")
+        XCTAssertEqual(receivedMetadata?[1]["key"] as? String, "size")
+        XCTAssertEqual(receivedMetadata?[1]["value"] as? String, "large")
+
+        // Verify the returned product optimistically includes custom fields
+        let returnedProduct = try XCTUnwrap(result?.get().product)
+        XCTAssertEqual(returnedProduct.product.customFields, customFields)
     }
 
     func test_duplicating_variable_product_triggers_retrieving_original_product_variations_and_creating_new_variations_for_duplicated_product() {

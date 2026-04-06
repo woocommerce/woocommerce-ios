@@ -15,13 +15,13 @@ class PriceFieldFormatter {
     /// Current amount converted to Decimal.
     ///
     var amountDecimal: Decimal {
-        guard let decimal = decimalFormatter.number(from: amount)?.decimalValue else {
-            if amount.isNotEmpty {
-                DDLogError("Failed to convert amount to Decimal: \(amount)")
-            }
+        guard amount.isNotEmpty else { return .zero }
+        let storeDecimalSeparator = storeCurrencySettings.sanitizedDecimalSeparator
+        let normalizedAmount = amount.replacingOccurrences(of: storeDecimalSeparator, with: ".")
+        guard let decimal = Decimal(string: normalizedAmount) else {
+            DDLogError("Failed to convert amount to Decimal: \(amount)")
             return .zero
         }
-
         return decimal
     }
 
@@ -51,36 +51,25 @@ class PriceFieldFormatter {
     ///
     private let currencyFormatter: CurrencyFormatter
 
-    /// Current store currency symbol
-    ///
-    private let storeCurrencySymbol: String
-
     /// Setting to allow negative number input
     ///
     private let allowNegativeNumber: Bool
 
     private let minusSign: String = NumberFormatter().minusSign
 
-    /// Price Field number formatter with store decimal separator without thousands separator
-    ///
-    private lazy var decimalFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.decimalSeparator = storeCurrencySettings.sanitizedDecimalSeparator
-        formatter.maximumFractionDigits = storeCurrencySettings.fractionDigits
-        formatter.minimumFractionDigits = storeCurrencySettings.fractionDigits
-        formatter.usesGroupingSeparator = false
-        formatter.numberStyle = .decimal
-        return formatter
-    }()
+    private let sanitizer: CurrencyInputSanitizer
 
     init(locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          allowNegativeNumber: Bool = false) {
         self.userLocale = locale
         self.storeCurrencySettings = storeCurrencySettings
-        self.storeCurrencySymbol = storeCurrencySettings.symbol(from: storeCurrencySettings.currencyCode)
         self.currencyFormatter = CurrencyFormatter(currencySettings: storeCurrencySettings)
         self.allowNegativeNumber = allowNegativeNumber
+        self.sanitizer = CurrencyInputSanitizer(
+            currencySettings: storeCurrencySettings,
+            deviceDecimalSeparator: locale.decimalSeparator
+        )
     }
 
     /// Formats user input by removing non-numeric symbols, thousands separator, and using store's currency settings.
@@ -103,7 +92,7 @@ class PriceFieldFormatter {
     /// Formats user input without thousands separator using store's currency settings
     ///
     func formatAmount(_ decimal: Decimal) -> String {
-        amount = formatSanitizedAmount(decimalFormatter.string(from: decimal as NSNumber) ?? decimal.formatted())
+        amount = formatSanitizedAmount(sanitizer.formatDecimal(decimal))
         amountWithSymbol = setCurrencySymbol(to: amount)
         return amount
     }
@@ -128,10 +117,9 @@ private extension PriceFieldFormatter {
         return negativePrefix + sanitized
     }
 
-    /// Formats a received sanitized value by trimming content to two decimal places.
+    /// Formats a received sanitized value by trimming content to the allowed number of decimal places.
     ///
     func formatSanitizedAmount(_ amount: String) -> String {
-        // Trim to two decimals & remove any extra "."
         let storeDecimalSeparator = storeCurrencySettings.sanitizedDecimalSeparator
         let storeNumberOfDecimals = storeCurrencySettings.fractionDigits
 
@@ -151,12 +139,9 @@ private extension PriceFieldFormatter {
         }
     }
 
-    /// Formats a received value by adding the store currency symbol to it's correct position.
+    /// Formats a received value by adding the store currency symbol to its correct position.
     ///
     func setCurrencySymbol(to amount: String) -> String {
-        currencyFormatter.formatCurrency(using: amount,
-                                         currencyPosition: storeCurrencySettings.currencyPosition,
-                                         currencySymbol: storeCurrencySymbol,
-                                         isNegative: allowNegativeNumber && amount.hasPrefix(minusSign))
+        sanitizer.addCurrencySymbol(to: amount, isNegative: allowNegativeNumber && amount.hasPrefix(minusSign))
     }
 }

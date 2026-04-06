@@ -27,6 +27,12 @@ public extension UIColor {
                         dark: withColorStudio(.red, shade: .shade30))
     }
 
+    /// Success. RGB(112, 185, 84)
+    ///
+    static var success: UIColor {
+        return UIColor(named: "Success", in: ColorStudio.bundle, compatibleWith: nil) ?? .systemGreen
+    }
+
     /// Primary. resolves to accent, WooCommercePurple-40 (Light mode) and WooCommercePurple-30 (Dark mode)
     ///
     static var primary: UIColor = .accent

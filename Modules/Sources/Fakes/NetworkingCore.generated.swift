@@ -175,6 +175,8 @@ extension NetworkingCore.Order {
             paymentMethodTitle: .fake(),
             paymentURL: .fake(),
             chargeID: .fake(),
+            paymentStatusMetadata: .fake(),
+            fulfillmentStatus: .fake(),
             items: .fake(),
             billingAddress: .fake(),
             shippingAddress: .fake(),
@@ -239,6 +241,13 @@ extension NetworkingCore.OrderFeeTaxStatus {
     ///
     public static func fake() -> NetworkingCore.OrderFeeTaxStatus {
         .taxable
+    }
+}
+extension NetworkingCore.OrderFulfillmentStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.OrderFulfillmentStatus {
+        .fulfilled
     }
 }
 extension NetworkingCore.OrderGiftCard {
@@ -314,10 +323,43 @@ extension NetworkingCore.OrderItemProductAddOn {
         )
     }
 }
+extension NetworkingCore.OrderItemRefund {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.OrderItemRefund {
+        .init(
+            itemID: .fake(),
+            name: .fake(),
+            productID: .fake(),
+            variationID: .fake(),
+            refundedItemID: .fake(),
+            quantity: .fake(),
+            price: .fake(),
+            sku: .fake(),
+            subtotal: .fake(),
+            subtotalTax: .fake(),
+            taxClass: .fake(),
+            taxes: .fake(),
+            total: .fake(),
+            totalTax: .fake()
+        )
+    }
+}
 extension NetworkingCore.OrderItemTax {
     /// Returns a "ready to use" type filled with fake values.
     ///
     public static func fake() -> NetworkingCore.OrderItemTax {
+        .init(
+            taxID: .fake(),
+            subtotal: .fake(),
+            total: .fake()
+        )
+    }
+}
+extension NetworkingCore.OrderItemTaxRefund {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.OrderItemTaxRefund {
         .init(
             taxID: .fake(),
             subtotal: .fake(),
@@ -433,6 +475,25 @@ extension NetworkingCore.ProductVariationAttribute {
         )
     }
 }
+extension NetworkingCore.Refund {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.Refund {
+        .init(
+            refundID: .fake(),
+            orderID: .fake(),
+            siteID: .fake(),
+            dateCreated: .fake(),
+            amount: .fake(),
+            reason: .fake(),
+            refundedByUserID: .fake(),
+            isAutomated: .fake(),
+            createAutomated: .fake(),
+            items: .fake(),
+            shippingLines: .fake()
+        )
+    }
+}
 extension NetworkingCore.ShippingLabel {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -529,6 +590,40 @@ extension NetworkingCore.ShippingLineTax {
         )
     }
 }
+extension NetworkingCore.Site {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.Site {
+        .init(
+            siteID: .fake(),
+            name: .fake(),
+            description: .fake(),
+            url: .fake(),
+            adminURL: .fake(),
+            loginURL: .fake(),
+            isSiteOwner: .fake(),
+            frameNonce: .fake(),
+            plan: .fake(),
+            isAIAssistantFeatureActive: .fake(),
+            isJetpackThePluginInstalled: .fake(),
+            isJetpackConnected: .fake(),
+            isWooCommerceActive: .fake(),
+            isWordPressComStore: .fake(),
+            jetpackConnectionActivePlugins: .fake(),
+            timezone: .fake(),
+            gmtOffset: .fake(),
+            visibility: .fake(),
+            canBlaze: .fake(),
+            isAdmin: .fake(),
+            wasEcommerceTrial: .fake(),
+            hasSSOEnabled: .fake(),
+            applicationPasswordAvailable: .fake(),
+            isGarden: .fake(),
+            gardenName: .fake(),
+            gardenPartner: .fake()
+        )
+    }
+}
 extension NetworkingCore.SiteSummaryStats {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -540,6 +635,13 @@ extension NetworkingCore.SiteSummaryStats {
             visitors: .fake(),
             views: .fake()
         )
+    }
+}
+extension NetworkingCore.SiteVisibility {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.SiteVisibility {
+        .privateSite
     }
 }
 extension NetworkingCore.SiteVisitStats {

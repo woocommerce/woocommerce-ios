@@ -121,7 +121,7 @@ private extension CustomFieldsListHostingController {
     }
 
     func dismissInProgressController() {
-        dismiss(animated: true)
+        presentedViewController?.dismiss(animated: true)
     }
 
     func presentBackNavigationActionSheet() {
@@ -278,6 +278,7 @@ private extension CustomFieldsListView {
                 } : nil
             ))
         }
+        .interactiveDismissDisabled()
     }
 }
 

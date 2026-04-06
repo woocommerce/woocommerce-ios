@@ -541,12 +541,12 @@ private extension SiteAddressViewController {
         }
 
         service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
-            self?.configureViewLoading(false)
             guard let self = self else {
                 return
             }
 
             if self.authenticationDelegate.shouldHandleError(error) {
+                self.configureViewLoading(false)
                 self.authenticationDelegate.handleError(error) { [weak self] customUI in
                     self?.navigationController?.pushViewController(customUI, animated: true)
                 }
@@ -556,6 +556,7 @@ private extension SiteAddressViewController {
                 if configuration.enableSiteCredentialsLoginForWPCOMSuspendedSites,
                    let serviceError = error as? WordPressComBlogServiceError,
                    serviceError == .wpcomSiteSuspended {
+                    self.configureViewLoading(false)
                     successBlock(WordPressComSiteInfo(name: "",
                                                       tagline: "",
                                                       url: baseSiteUrl,
@@ -564,11 +565,14 @@ private extension SiteAddressViewController {
                                                       isJetpackConnected: false,
                                                       icon: "",
                                                       isWPCom: false,
+                                                      isCommerceGarden: false,
                                                       isWP: true,
                                                       exists: true))
                     return
                 }
-                self.displayError(message: Localization.invalidURL)
+
+                // Try API discovery to check if the site has WordPress REST API
+                self.attemptAPIDiscoveryFallback(for: baseSiteUrl, siteInfoError: error)
             }
         })
     }
@@ -616,7 +620,7 @@ private extension SiteAddressViewController {
 
                 self.showWPUsernamePassword()
             case .presentEmailController:
-                self.showGetStarted(forWPComSite: false)
+                self.showGetStarted(forWPComSite: siteInfo?.isCommerceGarden == true)
             case let .injectViewController(customUI):
                 self.pushCustomUI(customUI)
             }
@@ -687,6 +691,48 @@ private extension SiteAddressViewController {
         return loginFields.validateSiteForSignin()
     }
 
+    /// Delegates API discovery to the host app when the site-info check fails.
+    /// If the site has a WordPress REST API, offers a fallback to site credentials login.
+    ///
+    func attemptAPIDiscoveryFallback(for siteURL: String, siteInfoError: Error) {
+        authenticationDelegate.handleSiteInfoFailure(siteURL: siteURL, error: siteInfoError) { [weak self] hasRESTAPI in
+            guard let self = self else { return }
+            self.configureViewLoading(false)
+
+            if hasRESTAPI {
+                self.presentSiteCredentialsFallbackAlert()
+            } else {
+                self.displayError(message: Localization.siteConnectionError)
+            }
+        }
+    }
+
+    /// Presents an alert informing the user that the site check failed but the site
+    /// appears to be a WordPress site, offering to proceed with site credentials login.
+    ///
+    func presentSiteCredentialsFallbackAlert() {
+        let alertController = UIAlertController(
+            title: Localization.siteInfoFailedAlertTitle,
+            message: Localization.siteInfoFailedAlertMessage,
+            preferredStyle: .alert
+        )
+
+        alertController.addAction(UIAlertAction(
+            title: Localization.siteInfoFailedAlertCTA,
+            style: .default,
+            handler: { [weak self] _ in
+                self?.showSelfHostedUsernamePassword()
+            }
+        ))
+
+        alertController.addAction(UIAlertAction(
+            title: Localization.siteInfoFailedAlertCancel,
+            style: .cancel
+        ))
+
+        present(alertController, animated: true)
+    }
+
     @objc private func promptUserToLogoutBeforeConnectingWPComSite() {
         let acceptActionTitle = NSLocalizedString("OK", comment: "Alert dismissal title")
         let message = NSLocalizedString("Please log out before connecting to a different wordpress.com site", comment: "Message for alert to prompt user to logout before connecting to a different wordpress.com site.")
@@ -704,5 +750,25 @@ private extension SiteAddressViewController {
         static let nonExistentSiteError = NSLocalizedString(
             "Cannot access the site at this address. Please double-check and try again.",
             comment: "Error message shown when the input URL does not point to an existing site.")
+        static let siteConnectionError = NSLocalizedString(
+            "siteAddress.siteConnectionError",
+            value: "We're having trouble connecting to this site. Please check the site address and try again.",
+            comment: "Error message shown when the site info check and API discovery both fail.")
+        static let siteInfoFailedAlertTitle = NSLocalizedString(
+            "siteAddress.siteInfoFailed.alert.title",
+            value: "Connection Issue",
+            comment: "Title for the alert shown when the site info check fails but the site appears to be a WordPress site.")
+        static let siteInfoFailedAlertMessage = NSLocalizedString(
+            "siteAddress.siteInfoFailed.alert.message",
+            value: "We couldn't verify your site details. You can try logging in with your site credentials instead.",
+            comment: "Message for the alert shown when the site info check fails but API discovery finds a WordPress REST API.")
+        static let siteInfoFailedAlertCTA = NSLocalizedString(
+            "siteAddress.siteInfoFailed.alert.loginWithSiteCredentials",
+            value: "Log In with Site Credentials",
+            comment: "Button title to proceed to site credentials login when site info check fails.")
+        static let siteInfoFailedAlertCancel = NSLocalizedString(
+            "siteAddress.siteInfoFailed.alert.cancel",
+            value: "Cancel",
+            comment: "Button title to dismiss the site info failure alert.")
     }
 }

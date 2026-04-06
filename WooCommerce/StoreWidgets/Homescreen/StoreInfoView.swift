@@ -187,9 +187,9 @@ private struct UnableToFetchView: View {
 private extension StoreInfoView {
     enum Localization {
         static let revenue = AppLocalizedString(
-            "storeWidgets.infoView.revenue",
-            value: "Revenue",
-            comment: "Revenue title label for the store info widget"
+            "storeWidgets.infoView.netSales",
+            value: "Net sales",
+            comment: "Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees."
         )
         static let visitors = AppLocalizedString(
             "storeWidgets.infoView.visitors",

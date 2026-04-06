@@ -50,6 +50,7 @@ private extension LoginJetpackSetupCoordinator {
         }
         let setupUI = JetpackSetupHostingController(
             siteURL: siteURL,
+            siteID: WooConstants.placeholderStoreID,
             connectionOnly: connectionOnly,
             wpcomCredentials: credentials,
             onStoreNavigation: { [weak self] connectedEmail in

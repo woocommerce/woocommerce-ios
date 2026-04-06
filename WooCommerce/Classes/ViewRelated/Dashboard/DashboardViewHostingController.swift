@@ -250,9 +250,14 @@ private extension DashboardViewHostingController {
                 return
             }
             let coordinator = JetpackSetupCoordinator(site: site,
-                                                      rootViewController: navigationController)
+                                                      rootViewController: navigationController,
+                                                      onCompletion: { [weak self] in
+                Task { @MainActor in
+                    await self?.viewModel.reloadAllData(forceCardsRefresh: true)
+                }
+            })
             jetpackSetupCoordinator = coordinator
-            coordinator.showBenefitModal()
+            coordinator.startSetup()
         }
     }
 }
@@ -371,14 +376,22 @@ private extension DashboardViewHostingController {
     func configureConnectWPComCard() {
         rootView.onConnectWPComSetup = { [weak self] in
             guard let self else { return }
-            let viewModel = WPComPushNotificationsBenefitsViewModel(onDismiss: {
-                self.dismiss(animated: true)
-            })
-            let hostingController = WPComPushNotificationsBenefitsHostingController(
-                viewModel: viewModel,
-                rootViewController: self,
+            self.viewModel.onConnectWPComCardTapped()
+            let benefitsViewModel = WPComPushNotificationsBenefitsViewModel(
+                siteID: viewModel.siteID,
+                siteURL: viewModel.stores.sessionManager.defaultSite?.url ?? "",
+                onDismiss: {
+                    self.dismiss(animated: true)
+                }
             )
-            present(hostingController, animated: true)
+            let navigationController = WooNavigationController()
+            let hostingController = WPComPushNotificationsBenefitsHostingController(
+                viewModel: benefitsViewModel,
+                rootViewController: navigationController
+            )
+            navigationController.viewControllers = [hostingController]
+            navigationController.modalPresentationStyle = .formSheet
+            present(navigationController, animated: true)
         }
     }
 }

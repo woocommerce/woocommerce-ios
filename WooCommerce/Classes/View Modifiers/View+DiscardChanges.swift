@@ -108,7 +108,6 @@ struct CloseButtonWithDiscardPrompt<Label>: ViewModifier where Label: View {
                     }, label: closeButtonLabel)
                 }
             })
-            .interactiveDismissDisabled()
             .confirmationDialog(title, isPresented: $isShowingPrompt) {
                 Button(discardButtonTitle, role: .destructive, action: {
                     didDismiss?()

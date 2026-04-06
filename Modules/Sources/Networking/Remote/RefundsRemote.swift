@@ -159,6 +159,20 @@ extension RefundsRemote: POSRefundsRemoteProtocol {
             }
         }
     }
+
+    public func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund) async throws -> Refund {
+        return try await withCheckedThrowingContinuation { continuation in
+            createRefund(for: siteID, by: orderID, refund: refund) { createdRefund, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if let createdRefund = createdRefund {
+                    continuation.resume(returning: createdRefund)
+                } else {
+                    continuation.resume(throwing: RefundsRemoteError.unexpectedNilRefund)
+                }
+            }
+        }
+    }
 }
 
 
@@ -168,4 +182,10 @@ struct POSRefundsRemote {
     func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64]) async throws -> [Refund] {
         try await refundsRemote.loadRefunds(for: siteID, by: orderID, with: refundIDs)
     }
+}
+
+// MARK: - Errors
+
+public enum RefundsRemoteError: Error {
+    case unexpectedNilRefund
 }

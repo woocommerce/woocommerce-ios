@@ -138,6 +138,8 @@ struct ItemListView: View {
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.posSurface)
                 .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }

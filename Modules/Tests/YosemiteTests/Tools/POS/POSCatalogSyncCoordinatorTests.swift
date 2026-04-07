@@ -592,7 +592,8 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
     func startFullSync(for siteID: Int64,
                         regenerateCatalog: Bool,
                         allowCellular: Bool,
-                        posProductsOnly: Bool) async throws -> POSCatalog {
+                        posProductsOnly: Bool,
+                        isBackgroundSync: Bool) async throws -> POSCatalog {
         startFullSyncCallCount += 1
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular
@@ -1493,6 +1494,6 @@ extension POSCatalogSyncCoordinatorTests {
 
 extension POSCatalogSyncCoordinator {
     func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval) async throws {
-        try await performFullSyncIfApplicable(for: siteID, maxAge: maxAge, regenerateCatalog: false)
+        try await performFullSyncIfApplicable(for: siteID, maxAge: maxAge, regenerateCatalog: false, isBackgroundSync: false)
     }
 }

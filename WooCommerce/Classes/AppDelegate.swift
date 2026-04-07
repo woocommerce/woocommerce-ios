@@ -15,9 +15,6 @@ import AutomatticTracks
 
 import class Yosemite.ScreenshotStoresManager
 
-// In that way, Inject will be available in the entire target.
-@_exported import Inject
-
 import WormholySwift
 
 // MARK: - Woo's App Delegate!

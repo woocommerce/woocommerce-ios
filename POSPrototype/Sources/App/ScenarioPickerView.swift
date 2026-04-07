@@ -1,9 +1,7 @@
 import SwiftUI
-import Inject
 
 struct ScenarioPickerView: View {
     let scenarios: [any POSPrototypeScenario]
-    @ObserveInjection var inject
 
     @State private var selectedScenarioID: String?
 
@@ -11,7 +9,7 @@ struct ScenarioPickerView: View {
         NavigationStack {
             List(scenarios, id: \.id) { scenario in
                 Button {
-                    selectedScenarioID = scenario.id
+                    selectScenario(scenario.id)
                 } label: {
                     HStack(spacing: 16) {
                         Image(systemName: scenario.icon)
@@ -30,13 +28,25 @@ struct ScenarioPickerView: View {
                 }
             }
             .navigationTitle("POS Lab")
-            .enableInjection()
             .fullScreenCover(isPresented: showCoverBinding) {
                 if let scenario = selectedScenario {
                     PrototypeContainerView(scenario: scenario)
                 }
             }
+            .onAppear {
+                // Auto-restore last scenario on launch
+                if PrototypeStateRestoration.isAutoRestoreEnabled,
+                   let savedID = PrototypeStateRestoration.savedScenarioID,
+                   scenarios.contains(where: { $0.id == savedID }) {
+                    selectedScenarioID = savedID
+                }
+            }
         }
+    }
+
+    private func selectScenario(_ id: String) {
+        selectedScenarioID = id
+        PrototypeStateRestoration.savedScenarioID = id
     }
 
     private var showCoverBinding: Binding<Bool> {

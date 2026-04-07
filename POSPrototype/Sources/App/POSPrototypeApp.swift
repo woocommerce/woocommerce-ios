@@ -1,14 +1,16 @@
 import SwiftUI
-import Inject
 
 @main
 struct POSPrototypeApp: App {
     init() {
-        // Point Inject library to InjectionNext's bundle path instead of InjectionIII's
-        InjectConfiguration.bundlePath = "/Applications/InjectionNext.app/Contents/Resources/"
+        // Enable auto-restore by default
+        if !UserDefaults.standard.bool(forKey: "prototype.hasLaunched") {
+            PrototypeStateRestoration.isAutoRestoreEnabled = true
+            UserDefaults.standard.set(true, forKey: "prototype.hasLaunched")
+        }
     }
 
-    private let scenarios: [any POSPrototypeScenario] = [
+    static let allScenarios: [any POSPrototypeScenario] = [
         SimpleStoreScenario(),
         LargeCatalogScenario(),
         NoReaderScenario(),
@@ -17,7 +19,7 @@ struct POSPrototypeApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ScenarioPickerView(scenarios: scenarios)
+            ScenarioPickerView(scenarios: Self.allScenarios)
         }
     }
 }

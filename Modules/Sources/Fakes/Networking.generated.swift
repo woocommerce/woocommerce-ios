@@ -946,7 +946,10 @@ extension Networking.Product {
             maxAllowedQuantity: .fake(),
             groupOfQuantity: .fake(),
             combineVariationQuantities: .fake(),
-            customFields: .fake()
+            customFields: .fake(),
+            bookingDuration: .fake(),
+            bookingDurationUnit: .fake(),
+            bookingResourceIDs: .fake()
         )
     }
 }

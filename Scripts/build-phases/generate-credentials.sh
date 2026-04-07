@@ -6,6 +6,8 @@ if [[ $ACTION == 'indexbuild' ]]; then
 fi
 
 DERIVED_PATH=${SOURCE_ROOT}/DerivedSources
+CLASSES_DERIVED_PATH=${SOURCE_ROOT}/Classes/DerivedSources
+WATCH_DERIVED_PATH="${SOURCE_ROOT}/Woo Watch App/DerivedSources"
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 
 CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
@@ -26,9 +28,11 @@ if [ ! -f $SECRETS_PATH ]; then
 
     echo ">> Using Templated Secrets"
 
-    ## Generate the Derived Folder. If needed
+    ## Generate the Derived folders, if needed
     ##
     mkdir -p ${DERIVED_PATH}
+    mkdir -p ${CLASSES_DERIVED_PATH}
+    mkdir -p "${WATCH_DERIVED_PATH}"
 
     ## Create a credentials file from the template (if needed)
     ## then copy it into place for the build.
@@ -46,13 +50,20 @@ if [ ! -f $SECRETS_PATH ]; then
         cp ${BASH_INPUT_PATH} ${BASH_OUTPUT_PATH}
     fi
 
+    ## Copy credentials to per-target DerivedSources folders
+    ##
+    cp ${CREDS_OUTPUT_PATH} ${CLASSES_DERIVED_PATH}/ApiCredentials.swift
+    cp ${CREDS_OUTPUT_PATH} "${WATCH_DERIVED_PATH}/ApiCredentials.swift"
+
 else
 
     echo ">> Loading Secrets ${SECRETS_PATH}"
 
-    ## Generate the Derived Folder. If needed
+    ## Generate the Derived folders, if needed
     ##
     mkdir -p ${DERIVED_PATH}
+    mkdir -p ${CLASSES_DERIVED_PATH}
+    mkdir -p "${WATCH_DERIVED_PATH}"
 
     if which rbenv; then
       # Fix an issue where, depending on the shell you are using on your machine and your rbenv setup,
@@ -73,5 +84,10 @@ else
     ##
     echo ">> Generating Credentials ${BASH_OUTPUT_PATH}"
     ruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}
+
+    ## Copy credentials to per-target DerivedSources folders
+    ##
+    cp ${CREDS_OUTPUT_PATH} ${CLASSES_DERIVED_PATH}/ApiCredentials.swift
+    cp ${CREDS_OUTPUT_PATH} "${WATCH_DERIVED_PATH}/ApiCredentials.swift"
 
 fi

@@ -271,7 +271,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
     var performSmartSyncResult: Result<Void, Error> = .success(())
     var onPerformSmartSyncCalled: (() -> Void)?
 
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool) async throws {
         performSmartSyncInvocationCount += 1
         performSmartSyncSiteID = siteID
         onPerformSmartSyncCalled?()
@@ -284,7 +284,7 @@ private final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProt
         }
     }
 
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
         // Not used
     }
 

@@ -84,13 +84,7 @@ public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, Generat
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        // Handle both "id" and "fulfillment_id" keys defensively
-        let fulfillmentID: Int64
-        if let id = try container.decodeIfPresent(Int64.self, forKey: .id) {
-            fulfillmentID = id
-        } else {
-            fulfillmentID = try container.decode(Int64.self, forKey: .fulfillmentID)
-        }
+        let fulfillmentID = try container.decode(Int64.self, forKey: .id)
 
         let status = try container.decodeIfPresent(String.self, forKey: .status)
         let isFulfilled = try container.decodeIfPresent(Bool.self, forKey: .isFulfilled) ?? false
@@ -125,7 +119,6 @@ private extension OrderFulfillment {
 
     enum CodingKeys: String, CodingKey {
         case id
-        case fulfillmentID = "fulfillment_id"
         case status
         case isFulfilled = "is_fulfilled"
         case dateUpdated = "date_updated"

@@ -1,7 +1,7 @@
 {
   "fulfillments": [
     {
-      "fulfillment_id": 42,
+      "id": 42,
       "entity_type": "WC_Order",
       "entity_id": "123",
       "status": "fulfilled",

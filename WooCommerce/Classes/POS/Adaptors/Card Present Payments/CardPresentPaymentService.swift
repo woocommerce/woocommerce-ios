@@ -36,6 +36,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
+    private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
 
     @MainActor
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
@@ -89,25 +90,40 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
-        // What happens if this gets called while there's another connection ongoing?
-        let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: createPreflightController())
-
-        let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
-
-        switch preflightResult {
-        case .completed(let cardReader, _):
-            let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
-                                                               batteryLevel: cardReader.batteryLevel,
-                                                               softwareVersion: cardReader.softwareVersion)
-            paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
-                self?.paymentEventSubject.send(.idle)
-            })))
-            return .connected(connectedReader)
-        case .canceled:
-            readerConnectionStatusSubject.send(.disconnected)
-            paymentEventSubject.send(.idle)
-            return .canceled
+        if let existingTask = connectReaderTask {
+            existingTask.cancel()
+            _ = try? await existingTask.value
         }
+
+        let task = Task { @MainActor [weak self] () throws -> CardPresentPaymentReaderConnectionResult in
+            guard let self else { return .canceled }
+            defer { self.connectReaderTask = nil }
+
+            let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: self.createPreflightController())
+            do {
+                let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
+                switch preflightResult {
+                case .completed(let cardReader, _):
+                    let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
+                                                                       batteryLevel: cardReader.batteryLevel,
+                                                                       softwareVersion: cardReader.softwareVersion)
+                    self.paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
+                        self?.paymentEventSubject.send(.idle)
+                    })))
+                    return .connected(connectedReader)
+                case .canceled:
+                    self.readerConnectionStatusSubject.send(.disconnected)
+                    self.paymentEventSubject.send(.idle)
+                    return .canceled
+                }
+            } catch is CancellationError {
+                await self.cancelReaderConnectionAttempt()
+                return .canceled
+            }
+        }
+
+        connectReaderTask = task
+        return try await task.value
     }
 
     @MainActor
@@ -198,6 +214,22 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     private func cancelPaymentTask() {
         paymentTask?.cancel()
         paymentTask = nil
+    }
+
+    @MainActor
+    private func cancelReaderConnectionAttempt() async {
+        paymentAlertsPresenterAdaptor.dismiss()
+
+        await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
+
+            let action = CardPresentPaymentAction.cancelCardReaderDiscovery { [weak self] _ in
+                self?.paymentAlertsPresenterAdaptor.dismiss()
+                nillableContinuation?.resume()
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

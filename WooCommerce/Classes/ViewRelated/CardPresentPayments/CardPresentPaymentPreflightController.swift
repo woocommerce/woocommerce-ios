@@ -15,6 +15,7 @@ enum CardReaderConnectionResult {
 
 protocol CardPresentPaymentPreflightControllerProtocol {
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async
+    func cancelConnectionAttempt()
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }
@@ -70,6 +71,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     private var tapToPayAlertProvider: TapToPayAlertProvider
 
     private var readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
+    private let connectionAttemptLock = NSLock()
+    private var currentConnectionAttemptID = 0
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> {
         readerConnectionSubject.eraseToAnyPublisher()
@@ -112,13 +115,18 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     @MainActor
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
+        let connectionAttemptID = beginConnectionAttempt()
         self.discoveryMethod = discoveryMethod
         observeConnectedReaders()
-        await checkForConnectedReader()
+        await checkForConnectedReader(connectionAttemptID: connectionAttemptID)
+    }
+
+    func cancelConnectionAttempt() {
+        _ = beginConnectionAttempt()
     }
 
     @MainActor
-    private func checkForConnectedReader() async {
+    private func checkForConnectedReader(connectionAttemptID: Int) async {
         if let connectedReader = connectedReader,
            let paymentGatewayAccount = await selectedPaymentGateway() {
             // The reader was already connected when the analyticsTracker was created,
@@ -132,7 +140,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                 do {
                     try await automaticallyDisconnectFromReader()
                     analyticsTracker.automaticallyDisconnectedFromReader()
-                    checkOnboarding()
+                    checkOnboarding(connectionAttemptID: connectionAttemptID)
                 } catch {
                     return handlePreflightFailure(
                         error: CardPresentPaymentPreflightError.failedToAutomaticallyDisconnect(reader: connectedReader))
@@ -140,7 +148,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             }
         } else {
             // If we're not connected, check onboarding
-            checkOnboarding()
+            checkOnboarding(connectionAttemptID: connectionAttemptID)
         }
     }
 
@@ -154,33 +162,37 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
-    private func checkOnboarding() {
+    private func checkOnboarding(connectionAttemptID: Int) {
         // Can't currently make this async without leaking the continuation.
         onboardingPresenter.showOnboardingIfRequired(from: rootViewController) { [weak self] in
             guard let self = self else { return }
-            Task {
-                await self.continuePreflight()
+            Task { @MainActor in
+                guard self.isCurrentConnectionAttempt(connectionAttemptID) else { return }
+                await self.continuePreflight(connectionAttemptID: connectionAttemptID)
             }
         }
     }
 
     @MainActor
-    private func continuePreflight() async {
+    private func continuePreflight(connectionAttemptID: Int) async {
         // Once onboarding is complete, a Payment Gateway will have been chosen
         guard let paymentGatewayAccount = await selectedPaymentGateway() else {
             DDLogError("⛔️ Cannot proceed with reader connection, no Payment Gateway found")
             return handlePreflightFailure(error: CardPresentPaymentPreflightError.paymentGatewayAccountNotFound)
         }
 
-        await startReaderConnection(using: paymentGatewayAccount)
+        await startReaderConnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
     }
 
 
-    private func startReaderConnection(using paymentGatewayAccount: PaymentGatewayAccount) async {
-        guard !tapToPayReconnectionController.isReconnecting else {
-            return adoptReconnection(using: paymentGatewayAccount)
+    private func startReaderConnection(using paymentGatewayAccount: PaymentGatewayAccount, connectionAttemptID: Int) async {
+        guard isCurrentConnectionAttempt(connectionAttemptID) else { return }
+        let isReconnecting = tapToPayReconnectionController.isReconnecting
+        guard !isReconnecting else {
+            return adoptReconnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
         }
         let tapToPayReaderSupported = await supportDeterminer.deviceSupportsTapToPayReader() && supportDeterminer.siteSupportsTapToPayReader()
+        guard isCurrentConnectionAttempt(connectionAttemptID) else { return }
 
         switch (discoveryMethod, tapToPayReaderSupported) {
         case (.none, true):
@@ -199,14 +211,28 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
-    private func adoptReconnection(using paymentGatewayAccount: PaymentGatewayAccount) {
+    private func beginConnectionAttempt() -> Int {
+        connectionAttemptLock.lock()
+        defer { connectionAttemptLock.unlock() }
+        currentConnectionAttemptID += 1
+        return currentConnectionAttemptID
+    }
+
+    private func isCurrentConnectionAttempt(_ connectionAttemptID: Int) -> Bool {
+        connectionAttemptLock.lock()
+        defer { connectionAttemptLock.unlock() }
+        return currentConnectionAttemptID == connectionAttemptID
+    }
+
+    private func adoptReconnection(using paymentGatewayAccount: PaymentGatewayAccount, connectionAttemptID: Int) {
         tapToPayReconnectionController.showAlertsForReconnection(from: alertsPresenter) { [weak self] result in
             guard let self = self else { return }
+            guard self.isCurrentConnectionAttempt(connectionAttemptID) else { return }
             switch self.discoveryMethod {
             case .bluetoothScan:
                 Task { [weak self] in
                     try await self?.automaticallyDisconnectFromReader()
-                    await self?.startReaderConnection(using: paymentGatewayAccount)
+                    await self?.startReaderConnection(using: paymentGatewayAccount, connectionAttemptID: connectionAttemptID)
                 }
             case .tapToPay, .none:
                 self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)

@@ -1,4 +1,5 @@
 import Combine
+import EventHorizonSDK
 import SwiftUI
 import UIKit
 import Yosemite
@@ -432,7 +433,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListSelected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(.mainTabBookingsSelect)
+            ServiceLocator.analytics.track(MainTabBookingsSelectEvent())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabSelected)
         case .pointOfSale:
@@ -453,7 +454,7 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(
                 event: .Products.productListReselected(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
         case .bookings:
-            ServiceLocator.analytics.track(.mainTabBookingsReselect)
+            ServiceLocator.analytics.track(MainTabBookingsReselectEvent())
         case .hubMenu:
             ServiceLocator.analytics.track(.hubMenuTabReselected)
             break

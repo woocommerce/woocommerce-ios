@@ -1728,7 +1728,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when establishing a connection to the card reader times out. */
 "Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "카드 리더 연결 시간 초과 - 임박했는지 확인하고 시간을 추가한 다음에 다시 시도하세요.";
 
-/* Title when checking if WooCommerce Payments is supported */
+/* Title when checking if WooPayments is supported */
 "Connecting to your account" = "계정에 연결 중";
 
 /* Name of the step to connect the store to Jetpack */
@@ -2293,7 +2293,6 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet */
 "Done" = "완료";
 
@@ -3423,9 +3422,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
 "Install WooCommerce" = "우커머스 설치";
-
-/* Title for the error screen when WooCommerce Payments is not installed */
-"Install WooCommerce Payments" = "WooCommerce 결제 설치";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "무료 젯팩 플러그인을 설치하여 최상의 모바일 환경을 경험하세요.";
@@ -5029,7 +5025,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message of in-progress modal when requesting shipping label document for printing
    Message of the in-progress UI while purchasing a shipping label
    Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress
-   Message when checking if WooCommerce Payments is supported
+   Message when checking if WooPayments is supported
    Text on the loading view of the survey screen indicating the user to wait
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "기다려 주세요.";
@@ -6001,9 +5997,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "제공하려는 할인 비율을 설정하세요.";
-
-/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
-"Set up %1$@" = "%1$@ 설정";
 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "젯팩 설정";
@@ -8218,14 +8211,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "우커머스 모바일 앱 - 어디에서나 스토어 실행";
 
-/* Title of the WooCommerce Payments support area option */
-"WooCommerce Payments" = "WooCommerce Payments";
-
 /* Title of the WooCommerce Plugin support area option */
 "WooCommerce Plugin" = "우커머스 플러그인";
-
-/* Navigation title of the webview which used by the merchant to update their store address */
-"WooCommerce Settings" = "WooCommerce 설정";
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "우커머스 설정";
@@ -8335,7 +8322,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "새 주문이 있습니다! 🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "계정에 기한이 지난 요구 사항이 하나 이상 있습니다. 대면 결제를 다시 시작하려면 해당 요구 사항을 처리하세요.";
@@ -8423,11 +8410,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "평가판이 종료되었습니다.";
-
-/* Error message when WooCommerce Payments is not installed
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "대면 결제를 수락하려면 스토어에 무료 WooCommerce 결제 확장 기능을 설치해야 합니다.";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -13051,12 +13033,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "추가";
-
-/* Accessibility label for back button on refund reason screen */
-"pos.refundReasonView.backButton.accessibilityLabel" = "뒤로";
-
-/* Accessibility label for close button on refund reason screen */
-"pos.refundReasonView.closeButton.accessibilityLabel" = "닫기";
 
 /* Placeholder text for the refund reason text field */
 "pos.refundReasonView.placeholder" = "주문 환불 사유";

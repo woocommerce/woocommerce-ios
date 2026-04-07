@@ -17,6 +17,15 @@ struct POSPaymentContentView: View {
     @Environment(POSPaymentModel.self) private var paymentModel
     private let viewHelper = POSPaymentViewHelper()
 
+    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
+    /// by NavigationStack push. Success and idle are visible to this view.
+    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    private var displayPaymentState: PointOfSalePaymentState {
+        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash
+            ? .idle : paymentModel.paymentState.cash
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+    }
+
     var body: some View {
         @Bindable var paymentModel = paymentModel
 
@@ -31,12 +40,12 @@ struct POSPaymentContentView: View {
             }
 
             Spacer()
-                .renderedIf(viewHelper.shouldApplyPadding(paymentState: paymentModel.paymentState))
+                .renderedIf(viewHelper.shouldApplyPadding(paymentState: displayPaymentState))
 
             cashPaymentButtonView
         }
-        .background(viewHelper.paymentBackgroundColor(for: paymentModel.paymentState))
-        .animation(.default, value: paymentModel.paymentState)
+        .background(viewHelper.paymentBackgroundColor(for: displayPaymentState))
+        .animation(.default, value: displayPaymentState.card)
         .overlay(alignment: .topTrailing) {
             closeButton
         }
@@ -66,7 +75,7 @@ struct POSPaymentContentView: View {
     private var closeButton: some View {
         if let onDismiss,
            paymentModel.configuration.showInitialCloseButton,
-           !paymentModel.paymentState.shownFullScreen {
+           !displayPaymentState.shownFullScreen {
             Button(action: onDismiss) {
                 Image(systemName: "xmark")
                     .font(.posBodyLargeBold)
@@ -82,15 +91,16 @@ struct POSPaymentContentView: View {
 
     @ViewBuilder
     private var paymentContentView: some View {
-        switch paymentModel.paymentState.activePaymentMethod {
+        switch displayPaymentState.activePaymentMethod {
         case .cash:
-            POSCashPaymentContentView(
-                cashPaymentState: paymentModel.paymentState.cash,
-                formattedOrderTotal: formattedTotal)
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: formattedTotal,
+                                     paymentMethod: .cash)))
         case .card:
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                paymentState: paymentModel.paymentState,
+                paymentState: displayPaymentState,
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                 connectCardReaderAction: paymentModel.connectCardReader,
                 showLoadingWhenIdle: !paymentModel.isZeroTotal)
@@ -100,7 +110,7 @@ struct POSPaymentContentView: View {
     // MARK: - Totals Fields
 
     private var shouldShowTotalsFields: Bool {
-        viewHelper.shouldShowTotalsFields(for: paymentModel.paymentState)
+        viewHelper.shouldShowTotalsFields(for: displayPaymentState)
     }
 
     @ViewBuilder
@@ -169,13 +179,11 @@ struct POSPaymentContentView: View {
     @ViewBuilder
     private var cashPaymentButtonView: some View {
         if viewHelper.shouldShowCashPaymentButton(
-            paymentState: paymentModel.paymentState,
+            paymentState: displayPaymentState,
             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
             isZeroTotal: paymentModel.isZeroTotal) {
             Button(action: {
-                Task { @MainActor in
-                    await paymentModel.startCashPayment()
-                }
+                paymentModel.startCashPayment()
             }) {
                 Text(Localization.cashPaymentButton)
                     .font(POSFontStyle.posBodyLargeBold)
@@ -252,31 +260,6 @@ struct POSCardPaymentContentView: View {
                   case .idle = paymentState.card,
                   case .connected = cardReaderConnectionStatus {
             POSPaymentLoadingView()
-        }
-    }
-}
-
-// MARK: - Shared Cash Payment Content
-
-/// Shared cash payment content rendering used by both cart and bookings flows.
-struct POSCashPaymentContentView: View {
-    let cashPaymentState: PointOfSaleCashPaymentState
-    let formattedOrderTotal: String
-    @Environment(\.posCurrencyProvider) private var currencyProvider
-
-    var body: some View {
-        switch cashPaymentState {
-        case .collectingCash:
-            PointOfSaleCollectCashView(orderTotal: formattedOrderTotal,
-                                       currencySettings: currencyProvider.currencySettings)
-                .transition(.move(edge: .trailing))
-        case .paymentSuccess:
-            PointOfSaleCardPresentPaymentInLineMessage(
-                messageType: .paymentSuccess(
-                    viewModel: .init(formattedOrderTotal: formattedOrderTotal,
-                                     paymentMethod: .cash)))
-        case .idle:
-            EmptyView()
         }
     }
 }

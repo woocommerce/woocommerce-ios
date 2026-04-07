@@ -6,11 +6,17 @@ struct HelpAndSupportViewModel {
     private let isZendeskEnabled: Bool
     private let isMacCatalyst: Bool
     private let hasLoginSiteURL: Bool
+    private let developerFFPanelEnabled: Bool
 
-    init(isAuthenticated: Bool, isZendeskEnabled: Bool, isMacCatalyst: Bool, hasLoginSiteURL: Bool = false) {
+    init(isAuthenticated: Bool,
+         isZendeskEnabled: Bool,
+         isMacCatalyst: Bool,
+         hasLoginSiteURL: Bool = false,
+         developerFFPanelEnabled: Bool = false) {
         self.isAuthenticated = isAuthenticated
         self.isZendeskEnabled = isZendeskEnabled
         self.isMacCatalyst = isMacCatalyst
+        self.developerFFPanelEnabled = developerFFPanelEnabled
         self.hasLoginSiteURL = hasLoginSiteURL
     }
 
@@ -31,5 +37,12 @@ struct HelpAndSupportViewModel {
             rows.append(.siteCompatibility)
         }
         return rows
+    }
+
+    func getDeveloperRows() -> [HelpAndSupportRow] {
+        guard developerFFPanelEnabled else {
+            return []
+        }
+        return [.featureFlags]
     }
 }

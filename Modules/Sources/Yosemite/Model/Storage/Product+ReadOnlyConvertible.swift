@@ -93,6 +93,9 @@ extension Storage.Product: ReadOnlyConvertible {
         if let productCombineVariationQuantities = product.combineVariationQuantities {
             combineVariationQuantities = NSNumber(booleanLiteral: productCombineVariationQuantities)
         }
+        bookingDuration = product.bookingDuration as? NSNumber
+        bookingDurationUnit = product.bookingDurationUnit
+        bookingResourceIDs = product.bookingResourceIDs
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -197,7 +200,10 @@ extension Storage.Product: ReadOnlyConvertible {
                        maxAllowedQuantity: maxAllowedQuantity,
                        groupOfQuantity: groupOfQuantity,
                        combineVariationQuantities: combineVariationQuantities?.boolValue,
-                       customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID })
+                       customFields: productCustomFields.sorted { $0.metadataID < $1.metadataID },
+                       bookingDuration: bookingDuration as? Int64,
+                       bookingDurationUnit: bookingDurationUnit,
+                       bookingResourceIDs: bookingResourceIDs)
     }
 
     // MARK: - Private Helpers

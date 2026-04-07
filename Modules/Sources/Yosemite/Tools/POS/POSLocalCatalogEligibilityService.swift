@@ -6,7 +6,6 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let catalogSizeLimit: Int
-    private let isLocalCatalogFeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
     private let betaFeatureToggleProvider: @Sendable () async -> Bool
 
@@ -23,21 +22,18 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     /// - Parameters:
     ///   - catalogSizeChecker: Service to check catalog size for sites
     ///   - systemStatusService: Service to check WooCommerce plugin version
-    ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
     ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
     public init(
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         systemStatusService: POSSystemStatusServiceProtocol,
-        isLocalCatalogFeatureFlagEnabled: Bool,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
         catalogSizeLimit: Int? = nil
     ) {
         self.catalogSizeChecker = catalogSizeChecker
         self.systemStatusService = systemStatusService
-        self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
@@ -107,12 +103,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        let (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
-        guard isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled else {
+        let (isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        guard isRemoteEnabled, isBetaToggleEnabled else {
             let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
             eligibilityStates[siteID] = state
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flags disabled for site \(siteID) " +
-                      "(local: \(isLocalCatalogFeatureFlagEnabled), remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
+                      "(remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
             return state
         }
 
@@ -181,11 +177,11 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         }
     }
 
-    private func featureFlagSettings() async -> (Bool, Bool, Bool) {
-        // Check feature flags - local, remote, and beta toggle must all be enabled
+    private func featureFlagSettings() async -> (Bool, Bool) {
+        // Check feature flags - remote and beta toggle must both be enabled
         let isRemoteEnabled = await isRemoteCatalogFeatureFlagEnabled()
         let isBetaToggleEnabled = await betaFeatureToggleProvider()
-        return (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled)
+        return (isRemoteEnabled, isBetaToggleEnabled)
     }
 }
 

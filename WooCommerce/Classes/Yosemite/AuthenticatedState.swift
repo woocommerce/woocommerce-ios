@@ -49,8 +49,7 @@ class AuthenticatedState: StoresManagerState {
     /// Designated Initializer
     ///
     init(credentials: Credentials,
-         sessionManager: SessionManagerProtocol,
-         isLocalCatalogFeatureFlagEnabled: Bool) {
+         sessionManager: SessionManagerProtocol) {
         let storageManager = ServiceLocator.storageManager
 
         let site = sessionManager.defaultSitePublisher
@@ -168,9 +167,8 @@ class AuthenticatedState: StoresManagerState {
 
         self.services = services
 
-        // Initialize POS catalog sync coordinator and eligibility service if feature flag is enabled
-        if isLocalCatalogFeatureFlagEnabled,
-           let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
+        // Initialize POS catalog sync coordinator and eligibility service
+        if let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
                                                            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                                                            grdbManager: ServiceLocator.grdbManager,
@@ -194,7 +192,6 @@ class AuthenticatedState: StoresManagerState {
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                     storageManager: ServiceLocator.storageManager
                 ),
-                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {
@@ -232,10 +229,8 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
         self.init(credentials: credentials,
-                  sessionManager: sessionManager,
-                  isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
+                  sessionManager: sessionManager)
     }
 
     /// Executed before the current state is deactivated.

@@ -42,10 +42,6 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     }
 
     func start() async {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
-            return
-        }
-
         if syncSiteID != nil, syncSiteID != storeProvider.defaultStoreID {
             DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Site has changed, resetting the sync")
             stop()
@@ -129,12 +125,6 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     }
 
     private func performSync() {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
-            DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: Feature flag disabled, skipping sync")
-            stop()
-            return
-        }
-
         guard let siteID = storeProvider.defaultStoreID else {
             DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: No default store, skipping sync")
             stop()

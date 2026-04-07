@@ -28,7 +28,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -47,7 +46,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -68,7 +66,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -103,7 +100,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -136,7 +132,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -163,7 +158,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -190,7 +184,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -223,38 +216,6 @@ struct POSLocalCatalogEligibilityServiceTests {
 
     // MARK: - Feature Flag
 
-    @Test("Local feature flag disabled returns ineligible")
-    func testLocalFeatureFlagDisabledReturnsIneligible() async throws {
-        let sizeChecker = MockPOSCatalogSizeChecker(
-            sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
-        )
-        let systemStatusService = MockPOSSystemStatusService()
-        let service = POSLocalCatalogEligibilityService(
-            catalogSizeChecker: sizeChecker,
-            systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: false,
-            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
-            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
-            catalogSizeLimit: 1000
-        )
-        try await service.updatePOSEligibility(isEligible: true, for: siteID)
-
-        let state = try await service.catalogEligibility(for: siteID)
-
-        guard case .ineligible(let reason) = state else {
-            Issue.record("Expected ineligible state")
-            return
-        }
-
-        guard case .featureFlagDisabled = reason else {
-            Issue.record("Expected featureFlagDisabled reason")
-            return
-        }
-
-        // Should not have checked catalog size
-        #expect(sizeChecker.checkCatalogSizeCallCount == 0)
-    }
-
     @Test("Remote feature flag disabled returns ineligible after refresh")
     func testRemoteFeatureFlagDisabledReturnsIneligible() async throws {
         let sizeChecker = MockPOSCatalogSizeChecker(
@@ -264,7 +225,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(returning: false),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -303,7 +263,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let serviceWithAllEnabled = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(returning: true),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(returning: true),
             catalogSizeLimit: 1000
@@ -321,7 +280,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(returning: true),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(returning: false),
             catalogSizeLimit: 1000
@@ -355,7 +313,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 100 // Custom lower limit
@@ -389,7 +346,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -423,7 +379,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -456,7 +411,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -512,7 +466,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -573,7 +526,6 @@ struct POSLocalCatalogEligibilityServiceTests {
         let service = POSLocalCatalogEligibilityService(
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000

@@ -14,7 +14,6 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     private let coordinator = MockPOSCatalogSyncCoordinator()
 
     init() {
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = true
         storeProvider.defaultStoreID = 123
         storeProvider.posCatalogSyncCoordinator = coordinator
         sut = ForegroundPOSCatalogSyncDispatcher(
@@ -34,18 +33,6 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         // Then
         #expect(timerProvider.createdTimers.count == 1)
         #expect(timerProvider.createdTimers.first?.isResumed == true)
-    }
-
-    @Test
-    func start_whenFeatureFlagDisabled_doesNotCreateTimer() async throws {
-        // Given
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleLocalCatalogi1] = false
-
-        // When
-        await sut.start()
-
-        // Then
-        #expect(timerProvider.createdTimers.isEmpty)
     }
 
     @Test

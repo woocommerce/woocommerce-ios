@@ -183,13 +183,7 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleHistoricalOrdersi1
 
-    /// Enables Local Catalog i1 in Point of Sale.
-    /// It syncs products and variations to local storage and display them in POS for quick access.
-    ///
-    case pointOfSaleLocalCatalogi1
-
     /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
-    /// Only has effect when pointOfSaleLocalCatalogi1 is also enabled.
     ///
     case pointOfSaleFTSSearch
 

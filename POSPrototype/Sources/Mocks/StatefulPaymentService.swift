@@ -37,6 +37,52 @@ final class StatefulPaymentService: CardPresentPaymentFacade {
     init(configuration: MockConfiguration) {
         self.configuration = configuration
         self.readerConnectionStatusSubject = CurrentValueSubject(configuration.initialReaderConnectionStatus)
+        restoreState()
+    }
+
+    // MARK: - State Restoration
+
+    func saveState() {
+        // Save control mode
+        PrototypeStateRestoration.savedControlMode = controlMode == .manual ? "manual" : "automatic"
+
+        // Save reader status
+        switch readerConnectionStatusSubject.value {
+        case .connected:
+            PrototypeStateRestoration.savedReaderStatus = "connected"
+        case .disconnected:
+            PrototypeStateRestoration.savedReaderStatus = "disconnected"
+        case .disconnecting:
+            PrototypeStateRestoration.savedReaderStatus = "disconnecting"
+        case .cancellingConnection:
+            PrototypeStateRestoration.savedReaderStatus = "cancellingConnection"
+        }
+    }
+
+    private func restoreState() {
+        guard PrototypeStateRestoration.isAutoRestoreEnabled else { return }
+
+        // Restore control mode
+        if let savedMode = PrototypeStateRestoration.savedControlMode {
+            controlMode = savedMode == "manual" ? .manual : .automatic
+        }
+
+        // Restore reader status
+        if let savedReader = PrototypeStateRestoration.savedReaderStatus {
+            switch savedReader {
+            case "connected":
+                let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
+                readerConnectionStatusSubject.send(.connected(reader))
+            case "disconnected":
+                readerConnectionStatusSubject.send(.disconnected)
+            case "disconnecting":
+                readerConnectionStatusSubject.send(.disconnecting)
+            case "cancellingConnection":
+                readerConnectionStatusSubject.send(.cancellingConnection)
+            default:
+                break
+            }
+        }
     }
 
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {

@@ -7,8 +7,17 @@ import PointOfSale
 struct PrototypeControlPanel: View {
     let paymentService: StatefulPaymentService
     var onCloseScenario: (() -> Void)?
-    @State private var isExpanded = false
-    @State private var selectedTab: ControlTab = .payment
+    @State private var isExpanded: Bool
+    @State private var selectedTab: ControlTab
+
+    init(paymentService: StatefulPaymentService, onCloseScenario: (() -> Void)? = nil) {
+        self.paymentService = paymentService
+        self.onCloseScenario = onCloseScenario
+        let restored = PrototypeStateRestoration.isAutoRestoreEnabled
+        self._isExpanded = State(initialValue: restored && PrototypeStateRestoration.savedControlPanelExpanded)
+        let restoredTab = restored ? PrototypeStateRestoration.savedControlPanelTab : nil
+        self._selectedTab = State(initialValue: ControlTab(rawValue: restoredTab ?? "") ?? .payment)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -19,6 +28,12 @@ struct PrototypeControlPanel: View {
             toggleBar
         }
         .animation(.easeInOut(duration: 0.25), value: isExpanded)
+        .onChange(of: isExpanded) { _, newValue in
+            PrototypeStateRestoration.savedControlPanelExpanded = newValue
+        }
+        .onChange(of: selectedTab) { _, newValue in
+            PrototypeStateRestoration.savedControlPanelTab = newValue.rawValue
+        }
     }
 
     // MARK: - Toggle Bar
@@ -39,7 +54,7 @@ struct PrototypeControlPanel: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(Color.blue.opacity(0.85))
+                    .background(Color.green)
                     .clipShape(Capsule())
                     .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
                 }
@@ -153,6 +168,7 @@ private struct PaymentTabContent: View {
                 .frame(width: 160)
                 .onChange(of: isManual) { _, newValue in
                     paymentService.controlMode = newValue ? .manual : .automatic
+                    paymentService.saveState()
                 }
             }
 
@@ -260,23 +276,28 @@ private struct ReaderTabContent: View {
                       icon: "checkmark.circle.fill", tint: .green) {
                 let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.92)
                 paymentService.readerConnectionStatusSubject.send(.connected(reader))
+                paymentService.saveState()
             }
             ReaderRow(label: "Connected (Low Battery)", subtitle: "15% battery",
                       icon: "battery.25percent", tint: .orange) {
                 let reader = CardPresentPaymentCardReader(name: "Prototype Reader", batteryLevel: 0.15)
                 paymentService.readerConnectionStatusSubject.send(.connected(reader))
+                paymentService.saveState()
             }
             ReaderRow(label: "Disconnected", subtitle: "No reader",
                       icon: "xmark.circle", tint: .red) {
                 paymentService.readerConnectionStatusSubject.send(.disconnected)
+                paymentService.saveState()
             }
             ReaderRow(label: "Disconnecting", subtitle: "Shutting down",
                       icon: "ellipsis.circle", tint: .orange) {
                 paymentService.readerConnectionStatusSubject.send(.disconnecting)
+                paymentService.saveState()
             }
             ReaderRow(label: "Cancelling Connection", subtitle: "Aborting",
                       icon: "stop.circle", tint: .secondary) {
                 paymentService.readerConnectionStatusSubject.send(.cancellingConnection)
+                paymentService.saveState()
             }
         }
         .padding(12)

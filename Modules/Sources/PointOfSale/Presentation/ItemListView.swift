@@ -6,7 +6,6 @@ import struct WooFoundationCore.WooAnalyticsEvent
 struct ItemListView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
@@ -89,8 +88,7 @@ struct ItemListView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.none, value: selectedItemListType)
-            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
-            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
+            .ignoresSafeArea([.keyboard, .container])
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.

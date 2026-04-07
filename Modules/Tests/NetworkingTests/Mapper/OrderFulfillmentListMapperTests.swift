@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Networking
 @testable import NetworkingCore
@@ -28,8 +29,10 @@ struct OrderFulfillmentListMapperTests {
         #expect(first.fulfillmentID == 42)
         #expect(first.status == "fulfilled")
         #expect(first.isFulfilled == true)
-        #expect(first.dateUpdated != nil)
-        #expect(first.dateFulfilled != nil)
+        let expectedDateUpdated = DateFormatter.Stats.dateTimeFormatter.date(from: "2026-03-18 21:00:00")
+        #expect(first.dateUpdated == expectedDateUpdated)
+        let expectedDateFulfilled = DateFormatter.Stats.dateTimeFormatter.date(from: "2026-03-18 14:30:00")
+        #expect(first.dateFulfilled == expectedDateFulfilled)
         #expect(first.trackingNumber == "1Z999AA10123456784")
         #expect(first.shipmentProvider == "ups")
         #expect(first.trackingURL == "https://www.ups.com/track?tracknum=1Z999AA10123456784")

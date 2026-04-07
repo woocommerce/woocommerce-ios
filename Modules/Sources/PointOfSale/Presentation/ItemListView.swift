@@ -82,13 +82,15 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            TabView(selection: $selectedItemListType) {
+            ZStack {
                 itemListTabContent(.products(search: false))
+                    .opacity(selectedItemListType.isProducts ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isProducts)
                 itemListTabContent(.coupons(search: false))
+                    .opacity(selectedItemListType.isCoupons ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.none, value: selectedItemListType)
-            .ignoresSafeArea([.keyboard, .container])
+            .ignoresSafeArea(.container)
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
@@ -123,6 +125,7 @@ struct ItemListView: View {
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
             itemListContent(itemListType)
+                .ignoresSafeArea(.keyboard)
                 .accessibilityElement(children: isSearching ? .ignore : .contain)
 
             if isSearching {
@@ -139,8 +142,7 @@ struct ItemListView: View {
                 .zIndex(1)
             }
         }
-        .tag(itemListType)
-        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+        .allowsHitTesting(selectedItemListType == itemListType)
     }
 
     @ViewBuilder

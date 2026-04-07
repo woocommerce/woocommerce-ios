@@ -96,8 +96,14 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     }
 
     /// Runs all connectivity tests sequentially.
+    /// Skips execution if tests have already been started.
     ///
+    private var hasStartedTests = false
+
     func startConnectivityTests() async {
+        guard !hasStartedTests else { return }
+        hasStartedTests = true
+
         cards = []
         restAPIRootURL = nil
         restAPIRootJSON = nil

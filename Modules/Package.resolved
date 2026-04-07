@@ -1,5 +1,5 @@
 {
-  "originHash" : "6f1a0fe7c972df45ab4649eb49a942020347aaee353bd794868a902b5fed7159",
+  "originHash" : "8761c398b1c92514d8b33a2ad8c73c2c5cd4b47db8a86d4dd75e74e45b9078e2",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -132,15 +132,6 @@
       "location" : "https://github.com/Automattic/Gridicons-iOS",
       "state" : {
         "revision" : "c904cb73e26e86463a78e1335c6f4fd54a9e9223"
-      }
-    },
-    {
-      "identity" : "inject",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/krzysztofzablocki/Inject.git",
-      "state" : {
-        "revision" : "728c56639ecb3df441d51d5bc6747329afabcfc9",
-        "version" : "1.5.2"
       }
     },
     {

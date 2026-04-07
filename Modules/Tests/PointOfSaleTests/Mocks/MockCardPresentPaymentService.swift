@@ -12,6 +12,12 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     @Published var connectedReader: CardPresentPaymentCardReader?
 
     var cancelPaymentCalled = false
+    var connectReaderCallCount = 0
+    private var connectReaderContinuation: CheckedContinuation<CardPresentPaymentReaderConnectionResult, Error>?
+    var shouldSuspendConnectReader = false
+    var connectReaderResult: CardPresentPaymentReaderConnectionResult = .connected(
+        CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85)
+    )
 
     // MARK: - CardPresentPaymentFacade
 
@@ -29,8 +35,27 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
         .eraseToAnyPublisher()
     }
 
+    var onConnectReaderCalled: (() -> Void)?
+
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
-        .connected(CardPresentPaymentCardReader(name: "Test reader", batteryLevel: 0.85))
+        connectReaderCallCount += 1
+        onConnectReaderCalled?()
+        if shouldSuspendConnectReader {
+            return try await withCheckedThrowingContinuation { continuation in
+                connectReaderContinuation = continuation
+            }
+        }
+        return connectReaderResult
+    }
+
+    func resumeConnectReader(with result: CardPresentPaymentReaderConnectionResult) {
+        connectReaderContinuation?.resume(returning: result)
+        connectReaderContinuation = nil
+    }
+
+    func failConnectReader(with error: Error) {
+        connectReaderContinuation?.resume(throwing: error)
+        connectReaderContinuation = nil
     }
 
     func disconnectReader() async {

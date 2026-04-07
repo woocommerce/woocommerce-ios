@@ -70,7 +70,7 @@ struct CartView: View {
                         .zIndex(1)
                 }
             }
-            .ignoresSafeArea(Self.containerRegionToIgnore, edges: .bottom)
+            .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
@@ -79,7 +79,6 @@ struct CartView: View {
             .background(content: {
                 if posModel.cart.isEmpty {
                     cartEmptyView
-                        .padding(.top, headerSize.height)
                 }
             })
             .background(backgroundColor.ignoresSafeArea(.all))
@@ -207,7 +206,7 @@ private extension CartView {
 
     var cartEmptyView: some View {
         VStack {
-            Spacer()
+            Spacer(minLength: headerSize.height + Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing)
             // By designs, the text should be vertically centred with the image 40px above it.
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top

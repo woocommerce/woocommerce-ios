@@ -337,22 +337,13 @@ private extension PointOfSaleDashboardView {
 }
 
 private extension PointOfSaleDashboardView {
-    /// iOS 26 NavigationStack introduces container insets that push content upward.
-    var containerRegionToIgnore: SafeAreaRegions {
-        if #available(iOS 26, *) {
-            return .container
-        } else {
-            return []
-        }
-    }
-
     /// Ignore keyboard safe area only for the full-size on-screen keyboard, so floating
     /// controls sit above the external keyboard's helper bar (pre-iOS 26 only; iOS 26 has no helper bar).
     var dashboardIgnoredSafeAreaRegions: SafeAreaRegions {
         if keyboardObserver.isFullSizeKeyboardVisible {
-            return containerRegionToIgnore.union(.keyboard)
+            return SafeAreaRegions.posContainerRegionToIgnore.union(.keyboard)
         } else {
-            return containerRegionToIgnore
+            return .posContainerRegionToIgnore
         }
     }
 }

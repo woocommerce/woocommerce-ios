@@ -17,10 +17,12 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failDiscovery: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
+    private var selectedPaymentGatewayAccount: PaymentGatewayAccount?
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
     private var paymentExtension: CardPresentPaymentsPlugin
 
     var receivedActions: [CardPresentPaymentAction] = []
+    var onStartCardReaderDiscovery: (() -> Void)?
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
@@ -52,9 +54,14 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private func onCardPresentPaymentAction(action: CardPresentPaymentAction) {
         receivedActions.append(action)
         switch action {
+        case .use(let account):
+            selectedPaymentGatewayAccount = account
+        case .selectedPaymentGatewayAccount(let onCompletion):
+            onCompletion(selectedPaymentGatewayAccount)
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)
         case .startCardReaderDiscovery(_, _, let onReaderDiscovered, let onError):
+            onStartCardReaderDiscovery?()
             guard !failDiscovery else {
                 onError(MockErrors.discoveryFailure)
                 return

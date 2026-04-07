@@ -105,7 +105,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                               regenerateCatalog: Bool = false,
                               allowCellular: Bool,
                               posProductsOnly: Bool = false,
-                              isBackgroundSync: Bool = false) async throws -> POSCatalog {
+                              isBackgroundSync: Bool) async throws -> POSCatalog {
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog), " +
                   "allowCellular: \(allowCellular), posProductsOnly: \(posProductsOnly), isBackgroundSync: \(isBackgroundSync)")
 

@@ -732,7 +732,7 @@ private extension PointOfSaleAggregateModel {
     private func performInitialSyncIfNeeded() {
         guard let catalogSyncCoordinator else { return }
         Task {
-            try? await catalogSyncCoordinator.performSmartSync(for: siteID)
+            try? await catalogSyncCoordinator.performSmartSync(for: siteID, isBackgroundSync: false)
         }
     }
 }

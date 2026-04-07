@@ -28,7 +28,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: expectedVariations, hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(result.products.count == expectedProducts.count)
@@ -50,7 +50,7 @@ struct POSCatalogFullSyncServiceTests {
         ])
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(result.products.count == 3)
@@ -71,7 +71,7 @@ struct POSCatalogFullSyncServiceTests {
         ])
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(result.variations.count == 4)
@@ -91,7 +91,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then - Should stop after empty page
         #expect(result.products.count == 1)
@@ -112,7 +112,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(result.products.count == 5)
@@ -131,7 +131,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
         }
     }
 
@@ -181,7 +181,7 @@ struct POSCatalogFullSyncServiceTests {
                                                 batchSize: customBatchSize,
                                                 persistenceService: mockPersistenceService,
                                                 usesCatalogAPI: false)
-        _ = try await service.startFullSync(for: sampleSiteID, allowCellular: true)
+        _ = try await service.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(await mockSyncRemote.loadProductsCallCount.value == 5)
@@ -206,7 +206,7 @@ struct POSCatalogFullSyncServiceTests {
         )
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(result.products.count == 1)
@@ -230,7 +230,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
         }
     }
 
@@ -249,7 +249,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
         }
     }
 
@@ -269,7 +269,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
         }
     }
 
@@ -287,7 +287,7 @@ struct POSCatalogFullSyncServiceTests {
         )
 
         // When
-        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: regenerateCatalog, allowCellular: true)
+        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: regenerateCatalog, allowCellular: true, isBackgroundSync: false)
 
         // Then
         #expect(mockSyncRemote.lastCatalogRequestForceGeneration == regenerateCatalog)
@@ -307,7 +307,7 @@ struct POSCatalogFullSyncServiceTests {
         )
 
         // When
-        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: false, allowCellular: allowCellular)
+        _ = try await sut.startFullSync(for: sampleSiteID, regenerateCatalog: false, allowCellular: allowCellular, isBackgroundSync: false)
 
         // Then
         #expect(mockSyncRemote.lastCatalogDownloadAllowCellular == allowCellular)
@@ -333,7 +333,7 @@ struct POSCatalogFullSyncServiceTests {
         )
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then - Should have made 4 catalog request calls (1 initial + 3 polls)
         #expect(mockSyncRemote.catalogRequestCallCount == 4)
@@ -358,7 +358,7 @@ struct POSCatalogFullSyncServiceTests {
 
         // When/Then - Should throw generationFailed
         await #expect(throws: POSCatalogSyncError.generationFailed) {
-            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
         }
 
         // Verify it stopped after receiving failed status
@@ -378,7 +378,7 @@ struct POSCatalogFullSyncServiceTests {
         )
 
         // When
-        _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true)
+        _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
 
         // Then - Should only make 1 catalog request call (no polling needed)
         #expect(mockSyncRemote.catalogRequestCallCount == 1)

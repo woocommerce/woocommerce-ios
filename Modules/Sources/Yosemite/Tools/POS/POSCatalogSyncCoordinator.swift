@@ -82,7 +82,7 @@ public extension POSCatalogSyncCoordinatorProtocol {
     }
 
     /// Performs a smart sync with a default 24-hour threshold for full sync
-    func performSmartSync(for siteID: Int64, isBackgroundSync: Bool = false) async throws {
+    func performSmartSync(for siteID: Int64, isBackgroundSync: Bool) async throws {
         let twentyFourHours: TimeInterval = 24 * 60 * 60
         let oneHour: TimeInterval = 60 * 60
         try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours, incrementalSyncMaxAge: oneHour, isBackgroundSync: isBackgroundSync)
@@ -145,7 +145,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.posProductsOnlyEnabled = posProductsOnlyEnabled
     }
 
-    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool = false) async throws {
+    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
         guard maxAge >= 0 else {
             throw POSCatalogSyncError.negativeMaxAge
         }
@@ -245,7 +245,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     // When Background App Refresh or foreground app open triggers this, first check if there's a
     // pending catalog generation from a previous session (requires state persistence). If so,
     // poll once for status and download/parse if ready instead of starting a new generation.
-    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool = false) async throws {
+    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool) async throws {
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
 

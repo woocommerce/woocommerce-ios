@@ -62,18 +62,9 @@ private struct PrototypeContainerContent: View {
                 services: PrototypeDependencyProvider(),
                 itemProvider: StatefulItemService(configuration: config)
             )
-
-            // Dismiss button - floating, doesn't affect POS layout
-            Button(action: onDismiss) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.title)
-                    .symbolRenderingMode(.palette)
-                    .foregroundStyle(.white, .black.opacity(0.5))
-                    .padding(16)
-            }
         }
         .overlay(alignment: .bottom) {
-            PrototypeControlPanel(paymentService: paymentService)
+            PrototypeControlPanel(paymentService: paymentService, onCloseScenario: onDismiss)
         }
         .enableInjection()
     }

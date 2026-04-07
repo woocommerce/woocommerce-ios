@@ -6,6 +6,7 @@ import PointOfSale
 
 struct PrototypeControlPanel: View {
     let paymentService: StatefulPaymentService
+    var onCloseScenario: (() -> Void)?
     @State private var isExpanded = false
     @State private var selectedTab: ControlTab = .payment
 
@@ -24,6 +25,7 @@ struct PrototypeControlPanel: View {
 
     private var toggleBar: some View {
         HStack {
+            Spacer()
             if !isExpanded {
                 Button {
                     isExpanded = true
@@ -37,12 +39,11 @@ struct PrototypeControlPanel: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 8)
-                    .background(Color.blue)
+                    .background(Color.blue.opacity(0.85))
                     .clipShape(Capsule())
                     .shadow(color: .black.opacity(0.2), radius: 6, y: 3)
                 }
             }
-            Spacer()
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 8)
@@ -52,7 +53,7 @@ struct PrototypeControlPanel: View {
 
     private var expandedPanel: some View {
         VStack(spacing: 0) {
-            // Header with close
+            // Header
             HStack {
                 Picker("", selection: $selectedTab) {
                     ForEach(ControlTab.allCases) { tab in
@@ -61,15 +62,30 @@ struct PrototypeControlPanel: View {
                 }
                 .pickerStyle(.segmented)
 
+                if let onCloseScenario {
+                    Button {
+                        onCloseScenario()
+                    } label: {
+                        Text("Exit")
+                            .font(.caption.bold())
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(Color.red.opacity(0.8))
+                            .clipShape(Capsule())
+                    }
+                    .padding(.leading, 4)
+                }
+
                 Button {
                     isExpanded = false
                 } label: {
-                    Image(systemName: "xmark.circle.fill")
+                    Image(systemName: "chevron.down.circle.fill")
                         .font(.title3)
                         .symbolRenderingMode(.hierarchical)
                         .foregroundStyle(.secondary)
                 }
-                .padding(.leading, 8)
+                .padding(.leading, 2)
             }
             .padding(.horizontal, 12)
             .padding(.top, 10)

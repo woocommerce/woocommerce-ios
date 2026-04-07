@@ -11,8 +11,6 @@ WATCH_DERIVED_PATH="${SOURCE_ROOT}/Woo Watch App/DerivedSources"
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 
 CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
-CREDS_OUTPUT_PATH=${DERIVED_PATH}/ApiCredentials.swift
-
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
 
 BASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl
@@ -34,26 +32,21 @@ if [ ! -f $SECRETS_PATH ]; then
     mkdir -p ${CLASSES_DERIVED_PATH}
     mkdir -p "${WATCH_DERIVED_PATH}"
 
-    ## Create a credentials file from the template (if needed)
-    ## then copy it into place for the build.
+    ## Create credentials files from the template (if needed)
     ##
-    if [ ! -f $CREDS_OUTPUT_PATH ]; then
-        echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH}"
-        cp ${CREDS_TEMPLATE_PATH} ${CREDS_OUTPUT_PATH}
-    fi
+    for TARGET_PATH in ${CLASSES_DERIVED_PATH} "${WATCH_DERIVED_PATH}"; do
+        if [ ! -f "${TARGET_PATH}/ApiCredentials.swift" ]; then
+            echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH} -> ${TARGET_PATH}"
+            cp ${CREDS_TEMPLATE_PATH} "${TARGET_PATH}/ApiCredentials.swift"
+        fi
+    done
 
     ## Create a bash secrets file from the template (if needed)
-    ## then copy it into place for the build.
     ##
     if [ ! -f $BASH_OUTPUT_PATH ]; then
         echo ">> Creating Bash Secrets File from Template: ${BASH_INPUT_PATH}"
         cp ${BASH_INPUT_PATH} ${BASH_OUTPUT_PATH}
     fi
-
-    ## Copy credentials to per-target DerivedSources folders
-    ##
-    cp ${CREDS_OUTPUT_PATH} ${CLASSES_DERIVED_PATH}/ApiCredentials.swift
-    cp ${CREDS_OUTPUT_PATH} "${WATCH_DERIVED_PATH}/ApiCredentials.swift"
 
 else
 
@@ -75,19 +68,16 @@ else
       rbenv rehash
     fi
 
-    ## Generate ApiCredentials.swift
+    ## Generate ApiCredentials.swift into per-target DerivedSources folders
     ##
-    echo ">> Generating Credentials ${CREDS_OUTPUT_PATH}"
-    ruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}
+    for TARGET_PATH in ${CLASSES_DERIVED_PATH} "${WATCH_DERIVED_PATH}"; do
+        echo ">> Generating Credentials ${TARGET_PATH}/ApiCredentials.swift"
+        ruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > "${TARGET_PATH}/ApiCredentials.swift"
+    done
 
     ## Generate bash_secrets
     ##
     echo ">> Generating Credentials ${BASH_OUTPUT_PATH}"
     ruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}
-
-    ## Copy credentials to per-target DerivedSources folders
-    ##
-    cp ${CREDS_OUTPUT_PATH} ${CLASSES_DERIVED_PATH}/ApiCredentials.swift
-    cp ${CREDS_OUTPUT_PATH} "${WATCH_DERIVED_PATH}/ApiCredentials.swift"
 
 fi

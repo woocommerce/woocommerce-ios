@@ -45,6 +45,7 @@ struct InfiniteScrollView<Content: View>: View {
                             }
                     })
         }
+        .contentMargins(0, for: .scrollContent)
         .measureHeight { height in
             scrollViewHeight = height
         }

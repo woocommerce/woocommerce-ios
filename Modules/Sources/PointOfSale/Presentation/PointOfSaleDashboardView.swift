@@ -7,6 +7,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.keyboardObserver) private var keyboardObserver
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -158,7 +159,7 @@ struct PointOfSaleDashboardView: View {
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
         }
-        .ignoresSafeArea(.keyboard)
+        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .onAppear {
             trackTimeForInitialLoadingState()
             loadItemsWhenEligible()
@@ -211,6 +212,7 @@ struct PointOfSaleDashboardView: View {
                             .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
                             .allowsHitTesting(posModel.orderStage == .finalizing)
                     }
+                    .ignoresSafeArea(containerRegionToIgnore, edges: .bottom)
                     .navigationDestination(for: POSNavigationDestination.self) { destination in
                         switch destination {
                         case .cashPayment(let orderTotal):
@@ -332,6 +334,27 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
+    }
+}
+
+private extension PointOfSaleDashboardView {
+    /// iOS 26 NavigationStack introduces container insets that push content upward.
+    var containerRegionToIgnore: SafeAreaRegions {
+        if #available(iOS 26, *) {
+            return .container
+        } else {
+            return []
+        }
+    }
+
+    /// Ignore keyboard safe area only for the full-size on-screen keyboard, so floating
+    /// controls sit above the external keyboard's helper bar (pre-iOS 26 only; iOS 26 has no helper bar).
+    var dashboardIgnoredSafeAreaRegions: SafeAreaRegions {
+        if keyboardObserver.isFullSizeKeyboardVisible {
+            return containerRegionToIgnore.union(.keyboard)
+        } else {
+            return containerRegionToIgnore
+        }
     }
 }
 

@@ -71,6 +71,7 @@ struct TotalsView: View {
                         cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                         startCashPaymentAction: { paymentModel.startCashPayment() }
                     )
+                    .padding(.bottom, cashPaymentBottomPadding)
                 }
                 .animation(.default, value: isShowingPaymentView)
                 .scrollVerticallyIfNeeded()
@@ -100,6 +101,17 @@ struct TotalsView: View {
 
     private var backgroundColor: Color {
         viewHelper.paymentBackgroundColor(for: displayPaymentState)
+    }
+}
+
+private extension TotalsView {
+    /// iOS 26 ignores container safe area, so explicit padding clears the home indicator.
+    var cashPaymentBottomPadding: CGFloat {
+        if #available(iOS 26, *) {
+            return POSPadding.medium
+        } else {
+            return 0
+        }
     }
 }
 

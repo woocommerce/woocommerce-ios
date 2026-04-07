@@ -11,7 +11,6 @@ public struct ConditionalVerticalScrollModifier: ViewModifier {
                     .frame(minHeight: parentGeometry.size.height)
             }
             .scrollBounceBehavior(.basedOnSize)
-            .contentMargins(0, for: .scrollContent)
         }
     }
 }

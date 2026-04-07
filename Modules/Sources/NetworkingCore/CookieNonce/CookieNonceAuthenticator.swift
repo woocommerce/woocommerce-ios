@@ -157,7 +157,7 @@ private extension CookieNonceAuthenticator {
 }
 
 // MARK: State
-private extension CookieNonceAuthenticator {
+fileprivate extension CookieNonceAuthenticator {
     final class CookieNonceAuthenticatorState: @unchecked Sendable {
         private var _nonce: String?
         private var _canRetry = true

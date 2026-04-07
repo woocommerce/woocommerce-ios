@@ -25,6 +25,11 @@ final class BackgroundTaskRefreshDispatcher {
     /// Sets earliestBeginDate to nil (no delay) if preferred run date is in the past
     ///
     private func scheduleNextTask() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
+            scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
+            return
+        }
+
         let nextTask = schedule.getNextTask()
         let preferredDate = schedule.preferredRunDate(for: nextTask)
         let earliestBeginDate = preferredDate > Date() ? preferredDate : nil

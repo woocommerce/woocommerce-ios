@@ -192,6 +192,7 @@ class AuthenticatedState: StoresManagerState {
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                     storageManager: ServiceLocator.storageManager
                 ),
+                isLocalCatalogFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {

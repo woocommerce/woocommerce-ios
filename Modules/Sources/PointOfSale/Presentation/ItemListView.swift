@@ -142,6 +142,7 @@ struct ItemListView: View {
                 .zIndex(1)
             }
         }
+        // Both tabs exist in the ZStack simultaneously — prevent taps reaching the hidden tab.
         .allowsHitTesting(selectedItemListType == itemListType)
     }
 

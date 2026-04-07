@@ -29,7 +29,7 @@ struct ScenarioPickerView: View {
                     .padding(.vertical, 8)
                 }
             }
-            .navigationTitle("POS Prototype")
+            .navigationTitle("POS Lab")
             .enableInjection()
             .fullScreenCover(isPresented: showCoverBinding) {
                 if let scenario = selectedScenario {

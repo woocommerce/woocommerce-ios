@@ -1,4 +1,5 @@
 import SwiftUI
+import Inject
 import PointOfSale
 import Yosemite
 
@@ -20,6 +21,7 @@ struct PrototypeContainerView: View {
 private struct PrototypeContainerContent: View {
     let config: MockConfiguration
     let onDismiss: () -> Void
+    @ObserveInjection var inject
 
     @State private var paymentService: StatefulPaymentService
 
@@ -73,5 +75,6 @@ private struct PrototypeContainerContent: View {
         .overlay(alignment: .bottom) {
             PrototypeControlPanel(paymentService: paymentService)
         }
+        .enableInjection()
     }
 }

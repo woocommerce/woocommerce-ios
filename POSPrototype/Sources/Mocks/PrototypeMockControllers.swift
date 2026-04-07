@@ -33,7 +33,8 @@ struct PrototypePurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStr
     let products: [POSItem]
 
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        try await Task.sleep(for: .milliseconds(50))
+        await MainActor.run { }
+        try await Task.sleep(for: .milliseconds(100))
         return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
@@ -60,8 +61,10 @@ struct PrototypeCouponFetchStrategyFactory: PointOfSaleCouponFetchStrategyFactor
 
 struct PrototypeCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem> {
-        // Small delay to avoid racing the AsyncPaginationTracker
-        try await Task.sleep(for: .milliseconds(50))
+        // Yield to MainActor to serialize access to AsyncPaginationTracker
+        // which has non-isolated mutable IndexSet properties
+        await MainActor.run { }
+        try await Task.sleep(for: .milliseconds(100))
         return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
@@ -88,7 +91,8 @@ struct PrototypeOrderListFetchStrategy: POSOrderListFetchStrategy {
     var showsCachedDataWhileLoading: Bool { false }
 
     func fetchOrders(pageNumber: Int) async throws -> PagedItems<POSOrder> {
-        try await Task.sleep(for: .milliseconds(50))
+        await MainActor.run { }
+        try await Task.sleep(for: .milliseconds(100))
         return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 

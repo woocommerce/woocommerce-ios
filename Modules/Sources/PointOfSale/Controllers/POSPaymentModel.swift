@@ -314,14 +314,18 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
-        connectCardReaderTask?.cancel()
-        connectCardReaderTask = nil
+        cancelConnectCardReaderTask()
         paymentSessionCancellables.removeAll()
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
         formattedOrderTotalPrice = nil
         cancelReaderPreparation()
+    }
+
+    private func cancelConnectCardReaderTask() {
+        connectCardReaderTask?.cancel()
+        connectCardReaderTask = nil
     }
 
     private func cancelReaderPreparation() {
@@ -521,8 +525,7 @@ extension POSPaymentModel {
     /// Otherwise, it would wait until the timeout (30-45 minutes), using more battery
     /// and risking a shopper paying for the wrong order.
     func tearDown() {
-        connectCardReaderTask?.cancel()
-        connectCardReaderTask = nil
+        cancelConnectCardReaderTask()
         cardPresentPaymentService.cancelPayment()
         resetCardReaderObservation()
         paymentSessionCancellables.removeAll()

@@ -17,7 +17,7 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failDiscovery: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
-    private var selectedPaymentGatewayAccount: PaymentGatewayAccount?
+    private var selectedPaymentGatewayAccount: Yosemite.PaymentGatewayAccount?
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
     private var paymentExtension: CardPresentPaymentsPlugin
 
@@ -46,6 +46,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     override func dispatch(_ action: Action) {
         if let action = action as? CardPresentPaymentAction {
             onCardPresentPaymentAction(action: action)
+        } else if let action = action as? AppSettingsAction {
+            onAppSettingsAction(action: action)
         } else {
             super.dispatch(action)
         }
@@ -58,6 +60,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             selectedPaymentGatewayAccount = account
         case .selectedPaymentGatewayAccount(let onCompletion):
             onCompletion(selectedPaymentGatewayAccount)
+        case .checkDeviceSupport(_, _, _, _, let onCompletion):
+            onCompletion(true)
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)
         case .startCardReaderDiscovery(_, _, let onReaderDiscovered, let onError):
@@ -103,6 +107,15 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onCompletion(Result.success(()))
         default:
             break
+        }
+    }
+
+    private func onAppSettingsAction(action: AppSettingsAction) {
+        switch action {
+        case .loadFirstInPersonPaymentsTransactionDate(_, _, let onCompletion):
+            onCompletion(nil)
+        default:
+            super.dispatch(action)
         }
     }
 
@@ -153,7 +166,7 @@ extension MockCardPresentPaymentsStoresManager {
     }
 
     func insertSamplePaymentGateway(forSiteID siteID: Int64) {
-        let paymentGatewayAccount = PaymentGatewayAccount
+        let paymentGatewayAccount = Yosemite.PaymentGatewayAccount
             .fake()
             .copy(
                 siteID: siteID,

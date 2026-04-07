@@ -119,6 +119,10 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             } catch is CancellationError {
                 await self.cancelReaderConnectionAttempt()
                 return .canceled
+            } catch {
+                DDLogError("⛔️ Card reader connection failed: \(error.localizedDescription)")
+                await self.cancelReaderConnectionAttempt()
+                return .canceled
             }
         }
 
@@ -223,8 +227,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
 
-            let action = CardPresentPaymentAction.cancelCardReaderDiscovery { [weak self] _ in
-                self?.paymentAlertsPresenterAdaptor.dismiss()
+            let action = CardPresentPaymentAction.cancelCardReaderDiscovery { _ in
                 nillableContinuation?.resume()
                 nillableContinuation = nil
             }

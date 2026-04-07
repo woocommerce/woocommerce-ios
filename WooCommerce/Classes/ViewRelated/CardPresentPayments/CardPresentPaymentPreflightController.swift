@@ -1,4 +1,5 @@
 import Foundation
+import os
 import Yosemite
 import Combine
 import protocol WooFoundation.Analytics
@@ -71,8 +72,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     private var tapToPayAlertProvider: TapToPayAlertProvider
 
     private var readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
-    private let connectionAttemptLock = NSLock()
-    private var currentConnectionAttemptID = 0
+    /// Lock guards the connection attempt ID because `cancelConnectionAttempt()` is called
+    /// from `withTaskCancellationHandler`'s `onCancel`, which fires on an arbitrary thread.
+    private let connectionAttemptID = OSAllocatedUnfairLock(initialState: 0)
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> {
         readerConnectionSubject.eraseToAnyPublisher()
@@ -212,16 +214,14 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     }
 
     private func beginConnectionAttempt() -> Int {
-        connectionAttemptLock.lock()
-        defer { connectionAttemptLock.unlock() }
-        currentConnectionAttemptID += 1
-        return currentConnectionAttemptID
+        connectionAttemptID.withLock { id in
+            id += 1
+            return id
+        }
     }
 
-    private func isCurrentConnectionAttempt(_ connectionAttemptID: Int) -> Bool {
-        connectionAttemptLock.lock()
-        defer { connectionAttemptLock.unlock() }
-        return currentConnectionAttemptID == connectionAttemptID
+    private func isCurrentConnectionAttempt(_ id: Int) -> Bool {
+        connectionAttemptID.withLock { $0 == id }
     }
 
     private func adoptReconnection(using paymentGatewayAccount: PaymentGatewayAccount, connectionAttemptID: Int) {

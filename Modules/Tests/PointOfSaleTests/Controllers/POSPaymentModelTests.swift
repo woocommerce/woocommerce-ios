@@ -1041,23 +1041,18 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        // When - call connectCardReader twice in quick succession
+        // When
         sut.connectCardReader()
         sut.connectCardReader()
 
-        // Flush pending MainActor tasks by triggering and observing a publisher change
+        // Wait for the single enqueued Task to complete
         await withCheckedContinuation { continuation in
-            withObservationTracking {
-                _ = sut.cardReaderConnectionStatus
-            } onChange: {
-                Task { @MainActor in
-                    continuation.resume()
-                }
+            service.onConnectReaderCalled = {
+                continuation.resume()
             }
-            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
         }
 
-        // Then - service should have been called only once
+        // Then - only one call made; guard rejected the second
         #expect(service.connectReaderCallCount == 1)
     }
 

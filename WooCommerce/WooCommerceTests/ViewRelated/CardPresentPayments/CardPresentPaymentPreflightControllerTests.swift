@@ -2,6 +2,7 @@ import XCTest
 import Fakes
 import Storage
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 @MainActor
@@ -154,5 +155,11 @@ private final class DelayedCardPresentPaymentsOnboardingPresenter: CardPresentPa
     func completeOnboarding() {
         completion?()
         completion = nil
+    }
+}
+
+private extension CardPresentPaymentPreflightControllerTests {
+    enum Mocks {
+        static let configuration = CardPresentPaymentsConfiguration(country: .US)
     }
 }

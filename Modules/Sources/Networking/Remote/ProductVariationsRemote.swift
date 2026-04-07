@@ -117,7 +117,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let stringOfRequiredFields = fields.joined(separator: ",")
-        var parameters = [
+        let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.downloadable: downloadable.map { String($0) },

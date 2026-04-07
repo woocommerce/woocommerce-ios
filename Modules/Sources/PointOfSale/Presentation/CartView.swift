@@ -22,6 +22,7 @@ struct CartView: View {
         abs(offSetPosition) < maxOffset
     }
 
+    @State private var headerSize: CGSize = .zero
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
@@ -48,6 +49,7 @@ struct CartView: View {
                 })
                 .if(shouldApplyHeaderBottomShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .bottom) })
                 .zIndex(1)
+                .trackSize(size: $headerSize)
 
                 if posModel.cart.isNotEmpty {
                     CartScrollViewContent(
@@ -68,6 +70,7 @@ struct CartView: View {
                         .zIndex(1)
                 }
             }
+            .ignoresSafeArea(Self.containerRegionToIgnore, edges: .bottom)
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
@@ -76,6 +79,7 @@ struct CartView: View {
             .background(content: {
                 if posModel.cart.isEmpty {
                     cartEmptyView
+                        .padding(.top, headerSize.height)
                 }
             })
             .background(backgroundColor.ignoresSafeArea(.all))
@@ -110,6 +114,15 @@ private struct ScrollViewHeightPreferenceKey: PreferenceKey {
 }
 
 private extension CartView {
+    /// iOS 26 NavigationStack introduces container insets that shift the checkout button up.
+    static var containerRegionToIgnore: SafeAreaRegions {
+        if #available(iOS 26, *) {
+            return .container
+        } else {
+            return []
+        }
+    }
+
     var backgroundColor: Color {
         .posSurfaceBright
     }

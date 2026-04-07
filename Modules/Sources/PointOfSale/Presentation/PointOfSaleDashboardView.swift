@@ -212,7 +212,6 @@ struct PointOfSaleDashboardView: View {
                             .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
                             .allowsHitTesting(posModel.orderStage == .finalizing)
                     }
-                    .ignoresSafeArea(containerRegionToIgnore, edges: .bottom)
                     .navigationDestination(for: POSNavigationDestination.self) { destination in
                         switch destination {
                         case .cashPayment(let orderTotal):

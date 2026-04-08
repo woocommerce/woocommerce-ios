@@ -16,6 +16,7 @@ struct POSPaymentContentView: View {
 
     @Environment(POSPaymentModel.self) private var paymentModel
     private let viewHelper = POSPaymentViewHelper()
+    @Namespace private var paymentMessageNamespace
 
     /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
     /// by NavigationStack push. Success and idle are visible to this view.
@@ -96,7 +97,8 @@ struct POSPaymentContentView: View {
             PointOfSaleCardPresentPaymentInLineMessage(
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: formattedTotal,
-                                     paymentMethod: .cash)))
+                                     paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
         case .card:
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
@@ -237,57 +239,95 @@ struct POSCardPaymentContentView: View {
     var showLoadingWhenIdle: Bool = false
 
     private let viewHelper = POSPaymentViewHelper()
+    @Namespace private var paymentMessageNamespace
+    private var paymentMessageAnimation: POSCardPresentPaymentInLineMessageAnimation {
+        .init(namespace: paymentMessageNamespace)
+    }
 
     @ViewBuilder
     var body: some View {
         if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {
-            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView {
+            PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(animation: paymentMessageAnimation) {
                 connectCardReaderAction()
             }
+        } else if let spinnerMessage = activeSpinnerMessage {
+            POSPaymentLoadingView(title: spinnerMessage.title,
+                                  message: spinnerMessage.message,
+                                  animation: paymentMessageAnimation)
         } else if let inlineMessage = cardPresentPaymentInlineMessage {
             switch inlineMessage {
             case .paymentSuccess:
-                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage)
+                PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage,
+                                                           animation: paymentMessageAnimation)
             default:
                 HStack(alignment: .center) {
                     Spacer()
-                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage)
+                    PointOfSaleCardPresentPaymentInLineMessage(messageType: inlineMessage,
+                                                               animation: paymentMessageAnimation)
                     Spacer()
                 }
             }
-        } else if showLoadingWhenIdle,
-                  case .idle = paymentState.card,
-                  case .connected = cardReaderConnectionStatus {
-            POSPaymentLoadingView()
         }
+    }
+
+    /// Routes all spinner states through one branch so the ProgressView keeps its identity.
+    private var activeSpinnerMessage: (title: String, message: String)? {
+        if let inlineMessage = cardPresentPaymentInlineMessage {
+            switch inlineMessage {
+            case .validatingOrder(let vm):
+                return (vm.title, vm.message)
+            case .preparingForPayment(let vm):
+                return (vm.title, vm.message)
+            default:
+                return nil
+            }
+        }
+        if showLoadingWhenIdle,
+           case .idle = paymentState.card,
+           case .connected = cardReaderConnectionStatus {
+            return (POSPaymentLoadingView.Localization.title,
+                    POSPaymentLoadingView.Localization.message)
+        }
+        return nil
     }
 }
 
 // MARK: - Payment Loading View
 
-/// Loading spinner shown while waiting for order data during payment.
+/// Spinner + text view used for idle-loading, validatingOrder, and preparingForPayment states.
+/// Rendered as a single persistent branch so the ProgressView animation state is preserved.
 struct POSPaymentLoadingView: View {
+    let title: String
+    let message: String
+    let animation: POSCardPresentPaymentInLineMessageAnimation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         VStack(alignment: .center, spacing: POSSpacing.xLarge) {
             ProgressView()
                 .progressViewStyle(POSProgressViewStyle())
                 .frame(width: 160, height: 160)
+                .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
+                .renderedIf(!dynamicTypeSize.isAccessibilitySize)
 
             VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
-                Text(Localization.title)
+                Text(title)
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .font(.posBodyLargeRegular())
+                    .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
-                Text(Localization.message)
+                Text(message)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
+                    .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
+            .transaction { $0.animation = nil }
         }
         .multilineTextAlignment(.center)
     }
 
-    private enum Localization {
+    enum Localization {
         static let title = NSLocalizedString(
             "pointOfSale.payment.loading.title",
             value: "Getting ready",

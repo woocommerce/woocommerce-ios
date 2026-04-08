@@ -138,6 +138,17 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
     public let customFields: [MetaData]
 
+    // MARK: Booking Product properties
+
+    /// Duration of each booking. Applicable for booking-type products only.
+    public let bookingDuration: Int64?
+
+    /// Unit of the booking duration (e.g., "hour", "minute"). Applicable for booking-type products only.
+    public let bookingDurationUnit: String?
+
+    /// List of resource IDs associated with this booking product. Applicable for booking-type products only.
+    public let bookingResourceIDs: [Int64]?
+
     /// Computed Properties
     ///
     public var productStatus: ProductStatus {
@@ -267,7 +278,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 maxAllowedQuantity: String?,
                 groupOfQuantity: String?,
                 combineVariationQuantities: Bool?,
-                customFields: [MetaData]) {
+                customFields: [MetaData],
+                bookingDuration: Int64? = nil,
+                bookingDurationUnit: String? = nil,
+                bookingResourceIDs: [Int64]? = nil) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -346,6 +360,9 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.maxAllowedQuantity = maxAllowedQuantity
         self.combineVariationQuantities = combineVariationQuantities
         self.customFields = customFields
+        self.bookingDuration = bookingDuration
+        self.bookingDurationUnit = bookingDurationUnit
+        self.bookingResourceIDs = bookingResourceIDs
     }
 
     /// The public initializer for Product.
@@ -575,6 +592,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
             combineVariationQuantities = combineVariationQuantitiesString == Values.combineVariationQuantitiesTrueValue
         }
 
+        // Booking Product properties
+        let bookingDuration = container.failsafeDecodeIfPresent(Int64.self, forKey: .bookingDuration)
+        let bookingDurationUnit = container.failsafeDecodeIfPresent(stringForKey: .bookingDurationUnit)
+        let bookingResourceIDs = try? container.decodeIfPresent([Int64].self, forKey: .bookingResourceIDs)
+
         self.init(siteID: siteID,
                   productID: productID,
                   name: name,
@@ -652,7 +674,10 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   maxAllowedQuantity: maxAllowedQuantity,
                   groupOfQuantity: groupOfQuantity,
                   combineVariationQuantities: combineVariationQuantities,
-                  customFields: customFields)
+                  customFields: customFields,
+                  bookingDuration: bookingDuration,
+                  bookingDurationUnit: bookingDurationUnit,
+                  bookingResourceIDs: bookingResourceIDs)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -880,6 +905,10 @@ private extension Product {
         case maxAllowedQuantity     = "max_quantity"
         case groupOfQuantity        = "group_of_quantity"
         case combineVariations      = "combine_variations"
+
+        case bookingDuration        = "booking_duration"
+        case bookingDurationUnit    = "booking_duration_unit"
+        case bookingResourceIDs     = "booking_resources"
     }
 
     enum MetadataKeys {

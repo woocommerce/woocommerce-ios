@@ -2591,6 +2591,45 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(results.first?.value(forKey: "fulfillmentID") as? Int64, 42)
         XCTAssertEqual(results.first?.value(forKey: "trackingNumber") as? String, "1Z999AA10123456784")
     }
+
+    func test_migrating_from_135_to_136_adds_booking_attributes_to_product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 135")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 135)
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["bookingDuration"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(product.entity.attributesByName["bookingDurationUnit"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(product.entity.attributesByName["bookingResourceIDs"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 136")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        XCTAssertNotNil(migratedProduct.entity.attributesByName["bookingDuration"])
+        XCTAssertNotNil(migratedProduct.entity.attributesByName["bookingDurationUnit"])
+        XCTAssertNotNil(migratedProduct.entity.attributesByName["bookingResourceIDs"])
+
+        // Default values should be nil
+        XCTAssertNil(migratedProduct.value(forKey: "bookingDuration"))
+        XCTAssertNil(migratedProduct.value(forKey: "bookingDurationUnit"))
+        XCTAssertNil(migratedProduct.value(forKey: "bookingResourceIDs"))
+
+        // Verify values can be set and saved
+        migratedProduct.setValue(30, forKey: "bookingDuration")
+        migratedProduct.setValue("minute", forKey: "bookingDurationUnit")
+        migratedProduct.setValue([1, 2, 3] as NSArray, forKey: "bookingResourceIDs")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedProduct.value(forKey: "bookingDuration") as? Int64, 30)
+        XCTAssertEqual(migratedProduct.value(forKey: "bookingDurationUnit") as? String, "minute")
+        XCTAssertEqual(migratedProduct.value(forKey: "bookingResourceIDs") as? [Int], [1, 2, 3])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

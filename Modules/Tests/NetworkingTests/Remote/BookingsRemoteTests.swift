@@ -111,12 +111,12 @@ struct BookingsRemoteTests {
         #expect(unwrappedResource.resourceID == 22)
         #expect(unwrappedResource.name == "Joel (Sample resource)")
         #expect(unwrappedResource.quantity == 1)
-        #expect(unwrappedResource.role == "")
-        #expect(unwrappedResource.email == "")
-        #expect(unwrappedResource.phoneNumber == "")
+        #expect(unwrappedResource.role.isEmpty)
+        #expect(unwrappedResource.email?.isEmpty == true)
+        #expect(unwrappedResource.phoneNumber?.isEmpty == true)
         #expect(unwrappedResource.imageID == 0)
-        #expect(unwrappedResource.imageURL == "")
-        #expect(unwrappedResource.description == "")
+        #expect(unwrappedResource.imageURL?.isEmpty == true)
+        #expect(unwrappedResource.description?.isEmpty == true)
         #expect(unwrappedResource.siteID == sampleSiteID)
     }
 

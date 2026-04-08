@@ -74,7 +74,7 @@ struct ApplicationPasswordDisabledViewModel: ULErrorViewModel {
         guard let viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .noWooError)
+        authentication.presentSupport(from: viewController, screen: .noWooError, siteURL: URL(string: siteURL))
     }
 }
 

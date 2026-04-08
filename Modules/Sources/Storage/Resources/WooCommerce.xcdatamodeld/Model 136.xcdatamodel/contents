@@ -526,6 +526,9 @@
         <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersKey" attributeType="String"/>
+        <attribute name="bookingDuration" optional="YES" attributeType="Integer 64" usesScalarValueType="NO"/>
+        <attribute name="bookingDurationUnit" optional="YES" attributeType="String"/>
+        <attribute name="bookingResourceIDs" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="NSArray"/>
         <attribute name="briefDescription" optional="YES" attributeType="String"/>
         <attribute name="bundleMaxSize" optional="YES" attributeType="Decimal"/>
         <attribute name="bundleMinSize" optional="YES" attributeType="Decimal"/>

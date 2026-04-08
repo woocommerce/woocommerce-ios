@@ -884,6 +884,137 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
+    @MainActor struct PriceUpdateTests {
+        private let cardPresentPaymentService = MockCardPresentPaymentService()
+        private let orderController = MockPointOfSaleOrderController()
+
+        init() {
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$15.00", orderTotalDecimal: 15)
+        }
+
+        @Test func checkOut_when_prices_changed_then_updates_cart_items() async {
+            // Given
+            let product = POSSimpleProduct(
+                id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+                name: "Test Product",
+                formattedPrice: "$10.00",
+                productID: 1,
+                price: "10.00",
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            let updatedProduct = POSSimpleProduct(
+                id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+                name: "Test Product",
+                formattedPrice: "$15.00",
+                productID: 1,
+                price: "15.00",
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(.simpleProduct(product))
+
+            let cartItemID = sut.cart.purchasableItems.first!.id
+            orderController.priceUpdatesToReturn = [
+                CartItemPriceUpdate(cartItemID: cartItemID, updatedItem: updatedProduct)
+            ]
+
+            // When
+            await sut.checkOut()
+
+            // Then
+            let updatedItem = sut.cart.purchasableItems.first
+            #expect(updatedItem?.formattedPrice == "$15.00")
+        }
+
+        @Test func checkOut_when_prices_changed_then_triggers_incremental_sync() async {
+            // Given
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            let product = POSSimpleProduct(
+                id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+                name: "Test Product",
+                formattedPrice: "$10.00",
+                productID: 1,
+                price: "10.00",
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+            let updatedProduct = POSSimpleProduct(
+                id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+                name: "Test Product",
+                formattedPrice: "$15.00",
+                productID: 1,
+                price: "15.00",
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: "instock"
+            )
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                siteID: 789,
+                catalogSyncCoordinator: coordinator)
+            sut.addToCart(.simpleProduct(product))
+
+            let cartItemID = sut.cart.purchasableItems.first!.id
+            orderController.priceUpdatesToReturn = [
+                CartItemPriceUpdate(cartItemID: cartItemID, updatedItem: updatedProduct)
+            ]
+
+            // When
+            await withCheckedContinuation { continuation in
+                var resumed = false
+                coordinator.onPerformIncrementalSyncCalled = {
+                    if !resumed {
+                        continuation.resume()
+                        resumed = true
+                    }
+                }
+
+                Task {
+                    await sut.checkOut()
+                }
+            }
+
+            // Then
+            #expect(coordinator.performIncrementalSyncSiteID == 789)
+        }
+
+        @Test func checkOut_when_prices_unchanged_then_does_not_trigger_incremental_sync() async {
+            // Given
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                siteID: 789,
+                catalogSyncCoordinator: coordinator)
+            sut.addToCart(makePurchasableItem())
+
+            // priceUpdatesToReturn defaults to empty
+            orderController.priceUpdatesToReturn = []
+
+            // When
+            await sut.checkOut()
+
+            // Allow any pending tasks to complete
+            try? await Task.sleep(nanoseconds: 100_000_000)
+
+            // Then — incremental sync count should only reflect the payment-success observation, not order creation
+            // Since payment hasn't succeeded yet, the count from checkOut price updates should be 0
+            // The initial smart sync may fire, so we check the site ID wasn't set by our price-change path
+            // by verifying the invocation count is 0 (no price-triggered sync)
+            #expect(coordinator.performIncrementalSyncInvocationCount == 0)
+        }
+    }
+
     @MainActor struct AnalyticsTests {
         private let analytics: MockPOSAnalytics
         private let cardPresentPaymentService = MockCardPresentPaymentService()

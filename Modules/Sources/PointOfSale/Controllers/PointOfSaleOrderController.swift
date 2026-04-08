@@ -9,7 +9,9 @@ import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
+import protocol Yosemite.POSOrderableItem
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
 import enum Yosemite.OrderUpdateField
@@ -32,6 +34,14 @@ enum SyncOrderStateError: Error {
     case syncFailure
 }
 
+/// Represents a cart item whose price was updated by the server during order sync.
+struct CartItemPriceUpdate {
+    /// The UUID of the cart's `PurchasableItem` whose price changed.
+    let cartItemID: UUID
+    /// The updated orderable item with the corrected price.
+    let updatedItem: POSOrderableItem
+}
+
 protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
@@ -40,6 +50,10 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
+
+    /// Compares cart item prices with the synced order's line items.
+    /// Returns updates for items whose server-side price differs from the local price.
+    func priceUpdates(for cart: Cart) -> [CartItemPriceUpdate]
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -129,6 +143,42 @@ protocol PointOfSaleOrderControllerProtocol {
         } catch {
             analytics.track(.pointOfSaleCashPaymentFailed)
             throw error
+        }
+    }
+
+    func priceUpdates(for cart: Cart) -> [CartItemPriceUpdate] {
+        guard let order else { return [] }
+
+        return cart.purchasableItems.compactMap { purchasableItem -> CartItemPriceUpdate? in
+            guard case .loaded(let orderableItem) = purchasableItem.state else { return nil }
+
+            // Find the matching order line item
+            guard let orderItem = order.items.first(where: { orderableItem.matches(orderItem: $0) }) else { return nil }
+
+            let orderPriceDecimal = orderItem.price
+            let orderPriceString = orderPriceDecimal.stringValue
+
+            // Update if the server price differs from the local price (compare as decimals to avoid string format mismatches)
+            if let simpleProduct = orderableItem as? POSSimpleProduct,
+               NSDecimalNumber(string: simpleProduct.price) != orderPriceDecimal {
+                let formattedPrice = currencyFormatter.formatAmount(orderPriceString, with: order.currency) ?? simpleProduct.formattedPrice
+                let updated = simpleProduct.copy(formattedPrice: formattedPrice, price: orderPriceString)
+                return CartItemPriceUpdate(cartItemID: purchasableItem.id, updatedItem: updated)
+            } else if let variation = orderableItem as? POSVariation,
+                      NSDecimalNumber(string: variation.price) != orderPriceDecimal {
+                let formattedPrice = currencyFormatter.formatAmount(orderPriceString, with: order.currency) ?? variation.formattedPrice
+                let updated = POSVariation(id: variation.id,
+                                           name: variation.name,
+                                           formattedPrice: formattedPrice,
+                                           price: orderPriceString,
+                                           productImageSource: variation.productImageSource,
+                                           productID: variation.productID,
+                                           variationID: variation.productVariationID,
+                                           parentProductName: variation.parentProductName)
+                return CartItemPriceUpdate(cartItemID: purchasableItem.id, updatedItem: updated)
+            }
+
+            return nil
         }
     }
 }

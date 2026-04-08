@@ -145,6 +145,21 @@ extension Cart {
         purchasableItems.removeAll(where: { $0.id == id })
     }
 
+    /// Updates cart item prices using server-provided corrections.
+    mutating func applyPriceUpdates(_ updates: [CartItemPriceUpdate]) {
+        for update in updates {
+            guard let index = purchasableItems.firstIndex(where: { $0.id == update.cartItemID }) else { continue }
+            let existing = purchasableItems[index]
+            purchasableItems[index] = PurchasableItem(
+                id: existing.id,
+                item: update.updatedItem,
+                title: existing.title,
+                subtitle: existing.subtitle,
+                quantity: existing.quantity
+            )
+        }
+    }
+
     var isEmpty: Bool {
         purchasableItems.isEmpty && coupons.isEmpty
     }

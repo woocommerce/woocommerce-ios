@@ -45,4 +45,9 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             throw sendReceiptErrorToThrow
         }
     }
+
+    var priceUpdatesToReturn: [CartItemPriceUpdate] = []
+    func priceUpdates(for cart: Cart) -> [CartItemPriceUpdate] {
+        priceUpdatesToReturn
+    }
 }

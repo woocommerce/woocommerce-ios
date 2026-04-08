@@ -453,7 +453,25 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await removeMissingProductsFromCatalogAfterSync()
+        updateCartPricesFromOrderIfNeeded()
         await paymentModel.startPayment()
+    }
+
+    /// Updates cart item prices if the server returned different prices during order sync,
+    /// and triggers an incremental catalog sync so the catalog reflects the corrected prices.
+    private func updateCartPricesFromOrderIfNeeded() {
+        let updates = orderController.priceUpdates(for: cart)
+        guard !updates.isEmpty else { return }
+
+        cart.applyPriceUpdates(updates)
+        DDLogInfo("💰 Updated \(updates.count) cart item price(s) from order response")
+
+        // Prices changed — the local catalog is stale, trigger an incremental sync
+        guard let catalogSyncCoordinator else { return }
+        let siteID = siteID
+        Task {
+            try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        }
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync

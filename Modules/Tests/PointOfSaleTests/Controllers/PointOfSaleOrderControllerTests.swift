@@ -14,6 +14,8 @@ import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 import enum Networking.NetworkError
 import struct Yosemite.POSItemIdentifier
+import struct Yosemite.POSSimpleProduct
+import struct Yosemite.POSVariation
 
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
@@ -706,6 +708,95 @@ struct PointOfSaleOrderControllerTests {
             #expect(analytics.events.first(where: { $0.eventName == "cash_payment_failed" }) != nil)
         }
     }
+
+    // MARK: - Price Updates
+
+    @MainActor
+    @Test func priceUpdates_when_no_order_returns_empty() {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: MockPOSOrderService(),
+                                             receiptSender: MockPOSReceiptSender(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let cart = Cart(purchasableItems: [makeSimpleProductCartItem(price: "10.00", productID: 1)])
+
+        // When
+        let updates = sut.priceUpdates(for: cart)
+
+        // Then
+        #expect(updates.isEmpty)
+    }
+
+    @MainActor
+    @Test func priceUpdates_when_prices_match_returns_empty() async {
+        // Given
+        let orderService = MockPOSOrderService()
+        let sut = PointOfSaleOrderController(orderService: orderService,
+                                             receiptSender: MockPOSReceiptSender(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let product = makeSimpleProduct(price: "10.00", productID: 1)
+        let cartItem = Cart.PurchasableItem(id: UUID(), item: product, title: product.name, subtitle: nil, quantity: 1)
+        let orderItem = OrderItem.fake().copy(productID: 1, quantity: 1, price: NSDecimalNumber(string: "10.00"))
+        orderService.orderToReturn = Order.fake().copy(items: [orderItem])
+        await sut.syncOrder(for: Cart(purchasableItems: [cartItem]), retryHandler: {})
+
+        // When
+        let updates = sut.priceUpdates(for: Cart(purchasableItems: [cartItem]))
+
+        // Then
+        #expect(updates.isEmpty)
+    }
+
+    @MainActor
+    @Test func priceUpdates_when_simple_product_price_changed_returns_update() async {
+        // Given
+        let orderService = MockPOSOrderService()
+        let sut = PointOfSaleOrderController(orderService: orderService,
+                                             receiptSender: MockPOSReceiptSender(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let product = makeSimpleProduct(price: "10.00", productID: 42)
+        let cartItemID = UUID()
+        let cartItem = Cart.PurchasableItem(id: cartItemID, item: product, title: product.name, subtitle: nil, quantity: 1)
+        let orderItem = OrderItem.fake().copy(productID: 42, quantity: 1, price: NSDecimalNumber(string: "15.00"))
+        orderService.orderToReturn = Order.fake().copy(currency: "USD", items: [orderItem])
+        await sut.syncOrder(for: Cart(purchasableItems: [cartItem]), retryHandler: {})
+
+        // When
+        let updates = sut.priceUpdates(for: Cart(purchasableItems: [cartItem]))
+
+        // Then
+        #expect(updates.count == 1)
+        #expect(updates.first?.cartItemID == cartItemID)
+        let updatedProduct = try? #require(updates.first?.updatedItem as? POSSimpleProduct)
+        #expect(updatedProduct?.price == "15")
+    }
+
+    @MainActor
+    @Test func priceUpdates_when_variation_price_changed_returns_update() async {
+        // Given
+        let orderService = MockPOSOrderService()
+        let sut = PointOfSaleOrderController(orderService: orderService,
+                                             receiptSender: MockPOSReceiptSender(),
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let variation = makeVariation(price: "5.00", productID: 10, variationID: 20)
+        let cartItemID = UUID()
+        let cartItem = Cart.PurchasableItem(id: cartItemID, item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+        let orderItem = OrderItem.fake().copy(productID: 10, variationID: 20, quantity: 1, price: NSDecimalNumber(string: "8.00"))
+        orderService.orderToReturn = Order.fake().copy(currency: "USD", items: [orderItem])
+        await sut.syncOrder(for: Cart(purchasableItems: [cartItem]), retryHandler: {})
+
+        // When
+        let updates = sut.priceUpdates(for: Cart(purchasableItems: [cartItem]))
+
+        // Then
+        #expect(updates.count == 1)
+        #expect(updates.first?.cartItemID == cartItemID)
+        let updatedVariation = try? #require(updates.first?.updatedItem as? POSVariation)
+        #expect(updatedVariation?.price == "8")
+    }
 }
 
 private func makeItem(name: String = "",
@@ -719,6 +810,36 @@ private func makeItem(name: String = "",
                  title: name,
                  subtitle: nil,
                  quantity: quantity)
+}
+
+private func makeSimpleProduct(price: String, productID: Int64) -> POSSimpleProduct {
+    POSSimpleProduct(
+        id: POSItemIdentifier(underlyingType: .product, itemID: productID),
+        name: "Product \(productID)",
+        formattedPrice: "$\(price)",
+        productID: productID,
+        price: price,
+        manageStock: false,
+        stockQuantity: nil,
+        stockStatusKey: "instock"
+    )
+}
+
+private func makeSimpleProductCartItem(price: String, productID: Int64) -> Cart.PurchasableItem {
+    let product = makeSimpleProduct(price: price, productID: productID)
+    return Cart.PurchasableItem(id: UUID(), item: product, title: product.name, subtitle: nil, quantity: 1)
+}
+
+private func makeVariation(price: String, productID: Int64, variationID: Int64) -> POSVariation {
+    POSVariation(
+        id: POSItemIdentifier(underlyingType: .variation, itemID: variationID),
+        name: "Variation \(variationID)",
+        formattedPrice: "$\(price)",
+        price: price,
+        productID: productID,
+        variationID: variationID,
+        parentProductName: "Parent \(productID)"
+    )
 }
 
 // MARK: - Mock Currency Settings Provider

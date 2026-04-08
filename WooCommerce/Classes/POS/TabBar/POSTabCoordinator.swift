@@ -336,8 +336,14 @@ private extension POSTabCoordinator {
 // MARK: - Sunset Warning
 private extension POSTabCoordinator {
     /// Determines whether the sunset warning banner should be shown.
-    /// Returns true if the store is on WC < 10.5 and the banner hasn't been shown in the last 14 days.
+    /// Returns true if the catalog API feature flag is enabled, the store is on WC < 10.5,
+    /// and the banner hasn't been dismissed in the last 14 days.
     func shouldShowSunsetWarning(siteID: Int64) async -> Bool {
+        // Only show when catalog API flag is on — without it, i1 still works for WC 10.3+ users
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
+            return false
+        }
+
         let siteSettings = SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         if let lastShownDate = siteSettings.getSunsetWarningLastShownDate(siteID: siteID) {
             let daysSinceShown = Calendar.current.dateComponents([.day], from: lastShownDate, to: Date()).day ?? 0

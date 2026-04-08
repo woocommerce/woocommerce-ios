@@ -7,7 +7,6 @@ import class WooFoundation.CurrencySettings
 import WooFoundationCore
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
-import class Storage.PListFileStorage
 import struct NetworkingCore.JetpackSite
 import struct NetworkingCore.OrderItem
 import PointOfSale
@@ -218,7 +217,15 @@ private extension POSTabCoordinator {
             }
 
             // Check if sunset warning should be shown (WC < 10.5, throttled to once every 14 days)
-            let needsSunsetWarning = await self.shouldShowSunsetWarning(siteID: siteID)
+            let sunsetWarningChecker = POSSunsetWarningChecker(
+                systemStatusService: POSSystemStatusService(
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported,
+                    storageManager: storageManager
+                )
+            )
+            let needsSunsetWarning = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
 
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
@@ -316,10 +323,8 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     needsSunsetWarning: needsSunsetWarning,
-                    onSunsetWarningDismissed: { [weak self] in
-                        guard let self else { return }
-                        let siteSettings = SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
-                        siteSettings.setSunsetWarningLastShownDate(siteID: siteID, date: Date())
+                    onSunsetWarningDismissed: {
+                        sunsetWarningChecker.recordDismissal(siteID: siteID)
                     },
                     services: serviceAdaptor,
                     itemProvider: itemProvider
@@ -333,52 +338,6 @@ private extension POSTabCoordinator {
     }
 }
 
-// MARK: - Sunset Warning
-private extension POSTabCoordinator {
-    /// Determines whether the sunset warning banner should be shown.
-    /// Returns true if the catalog API feature flag is enabled, the store is on WC < 10.5,
-    /// and the banner hasn't been dismissed in the last 14 days.
-    func shouldShowSunsetWarning(siteID: Int64) async -> Bool {
-        // Only show when catalog API flag is on — without it, i1 still works for WC 10.3+ users
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
-            return false
-        }
-
-        let siteSettings = SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
-        if let lastShownDate = siteSettings.getSunsetWarningLastShownDate(siteID: siteID) {
-            let daysSinceShown = Calendar.current.dateComponents([.day], from: lastShownDate, to: Date()).day ?? 0
-            if daysSinceShown < Constants.sunsetWarningThresholdDays {
-                return false
-            }
-        }
-
-        // Check WC version via system status service
-        do {
-            let systemStatusService = POSSystemStatusService(
-                credentials: credentials,
-                selectedSite: defaultSitePublisher,
-                appPasswordSupportState: isAppPasswordSupported,
-                storageManager: storageManager
-            )
-            let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
-            guard let wcPlugin = pluginInfo.wcPlugin, wcPlugin.active else {
-                return false
-            }
-            let isVersionSupported = VersionHelpers.isVersionSupported(
-                version: wcPlugin.version,
-                minimumRequired: Constants.sunsetWarningMinimumWCVersion
-            )
-            return !isVersionSupported
-        } catch {
-            return false
-        }
-    }
-
-    enum Constants {
-        static let sunsetWarningThresholdDays = 14
-        static let sunsetWarningMinimumWCVersion = "10.5.0"
-    }
-}
 
 private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {

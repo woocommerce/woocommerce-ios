@@ -105,6 +105,22 @@ public enum BookingAction: Action {
                            onCompletion: (Error?) -> Void)
 
 
+    /// Reschedules a booking by updating its start date, end date, and optionally its resource.
+    ///
+    /// - Parameter siteID: The site ID of the booking.
+    /// - Parameter bookingID: The ID of the booking to reschedule.
+    /// - Parameter startDate: The new booking start datetime (ISO 8601 format).
+    /// - Parameter endDate: The new booking end datetime (ISO 8601 format).
+    /// - Parameter resourceID: Optional new resource/team member ID.
+    /// - Parameter onCompletion: called when reschedule completes, returns an error in case of a failure.
+    ///
+    case rescheduleBooking(siteID: Int64,
+                           bookingID: Int64,
+                           startDate: String,
+                           endDate: String,
+                           resourceID: Int64?,
+                           onCompletion: (Error?) -> Void)
+
     /// Fetches the booking location from the product endpoint and persists it on the booking.
     ///
     /// - Parameter siteID: The site ID.

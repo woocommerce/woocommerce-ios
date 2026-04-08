@@ -89,6 +89,15 @@ public class BookingStore: Store {
                 note: note,
                 onCompletion: onCompletion
             )
+        case .rescheduleBooking(let siteID, let bookingID, let startDate, let endDate, let resourceID, let onCompletion):
+            rescheduleBooking(
+                siteID: siteID,
+                bookingID: bookingID,
+                startDate: startDate,
+                endDate: endDate,
+                resourceID: resourceID,
+                onCompletion: onCompletion
+            )
         case .fetchBookingLocationResponse(let siteID, let bookingID, let productID, let onCompletion):
             fetchBookingLocationResponse(siteID: siteID, bookingID: bookingID, productID: productID, onCompletion: onCompletion)
         case .clearBookingsCache(siteID: let siteID, onCompletion: let onCompletion):
@@ -462,6 +471,40 @@ private extension BookingStore {
                 }
             } catch {
                 onCompletion(error)
+            }
+        }
+    }
+
+    /// Reschedules a booking by updating its start date, end date, and optionally its resource.
+    func rescheduleBooking(
+        siteID: Int64,
+        bookingID: Int64,
+        startDate: String,
+        endDate: String,
+        resourceID: Int64?,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        Task { @MainActor in
+            do {
+                if let remoteBooking = try await self.remote.rescheduleBooking(
+                    from: siteID,
+                    bookingID: bookingID,
+                    startDate: startDate,
+                    endDate: endDate,
+                    resourceID: resourceID
+                ) {
+                    await self.upsertStoredBookingsInBackground(
+                        readOnlyBookings: [remoteBooking],
+                        readOnlyOrders: [],
+                        siteID: siteID
+                    )
+
+                    onCompletion(nil)
+                } else {
+                    return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                }
+            } catch {
+                return onCompletion(error)
             }
         }
     }

@@ -749,7 +749,7 @@ struct PointOfSaleOrderControllerTests {
     }
 
     @MainActor
-    @Test func priceUpdates_when_simple_product_price_changed_returns_update() async {
+    @Test func priceUpdates_when_simple_product_price_changed_returns_update() async throws {
         // Given
         let orderService = MockPOSOrderService()
         let sut = PointOfSaleOrderController(orderService: orderService,
@@ -769,12 +769,12 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(updates.count == 1)
         #expect(updates.first?.cartItemID == cartItemID)
-        let updatedProduct = try? #require(updates.first?.updatedItem as? POSSimpleProduct)
-        #expect(updatedProduct?.price == "15")
+        let updatedProduct = try #require(updates.first?.updatedItem as? POSSimpleProduct)
+        #expect(updatedProduct.price == "15")
     }
 
     @MainActor
-    @Test func priceUpdates_when_variation_price_changed_returns_update() async {
+    @Test func priceUpdates_when_variation_price_changed_returns_update() async throws {
         // Given
         let orderService = MockPOSOrderService()
         let sut = PointOfSaleOrderController(orderService: orderService,
@@ -794,8 +794,8 @@ struct PointOfSaleOrderControllerTests {
         // Then
         #expect(updates.count == 1)
         #expect(updates.first?.cartItemID == cartItemID)
-        let updatedVariation = try? #require(updates.first?.updatedItem as? POSVariation)
-        #expect(updatedVariation?.price == "8")
+        let updatedVariation = try #require(updates.first?.updatedItem as? POSVariation)
+        #expect(updatedVariation.price == "8")
     }
 }
 

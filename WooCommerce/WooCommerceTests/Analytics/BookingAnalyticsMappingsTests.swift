@@ -18,7 +18,7 @@ struct BookingAnalyticsMappingsTests {
         )
 
         // Then
-        #expect(noFilters.analyticsFilterString == "")
+        #expect(noFilters.analyticsFilterString.isEmpty)
         #expect(allFilters.analyticsFilterString == "attendance_status,customer,date_time,service_events,team_member")
     }
 }

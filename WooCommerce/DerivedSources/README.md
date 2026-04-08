@@ -1,9 +1,9 @@
 # Derived Sources
 
 This folder contains files generated at build time by the `GenerateCredentials` aggregate target.
-You'll notice the setup derived sources are set up differently in the Xcode project, that is, as a group rather than the superior synchronized folder.
+In the Xcode project, these derived sources are added as a group rather than as a synchronized folder.
 This is because synchronized folders determine their file list at project-load time, before build phases run.
-Generated files that don't exist on disk yet would be invisible to a synchronized group.
+Generated files that do not yet exist on disk would not appear in a synchronized folder.
 
 The generation script (`Scripts/build-phases/generate-credentials.sh`) creates `ApiCredentials.swift` in each subfolder:
 

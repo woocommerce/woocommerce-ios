@@ -30,6 +30,19 @@ tracks_checker.check_tracks_changes(
   tracks_label: 'category: tracks'
 )
 
+# Warn when Action enums are modified without updating mock handlers
+action_files = git.modified_files.select { |f| f.start_with?('Modules/Sources/Yosemite/Actions/') }
+mock_handler_files = git.modified_files.select { |f| f.start_with?('Modules/Sources/Yosemite/Model/Mocks/') }
+
+if action_files.any? && mock_handler_files.empty?
+  warn(
+    "Action enum(s) modified (`#{action_files.map { |f| File.basename(f) }.join('`, `')}`) " \
+    'without updating mock handlers. If new action cases were added, update the corresponding ' \
+    'MockActionHandler in `Modules/Sources/Yosemite/Model/Mocks/ActionHandlers/` to avoid ' \
+    'breaking screenshot tests.'
+  )
+end
+
 view_changes_checker.check
 
 pr_size_checker.check_diff_size(

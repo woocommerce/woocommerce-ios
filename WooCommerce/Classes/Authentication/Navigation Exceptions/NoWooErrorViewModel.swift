@@ -102,7 +102,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         guard let viewController = viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .noWooError)
+        authentication.presentSupport(from: viewController, screen: .noWooError, siteURL: URL(string: site.url))
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

@@ -57,4 +57,72 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         XCTAssertEqual(rows.first, .helpCenter)
         XCTAssertEqual(rows.last, .systemStatusReport)
     }
+
+    func test_given_unauthenticated_user_with_login_site_url_when_getting_rows_then_site_compatibility_is_shown() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false, isZendeskEnabled: true, isMacCatalyst: false, hasLoginSiteURL: true)
+
+        // When
+        let rows = viewModel.getRows()
+
+        // Then
+        XCTAssertTrue(rows.contains(.siteCompatibility))
+    }
+
+    func test_given_unauthenticated_user_without_login_site_url_when_getting_rows_then_site_compatibility_is_not_shown() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false, isZendeskEnabled: true, isMacCatalyst: false, hasLoginSiteURL: false)
+
+        // When
+        let rows = viewModel.getRows()
+
+        // Then
+        XCTAssertFalse(rows.contains(.siteCompatibility))
+    }
+
+    func test_given_authenticated_user_with_login_site_url_when_getting_rows_then_site_compatibility_is_not_shown() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: true, isZendeskEnabled: true, isMacCatalyst: false, hasLoginSiteURL: true)
+
+        // When
+        let rows = viewModel.getRows()
+
+        // Then
+        XCTAssertFalse(rows.contains(.siteCompatibility))
+    }
+
+    // MARK: - Developer rows
+
+    func test_getDeveloperRows_when_loggedOutFFPanel_enabled_then_returns_featureFlags() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false, isZendeskEnabled: true, isMacCatalyst: false, developerFFPanelEnabled: true)
+
+        // When
+        let rows = viewModel.getDeveloperRows()
+
+        // Then
+        XCTAssertEqual(rows, [.featureFlags])
+    }
+
+    func test_getDeveloperRows_when_loggedOutFFPanel_disabled_then_returns_empty() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false, isZendeskEnabled: true, isMacCatalyst: false, developerFFPanelEnabled: false)
+
+        // When
+        let rows = viewModel.getDeveloperRows()
+
+        // Then
+        XCTAssertTrue(rows.isEmpty)
+    }
+
+    func test_getDeveloperRows_when_default_then_returns_empty() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: true, isZendeskEnabled: true, isMacCatalyst: false)
+
+        // When
+        let rows = viewModel.getDeveloperRows()
+
+        // Then
+        XCTAssertTrue(rows.isEmpty)
+    }
 }

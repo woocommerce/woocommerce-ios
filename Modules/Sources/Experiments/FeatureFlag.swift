@@ -229,4 +229,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables FedEx as a carrier option in WooShipping label creation
     ///
     case wooShippingFedEx
+
+    /// Enables the feature flag override panel in the Help screen during the login flow
+    ///
+    case loggedOutFFPanel
 }

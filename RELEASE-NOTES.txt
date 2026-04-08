@@ -3,6 +3,7 @@
 24.6
 -----
 - [*] POS: visual fixes in iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/16898]
+- [*] Add troubleshooting tool for login [https://github.com/woocommerce/woocommerce-ios/pull/16890]
 
 
 24.5

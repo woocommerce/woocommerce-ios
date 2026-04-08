@@ -1,3 +1,4 @@
+import EventHorizonSDK
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
@@ -236,6 +237,55 @@ class WooAnalyticsTests: XCTestCase {
             XCTAssertNil(receivedProperties[property])
         }
     }
+
+    // MARK: - Trackable Bridge
+
+    func test_track_Trackable_when_authenticated_then_includes_site_properties() {
+        // Given
+        guard let testingProvider = testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL)))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
+
+        // When
+        analytics.track(MockTrackableEvent(analyticsName: "test_event",
+                                           analyticsProperties: ["key1": "value1"]))
+
+        // Then
+        XCTAssertEqual(testingProvider.receivedEvents.first, "test_event")
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["key1"] as? String, "value1")
+        XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
+    }
+
+    func test_track_Trackable_when_not_authenticated_then_skips_site_properties() {
+        // Given
+        guard let testingProvider = testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
+
+        // When
+        analytics.track(MockTrackableEvent(analyticsName: "test_event",
+                                           analyticsProperties: ["key1": "value1"]))
+
+        // Then
+        XCTAssertEqual(testingProvider.receivedEvents.first, "test_event")
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["key1"] as? String, "value1")
+        XCTAssertNil(receivedProperties["blog_id"])
+    }
 }
 
 
@@ -253,5 +303,22 @@ private extension WooAnalyticsTests {
         static let testErrorReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain"]
 
         static let testErrorAndPropertyReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain", "prop-key1": "prop-value1"]
+    }
+}
+
+// MARK: - Mock Trackable
+
+private struct MockTrackableEvent: Trackable {
+    let analyticsName: String
+    let analyticsProperties: [String: any CustomStringConvertible]
+
+    var description: String { analyticsName }
+
+    static func == (lhs: MockTrackableEvent, rhs: MockTrackableEvent) -> Bool {
+        lhs.analyticsName == rhs.analyticsName
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(analyticsName)
     }
 }

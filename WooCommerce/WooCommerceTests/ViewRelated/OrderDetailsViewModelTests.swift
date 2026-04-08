@@ -819,3 +819,29 @@ private extension OrderDetailsViewModelTests {
         }
     }
 }
+
+// MARK: - Order Fulfillment Eligibility (CIAB)
+extension OrderDetailsViewModelTests {
+
+    func test_checkOrderFulfillmentEligibility_when_eligible_then_returns_true() async {
+        // Given
+        whenCheckingShippingLabelCreationEligibility(thenReturn: true)
+
+        // When
+        let result = await viewModel.checkOrderFulfillmentEligibility()
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    func test_checkOrderFulfillmentEligibility_when_not_eligible_then_returns_false() async {
+        // Given
+        whenCheckingShippingLabelCreationEligibility(thenReturn: false)
+
+        // When
+        let result = await viewModel.checkOrderFulfillmentEligibility()
+
+        // Then
+        XCTAssertFalse(result)
+    }
+}

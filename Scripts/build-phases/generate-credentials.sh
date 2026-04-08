@@ -22,7 +22,7 @@ SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.jso
 
 ## Validate Secrets!
 ##
-if [ ! -f $SECRETS_PATH ]; then
+if [ ! -f "$SECRETS_PATH" ]; then
 
     echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane run configure_apply\` to update your secrets"
 
@@ -30,24 +30,24 @@ if [ ! -f $SECRETS_PATH ]; then
 
     ## Generate the Derived folders, if needed
     ##
-    mkdir -p ${DERIVED_PATH}
-    mkdir -p ${CLASSES_DERIVED_PATH}
-    mkdir -p ${WATCH_DERIVED_PATH}
+    mkdir -p "${DERIVED_PATH}"
+    mkdir -p "${CLASSES_DERIVED_PATH}"
+    mkdir -p "${WATCH_DERIVED_PATH}"
 
     ## Create credentials files from the template (if needed)
     ##
     for TARGET_PATH in ${CLASSES_DERIVED_PATH} ${WATCH_DERIVED_PATH}; do
         if [ ! -f "${TARGET_PATH}/ApiCredentials.swift" ]; then
             echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH} -> ${TARGET_PATH}"
-            cp ${CREDS_TEMPLATE_PATH} "${TARGET_PATH}/ApiCredentials.swift"
+            cp "${CREDS_TEMPLATE_PATH}" "${TARGET_PATH}/ApiCredentials.swift"
         fi
     done
 
     ## Create a bash secrets file from the template (if needed)
     ##
-    if [ ! -f $BASH_OUTPUT_PATH ]; then
+    if [ ! -f "$BASH_OUTPUT_PATH" ]; then
         echo ">> Creating Bash Secrets File from Template: ${BASH_INPUT_PATH}"
-        cp ${BASH_INPUT_PATH} ${BASH_OUTPUT_PATH}
+        cp "${BASH_INPUT_PATH}" "${BASH_OUTPUT_PATH}"
     fi
 
 else
@@ -56,9 +56,9 @@ else
 
     ## Generate the Derived folders, if needed
     ##
-    mkdir -p ${DERIVED_PATH}
-    mkdir -p ${CLASSES_DERIVED_PATH}
-    mkdir -p ${WATCH_DERIVED_PATH}
+    mkdir -p "${DERIVED_PATH}"
+    mkdir -p "${CLASSES_DERIVED_PATH}"
+    mkdir -p "${WATCH_DERIVED_PATH}"
 
     if which rbenv; then
       # Fix an issue where, depending on the shell you are using on your machine and your rbenv setup,
@@ -74,12 +74,12 @@ else
     ##
     for TARGET_PATH in ${CLASSES_DERIVED_PATH} ${WATCH_DERIVED_PATH}; do
         echo ">> Generating Credentials ${TARGET_PATH}/ApiCredentials.swift"
-        ruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > "${TARGET_PATH}/ApiCredentials.swift"
+        ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${TARGET_PATH}/ApiCredentials.swift"
     done
 
     ## Generate bash_secrets
     ##
     echo ">> Generating Credentials ${BASH_OUTPUT_PATH}"
-    ruby ${SCRIPT_PATH} -i ${BASH_INPUT_PATH} -s ${SECRETS_PATH} > ${BASH_OUTPUT_PATH}
+    ruby "${SCRIPT_PATH}" -i "${BASH_INPUT_PATH}" -s "${SECRETS_PATH}" > "${BASH_OUTPUT_PATH}"
 
 fi

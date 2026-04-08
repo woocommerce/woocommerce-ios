@@ -45,6 +45,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var isEligibleForWooShipping: Bool = false
 
+    /// Whether the order is eligible for order fulfillment (CIAB sites only).
+    ///
+    var isEligibleForOrderFulfillment: Bool = false
+
     /// Whether the order is eligible for card present payment.
     ///
     var isEligibleForPayment: Bool {

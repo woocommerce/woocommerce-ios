@@ -7,7 +7,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     private let systemStatusService: POSSystemStatusServiceProtocol
     private let catalogSizeLimit: Int
     private let isLocalCatalogFeatureFlagEnabled: Bool
-    private let usesCatalogAPI: Bool
+    private let isCatalogAPIFeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
     private let betaFeatureToggleProvider: @Sendable () async -> Bool
 
@@ -32,7 +32,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         systemStatusService: POSSystemStatusServiceProtocol,
         isLocalCatalogFeatureFlagEnabled: Bool,
-        usesCatalogAPI: Bool = false,
+        isCatalogAPIFeatureFlagEnabled: Bool = false,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
         catalogSizeLimit: Int? = nil
@@ -40,7 +40,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         self.catalogSizeChecker = catalogSizeChecker
         self.systemStatusService = systemStatusService
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
-        self.usesCatalogAPI = usesCatalogAPI
+        self.isCatalogAPIFeatureFlagEnabled = isCatalogAPIFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
         self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
@@ -122,7 +122,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         // Check WooCommerce version:
         // - Paginated sync requires 10.3.0+
         // - Catalog API requires 10.5.0+,
-        let minimumVersion = usesCatalogAPI ? Constants.wcPluginMinimumVersionForCatalogAPI : Constants.wcPluginMinimumVersionForLocalCatalog
+        let minimumVersion = isCatalogAPIFeatureFlagEnabled ? Constants.wcPluginMinimumVersionForCatalogAPI : Constants.wcPluginMinimumVersionForLocalCatalog
         do {
             let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
 
@@ -158,13 +158,14 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         }
 
         // Catalog API supports stores of any size, so we skip the size check
-        if usesCatalogAPI {
+        if isCatalogAPIFeatureFlagEnabled {
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Using catalog API, skipping size check for site \(siteID)")
             eligibilityStates[siteID] = .eligible
             return .eligible
         }
 
         // Fetch remote catalog size and check against limit (paginated sync only)
+        // Once pointOfSaleCatalogAPI is enabled and file approach is working, catalog size won't apply
         do {
             let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
 

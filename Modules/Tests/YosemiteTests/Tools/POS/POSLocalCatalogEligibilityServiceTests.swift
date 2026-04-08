@@ -610,7 +610,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
-            usesCatalogAPI: true,
+            isCatalogAPIFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -652,7 +652,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
-            usesCatalogAPI: true,
+            isCatalogAPIFeatureFlagEnabled: true,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -689,7 +689,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
-            usesCatalogAPI: false,
+            isCatalogAPIFeatureFlagEnabled: false,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000
@@ -731,7 +731,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             catalogSizeChecker: sizeChecker,
             systemStatusService: systemStatusService,
             isLocalCatalogFeatureFlagEnabled: true,
-            usesCatalogAPI: false,
+            isCatalogAPIFeatureFlagEnabled: false,
             remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
             catalogSizeLimit: 1000

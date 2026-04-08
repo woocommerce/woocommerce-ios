@@ -342,7 +342,11 @@ extension OrderDetailsViewModel {
                 defer {
                     group.leave()
                 }
-                await syncOrderFulfillments()
+                let isEligible = await checkOrderFulfillmentEligibility()
+                dataSource.isEligibleForOrderFulfillment = isEligible
+                if isEligible {
+                    await syncOrderFulfillments()
+                }
             }
         }
 
@@ -843,6 +847,19 @@ extension OrderDetailsViewModel {
             return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
         } else {
             return false
+        }
+    }
+
+    /// Checks whether the order is eligible for fulfillment on CIAB sites.
+    /// Reuses the WooShipping eligibility endpoint which determines if an order can be fulfilled.
+    /// Returns `false` on error to degrade gracefully without blocking order detail loading.
+    @MainActor
+    func checkOrderFulfillmentEligibility() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(WooShippingAction.checkCreationEligibility(siteID: order.siteID,
+                                                                         orderID: order.orderID) { isEligible in
+                continuation.resume(returning: isEligible)
+            })
         }
     }
 

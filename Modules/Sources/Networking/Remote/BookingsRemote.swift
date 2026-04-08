@@ -33,6 +33,12 @@ public protocol BookingsRemoteProtocol {
 
     func fetchBookingLocationResponse(for siteID: Int64,
                                      productID: Int64) async throws -> BookingLocationResponse
+
+    func rescheduleBooking(from siteID: Int64,
+                           bookingID: Int64,
+                           startDate: String,
+                           endDate: String,
+                           resourceID: Int64?) async throws -> Booking?
 }
 
 /// Filters for booking queries
@@ -285,6 +291,45 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
+    /// Reschedules a booking by updating its start date, end date, and optionally its resource.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll update the booking.
+    ///     - bookingID: The ID of the booking to reschedule.
+    ///     - startDate: New booking start datetime (ISO 8601 format).
+    ///     - endDate: New booking end datetime (ISO 8601 format).
+    ///     - resourceID: Optional new resource/team member ID.
+    ///
+    public func rescheduleBooking(
+        from siteID: Int64,
+        bookingID: Int64,
+        startDate: String,
+        endDate: String,
+        resourceID: Int64?
+    ) async throws -> Booking? {
+        let path = "\(Path.bookings)/\(bookingID)"
+        var parameters: [String: String] = [
+            ParameterKey.start: startDate,
+            ParameterKey.end: endDate
+        ]
+
+        if let resourceID {
+            parameters[ParameterKey.resourceID] = String(resourceID)
+        }
+
+        let request = JetpackRequest(
+            wooApiVersion: .wcBookings,
+            method: .put,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+
+        let mapper = BookingMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Fetches the `booking_location` field from a product.
     ///
     public func fetchBookingLocationResponse(
@@ -348,6 +393,9 @@ public extension BookingsRemote {
         static let bookingStatusExclude    = "booking_status_exclude"
         static let status: String          = "status"
         static let note: String            = "note"
+        static let start: String           = "start"
+        static let end: String             = "end"
+        static let resourceID: String      = "resource_id"
         static let fields: String          = "_fields"
     }
 

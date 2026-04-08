@@ -150,6 +150,23 @@ struct WooShippingCreateLabelsView: View {
                     .presentationDetents([.large])
                 }
             }
+            .sheet(isPresented: $viewModel.shouldShowFedExTermsAndConditions) {
+                if let termsViewModel = viewModel.fedExTermsViewModel {
+                    CarrierTermsView(viewModel: termsViewModel, checkboxes: { vm in
+                        LinkedCheckboxToggle(isOn: Binding(get: { vm.isTOSAccepted },
+                                                           set: { vm.isTOSAccepted = $0 }),
+                                             labelFormat: FedExTermsViewModel.Localization.checkbox,
+                                             linkText: FedExTermsViewModel.Localization.termsOfService,
+                                             linkURL: FedExTermsViewModel.Links.termsOfService)
+                    }, onConfirmation: {
+                        viewModel.shouldShowFedExTermsAndConditions = false
+                        Task { @MainActor in
+                            await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
+                        }
+                    })
+                    .presentationDetents([.large])
+                }
+            }
         }
     }
 }

@@ -197,11 +197,17 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     @Published var shouldShowUPSTermsAndConditions = false
 
+    @Published var shouldShowFedExTermsAndConditions = false
+
     var upsTermsViewModel: UPSTermsViewModel? {
         guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
             return nil
         }
         return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
+    }
+
+    var fedExTermsViewModel: FedExTermsViewModel? {
+        FedExTermsViewModel(siteID: order.siteID)
     }
 
     let isOrderCompleted: Bool
@@ -382,6 +388,8 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
             try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
+        } catch let DotcomError.unknown(code, _, _) where code == Constants.missingFedExTermsOfServiceAcceptance {
+            shouldShowFedExTermsAndConditions = true
         } catch {
             if let phoneMessage = invalidPhoneNumberMessage(from: error) {
                 labelPurchaseErrorNotice = Notice(
@@ -833,6 +841,7 @@ private extension WooShippingCreateLabelsViewModel {
 private extension WooShippingCreateLabelsViewModel {
     enum Constants {
         static let missingUPSDAPTermsOfServiceAcceptance = "missing_upsdap_terms_of_service_acceptance"
+        static let missingFedExTermsOfServiceAcceptance = "missing_fedex_terms_of_service_acceptance"
         static let serverErrorResponse = "wcc_server_error_response"
     }
     enum Localization {

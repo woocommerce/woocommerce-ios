@@ -122,7 +122,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             } catch {
                 DDLogError("⛔️ Card reader connection failed: \(error.localizedDescription)")
                 await self.cancelReaderConnectionAttempt()
-                return .canceled
+                throw error
             }
         }
 

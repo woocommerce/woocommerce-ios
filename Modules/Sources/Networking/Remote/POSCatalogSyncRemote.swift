@@ -463,7 +463,7 @@ public struct POSCatalogRequestResponse: Decodable {
     /// Timestamp when the job completed.
     public let completedAt: String?
     /// Progress percentage (0-100)
-    public let progress: Int?
+    public let progress: Double?
     /// Number of items processed so far
     public let processed: Int?
     /// Total number of items to process
@@ -483,7 +483,7 @@ public struct POSCatalogRequestResponse: Decodable {
                 downloadURL: String? = nil,
                 scheduledAt: String? = nil,
                 completedAt: String? = nil,
-                progress: Int? = nil,
+                progress: Double? = nil,
                 processed: Int? = nil,
                 total: Int? = nil) {
         self.status = status

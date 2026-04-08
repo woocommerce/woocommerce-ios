@@ -90,6 +90,7 @@ class AuthenticatedState: StoresManagerState {
                 storageManager: storageManager,
                 network: network,
             ),
+            OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

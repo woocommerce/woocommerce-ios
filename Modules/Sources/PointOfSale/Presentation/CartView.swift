@@ -278,7 +278,9 @@ private struct CartScrollViewContent: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: Constants.cartItemSpacing) {
-                    CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    if posModel.cart.coupons.isNotEmpty {
+                        CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    }
 
                     PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
                 }

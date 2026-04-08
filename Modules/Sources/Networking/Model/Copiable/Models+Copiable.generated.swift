@@ -1587,7 +1587,10 @@ extension Networking.Product {
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
         combineVariationQuantities: NullableCopiableProp<Bool> = .copy,
-        customFields: CopiableProp<[MetaData]> = .copy
+        customFields: CopiableProp<[MetaData]> = .copy,
+        bookingDuration: NullableCopiableProp<Int64> = .copy,
+        bookingDurationUnit: NullableCopiableProp<String> = .copy,
+        bookingResourceIDs: NullableCopiableProp<[Int64]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1667,6 +1670,9 @@ extension Networking.Product {
         let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
         let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
         let customFields = customFields ?? self.customFields
+        let bookingDuration = bookingDuration ?? self.bookingDuration
+        let bookingDurationUnit = bookingDurationUnit ?? self.bookingDurationUnit
+        let bookingResourceIDs = bookingResourceIDs ?? self.bookingResourceIDs
 
         return Networking.Product(
             siteID: siteID,
@@ -1746,7 +1752,10 @@ extension Networking.Product {
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
             combineVariationQuantities: combineVariationQuantities,
-            customFields: customFields
+            customFields: customFields,
+            bookingDuration: bookingDuration,
+            bookingDurationUnit: bookingDurationUnit,
+            bookingResourceIDs: bookingResourceIDs
         )
     }
 }

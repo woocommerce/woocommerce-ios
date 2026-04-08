@@ -12,12 +12,15 @@ final class RequestProcessor: RequestInterceptor {
 
     private let state: RequestProcessorState
 
-    weak var delegate: RequestProcessorDelegate?
-
     init(requestAuthenticator: RequestAuthenticator,
          notificationCenter: NotificationCenter = .default) {
         self.notificationCenter = notificationCenter
         self.state = RequestProcessorState(requestAuthenticator: requestAuthenticator)
+    }
+
+    weak var delegate: RequestProcessorDelegate? {
+        get { state.delegate }
+        set { state.delegate = newValue }
     }
 
     func updateAuthenticator(_ authenticator: RequestAuthenticator) {
@@ -195,6 +198,7 @@ private extension RequestProcessor {
         private var isAuthenticating: Bool
         private var requestAuthenticator: RequestAuthenticator
         private var siteID: Int64?
+        private weak var _delegate: RequestProcessorDelegate?
 
         private let queue = DispatchQueue(
             label: "com.woocommerce.networking.request-processor.state-queue",
@@ -206,6 +210,11 @@ private extension RequestProcessor {
             self.isAuthenticating = false
             self.requestAuthenticator = requestAuthenticator
             self.siteID = requestAuthenticator.jetpackSiteID
+        }
+
+        var delegate: RequestProcessorDelegate? {
+            get { queue.sync { _delegate } }
+            set { queue.sync { _delegate = newValue } }
         }
 
         var authenticator: RequestAuthenticator {

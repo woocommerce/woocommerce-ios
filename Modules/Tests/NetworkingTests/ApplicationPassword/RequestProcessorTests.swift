@@ -446,7 +446,39 @@ final class RequestProcessorTests: XCTestCase {
         XCTAssertFalse(shouldRetry.retryRequired)
     }
 
-    /// The test is designed for manual local run. It must be excluded from CI pipelines.
+    /// Simulates race condition of concurrent `delegate` reads and writes from different threads.
+    /// Verifies the synchronized implementation does not crash. Best run with Thread Sanitizer enabled.
+    func test_concurrent_delegate_access_does_not_trigger_race_condition() {
+        // Given
+        let sut = RequestProcessor(
+            requestAuthenticator: MockRequestAuthenticator(),
+            notificationCenter: MockNotificationCenter()
+        )
+        let iterations = 20000
+        let queue = DispatchQueue(
+            label: "com.woocommerce.tests.requestProcessor.delegate-race",
+            qos: .userInitiated,
+            attributes: .concurrent
+        )
+        let group = DispatchGroup()
+        let delegates = (0..<iterations / 2).map { _ in MockRequestProcessorDelegate() }
+
+        // When
+        for index in 0..<iterations {
+            queue.async(group: group) {
+                if index.isMultiple(of: 2) {
+                    sut.delegate = delegates[index / 2]
+                } else {
+                    _ = sut.delegate
+                }
+            }
+        }
+
+        // Then
+        let result = group.wait(timeout: .now() + 20)
+        XCTAssertEqual(result, .success)
+    }
+
     /// Simulates race condition of multiple `updateAuthenticator` calls from different threads
     /// Should cause a crash on old/non-synchronized `RequestProcessor` implementatoin
     /// Should work fine on synchronized version of `RequestProcessor`

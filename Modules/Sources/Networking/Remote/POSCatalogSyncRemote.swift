@@ -13,7 +13,7 @@ public protocol POSCatalogSyncRemoteProtocol {
     /// - Returns: Paginated list of POS products.
     // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
     // periphery:ignore
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String?) async throws -> PagedItems<POSProduct>
+    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String?, posProductsOnly: Bool) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations modified after the specified date for incremental sync.
     ///
@@ -118,7 +118,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     public func loadProducts(modifiedAfter: Date,
                              siteID: Int64,
                              pageNumber: Int,
-                             includeStatus: String? = nil)
+                             includeStatus: String? = nil,
+                             posProductsOnly: Bool = true)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
         var parameters: [String: String] = [
@@ -126,7 +127,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ","),
-            ParameterKey.posProductsOnly: String(true)
+            ParameterKey.posProductsOnly: String(posProductsOnly)
         ]
 
         if let includeStatus = includeStatus {

@@ -57,4 +57,39 @@ final class HelpAndSupportViewModelTests: XCTestCase {
         XCTAssertEqual(rows.first, .helpCenter)
         XCTAssertEqual(rows.last, .systemStatusReport)
     }
+
+    // MARK: - Developer rows
+
+    func test_getDeveloperRows_when_loggedOutFFPanel_enabled_then_returns_featureFlags() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false, isZendeskEnabled: true, isMacCatalyst: false, developerFFPanelEnabled: true)
+
+        // When
+        let rows = viewModel.getDeveloperRows()
+
+        // Then
+        XCTAssertEqual(rows, [.featureFlags])
+    }
+
+    func test_getDeveloperRows_when_loggedOutFFPanel_disabled_then_returns_empty() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: false, isZendeskEnabled: true, isMacCatalyst: false, developerFFPanelEnabled: false)
+
+        // When
+        let rows = viewModel.getDeveloperRows()
+
+        // Then
+        XCTAssertTrue(rows.isEmpty)
+    }
+
+    func test_getDeveloperRows_when_default_then_returns_empty() {
+        // Given
+        let viewModel = HelpAndSupportViewModel(isAuthenticated: true, isZendeskEnabled: true, isMacCatalyst: false)
+
+        // When
+        let rows = viewModel.getDeveloperRows()
+
+        // Then
+        XCTAssertTrue(rows.isEmpty)
+    }
 }

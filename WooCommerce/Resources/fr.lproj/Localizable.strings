@@ -1728,7 +1728,7 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when establishing a connection to the card reader times out. */
 "Connecting to the card reader timed out - ensure it is nearby and charged and then try again." = "La connexion au lecteur de cartes a été interrompue après le délai. Assurez-vous qu’il est assez près et bien chargé, puis réessayez";
 
-/* Title when checking if WooCommerce Payments is supported */
+/* Title when checking if WooPayments is supported */
 "Connecting to your account" = "Connexion à votre compte";
 
 /* Name of the step to connect the store to Jetpack */
@@ -2293,7 +2293,6 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Edit Address Form
    Text for the done button in the edit customer provided note screen
-   The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
    Title for the Done button on a WebView modal sheet */
 "Done" = "Terminé";
 
@@ -3423,9 +3422,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button for installing WooCommerce.Presented when logging in with a site address that does not have WooCommerce */
 "Install WooCommerce" = "Installer WooCommerce";
-
-/* Title for the error screen when WooCommerce Payments is not installed */
-"Install WooCommerce Payments" = "Installer WooCommerce Payments";
 
 /* Subtitle of the Jetpack benefits view. */
 "Install the free Jetpack plugin to experience the best mobile experience." = "Installez la nouvelle extension Jetpack gratuite pour profiter de la meilleure expérience mobile qui soit.";
@@ -5029,7 +5025,7 @@ If your translation of that term also happens to contains a hyphen, please be su
    Message of in-progress modal when requesting shipping label document for printing
    Message of the in-progress UI while purchasing a shipping label
    Message on the loading view displayed when the magic link authentication for Jetpack setup is in progress
-   Message when checking if WooCommerce Payments is supported
+   Message when checking if WooPayments is supported
    Text on the loading view of the survey screen indicating the user to wait
    VoiceOver Accessibility label for the instruction */
 "Please wait" = "Veuillez patienter";
@@ -6001,9 +5997,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Définissez le pourcentage de la remise que vous souhaitez offrir.";
-
-/* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
-"Set up %1$@" = "Configurer %1$@";
 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Réglage de Jetpack";
@@ -8218,14 +8211,8 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "Application mobile WooCommerce : gérez votre boutique où que vous soyez";
 
-/* Title of the WooCommerce Payments support area option */
-"WooCommerce Payments" = "Paiements WooCommerce";
-
 /* Title of the WooCommerce Plugin support area option */
 "WooCommerce Plugin" = "Extension WooCommerce";
-
-/* Navigation title of the webview which used by the merchant to update their store address */
-"WooCommerce Settings" = "Réglages WooCommerce";
 
 /* Title for the WooCommerce Setup screen in the login flow */
 "WooCommerce Setup" = "Configuration WooCommerce";
@@ -8335,7 +8322,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title for the mocked order notification needed for the AppStore listing screenshot */
 "You have a new order! 🎉" = "Une nouvelle commande a été passée sur votre site ! 🎉";
 
-/* Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements
+/* Error message when WooPayments is not supported because the Stripe account has overdue requirements
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
 "You have at least one overdue requirement on your account. Please take care of that to resume In‑Person Payments." = "Votre compte comporte au moins un prérequis en attente. Veuillez y remédier afin de reprendre les paiements en personne.";
@@ -8423,11 +8410,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Votre essai est terminé.";
-
-/* Error message when WooCommerce Payments is not installed
-The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
-If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
-"You’ll need to install the free WooCommerce Payments extension on your store to accept In‑Person Payments." = "Vous devrez installer l’extension gratuite WooCommerce Payments sur votre boutique afin d’accepter les paiements en personne.";
 
 /* Error message when an in-person payments plugin is activated but not set up. %1$@ contains the plugin name.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -13051,12 +13033,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to add the refund reason */
 "pos.refundReasonView.addButton" = "Ajouter";
-
-/* Accessibility label for back button on refund reason screen */
-"pos.refundReasonView.backButton.accessibilityLabel" = "Retour";
-
-/* Accessibility label for close button on refund reason screen */
-"pos.refundReasonView.closeButton.accessibilityLabel" = "Fermer";
 
 /* Placeholder text for the refund reason text field */
 "pos.refundReasonView.placeholder" = "Motif du remboursement de la commande";

@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 import Yosemite
 
@@ -68,7 +69,9 @@ final class HelpAndSupportViewController: UIViewController {
     private lazy var viewModel = HelpAndSupportViewModel(
         isAuthenticated: ServiceLocator.stores.isAuthenticated,
         isZendeskEnabled: ZendeskProvider.shared.zendeskEnabled,
-        isMacCatalyst: isMacCatalyst
+        isMacCatalyst: isMacCatalyst,
+        developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
+            && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel)
     )
 
     private var isMacCatalyst: Bool {
@@ -169,7 +172,15 @@ private extension HelpAndSupportViewController {
     ///
     func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
-        sections = [Section(title: helpAndSupportTitle, rows: viewModel.getRows())]
+        var result = [Section(title: helpAndSupportTitle, rows: viewModel.getRows())]
+
+        let developerRows = viewModel.getDeveloperRows()
+        if !developerRows.isEmpty {
+            let developerTitle = "DEVELOPER"
+            result.append(Section(title: developerTitle, rows: developerRows))
+        }
+
+        sections = result
     }
 
     /// Register table cells.
@@ -211,6 +222,8 @@ private extension HelpAndSupportViewController {
             configureApplicationLog(cell: cell)
         case let cell as ValueOneTableViewCell where row == .systemStatusReport:
             configureSystemStatusReport(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .featureFlags:
+            configureFeatureFlags(cell: cell)
         default:
             fatalError()
         }
@@ -268,6 +281,15 @@ private extension HelpAndSupportViewController {
             "Various system information about your site",
             comment: "Description of the system status report on Help screen"
         )
+    }
+
+    /// Override Feature Flags cell
+    ///
+    func configureFeatureFlags(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = "Override Feature Flags"
+        cell.detailTextLabel?.text = "Toggle local feature flags"
     }
 
     func refreshViewContent() {
@@ -365,6 +387,13 @@ private extension HelpAndSupportViewController {
         ServiceLocator.analytics.track(.supportSSROpened)
     }
 
+    /// Override Feature Flags action
+    ///
+    func featureFlagsWasPressed() {
+        let controller = UIHostingController(rootView: OverrideFeatureFlagsView(loadsRemoteValues: false))
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     @objc func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
@@ -417,6 +446,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             applicationLogWasPressed()
         case .systemStatusReport:
             systemStatusReportWasPressed()
+        case .featureFlags:
+            featureFlagsWasPressed()
         }
     }
 }
@@ -441,10 +472,11 @@ enum HelpAndSupportRow: CaseIterable {
     case contactEmail
     case applicationLog
     case systemStatusReport
+    case featureFlags
 
     var type: UITableViewCell.Type {
         switch self {
-        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport:
+        case .helpCenter, .contactSupport, .contactEmail, .applicationLog, .systemStatusReport, .featureFlags:
             return ValueOneTableViewCell.self
         }
     }

@@ -714,7 +714,7 @@ struct POSCatalogSyncRemoteTests {
         #expect(variableProduct.siteID == sampleSiteID)
         #expect(variableProduct.productID == 31)
         #expect(variableProduct.sku == "incredible-silk-chair-13060312")
-        #expect(variableProduct.globalUniqueID == "")
+        #expect(variableProduct.globalUniqueID?.isEmpty == true)
         #expect(variableProduct.name == "Incredible Silk Chair")
         #expect(variableProduct.price == "134.58")
         #expect(variableProduct.stockQuantity == -83)

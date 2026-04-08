@@ -23,16 +23,16 @@ struct OrderItemRefundEncoderTests {
         #expect(item.taxes == [])
 
         // Defaulted fields
-        #expect(item.name.isEmpty == true)
+        #expect(item.name.isEmpty)
         #expect(item.productID == 0)
         #expect(item.variationID == 0)
         #expect(item.refundedItemID == nil)
         #expect(item.price == .zero)
         #expect(item.sku == nil)
-        #expect(item.subtotal.isEmpty == true)
-        #expect(item.subtotalTax.isEmpty == true)
-        #expect(item.taxClass.isEmpty == true)
-        #expect(item.totalTax.isEmpty == true)
+        #expect(item.subtotal.isEmpty)
+        #expect(item.subtotalTax.isEmpty)
+        #expect(item.taxClass.isEmpty)
+        #expect(item.totalTax.isEmpty)
     }
 
     @Test func init_with_explicit_values_then_overrides_defaults() {

@@ -164,7 +164,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         guard let viewController = viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .wrongAccountError)
+        authentication.presentSupport(from: viewController, screen: .wrongAccountError, siteURL: URL(string: siteURL))
     }
 }
 

@@ -99,7 +99,7 @@ struct JetpackErrorViewModel: ULErrorViewModel {
         guard let viewController = viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .jetpackRequired)
+        authentication.presentSupport(from: viewController, screen: .jetpackRequired, siteURL: URL(string: siteURL))
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {

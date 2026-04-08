@@ -963,15 +963,15 @@ struct BookingStoreTests {
         let booking = Booking.fake().copy(
             siteID: sampleSiteID,
             bookingID: 1,
-            startDate: Date(timeIntervalSince1970: 1000),
-            endDate: Date(timeIntervalSince1970: 2000)
+            endDate: Date(timeIntervalSince1970: 2000),
+            startDate: Date(timeIntervalSince1970: 1000)
         )
         storeBooking(booking)
 
         let updatedBooking = booking.copy(
-            startDate: Date(timeIntervalSince1970: 3000),
             endDate: Date(timeIntervalSince1970: 4000),
-            resourceID: 42
+            resourceID: 42,
+            startDate: Date(timeIntervalSince1970: 3000)
         )
         remote.whenReschedulingBooking(thenReturn: .success(updatedBooking))
         let store = BookingStore(dispatcher: Dispatcher(),

@@ -1,1 +1,0 @@
-Du kannst deinen Shop jetzt noch besser verwalten. Das Scrollen in Bestell- und Produktlisten wurde verbessert, Belege für Zahlungsmethoden und Bestellstatus sind zuverlässiger und die Tap to Pay für Setups mit mehreren Shops funktioniert verlässlicher. Außerdem haben wir die Anmeldung, Buchungsfilter und das Tracking von „Zum Bezahlen scannen“ verbessert.

@@ -514,6 +514,57 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(attributionInfo.deviceType, "Desktop")
         XCTAssertEqual(attributionInfo.sessionPageViews, "2")
     }
+
+    // MARK: - Fulfillment Status Tests
+
+    func test_order_fulfillmentStatus_when_meta_is_fulfilled() throws {
+        // Given
+        let order = try makeOrder(withFulfillmentStatus: "fulfilled")
+
+        // Then
+        XCTAssertEqual(order.fulfillmentStatus, .fulfilled)
+    }
+
+    func test_order_fulfillmentStatus_when_meta_is_unfulfilled() throws {
+        // Given
+        let order = try makeOrder(withFulfillmentStatus: "unfulfilled")
+
+        // Then
+        XCTAssertEqual(order.fulfillmentStatus, .unfulfilled)
+    }
+
+    func test_order_fulfillmentStatus_when_meta_is_partially_fulfilled() throws {
+        // Given
+        let order = try makeOrder(withFulfillmentStatus: "partially_fulfilled")
+
+        // Then
+        XCTAssertEqual(order.fulfillmentStatus, .partiallyFulfilled)
+    }
+
+    func test_order_fulfillmentStatus_when_meta_is_no_fulfillments() throws {
+        // Given
+        let order = try makeOrder(withFulfillmentStatus: "no_fulfillments")
+
+        // Then
+        XCTAssertEqual(order.fulfillmentStatus, .noFulfillments)
+    }
+
+    func test_order_fulfillmentStatus_when_meta_key_is_missing_then_returns_unknown() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderResponse())
+
+        // Then
+        XCTAssertEqual(order.fulfillmentStatus, .unknown)
+    }
+
+    func test_order_fulfillmentStatus_when_meta_has_unrecognized_value_then_returns_unknown() throws {
+        // Given
+        let order = try makeOrder(withFulfillmentStatus: "some_future_value")
+
+        // Then
+        XCTAssertEqual(order.fulfillmentStatus, .unknown)
+    }
+
 }
 
 
@@ -782,5 +833,55 @@ private extension OrderMapperTests {
         XCTAssertTrue(fieldNames.contains("dict_field_1"))
         XCTAssertTrue(fieldNames.contains("dict_field_2"))
         XCTAssertFalse(fieldNames.contains("_internal_dict_field"))
+    }
+
+    // MARK: - Helpers
+
+    /// Creates an Order by decoding inline JSON with a specific `_fulfillment_status` meta value.
+    private func makeOrder(withFulfillmentStatus status: String) throws -> Order {
+        let jsonString = """
+        {
+            "id": 99999,
+            "parent_id": 0,
+            "number": "99999",
+            "order_key": "wc_order_test",
+            "created_via": "rest-api",
+            "status": "processing",
+            "currency": "USD",
+            "currency_symbol": "$",
+            "date_created_gmt": "2024-01-01T00:00:00",
+            "date_modified_gmt": "2024-01-01T00:00:00",
+            "discount_total": "0.00",
+            "discount_tax": "0.00",
+            "shipping_total": "0.00",
+            "shipping_tax": "0.00",
+            "total": "10.00",
+            "total_tax": "0.00",
+            "customer_id": 0,
+            "customer_note": "",
+            "billing": {},
+            "shipping": {},
+            "payment_method": "",
+            "payment_method_title": "",
+            "line_items": [],
+            "tax_lines": [],
+            "shipping_lines": [],
+            "fee_lines": [],
+            "coupon_lines": [],
+            "refunds": [],
+            "meta_data": [
+                {
+                    "id": 12345,
+                    "key": "_fulfillment_status",
+                    "value": "\(status)"
+                }
+            ]
+        }
+        """
+        let data = try XCTUnwrap(jsonString.data(using: .utf8))
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        decoder.userInfo = [.siteID: dummySiteID]
+        return try decoder.decode(Order.self, from: data)
     }
 }

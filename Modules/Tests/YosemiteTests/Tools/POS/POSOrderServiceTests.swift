@@ -118,8 +118,8 @@ struct POSOrderServiceTests {
         // Verify all items in the order are sanitized
         for item in orderSentToRemote.items {
             #expect(item.itemID == 0, "Item ID should be zero for new items")
-            #expect(item.total == "", "Total should be empty string")
-            #expect(item.subtotal == "", "Subtotal should be empty string")
+            #expect(item.total.isEmpty, "Total should be empty string")
+            #expect(item.subtotal.isEmpty, "Subtotal should be empty string")
         }
     }
 
@@ -227,7 +227,7 @@ struct POSOrderServiceTests {
             if case .missingProductsInOrder(let missingItems) = error as? POSOrderService.POSOrderServiceError {
                 #expect(missingItems.count == 1)
                 #expect(missingItems.first?.productID == 200)
-                #expect(missingItems.first?.name == "")
+                #expect(missingItems.first?.name.isEmpty == true)
                 return true
             }
             return false

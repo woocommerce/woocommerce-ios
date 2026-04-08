@@ -39,7 +39,7 @@ final class CustomFieldEditorViewModel: ObservableObject {
     }
 
     var isNewCreationMode: Bool {
-        initialKey == "" && initialValue == ""
+        initialKey.isEmpty && initialValue.isEmpty
     }
 
     init(customField: CustomFieldViewModel?,

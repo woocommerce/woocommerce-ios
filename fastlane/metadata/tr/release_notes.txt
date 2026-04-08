@@ -1,1 +1,0 @@
-Mağazanızı yönetmek artık çok daha iyi. Sipariş ve ürün listelerinde kaydırmayı iyileştirdik, ödeme yöntemlerinde ve sipariş durumlarında makbuzları daha güvenilir hale getirdik ve çoklu mağaza kurulumlarında Tap to Pay güvenilirliğini artırdık. Ayrıca oturum açma, rezervasyon filtreleri ve Ödemek için Tara takibini iyileştirdik.

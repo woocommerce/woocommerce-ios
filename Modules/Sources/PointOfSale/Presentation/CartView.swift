@@ -174,10 +174,6 @@ private extension CartView {
             value: "Scan barcode",
             comment: "The title of the menu button to start a barcode scanner setup flow."
         )
-        static let cartTitle = NSLocalizedString(
-            "pos.cartView.cartTitle",
-            value: "Cart",
-            comment: "Title at the header for the Cart view.")
         static let addItemsToCartOrScanHint = NSLocalizedString(
             "pos.cartView.addItemsToCartOrScanHint",
             value: "Tap on a product to \n add it to the cart, or ",
@@ -305,7 +301,9 @@ private struct CartScrollViewContent: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: Constants.cartItemSpacing) {
-                    CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    if posModel.cart.coupons.isNotEmpty {
+                        CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
+                    }
 
                     PurchasableItemsCartSection(shouldShowItemImages: $shouldShowItemImages)
                 }

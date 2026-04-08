@@ -164,7 +164,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         guard let viewController = viewController else {
             return
         }
-        authentication.presentSupport(from: viewController, screen: .wrongAccountError)
+        authentication.presentSupport(from: viewController, screen: .wrongAccountError, siteURL: URL(string: siteURL))
     }
 }
 
@@ -221,7 +221,7 @@ private extension WrongAccountErrorViewModel {
 
             switch result {
             case .success(let siteInfo):
-                self.isSelfHostedSite = !siteInfo.isWPCom
+                self.isSelfHostedSite = !siteInfo.isWPCom && !siteInfo.isCommerceGarden
             case .failure(let error):
                 DDLogWarn("⚠️ Error fetching site info: \(error)")
             }

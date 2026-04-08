@@ -1,1 +1,0 @@
-Hanteringen av din butik blev just bättre. Vi har förbättrat bläddringen i beställnings- och produktlistor, gjort kvitton mer tillförlitliga för olika betalningsmetoder och beställningsstatusar samt förbättrat Tryck för att betala-tillförlitligheten för flerbutikskonfigurationer. Vi har också förbättrat inloggningen, bokningsfiltren och Skanna för att betala-spårningen.

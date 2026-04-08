@@ -814,6 +814,38 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
     }
+
+    // MARK: - CIAB WC Admin Safari Sheet
+
+    @MainActor
+    func test_isCIABSite_when_site_is_CIAB_then_returns_true() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        let result = viewModel.isCIABSite()
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    @MainActor
+    func test_isCIABSite_when_site_is_not_CIAB_then_returns_false() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        let result = viewModel.isCIABSite()
+
+        // Then
+        XCTAssertFalse(result)
+    }
 }
 
 private extension HubMenuViewModelTests {

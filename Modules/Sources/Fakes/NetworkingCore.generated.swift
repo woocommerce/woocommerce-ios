@@ -176,6 +176,7 @@ extension NetworkingCore.Order {
             paymentURL: .fake(),
             chargeID: .fake(),
             paymentStatusMetadata: .fake(),
+            fulfillmentStatus: .fake(),
             items: .fake(),
             billingAddress: .fake(),
             shippingAddress: .fake(),
@@ -240,6 +241,13 @@ extension NetworkingCore.OrderFeeTaxStatus {
     ///
     public static func fake() -> NetworkingCore.OrderFeeTaxStatus {
         .taxable
+    }
+}
+extension NetworkingCore.OrderFulfillmentStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> NetworkingCore.OrderFulfillmentStatus {
+        .fulfilled
     }
 }
 extension NetworkingCore.OrderGiftCard {

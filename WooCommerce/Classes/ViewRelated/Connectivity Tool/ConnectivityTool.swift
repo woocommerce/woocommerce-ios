@@ -13,6 +13,10 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Retains the Jetpack setup coordinator while the flow is active.
+    ///
+    private var jetpackSetupCoordinator: JetpackSetupCoordinator?
+
 
     init() {
         viewModel = ConnectivityToolViewModel()
@@ -30,6 +34,33 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         }
         .store(in: &subscriptions)
 
+        // Open selected URL — system URLs (e.g. notification settings) via UIApplication,
+        // web URLs in-app using Safari.
+        viewModel.$selectedURL
+            .removeDuplicates()
+            .compactMap { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] url in
+                guard let self else { return }
+                self.viewModel.selectedURL = nil
+                if url.scheme == "http" || url.scheme == "https" {
+                    WebviewHelper.launch(url, with: self)
+                } else {
+                    UIApplication.shared.open(url)
+                }
+            }
+            .store(in: &subscriptions)
+
+        // Start Jetpack setup when requested
+        viewModel.$shouldStartJetpackSetup
+            .filter { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.viewModel.shouldStartJetpackSetup = false
+                self?.startJetpackSetup()
+            }
+            .store(in: &subscriptions)
+
         // Listen to the contact support button
         rootView.onContactSupportTapped = { [weak self] in
             self?.showContactSupportForm()
@@ -38,6 +69,16 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    private func startJetpackSetup() {
+        guard let site = viewModel.stores.sessionManager.defaultSite else { return }
+        let coordinator = JetpackSetupCoordinator(site: site, rootViewController: self, onCompletion: { [weak self] in
+            self?.viewModel.retryTest(.notifications)
+            self?.jetpackSetupCoordinator = nil
+        })
+        jetpackSetupCoordinator = coordinator
+        coordinator.startSetup()
     }
 
     private func showContactSupportForm() {
@@ -66,9 +107,20 @@ struct ConnectivityTool: View {
     /// Dependency object.
     ///
     struct Card {
+        let testCase: ConnectivityToolViewModel.ConnectivityTest?
         let title: String
         let icon: ConnectivityToolCard.Icon
         let state: ConnectivityToolCard.ConnectivityState
+
+        init(testCase: ConnectivityToolViewModel.ConnectivityTest? = nil,
+             title: String,
+             icon: ConnectivityToolCard.Icon,
+             state: ConnectivityToolCard.ConnectivityState) {
+            self.testCase = testCase
+            self.title = title
+            self.icon = icon
+            self.state = state
+        }
     }
 
     /// Tool cards.
@@ -144,12 +196,18 @@ struct ConnectivityToolCard: View {
         /// Represents an action to could be performed when presenting an error.
         ///
         struct Action {
+            let id: String?
             let title: String
             let systemImage: String
             let action: () -> ()
             let technicalDetails: String?
 
-            init(title: String, systemImage: String, action: @escaping () -> Void = {}, technicalDetails: String? = nil) {
+            init(id: String? = nil,
+                 title: String,
+                 systemImage: String,
+                 action: @escaping () -> Void = {},
+                 technicalDetails: String? = nil) {
+                self.id = id
                 self.title = title
                 self.systemImage = systemImage
                 self.action = action

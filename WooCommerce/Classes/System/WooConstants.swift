@@ -245,10 +245,10 @@ extension WooConstants {
         /// URLs for WCPay IPP documentation
         ///
         case inPersonPaymentsLearnMoreWCPay =
-                "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
+                "https://woocommerce.com/document/getting-started-with-in-person-payments-woopayments/"
 
         // swiftlint:disable:next line_length
-        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/woocommerce-payments/in-person-payments/woocommerce-in-person-payments-tap-to-pay-on-iphone-quick-start-guide/"
+        case inPersonPaymentsLearnMoreWCPayTapToPay = "https://woocommerce.com/document/tap-to-pay-iphone/"
 
         /// URL for Stripe IPP documentation
         ///

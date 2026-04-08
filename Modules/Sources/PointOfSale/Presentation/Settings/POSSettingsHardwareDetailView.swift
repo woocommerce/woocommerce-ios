@@ -8,7 +8,7 @@ struct POSSettingsHardwareDetailView: View {
 
     let settingsController: POSSettingsControllerProtocol
 
-    @State private var navigationPath: [NavigationDestination] = []
+    @Binding var navigationPath: NavigationPath
     @State private var showBarcodeScanningSetupModal: Bool = false
     @State private var showBarcodeScanningDocumentationModal: Bool = false
     @State private var showCardReaderDocumentationModal: Bool = false
@@ -48,68 +48,68 @@ struct POSSettingsHardwareDetailView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        NavigationStack(path: $navigationPath) {
-            VStack(spacing: POSSpacing.none) {
-                POSPageHeaderView(title: Localization.hardwareTitle)
-                    .foregroundColor(.posSurface)
-                    .accessibilityAddTraits(.isHeader)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(title: Localization.hardwareTitle)
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
 
-                VStack(spacing: POSSpacing.small) {
-                    ForEach(HardwareDestination.allCases) { destination in
-                        NavigationLink(value: NavigationDestination.hardware(destination)) {
-                            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
-                                Text(destination.title)
-                                    .font(.posBodyLargeBold)
-                                    .foregroundStyle(Color.posOnSurface)
-                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                                Text(destination.subtitle)
-                                    .font(.posBodyMediumRegular())
-                                    .foregroundStyle(.secondary)
-                                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.posSurfaceContainerLowest)
-                            .posItemCardBorderStyles()
+            VStack(spacing: POSSpacing.small) {
+                ForEach(HardwareDestination.allCases) { destination in
+                    NavigationLink(value: NavigationDestination.hardware(destination)) {
+                        VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                            Text(destination.title)
+                                .font(.posBodyLargeBold)
+                                .foregroundStyle(Color.posOnSurface)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                            Text(destination.subtitle)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(.secondary)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("\(destination.title), \(destination.subtitle)")
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.posSurfaceContainerLowest)
+                        .posItemCardBorderStyles()
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 }
-                .padding(.horizontal, POSPadding.medium)
+            }
+            .padding(.horizontal, POSPadding.medium)
 
-                Spacer()
+            Spacer()
+        }
+        .background(backgroundColor)
+        .navigationDestination(for: NavigationDestination.self) { destination in
+            switch destination {
+            case .hardware(.cardReaders):
+                cardReadersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
+            case .hardware(.scanners):
+                scannersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
             }
-            .background(backgroundColor)
-            .navigationDestination(for: NavigationDestination.self) { destination in
-                switch destination {
-                case .hardware(.cardReaders):
-                    cardReadersView
-                case .hardware(.scanners):
-                    scannersView
-                }
-            }
-            .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
-                posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
-            }, content: { alertType in
-                PointOfSaleCardPresentPaymentAlert(alertType: alertType)
-                    .posInteractiveDismissDisabled(alertType.isDismissDisabled)
-            })
-            .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
-                posModel.cancelCardPaymentsOnboarding()
-            }, content: { viewContainer in
-                paymentsOnboardingView(from: viewContainer)
-            })
-            .posSheet(isPresented: $showSupport) {
-                supportForm
-                    .interactiveDismissDisabled(true)
-            }
-            .posModal(isPresented: $showBarcodeScanningSetupModal) {
-                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
-            }
-            .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
-                SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
-            }
+        }
+        .posModal(item: $posModel.cardPresentPaymentAlertViewModel, onDismiss: {
+            posModel.cardPresentPaymentAlertViewModel?.onDismiss?()
+        }, content: { alertType in
+            PointOfSaleCardPresentPaymentAlert(alertType: alertType)
+                .posInteractiveDismissDisabled(alertType.isDismissDisabled)
+        })
+        .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
+            posModel.cancelCardPaymentsOnboarding()
+        }, content: { viewContainer in
+            paymentsOnboardingView(from: viewContainer)
+        })
+        .posSheet(isPresented: $showSupport) {
+            supportForm
+                .interactiveDismissDisabled(true)
+        }
+        .posModal(isPresented: $showBarcodeScanningSetupModal) {
+            POSBarcodeScannerSetup(isPresented: $showBarcodeScanningSetupModal, analytics: analytics)
+        }
+        .posFullScreenCover(isPresented: $showBarcodeScanningDocumentationModal) {
+            SafariView(url: POSConstants.URLs.pointOfSaleBarcodeScannerDocumentation.asURL())
         }
     }
 }
@@ -512,6 +512,9 @@ private extension POSSettingsHardwareDetailView {
 
 #if DEBUG
 #Preview {
-    POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController())
+    @Previewable @State var navigationPath = NavigationPath()
+    NavigationStack(path: $navigationPath) {
+        POSSettingsHardwareDetailView(settingsController: POSSettingsPreviewController(), navigationPath: $navigationPath)
+    }
 }
 #endif

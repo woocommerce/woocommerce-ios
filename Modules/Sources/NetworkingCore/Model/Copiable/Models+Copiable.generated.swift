@@ -230,6 +230,7 @@ extension NetworkingCore.Order {
         paymentURL: NullableCopiableProp<URL> = .copy,
         chargeID: NullableCopiableProp<String> = .copy,
         paymentStatusMetadata: NullableCopiableProp<String> = .copy,
+        fulfillmentStatus: CopiableProp<OrderFulfillmentStatus> = .copy,
         items: CopiableProp<[OrderItem]> = .copy,
         billingAddress: NullableCopiableProp<Address> = .copy,
         shippingAddress: NullableCopiableProp<Address> = .copy,
@@ -272,6 +273,7 @@ extension NetworkingCore.Order {
         let paymentURL = paymentURL ?? self.paymentURL
         let chargeID = chargeID ?? self.chargeID
         let paymentStatusMetadata = paymentStatusMetadata ?? self.paymentStatusMetadata
+        let fulfillmentStatus = fulfillmentStatus ?? self.fulfillmentStatus
         let items = items ?? self.items
         let billingAddress = billingAddress ?? self.billingAddress
         let shippingAddress = shippingAddress ?? self.shippingAddress
@@ -315,6 +317,7 @@ extension NetworkingCore.Order {
             paymentURL: paymentURL,
             chargeID: chargeID,
             paymentStatusMetadata: paymentStatusMetadata,
+            fulfillmentStatus: fulfillmentStatus,
             items: items,
             billingAddress: billingAddress,
             shippingAddress: shippingAddress,

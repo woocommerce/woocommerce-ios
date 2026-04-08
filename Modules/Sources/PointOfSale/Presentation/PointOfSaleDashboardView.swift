@@ -200,12 +200,14 @@ struct PointOfSaleDashboardView: View {
                                 .accessibilitySortPriority(1)
                         }
 
+                        let totalsWidth = posModel.paymentState.card.shownFullScreen
+                            || posModel.paymentState.cash == .paymentSuccess
+                            ? cartWidth + checkoutWidth
+                            : checkoutWidth
+
                         TotalsView()
                             .background(Color.posSurface)
-                            .frame(width: posModel.paymentState.card.shownFullScreen
-                                    || posModel.paymentState.cash == .paymentSuccess
-                                   ? cartWidth + checkoutWidth
-                                   : checkoutWidth)
+                            .frame(width: totalsWidth)
                             .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
                             .allowsHitTesting(posModel.orderStage == .finalizing)
                     }

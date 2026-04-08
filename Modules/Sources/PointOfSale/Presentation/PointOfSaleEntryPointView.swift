@@ -50,6 +50,8 @@ public struct PointOfSaleEntryPointView: View {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let isLocalCatalogEligible: Bool
     private let isBookingsEligible: Bool
+    private let needsSunsetWarning: Bool
+    private let onSunsetWarningDismissed: (() -> Void)?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -77,6 +79,8 @@ public struct PointOfSaleEntryPointView: View {
          grdbManager: GRDBManagerProtocol?,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
+         needsSunsetWarning: Bool = false,
+         onSunsetWarningDismissed: (() -> Void)? = nil,
          services: POSDependencyProviding,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
@@ -164,6 +168,8 @@ public struct PointOfSaleEntryPointView: View {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.isBookingsEligible = isBookingsEligible
+        self.needsSunsetWarning = needsSunsetWarning
+        self.onSunsetWarningDismissed = onSunsetWarningDismissed
     }
 
     public var body: some View {
@@ -197,7 +203,9 @@ public struct PointOfSaleEntryPointView: View {
                 receiptSender: receiptSender,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
-                isLocalCatalogEligible: isLocalCatalogEligible)
+                isLocalCatalogEligible: isLocalCatalogEligible,
+                needsSunsetWarning: needsSunsetWarning,
+                onSunsetWarningDismissed: onSunsetWarningDismissed)
         }
         .environment(\.posAnalytics, services.analytics)
         .environment(\.posCurrencyProvider, services.currency)

@@ -1044,6 +1044,50 @@ struct PointOfSaleAggregateModelTests {
             }
         }
     }
+
+    @MainActor struct SunsetWarningTests {
+        @Test func showSunsetWarning_when_needsSunsetWarning_is_false_then_returns_false() {
+            // Given
+            let sut = makePointOfSaleAggregateModel(needsSunsetWarning: false)
+
+            // Then
+            #expect(sut.showSunsetWarning == false)
+        }
+
+        @Test func showSunsetWarning_when_needsSunsetWarning_is_true_then_returns_true() {
+            // Given
+            let sut = makePointOfSaleAggregateModel(needsSunsetWarning: true)
+
+            // Then
+            #expect(sut.showSunsetWarning == true)
+        }
+
+        @Test func showSunsetWarning_when_dismissed_then_returns_false() {
+            // Given
+            let sut = makePointOfSaleAggregateModel(needsSunsetWarning: true)
+
+            // When
+            sut.dismissSunsetWarning()
+
+            // Then
+            #expect(sut.showSunsetWarning == false)
+        }
+
+        @Test func dismissSunsetWarning_calls_onSunsetWarningDismissed_closure() {
+            // Given
+            var dismissCalled = false
+            let sut = makePointOfSaleAggregateModel(
+                needsSunsetWarning: true,
+                onSunsetWarningDismissed: { dismissCalled = true }
+            )
+
+            // When
+            sut.dismissSunsetWarning()
+
+            // Then
+            #expect(dismissCalled == true)
+        }
+    }
 }
 
 private func makePurchasableItem(name: String = "") -> POSItem {
@@ -1092,7 +1136,9 @@ private func makePointOfSaleAggregateModel(
     soundPlayer: PointOfSaleSoundPlayerProtocol = MockPointOfSaleSoundPlayer(),
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
-    catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil
+    catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+    needsSunsetWarning: Bool = false,
+    onSunsetWarningDismissed: (() -> Void)? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
         entryPointController: entryPointController,
@@ -1112,6 +1158,8 @@ private func makePointOfSaleAggregateModel(
         soundPlayer: soundPlayer,
         paymentState: paymentState,
         siteID: siteID,
-        catalogSyncCoordinator: catalogSyncCoordinator
+        catalogSyncCoordinator: catalogSyncCoordinator,
+        needsSunsetWarning: needsSunsetWarning,
+        onSunsetWarningDismissed: onSunsetWarningDismissed
     )
 }

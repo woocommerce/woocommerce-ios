@@ -239,7 +239,8 @@ struct POSPreviewHelpers {
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
-        isLocalCatalogEligible: Bool = false
+        isLocalCatalogEligible: Bool = false,
+        needsSunsetWarning: Bool = false
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -258,7 +259,8 @@ struct POSPreviewHelpers {
             receiptSender: receiptSender,
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
-            isLocalCatalogEligible: isLocalCatalogEligible
+            isLocalCatalogEligible: isLocalCatalogEligible,
+            needsSunsetWarning: needsSunsetWarning
         )
     }
 

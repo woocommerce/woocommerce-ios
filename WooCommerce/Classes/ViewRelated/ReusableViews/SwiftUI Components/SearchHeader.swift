@@ -62,8 +62,25 @@ struct SearchHeader: View {
             // TextField
             TextField(placeholder, text: $text, onEditingChanged: onEditingChanged ?? { _ in })
                 .padding([.bottom, .top], customizations.internalVerticalPadding)
-                .padding(.trailing, customizations.internalHorizontalPadding)
                 .accessibility(addTraits: .isSearchField)
+
+            // Clear button
+            if !text.isEmpty {
+                Button {
+                    text = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(Color(.tertiaryLabel))
+                }
+                .accessibilityLabel(NSLocalizedString(
+                    "searchHeader.clearButton.accessibilityLabel",
+                    value: "Clear search",
+                    comment: "Accessibility label for the clear button in the search header"
+                ))
+            }
+
+            Spacer()
+                .frame(width: customizations.internalHorizontalPadding)
         }
         .background(Color(customizations.backgroundColor))
         .cornerRadius(Layout.cornerRadius)

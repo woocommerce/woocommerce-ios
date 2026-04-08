@@ -202,11 +202,13 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         case (.bluetoothScan, _),
             (.none, false):
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
-                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+                guard let self, self.isCurrentConnectionAttempt(connectionAttemptID) else { return }
+                self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         case (.tapToPay, true):
             tapToPayConnectionController.searchAndConnect(onCompletion: { [weak self] result in
-                self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
+                guard let self, self.isCurrentConnectionAttempt(connectionAttemptID) else { return }
+                self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         case (.tapToPay, false):
             handlePreflightFailure(error: CardPresentPaymentPreflightError.tapToPayReaderNotSupported)

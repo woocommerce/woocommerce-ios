@@ -23,6 +23,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
 
     var receivedActions: [CardPresentPaymentAction] = []
     var onStartCardReaderDiscovery: (() -> Void)?
+    var shouldHoldDiscovery = false
+    private var heldReaderDiscoveredCallback: (([CardReader]) -> Void)?
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
@@ -68,6 +70,10 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
             onStartCardReaderDiscovery?()
             guard !failDiscovery else {
                 onError(MockErrors.discoveryFailure)
+                return
+            }
+            if shouldHoldDiscovery {
+                heldReaderDiscoveredCallback = onReaderDiscovered
                 return
             }
             guard discoveredReaders.isNotEmpty else {
@@ -117,6 +123,11 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         default:
             super.dispatch(action)
         }
+    }
+
+    func completeHeldDiscovery(with readers: [CardReader]) {
+        heldReaderDiscoveredCallback?(readers)
+        heldReaderDiscoveredCallback = nil
     }
 
     var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {

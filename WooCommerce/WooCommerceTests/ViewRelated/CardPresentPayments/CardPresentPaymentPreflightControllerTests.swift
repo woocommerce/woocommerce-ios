@@ -133,6 +133,39 @@ final class CardPresentPaymentPreflightControllerTests: XCTestCase {
 
         await fulfillment(of: [didStartDiscovery], timeout: 1.0)
     }
+
+    func test_start_when_discovery_completes_after_cancellation_then_does_not_emit_result() async {
+        // Given - hold discovery so we can cancel before it completes
+        stores.shouldHoldDiscovery = true
+
+        let didStartDiscovery = expectation(description: "discovery started")
+        stores.onStartCardReaderDiscovery = {
+            didStartDiscovery.fulfill()
+        }
+
+        await sut.start(discoveryMethod: .bluetoothScan)
+        onboardingPresenter.completeOnboarding()
+        await fulfillment(of: [didStartDiscovery], timeout: 1.0)
+
+        // When - cancel, then trigger a stale discovery result
+        sut.cancelConnectionAttempt()
+
+        let didNotEmitResult = expectation(description: "no result emitted")
+        didNotEmitResult.isInverted = true
+        let cancellable = sut.readerConnection
+            .compactMap { $0 }
+            .sink { _ in
+                didNotEmitResult.fulfill()
+            }
+
+        stores.completeHeldDiscovery(with: [
+            MockCardReader.bbposChipper2XBT()
+        ])
+
+        // Then - readerConnection should not emit
+        await fulfillment(of: [didNotEmitResult], timeout: 0.2)
+        cancellable.cancel()
+    }
 }
 
 private final class DelayedCardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {

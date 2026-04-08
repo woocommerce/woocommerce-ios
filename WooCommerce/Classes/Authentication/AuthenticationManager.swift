@@ -509,7 +509,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                         lastStep: AuthenticatorAnalyticsTracker.Step,
                         lastFlow: AuthenticatorAnalyticsTracker.Flow,
                         siteURL: String?) {
-        let parsedURL = siteURL.flatMap { URL(string: $0) }
+        let parsedURL: URL? = {
+            // swiftlint:disable:next control_statement
+            guard let siteURL, let url = URL(string: siteURL),
+                  let scheme = url.scheme?.lowercased(),
+                  (scheme == "http" || scheme == "https"),
+                  url.host != nil else {
+                return nil
+            }
+            return url
+        }()
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
             presentSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: parsedURL)
             return

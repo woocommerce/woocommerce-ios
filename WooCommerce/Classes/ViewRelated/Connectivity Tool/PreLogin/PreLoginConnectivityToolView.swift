@@ -56,7 +56,7 @@ struct PreLoginConnectivityToolView: View {
     var body: some View {
         VStack(spacing: .zero) {
             ScrollView {
-                Text(Localization.subtitle)
+                Text(String.localizedStringWithFormat(Localization.subtitle, viewModel.siteURL.absoluteString))
                     .secondaryBodyStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -181,8 +181,8 @@ private extension PreLoginConnectivityToolView {
         )
         static let subtitle = NSLocalizedString(
             "preLoginConnectivityToolView.subtitle",
-            value: "Checking your site's compatibility with the WooCommerce app.",
-            comment: "Subtitle on the pre-login connectivity tool screen"
+            value: "Checking your site %1$@ for compatibility with the WooCommerce app.",
+            comment: "Subtitle on the pre-login connectivity tool screen. The placeholder is the site address"
         )
         static let contactSupport = NSLocalizedString(
             "preLoginConnectivityToolView.contactSupport",

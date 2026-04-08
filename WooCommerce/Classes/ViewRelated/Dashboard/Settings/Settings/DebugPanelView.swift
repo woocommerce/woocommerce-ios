@@ -78,29 +78,6 @@ struct DebugPanelView: View {
                     )
                     WPComConnectionSetupView(viewModel: viewModel)
                 }
-
-                Section("Carrier Terms of Service") {
-                    DebugSheetPresenter("Present UPS Terms of Service") { dismiss in
-                        let originAddress = WooShippingAddress(company: "Automattic Inc.",
-                                                               name: "John Doe",
-                                                               email: "john@example.com",
-                                                               phone: "555-0100",
-                                                               country: "US",
-                                                               state: "CA",
-                                                               address1: "60 29th Street",
-                                                               address2: "Suite 343",
-                                                               city: "San Francisco",
-                                                               postcode: "94110")
-                        UPSTermsView(viewModel: UPSTermsViewModel(siteID: site.siteID,
-                                                                   originAddress: originAddress),
-                                     onConfirmation: dismiss)
-                    }
-
-                    DebugSheetPresenter("Present FedEx Terms of Service") { dismiss in
-                        FedExTermsView(viewModel: FedExTermsViewModel(siteID: site.siteID),
-                                       onConfirmation: dismiss)
-                    }
-                }
             }
         }
         .contentMargins(20)

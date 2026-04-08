@@ -25,3 +25,18 @@ struct UPSTermsView: View {
         }, onConfirmation: onConfirmation)
     }
 }
+
+#Preview {
+    UPSTermsView(viewModel: UPSTermsViewModel(siteID: 123,
+                                              originAddress: .init(company: "A8C",
+                                                                   name: "John Doe",
+                                                                   email: "test@mail.com",
+                                                                   phone: "09381734543",
+                                                                   country: "US",
+                                                                   state: "New York",
+                                                                   address1: "1 E 35th St",
+                                                                   address2: "",
+                                                                   city: "New York",
+                                                                   postcode: "10028")),
+                 onConfirmation: {})
+}

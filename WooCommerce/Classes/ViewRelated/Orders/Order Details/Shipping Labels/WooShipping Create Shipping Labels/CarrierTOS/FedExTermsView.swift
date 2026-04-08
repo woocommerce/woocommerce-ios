@@ -15,3 +15,8 @@ struct FedExTermsView: View {
         }, onConfirmation: onConfirmation)
     }
 }
+
+#Preview {
+    FedExTermsView(viewModel: FedExTermsViewModel(siteID: 123),
+                   onConfirmation: {})
+}

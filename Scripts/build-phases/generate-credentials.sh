@@ -1,4 +1,6 @@
-#!/usr/bin/env bash -euo pipefail
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 if [[ $ACTION == 'indexbuild' ]]; then
   echo "ℹ️: Skipping code generation in 'indexbuild' build. See https://github.com/mac-cain13/R.swift/issues/719#issuecomment-937733804 for more info."

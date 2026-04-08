@@ -18,7 +18,7 @@ struct TechnicalDetailsView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading) {
-                    Text(technicalDetails)
+                    detailsText
                         .font(.system(.body, design: .monospaced))
                         .textSelection(.enabled)
                         .padding()
@@ -42,6 +42,16 @@ struct TechnicalDetailsView: View {
                 }
             }
             .notice($notice)
+        }
+    }
+
+    @ViewBuilder
+    private var detailsText: some View {
+        if let attributed = try? AttributedString(markdown: technicalDetails,
+                                                  options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)) {
+            Text(attributed)
+        } else {
+            Text(technicalDetails)
         }
     }
 

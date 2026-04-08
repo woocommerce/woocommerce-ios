@@ -21,15 +21,15 @@ struct CarrierTermsView<ViewModel: CarrierTermsViewModel, Checkboxes: View>: Vie
     var body: some View {
         VStack(spacing: 0) {
             ScrollableVStack(alignment: .leading,
-                             padding: Layout.contentPadding,
-                             spacing: Layout.sectionSpacing) {
+                             padding: CarrierTermsViewLayout.contentPadding,
+                             spacing: CarrierTermsViewLayout.sectionSpacing) {
                 Text(viewModel.title)
                     .font(.title3)
                     .bold()
 
                 if let address = viewModel.displayedOriginAddress {
-                    VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-                        Text(Localization.shippingFrom)
+                    VStack(alignment: .leading, spacing: CarrierTermsViewLayout.contentSpacing) {
+                        Text(CarrierTermsViewLocalization.shippingFrom)
                             .headlineStyle()
                         Text(address)
                             .foregroundStyle(Color.primary)
@@ -41,7 +41,7 @@ struct CarrierTermsView<ViewModel: CarrierTermsViewModel, Checkboxes: View>: Vie
 
                 Text(viewModel.message)
 
-                VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                VStack(alignment: .leading, spacing: CarrierTermsViewLayout.contentPadding) {
                     checkboxes(viewModel)
                 }
 
@@ -51,26 +51,26 @@ struct CarrierTermsView<ViewModel: CarrierTermsViewModel, Checkboxes: View>: Vie
             VStack(spacing: 0) {
                 Divider()
 
-                Button(Localization.confirmButton, action: {
+                Button(CarrierTermsViewLocalization.confirmButton, action: {
                     Task { @MainActor in
                         await confirmAcceptance()
                     }
                 })
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isConfirming))
-                .padding(Layout.contentPadding)
+                .padding(CarrierTermsViewLayout.contentPadding)
                 .disabled(!viewModel.shouldEnableConfirmButton)
             }
         }
-        .padding(.top, Layout.contentPadding)
-        .alert(Localization.errorTitle, isPresented: $didFailToConfirmAcceptance) {
-            Button(Localization.retry) {
+        .padding(.top, CarrierTermsViewLayout.contentPadding)
+        .alert(CarrierTermsViewLocalization.errorTitle, isPresented: $didFailToConfirmAcceptance) {
+            Button(CarrierTermsViewLocalization.retry) {
                 Task { @MainActor in
                     await confirmAcceptance()
                 }
             }
-            Button(Localization.cancel, role: .cancel) {}
+            Button(CarrierTermsViewLocalization.cancel, role: .cancel) {}
         } message: {
-            Text(Localization.errorMessage)
+            Text(CarrierTermsViewLocalization.errorMessage)
         }
         .environment(\.openURL, OpenURLAction { url in
             externalURL = url
@@ -97,43 +97,42 @@ private extension CarrierTermsView {
     }
 }
 
-private extension CarrierTermsView {
-    enum Layout {
-        static let contentPadding: CGFloat = 16
-        static let sectionSpacing: CGFloat = 24
-        static let contentSpacing: CGFloat = 8
-    }
+// MARK: - Constants
+private enum CarrierTermsViewLayout {
+    static let contentPadding: CGFloat = 16
+    static let sectionSpacing: CGFloat = 24
+    static let contentSpacing: CGFloat = 8
+}
 
-    enum Localization {
-        static let shippingFrom = NSLocalizedString(
-            "carrierTermsView.shippingFrom",
-            value: "Shipping from",
-            comment: "Title label for the origin address on the carrier Terms and Conditions view"
-        )
-        static let confirmButton = NSLocalizedString(
-            "carrierTermsView.confirmButton",
-            value: "Confirm and continue",
-            comment: "Button to confirm all agreements on the carrier Terms and Conditions view"
-        )
-        static let errorTitle = NSLocalizedString(
-            "carrierTermsView.errorTitle",
-            value: "Error confirming acceptance",
-            comment: "Title of the alert when confirming agreements on the carrier Terms and Conditions view fails"
-        )
-        static let errorMessage = NSLocalizedString(
-            "carrierTermsView.errorMessage",
-            value: "An unexpected error occurred when confirming your acceptance. Please try again.",
-            comment: "Message of the alert when confirming agreements on the carrier Terms and Conditions view fails"
-        )
-        static let retry = NSLocalizedString(
-            "carrierTermsView.retry",
-            value: "Retry",
-            comment: "Button to retry confirming agreements on the carrier Terms and Conditions view"
-        )
-        static let cancel = NSLocalizedString(
-            "carrierTermsView.cancel",
-            value: "Cancel",
-            comment: "Button to cancel confirming agreements on the carrier Terms and Conditions view"
-        )
-    }
+private enum CarrierTermsViewLocalization {
+    static let shippingFrom = NSLocalizedString(
+        "carrierTermsView.shippingFrom",
+        value: "Shipping from",
+        comment: "Title label for the origin address on the carrier Terms and Conditions view"
+    )
+    static let confirmButton = NSLocalizedString(
+        "carrierTermsView.confirmButton",
+        value: "Confirm and continue",
+        comment: "Button to confirm all agreements on the carrier Terms and Conditions view"
+    )
+    static let errorTitle = NSLocalizedString(
+        "carrierTermsView.errorTitle",
+        value: "Error confirming acceptance",
+        comment: "Title of the alert when confirming agreements on the carrier Terms and Conditions view fails"
+    )
+    static let errorMessage = NSLocalizedString(
+        "carrierTermsView.errorMessage",
+        value: "An unexpected error occurred when confirming your acceptance. Please try again.",
+        comment: "Message of the alert when confirming agreements on the carrier Terms and Conditions view fails"
+    )
+    static let retry = NSLocalizedString(
+        "carrierTermsView.retry",
+        value: "Retry",
+        comment: "Button to retry confirming agreements on the carrier Terms and Conditions view"
+    )
+    static let cancel = NSLocalizedString(
+        "carrierTermsView.cancel",
+        value: "Cancel",
+        comment: "Button to cancel confirming agreements on the carrier Terms and Conditions view"
+    )
 }

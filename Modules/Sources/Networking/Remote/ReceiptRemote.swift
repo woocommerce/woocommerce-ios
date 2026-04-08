@@ -53,17 +53,20 @@ public final class ReceiptRemote: Remote {
     /// - Parameters:
     ///   - siteID: Site which hosts the Order.
     ///   - orderID: ID of the order that the receipt is associated to.
-    public func sendPOSReceipt(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
+    public func sendPOSReceipt(siteID: Int64, orderID: Int64, emailAddress: String, templateID: String?) async throws {
         let sendEmailPath = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_email"
+        var parameters: [String: Any] = [
+            ParameterKeys.email: emailAddress,
+            ParameterKeys.forceEmailUpdate: true
+        ]
+        if let templateID {
+            parameters[ParameterKeys.templateID] = templateID
+        }
         let sendEmailRequest = JetpackRequest(wooApiVersion: .mark3,
                                               method: .post,
                                               siteID: siteID,
                                               path: sendEmailPath,
-                                              parameters: [
-                                                ParameterKeys.templateID: POSConstants.receiptTemplateID,
-                                                ParameterKeys.email: emailAddress,
-                                                ParameterKeys.forceEmailUpdate: true
-                                              ],
+                                              parameters: parameters,
                                               availableAsRESTRequest: true)
         try await enqueue(sendEmailRequest)
     }
@@ -83,9 +86,5 @@ private extension ReceiptRemote {
     enum Constants {
         static let ordersPath: String = "orders"
         static let actionsPath: String = "actions"
-    }
-
-    enum POSConstants {
-        static let receiptTemplateID: String = "customer_pos_completed_order"
     }
 }

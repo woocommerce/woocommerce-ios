@@ -6,6 +6,7 @@ import Yosemite
 import Hardware
 import WooFoundation
 import WordPressShared
+import protocol Networking.RemoteFeatureFlagOverrideStore
 
 /// Provides global dependencies.
 ///
@@ -28,6 +29,14 @@ final class ServiceLocator {
     private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
 
     private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
+
+    private static var _remoteFeatureFlagOverrideStore: RemoteFeatureFlagOverrideStore? = {
+        if BuildConfiguration.current == .appStore {
+            return nil
+        } else {
+            return RemoteFeatureFlagOverrideStoreAdapter(baseStore: _featureFlagOverrideStore)
+        }
+    }()
 
     /// FeatureFlagService
     ///
@@ -133,6 +142,13 @@ final class ServiceLocator {
     ///
     private static var _ageRangeVerificationService: AgeRangeVerificationServiceProtocol = AgeRangeVerificationService()
 
+    /// Age rating change detector
+    ///
+    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+        defaults: .standard,
+        provider: StoreKitAgeRatingProvider()
+    )
+
     // MARK: - Getters
 
     /// Provides the access point to the analytics.
@@ -145,6 +161,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the FeatureFlagOverrideStore protocol. It defaults to UserDefaultsFeatureFlagOverrideStore
     static var featureFlagOverrideStore: FeatureFlagOverrideStore {
         return _featureFlagOverrideStore
+    }
+
+    /// Provides the access point to the store for overriding remote FFs.
+    /// - Returns: An implementation of the RemoteFeatureFlagOverrideStore protocol. Returns nil for AppStore builds.
+    static var remoteFeatureFlagOverrideStore: RemoteFeatureFlagOverrideStore? {
+        return _remoteFeatureFlagOverrideStore
     }
 
     /// Provides the access point to the feature flag service.
@@ -339,6 +361,10 @@ final class ServiceLocator {
         _ageRangeVerificationService
     }
 
+    static var ageRatingChangeDetector: AgeRatingChangeDetector {
+        _ageRatingChangeDetector
+    }
+
     /// Provides access point to the `POSCatalogSyncCoordinator`.
     /// Returns nil if feature flag is disabled or user is not authenticated.
     ///
@@ -483,6 +509,14 @@ extension ServiceLocator {
         }
 
         _ageRangeVerificationService = mock
+    }
+
+    static func setAgeRatingChangeDetector(_ mock: AgeRatingChangeDetector) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _ageRatingChangeDetector = mock
     }
 
     static func setConnectivityObserver(_ mock: ConnectivityObserver) {

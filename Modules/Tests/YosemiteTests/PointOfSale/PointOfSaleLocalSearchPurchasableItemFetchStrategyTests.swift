@@ -11,6 +11,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
     private var grdbManager: GRDBManager!
     private let variationsRemote = MockProductVariationsRemote()
     private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()
+    private let mockItemMapper = MockPointOfSaleItemMapper()
 
     init() async throws {
         grdbManager = try GRDBManager()
@@ -35,6 +36,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -58,6 +60,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: "TEST-SKU",
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -80,6 +83,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: "12345",
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -101,6 +105,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: "nonexistent",
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -127,6 +132,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics,
             pageSize: 10
         )
@@ -167,6 +173,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics,
             pageSize: 25
         )
@@ -192,6 +199,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics,
             pageSize: 25
         )
@@ -221,6 +229,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -245,6 +254,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -278,6 +288,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -304,6 +315,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -332,6 +344,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -359,6 +372,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -382,6 +396,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 
@@ -410,6 +425,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics,
             pageSize: 10
         )
@@ -453,6 +469,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             searchTerm: searchTerm,
             grdbManager: grdbManager,
             variationsRemote: variationsRemote,
+            itemMapper: mockItemMapper,
             analytics: mockAnalytics
         )
 

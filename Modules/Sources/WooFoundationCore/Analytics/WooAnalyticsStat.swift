@@ -631,6 +631,18 @@ public enum WooAnalyticsStat: String {
     case wpcomDeviceDisablePushNotificationsSuccess = "wpcom_device_disable_push_notifications_success"
     case wpcomDeviceDisablePushNotificationsError = "wpcom_device_disable_push_notifications_error"
 
+    case pushNotificationsCardView = "push_notifications_card_view"
+    case settingsPushNotificationsButtonTap = "settings_push_notifications_button_tap"
+    case pushNotificationsSetupIntroductionView = "push_notifications_setup_introduction_view"
+    case pushNotificationsSetupIntroductionButtonTap = "push_notifications_setup_introduction_button_tap"
+    case pushNotificationsSetupIntroductionLinkTap = "push_notifications_setup_introduction_link_tap"
+    case pushNotificationsSetupIntroductionClose = "push_notifications_setup_introduction_close"
+    case pushNotificationsSetupIntroductionError = "push_notifications_setup_introduction_error"
+    case pushNotificationsSetupFlowSuccess = "push_notifications_setup_flow_success"
+    case pushNotificationsSetupFlowButtonTap = "push_notifications_setup_flow_button_tap"
+    case pushNotificationsSetupFlowClose = "push_notifications_setup_flow_close"
+    case pushNotificationsSetupFlowError = "push_notifications_setup_flow_error"
+
     // MARK: Notification View Events
     //
     case notificationOpened = "notification_open"
@@ -1074,24 +1086,9 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
     case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
-    // MARK: - Bookings
-    case bookingsSelected = "main_tab_bookings_selected"
-    case bookingsReselected = "main_tab_bookings_reselected"
-    case bookingCancelled = "booking_detail_cancel_booking"
-    case bookingAttenceStatusUpdated = "booking_detail_attendance_status_updated"
-    case bookingAddNoteTapped = "booking_detail_add_note_tapped"
-    case bookingMarkAsPaidTapped = "booking_detail_mark_as_paid_tapped"
-    case bookingViewLinkedOrderTapped = "booking_detail_view_linked_order_tapped"
-    case bookingListTabSelected = "booking_list_tab_selected"
-    case bookingListDisplayed = "booking_list_displayed"
+    // MARK: - Bookings (error events only — other booking events use EventHorizon codegen)
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
     case bookingListFailedToUpdateBookingDetails = "booking_list_failed_to_update_booking_details"
-    case bookingListBookingTapped = "booking_list_booking_tapped"
-    case bookingListFiltersTapped = "booking_list_filters_tapped"
-    case bookingListApplyFilters = "booking_list_apply_filters"
-    case bookingListSearchTapped = "booking_list_search_tapped"
-    case bookingListSortByTapped = "booking_list_sort_by_tapped"
-    case bookingListSortByOptionTapped = "booking_list_sort_by_option_tapped"
 
     // MARK: Hub Menu
     //
@@ -1279,6 +1276,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleTabVisibilityChecked = "pos_tab_visibility_checked"
     case pointOfSaleIneligibleUIShown = "pos_ineligible_ui_shown"
     case pointOfSaleIneligibleUIRetryTapped = "pos_ineligible_ui_retry_tapped"
+    case pointOfSaleIneligibleUILearnMoreTapped = "pos_ineligible_ui_learn_more_tapped"
     case pointOfSaleLoaded = "loaded"
     case pointOfSaleItemsFetched = "items_fetched"
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
@@ -1342,6 +1340,13 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleOrdersListSearchResultsFetched = "orders_list_search_results_fetched"
     case pointOfSaleOrderDetailsLoaded = "order_details_loaded"
     case pointOfSaleOrderDetailsEmailReceiptTapped = "order_details_email_receipt_tapped"
+    case pointOfSaleRefundFlowStarted = "refund_flow_started"
+    case pointOfSaleRefundConfirmTapped = "refund_confirm_tapped"
+    case pointOfSaleRefundProcessingStarted = "refund_processing_started"
+    case pointOfSaleRefundProcessingSuccess = "refund_processing_success"
+    case pointOfSaleRefundProcessingFailed = "refund_processing_failed"
+    case pointOfSaleRefundFlowAborted = "refund_flow_aborted"
+    case pointOfSaleRefundSelectAllTapped = "refund_select_all_tapped"
     case pointOfSaleLocalCatalogDownloadingScreenShown = "local_catalog_downloading_screen_shown"
     case pointOfSaleLocalCatalogDownloadingScreenExitPosTapped = "local_catalog_downloading_screen_exit_pos_tapped"
     case pointOfSaleSplashScreenErrorShown = "splash_screen_error_shown"
@@ -1355,6 +1360,24 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
+
+    // MARK: Point of Sale Bookings
+    case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
+    case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
+    case pointOfSaleBookingsListBookingTapped = "bookings_list_booking_tapped"
+    case pointOfSaleBookingCancelled = "booking_cancelled"
+    case pointOfSaleBookingAddNoteTapped = "booking_add_note_tapped"
+    case pointOfSaleBookingIssueRefundTapped = "booking_issue_refund_tapped"
+    case pointOfSaleBookingViewOrderTapped = "booking_view_order_tapped"
+    case pointOfSaleBookingAttendanceChanged = "booking_attendance_changed"
+    case pointOfSaleBookingNoteAdded = "booking_note_added"
+    case pointOfSaleBookingCancelFailed = "booking_cancel_failed"
+    case pointOfSaleBookingAttendanceChangeFailed = "booking_attendance_change_failed"
+    case pointOfSaleBookingNoteAddFailed = "booking_note_add_failed"
+    case pointOfSaleBookingRefundFailed = "booking_refund_failed"
+    case pointOfSaleBookingDatePreviousTapped = "booking_date_previous_tapped"
+    case pointOfSaleBookingDateNextTapped = "booking_date_next_tapped"
+    case pointOfSaleBookingDateCalendarSelected = "booking_date_calendar_selected"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"

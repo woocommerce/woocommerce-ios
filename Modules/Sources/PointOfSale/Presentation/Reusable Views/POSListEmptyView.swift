@@ -9,6 +9,10 @@ protocol POSListEmptyViewModelProtocol {
     var icon: Image { get }
 }
 
+extension POSListEmptyViewModelProtocol {
+    var hint: String? { nil }
+}
+
 struct POSListEmptyView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.floatingControlAreaSize) private var floatingControlAreaSize: CGSize

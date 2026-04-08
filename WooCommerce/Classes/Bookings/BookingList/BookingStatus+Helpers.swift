@@ -25,7 +25,7 @@ extension BookingStatus {
         case .cancelled:
             NSLocalizedString(
                 "bookingStatus.title.canceled",
-                value: "Cancelled",
+                value: "Canceled",
                 comment: "Status of a canceled booking"
             )
         case .pendingConfirmation:

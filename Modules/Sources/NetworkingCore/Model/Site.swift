@@ -61,7 +61,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     public let isWordPressComStore: Bool
 
     /// For Jetpack CP sites (connected to Jetpack with Jetpack Connection Package instead of Jetpack-the-plugin), this property contains
-    /// a list of active plugins with Jetpack Connection Package (e.g. WooCommerce Payments, Jetpack Backup).
+    /// a list of active plugins with Jetpack Connection Package (e.g. WooPayments, Jetpack Backup).
     ///
     public let jetpackConnectionActivePlugins: [String]
 
@@ -156,6 +156,10 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let gardenName = try siteContainer.decodeIfPresent(String.self, forKey: .gardenName)
         let gardenPartner = try siteContainer.decodeIfPresent(String.self, forKey: .gardenPartner)
 
+        // On CIAB commerce garden sites, `woocommerce_is_active` can be false even though
+        // WooCommerce is expected to be present. Bypass the flag for these sites.
+        let effectiveWooCommerceActive = isWooCommerceActive || Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
+
         self.init(siteID: siteID,
                   name: name,
                   description: description,
@@ -168,7 +172,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   isAIAssistantFeatureActive: isAIAssistantFeatureActive,
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
-                  isWooCommerceActive: isWooCommerceActive,
+                  isWooCommerceActive: effectiveWooCommerceActive,
                   isWordPressComStore: isWordPressComStore,
                   jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
@@ -264,6 +268,14 @@ public extension Site {
     ///
     var isSimpleSite: Bool {
         plan == WooConstants.freePlanSlug
+    }
+
+    static func isCIAB(isGarden: Bool, gardenName: String?) -> Bool {
+        isGarden && gardenName ==  Constants.commerceGardenName
+    }
+
+    var isCIAB: Bool {
+        Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
     }
 }
 
@@ -368,5 +380,6 @@ public extension Site {
 private extension Site {
     enum Constants {
         static let aiAssistantFeature = "ai-assistant"
+        static let commerceGardenName = "commerce"
     }
 }

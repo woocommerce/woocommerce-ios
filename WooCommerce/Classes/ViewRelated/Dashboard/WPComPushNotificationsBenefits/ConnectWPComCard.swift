@@ -3,11 +3,13 @@ import SwiftUI
 /// A card prompting users to connect their store to WordPress.com for push notifications.
 struct ConnectWPComCard: View {
 
+    /// Closure invoked when the card is tapped
+    var setupAction: () -> Void
+
     /// Closure invoked when the hide button is tapped
     var hideAction: () -> Void
 
     @ScaledMetric private var scale: CGFloat = 1.0
-    @State private var showingWPComPushNotificationsBenefits = false
 
     var body: some View {
         HStack {
@@ -21,6 +23,7 @@ struct ConnectWPComCard: View {
                     .fontWeight(.semibold)
                 Text(Localization.subtitle)
                     .font(.callout)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             VStack {
                 Menu {
@@ -41,14 +44,7 @@ struct ConnectWPComCard: View {
         .padding(.horizontal, Layout.padding)
         .contentShape(Rectangle())
         .onTapGesture {
-            showingWPComPushNotificationsBenefits = true
-        }
-        .sheet(isPresented: $showingWPComPushNotificationsBenefits) {
-            WPComPushNotificationsBenefitsView(
-                viewModel: WPComPushNotificationsBenefitsViewModel(
-                    onDismiss: { showingWPComPushNotificationsBenefits = false }
-                )
-            )
+            setupAction()
         }
     }
 }
@@ -62,17 +58,17 @@ private extension ConnectWPComCard {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "dashboardView.connectWPComCard.title",
+            "connectWPComCard.title",
             value: "Never miss a new order",
             comment: "Title of the Connect WPCom card on My Store screen"
         )
         static let subtitle = NSLocalizedString(
-            "dashboardView.connectWPComCard.subtitle",
-            value: "Connect your store to a WordPress.com account to get alerts for new orders and reviews.",
+            "connectWPComCard.subtitle",
+            value: "Enable push notifications to stay on top of new orders and reviews.",
             comment: "Subtitle of the Connect WPCom card on My Store screen"
         )
         static let hideButton = NSLocalizedString(
-            "dashboardView.connectWPComCard.hideButton",
+            "connectWPComCard.hideButton",
             value: "Hide this content",
             comment: "Button to hide the Connect WPCom card from the My Store screen"
         )
@@ -80,5 +76,5 @@ private extension ConnectWPComCard {
 }
 
 #Preview {
-    ConnectWPComCard(hideAction: {})
+    ConnectWPComCard(setupAction: {}, hideAction: {})
 }

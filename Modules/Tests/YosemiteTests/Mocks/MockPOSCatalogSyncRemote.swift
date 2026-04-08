@@ -9,7 +9,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     private(set) var incrementalVariationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
     private(set) var trashedProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
-    // Results returned when posProductsOnly=false (used during dual-request hidden product detection)
+    // Results returned for the unfiltered request (used during dual-request hidden product detection)
     private(set) var allProductResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
 
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
@@ -90,13 +90,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
-    /* MARK: - Setup Methods for posProductsOnly=false requests
-     Dual-request mode is triggered when the feature flag posProductsOnly=true
-     Within that mode, we make requests with both values:
-        - posProductsOnly=true returns POS-eligible products (uses incrementalProductResults)
-        - posProductsOnly=false returns all products (uses allProductResults)
-     We compare the two to find hidden products (present in "all" but missing from "POS")
-     */
+    // MARK: - Setup Methods for unfiltered product requests (hidden product detection)
     func setAllProductResult(pageNumber: Int, result: Result<PagedItems<POSProduct>, Error>) {
         allProductResults[pageNumber] = result
     }
@@ -123,17 +117,18 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                     throw error
                 }
             }
-        } else if !posProductsOnly, let result = allProductResults[pageNumber] {
-            // Use all-products results when posProductsOnly=false and results are configured
-            await loadIncrementalProductsCallCount.increment()
-            lastIncrementalProductsModifiedAfter = modifiedAfter
-
-            switch result {
-            case .success(let pagedItems):
-                return pagedItems
-            case .failure(let error):
-                throw error
+        } else if !posProductsOnly {
+            // Unfiltered request (posProductsOnly=false) — used for hidden product detection.
+            // Uses allProductResults if configured, otherwise returns fallback.
+            if let result = allProductResults[pageNumber] {
+                switch result {
+                case .success(let pagedItems):
+                    return pagedItems
+                case .failure(let error):
+                    throw error
+                }
             }
+            return fallbackResult
         } else {
             await loadIncrementalProductsCallCount.increment()
             lastIncrementalProductsModifiedAfter = modifiedAfter
@@ -152,8 +147,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     func loadProductVariations(modifiedAfter: Date,
                                 siteID: Int64,
-                                pageNumber: Int,
-                                posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation> {
+                                pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         await loadIncrementalProductVariationsCallCount.increment()
         lastIncrementalVariationsModifiedAfter = modifiedAfter
 
@@ -172,8 +166,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     func loadProducts(siteID: Int64,
                       pageNumber: Int,
-                      allowCellular: Bool,
-                      posProductsOnly: Bool) async throws -> PagedItems<POSProduct> {
+                      allowCellular: Bool) async throws -> PagedItems<POSProduct> {
         await loadProductsCallCount.increment()
 
         if let result = productResults[pageNumber] {
@@ -189,8 +182,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
 
     func loadProductVariations(siteID: Int64,
                                 pageNumber: Int,
-                                allowCellular: Bool,
-                                posProductsOnly: Bool) async throws -> PagedItems<POSProductVariation> {
+                                allowCellular: Bool) async throws -> PagedItems<POSProductVariation> {
         await loadProductVariationsCallCount.increment()
 
         if let result = variationResults[pageNumber] {
@@ -270,7 +262,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     var getProductVariationCountResult: Result<Int, Error> = .success(0)
     var variationCountDelay: UInt64 = 0
 
-    func getProductCount(siteID: Int64, posProductsOnly: Bool) async throws -> Int {
+    func getProductCount(siteID: Int64) async throws -> Int {
         getProductCountCallCount += 1
         lastProductCountSiteID = siteID
 
@@ -286,7 +278,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
-    func getProductVariationCount(siteID: Int64, posProductsOnly: Bool) async throws -> Int {
+    func getProductVariationCount(siteID: Int64) async throws -> Int {
         getProductVariationCountCallCount += 1
         lastVariationCountSiteID = siteID
 

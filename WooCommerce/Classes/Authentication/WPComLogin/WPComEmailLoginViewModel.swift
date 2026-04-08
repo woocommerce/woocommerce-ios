@@ -20,8 +20,6 @@ extension WordPressComAccountService: WordPressComAccountServiceProtocol {}
 final class WPComEmailLoginViewModel: ObservableObject {
     var titleString: String {
         switch flow {
-        case .notificationSetup:
-            Localization.ConnectWPCom.title
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         }
@@ -29,8 +27,6 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     var subtitleString: String {
         switch flow {
-        case .notificationSetup:
-            Localization.ConnectWPCom.subtitle
         case .jetpackSetup(let requiresConnectionOnly):
             requiresConnectionOnly ? Localization.loginToConnect : Localization.loginToInstall
         }
@@ -38,8 +34,6 @@ final class WPComEmailLoginViewModel: ObservableObject {
 
     var primaryButtonTitle: String {
         switch flow {
-        case .notificationSetup:
-            Localization.ConnectWPCom.primaryButtonTitle
         case .jetpackSetup:
             titleString
         }
@@ -83,8 +77,6 @@ final class WPComEmailLoginViewModel: ObservableObject {
         self.termsAttributedString = {
             let content: String = {
                 switch flow {
-                case .notificationSetup:
-                    String.localizedStringWithFormat(Localization.ConnectWPCom.termsContent, Localization.termsOfService, Localization.shareDetails)
                 case .jetpackSetup:
                     String.localizedStringWithFormat(Localization.termsContent, Localization.termsOfService, Localization.shareDetails)
                 }
@@ -227,28 +219,5 @@ extension WPComEmailLoginViewModel {
             value: "We can\'t find a WordPress.com account connected to this username. You can enter an email to create a new account.",
             comment: "Error message when the username is not found"
         )
-
-        enum ConnectWPCom {
-            static let title = NSLocalizedString(
-                "wpcomEmailLoginViewModel.connectWPCom.title",
-                value: "Connect to WordPress.com",
-                comment: "Title for the WPCom email login screen for push notification setup"
-            )
-            static let subtitle = NSLocalizedString(
-                "wpcomEmailLoginViewModel.connectWPCom.subtitle",
-                value: "Log in with your WordPress.com account to connect your store.",
-                comment: "Subtitle for the WPCom email login screen for push notification setup"
-            )
-            static let primaryButtonTitle = NSLocalizedString(
-                "wpcomEmailLoginViewModel.connectWPCom.primaryButtonTitle",
-                value: "Continue",
-                comment: "Button to submit a WPCom email on the login screen for push notification setup"
-            )
-            static let termsContent = NSLocalizedString(
-                "wpcomEmailLoginViewModel.connectWPCom.termsContent",
-                value: "By continuing, you agree to our %1$@ and to %2$@ with WordPress.com.",
-                comment: "Content of the label at the end of the Wrong Account screen. " +
-                "Reads like: By tapping the Connect Jetpack button, you agree to our Terms of Service and to share details with WordPress.com.")
-        }
     }
 }

@@ -325,6 +325,192 @@ struct BookingSearchViewModelTests {
         #expect(capturedFilters?.startDateAfter == nil, "All tab should not have startDateAfter filter")
     }
 
+    // MARK: - Filter merging
+
+    @Test func today_tab_merges_user_date_filters_with_tab_constraints() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .today,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [],
+            products: [],
+            attendanceStatus: nil,
+            customers: [],
+            dateRange: BookingDateRangeFilter(
+                startDate: Date(timeIntervalSince1970: 1609416000), // 2020-12-31T12:00:00Z
+                endDate: Date(timeIntervalSince1970: 1609524000)    // 2021-01-01T18:00:00Z
+            ),
+            numberOfActiveFilters: 1
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z",
+                "Should use tab's startDateAfter since it's later")
+        #expect(capturedFilters?.startDateBefore == "2021-01-01T18:00:00Z",
+                "Should use user's startDateBefore since it's earlier")
+    }
+
+    @Test func upcoming_tab_merges_user_date_filters_with_tab_constraints() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200)
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .upcoming,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [],
+            products: [],
+            attendanceStatus: nil,
+            customers: [],
+            dateRange: BookingDateRangeFilter(
+                startDate: Date(timeIntervalSince1970: 1609632000), // 2021-01-03T00:00:00Z
+                endDate: Date(timeIntervalSince1970: 1609804800)    // 2021-01-05T00:00:00Z
+            ),
+            numberOfActiveFilters: 1
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedFilters?.startDateAfter == "2021-01-03T00:00:00Z",
+                "Should use user's startDateAfter since it's later")
+        #expect(capturedFilters?.startDateBefore == "2021-01-05T00:00:00Z",
+                "Should use user's startDateBefore since tab has no upper bound")
+    }
+
+    @Test func all_tab_passes_user_date_filters_through_unchanged() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200)
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .all,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        let userStartDate = Date(timeIntervalSince1970: 1609632000)
+        let userEndDate = Date(timeIntervalSince1970: 1609804800)
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [],
+            products: [],
+            attendanceStatus: nil,
+            customers: [],
+            dateRange: BookingDateRangeFilter(startDate: userStartDate, endDate: userEndDate),
+            numberOfActiveFilters: 1
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedFilters?.startDateAfter == userStartDate.ISO8601Format())
+        #expect(capturedFilters?.startDateBefore == userEndDate.ISO8601Format())
+    }
+
+    @Test func non_date_filters_pass_through_on_today_tab() async throws {
+        // Given
+        let testDate = Date(timeIntervalSince1970: 1609459200)
+        let searchQuerySubject = PassthroughSubject<String, Never>()
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var capturedFilters: BookingFilters?
+
+        stores.whenReceivingAction(ofType: BookingAction.self) { action in
+            guard case let .searchBookings(_, _, _, _, filters, _, onCompletion) = action else {
+                return
+            }
+            capturedFilters = filters
+            onCompletion(.success([]))
+        }
+
+        let viewModel = BookingSearchViewModel(
+            siteID: sampleSiteID,
+            type: .today,
+            searchQueryPublisher: searchQuerySubject.eraseToAnyPublisher(),
+            stores: stores,
+            currentDate: testDate
+        )
+
+        let userFilters = BookingFiltersViewModel.Filters(
+            teamMembers: [BookingTeamMemberFilter(resourceID: 42, name: "Alice")],
+            products: [BookingProductFilter(productID: 100, name: "Massage")],
+            attendanceStatus: .attended,
+            customers: [BookingCustomerFilter(customerID: 7, name: "Bob")],
+            dateRange: nil,
+            numberOfActiveFilters: 4
+        )
+
+        // When
+        viewModel.updateFilters(userFilters)
+        searchQuerySubject.send("test")
+        try await Task.sleep(nanoseconds: 400_000_000)
+
+        // Then
+        #expect(capturedFilters?.resourceIDs == [42])
+        #expect(capturedFilters?.productIDs == [100])
+        #expect(capturedFilters?.attendanceStatus == BookingAttendanceStatus.attended.rawValue)
+        #expect(capturedFilters?.customerIDs == [7])
+        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z")
+        #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z")
+    }
+
     // MARK: - Refresh action
 
     @Test func on_refresh_action_resyncs_search_results() async throws {

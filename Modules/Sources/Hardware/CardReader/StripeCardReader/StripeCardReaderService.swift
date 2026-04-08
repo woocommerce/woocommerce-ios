@@ -255,8 +255,8 @@ extension StripeCardReaderService: CardReaderService {
             // This prevent a crash when logging out or switching stores before
             // the SDK has been initialized.
             // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
-            // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
-            guard Terminal.hasTokenProvider() else {
+            // Before accessing the singleton for the first time, you must first call initWithTokenProvider:
+            guard Terminal.isInitialized() else {
                 promise(.failure(CardReaderServiceError.disconnection()))
                 return
             }
@@ -322,8 +322,8 @@ extension StripeCardReaderService: CardReaderService {
         // This prevent a crash when logging out or switching stores before
         // the SDK has been initialized.
         // Why? https://stripe.dev/stripe-terminal-ios/docs/Classes/SCPTerminal.html#/c:objc(cs)SCPTerminal(cpy)shared
-        // `Before accessing the singleton for the first time, you must first call setTokenProvider: and setDelegate:.`
-        guard Terminal.hasTokenProvider() else {
+        // `Before accessing the singleton for the first time, you must first call initWithTokenProvider:.`
+        guard Terminal.isInitialized() else {
             return
         }
 
@@ -331,7 +331,9 @@ extension StripeCardReaderService: CardReaderService {
             connectionAttemptInvalidated = true
         }
 
-        Terminal.shared.clearCachedCredentials()
+        if case .failure(let error) = Terminal.shared.clearCachedCredentials() {
+            _ = Self.logAndDecodeError(error)
+        }
     }
 
     public func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error> {
@@ -571,9 +573,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
-                    if self.connectionAttemptInvalidated {
+                    guard !self.connectionAttemptInvalidated else {
                         _ = self.disconnect()
                         promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
+                        return
                     }
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
@@ -611,9 +614,10 @@ extension StripeCardReaderService: CardReaderService {
                 }
 
                 if let reader = reader {
-                    if self.connectionAttemptInvalidated {
+                    guard !self.connectionAttemptInvalidated else {
                         _ = self.disconnect()
                         promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
+                        return
                     }
                     self.connectedReadersSubject.send([CardReader(reader: reader)])
                     self.switchStatusToIdle()
@@ -1048,12 +1052,12 @@ private extension StripeCardReaderService {
 
 private extension StripeCardReaderService {
     private func setConfigProvider(_ configProvider: CardReaderConfigProvider) {
-        if !Terminal.hasTokenProvider() {
+        if !Terminal.isInitialized() {
             readerLocationProvider = configProvider
 
             let tokenProvider = DefaultConnectionTokenProvider(provider: configProvider)
 
-            Terminal.setTokenProvider(tokenProvider)
+            Terminal.initWithTokenProvider(tokenProvider)
         }
     }
 

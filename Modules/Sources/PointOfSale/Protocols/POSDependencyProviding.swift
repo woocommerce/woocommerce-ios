@@ -48,10 +48,6 @@ public protocol POSExternalNavigationProviding {
 ///
 public protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
-    func createFormattableAmountTextField(preset: Decimal?,
-                                          font: Font,
-                                          onSubmit: @escaping () -> Void,
-                                          onChange: @escaping (String) -> Void) -> AnyView
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
@@ -61,7 +57,7 @@ public protocol POSExternalViewProviding {
                                           title: String,
                                           cancelButtonTitle: String,
                                           onSelection: @escaping (CouponDiscountType) -> Void) -> AnyView
-    func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView
 }
 
 /// Main protocol that combines all POS dependency providers

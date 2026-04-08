@@ -149,6 +149,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$25.99",
             formattedSubtotal: "$25.99",
             customerEmail: "customer1@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(
@@ -156,6 +157,7 @@ extension MockPOSOrderListService {
                     name: "Coffee",
                     quantity: 2,
                     price: 10.00,
+                    total: 20.00,
                     totalTax: 0,
                     formattedPrice: "$10.00",
                     formattedTotal: "$20.00",
@@ -167,6 +169,7 @@ extension MockPOSOrderListService {
                     name: "Muffin",
                     quantity: 1,
                     price: 5.99,
+                    total: 5.99,
                     totalTax: 0,
                     formattedPrice: "$5.99",
                     formattedTotal: "$5.99",
@@ -178,7 +181,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$25.99",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate
         )
 
         let order2 = POSOrder(
@@ -189,6 +193,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$15.50",
             formattedSubtotal: "$15.50",
             customerEmail: "customer2@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Card",
             lineItems: [
                 POSOrderItem(
@@ -196,6 +201,7 @@ extension MockPOSOrderListService {
                     name: "Tea",
                     quantity: 1,
                     price: 15.50,
+                    total: 15.50,
                     totalTax: 0,
                     formattedPrice: "$15.50",
                     formattedTotal: "$15.50",
@@ -207,7 +213,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$15.50",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate.addingTimeInterval(3600)
         )
 
         return [order1, order2]
@@ -224,6 +231,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$42.75",
             formattedSubtotal: "$42.75",
             customerEmail: "customer3@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(
@@ -231,6 +239,7 @@ extension MockPOSOrderListService {
                     name: "Sandwich",
                     quantity: 1,
                     price: 12.00,
+                    total: 12.00,
                     totalTax: 0,
                     formattedPrice: "$12.00",
                     formattedTotal: "$12.00",
@@ -242,6 +251,7 @@ extension MockPOSOrderListService {
                     name: "Soup",
                     quantity: 2,
                     price: 15.38,
+                    total: 30.76,
                     totalTax: 0,
                     formattedPrice: "$15.38",
                     formattedTotal: "$30.75",
@@ -253,7 +263,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$42.75",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate.addingTimeInterval(7200)
         )
 
         let order4 = POSOrder(
@@ -264,6 +275,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$12.00",
             formattedSubtotal: "$12.00",
             customerEmail: "customer4@example.com",
+            paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Card",
             lineItems: [
                 POSOrderItem(
@@ -271,6 +283,7 @@ extension MockPOSOrderListService {
                     name: "Cookies",
                     quantity: 1,
                     price: 12.00,
+                    total: 12.00,
                     totalTax: 0,
                     formattedPrice: "$12.00",
                     formattedTotal: "$12.00",
@@ -284,7 +297,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$12.00",
-            formattedNetAmount: "$0.00"
+            formattedNetAmount: "$0.00",
+            datePaid: baseDate.addingTimeInterval(10800)
         )
 
         return [order3, order4]
@@ -301,6 +315,7 @@ extension MockPOSOrderListService {
             formattedTotal: "$18.50",
             formattedSubtotal: "$18.50",
             customerEmail: "search@example.com",
+            paymentMethodID: "cod",
             paymentMethodTitle: "Cash",
             lineItems: [
                 POSOrderItem(
@@ -308,6 +323,7 @@ extension MockPOSOrderListService {
                     name: "Test Product",
                     quantity: 1,
                     price: 18.50,
+                    total: 18.50,
                     totalTax: 0,
                     formattedPrice: "$18.50",
                     formattedTotal: "$18.50",
@@ -319,7 +335,8 @@ extension MockPOSOrderListService {
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$18.50",
-            formattedNetAmount: nil
+            formattedNetAmount: nil,
+            datePaid: baseDate.addingTimeInterval(14400)
         )
 
         return [searchOrder]

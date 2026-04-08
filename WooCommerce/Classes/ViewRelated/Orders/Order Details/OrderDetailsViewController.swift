@@ -98,7 +98,10 @@ final class OrderDetailsViewController: UIViewController {
         syncEverything { [weak self] in
             ServiceLocator.analytics.track(event: waitingTracker.end())
 
-            self?.topLoaderView.isHidden = true
+            UIView.animate(withDuration: 0.3) {
+                self?.topLoaderView.alpha = 0
+                self?.topLoaderView.isHidden = true
+            }
 
             /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
             if self?.tableView.refreshControl == nil {
@@ -214,8 +217,16 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
+            let previousStatus = self.viewModel.order.status
             self.viewModel.update(order: order)
             self.reloadTableViewSectionsAndData()
+
+            if order.status != previousStatus {
+                Task { @MainActor [weak self] in
+                    await self?.viewModel.refreshReceiptEligibility()
+                    self?.reloadTableViewSectionsAndData()
+                }
+            }
         }
     }
 

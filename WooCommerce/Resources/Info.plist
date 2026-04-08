@@ -35,7 +35,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>wordpress-oauth-v2</string>
-				<string>DOTCOM_AUTH_SCHEME</string>
+				<string>$(DOTCOM_AUTH_SCHEME)</string>
 			</array>
 		</dict>
 		<dict>
@@ -45,7 +45,7 @@
 			<string>GoogleSignIn</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>GOOGLE_AUTH_SCHEME</string>
+				<string>$(GOOGLE_AUTH_SCHEME)</string>
 			</array>
 		</dict>
 	</array>
@@ -156,6 +156,10 @@
 	<true/>
 	<key>BuildConfigurationName</key>
 	<string>$(CONFIGURATION)</string>
+	<key>WCDotcomAuthScheme</key>
+	<string>$(DOTCOM_AUTH_SCHEME)</string>
+	<key>WCGoogleAuthScheme</key>
+	<string>$(GOOGLE_AUTH_SCHEME)</string>
   <key>UIApplicationSceneManifest</key>
   <dict>
     <key>UIApplicationSupportsMultipleScenes</key>

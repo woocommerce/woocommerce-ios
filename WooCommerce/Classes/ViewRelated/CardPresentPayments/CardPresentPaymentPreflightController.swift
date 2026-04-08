@@ -124,11 +124,11 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             // The reader was already connected when the analyticsTracker was created,
             //`so we need to pass it along for properties to be correct
             analyticsTracker.setCandidateReader(connectedReader)
-            if connectedReader.discoveryMethod == discoveryMethod {
-                // If we're already connected to a reader of the correct type, return it
+            if connectedReader.discoveryMethod == discoveryMethod,
+               paymentGatewayAccount.siteID == siteID {
                 return handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
             } else {
-                // If it's the wrong type, disconnect it automatically and check onboarding
+                // Wrong discovery method or different store - disconnect and reconnect
                 do {
                     try await automaticallyDisconnectFromReader()
                     analyticsTracker.automaticallyDisconnectedFromReader()

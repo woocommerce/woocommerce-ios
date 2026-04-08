@@ -75,7 +75,10 @@ class AuthenticatedState: StoresManagerState {
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            FeatureFlagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            FeatureFlagStore(dispatcher: dispatcher,
+                            storageManager: storageManager,
+                            network: network,
+                            overrideStore: ServiceLocator.remoteFeatureFlagOverrideStore),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -86,13 +89,6 @@ class AuthenticatedState: StoresManagerState {
                 dispatcher: dispatcher,
                 storageManager: storageManager,
                 network: network,
-                crashLogger: ServiceLocator.crashLogging,
-                isCIABEnvironmentSupported: {
-                    ServiceLocator.featureFlagService.isFeatureFlagEnabled(.ciab)
-                },
-                currentSite: {
-                    sessionManager.defaultSite
-                }
             ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -185,15 +181,12 @@ class AuthenticatedState: StoresManagerState {
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
             grdbManager: ServiceLocator.grdbManager
            ) {
-            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
-
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                    posProductsOnlyEnabled: posProductsOnlyEnabled
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
                 ),
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
@@ -202,6 +195,7 @@ class AuthenticatedState: StoresManagerState {
                     storageManager: ServiceLocator.storageManager
                 ),
                 isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                isCatalogAPIFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {
@@ -218,8 +212,7 @@ class AuthenticatedState: StoresManagerState {
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
-                connectivityObserver: ServiceLocator.connectivityObserver,
-                posProductsOnlyEnabled: posProductsOnlyEnabled
+                connectivityObserver: ServiceLocator.connectivityObserver
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility

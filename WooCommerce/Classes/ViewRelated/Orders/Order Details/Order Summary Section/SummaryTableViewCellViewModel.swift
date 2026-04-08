@@ -13,21 +13,36 @@ struct SummaryTableViewCellViewModel {
 
     let presentation: OrderStatusPresentation
 
+    /// Whether the edit status button should be displayed.
+    let isEditButtonVisible: Bool
+
     private let calendar: Calendar
 
     init(order: Order,
          status: OrderStatus?,
+         isEditButtonVisible: Bool = true,
+         isCIAB: Bool = false,
          calendar: Calendar = .current) {
 
         billingAddress = order.billingAddress
         dateCreated = order.dateCreated
         salesChannel = order.salesChannel?.description
 
-        presentation = OrderStatusPresentation(
-            style: status?.status ?? order.status,
-            title: status?.name ?? order.status.rawValue
-        )
+        let orderStatus = status?.status ?? order.status
+        let statusTitle = status?.name ?? order.status.rawValue
+        if isCIAB {
+            presentation = OrderStatusPresentation(
+                style: CIABOrderStatusMapper.displayStatus(for: orderStatus),
+                title: CIABOrderStatusMapper.displayName(for: orderStatus)
+            )
+        } else {
+            presentation = OrderStatusPresentation(
+                style: orderStatus,
+                title: statusTitle
+            )
+        }
 
+        self.isEditButtonVisible = isEditButtonVisible
         self.calendar = calendar
     }
 

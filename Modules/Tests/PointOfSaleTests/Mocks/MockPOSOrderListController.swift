@@ -1,10 +1,13 @@
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderItem
 
 final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
+    var isLoadingOrderRefunds = false
+    var displayedLineItems: [POSOrderItem] = []
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
     var updateOrderCalled = false
@@ -38,11 +41,14 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func clearSearchOrders() {}
 
-    func startRefundFlow() {
-        guard let order = selectedOrder else { return }
+    var stubStartRefundFlowResult: StartRefundFlowResult = .hasItemsToRefund
+
+    func startRefundFlow() async -> StartRefundFlowResult {
+        guard let order = selectedOrder else { return .failed }
         refundSelectableItems = order.lineItems.map {
             POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
         }
+        return stubStartRefundFlowResult
     }
 
     func toggleRefundItemSelection(at index: Int) {
@@ -74,7 +80,26 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             formattedTax: "$0.00",
             formattedRefundTotal: "$0.00",
             paymentMethodDescription: "Via payment card",
-            refundReason: nil
+            customerEmail: nil,
+            refundReason: nil,
+            isFullRefund: selectedItems.count == refundSelectableItems.count
         )
+    }
+
+    func loadOrderRefunds() async {}
+
+    // MARK: - Refund Processing
+
+    var processRefundCalled = false
+    var spyProcessRefundReason: String?
+    var shouldThrowProcessRefundError = false
+
+    func processRefund(reason: String?) async throws {
+        processRefundCalled = true
+        spyProcessRefundReason = reason
+
+        if shouldThrowProcessRefundError {
+            throw TestError.updateOrderFailed
+        }
     }
 }

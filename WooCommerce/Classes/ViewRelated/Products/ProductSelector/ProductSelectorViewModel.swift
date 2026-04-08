@@ -81,7 +81,13 @@ final class ProductSelectorViewModel: ObservableObject {
     /// View model for the filter list.
     ///
     var filterListViewModel: FilterProductListViewModel {
-        FilterProductListViewModel(filters: filtersSubject.value, siteID: siteID, storageManager: storageManager)
+        FilterProductListViewModel(
+            filters: filtersSubject.value,
+            siteID: siteID,
+            site: stores.sessionManager.defaultSite,
+            stores: stores,
+            storageManager: storageManager
+        )
     }
 
     /// Selected filters for the product list

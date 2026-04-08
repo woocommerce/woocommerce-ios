@@ -1,5 +1,6 @@
 import Foundation
 import Testing
+@testable import Networking
 @testable import Storage
 @testable import Yosemite
 
@@ -26,10 +27,10 @@ struct POSCatalogPersistenceServiceTests {
                 POSProduct.fake().copy(siteID: sampleSiteID, productID: 1),
                 POSProduct.fake().copy(siteID: sampleSiteID, productID: 2, productTypeKey: "variable")
             ],
-            variations: [
+            variations: typedVariations([
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 2, productVariationID: 1),
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 2, productVariationID: 2)
-            ],
+            ]),
             syncDate: .now
         )
 
@@ -83,7 +84,7 @@ struct POSCatalogPersistenceServiceTests {
             attributes: [ProductVariationAttribute.fake(), ProductVariationAttribute.fake()], image: ProductImage.fake().copy(imageID: 200)
         )
         let catalog = POSCatalog(products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 15)],
-                                 variations: [variationWithRelations],
+                                 variations: typedVariations([variationWithRelations]),
                                  syncDate: .now)
 
         // When
@@ -136,7 +137,7 @@ struct POSCatalogPersistenceServiceTests {
         // Given - existing data
         let existingCatalog = POSCatalog(
             products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 80)],
-            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 80, productVariationID: 100)],
+            variations: typedVariations([POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 80, productVariationID: 100)]),
             syncDate: .now
         )
         try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
@@ -144,7 +145,7 @@ struct POSCatalogPersistenceServiceTests {
         // When - replace with new data
         let newCatalog = POSCatalog(
             products: [POSProduct.fake().copy(siteID: sampleSiteID, productID: 180)],
-            variations: [POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 180, productVariationID: 200)],
+            variations: typedVariations([POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 180, productVariationID: 200)]),
             syncDate: .now
         )
         try await sut.replaceAllCatalogData(newCatalog, siteID: sampleSiteID)
@@ -205,7 +206,7 @@ struct POSCatalogPersistenceServiceTests {
             attributes: [ProductVariationAttribute.fake()],
             image: ProductImage.fake().copy(imageID: 500)
         )
-        let existingCatalog = POSCatalog(products: [parentProduct], variations: [existingVariation], syncDate: .now)
+        let existingCatalog = POSCatalog(products: [parentProduct], variations: typedVariations([existingVariation]), syncDate: .now)
         try await sut.replaceAllCatalogData(existingCatalog, siteID: sampleSiteID)
 
         // When - replace with catalog containing only parent product (no variations)
@@ -400,7 +401,7 @@ struct POSCatalogPersistenceServiceTests {
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 6),
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 2)
         ]
-        let catalog = POSCatalog(products: [parentProduct], variations: newVariations, syncDate: .now)
+        let catalog = POSCatalog(products: [parentProduct], variations: typedVariations(newVariations), syncDate: .now)
 
         // When
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
@@ -427,7 +428,7 @@ struct POSCatalogPersistenceServiceTests {
 
         // When
         let updatedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, price: "15.00")
-        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation], syncDate: .now)
+        let updateCatalog = POSCatalog(products: [parentProduct], variations: typedVariations([updatedVariation]), syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -454,7 +455,7 @@ struct POSCatalogPersistenceServiceTests {
         let updatedAttribute1 = attribute1.copy(option: "Cardinal")
         let newAttribute = ProductVariationAttribute.fake().copy(name: "Material", option: "Cotton")
         let updatedVariation = variation.copy(attributes: [newAttribute, updatedAttribute1])
-        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation], syncDate: .now)
+        let updateCatalog = POSCatalog(products: [parentProduct], variations: typedVariations([updatedVariation]), syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -482,7 +483,7 @@ struct POSCatalogPersistenceServiceTests {
         try await insertVariation(variation)
 
         // When - perform multiple incremental syncs with the same variation/attributes
-        let catalog = POSCatalog(products: [parentProduct], variations: [variation], syncDate: .now)
+        let catalog = POSCatalog(products: [parentProduct], variations: typedVariations([variation]), syncDate: .now)
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)
@@ -513,7 +514,7 @@ struct POSCatalogPersistenceServiceTests {
         // When
         let updatedImage = image.copy(src: "https://example.com/variation1-updated.jpg")
         let updatedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 1, image: updatedImage)
-        let updateCatalog = POSCatalog(products: [parentProduct], variations: [updatedVariation], syncDate: .now)
+        let updateCatalog = POSCatalog(products: [parentProduct], variations: typedVariations([updatedVariation]), syncDate: .now)
         try await sut.persistIncrementalCatalogData(updateCatalog, siteID: sampleSiteID)
 
         // Then
@@ -542,7 +543,7 @@ struct POSCatalogPersistenceServiceTests {
         // When
         let updatedExistingVariation = existingVariation.copy(price: "12.00")
         let newVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 2, price: "8.00")
-        let mixedCatalog = POSCatalog(products: [parentProduct], variations: [updatedExistingVariation, newVariation], syncDate: .now)
+        let mixedCatalog = POSCatalog(products: [parentProduct], variations: typedVariations([updatedExistingVariation, newVariation]), syncDate: .now)
         try await sut.persistIncrementalCatalogData(mixedCatalog, siteID: sampleSiteID)
 
         // Then
@@ -590,7 +591,7 @@ struct POSCatalogPersistenceServiceTests {
         let variation2 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 20)
         let variation3 = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 30)
 
-        let catalog = POSCatalog(products: [product], variations: [variation1, variation2, variation3], syncDate: .now)
+        let catalog = POSCatalog(products: [product], variations: typedVariations([variation1, variation2, variation3]), syncDate: .now)
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
 
         // Verify initial state
@@ -642,7 +643,7 @@ struct POSCatalogPersistenceServiceTests {
 
         let catalog = POSCatalog(
             products: [product1, product2],
-            variations: [variation10, variation20, variation30, variation40],
+            variations: typedVariations([variation10, variation20, variation30, variation40]),
             syncDate: .now
         )
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
@@ -729,7 +730,7 @@ struct POSCatalogPersistenceServiceTests {
 
         let catalog = POSCatalog(
             products: [product],
-            variations: [validVariation, orphanedVariation1, orphanedVariation2],
+            variations: typedVariations([validVariation, orphanedVariation1, orphanedVariation2]),
             syncDate: .now
         )
 
@@ -785,11 +786,11 @@ struct POSCatalogPersistenceServiceTests {
             products: [
                 POSProduct.fake().copy(siteID: sampleSiteID, productID: 100, productTypeKey: "variable")
             ],
-            variations: [
+            variations: typedVariations([
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 500),
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 501),
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 100, productVariationID: 502)
-            ],
+            ]),
             syncDate: .now
         )
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
@@ -814,10 +815,10 @@ struct POSCatalogPersistenceServiceTests {
                 POSProduct.fake().copy(siteID: sampleSiteID, productID: 100),
                 POSProduct.fake().copy(siteID: sampleSiteID, productID: 200, productTypeKey: "variable")
             ],
-            variations: [
+            variations: typedVariations([
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 200, productVariationID: 500),
                 POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 200, productVariationID: 501)
-            ],
+            ]),
             syncDate: .now
         )
         try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
@@ -894,6 +895,91 @@ struct POSCatalogPersistenceServiceTests {
             #expect(products.first?.id == 100)
         }
     }
+
+    @Test func deleteProducts_removes_cascade_deleted_variations_from_fts_index() async throws {
+        // Given - A variable product with variations (all FTS-eligible)
+        let product = POSProduct.fake().copy(
+            siteID: sampleSiteID,
+            productID: 100,
+            name: "Variable Shirt",
+            productTypeKey: "variable",
+            statusKey: "publish"
+        )
+        let variation1 = POSProductVariation.fake().copy(
+            siteID: sampleSiteID,
+            productID: 100,
+            productVariationID: 501,
+            sku: "SHIRT-S"
+        )
+        let variation2 = POSProductVariation.fake().copy(
+            siteID: sampleSiteID,
+            productID: 100,
+            productVariationID: 502,
+            sku: "SHIRT-M"
+        )
+        let catalog = POSCatalog(
+            products: [product],
+            variations: typedVariations([variation1, variation2]),
+            syncDate: .now
+        )
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Verify FTS index has product and variations
+        let initialIndexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(initialIndexCount == 3) // 1 product + 2 variations
+
+        // When - Delete the product without specifying variation IDs
+        // (simulates cascade delete scenario where variations are deleted by GRDB cascade)
+        try await sut.deleteProducts([100], variationIDs: [], siteID: sampleSiteID)
+
+        // Then - FTS index should also have the variations removed
+        let finalIndexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(finalIndexCount == 0) // All entries removed
+    }
+
+    // MARK: - FTS Index Rebuild Tests
+
+    @Test func replaceAllCatalogData_rebuilds_fts_index() async throws {
+        // Given - product with valid productTypeKey and statusKey for FTS indexing
+        let product = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Coffee Beans", productTypeKey: "simple", statusKey: "publish")
+        let catalog = POSCatalog(products: [product], variations: [], syncDate: .now)
+
+        // When
+        try await sut.replaceAllCatalogData(catalog, siteID: sampleSiteID)
+
+        // Then
+        let indexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(indexCount == 1)
+    }
+
+    @Test func persistIncrementalCatalogData_rebuilds_fts_index() async throws {
+        // Given - products with valid productTypeKey and statusKey for FTS indexing
+        let product1 = POSProduct.fake().copy(siteID: sampleSiteID, productID: 1, name: "Coffee", productTypeKey: "simple", statusKey: "publish")
+        let initialCatalog = POSCatalog(products: [product1], variations: [], syncDate: .now)
+        try await sut.replaceAllCatalogData(initialCatalog, siteID: sampleSiteID)
+
+        // When
+        let product2 = POSProduct.fake().copy(siteID: sampleSiteID, productID: 2, name: "Tea", productTypeKey: "simple", statusKey: "publish")
+        let incrementalCatalog = POSCatalog(products: [product2], variations: [], syncDate: .now)
+        try await sut.persistIncrementalCatalogData(incrementalCatalog, siteID: sampleSiteID)
+
+        // Then
+        let indexCount = try await db.read { db in
+            try Int.fetchOne(db, sql: "SELECT COUNT(*) FROM pos_search_fts WHERE siteID = ?", arguments: [sampleSiteID]) ?? 0
+        }
+        #expect(indexCount == 2)
+    }
+}
+
+/// Wraps plain variations with the default "variation" typeKey for use in POSCatalog test data.
+private func typedVariations(_ variations: [POSProductVariation]) -> [POSTypedVariation] {
+    variations.map { POSTypedVariation(variation: $0, typeKey: "variation") }
 }
 
 private extension POSCatalogPersistenceServiceTests {

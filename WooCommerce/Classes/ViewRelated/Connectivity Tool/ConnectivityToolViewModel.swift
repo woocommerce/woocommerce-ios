@@ -9,12 +9,21 @@ import class Networking.SystemStatusRemote
 import class Networking.OrdersRemote
 import class Networking.ProductsRemote
 import class Networking.UserAgent
+import protocol WooFoundation.Analytics
 
 final class ConnectivityToolViewModel {
 
     /// Cards to be rendered by the view.
     ///
     @Published var cards: [ConnectivityTool.Card] = []
+
+    /// URL selected by an action button, to be opened in-app by the view layer.
+    ///
+    @Published var selectedURL: URL?
+
+    /// Set to `true` when the user taps "Setup Jetpack" to signal the view layer to start the Jetpack setup flow.
+    ///
+    @Published var shouldStartJetpackSetup = false
 
     /// Remote used to check the connection to WPCom servers.
     ///
@@ -32,19 +41,51 @@ final class ConnectivityToolViewModel {
     ///
     private let productsRemote: ProductsRemote
 
+    /// Stores manager for dispatching Yosemite actions.
+    ///
+    let stores: StoresManager
+
+    /// Analytics tracker.
+    ///
+    private let analytics: Analytics
+
+    /// Adapter for checking notification authorization status.
+    ///
+    let userNotificationCenter: UserNotificationsCenterAdapter
+
+    /// WordPress.com device identifier for notification settings.
+    ///
+    let pushNotesManager: PushNotesManager
+
+    /// The site URL used for authenticating Jetpack connection requests.
+    ///
+    let siteURL: String?
+
     /// Site to be tested.
     ///
-    private let siteID: Int64
+    let siteID: Int64
 
     private var latestTestResult: [ConnectivityTestResult] = []
 
-    init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager) {
+    let network: AlamofireNetwork
+
+    init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
 
         let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
+        self.network = network
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
         self.orderRemote = OrdersRemote(network: network)
         self.productsRemote = ProductsRemote(network: network)
+        self.stores = stores
+        self.analytics = analytics
+        self.userNotificationCenter = userNotificationCenter
+        self.pushNotesManager = pushNotesManager
+        self.siteURL = session.defaultSite?.url
         self.siteID = session.defaultStoreID ?? .zero
 
         Task {
@@ -57,15 +98,18 @@ final class ConnectivityToolViewModel {
     ///
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
-            if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts]
+            if stores.isAuthenticatedWithoutWPCom == false {
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
             } else {
-                [.internetConnection, .site, .siteOrders, .loadingProducts]
+                [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }
         }()
-        for (index, testCase) in supportedTests.enumerated().dropFirst(sinceTest.rawValue) {
+
+        let testsToRun = supportedTests.filter { $0.rawValue >= sinceTest.rawValue }
+        for testCase in testsToRun {
 
             // Add an inProgress card for the current test.
+            let cardIndex = cards.count
             cards.append(testCase.inProgressCard)
 
             // Start time snapshot
@@ -78,7 +122,7 @@ final class ConnectivityToolViewModel {
             let timeTaken = Date().timeIntervalSince(startTime)
 
             // Update the test card with the test result.
-            cards[index] = cards[index].updatingState(testResult)
+            cards[cardIndex] = cards[cardIndex].updatingState(testResult)
 
             // Track test result
             trackResponseEvent(for: testCase, success: testResult.isSuccess, timeTaken: timeTaken)
@@ -122,24 +166,27 @@ final class ConnectivityToolViewModel {
             return await testFetchingOrders()
         case .loadingProducts:
             return await testFetchingProducts()
-
+        case .analyticsSetting:
+            return await testAnalyticsSetting()
+        case .notifications:
+            return await testNotifications()
         }
     }
 
-    /// Retries the last test case and the subsequent ones.
+    /// Retries the last failed test case and the subsequent ones.
     ///
-    private func retryLastTest() {
-        // Remove the last test
-        cards.removeLast()
-
-        // Make sure there is a test case to run.
-        guard let testCaseToRepeat = ConnectivityTest(rawValue: cards.count) else {
-            return
+    func retryTest(_ testCase: ConnectivityTest) {
+        // Remove the last test result and card.
+        if !latestTestResult.isEmpty {
+            latestTestResult.removeLast()
+        }
+        if !cards.isEmpty {
+            cards.removeLast()
         }
 
-        // Run tests again from the last one.
+        // Run tests again from the failed one.
         Task {
-            await startConnectivityTest(sinceTest: testCaseToRepeat)
+            await startConnectivityTest(sinceTest: testCase)
         }
     }
 
@@ -160,7 +207,7 @@ final class ConnectivityToolViewModel {
 
         let state: ConnectivityToolCard.ConnectivityState = reachable ?
             .success :
-            .error(Localization.ErrorMessage.noInternet, [self.retryAction()])
+            .error(Localization.ErrorMessage.noInternet, [self.retryAction(for: .internetConnection)])
 
         return state
     }
@@ -180,7 +227,7 @@ final class ConnectivityToolViewModel {
 
                 let state: ConnectivityToolCard.ConnectivityState = result.isSuccess ?
                     .success :
-                    .error(Localization.ErrorMessage.wpcomConnection, [self.retryAction()])
+                    .error(Localization.ErrorMessage.wpcomConnection, [self.retryAction(for: .wpComServers)])
                 continuation.resume(returning: state
                 )
             }
@@ -233,6 +280,97 @@ final class ConnectivityToolViewModel {
         }
     }
 
+    /// Test whether WooCommerce Analytics is enabled on the site.
+    ///
+    @MainActor
+    func testAnalyticsSetting() async -> ConnectivityToolCard.ConnectivityState {
+        await withCheckedContinuation { continuation in
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: siteID) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .success(let isEnabled):
+                    if isEnabled {
+                        DDLogInfo("Connectivity Tool: ✅ Analytics setting enabled")
+                        continuation.resume(returning: .success)
+                    } else {
+                        DDLogInfo("Connectivity Tool: ⚠️ Analytics setting disabled")
+                        let enableAction = ConnectivityToolCard.ConnectivityState.Action(
+                            title: Localization.Action.enableAnalytics,
+                            systemImage: SystemImages.enableAction.rawValue,
+                            action: { [weak self] in
+                                self?.enableAnalytics()
+                            }
+                        )
+                        continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled,
+                                                                    [enableAction, self.retryAction(for: .analyticsSetting)]))
+                    }
+                case .failure(let error):
+                    DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
+                    let technicalDetails = String(describing: error)
+                    let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
+                        title: Localization.Action.viewDetails,
+                        systemImage: SystemImages.viewDetails.rawValue,
+                        technicalDetails: technicalDetails
+                    )
+                    continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed,
+                                                                [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    /// Enables WooCommerce Analytics on the site with one automatic retry (known API quirk).
+    ///
+    @MainActor
+    private func enableAnalytics(retries: Int = 0) {
+        // Hide card content and show loading indicator while enabling.
+        updateCardState(for: .analyticsSetting, state: .inProgress)
+
+        let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success:
+                DDLogInfo("Connectivity Tool: ✅ Analytics enabled successfully")
+                // Update the analytics setting card to show relaunch message.
+                self.updateCardState(for: .analyticsSetting, state: .empty(Localization.analyticsEnabledRelaunch))
+            case .failure(let error):
+                if retries < 1 {
+                    // Retry once due to known API quirk where first request fails.
+                    self.enableAnalytics(retries: retries + 1)
+                } else {
+                    DDLogError("Connectivity Tool: ❌ Failed to enable analytics\n\(error)")
+                    // Restore the error state with interactive buttons.
+                    self.restoreAnalyticsCardActions()
+                }
+            }
+        }
+        stores.dispatch(action)
+    }
+
+    /// Restores the analytics setting card to its interactive error state after a failed enable attempt.
+    ///
+    @MainActor
+    private func restoreAnalyticsCardActions() {
+        let enableAction = ConnectivityToolCard.ConnectivityState.Action(
+            title: Localization.Action.enableAnalytics,
+            systemImage: SystemImages.enableAction.rawValue,
+            action: { [weak self] in
+                self?.enableAnalytics()
+            }
+        )
+        updateCardState(for: .analyticsSetting,
+                        state: .error(Localization.ErrorMessage.analyticsDisabled,
+                                      [enableAction, retryAction(for: .analyticsSetting)]))
+    }
+
+    /// Updates the state of the card matching the given test case.
+    ///
+    func updateCardState(for testCase: ConnectivityTest, state: ConnectivityToolCard.ConnectivityState) {
+        guard let index = cards.lastIndex(where: { $0.testCase == testCase }) else { return }
+        cards[index] = cards[index].updatingState(state)
+    }
+
     private func stateForSiteResult<T>(_ result: Result<T, Error>, operation: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState {
         guard case let .failure(error) = result else {
             return .success
@@ -240,23 +378,23 @@ final class ConnectivityToolViewModel {
 
         let message: String
         let readMore = Localization.Action.readMore
-        let generalTroubleshootAction = {
-            UIApplication.shared.open(WooConstants.URLs.troubleshootErrorLoadingData.asURL())
-            ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
+        let generalTroubleshootAction = { [weak self] in
+            self?.selectedURL = WooConstants.URLs.troubleshootErrorLoadingData.asURL()
+            self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
         var readMoreAction = ConnectivityToolCard.ConnectivityState.Action(title: readMore,
                                                                            systemImage: SystemImages.readMore.rawValue,
                                                                            action: generalTroubleshootAction)
-        let jetpackTroubleshootAction = {
-            UIApplication.shared.open(WooConstants.URLs.troubleshootJetpackConnection.asURL())
-            ServiceLocator.analytics.track(event: .ConnectivityTool.readMoreTapped())
+        let jetpackTroubleshootAction = { [weak self] in
+            self?.selectedURL = WooConstants.URLs.troubleshootJetpackConnection.asURL()
+            self?.analytics.track(event: .ConnectivityTool.readMoreTapped())
         }
 
         // Handle all types of errors but timeouts are specific.
         switch (error, error.isTimeoutError) {
         case (_, true):
             message = Localization.ErrorMessage.timeout
-            return .error(message, [readMoreAction, retryAction()])
+            return .error(message, [readMoreAction, retryAction(for: operation)])
 
         case (let decodingError as DecodingError, _):
             message = Localization.ErrorMessage.decodingError
@@ -267,12 +405,12 @@ final class ConnectivityToolViewModel {
                 systemImage: SystemImages.viewDetails.rawValue,
                 technicalDetails: technicalDetails
             )
-            return .error(message, [viewDetailsAction, readMoreAction, retryAction()])
+            return .error(message, [viewDetailsAction, readMoreAction, retryAction(for: operation)])
 
         case (DotcomError.jetpackNotConnected, _):
             message = Localization.ErrorMessage.noJetpackConnection
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: jetpackTroubleshootAction)
-            return .error(message, [readMoreAction, retryAction()])
+            return .error(message, [readMoreAction, retryAction(for: operation)])
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
@@ -284,14 +422,14 @@ final class ConnectivityToolViewModel {
                 technicalDetails: technicalDetails
             )
             readMoreAction = .init(title: readMore, systemImage: SystemImages.readMore.rawValue, action: generalTroubleshootAction)
-            return .error(message, [viewDetailsAction, readMoreAction, retryAction()])
+            return .error(message, [viewDetailsAction, readMoreAction, retryAction(for: operation)])
         }
     }
 
-    private func retryAction() -> ConnectivityToolCard.ConnectivityState.Action {
+    func retryAction(for testCase: ConnectivityTest) -> ConnectivityToolCard.ConnectivityState.Action {
         let retryText = Localization.Action.retry
         return .init(title: retryText, systemImage: SystemImages.retry.rawValue, action: { [weak self] in
-            self?.retryLastTest()
+            self?.retryTest(testCase)
         })
     }
 
@@ -305,9 +443,11 @@ final class ConnectivityToolViewModel {
             case .site: return .site
             case .siteOrders: return .orders
             case .loadingProducts: return .products
+            case .analyticsSetting: return .analytics
+            case .notifications: return .notifications
             }
         }()
-        ServiceLocator.analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
     }
 
     private func noConnectionsIssueState() -> ConnectivityTool.Card {
@@ -410,6 +550,8 @@ fileprivate struct ConnectivityTestResult {
         case .site: "Connecting to your site"
         case .siteOrders: "Fetching your site orders"
         case .loadingProducts: "Fetching products in your store"
+        case .analyticsSetting: "Checking analytics setting"
+        case .notifications: "Checking notification settings"
         }
     }
 
@@ -438,6 +580,11 @@ private extension ConnectivityToolViewModel {
             "connectivityToolViewModel.message.noIssuesMessage",
             value: "If your data still isn't loading, contact our support team for assistance.",
             comment: "Info message when there are no connection issues in the connectivity tool screen"
+        )
+        static let analyticsEnabledRelaunch = NSLocalizedString(
+            "connectivityToolViewModel.message.analyticsEnabledRelaunch",
+            value: "Analytics has been enabled. Please relaunch the app for analytics data to be available.",
+            comment: "Message shown after successfully enabling analytics in the connectivity tool"
         )
         enum ErrorMessage {
             static let noInternet = NSLocalizedString(
@@ -474,6 +621,18 @@ private extension ConnectivityToolViewModel {
                 value: "There seems to be a problem with your site.\n\nPlease contact your hosting provider for further assistance.",
                 comment: "Message when we there is a generic error in the recovery tool"
             )
+            static let analyticsDisabled = NSLocalizedString(
+                "connectivityToolViewModel.errorMessage.analyticsDisabled",
+                value: "WooCommerce Analytics is not enabled on your store.\n\n" +
+                "Analytics data like revenue and order stats won't be available until it's enabled.",
+                comment: "Message when WooCommerce Analytics is disabled in the connectivity tool"
+            )
+            static let analyticsCheckFailed = NSLocalizedString(
+                "connectivityToolViewModel.errorMessage.analyticsCheckFailed",
+                value: "We couldn't check your analytics setting.\n\n" +
+                "Contact our support team for further assistance.",
+                comment: "Message when the analytics setting check fails in the connectivity tool"
+            )
         }
         enum Action {
             static let readMore = NSLocalizedString(
@@ -491,24 +650,33 @@ private extension ConnectivityToolViewModel {
                 value: "Retry test",
                 comment: "Retry test button in the connectivity tool screen"
             )
+            static let enableAnalytics = NSLocalizedString(
+                "connectivityToolViewModel.action.enableAnalytics",
+                value: "Enable Analytics",
+                comment: "Action button to enable WooCommerce Analytics in the connectivity tool"
+            )
         }
     }
 }
 
 private extension ConnectivityToolViewModel {
-
-    private enum SystemImages: String {
+    enum SystemImages: String {
         case retry = "arrow.clockwise"
         case readMore = "arrow.up.forward.app"
         case viewDetails = "info.circle"
+        case enableAction = "checkmark.circle"
     }
+}
 
+extension ConnectivityToolViewModel {
     enum ConnectivityTest: Int {
         case internetConnection
         case wpComServers
         case site
         case siteOrders
         case loadingProducts
+        case analyticsSetting
+        case notifications
 
         var title: String {
             switch self {
@@ -542,6 +710,18 @@ private extension ConnectivityToolViewModel {
                     value: "Fetching products in your store",
                     comment: "Title for the test to load products in connectivity tool"
                 )
+            case .analyticsSetting:
+                NSLocalizedString(
+                    "connectivityToolViewModel.connectivityTest.analyticsSetting",
+                    value: "Checking analytics setting",
+                    comment: "Title for the analytics setting check in the connectivity tool"
+                )
+            case .notifications:
+                NSLocalizedString(
+                    "connectivityToolViewModel.connectivityTest.notifications",
+                    value: "Checking notification settings",
+                    comment: "Title for the notification settings check in the connectivity tool"
+                )
             }
         }
 
@@ -557,11 +737,15 @@ private extension ConnectivityToolViewModel {
                     .system("list.clipboard")
             case .loadingProducts:
                     .system("cart")
+            case .analyticsSetting:
+                    .system("chart.bar.xaxis")
+            case .notifications:
+                    .system("bell.badge")
             }
         }
 
         var inProgressCard: ConnectivityTool.Card {
-            .init(title: title, icon: icon, state: .inProgress)
+            .init(testCase: self, title: title, icon: icon, state: .inProgress)
         }
     }
 }
@@ -571,6 +755,6 @@ extension ConnectivityTool.Card {
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.ConnectivityState) -> ConnectivityTool.Card {
-        Self.init(title: title, icon: icon, state: newState)
+        Self.init(testCase: testCase, title: title, icon: icon, state: newState)
     }
 }

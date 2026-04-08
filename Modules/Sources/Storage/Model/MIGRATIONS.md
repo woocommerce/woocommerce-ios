@@ -2,6 +2,36 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 136 (Release 24.6.0.0)
+- @itsmeichigo 2026-04-07
+  - Added `bookingDuration` attribute to `Product` entity.
+  - Added `bookingDurationUnit` attribute to `Product` entity.
+  - Added `bookingResourceIDs` attribute to `Product` entity.
+
+## Model 135 (Release 24.5.0.0)
+- @rafaelkayumov 2026-03-31
+  - Added `fulfillmentStatusKey` attribute to `Order` entity.
+
+## Model 134 (Release 24.4.0.0)
+- @adborbas 2026-03-16
+  - Added `location` attribute to `Booking` entity.
+- @rafaelkayumov 2026-03-16
+  - Added `userID` attribute to `Booking` entity.
+
+## Model 133 (Release 24.4.0.0)
+- @itsmeichigo 2026-03-11
+  - Added `paymentStatusMetadata` attribute to `BookingOrderInfo` entity.
+
+## Model 132 (Release 24.2.0.0)
+- @jmucientes 2026-02-26
+  - Added `datePaid` attribute to `BookingOrderInfo` entity.
+  - Added `total` attribute to `BookingOrderInfo` entity.
+  - Added `refundTotal` attribute to `BookingOrderInfo` entity.
+
+## Model 131 (Release 23.8.0.0)
+- @rafaelkayumov 2025-11-21
+  - Added `note` attribute to `BookingCustomerInfo` entity.
+
 ## Model 130 (Release 23.7)
 - @adborbas 2025-11-06
   - Added `note` attribute to `Booking` entity.

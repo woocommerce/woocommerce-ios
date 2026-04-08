@@ -46,6 +46,13 @@ extension WooAnalyticsEvent {
             static let pageNumber = "page_number"
             static let reason = "reason"
             static let syncStrategy = "sync_strategy"
+            static let searchMethod = "search_method"
+            static let resultPosition = "result_position"
+            static let deltaFromToday = "delta_from_today"
+            static let refundType = "refund_type"
+            static let hasReason = "has_reason"
+            static let refundStep = "refund_step"
+            static let action = "action"
         }
 
         /// Source of the event where the event is triggered
@@ -155,6 +162,7 @@ extension WooAnalyticsEvent {
             sourceViewType: WooAnalyticsEvent.PointOfSale.SourceViewType,
             itemType: WooAnalyticsEvent.PointOfSale.ItemType,
             productType: WooAnalyticsEvent.PointOfSale.CartItemProductType? = nil,
+            resultPosition: Int? = nil,
             error: Error? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: String] = [
@@ -168,6 +176,10 @@ extension WooAnalyticsEvent {
 
             if let productType {
                 properties[Key.productType] = productType.rawValue
+            }
+
+            if let resultPosition {
+                properties[Key.resultPosition] = "\(resultPosition)"
             }
 
             return WooAnalyticsEvent(
@@ -305,14 +317,16 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        static func pointOfSaleSearchResultsFetched(itemType: POSItemType,
+        static func pointOfSaleSearchResultsFetched(source: String,
                                                     resultsCount: Int,
-                                                    millisecondsSinceRequestSent: Int) -> WooAnalyticsEvent {
+                                                    millisecondsSinceRequestSent: Int,
+                                                    searchMethod: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleSearchResultsFetched,
                               properties: [
-                                Key.sourceView: SourceView(itemType: itemType).rawValue,
+                                Key.sourceView: source,
                                 Key.resultsCount: "\(resultsCount)",
-                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)",
+                                Key.searchMethod: searchMethod
                               ])
         }
 
@@ -510,6 +524,125 @@ extension WooAnalyticsEvent {
                     Key.syncStrategy: syncStrategy
                 ]
             )
+        }
+        // MARK: - Bookings
+
+        static func bookingsMenuItemTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsMenuItemTapped, properties: [:])
+        }
+
+        static func bookingsListSearchButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsListSearchButtonTapped, properties: [:])
+        }
+
+        static func bookingsListBookingTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingsListBookingTapped, properties: [:])
+        }
+
+        static func bookingCancelled() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelled, properties: [:])
+        }
+
+        static func bookingAddNoteTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAddNoteTapped, properties: [:])
+        }
+
+        static func bookingIssueRefundTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingIssueRefundTapped, properties: [:])
+        }
+
+        static func bookingViewOrderTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingViewOrderTapped, properties: [:])
+        }
+
+        static func bookingAttendanceChanged() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAttendanceChanged, properties: [:])
+        }
+
+        static func bookingNoteAdded() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingNoteAdded, properties: [:])
+        }
+
+        static func bookingCancelFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingCancelFailed,
+                              properties: [:],
+                              error: error)
+        }
+
+        static func bookingAttendanceChangeFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingAttendanceChangeFailed,
+                              properties: [:],
+                              error: error)
+        }
+
+        static func bookingNoteAddFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingNoteAddFailed,
+                              properties: [:],
+                              error: error)
+        }
+
+        static func bookingRefundFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingRefundFailed,
+                              properties: [:],
+                              error: error)
+        }
+
+        static func bookingDatePreviousTapped(deltaFromToday: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDatePreviousTapped,
+                              properties: [Key.deltaFromToday: "\(deltaFromToday)"])
+        }
+
+        static func bookingDateNextTapped(deltaFromToday: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDateNextTapped,
+                              properties: [Key.deltaFromToday: "\(deltaFromToday)"])
+        }
+
+        static func bookingDateCalendarSelected(deltaFromToday: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleBookingDateCalendarSelected,
+                              properties: [Key.deltaFromToday: "\(deltaFromToday)"])
+        }
+
+        // MARK: - Refund Flow
+
+        static func refundFlowStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundFlowStarted, properties: [:])
+        }
+
+        static func refundConfirmTapped(refundType: String, hasReason: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundConfirmTapped, properties: [
+                Key.refundType: refundType,
+                Key.hasReason: hasReason
+            ])
+        }
+
+        static func refundProcessingStarted() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [:])
+        }
+
+        static func refundProcessingSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [:])
+        }
+
+        static func refundProcessingFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: [:], error: error)
+        }
+
+        enum RefundStep: String {
+            case selectItems = "select_items"
+            case reviewRefund = "review_refund"
+            case confirmRefund = "confirm_refund"
+        }
+
+        static func refundFlowAborted(step: RefundStep) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundFlowAborted, properties: [
+                Key.refundStep: step.rawValue
+            ])
+        }
+
+        static func refundSelectAllTapped(action: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundSelectAllTapped, properties: [
+                Key.action: action
+            ])
         }
     }
 }

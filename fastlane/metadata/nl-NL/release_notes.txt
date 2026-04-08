@@ -1,1 +1,0 @@
-Deze update geeft duidelijkere feedback tijdens het afrekenen, betrouwbaardere synchronisatie en veiliger betalingsgedrag. Probleemoplossing is nu krachtiger met betere diagnostiek, plugin-updates werken soepeler en we hebben crashes, bewerkingsproblemen en lokalisatie bugs opgelost om het dagelijkse winkelbeheer stabieler en voorspelbaarder te maken.

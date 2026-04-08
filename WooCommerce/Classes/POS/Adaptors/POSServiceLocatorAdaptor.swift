@@ -95,13 +95,6 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
         )
     }
 
-    func createFormattableAmountTextField(preset: Decimal?,
-                                          font: Font,
-                                          onSubmit: @escaping () -> Void,
-                                          onChange: @escaping (String) -> Void) -> AnyView {
-        AnyView(POSFormattableAmountTextFieldAdaptor(preset: preset, font: font, onSubmit: onSubmit, onChange: onChange))
-    }
-
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
                                   onSuccess: @escaping (Coupon) -> Void,
@@ -128,7 +121,7 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
         ))
     }
 
-    func createWCWebView(adminUrl: URL, completion: @escaping () -> Void) -> AnyView {
-        AnyView(WCSettingsWebView(adminUrl: adminUrl, completion: completion))
+    func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
+        AnyView(WCAuthenticatedWebView(url: url, title: title, completion: completion))
     }
 }

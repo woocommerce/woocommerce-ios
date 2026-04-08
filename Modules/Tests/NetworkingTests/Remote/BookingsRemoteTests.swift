@@ -71,6 +71,7 @@ struct BookingsRemoteTests {
         #expect((parameters["start_date_after"] as? String) == "2023-12-31T23:59:59Z")
         #expect((parameters["search"] as? String) == searchQuery)
         #expect((parameters["order"] as? String) == "asc")
+        #expect((parameters["orderby"] as? String) == "start_date")
     }
 
     @Test func test_loadAllBookings_omits_nil_parameters() async throws {
@@ -110,12 +111,12 @@ struct BookingsRemoteTests {
         #expect(unwrappedResource.resourceID == 22)
         #expect(unwrappedResource.name == "Joel (Sample resource)")
         #expect(unwrappedResource.quantity == 1)
-        #expect(unwrappedResource.role == "")
-        #expect(unwrappedResource.email == "")
-        #expect(unwrappedResource.phoneNumber == "")
+        #expect(unwrappedResource.role.isEmpty)
+        #expect(unwrappedResource.email?.isEmpty == true)
+        #expect(unwrappedResource.phoneNumber?.isEmpty == true)
         #expect(unwrappedResource.imageID == 0)
-        #expect(unwrappedResource.imageURL == "")
-        #expect(unwrappedResource.description == "")
+        #expect(unwrappedResource.imageURL?.isEmpty == true)
+        #expect(unwrappedResource.description?.isEmpty == true)
         #expect(unwrappedResource.siteID == sampleSiteID)
     }
 
@@ -139,7 +140,7 @@ struct BookingsRemoteTests {
         let booking = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .noShow,
+            attendanceStatus: .attended,
             bookingStatus: nil,
             note: nil
         )
@@ -160,7 +161,7 @@ struct BookingsRemoteTests {
         _ = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .noShow,
+            attendanceStatus: .attended,
             bookingStatus: nil,
             note: nil
         )
@@ -169,7 +170,7 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["attendance_status"] as? String) == "no-show")
+        #expect((parameters["attendance_status"] as? String) == "attended")
         #expect(parameters["status"] == nil)
     }
 
@@ -206,7 +207,7 @@ struct BookingsRemoteTests {
         _ = try await remote.updateBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            attendanceStatus: .booked,
+            attendanceStatus: .unattended,
             bookingStatus: .paid,
             note: nil
         )
@@ -215,7 +216,7 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["attendance_status"] as? String) == "booked")
+        #expect((parameters["attendance_status"] as? String) == "unattended")
         #expect((parameters["status"] as? String) == "paid")
     }
 

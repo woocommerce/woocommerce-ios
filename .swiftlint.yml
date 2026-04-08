@@ -1,4 +1,4 @@
-swiftlint_version: 0.58.2
+swiftlint_version: 0.63.2
 
 excluded:
   - build
@@ -29,12 +29,18 @@ only_rules:
 
   - duplicate_imports
 
+  # Prefer checking `isEmpty` over comparing `count` to zero.
+  - empty_count
+
   # Arguments can be omitted when matching enums with associated types if they
   # are not used.
   - empty_enum_arguments
 
   # Prefer `() -> ` over `Void -> `.
   - empty_parameters
+
+  # Prefer checking `isEmpty` over comparing `string` to `""`.
+  - empty_string
 
   - line_length
 

@@ -196,7 +196,8 @@ struct POSCatalogFullSyncServiceTests {
         let expectedVariation = POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 1, productVariationID: 1)
 
         mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
-        mockSyncRemote.catalogDownloadResult = .success(.init(products: [expectedProduct], variations: [expectedVariation]))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [expectedProduct],
+                                                                       variations: [POSTypedVariation(variation: expectedVariation, typeKey: "variation")]))
 
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,

@@ -1,1 +1,1 @@
-Woocommerce, app woocommerce, aplicación woocommerce, app woo, alerta pedidos, wordpress, eComm
+woo,pedido,comercio electrónico,punto de venta,wordpress,tienda,pagos,crédito,envío,inventario

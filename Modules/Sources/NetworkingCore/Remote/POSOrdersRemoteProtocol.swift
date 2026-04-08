@@ -2,7 +2,7 @@ import Foundation
 
 public protocol POSReceiptsRemoteProtocol {
     func sendReceipt(siteID: Int64, orderID: Int64) async throws
-    func sendPOSReceipt(siteID: Int64, orderID: Int64, emailAddress: String) async throws
+    func sendPOSReceipt(siteID: Int64, orderID: Int64, emailAddress: String, templateID: String?) async throws
 }
 
 public protocol POSOrdersRemoteProtocol {
@@ -20,6 +20,8 @@ public protocol POSOrdersRemoteProtocol {
                         fields: [OrdersRemote.CreateOrderField]) async throws -> Order
 
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order
+
+    func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order]
 
     func loadPOSOrders(siteID: Int64,
                        pageNumber: Int,

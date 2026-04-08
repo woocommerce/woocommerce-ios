@@ -18,7 +18,7 @@ public enum CardPresentPaymentAction: Action {
     case loadActivePaymentGatewayExtension(onCompletion: (CardPresentPaymentsPlugin) -> Void)
 
     /// Retrieves and stores payment gateway account(s) for the provided `siteID`
-    /// We support payment gateway accounts for both the WooCommerce Payments extension AND
+    /// We support payment gateway accounts for both the WooPayments extension AND
     /// the Stripe extension. Let's attempt to load each and update view storage with the results.
     /// Calls the passed completion with success after both loads have been attempted.
     ///
@@ -94,7 +94,7 @@ public enum CardPresentPaymentAction: Action {
     /// 1. Disconnect from a connected reader
     /// 2. Clear all credentials, cached data
     /// 3. Reset all status indicators
-    case reset
+    case reset(onCompletion: () -> Void)
 
     /// Provides a publisher for card reader connections
     case publishCardReaderConnections(onCompletion: (AnyPublisher<[CardReader], Never>) -> Void)

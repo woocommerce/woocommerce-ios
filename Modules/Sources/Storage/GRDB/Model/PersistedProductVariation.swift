@@ -6,6 +6,7 @@ public struct PersistedProductVariation: Codable {
     public let id: Int64
     public let siteID: Int64
     public let productID: Int64
+    public let productTypeKey: String
     public let sku: String?
     public let globalUniqueID: String?
     public let price: String
@@ -18,6 +19,7 @@ public struct PersistedProductVariation: Codable {
     public init(id: Int64,
                 siteID: Int64,
                 productID: Int64,
+                productTypeKey: String = "variation",
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
@@ -29,6 +31,7 @@ public struct PersistedProductVariation: Codable {
         self.id = id
         self.siteID = siteID
         self.productID = productID
+        self.productTypeKey = productTypeKey
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.price = price
@@ -50,6 +53,7 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
         public static let id = Column(CodingKeys.id)
         public static let siteID = Column(CodingKeys.siteID)
         public static let productID = Column(CodingKeys.productID)
+        public static let productTypeKey = Column(CodingKeys.productTypeKey)
         public static let sku = Column(CodingKeys.sku)
         public static let globalUniqueID = Column(CodingKeys.globalUniqueID)
         public static let price = Column(CodingKeys.price)
@@ -89,11 +93,22 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
 public extension PersistedProductVariation {
     /// Returns a request for non-downloadable variations of a parent product, ordered by ID
     static func posVariationsRequest(siteID: Int64, parentProductID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return baseQuery(siteID: siteID)
+            .filter(Columns.productID == parentProductID)
+            .order(Columns.id)
+    }
+
+    /// Returns a request for all non-downloadable variations for a site
+    static func posAllVariationsRequest(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        return baseQuery(siteID: siteID)
+    }
+
+    /// Base query for POS-supported variations (non-downloadable) for a given site
+    private static func baseQuery(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation
             .filter(Columns.siteID == siteID)
-            .filter(Columns.productID == parentProductID)
+            .filter(Columns.productTypeKey == "variation")
             .filter(Columns.downloadable == false)
-            .order(Columns.id)
     }
 
     /// Searches for a POS-supported variation by global unique ID
@@ -113,6 +128,7 @@ extension PersistedProductVariation {
         case id
         case siteID
         case productID
+        case productTypeKey
         case sku
         case globalUniqueID
         case price

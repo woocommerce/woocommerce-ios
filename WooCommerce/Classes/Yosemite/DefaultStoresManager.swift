@@ -309,7 +309,7 @@ class DefaultStoresManager: StoresManager {
         trackedEligibleSites.removeAll()
 
         if isAuthenticated {
-            let resetAction = CardPresentPaymentAction.reset
+            let resetAction = CardPresentPaymentAction.reset(onCompletion: {})
             dispatch(resetAction)
         }
 

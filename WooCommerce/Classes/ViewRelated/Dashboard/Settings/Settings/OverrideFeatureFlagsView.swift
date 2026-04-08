@@ -1,10 +1,22 @@
 import SwiftUI
 import Experiments
+import enum Networking.RemoteFeatureFlag
+import enum Yosemite.FeatureFlagAction
+import protocol Yosemite.StoresManager
 
 struct OverrideFeatureFlagsView: View {
     @State private var refreshID = UUID()
     @State private var searchText = ""
     private let defaultFeatureFlagService = DefaultFeatureFlagService()
+
+    /// Whether to fetch and display remote feature flag values.
+    /// When `false`, the remote section is still shown but rows skip the network
+    /// fetch and hide the "Remote: ..." status line. Useful in logged-out context.
+    private let loadsRemoteValues: Bool
+
+    init(loadsRemoteValues: Bool = true) {
+        self.loadsRemoteValues = loadsRemoteValues
+    }
 
     private var filteredFeatureFlags: [FeatureFlag] {
         let allFlags = FeatureFlag.allCases
@@ -16,13 +28,31 @@ struct OverrideFeatureFlagsView: View {
         return allFlags.filter { $0.title.lowercased().contains(query) }
     }
 
+    private var filteredRemoteFeatureFlags: [RemoteFeatureFlag] {
+        let allFlags = RemoteFeatureFlag.allCases
+        guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            return allFlags
+        }
+
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return allFlags.filter { $0.title.lowercased().contains(query) }
+    }
+
     var body: some View {
         List {
-            ForEach(filteredFeatureFlags, id: \.self) { flag in
-                FeatureFlagRow(
-                    featureFlag: flag,
-                    defaultFeatureFlagService: defaultFeatureFlagService
-                )
+            Section("Remote Feature Flags") {
+                ForEach(filteredRemoteFeatureFlags, id: \.self) { flag in
+                    RemoteFeatureFlagRow(featureFlag: flag, loadsRemoteValue: loadsRemoteValues)
+                }
+            }
+
+            Section("Local Feature Flags") {
+                ForEach(filteredFeatureFlags, id: \.self) { flag in
+                    FeatureFlagRow(
+                        featureFlag: flag,
+                        defaultFeatureFlagService: defaultFeatureFlagService
+                    )
+                }
             }
         }
         .contentMargins(20)
@@ -114,7 +144,104 @@ fileprivate struct FeatureFlagRow: View {
     }
 }
 
+fileprivate struct RemoteFeatureFlagRow: View {
+    let featureFlag: RemoteFeatureFlag
+    let stores: StoresManager
+    let loadsRemoteValue: Bool
+
+    init(featureFlag: RemoteFeatureFlag,
+         loadsRemoteValue: Bool = true,
+         stores: StoresManager = ServiceLocator.stores) {
+        self.featureFlag = featureFlag
+        self.loadsRemoteValue = loadsRemoteValue
+        self.stores = stores
+        _overrideValue = State(initialValue: ServiceLocator.remoteFeatureFlagOverrideStore?.overrideValue(for: featureFlag))
+    }
+
+    @State private var overrideValue: Bool?
+    @State private var remoteValue: Bool?
+
+    private var effectiveValue: Bool {
+        overrideValue ?? remoteValue ?? false
+    }
+
+    private var isOverridden: Bool {
+        overrideValue != nil
+    }
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                HStack {
+                    Text(featureFlag.title)
+                        .font(.body)
+                }
+
+                if isOverridden {
+                    Text("Overridden")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                } else if let remoteValue {
+                    Text("Remote: \(remoteValue ? "Enabled" : "Disabled")")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else if loadsRemoteValue {
+                    Text("Remote: Loading...")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                if isOverridden {
+                    Button("Reset") {
+                        resetValue()
+                    }
+                    .font(.caption)
+                }
+            }
+
+            Spacer()
+
+            Toggle(isOn: Binding(
+                get: { effectiveValue },
+                set: { newValue in
+                    overrideValue = newValue
+                    ServiceLocator.remoteFeatureFlagOverrideStore?.setOverrideValue(newValue, for: featureFlag)
+                }
+            )) { EmptyView() }
+        }
+        .onAppear {
+            if loadsRemoteValue {
+                fetchRemoteValueIfNeeded()
+            }
+        }
+    }
+
+    private func fetchRemoteValueIfNeeded() {
+        // Only fetch if no override is set, since the store returns override value when set
+        guard overrideValue == nil else { return }
+
+        let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(featureFlag, defaultValue: false, useCache: true) { value in
+            self.remoteValue = value
+        }
+        stores.dispatch(action)
+    }
+
+    private func resetValue() {
+        overrideValue = nil
+        ServiceLocator.remoteFeatureFlagOverrideStore?.setOverrideValue(nil, for: featureFlag)
+        if loadsRemoteValue {
+            fetchRemoteValueIfNeeded()
+        }
+    }
+}
+
 fileprivate extension FeatureFlag {
+    var title: String {
+        return String(describing: self)
+    }
+}
+
+fileprivate extension RemoteFeatureFlag {
     var title: String {
         return String(describing: self)
     }

@@ -114,10 +114,10 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
 
         // When
-        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["123": true]
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+        XCTAssertEqual((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["123"], true)
 
         // When
         sut.reset()
@@ -422,28 +422,6 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertNil(defaults[.ciabBookingsTabAvailable])
     }
 
-    /// Verifies that image cache is cleared upon reset
-    ///
-    func test_siteIDsRegisteredForWooPushNotifications_is_cleared_upon_reset() throws {
-        // Given
-        let siteID: Int64 = 13
-        let uuid = UUID().uuidString
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
-
-        // When
-        defaults[.siteIDsRegisteredForWooPushNotifications] = siteID.description
-
-        // Then
-        XCTAssertEqual(try XCTUnwrap(defaults[.siteIDsRegisteredForWooPushNotifications] as? String), siteID.description)
-
-        // When
-        sut.reset()
-
-        // Then
-        XCTAssertNil(defaults[.siteIDsRegisteredForWooPushNotifications])
-    }
-
     /// Verifies that flag to hide WPCom connection suggestion is cleared upon reset
     ///
     func test_hideWPComConnectionOnDashboard_is_cleared_upon_reset() throws {
@@ -463,6 +441,26 @@ final class SessionManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(defaults[.hideWPComConnectionOnDashboard])
+    }
+
+    func test_pendingMagicLinkFlow_is_cleared_upon_reset() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let sut = SessionManager(defaults: defaults, keychainServiceName: Settings.keychainServiceName)
+
+        // When
+        let flow = PendingAuthFlowStorage.StoredFlow(flow: .jetpackSetup, timestamp: Date())
+        defaults[.pendingMagicLinkFlow] = try? JSONEncoder().encode(flow)
+
+        // Then
+        XCTAssertNotNil(defaults[.pendingMagicLinkFlow])
+
+        // When
+        sut.reset()
+
+        // Then
+        XCTAssertNil(defaults[.pendingMagicLinkFlow])
     }
 
     /// Verifies that `removeDefaultCredentials` effectively nukes everything from the keychain

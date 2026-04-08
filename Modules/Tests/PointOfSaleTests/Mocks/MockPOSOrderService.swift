@@ -54,6 +54,20 @@ class MockPOSOrderService: POSOrderServiceProtocol {
         return order
     }
 
+    var loadOrderWasCalled = false
+    func loadOrder(orderID: Int64) async throws -> Order {
+        loadOrderWasCalled = true
+
+        if let error = errorToReturn {
+            throw error
+        }
+
+        guard let order = orderToReturn else {
+            throw MockPOSOrderServiceError.noOrderToReturn
+        }
+        return order
+    }
+
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {
         updateOrderWasCalled = true
 

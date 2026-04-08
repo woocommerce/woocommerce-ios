@@ -1,1 +1,0 @@
-Den här uppdateringen ger tydligare feedback i kassan, mer tillförlitlig synkronisering och säkrare betalningsbeteende. Felsökningen är nu mer kraftfull med bättre diagnostik, tilläggsuppdateringarna fungerar smidigare och vi har åtgärdat krascher, redigeringsproblem och lokaliseringsfel för att göra den dagliga butikshanteringen mer stabil och förutsägbar.

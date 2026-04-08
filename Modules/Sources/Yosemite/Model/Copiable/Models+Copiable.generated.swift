@@ -58,6 +58,84 @@ extension Yosemite.JustInTimeMessage {
     }
 }
 
+extension Yosemite.POSBooking {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        customerID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
+        customerName: NullableCopiableProp<String> = .copy,
+        serviceName: CopiableProp<String> = .copy,
+        startDate: CopiableProp<Date> = .copy,
+        endDate: CopiableProp<Date> = .copy,
+        formattedAmount: CopiableProp<String> = .copy,
+        status: CopiableProp<BookingStatus> = .copy,
+        attendanceStatus: CopiableProp<BookingAttendanceStatus> = .copy,
+        orderID: NullableCopiableProp<Int64> = .copy,
+        resourceName: NullableCopiableProp<String> = .copy,
+        resourceImageURL: NullableCopiableProp<String> = .copy,
+        customerEmail: NullableCopiableProp<String> = .copy,
+        customerPhone: NullableCopiableProp<String> = .copy,
+        billingAddress: NullableCopiableProp<String> = .copy,
+        customerNote: NullableCopiableProp<String> = .copy,
+        bookingNote: NullableCopiableProp<String> = .copy,
+        location: NullableCopiableProp<String> = .copy,
+        duration: CopiableProp<String> = .copy,
+        formattedSubtotal: NullableCopiableProp<String> = .copy,
+        formattedTax: NullableCopiableProp<String> = .copy,
+        order: CopiableProp<POSOrder> = .copy
+    ) -> Yosemite.POSBooking {
+        let id = id ?? self.id
+        let customerID = customerID ?? self.customerID
+        let userID = userID ?? self.userID
+        let customerName = customerName ?? self.customerName
+        let serviceName = serviceName ?? self.serviceName
+        let startDate = startDate ?? self.startDate
+        let endDate = endDate ?? self.endDate
+        let formattedAmount = formattedAmount ?? self.formattedAmount
+        let status = status ?? self.status
+        let attendanceStatus = attendanceStatus ?? self.attendanceStatus
+        let orderID = orderID ?? self.orderID
+        let resourceName = resourceName ?? self.resourceName
+        let resourceImageURL = resourceImageURL ?? self.resourceImageURL
+        let customerEmail = customerEmail ?? self.customerEmail
+        let customerPhone = customerPhone ?? self.customerPhone
+        let billingAddress = billingAddress ?? self.billingAddress
+        let customerNote = customerNote ?? self.customerNote
+        let bookingNote = bookingNote ?? self.bookingNote
+        let location = location ?? self.location
+        let duration = duration ?? self.duration
+        let formattedSubtotal = formattedSubtotal ?? self.formattedSubtotal
+        let formattedTax = formattedTax ?? self.formattedTax
+        let order = order ?? self.order
+
+        return Yosemite.POSBooking(
+            id: id,
+            customerID: customerID,
+            userID: userID,
+            customerName: customerName,
+            serviceName: serviceName,
+            startDate: startDate,
+            endDate: endDate,
+            formattedAmount: formattedAmount,
+            status: status,
+            attendanceStatus: attendanceStatus,
+            orderID: orderID,
+            resourceName: resourceName,
+            resourceImageURL: resourceImageURL,
+            customerEmail: customerEmail,
+            customerPhone: customerPhone,
+            billingAddress: billingAddress,
+            customerNote: customerNote,
+            bookingNote: bookingNote,
+            location: location,
+            duration: duration,
+            formattedSubtotal: formattedSubtotal,
+            formattedTax: formattedTax,
+            order: order
+        )
+    }
+}
+
 extension Yosemite.POSItemIdentifier {
     public func copy(
         underlyingType: CopiableProp<POSItemIdentifier.UnderlyingType> = .copy,
@@ -82,13 +160,17 @@ extension Yosemite.POSOrder {
         formattedTotal: CopiableProp<String> = .copy,
         formattedSubtotal: CopiableProp<String> = .copy,
         customerEmail: NullableCopiableProp<String> = .copy,
+        paymentMethodID: CopiableProp<String> = .copy,
         paymentMethodTitle: CopiableProp<String> = .copy,
         lineItems: CopiableProp<[POSOrderItem]> = .copy,
         refunds: CopiableProp<[POSOrderRefund]> = .copy,
         formattedDiscountTotal: NullableCopiableProp<String> = .copy,
         formattedTotalTax: CopiableProp<String> = .copy,
         formattedPaymentTotal: CopiableProp<String> = .copy,
-        formattedNetAmount: NullableCopiableProp<String> = .copy
+        formattedNetAmount: NullableCopiableProp<String> = .copy,
+        datePaid: NullableCopiableProp<Date> = .copy,
+        paymentStatusMetadata: NullableCopiableProp<String> = .copy,
+        lineItemQuantitiesByProductOrVariationID: CopiableProp<[Int64: Decimal]> = .copy
     ) -> Yosemite.POSOrder {
         let id = id ?? self.id
         let number = number ?? self.number
@@ -97,6 +179,7 @@ extension Yosemite.POSOrder {
         let formattedTotal = formattedTotal ?? self.formattedTotal
         let formattedSubtotal = formattedSubtotal ?? self.formattedSubtotal
         let customerEmail = customerEmail ?? self.customerEmail
+        let paymentMethodID = paymentMethodID ?? self.paymentMethodID
         let paymentMethodTitle = paymentMethodTitle ?? self.paymentMethodTitle
         let lineItems = lineItems ?? self.lineItems
         let refunds = refunds ?? self.refunds
@@ -104,6 +187,9 @@ extension Yosemite.POSOrder {
         let formattedTotalTax = formattedTotalTax ?? self.formattedTotalTax
         let formattedPaymentTotal = formattedPaymentTotal ?? self.formattedPaymentTotal
         let formattedNetAmount = formattedNetAmount ?? self.formattedNetAmount
+        let datePaid = datePaid ?? self.datePaid
+        let paymentStatusMetadata = paymentStatusMetadata ?? self.paymentStatusMetadata
+        let lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID ?? self.lineItemQuantitiesByProductOrVariationID
 
         return Yosemite.POSOrder(
             id: id,
@@ -113,13 +199,17 @@ extension Yosemite.POSOrder {
             formattedTotal: formattedTotal,
             formattedSubtotal: formattedSubtotal,
             customerEmail: customerEmail,
+            paymentMethodID: paymentMethodID,
             paymentMethodTitle: paymentMethodTitle,
             lineItems: lineItems,
             refunds: refunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: formattedTotalTax,
             formattedPaymentTotal: formattedPaymentTotal,
-            formattedNetAmount: formattedNetAmount
+            formattedNetAmount: formattedNetAmount,
+            datePaid: datePaid,
+            paymentStatusMetadata: paymentStatusMetadata,
+            lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }
 }
@@ -186,7 +276,7 @@ extension Yosemite.POSSite {
 
 extension Yosemite.ProductReviewFromNoteParcel {
     public func copy(
-        note: CopiableProp<Note> = .copy,
+        note: NullableCopiableProp<Note> = .copy,
         review: CopiableProp<ProductReview> = .copy,
         product: CopiableProp<Networking.Product> = .copy
     ) -> Yosemite.ProductReviewFromNoteParcel {

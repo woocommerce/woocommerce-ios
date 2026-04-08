@@ -3,6 +3,7 @@ import Testing
 
 import Fakes
 import Storage
+import YosemiteTestHelpers
 @testable import Networking
 @testable import Yosemite
 
@@ -134,7 +135,7 @@ struct SystemPluginsUpsertUseCaseTests {
 
         // Then - all plugins should be removed
         let storedPlugins = viewStorage.loadSystemPlugins(siteID: siteID)
-        #expect(storedPlugins.count == 0)
+        #expect(storedPlugins.isEmpty)
     }
 
     @Test func upsert_handles_site_isolation() async throws {

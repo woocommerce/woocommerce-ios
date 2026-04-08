@@ -1,0 +1,101 @@
+{
+    "environment": {
+        "home_url": "https://additional-beetle.jurassic.ninja",
+        "site_url": "https://additional-beetle.jurassic.ninja",
+        "store_id": "sample-store-uuid",
+        "version": "5.9.0",
+        "log_directory": "/srv/users/user9fe179e8/apps/user9fe179e8/public/wp-content/uploads/wc-logs/",
+        "log_directory_writable": true,
+        "wp_version": "5.8.2",
+        "wp_multisite": false,
+        "wp_memory_limit": 268435456,
+        "wp_debug_mode": true,
+        "wp_cron": true,
+        "language": "en_US",
+        "external_object_cache": null,
+        "server_info": "Apache/2.4.51 (Unix) OpenSSL/1.0.2g",
+        "php_version": "7.4.26",
+        "php_post_max_size": 1073741824,
+        "php_max_execution_time": 30,
+        "php_max_input_vars": 5000,
+        "curl_version": "7.47.0, OpenSSL/1.0.2g",
+        "suhosin_installed": false,
+        "max_upload_size": "536870912",
+        "mysql_version": "5.7.33",
+        "mysql_version_string": "5.7.33-0ubuntu0.16.04.1-log",
+        "default_timezone": "UTC",
+        "fsockopen_or_curl_enabled": true,
+        "soapclient_enabled": true,
+        "domdocument_enabled": true,
+        "gzip_enabled": true,
+        "mbstring_enabled": true,
+        "remote_post_successful": true,
+        "remote_post_response": 200,
+        "remote_get_successful": true,
+        "remote_get_response": 200
+    },
+    "active_plugins":[
+        {
+            "plugin":"woocommerce\/woocommerce.php",
+            "name":"WooCommerce",
+            "version":"5.8.0",
+            "version_latest":"5.8.0",
+            "url":"https:\/\/woocommerce.com\/",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/woocommerce.com",
+            "network_activated":false
+        },
+        {
+            "plugin":"woocommerce-payments\/woocommerce-payments.php",
+            "name":"WooPayments",
+            "version":"3.1.0",
+            "version_latest":"3.1.0",
+            "url":"https:\/\/woocommerce.com\/payments\/",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/woocommerce.com\/",
+            "network_activated":false
+        },
+        {
+            "plugin":"woocommerce-subscriptions\/woocommerce-subscriptions",
+            "name":"WooCommerce Subscriptions",
+            "version":"3.1.6",
+            "version_latest":"3.1.6",
+            "url":"https:\/\/www.woocommerce.com\/products\/woocommerce-subscriptions\/",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/woocommerce.com\/",
+            "network_activated":false
+        },
+        {
+            "plugin":"jetpack\/jetpack.php",
+            "name":"Jetpack",
+            "version":"10.2",
+            "version_latest":"10.2.1",
+            "url":"https:\/\/jetpack.com",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/jetpack.com",
+            "network_activated":false
+        }
+    ],
+    "inactive_plugins":[
+        {
+            "plugin":"akismet\/akismet.php",
+            "name":"Akismet Anti-Spam",
+            "version":"4.2.1",
+            "version_latest":"4.2.1",
+            "url":"https:\/\/akismet.com\/",
+            "author_name":"Automattic",
+            "author_url":"https:\/\/automattic.com\/wordpress-plugins\/",
+            "network_activated":false
+        },
+        {
+            "plugin":"hello.php",
+            "name":"Hello Dolly",
+            "version":"1.7.2",
+            "version_latest":"1.7.2",
+            "url":"http:\/\/wordpress.org\/plugins\/hello-dolly\/",
+            "author_name":"Matt Mullenweg",
+            "author_url":"http:\/\/ma.tt\/",
+            "network_activated":false
+        }
+    ]
+}

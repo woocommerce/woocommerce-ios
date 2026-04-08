@@ -652,6 +652,92 @@ final class AlamofireNetworkTests: XCTestCase {
         XCTAssertEqual(networkError?.errorCode, "failed")
     }
 
+    // MARK: - Discovery Logic Tests
+
+    func test_discovery_is_triggered_with_siteAddress_for_wporg_credentials() async {
+        // Given
+        let siteAddress = "https://wporg-site.example.com"
+        let credentials = Credentials.wporg(username: "user", password: "pass", siteAddress: siteAddress)
+        let expectation = expectation(description: "Discovery called")
+        var discoveredURL: String?
+
+        // When
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol(),
+                                       discoveryHandler: { siteURL in
+                                           discoveredURL = siteURL
+                                           expectation.fulfill()
+                                       })
+        await fulfillment(of: [expectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(discoveredURL, siteAddress)
+        _ = network
+    }
+
+    func test_discovery_is_triggered_with_siteAddress_for_applicationPassword_credentials() async {
+        // Given
+        let siteAddress = "https://apppw-site.example.com"
+        let credentials = Credentials.applicationPassword(username: "user", password: "pass", siteAddress: siteAddress)
+        let expectation = expectation(description: "Discovery called")
+        var discoveredURL: String?
+
+        // When
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol(),
+                                       discoveryHandler: { siteURL in
+                                           discoveredURL = siteURL
+                                           expectation.fulfill()
+                                       })
+        await fulfillment(of: [expectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(discoveredURL, siteAddress)
+    }
+
+    func test_discovery_is_triggered_with_siteAddress_for_wpcom_credentials() async {
+        // Given
+        let siteAddress = "https://wpcom-site.example.com"
+        let credentials = Credentials.wpcom(username: "user", authToken: "token", siteAddress: siteAddress)
+        let expectation = expectation(description: "Discovery called")
+        var discoveredURL: String?
+
+        // When
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol(),
+                                       discoveryHandler: { siteURL in
+                                           discoveredURL = siteURL
+                                           expectation.fulfill()
+                                       })
+        await fulfillment(of: [expectation], timeout: 1.0)
+
+        // Then
+        XCTAssertEqual(discoveredURL, siteAddress)
+    }
+
+    func test_discovery_is_not_triggered_when_credentials_are_nil() async {
+        // Given
+        let expectation = expectation(description: "Discovery should not be called")
+        expectation.isInverted = true
+
+        // When
+        let network = AlamofireNetwork(credentials: nil,
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol(),
+                                       discoveryHandler: { _ in expectation.fulfill() })
+        await fulfillment(of: [expectation], timeout: 0.1)
+
+        // Then — expectation is inverted; reaching here means the handler was never called
+        _ = network
+    }
+
     // MARK: - Authentication Mode Tests
 
     func test_authenticationMode_is_appPasswords_for_wporg_credentials() {

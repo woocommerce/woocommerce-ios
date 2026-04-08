@@ -1,6 +1,21 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.5
+The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.
+
+## 24.4
+This update improves reliability and consistency across your store management experience. We fixed site connection issues, aligned revenue with wp-admin, smoothed bookings and dashboard behavior, improved iPad layouts, and resolved product duplication gaps. Plus several UI polish and stability fixes throughout.
+
+## 24.3
+Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.
+
+## 24.2
+This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!
+
+## 24.0
+This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
+
 ## 23.9
 This update brings clearer feedback during checkout, more reliable syncing, and safer payment behavior. Troubleshooting is now more powerful with better diagnostics, plugin updates work more smoothly, and we fixed crashes, editing issues, and localization bugs to make everyday store management more stable and predictable.
 

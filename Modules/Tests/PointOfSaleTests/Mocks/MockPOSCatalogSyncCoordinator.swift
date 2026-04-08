@@ -66,7 +66,7 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
+        return await fullSyncStateModel.state[siteID] ?? .syncNeverDone(siteID: siteID)
     }
 
     var isSyncStaleResult: Bool = false
@@ -102,6 +102,10 @@ final class MockPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     }
 
     func deleteProductsFromCatalog(_ productIDs: [Int64], variationIDs: [Int64], siteID: Int64) async throws {
+        // no-op
+    }
+
+    func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
 }

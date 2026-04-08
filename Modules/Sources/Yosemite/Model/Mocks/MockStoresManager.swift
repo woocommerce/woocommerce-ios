@@ -165,11 +165,13 @@ public class MockStoresManager: StoresManager {
             couponActionHandler.handle(action: action)
         case let action as FeatureFlagAction:
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
             }
         default:
-            fatalError("Unable to handle action: \(action.identifier) \(String(describing: action))")
+            let message = "⚠️ [MockStoresManager] Unhandled action type: \(action.identifier) \(String(describing: action))"
+            DDLogWarn(message)
+            assertionFailure(message)
         }
     }
 

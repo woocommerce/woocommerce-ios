@@ -7,7 +7,7 @@ import struct NetworkingCore.MetaData
 import enum NetworkingCore.OrderStatusEnum
 import struct NetworkingCore.Order
 
-public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
+public struct POSOrder: Equatable, Hashable, Identifiable, GeneratedCopiable {
     public let id: Int64
     public let number: String
     public let dateCreated: Date
@@ -15,6 +15,7 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
     public let formattedTotal: String
     public let formattedSubtotal: String
     public let customerEmail: String?
+    public let paymentMethodID: String
     public let paymentMethodTitle: String
     public let lineItems: [POSOrderItem]
     public let refunds: [POSOrderRefund]
@@ -22,6 +23,8 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
     public let formattedTotalTax: String
     public let formattedPaymentTotal: String
     public let formattedNetAmount: String?
+    public let datePaid: Date?
+    public let paymentStatusMetadata: String?
 
     /// Aggregated quantities per product/variation ID for refund comparison.
     /// Key is productID for simple products, or variationID for variations.
@@ -35,6 +38,7 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
                 formattedTotal: String,
                 formattedSubtotal: String,
                 customerEmail: String? = nil,
+                paymentMethodID: String,
                 paymentMethodTitle: String,
                 lineItems: [POSOrderItem] = [],
                 refunds: [POSOrderRefund] = [],
@@ -42,6 +46,8 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
                 formattedTotalTax: String,
                 formattedPaymentTotal: String,
                 formattedNetAmount: String? = nil,
+                datePaid: Date? = nil,
+                paymentStatusMetadata: String? = nil,
                 lineItemQuantitiesByProductOrVariationID: [Int64: Decimal] = [:]) {
         self.id = id
         self.number = number
@@ -50,6 +56,7 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
         self.formattedTotal = formattedTotal
         self.formattedSubtotal = formattedSubtotal
         self.customerEmail = customerEmail
+        self.paymentMethodID = paymentMethodID
         self.paymentMethodTitle = paymentMethodTitle
         self.lineItems = lineItems
         self.refunds = refunds
@@ -57,6 +64,8 @@ public struct POSOrder: Equatable, Hashable, GeneratedCopiable {
         self.formattedTotalTax = formattedTotalTax
         self.formattedPaymentTotal = formattedPaymentTotal
         self.formattedNetAmount = formattedNetAmount
+        self.datePaid = datePaid
+        self.paymentStatusMetadata = paymentStatusMetadata
         self.lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID
     }
 }

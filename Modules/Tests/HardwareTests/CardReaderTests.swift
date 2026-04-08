@@ -65,11 +65,4 @@ final class CardReaderTests: XCTestCase {
 
         XCTAssertEqual(cardReader.readerType, .wisepad3)
     }
-
-    func test_card_reader_maps_reader_type_for_verifone() {
-        let mockReader = MockStripeCardReader.verifoneP400()
-        let cardReader = CardReader(reader: mockReader)
-
-        XCTAssertEqual(cardReader.readerType, .other)
-    }
 }

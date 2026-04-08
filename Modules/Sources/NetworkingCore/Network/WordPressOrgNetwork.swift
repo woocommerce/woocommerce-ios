@@ -24,6 +24,7 @@ public final class WordPressOrgNetwork: Network {
 
     private let authenticator: CookieNonceAuthenticator
     private let userAgent: String?
+    private let requestConverter: RequestConverter
 
     private lazy var alamofireSession: Alamofire.Session = {
         makeSession(configuration: .default)
@@ -31,12 +32,16 @@ public final class WordPressOrgNetwork: Network {
 
     public var session: URLSession { alamofireSession.session }
 
-    public init(configuration: CookieNonceAuthenticatorConfiguration, userAgent: String = UserAgent.defaultUserAgent) {
+    public init(configuration: CookieNonceAuthenticatorConfiguration,
+                siteAddress: String,
+                userAgent: String = UserAgent.defaultUserAgent) {
         self.authenticator = CookieNonceAuthenticator(configuration: configuration)
         self.userAgent = userAgent
+        self.requestConverter = RequestConverter(siteAddress: siteAddress)
     }
 
     public func responseData(for request: URLRequestConvertible) async throws -> Data? {
+        let request = requestConverter.convert(request)
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
 
@@ -70,6 +75,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        let request = requestConverter.convert(request)
         alamofireSession.request(request)
             .validate()
             .responseData { response in
@@ -92,6 +98,7 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        let request = requestConverter.convert(request)
         alamofireSession.request(request)
             .validate()
             .responseData { response in
@@ -105,6 +112,7 @@ public final class WordPressOrgNetwork: Network {
     }
 
     public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        let request = requestConverter.convert(request)
         let sessionRequest = alamofireSession.request(request).validate()
         let response = await sessionRequest.serializingData().response
         do {
@@ -129,6 +137,7 @@ public final class WordPressOrgNetwork: Network {
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        let request = requestConverter.convert(request)
         return Future() { [weak self] promise in
             guard let self = self else { return }
             self.alamofireSession.request(request).validate().responseData { response in
@@ -146,6 +155,7 @@ public final class WordPressOrgNetwork: Network {
     public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                         to request: URLRequestConvertible,
                                         completion: @escaping (Data?, Error?) -> Void) {
+        let request = requestConverter.convert(request)
         alamofireSession
             .upload(multipartFormData: multipartFormData, with: request)
             .responseData() { response in
@@ -170,7 +180,13 @@ private extension WordPressOrgNetwork {
 
         sessionConfiguration.httpAdditionalHeaders = additionalHeaders
 
-        return Alamofire.Session(configuration: sessionConfiguration, interceptor: authenticator)
+        let delegate = StreamableUploadSessionDelegate()
+        return Alamofire.Session(
+            configuration: sessionConfiguration,
+            delegate: delegate,
+            interceptor: authenticator,
+            eventMonitors: [delegate.uploadStreamProvider]
+        )
     }
 
     /// Validates whether the REST API request failed with an invalid cookie nonce.

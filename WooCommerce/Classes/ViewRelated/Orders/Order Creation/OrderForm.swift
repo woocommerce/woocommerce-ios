@@ -167,7 +167,8 @@ struct OrderFormPresentationWrapper: View {
                 }
                 .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
             },
-            isShowingSecondaryView: $viewModel.isProductSelectorPresented)
+            isShowingSecondaryView: $viewModel.isProductSelectorPresented,
+            isSecondaryViewInteractiveDismissable: false)
         // When we're side-by-side, show the notices over the combined screen
         .if(horizontalSizeClass == .regular, transform: {
             $0
@@ -273,7 +274,9 @@ struct OrderForm: View {
                         }
 
                         Group {
-                            OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                            OrderStatusSection(viewModel: viewModel,
+                                               topDivider: !viewModel.shouldShowNonEditableIndicators,
+                                               isEditButtonVisible: viewModel.isOrderStatusEditingEnabled)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
                         .renderedIf(flow == .editing)

@@ -18,6 +18,10 @@ final class IssueRefundCoordinatingController: WooNavigationController {
     ///
     private let systemNoticePresenter: NoticePresenter
 
+    /// Called when the refund flow is dismissed (whether refund was completed or cancelled).
+    ///
+    var onDismissCallback: (() -> Void)?
+
     init(order: Order, refunds: [Refund], systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
         self.refunds = refunds
@@ -151,6 +155,7 @@ private extension IssueRefundCoordinatingController {
             if presentSuccessNotice {
                 self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
             }
+            self?.onDismissCallback?()
         }
     }
 }

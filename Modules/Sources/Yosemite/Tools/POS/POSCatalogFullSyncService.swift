@@ -6,6 +6,7 @@ import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import struct Networking.POSCatalogResponse
+import struct Networking.POSTypedVariation
 
 public protocol POSCatalogFullSyncServiceProtocol {
     /// Starts a full catalog sync process
@@ -13,10 +14,9 @@ public protocol POSCatalogFullSyncServiceProtocol {
     ///   - siteID: The site ID to sync catalog for
     ///   - regenerateCatalog: Whether to force the catalog generation
     ///   - allowCellular: Should cellular data be used if required.
-    ///   - posProductsOnly: Whether to filter to POS-eligible products only.
     ///   - isBackgroundSync: Whether this sync is running in a background task context. Limits polling attempts to stay within ~30s window.
     /// - Returns: The synced catalog containing products and variations
-    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, posProductsOnly: Bool, isBackgroundSync: Bool) async throws -> POSCatalog
+    func startFullSync(for siteID: Int64, regenerateCatalog: Bool, allowCellular: Bool, isBackgroundSync: Bool) async throws -> POSCatalog
 
     /// Parses and persists a downloaded catalog file from a background download.
     /// - Parameters:
@@ -29,7 +29,7 @@ public protocol POSCatalogFullSyncServiceProtocol {
 /// POS catalog from full sync.
 public struct POSCatalog {
     public let products: [POSProduct]
-    public let variations: [POSProductVariation]
+    public let variations: [POSTypedVariation]
     public let syncDate: Date
 
     /// Product IDs to remove from local catalog when these should be hidden when performing an incremental sync.
@@ -39,7 +39,7 @@ public struct POSCatalog {
     public let productsToRemove: [Int64]
 
     public init(products: [POSProduct],
-                variations: [POSProductVariation],
+                variations: [POSTypedVariation],
                 syncDate: Date,
                 productsToRemove: [Int64] = []) {
         self.products = products
@@ -104,10 +104,9 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     public func startFullSync(for siteID: Int64,
                               regenerateCatalog: Bool = false,
                               allowCellular: Bool,
-                              posProductsOnly: Bool = false,
                               isBackgroundSync: Bool) async throws -> POSCatalog {
         DDLogInfo("🔄 Starting full catalog sync for site ID: \(siteID) with regenerateCatalog: \(regenerateCatalog), " +
-                  "allowCellular: \(allowCellular), posProductsOnly: \(posProductsOnly), isBackgroundSync: \(isBackgroundSync)")
+                  "allowCellular: \(allowCellular), isBackgroundSync: \(isBackgroundSync)")
 
         do {
             // Sync from network
@@ -120,7 +119,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                                                               allowCellular: allowCellular,
                                                               maxAttempts: maxAttempts)
             } else {
-                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular, posProductsOnly: posProductsOnly)
+                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
             }
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
@@ -162,29 +161,28 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 private extension POSCatalogFullSyncService {
     func loadCatalog(for siteID: Int64,
                      syncRemote: POSCatalogSyncRemoteProtocol,
-                     allowCellular: Bool,
-                     posProductsOnly: Bool) async throws -> POSCatalog {
+                     allowCellular: Bool) async throws -> POSCatalog {
         let syncStartDate = Date.now
         // Loads products and variations in batches in parallel.
         async let productsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
                 try await syncRemote.loadProducts(siteID: siteID,
                                                   pageNumber: pageNumber,
-                                                  allowCellular: allowCellular,
-                                                  posProductsOnly: posProductsOnly)
+                                                  allowCellular: allowCellular)
             }
         )
         async let variationsTask = batchedLoader.loadAll(
             makeRequest: { pageNumber in
                 try await syncRemote.loadProductVariations(siteID: siteID,
                                                            pageNumber: pageNumber,
-                                                           allowCellular: allowCellular,
-                                                           posProductsOnly: posProductsOnly)
+                                                           allowCellular: allowCellular)
             }
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
+        return POSCatalog(products: products,
+                          variations: variations.map { POSTypedVariation(variation: $0, typeKey: "variation") },
+                          syncDate: syncStartDate)
     }
 
     func loadCatalogFromCatalogAPI(for siteID: Int64,
@@ -265,10 +263,10 @@ private extension POSCatalogFullSyncService {
                 }
                 DDLogInfo("🟣 Catalog generation completed after \(attempts + 1) poll(s)")
                 return downloadURL
-            case .scheduled, .processing:
-                // Log progress every 5 attempts or on first attempt
-                if attempts % 5 == 0 {
-                    DDLogInfo("🟣 Catalog \(response.status)... (attempt \(attempts + 1)/\(maxAttempts), next delay: \(String(format: "%.1f", currentDelay))s)")
+            case .scheduled, .inProgress:
+                // Only logs every 10th attempt to avoid flooding logs for large catalogs.
+                if attempts % 10 == 0 {
+                    DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
                 }
 
                 try await Task.sleep(nanoseconds: UInt64(currentDelay * 1_000_000_000))

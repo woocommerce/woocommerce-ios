@@ -301,7 +301,7 @@ struct SupportFormProvider: PreviewProvider {
             SupportForm(isPresented: .constant(true), viewModel: .init(areas: [
                 .init(title: "Mobile Apps", datasource: MockDataSource()),
                 .init(title: "Card Reader / In Person Payments", datasource: MockDataSource()),
-                .init(title: "WooCommerce Payments", datasource: MockDataSource()),
+                .init(title: "WooPayments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
             ]))

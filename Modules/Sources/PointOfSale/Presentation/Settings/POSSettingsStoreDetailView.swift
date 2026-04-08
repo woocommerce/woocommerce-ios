@@ -18,28 +18,26 @@ struct POSSettingsStoreDetailView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: POSSpacing.none) {
-                POSPageHeaderView(title: Localization.storeTitle)
-                    .foregroundColor(.posSurface)
-                    .accessibilityAddTraits(.isHeader)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(title: Localization.storeTitle)
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
 
-                ScrollView {
-                    VStack(spacing: POSSpacing.medium) {
-                        storeInformationView
+            ScrollView {
+                VStack(spacing: POSSpacing.medium) {
+                    storeInformationView
 
-                        receiptInformationView
-                            .renderedIf(viewModel.shouldShowReceiptInformation)
-                    }
-                    .padding(.horizontal, POSPadding.medium)
+                    receiptInformationView
+                        .renderedIf(viewModel.shouldShowReceiptInformation)
                 }
+                .padding(.horizontal, POSPadding.medium)
             }
-            .background(backgroundColor)
-            .task {
-                isLoading = true
-                await viewModel.retrievePOSReceiptSettings()
-                isLoading = false
-            }
+        }
+        .background(backgroundColor)
+        .task {
+            isLoading = true
+            await viewModel.retrievePOSReceiptSettings()
+            isLoading = false
         }
     }
 

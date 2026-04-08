@@ -3,6 +3,7 @@ import XCTest
 import Combine
 import Fakes
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 @testable import Networking
@@ -417,11 +418,17 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
-    func test_completed_event_is_tracked_after_scanning_to_pay() {
+    func test_completed_event_is_tracked_after_scanning_to_pay() async {
         // Given
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            if case let .addOrderNote(_, _, _, _, onCompletion) = action {
+                onCompletion(nil, nil)
+            }
+        }
+
         let analytics = MockAnalyticsProvider()
         let orderID: Int64 = 232
-        let dependencies = Dependencies(analytics: WooAnalytics(analyticsProvider: analytics))
+        let dependencies = Dependencies(stores: stores, analytics: WooAnalytics(analyticsProvider: analytics))
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 total: "12",
                                                 formattedTotal: "$12.00",
@@ -430,7 +437,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        viewModel.performScanToPayFinishedTasks()
+        await viewModel.performScanToPayFinishedTasks()
 
         // Then
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
@@ -627,6 +634,44 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    func test_performScanToPayFinishedTasks_adds_note_to_order() async {
+        // Given
+        let siteID: Int64 = 10
+        let orderID: Int64 = 232
+
+        var passedNote: String?
+        var passedSiteID: Int64?
+        var passedOrderID: Int64?
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            switch action {
+            case let .addOrderNote(siteID, orderID, _, note, onCompletion):
+                passedSiteID = siteID
+                passedOrderID = orderID
+                passedNote = note
+                onCompletion(nil, nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let dependencies = Dependencies(stores: stores)
+        let viewModel = PaymentMethodsViewModel(siteID: siteID,
+                                                orderID: orderID,
+                                                total: "12",
+                                                formattedTotal: "$12.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        await viewModel.performScanToPayFinishedTasks()
+
+        // Then
+        XCTAssertEqual(passedSiteID, siteID)
+        XCTAssertEqual(passedOrderID, orderID)
+        XCTAssertEqual(passedNote, "Payment link shared via Scan to Pay. Please verify payment before fulfilling order.")
+    }
+
     func test_collect_event_is_tracked_when_collecting_payment() {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -786,58 +831,146 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
-    func test_card_rows_are_not_shown_for_ciab_site() {
+    // MARK: - CIAB IPP Gating Tests
+
+    func test_card_and_ttp_rows_are_hidden_when_site_is_ciab_non_pro() {
         // Given
-        let siteID: Int64 = 1212
-        let orderID: Int64 = 111
-        let ciabSite = Site.fake().copy(siteID: siteID, isGarden: true, gardenName: "commerce")
-        let order = MockOrders()
-            .makeOrder(status: .pending)
-            .copy(
-                siteID: siteID,
-                orderID: orderID,
-                datePaid: .some(nil),
-                total: "100"
-            )
-
-        storage.insertSampleSite(readOnlySite: ciabSite)
-        storage.insertSampleOrder(readOnlyOrder: order)
-
-        let eligibilityStore = OrderCardPresentPaymentEligibilityStore(
-            dispatcher: Dispatcher(),
-            storageManager: storage,
-            network: MockNetwork(),
-            crashLogger: MockCrashLogger(),
-            isCIABEnvironmentSupported: { true },
-            currentSite: { ciabSite }
-        )
-
         let configuration = CardPresentPaymentsConfiguration(country: .US)
-        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
-            eligibilityStore.onAction(action)
-        }
-
-        simulate(tapToPayDeviceAvailability: true, on: stores)
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: false)
 
         // When
-        let dependencies = Dependencies(
-            stores: stores,
-            storage: storage,
-            cardPresentPaymentsConfiguration: configuration
-        )
-        let viewModel = PaymentMethodsViewModel(
-            siteID: siteID,
-            orderID: orderID,
-            total: "5",
-            formattedTotal: "$5.00",
-            flow: .simplePayment,
-            channel: .storeManagement,
-            dependencies: dependencies
-        )
+        let dependencies = Dependencies(stores: stores, storage: storage,
+                                        cardPresentPaymentsConfiguration: configuration,
+                                        ciabEligibilityChecker: ciabChecker)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                total: "5",
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
 
         // Then
         XCTAssertFalse(viewModel.showPayWithCardRow)
         XCTAssertFalse(viewModel.showTapToPayRow)
+    }
+
+    func test_card_and_ttp_rows_are_shown_when_site_is_ciab_pro() {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: true)
+
+        // When
+        let dependencies = Dependencies(stores: stores, storage: storage,
+                                        cardPresentPaymentsConfiguration: configuration,
+                                        ciabEligibilityChecker: ciabChecker)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                total: "5",
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertTrue(viewModel.showTapToPayRow)
+    }
+
+    func test_card_and_ttp_rows_are_shown_when_site_is_not_ciab() {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+
+        // When
+        let dependencies = Dependencies(stores: stores, storage: storage,
+                                        cardPresentPaymentsConfiguration: configuration,
+                                        ciabEligibilityChecker: ciabChecker)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                total: "5",
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
+        XCTAssertTrue(viewModel.showTapToPayRow)
+    }
+
+    func test_learnMoreViewModel_returns_ciab_upgrade_prompt_when_ciab_non_pro() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: false)
+        let dependencies = Dependencies(stores: stores, storage: storage, ciabEligibilityChecker: ciabChecker)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                total: "5",
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        let learnMore = viewModel.learnMoreViewModel
+
+        // Then
+        XCTAssertTrue(learnMore.formatText.contains("Upgrade to Pro"))
+    }
+
+    func test_learnMoreViewModel_returns_standard_ipp_prompt_when_not_ciab() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let dependencies = Dependencies(stores: stores, storage: storage, ciabEligibilityChecker: ciabChecker)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                total: "5",
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+
+        // When
+        let learnMore = viewModel.learnMoreViewModel
+
+        // Then
+        XCTAssertFalse(learnMore.formatText.contains("Upgrade to Pro"))
+    }
+
+    func test_syncSiteAndRefreshVisibility_unhides_rows_after_plan_upgrade() {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
+        simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
+
+        // Start as non-Pro CIAB (rows hidden)
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: false)
+        let dependencies = Dependencies(stores: stores, storage: storage,
+                                        cardPresentPaymentsConfiguration: configuration,
+                                        ciabEligibilityChecker: ciabChecker)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212,
+                                                orderID: 111,
+                                                total: "5",
+                                                formattedTotal: "$5.00",
+                                                flow: .simplePayment,
+                                                channel: .storeManagement,
+                                                dependencies: dependencies)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+
+        // Simulate plan upgrade: update the checker to Pro inside the sync completion
+        stores.whenReceivingAction(ofType: SiteAction.self) { action in
+            guard case let .syncSite(_, completion) = action else { return }
+            ciabChecker.mockedIsCurrentSiteCIABProPlan = true
+            completion(.success(Site.fake()))
+        }
+
+        // When
+        viewModel.syncSiteAndRefreshVisibility()
+
+        // Then
+        XCTAssertTrue(viewModel.showPayWithCardRow)
     }
 
     func test_paymentLinkRow_is_hidden_if_payment_link_is_not_available() {
@@ -921,10 +1054,16 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
-    func test_view_model_attempts_created_notice_after_scan_to_pay() {
+    func test_view_model_attempts_created_notice_after_scan_to_pay() async {
         // Given
+        stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
+            if case let .addOrderNote(_, _, _, _, onCompletion) = action {
+                onCompletion(nil, nil)
+            }
+        }
+
         let noticeSubject = PassthroughSubject<PaymentMethodsNotice, Never>()
-        let dependencies = Dependencies(presentNoticeSubject: noticeSubject)
+        let dependencies = Dependencies(presentNoticeSubject: noticeSubject, stores: stores)
         let viewModel = PaymentMethodsViewModel(total: "12",
                                                 formattedTotal: "$12.00",
                                                 flow: .simplePayment,
@@ -932,7 +1071,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
 
         // When
-        let receivedCompleted: Bool = waitFor { promise in
+        let receivedCompleted: Bool = await waitForAsync { promise in
             noticeSubject.sink { intent in
                 switch intent {
                 case .error, .completed:
@@ -942,7 +1081,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                 }
             }
             .store(in: &self.subscriptions)
-            viewModel.performScanToPayFinishedTasks()
+            await viewModel.performScanToPayFinishedTasks()
         }
 
         // Then

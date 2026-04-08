@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class WooShippingCustomsItemViewModelTests: XCTestCase {

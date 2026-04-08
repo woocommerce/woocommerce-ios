@@ -4,6 +4,7 @@ import UIKit
 enum WooShippingCarrier: String, Comparable, CaseIterable {
     case upsdap
     case usps
+    case fedex
     case dhlExpress = "dhlexpress"
     case dhlEcommerce = "dhlecommerce"
     case dhlEcommerceAsia = "dhlecommerceasia"
@@ -14,6 +15,8 @@ enum WooShippingCarrier: String, Comparable, CaseIterable {
             return UIImage(named: "shipping-label-ups-logo")
         case .usps:
             return UIImage(named: "shipping-label-usps-logo")
+        case .fedex:
+            return UIImage(named: "shipping-label-fedex-logo")
         case .dhlExpress, .dhlEcommerce, .dhlEcommerceAsia:
             return UIImage(named: "shipping-label-dhl-logo")
         }
@@ -25,6 +28,8 @@ enum WooShippingCarrier: String, Comparable, CaseIterable {
             "UPS"
         case .usps:
             "USPS"
+        case .fedex:
+            "FedEx"
         case .dhlExpress:
             "DHL Express"
         case .dhlEcommerce:
@@ -40,6 +45,8 @@ enum WooShippingCarrier: String, Comparable, CaseIterable {
             return URL(string: "https://tools.usps.com/schedule-pickup-steps.htm")
         case .upsdap:
             return URL(string: "https://wwwapps.ups.com/pickup/request")
+        case .fedex:
+            return URL(string: "https://www.fedex.com/en-us/shipping/schedule-manage-pickups.html")
         case .dhlExpress:
             return URL(string: "https://mydhl.express.dhl/us/en/schedule-pickup.html#/schedule-pickup#label-reference")
         case .dhlEcommerce, .dhlEcommerceAsia:

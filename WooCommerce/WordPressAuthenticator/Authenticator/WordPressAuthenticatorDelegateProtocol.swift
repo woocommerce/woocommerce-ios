@@ -77,7 +77,11 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - lastStep: Last `Step` tracked in `AuthenticatorAnalyticsTracker`
     ///     - lastFlow: Last `Flow` tracked in `AuthenticatorAnalyticsTracker`
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: AuthenticatorAnalyticsTracker.Step, lastFlow: AuthenticatorAnalyticsTracker.Flow)
+    func presentSupport(from sourceViewController: UIViewController,
+                        sourceTag: WordPressSupportSourceTag,
+                        lastStep: AuthenticatorAnalyticsTracker.Step,
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow,
+                        siteURL: String?)
 
     /// Indicates if the Login Epilogue should be displayed.
     ///

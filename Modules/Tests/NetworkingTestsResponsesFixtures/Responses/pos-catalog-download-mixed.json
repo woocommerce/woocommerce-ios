@@ -110,6 +110,7 @@
     "type": "variation",
     "data": {
       "id": 32,
+      "type": "variation",
       "sku": "",
       "global_unique_id": "",
       "name": "Incredible Silk Chair",
@@ -157,6 +158,7 @@
     "type": "variation",
     "data": {
       "id": 33,
+      "type": "variation",
       "sku": "",
       "global_unique_id": "",
       "name": "Incredible Silk Chair",
@@ -204,6 +206,7 @@
     "type": "subscription_variation",
     "data": {
       "id": 99,
+      "type": "subscription_variation",
       "sku": "subscription-variation-test",
       "global_unique_id": "",
       "name": "Subscription Variation (unsupported)",

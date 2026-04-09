@@ -157,20 +157,33 @@ protocol PointOfSaleOrderControllerProtocol {
             }
             guard let cartPriceString else { return false }
             let cartPrice = NSDecimalNumber(string: cartPriceString)
-
-            // Ex-tax unit price: subtotal / quantity
-            let subtotalDecimal = NSDecimalNumber(string: orderItem.subtotal)
             let quantityDecimal = NSDecimalNumber(decimal: orderItem.quantity)
-            guard quantityDecimal != .zero else { return false }
-            let exTaxUnitPrice = subtotalDecimal.dividing(by: quantityDecimal)
 
-            // Tax-inclusive unit price: (subtotal + subtotalTax) / quantity
+            // Multiply cart price by order quantity to compare against line totals.
+            // This avoids division and the precision issues it introduces with tax rounding.
+            let expectedTotal = cartPrice.multiplying(by: quantityDecimal)
+
+            let subtotalDecimal = NSDecimalNumber(string: orderItem.subtotal)
             let subtotalTaxDecimal = NSDecimalNumber(string: orderItem.subtotalTax)
-            let taxInclusiveUnitPrice = subtotalDecimal.adding(subtotalTaxDecimal).dividing(by: quantityDecimal)
+            let subtotalWithTax = subtotalDecimal.adding(subtotalTaxDecimal)
 
-            // If cart price matches either representation, the price hasn't changed
-            return cartPrice != exTaxUnitPrice && cartPrice != taxInclusiveUnitPrice
+            // Use tolerance for comparison because the server's tax rounding can cause
+            // subtotal + subtotalTax to differ slightly from the original tax-inclusive price.
+            // For example: price $180 (incl tax) → subtotal "178.21782200" + tax "1.78000000" = 179.99782200
+            let matchesExTax = approximatelyEqual(expectedTotal, subtotalDecimal)
+            let matchesTaxInclusive = approximatelyEqual(expectedTotal, subtotalWithTax)
+
+            return !matchesExTax && !matchesTaxInclusive
         }
+    }
+
+    /// Compares two decimal amounts with a tolerance to account for tax rounding differences.
+    private func approximatelyEqual(_ a: NSDecimalNumber, _ b: NSDecimalNumber, tolerance: NSDecimalNumber = NSDecimalNumber(string: "0.01")) -> Bool {
+        let difference = a.subtracting(b)
+        let absoluteDifference = difference.compare(NSDecimalNumber.zero) == .orderedAscending
+            ? difference.multiplying(by: NSDecimalNumber(value: -1))
+            : difference
+        return absoluteDifference.compare(tolerance) != .orderedDescending
     }
 }
 

@@ -346,6 +346,18 @@
         <attribute name="discountTax" optional="YES" attributeType="String"/>
         <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="coupons" inverseEntity="Order"/>
     </entity>
+    <entity name="OrderFulfillment" representedClassName="OrderFulfillment" syncable="YES">
+        <attribute name="dateFulfilled" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateUpdated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="fulfillmentID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="isFulfilled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="shipmentProvider" optional="YES" attributeType="String"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="statusKey" optional="YES" attributeType="String"/>
+        <attribute name="trackingNumber" optional="YES" attributeType="String"/>
+        <attribute name="trackingURL" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="OrderFeeLine" representedClassName="OrderFeeLine" syncable="YES">
         <attribute name="feeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>

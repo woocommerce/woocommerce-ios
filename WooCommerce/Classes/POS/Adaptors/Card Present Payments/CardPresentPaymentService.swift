@@ -6,7 +6,7 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
-import enum Hardware.CardReaderSoftwareUpdateState
+import enum Yosemite.CardReaderSoftwareUpdateState
 import enum Yosemite.CardReaderReconnectionState
 import protocol Yosemite.StoresManager
 

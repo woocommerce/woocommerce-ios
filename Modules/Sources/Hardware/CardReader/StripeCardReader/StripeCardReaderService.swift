@@ -640,11 +640,14 @@ extension StripeCardReaderService: CardReaderService {
 
     public func cancelReconnection() -> Future<Void, Error> {
         Future { [weak self] promise in
-            guard let self = self,
-                  let reconnectionCancelable = self.reconnectionCancelable,
+            guard let self else {
+                return promise(.success(()))
+            }
+
+            guard let reconnectionCancelable = self.reconnectionCancelable,
                   !reconnectionCancelable.completed else {
-                self?.reconnectionCancelable = nil
-                self?.reconnectionStateSubject.send(.idle)
+                self.reconnectionCancelable = nil
+                self.reconnectionStateSubject.send(.idle)
                 return promise(.success(()))
             }
 
@@ -1058,6 +1061,9 @@ extension StripeCardReaderService: MobileReaderDelegate {
     }
 
     public func readerDidFailReconnect(_ reader: Reader) {
+        // Only log as an error if reconnection was still in progress.
+        // When the user cancels reconnection, the cancelable is nilled out before
+        // this delegate fires, so the failure is expected and not worth logging.
         if reconnectionCancelable != nil {
             DDLogError("💳 Reader auto-reconnection failed")
         }

@@ -181,7 +181,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     @MainActor
     private func cancelReconnection() async {
         await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.cancelReconnection { _ in
+            let action = CardPresentPaymentAction.cancelReconnection { result in
+                if case .failure(let error) = result {
+                    DDLogError("⚠️ Failed to cancel reader reconnection: \(error)")
+                }
                 continuation.resume()
             }
             stores.dispatch(action)

@@ -3,6 +3,7 @@
 24.6
 -----
 - [*] Add troubleshooting tool for login [https://github.com/woocommerce/woocommerce-ios/pull/16890]
+- [*] Update Tap to Pay requirement to iOS 18.0.1 [https://github.com/woocommerce/woocommerce-ios/pull/16914]
 
 
 24.5

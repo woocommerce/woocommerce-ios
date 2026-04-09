@@ -197,7 +197,7 @@ struct POSCatalogFullSyncServiceTests {
 
         mockSyncRemote.catalogRequestResult = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
         mockSyncRemote.catalogDownloadResult = .success(.init(products: [expectedProduct],
-                                                                       variations: [expectedVariation]))
+                                                              variations: [expectedVariation]))
 
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,

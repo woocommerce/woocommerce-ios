@@ -1,6 +1,5 @@
 import Foundation
 import Testing
-@testable import Networking
 @testable import Storage
 @testable import Yosemite
 
@@ -401,7 +400,7 @@ struct POSCatalogPersistenceServiceTests {
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 6),
             POSProductVariation.fake().copy(siteID: sampleSiteID, productID: 10, productVariationID: 2)
         ]
-        let catalog = POSCatalog(products: [parentProduct], variations: (newVariations), syncDate: .now)
+        let catalog = POSCatalog(products: [parentProduct], variations: newVariations, syncDate: .now)
 
         // When
         try await sut.persistIncrementalCatalogData(catalog, siteID: sampleSiteID)

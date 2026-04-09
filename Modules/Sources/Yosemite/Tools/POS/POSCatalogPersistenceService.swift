@@ -275,7 +275,7 @@ private extension POSCatalogPersistenceService {
         let variations = catalog.variations.filter { variation in
             let parentExists = productIDs.contains { $0 == variation.productID }
             if !parentExists {
-                DDLogWarn("Variation \(variation.productVariationID) references missing product \(variation.productID).")
+                DDLogWarn("Variation \(variation.productVariationID) references missing product \(variation.productID) - it will not be available in POS.")
             }
             return parentExists
         }
@@ -338,8 +338,8 @@ private extension POSCatalog {
     var variationImagesToPersist: [PersistedProductVariationImage] {
         variations.compactMap { variation in
             variation.image.map { PersistedProductVariationImage(siteID: variation.siteID,
-                                                                  productVariationID: variation.productVariationID,
-                                                                  imageID: $0.imageID) }
+                                                                 productVariationID: variation.productVariationID,
+                                                                 imageID: $0.imageID) }
         }
     }
 

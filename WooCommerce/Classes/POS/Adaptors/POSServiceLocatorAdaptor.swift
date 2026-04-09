@@ -12,6 +12,7 @@ import protocol PointOfSale.POSFeatureFlagProviding
 import protocol PointOfSale.POSConnectivityProviding
 import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
+import protocol PointOfSale.POSPermissionProviding
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
     init() {
@@ -39,6 +40,10 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
 
     var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
+    }
+
+    var permissions: POSPermissionProviding {
+        EmptyPOSPermissionAdaptor()
     }
 }
 
@@ -124,4 +129,13 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(WCAuthenticatedWebView(url: url, title: title, completion: completion))
     }
+}
+
+private final class EmptyPOSPermissionAdaptor: POSPermissionProviding {
+    var currentOperator: PointOfSale.POSOperator? { nil }
+    var isLocked: Bool { false }
+    func checkPermission(_ capability: String) -> PointOfSale.POSPermissionResult { .allowed }
+    func hasCapability(_ capability: String) -> Bool { true }
+    func signIn(_ posOperator: PointOfSale.POSOperator) {}
+    func lock() {}
 }

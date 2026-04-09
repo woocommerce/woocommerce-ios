@@ -69,4 +69,5 @@ public protocol POSDependencyProviding {
     var connectivity: POSConnectivityProviding { get }
     var externalNavigation: POSExternalNavigationProviding { get }
     var externalViews: POSExternalViewProviding { get }
+    var permissions: POSPermissionProviding { get }
 }

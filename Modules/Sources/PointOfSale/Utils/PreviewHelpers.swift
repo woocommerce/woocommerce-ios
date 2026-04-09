@@ -697,6 +697,7 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+    var permissions: POSPermissionProviding = EmptyPOSPermissionProvider()
 }
 
 // MARK: - Preview Catalog Services

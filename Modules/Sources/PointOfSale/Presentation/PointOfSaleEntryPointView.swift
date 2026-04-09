@@ -161,7 +161,7 @@ public struct PointOfSaleEntryPointView: View {
         } else {
             self.bookingsModel = nil
         }
-        if let grdbManager {
+        if isLocalCatalogEligible, let grdbManager {
             self.cartProductObserver = POSCartProductObserver(
                 siteID: siteID,
                 grdbManager: grdbManager,

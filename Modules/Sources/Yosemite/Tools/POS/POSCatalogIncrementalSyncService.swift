@@ -5,7 +5,6 @@ import class Networking.POSCatalogSyncRemote
 import protocol Storage.GRDBManagerProtocol
 import struct NetworkingCore.JetpackSite
 import struct Combine.AnyPublisher
-import struct Networking.POSTypedVariation
 
 // TODO - remove the periphery ignore comment when the service is integrated with POS.
 // periphery:ignore
@@ -148,7 +147,7 @@ private extension POSCatalogIncrementalSyncService {
         let productsToSync = posProducts + trashedProducts
 
         return POSCatalog(products: productsToSync,
-                          variations: posVariations.map { POSTypedVariation(variation: $0, typeKey: "variation") },
+                          variations: posVariations,
                           syncDate: syncStartDate,
                           productsToRemove: hiddenProductIDs)
     }

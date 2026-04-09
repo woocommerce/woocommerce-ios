@@ -6,7 +6,6 @@ import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import struct Networking.POSCatalogResponse
-import struct Networking.POSTypedVariation
 
 public protocol POSCatalogFullSyncServiceProtocol {
     /// Starts a full catalog sync process
@@ -29,7 +28,7 @@ public protocol POSCatalogFullSyncServiceProtocol {
 /// POS catalog from full sync.
 public struct POSCatalog {
     public let products: [POSProduct]
-    public let variations: [POSTypedVariation]
+    public let variations: [POSProductVariation]
     public let syncDate: Date
 
     /// Product IDs to remove from local catalog when these should be hidden when performing an incremental sync.
@@ -39,7 +38,7 @@ public struct POSCatalog {
     public let productsToRemove: [Int64]
 
     public init(products: [POSProduct],
-                variations: [POSTypedVariation],
+                variations: [POSProductVariation],
                 syncDate: Date,
                 productsToRemove: [Int64] = []) {
         self.products = products
@@ -181,7 +180,7 @@ private extension POSCatalogFullSyncService {
 
         let (products, variations) = try await (productsTask, variationsTask)
         return POSCatalog(products: products,
-                          variations: variations.map { POSTypedVariation(variation: $0, typeKey: "variation") },
+                          variations: variations,
                           syncDate: syncStartDate)
     }
 

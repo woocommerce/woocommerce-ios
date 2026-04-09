@@ -4,12 +4,12 @@ import Storage
 // MARK: - PersistedProductVariation Conversions
 // periphery:ignore - TODO: remove ignore when populating database
 extension PersistedProductVariation {
-    init(from posProductVariation: POSProductVariation, productTypeKey: String = "variation") {
+    init(from posProductVariation: POSProductVariation) {
         self.init(
             id: posProductVariation.productVariationID,
             siteID: posProductVariation.siteID,
             productID: posProductVariation.productID,
-            productTypeKey: productTypeKey,
+            typeKey: posProductVariation.typeKey,
             sku: posProductVariation.sku,
             globalUniqueID: posProductVariation.globalUniqueID,
             price: posProductVariation.price,
@@ -31,6 +31,7 @@ extension PersistedProductVariation {
             fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
+            typeKey: typeKey,
             price: price,
             downloadable: downloadable,
             manageStock: manageStock,

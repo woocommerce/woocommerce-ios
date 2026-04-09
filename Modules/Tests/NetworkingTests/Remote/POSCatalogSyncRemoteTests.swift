@@ -732,21 +732,21 @@ struct POSCatalogSyncRemoteTests {
                   options: ["19", "8", "9", "At", "Reiciendis"])
         ])
 
-        let firstVariation = try #require(catalog.variations.first)
-        #expect(firstVariation.variation.siteID == sampleSiteID)
-        #expect(firstVariation.variation.productVariationID == 32)
-        #expect(firstVariation.variation.productID == 31)
-        #expect(firstVariation.variation.sku?.isEmpty == true)
-        #expect(firstVariation.variation.globalUniqueID?.isEmpty == true)
-        #expect(firstVariation.variation.price == "330.34")
-        #expect(firstVariation.variation.attributes.count == 3)
-        #expect(firstVariation.variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
-        #expect(firstVariation.variation.attributes == [
+        let variation = try #require(catalog.variations.first)
+        #expect(variation.siteID == sampleSiteID)
+        #expect(variation.productVariationID == 32)
+        #expect(variation.productID == 31)
+        #expect(variation.sku?.isEmpty == true)
+        #expect(variation.globalUniqueID?.isEmpty == true)
+        #expect(variation.price == "330.34")
+        #expect(variation.attributes.count == 3)
+        #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
+        #expect(variation.attributes == [
             .init(id: 1, name: "Size", option: "Earum"),
             .init(id: 0, name: "ab", option: "deserunt"),
             .init(id: 2, name: "Numeric Size", option: "19")
         ])
-        #expect(firstVariation.typeKey == "variation")
+        #expect(variation.typeKey == "variation")
     }
 
     @Test func downloadCatalog_decodes_subscription_variation_as_variation() async throws {
@@ -766,10 +766,10 @@ struct POSCatalogSyncRemoteTests {
         #expect(catalog.variations.count == 3)
         #expect(catalog.products.contains { $0.productID == 99 } == false)
 
-        let subscriptionVariation = try #require(catalog.variations.first { $0.variation.productVariationID == 99 })
+        let subscriptionVariation = try #require(catalog.variations.first { $0.productVariationID == 99 })
         #expect(subscriptionVariation.typeKey == "subscription_variation")
-        #expect(subscriptionVariation.variation.productID == 50)
-        #expect(subscriptionVariation.variation.price == "10")
+        #expect(subscriptionVariation.productID == 50)
+        #expect(subscriptionVariation.price == "10")
     }
 
     @Test func downloadCatalog_when_item_has_malformed_data_then_skips_item_without_failing() async throws {

@@ -269,14 +269,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let items = try mapper.map(response: data)
 
         var products: [POSProduct] = []
-        var variations: [POSTypedVariation] = []
+        var variations: [POSProductVariation] = []
 
         for item in items {
             switch item {
             case .product(let product):
                 products.append(product)
-            case .variation(let variation, let typeKey):
-                variations.append(POSTypedVariation(variation: variation, typeKey: typeKey))
+            case .variation(let variation):
+                variations.append(variation)
             case .unsupported:
                 continue
             }
@@ -508,7 +508,7 @@ public enum POSCatalogStatus: String, Decodable {
 /// Decodes the type-tagged wrapper and directly parses the nested data in a single pass.
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
-    case variation(POSProductVariation, typeKey: String)
+    case variation(POSProductVariation)
     /// Items with malformed data that fail to decode are skipped during parsing
     case unsupported
 
@@ -523,7 +523,7 @@ public enum POSCatalogItem: Decodable {
 
         if type.contains("variation") {
             do {
-                self = .variation(try container.decode(POSProductVariation.self, forKey: .data), typeKey: type)
+                self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
             } catch {
                 self = .unsupported
             }
@@ -537,20 +537,10 @@ public enum POSCatalogItem: Decodable {
     }
 }
 
-public struct POSTypedVariation {
-    public let variation: POSProductVariation
-    public let typeKey: String
-
-    public init(variation: POSProductVariation, typeKey: String) {
-        self.variation = variation
-        self.typeKey = typeKey
-    }
-}
-
 /// POS catalog from download.
 public struct POSCatalogResponse {
     public let products: [POSProduct]
-    public let variations: [POSTypedVariation]
+    public let variations: [POSProductVariation]
 }
 
 // MARK: - POS Catalog Sync Constants
@@ -559,30 +549,4 @@ public struct POSCatalogResponse {
 public enum POSCatalogSyncConstants {
     /// Background download session identifier prefix for POS catalog downloads
     public static let backgroundDownloadSessionPrefix = "com.woocommerce.pos.catalog.download"
-}
-
-private extension POSProduct {
-    var toVariation: POSProductVariation {
-        let variationAttributes = attributes.compactMap { attribute in
-            try? attribute.toProductVariationAttribute()
-        }
-
-        let firstImage = images.first
-
-        return .init(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: variationAttributes,
-            image: firstImage,
-            fullDescription: fullDescription,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
-        )
-    }
 }

@@ -167,7 +167,7 @@ class RoleErrorViewController: UIViewController {
     }
 
     @objc private func helpButtonWasPressed() {
-        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin)
+        ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin, siteURL: nil)
     }
 }
 

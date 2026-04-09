@@ -1044,6 +1044,58 @@ struct PointOfSaleAggregateModelTests {
             }
         }
     }
+
+    @MainActor struct PriceChangeDetectionTests {
+        private let orderController = MockPointOfSaleOrderController()
+
+        @Test func checkOut_when_price_change_detected_then_triggers_incremental_sync() async throws {
+            // Given
+            let catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
+            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
+            orderController.detectsPriceChangeResult = true
+            let siteID: Int64 = 777
+            let sut = makePointOfSaleAggregateModel(
+                orderController: orderController,
+                siteID: siteID,
+                catalogSyncCoordinator: catalogSyncCoordinator
+            )
+            sut.addToCart(makePurchasableItem())
+
+            // Then: set the callback before checkOut so it fires when the fire-and-forget Task runs
+            await withCheckedContinuation { continuation in
+                var resumed = false
+                catalogSyncCoordinator.onPerformIncrementalSyncCalled = {
+                    guard !resumed else { return }
+                    resumed = true
+                    continuation.resume()
+                }
+
+                // When
+                Task { await sut.checkOut() }
+            }
+            #expect(catalogSyncCoordinator.performIncrementalSyncInvocationCount >= 1)
+            #expect(catalogSyncCoordinator.performIncrementalSyncSiteID == siteID)
+        }
+
+        @Test func checkOut_when_no_price_change_then_does_not_trigger_incremental_sync() async throws {
+            // Given
+            let catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
+            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
+            orderController.detectsPriceChangeResult = false
+            let sut = makePointOfSaleAggregateModel(
+                orderController: orderController,
+                catalogSyncCoordinator: catalogSyncCoordinator
+            )
+            sut.addToCart(makePurchasableItem())
+
+            // When
+            await sut.checkOut()
+
+            // Then: give any hypothetical async work a chance to run, then verify no sync occurred
+            await Task.yield()
+            #expect(catalogSyncCoordinator.performIncrementalSyncInvocationCount == 0)
+        }
+    }
 }
 
 private func makePurchasableItem(name: String = "") -> POSItem {

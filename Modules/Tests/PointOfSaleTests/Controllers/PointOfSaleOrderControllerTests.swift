@@ -14,6 +14,8 @@ import protocol WooFoundation.Analytics
 import enum Networking.DotcomError
 import enum Networking.NetworkError
 import struct Yosemite.POSItemIdentifier
+@testable import struct Yosemite.POSSimpleProduct
+@testable import struct Yosemite.POSVariation
 
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
@@ -637,6 +639,173 @@ struct PointOfSaleOrderControllerTests {
         default:
             #expect(Bool(false), "Expected new order after failure cleared previous order, got \(subsequentResult)")
         }
+    }
+
+    // MARK: - Price Change Detection
+
+    @Test func detectsPriceChange_when_no_order_then_returns_false() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let productID: Int64 = 42
+        let simpleProduct = POSSimpleProduct(id: POSItemIdentifier(underlyingType: .product, itemID: productID),
+                                             name: "Test Product",
+                                             formattedPrice: "$10.00",
+                                             productID: productID,
+                                             price: "10.00",
+                                             manageStock: false,
+                                             stockQuantity: nil,
+                                             stockStatusKey: "instock")
+        let cartItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: "Test Product", subtitle: nil, quantity: 1)
+        let cart = Cart(purchasableItems: [cartItem])
+        // No order synced — sut.order is nil
+
+        // When
+        let result = sut.detectsPriceChange(for: cart)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func detectsPriceChange_when_exTax_price_matches_then_returns_false() async throws {
+        // Given: a store where prices are tax-exclusive (subtotal/qty == cart price)
+        let productID: Int64 = 42
+        let simpleProduct = POSSimpleProduct(id: POSItemIdentifier(underlyingType: .product, itemID: productID),
+                                             name: "Test Product",
+                                             formattedPrice: "$10.00",
+                                             productID: productID,
+                                             price: "10.00",
+                                             manageStock: false,
+                                             stockQuantity: nil,
+                                             stockStatusKey: "instock")
+        let orderItem = OrderItem.fake().copy(productID: productID,
+                                              variationID: 0,
+                                              quantity: 1,
+                                              subtotal: "10.00",
+                                              subtotalTax: "0.00")
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let cartItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: "Test Product", subtitle: nil, quantity: 1)
+        let cart = Cart(purchasableItems: [cartItem])
+
+        // Sync the order so the internal `order` property is set
+        await sut.syncOrder(for: cart, retryHandler: {})
+
+        // When
+        let result = sut.detectsPriceChange(for: cart)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func detectsPriceChange_when_taxInclusive_price_matches_then_returns_false() async throws {
+        // Given: a store where prices are tax-inclusive ((subtotal+subtotalTax)/qty == cart price)
+        let productID: Int64 = 42
+        let simpleProduct = POSSimpleProduct(id: POSItemIdentifier(underlyingType: .product, itemID: productID),
+                                             name: "Test Product",
+                                             formattedPrice: "$11.00",
+                                             productID: productID,
+                                             price: "11.00",
+                                             manageStock: false,
+                                             stockQuantity: nil,
+                                             stockStatusKey: "instock")
+        // Ex-tax price is 10.00, tax is 1.00, so tax-inclusive unit price = (10.00 + 1.00) / 1 = 11.00
+        let orderItem = OrderItem.fake().copy(productID: productID,
+                                              variationID: 0,
+                                              quantity: 1,
+                                              subtotal: "10.00",
+                                              subtotalTax: "1.00")
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let cartItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: "Test Product", subtitle: nil, quantity: 1)
+        let cart = Cart(purchasableItems: [cartItem])
+        await sut.syncOrder(for: cart, retryHandler: {})
+
+        // When
+        let result = sut.detectsPriceChange(for: cart)
+
+        // Then
+        #expect(result == false)
+    }
+
+    @Test func detectsPriceChange_when_price_genuinely_changed_then_returns_true() async throws {
+        // Given: cart price is 12.00 but neither 10.00 (ex-tax) nor 11.00 (tax-inclusive) match
+        let productID: Int64 = 42
+        let simpleProduct = POSSimpleProduct(id: POSItemIdentifier(underlyingType: .product, itemID: productID),
+                                             name: "Test Product",
+                                             formattedPrice: "$12.00",
+                                             productID: productID,
+                                             price: "12.00",
+                                             manageStock: false,
+                                             stockQuantity: nil,
+                                             stockStatusKey: "instock")
+        let orderItem = OrderItem.fake().copy(productID: productID,
+                                              variationID: 0,
+                                              quantity: 1,
+                                              subtotal: "10.00",
+                                              subtotalTax: "1.00")
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let cartItem = Cart.PurchasableItem(id: UUID(), item: simpleProduct, title: "Test Product", subtitle: nil, quantity: 1)
+        let cart = Cart(purchasableItems: [cartItem])
+        await sut.syncOrder(for: cart, retryHandler: {})
+
+        // When
+        let result = sut.detectsPriceChange(for: cart)
+
+        // Then
+        #expect(result == true)
+    }
+
+    @Test func detectsPriceChange_when_variation_price_changed_then_returns_true() async throws {
+        // Given: a variation whose price changed (9.00) vs order line item (8.00 ex-tax, 8.80 tax-inclusive)
+        let productID: Int64 = 10
+        let variationID: Int64 = 99
+        let variation = POSVariation(id: POSItemIdentifier(underlyingType: .variation, itemID: variationID),
+                                     name: "Blue / Large",
+                                     formattedPrice: "$9.00",
+                                     price: "9.00",
+                                     productID: productID,
+                                     variationID: variationID,
+                                     parentProductName: "T-Shirt")
+        let orderItem = OrderItem.fake().copy(productID: productID,
+                                              variationID: variationID,
+                                              quantity: 1,
+                                              subtotal: "8.00",
+                                              subtotalTax: "0.80")
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let cartItem = Cart.PurchasableItem(id: UUID(), item: variation, title: "Blue / Large", subtitle: nil, quantity: 1)
+        let cart = Cart(purchasableItems: [cartItem])
+        await sut.syncOrder(for: cart, retryHandler: {})
+
+        // When
+        let result = sut.detectsPriceChange(for: cart)
+
+        // Then
+        #expect(result == true)
     }
 
     @MainActor

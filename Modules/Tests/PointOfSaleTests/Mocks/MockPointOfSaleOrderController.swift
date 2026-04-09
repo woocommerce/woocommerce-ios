@@ -45,4 +45,9 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             throw sendReceiptErrorToThrow
         }
     }
+
+    var detectsPriceChangeResult: Bool = false
+    func detectsPriceChange(for cart: Cart) -> Bool {
+        detectsPriceChangeResult
+    }
 }

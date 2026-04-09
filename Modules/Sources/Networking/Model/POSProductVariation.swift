@@ -43,7 +43,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 fullDescription: String?,
                 sku: String?,
                 globalUniqueID: String?,
-                typeKey: String = "variation",
+                typeKey: String,
                 price: String,
                 downloadable: Bool,
                 manageStock: Bool,

@@ -188,7 +188,6 @@ struct PointOfSaleDashboardView: View {
                 ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                              searchTerm: $viewStateCoordinator.searchTerm)
                     .frame(width: productsWidth)
-                    .accessibilitySortPriority(posModel.orderStage == .building ? 2 : 0)
                     .allowsHitTesting(posModel.orderStage == .building)
 
                 NavigationStack(path: $navigationPath) {
@@ -197,7 +196,6 @@ struct PointOfSaleDashboardView: View {
                             && posModel.paymentState.cash != .paymentSuccess {
                             CartView()
                                 .frame(width: cartWidth)
-                                .accessibilitySortPriority(1)
                         }
 
                         let totalsWidth = posModel.paymentState.card.shownFullScreen
@@ -208,7 +206,6 @@ struct PointOfSaleDashboardView: View {
                         TotalsView()
                             .background(Color.posSurface)
                             .frame(width: totalsWidth)
-                            .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
                             .allowsHitTesting(posModel.orderStage == .finalizing)
                     }
                     .navigationDestination(for: POSNavigationDestination.self) { destination in

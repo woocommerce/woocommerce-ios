@@ -3,6 +3,18 @@ import Observation
 import Yosemite
 import protocol WooFoundation.Analytics
 
+/// Input data for the booking reschedule flow.
+struct BookingRescheduleInput {
+    /// The booking to reschedule.
+    let booking: Booking
+
+    /// Duration of the booking in seconds, calculated from the product or from booking dates.
+    let durationInSeconds: TimeInterval
+
+    /// Resource IDs associated with the booking product.
+    let resourceIDs: [Int64]
+}
+
 @Observable
 final class RescheduleBookingViewModel {
     private let booking: Booking
@@ -23,5 +35,6 @@ final class RescheduleBookingViewModel {
         self.resourceIDs = input.resourceIDs
         self.stores = stores
         self.analytics = analytics
+        DDLogDebug("Duration: \(durationInSeconds), resourceIDs: \(resourceIDs)")
     }
 }

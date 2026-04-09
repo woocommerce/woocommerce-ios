@@ -57,6 +57,16 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         case wordPressRESTAPI
         case wooCommerceAPI
         case applicationPasswords
+
+        var analyticValue: String {
+            switch self {
+            case .siteInfo: "site_info"
+            case .apiDiscovery: "api_discovery"
+            case .wordPressRESTAPI: "wordpress_rest_api"
+            case .wooCommerceAPI: "woocommerce_api"
+            case .applicationPasswords: "application_passwords"
+            }
+        }
     }
 
     /// Cards to be rendered by the view.
@@ -142,16 +152,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 private extension PreLoginConnectivityToolViewModel {
 
     func trackResponseEvent(for test: ConnectivityTest, success: Bool, timeTaken: Double) {
-        let eventTest: WooAnalyticsEvent.ConnectivityTool.PreLoginTest = {
-            switch test {
-            case .siteInfo: return .siteInfo
-            case .apiDiscovery: return .apiDiscovery
-            case .wordPressRESTAPI: return .wordPressRESTAPI
-            case .wooCommerceAPI: return .wooCommerceAPI
-            case .applicationPasswords: return .applicationPasswords
-            }
-        }()
-        analytics.track(event: .ConnectivityTool.preLoginRequestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+        analytics.track(event: .ConnectivityTool.preLoginRequestResponse(testName: test.analyticValue, success: success, timeTaken: timeTaken))
     }
 }
 

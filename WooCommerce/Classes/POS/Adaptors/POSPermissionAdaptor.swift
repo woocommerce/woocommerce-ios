@@ -1,5 +1,6 @@
 import Foundation
 import PointOfSale
+import Yosemite
 import enum Experiments.FeatureFlag
 
 /// Factory that creates the correct POS permission provider based on feature flags.
@@ -7,16 +8,40 @@ struct POSPermissionAdaptor {
     static func createProvider(
         siteID: Int64,
         userID: Int64,
-        displayName: String
+        displayName: String,
+        stores: StoresManager = ServiceLocator.stores
     ) -> POSPermissionProviding {
         let featureFlagService = ServiceLocator.featureFlagService
 
         if featureFlagService.isFeatureFlagEnabled(.pointOfSaleRemoteRoles) {
             return RemotePOSPermissionProvider(
-                approvalService: PlaceholderApprovalService(),
-                authenticatePINRemote: { _, _ in
-                    throw NSError(domain: "POSAuth", code: -1,
-                                  userInfo: [NSLocalizedDescriptionKey: "Remote auth not yet configured"])
+                approvalService: RemotePOSApprovalService(siteID: siteID, stores: stores),
+                authenticatePINRemote: { pin, registerID in
+                    try await withCheckedThrowingContinuation { continuation in
+                        let action = POSAuthAction.authenticatePIN(
+                            siteID: siteID,
+                            pin: pin,
+                            registerID: registerID
+                        ) { result in
+                            switch result {
+                            case .success(let networkResult):
+                                let response = POSPINAuthResponse(
+                                    userID: networkResult.userID,
+                                    displayName: networkResult.displayName,
+                                    role: networkResult.role,
+                                    capabilities: networkResult.capabilities,
+                                    applicationPassword: networkResult.applicationPassword,
+                                    applicationPasswordUUID: networkResult.applicationPasswordUUID,
+                                    sessionExpires: networkResult.sessionExpires,
+                                    idleTimeoutSeconds: networkResult.idleTimeoutSeconds
+                                )
+                                continuation.resume(returning: response)
+                            case .failure(let error):
+                                continuation.resume(throwing: error)
+                            }
+                        }
+                        stores.dispatch(action)
+                    }
                 },
                 appAccountUserID: userID
             )
@@ -29,13 +54,6 @@ struct POSPermissionAdaptor {
         } else {
             return EmptyPOSPermissionAdaptor()
         }
-    }
-}
-
-private struct PlaceholderApprovalService: POSApprovalServiceProtocol {
-    func requestApproval(pin: String, action: String, context: [String: Int64]) async throws -> String {
-        throw NSError(domain: "POSAuth", code: -1,
-                      userInfo: [NSLocalizedDescriptionKey: "Approval service not yet configured"])
     }
 }
 

@@ -74,6 +74,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
             XCTAssertEqual(storedFulfillment?.isFulfilled, true)
             XCTAssertEqual(storedFulfillment?.trackingNumber, "1Z999AA10123456784")
             XCTAssertEqual(storedFulfillment?.shipmentProvider, "ups")
+            XCTAssertEqual(storedFulfillment?.providerName, "")
             XCTAssertNotNil(storedFulfillment?.dateUpdated)
             XCTAssertNotNil(storedFulfillment?.dateFulfilled)
 

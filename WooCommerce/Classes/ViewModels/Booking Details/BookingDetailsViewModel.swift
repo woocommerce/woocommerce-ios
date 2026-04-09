@@ -1,4 +1,5 @@
 import EventHorizonSDK
+import Experiments
 import Foundation
 import SwiftUI
 import Yosemite
@@ -25,6 +26,10 @@ final class BookingDetailsViewModel: ObservableObject {
     private let paymentContent = PaymentContent()
     private let notesContent = NotesContent()
     private let analytics: Analytics
+    private let featureFlagService: FeatureFlagService
+
+    /// Product fetched for the booking, used to calculate duration and get resources.
+    private(set) var bookingProduct: Product?
 
     // EntityListener: Update / Deletion Notifications.
     ///
@@ -37,12 +42,25 @@ final class BookingDetailsViewModel: ObservableObject {
     @Published private(set) var isViewOrderAvailable = true
     @Published var notice: Notice?
 
+    /// Input for the reschedule booking flow, set when the user taps the Reschedule button.
+    @Published var rescheduleInput: BookingRescheduleInput?
+
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
     }
 
     var shouldShowAttendanceButton: Bool {
         booking.bookingStatus != .cancelled
+    }
+
+    /// Whether the Reschedule button should be shown.
+    /// Hidden for bookings with status: canceled, completed, failed, or in-cart.
+    var shouldShowRescheduleButton: Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.ciabBookingReschedule) else {
+            return false
+        }
+        let ineligibleStatuses: [BookingStatus] = [.cancelled, .complete, .failed, .inCart]
+        return !ineligibleStatuses.contains(booking.bookingStatus)
     }
 
     var attendanceButtonTitle: String {
@@ -58,11 +76,13 @@ final class BookingDetailsViewModel: ObservableObject {
     init(booking: Booking,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.booking = booking
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.bookingResource = storage.viewStorage.loadBookingResource(
             siteID: booking.siteID,
             resourceID: booking.resourceID
@@ -71,6 +91,11 @@ final class BookingDetailsViewModel: ObservableObject {
             siteID: booking.siteID,
             bookingID: booking.bookingID
         )?.location
+
+        // Load product from storage cache for early access
+        if let storedProduct = storage.viewStorage.loadProduct(siteID: booking.siteID, productID: booking.productID) {
+            self.bookingProduct = storedProduct.toReadOnly()
+        }
 
         setupSections()
         configureEntityListener()
@@ -215,6 +240,7 @@ extension BookingDetailsViewModel {
         async let resourceResult = fetchResource()
         async let bookingSync: Void = fetchBooking()
         async let locationResult = fetchBookingLocation()
+        async let productResult = fetchProduct()
 
         // Sequential updates
         if let resource = await resourceResult {
@@ -226,6 +252,10 @@ extension BookingDetailsViewModel {
 
         self.bookingLocation = await locationResult
         isLoadingLocation = false
+
+        if let product = await productResult {
+            self.bookingProduct = product
+        }
 
         // Persist location after booking sync completes
         // to avoid Core Data context race.
@@ -342,6 +372,33 @@ extension BookingDetailsViewModel {
     }
 }
 
+// MARK: - Reschedule booking
+
+extension BookingDetailsViewModel {
+    /// Calculates the booking duration in seconds.
+    /// Prefers the product's `bookingDuration` and `bookingDurationUnit` when available.
+    /// Falls back to the difference between booking end and start dates.
+    func calculateBookingDuration() -> TimeInterval {
+        if let product = bookingProduct,
+           let duration = product.bookingDuration,
+           let unitString = product.bookingDurationUnit,
+           let unit = Booking.DurationUnit(rawValue: unitString) {
+            return TimeInterval(duration) * unit.timeIntervalPerUnit
+        }
+        // Fallback: calculate from booking dates
+        return booking.endDate.timeIntervalSince(booking.startDate)
+    }
+
+    func rescheduleBooking() {
+        let duration = calculateBookingDuration()
+        let resourceIDs = bookingProduct?.bookingResourceIDs ?? []
+        rescheduleInput = BookingRescheduleInput(
+            booking: booking,
+            durationInSeconds: duration,
+            resourceIDs: resourceIDs
+        )
+    }
+}
 
 private extension BookingDetailsViewModel {
     @MainActor
@@ -407,6 +464,25 @@ private extension BookingDetailsViewModel {
             guard let storageBooking = storage.loadBooking(siteID: siteID, bookingID: bookingID) else { return }
             storageBooking.location = location
         }, completion: {}, on: .main)
+    }
+
+    @MainActor
+    func fetchProduct() async -> Product? {
+        do {
+            return try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.retrieveProduct(siteID: booking.siteID, productID: booking.productID) { result in
+                    switch result {
+                    case .success(let product):
+                        continuation.resume(returning: product)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                })
+            }
+        } catch {
+            DDLogError("⛔️ Error fetching product for Booking: \(error)")
+            return nil
+        }
     }
 }
 

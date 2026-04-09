@@ -243,6 +243,8 @@ public enum BookingStatus: String, CaseIterable, Codable {
     case cancelled
     case pendingConfirmation = "pending-confirmation"
     case confirmed
+    case failed
+    case inCart = "in-cart"
     case unknown
 }
 
@@ -250,4 +252,27 @@ public enum BookingAttendanceStatus: String, CaseIterable, Codable {
     case attended
     case unattended
     case unknown
+}
+
+// MARK: - Booking Duration Unit
+
+public extension Booking {
+    /// Represents the unit of a booking's duration.
+    enum DurationUnit: String {
+        case minute
+        case hour
+        case day
+
+        /// The number of seconds in one unit.
+        public var timeIntervalPerUnit: TimeInterval {
+            switch self {
+            case .minute:
+                return 60
+            case .hour:
+                return 3600
+            case .day:
+                return 86400
+            }
+        }
+    }
 }

@@ -7,6 +7,7 @@ struct POSSettingsView: View {
     @State private var selection: SidebarNavigation?
 
     let settingsController: POSSettingsControllerProtocol
+    let pinService: POSPINService
 
     var body: some View {
         POSNavigationSplitView(selection: $selection) { _ in
@@ -64,6 +65,12 @@ extension POSSettingsView {
                         selection = .localCatalog
                     })
                 }
+                POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
+                                    subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
+                                    isSelected: selection == .staff,
+                                    action: {
+                    selection = .staff
+                })
                 Spacer()
 
                 helpView
@@ -86,6 +93,8 @@ extension POSSettingsView {
             } else {
                 EmptyView()
             }
+        case .staff:
+            POSStaffSettingsView(pinService: pinService)
         case .help:
             POSSettingsHelpDetailView()
         }
@@ -123,6 +132,7 @@ extension POSSettingsView {
         case store
         case hardware
         case localCatalog
+        case staff
         case help
 
         var id: Self { self }
@@ -132,6 +142,7 @@ extension POSSettingsView {
             case .store: return Localization.sidebarNavigationStoreTitle
             case .hardware: return Localization.sidebarNavigationHardwareTitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogTitle
+            case .staff: return Localization.sidebarNavigationStaffTitle
             case .help: return Localization.sidebarNavigationHelpTitle
             }
         }
@@ -141,13 +152,14 @@ extension POSSettingsView {
             case .store: return Localization.sidebarNavigationStoreSubtitle
             case .hardware: return Localization.sidebarNavigationHardwareSubtitle
             case .localCatalog: return Localization.sidebarNavigationLocalCatalogSubtitle
+            case .staff: return Localization.sidebarNavigationStaffSubtitle
             case .help: return Localization.sidebarNavigationHelpSubtitle
             }
         }
 
         var icon: String? {
             switch self {
-            case .store, .hardware, .localCatalog:
+            case .store, .hardware, .localCatalog, .staff:
                 return nil
             case .help:
                 return "questionmark.circle"
@@ -204,6 +216,18 @@ extension POSSettingsView {
             comment: "Description of the settings to be found within the Local catalog section."
         )
 
+        static let sidebarNavigationStaffTitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationStaffTitle",
+            value: "Staff",
+            comment: "Title of the Staff section within Point of Sale settings."
+        )
+
+        static let sidebarNavigationStaffSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsView.sidebarNavigationStaffSubtitle",
+            value: "Manage staff PINs and roles",
+            comment: "Description of the settings to be found within the Staff section."
+        )
+
         static let sidebarNavigationHelpSubtitle = NSLocalizedString(
             "pointOfSaleSettingsView.sidebarNavigationHelpSubtitle",
             value: "Get help and support",
@@ -214,6 +238,7 @@ extension POSSettingsView {
 
 #if DEBUG
 #Preview {
-    POSSettingsView(settingsController: POSSettingsPreviewController())
+    POSSettingsView(settingsController: POSSettingsPreviewController(),
+                    pinService: POSPINService(storage: InMemoryPINStorage()))
 }
 #endif

@@ -178,12 +178,15 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 
     /// Compares two decimal amounts with a tolerance to account for tax rounding differences.
-    private func approximatelyEqual(_ a: NSDecimalNumber, _ b: NSDecimalNumber, tolerance: NSDecimalNumber = NSDecimalNumber(string: "0.01")) -> Bool {
+    /// Half a cent (0.005) absorbs server-side tax rounding (typically ~0.002) while still
+    /// detecting real price changes of $0.01 or more.
+    private func approximatelyEqual(_ a: NSDecimalNumber, _ b: NSDecimalNumber) -> Bool {
+        let halfCent = NSDecimalNumber(string: "0.005")
         let difference = a.subtracting(b)
         let absoluteDifference = difference.compare(NSDecimalNumber.zero) == .orderedAscending
             ? difference.multiplying(by: NSDecimalNumber(value: -1))
             : difference
-        return absoluteDifference.compare(tolerance) != .orderedDescending
+        return absoluteDifference.compare(halfCent) != .orderedDescending
     }
 }
 

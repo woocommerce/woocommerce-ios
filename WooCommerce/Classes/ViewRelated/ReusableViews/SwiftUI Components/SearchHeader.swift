@@ -72,11 +72,7 @@ struct SearchHeader: View {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundColor(Color(.tertiaryLabel))
                 }
-                .accessibilityLabel(NSLocalizedString(
-                    "searchHeader.clearButton.accessibilityLabel",
-                    value: "Clear search",
-                    comment: "Accessibility label for the clear button in the search header"
-                ))
+                .accessibilityLabel(Localization.clearAccessibilityLabel)
             }
 
             Spacer()
@@ -100,6 +96,14 @@ private extension SearchHeader {
         static let internalPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 10
         static let externalPadding = EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
+    }
+    
+    enum Localization {
+        static let clearAccessibilityLabel = NSLocalizedString(
+            "searchHeader.clearButton.accessibilityLabel",
+            value: "Clear",
+            comment: "Accessibility label for the clear button in the search header"
+        )
     }
 }
 

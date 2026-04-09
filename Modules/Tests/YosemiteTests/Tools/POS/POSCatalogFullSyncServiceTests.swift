@@ -320,8 +320,8 @@ struct POSCatalogFullSyncServiceTests {
         // Given - First request returns scheduled (no URL), then after polling returns completed with URL
         mockSyncRemote.catalogRequestSequence = [
             .success(.init(status: .scheduled, downloadURL: nil)),  // Initial request
-            .success(.init(status: .processing, downloadURL: nil)), // Poll 1
-            .success(.init(status: .processing, downloadURL: nil)), // Poll 2
+            .success(.init(status: .inProgress, downloadURL: nil)), // Poll 1
+            .success(.init(status: .inProgress, downloadURL: nil)), // Poll 2
             .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json")) // Poll 3 - success
         ]
         mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
@@ -346,7 +346,7 @@ struct POSCatalogFullSyncServiceTests {
         // Given - Returns failed status
         mockSyncRemote.catalogRequestSequence = [
             .success(.init(status: .scheduled, downloadURL: nil)),  // Initial request
-            .success(.init(status: .processing, downloadURL: nil)), // Poll 1
+            .success(.init(status: .inProgress, downloadURL: nil)), // Poll 1
             .success(.init(status: .failed, downloadURL: nil))      // Poll 2 - failed
         ]
 

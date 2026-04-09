@@ -1,9 +1,8 @@
+import Foundation
 import Yosemite
 
 /// Input data for the booking reschedule flow.
-struct BookingRescheduleInput: Identifiable {
-    var id: Int64 { booking.bookingID }
-
+struct BookingRescheduleInput {
     /// The booking to reschedule.
     let booking: Booking
 

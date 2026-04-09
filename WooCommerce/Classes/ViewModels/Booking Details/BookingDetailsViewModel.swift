@@ -42,8 +42,11 @@ final class BookingDetailsViewModel: ObservableObject {
     @Published private(set) var isViewOrderAvailable = true
     @Published var notice: Notice?
 
+    /// Whether the reschedule booking sheet is presented.
+    @Published var showingRescheduleSheet = false
+
     /// Input for the reschedule booking flow, set when the user taps the Reschedule button.
-    @Published var rescheduleInput: BookingRescheduleInput?
+    private(set) var rescheduleInput: BookingRescheduleInput?
 
     var bookingAttendanceStatus: BookingAttendanceStatus {
         booking.attendanceStatus
@@ -59,7 +62,7 @@ final class BookingDetailsViewModel: ObservableObject {
         guard featureFlagService.isFeatureFlagEnabled(.ciabBookingReschedule) else {
             return false
         }
-        let ineligibleStatuses: [BookingStatus] = [.cancelled, .complete, .failed, .inCart]
+        let ineligibleStatuses: [BookingStatus] = [.cancelled, .complete, .unknown] // treating failed and in-cart as unknown
         return !ineligibleStatuses.contains(booking.bookingStatus)
     }
 
@@ -397,6 +400,7 @@ extension BookingDetailsViewModel {
             durationInSeconds: duration,
             resourceIDs: resourceIDs
         )
+        showingRescheduleSheet = true
     }
 }
 

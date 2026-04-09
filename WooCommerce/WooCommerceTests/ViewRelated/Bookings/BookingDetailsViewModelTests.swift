@@ -541,8 +541,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             startDate: Date(),
             endDate: Date().addingTimeInterval(7200) // 2 hours
         )
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+        let viewModel = givenViewModel(booking: booking)
 
         // Simulate product being fetched with 90-minute duration
         let product = Product.fake().copy(bookingDuration: 90, bookingDurationUnit: "minute")
@@ -561,8 +560,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
             startDate: Date(),
             endDate: Date().addingTimeInterval(3600)
         )
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+        let viewModel = givenViewModel(booking: booking)
 
         let product = Product.fake().copy(bookingDuration: 2, bookingDurationUnit: "hour")
         viewModel.bookingProduct = product
@@ -579,10 +577,9 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let start = Date()
         let end = start.addingTimeInterval(5400) // 90 minutes
         let booking = Booking.fake().copy(startDate: start, endDate: end)
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
 
         // When
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+        let viewModel = givenViewModel(booking: booking)
         let duration = viewModel.calculateBookingDuration()
 
         // Then
@@ -610,6 +607,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         viewModel.rescheduleBooking()
 
         // Then
+        XCTAssertTrue(viewModel.showingRescheduleSheet)
         XCTAssertNotNil(viewModel.rescheduleInput)
         XCTAssertEqual(viewModel.rescheduleInput?.durationInSeconds, 3600) // 60 minutes
         XCTAssertEqual(viewModel.rescheduleInput?.resourceIDs, [10, 20, 30])
@@ -621,13 +619,13 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let start = Date()
         let end = start.addingTimeInterval(1800)
         let booking = Booking.fake().copy(startDate: start, endDate: end)
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
+        let viewModel = givenViewModel(booking: booking)
 
         // When
         viewModel.rescheduleBooking()
 
         // Then
+        XCTAssertTrue(viewModel.showingRescheduleSheet)
         XCTAssertNotNil(viewModel.rescheduleInput)
         XCTAssertEqual(viewModel.rescheduleInput?.durationInSeconds, 1800)
         XCTAssertEqual(viewModel.rescheduleInput?.resourceIDs, [])

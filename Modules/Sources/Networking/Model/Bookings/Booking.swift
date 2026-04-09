@@ -243,8 +243,6 @@ public enum BookingStatus: String, CaseIterable, Codable {
     case cancelled
     case pendingConfirmation = "pending-confirmation"
     case confirmed
-    case failed
-    case inCart = "in-cart"
     case unknown
 }
 
@@ -258,12 +256,15 @@ public enum BookingAttendanceStatus: String, CaseIterable, Codable {
 
 public extension Booking {
     /// Represents the unit of a booking's duration.
+    /// Valid values defined in `woocommerce-bookings/includes/data-objects/class-wc-product-booking.php`.
     enum DurationUnit: String {
         case minute
         case hour
         case day
+        case month
 
         /// The number of seconds in one unit.
+        /// For `month`, uses a 30-day approximation.
         public var timeIntervalPerUnit: TimeInterval {
             switch self {
             case .minute:
@@ -272,6 +273,8 @@ public extension Booking {
                 return 3600
             case .day:
                 return 86400
+            case .month:
+                return 86400 * 30
             }
         }
     }

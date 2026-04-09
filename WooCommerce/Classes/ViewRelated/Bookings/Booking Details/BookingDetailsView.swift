@@ -90,8 +90,10 @@ struct BookingDetailsView: View {
         } message: {
             Text(viewModel.cancellationAlertMessage)
         }
-        .sheet(item: $viewModel.rescheduleInput) { input in
-            RescheduleBookingView(viewModel: RescheduleBookingViewModel(input: input))
+        .sheet(isPresented: $viewModel.showingRescheduleSheet) {
+            if let input = viewModel.rescheduleInput {
+                RescheduleBookingView(viewModel: RescheduleBookingViewModel(input: input))
+            }
         }
         .notice($notice)
         .notice($viewModel.notice)

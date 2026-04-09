@@ -10,7 +10,7 @@ struct RescheduleBookingView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Text("")
                 .navigationTitle(Localization.title)
                 .navigationBarTitleDisplayMode(.inline)

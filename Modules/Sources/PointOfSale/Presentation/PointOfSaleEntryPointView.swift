@@ -30,6 +30,7 @@ public struct PointOfSaleEntryPointView: View {
     @State private var orderListModel: POSOrderListModel
     @State private var posEntryPointController: POSEntryPointController
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.dismiss) private var dismiss
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
@@ -53,6 +54,7 @@ public struct PointOfSaleEntryPointView: View {
     private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
+    private let permissionProvider: POSPermissionProviding
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -168,17 +170,25 @@ public struct PointOfSaleEntryPointView: View {
         self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
+        self.permissionProvider = services.permissions
     }
 
     public var body: some View {
-        Group {
-            if let posModel {
-                PointOfSaleDashboardView()
-                    .environment(posModel)
-                    .environment(posModel.paymentModel)
-            } else {
-                PointOfSaleLoadingView()
+        ZStack {
+            Group {
+                if let posModel {
+                    PointOfSaleDashboardView()
+                        .environment(posModel)
+                        .environment(posModel.paymentModel)
+                } else {
+                    PointOfSaleLoadingView()
+                }
             }
+
+            POSLockScreenOverlay(
+                permissionProvider: permissionProvider,
+                onLogout: { dismiss() }
+            )
         }
         .task {
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
@@ -216,6 +226,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posConnectivityProvider, services.connectivity)
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
+        .environment(\.posPermissions, permissionProvider)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)

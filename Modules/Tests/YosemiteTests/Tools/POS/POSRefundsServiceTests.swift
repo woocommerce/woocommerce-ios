@@ -115,7 +115,7 @@ struct POSRefundsServiceTests {
         let remote = MockPOSRefundsRemote()
         let gateway = PaymentGateway(siteID: 123,
                                      gatewayID: "woocommerce_payments",
-                                     title: "WooCommerce Payments",
+                                     title: "WooPayments",
                                      description: "",
                                      enabled: true,
                                      features: [.refunds],
@@ -238,6 +238,117 @@ struct POSRefundsServiceTests {
 
         // Then
         #expect(result.isFullyRefunded == true)
+    }
+
+    // MARK: - loadRefundData Tests
+
+    @Test func loadRefundData_then_calls_remote_with_expected_params() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let siteID: Int64 = 123
+        let sut = makeSUT(siteID: siteID, remote: remote)
+        let orderRefunds = [
+            POSOrderRefund(refundID: 10, formattedTotal: "-$22"),
+            POSOrderRefund(refundID: 20, formattedTotal: "-$15")
+        ]
+        let order = makeOrder(id: 1, refunds: orderRefunds)
+
+        // When
+        _ = try await sut.loadOrderRefunds(for: order)
+
+        // Then
+        #expect(remote.spySiteID == siteID)
+        #expect(remote.spyOrderID == order.id)
+        #expect(remote.spyRefundIDs == [10, 20])
+    }
+
+    @Test func loadRefundData_when_remote_fails_then_propagates_error() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        struct TestError: Error {}
+        remote.result = .failure(TestError())
+        let sut = makeSUT(remote: remote)
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10")])
+
+        // Then
+        do {
+            _ = try await sut.loadOrderRefunds(for: order)
+            Issue.record("Expected error to be thrown")
+        } catch {
+            #expect(error is TestError)
+        }
+    }
+
+    @Test func loadRefundData_then_maps_refunds_with_dateCreated() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+        let expectedDate = Date(timeIntervalSince1970: 1000000)
+        let refund = MockRefunds.sampleRefund(refundID: 10, dateCreated: expectedDate, amount: "25.50", reason: "Customer request")
+        remote.result = .success([refund])
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 10, formattedTotal: "-$25.50")])
+
+        // When
+        let result = try await sut.loadOrderRefunds(for: order)
+
+        // Then
+        #expect(result.count == 1)
+        #expect(result[0].refundID == 10)
+        #expect(result[0].dateCreated == expectedDate)
+        #expect(result[0].reason == "Customer request")
+    }
+
+    @Test func loadRefundData_then_formats_enrichedRefund_amount_as_negative() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+        let refund = MockRefunds.sampleRefund(refundID: 1, amount: "42.99")
+        remote.result = .success([refund])
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$42.99")])
+
+        // When
+        let result = try await sut.loadOrderRefunds(for: order)
+
+        // Then
+        #expect(result[0].formattedTotal.contains("-"))
+        #expect(result[0].formattedTotal.contains("42.99"))
+    }
+
+    @Test func loadRefundData_when_reason_is_empty_then_enrichedRefund_reason_is_nil() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+        let refund = MockRefunds.sampleRefund(refundID: 1, reason: "")
+        remote.result = .success([refund])
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10")])
+
+        // When
+        let result = try await sut.loadOrderRefunds(for: order)
+
+        // Then
+        #expect(result[0].reason == nil)
+    }
+
+    @Test func loadOrderRefunds_then_refunds_contain_items_and_subtotal_and_tax() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+        let items = [
+            MockRefunds.sampleRefundItem(name: "Cup", quantity: -1, price: 18.00, total: "-18.00", totalTax: "-3.60"),
+            MockRefunds.sampleRefundItem(itemID: 2, name: "Mug", refundedItemID: "2", quantity: -2, price: 5.00, total: "-10.00", totalTax: "-2.00")
+        ]
+        let refund = MockRefunds.sampleRefund(refundID: 1, amount: "33.60", items: items)
+        remote.result = .success([refund])
+        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$33.60")])
+
+        // When
+        let result = try await sut.loadOrderRefunds(for: order)
+
+        // Then
+        #expect(result[0].items.count == 2)
+        #expect(result[0].itemCount == 2)
+        #expect(result[0].formattedItemsSubtotal.contains("28.00"))
+        #expect(result[0].formattedTax.contains("5.60"))
     }
 
     // MARK: - createRefund Tests
@@ -383,6 +494,43 @@ struct POSRefundsServiceTests {
 
         // Then
         #expect(remote.spyCreateRefund?.createAutomated == false)
+    }
+
+    @Test func createRefund_then_sends_positive_quantities_and_totals_to_remote() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let calculator = MockPOSRefundCalculator()
+        calculator.stubRefundRequest = POSRefundRequest(
+            orderID: 456,
+            amount: try #require(Decimal(string: "50.00")),
+            reason: nil,
+            items: [
+                POSRefundRequestItem(itemID: 10, quantity: 2,
+                                     refundTotal: try #require(Decimal(string: "32.00")),
+                                     refundTax: try #require(Decimal(string: "3.20"))),
+                POSRefundRequestItem(itemID: 20, quantity: 1,
+                                     refundTotal: try #require(Decimal(string: "18.00")),
+                                     refundTax: try #require(Decimal(string: "1.80")))
+            ]
+        )
+        let sut = makeSUT(remote: remote, calculator: calculator)
+
+        // When
+        try await sut.createRefund(orderID: 456, items: [], reason: nil, isAutomaticRefund: true)
+
+        // Then - quantities and totals must be positive (the WooCommerce API negates them)
+        let refund = try #require(remote.spyCreateRefund)
+        #expect(refund.items.count == 2)
+
+        let firstItem = refund.items[0]
+        #expect(firstItem.quantity == Decimal(2))
+        #expect(firstItem.total == "32.00")
+        #expect(firstItem.taxes.first?.total == "3.20")
+
+        let secondItem = refund.items[1]
+        #expect(secondItem.quantity == Decimal(1))
+        #expect(secondItem.total == "18.00")
+        #expect(secondItem.taxes.first?.total == "1.80")
     }
 
     @Test func createRefund_when_remote_fails_then_propagates_error() async throws {

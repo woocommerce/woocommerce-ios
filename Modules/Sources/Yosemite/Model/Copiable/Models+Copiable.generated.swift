@@ -62,6 +62,7 @@ extension Yosemite.POSBooking {
     public func copy(
         id: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
         customerName: NullableCopiableProp<String> = .copy,
         serviceName: CopiableProp<String> = .copy,
         startDate: CopiableProp<Date> = .copy,
@@ -85,6 +86,7 @@ extension Yosemite.POSBooking {
     ) -> Yosemite.POSBooking {
         let id = id ?? self.id
         let customerID = customerID ?? self.customerID
+        let userID = userID ?? self.userID
         let customerName = customerName ?? self.customerName
         let serviceName = serviceName ?? self.serviceName
         let startDate = startDate ?? self.startDate
@@ -109,6 +111,7 @@ extension Yosemite.POSBooking {
         return Yosemite.POSBooking(
             id: id,
             customerID: customerID,
+            userID: userID,
             customerName: customerName,
             serviceName: serviceName,
             startDate: startDate,
@@ -166,6 +169,7 @@ extension Yosemite.POSOrder {
         formattedPaymentTotal: CopiableProp<String> = .copy,
         formattedNetAmount: NullableCopiableProp<String> = .copy,
         datePaid: NullableCopiableProp<Date> = .copy,
+        paymentStatusMetadata: NullableCopiableProp<String> = .copy,
         lineItemQuantitiesByProductOrVariationID: CopiableProp<[Int64: Decimal]> = .copy
     ) -> Yosemite.POSOrder {
         let id = id ?? self.id
@@ -184,6 +188,7 @@ extension Yosemite.POSOrder {
         let formattedPaymentTotal = formattedPaymentTotal ?? self.formattedPaymentTotal
         let formattedNetAmount = formattedNetAmount ?? self.formattedNetAmount
         let datePaid = datePaid ?? self.datePaid
+        let paymentStatusMetadata = paymentStatusMetadata ?? self.paymentStatusMetadata
         let lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID ?? self.lineItemQuantitiesByProductOrVariationID
 
         return Yosemite.POSOrder(
@@ -203,6 +208,7 @@ extension Yosemite.POSOrder {
             formattedPaymentTotal: formattedPaymentTotal,
             formattedNetAmount: formattedNetAmount,
             datePaid: datePaid,
+            paymentStatusMetadata: paymentStatusMetadata,
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }

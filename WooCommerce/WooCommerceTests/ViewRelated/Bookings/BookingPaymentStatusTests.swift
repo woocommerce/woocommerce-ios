@@ -6,61 +6,72 @@ import Yosemite
 @Suite("BookingPaymentStatus resolver")
 struct BookingPaymentStatusTests {
 
-    @Test("Order status refunded resolves to refunded")
-    func test_refunded_order_status_resolves_to_refunded() {
-        let status = BookingPaymentStatus(orderStatusKey: "refunded", datePaid: nil)
-        #expect(status == .refunded)
-    }
+    // MARK: - Metadata-based resolution
 
-    @Test("datePaid set resolves to paid")
-    func test_datePaid_set_resolves_to_paid() {
-        let status = BookingPaymentStatus(orderStatusKey: "processing", datePaid: Date())
+    @Test("_payment_status 'paid' resolves to paid")
+    func test_paymentStatusMetadata_paid_resolves_to_paid() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "paid")
         #expect(status == .paid)
     }
 
-    @Test("Failed order status resolves to failed")
-    func test_failed_order_status_resolves_to_failed() {
-        let status = BookingPaymentStatus(orderStatusKey: "failed", datePaid: nil)
-        #expect(status == .failed)
-    }
-
-    @Test("Cancelled order status resolves to failed")
-    func test_cancelled_order_status_resolves_to_failed() {
-        let status = BookingPaymentStatus(orderStatusKey: "cancelled", datePaid: nil)
-        #expect(status == .failed)
-    }
-
-    @Test("Pending order with no datePaid resolves to unpaid")
-    func test_pending_order_with_no_datePaid_resolves_to_unpaid() {
-        let status = BookingPaymentStatus(orderStatusKey: "pending", datePaid: nil)
+    @Test("_payment_status 'unpaid' resolves to unpaid")
+    func test_paymentStatusMetadata_unpaid_resolves_to_unpaid() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "unpaid")
         #expect(status == .unpaid)
     }
 
-    @Test("refundTotal exceeding total resolves to refunded")
-    func test_refundTotal_exceeding_total_resolves_to_refunded() {
-        let status = BookingPaymentStatus(orderStatusKey: "processing",
-                                          datePaid: Date(),
-                                          refundTotal: 50,
-                                          total: 50)
+    @Test("_payment_status 'failed' resolves to failed")
+    func test_paymentStatusMetadata_failed_resolves_to_failed() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "failed")
+        #expect(status == .failed)
+    }
+
+    @Test("_payment_status 'refunded' resolves to refunded")
+    func test_paymentStatusMetadata_refunded_resolves_to_refunded() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "refunded")
         #expect(status == .refunded)
     }
 
-    @Test("Partial refund resolves to partiallyRefunded")
-    func test_partial_refund_resolves_to_partiallyRefunded() {
-        let status = BookingPaymentStatus(orderStatusKey: "processing",
-                                          datePaid: Date(),
-                                          refundTotal: 10,
-                                          total: 50)
+    @Test("_payment_status 'partially_refunded' resolves to partiallyRefunded")
+    func test_paymentStatusMetadata_partially_refunded_resolves_to_partiallyRefunded() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "partially_refunded")
         #expect(status == .partiallyRefunded)
     }
 
-    @Test("BookingPaymentStatus conforms to BookingBadgeable")
+    @Test("_payment_status 'authorized' resolves to authorized")
+    func test_paymentStatusMetadata_authorized_resolves_to_authorized() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "authorized")
+        #expect(status == .authorized)
+    }
+
+    @Test("_payment_status 'authorization_voided' resolves to authorizationVoided")
+    func test_paymentStatusMetadata_authorization_voided_resolves_to_authorizationVoided() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "authorization_voided")
+        #expect(status == .authorizationVoided)
+    }
+
+    @Test("Unknown _payment_status value defaults to unpaid")
+    func test_paymentStatusMetadata_unknown_value_defaults_to_unpaid() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: "some_future_value")
+        #expect(status == .unpaid)
+    }
+
+    @Test("nil _payment_status defaults to unpaid")
+    func test_paymentStatusMetadata_nil_defaults_to_unpaid() {
+        let status = BookingPaymentStatus(paymentStatusMetadata: nil)
+        #expect(status == .unpaid)
+    }
+
+    // MARK: - BookingBadgeable conformance
+
+    @Test("BookingPaymentStatus conforms to BookingBadgeable with correct text")
     func test_bookingBadgeable_conformance() {
-        let status: BookingBadgeable = BookingPaymentStatus.paid
-        #expect(status.text == "Paid")
+        #expect(BookingPaymentStatus.paid.text == "Paid")
         #expect(BookingPaymentStatus.unpaid.text == "Unpaid")
         #expect(BookingPaymentStatus.failed.text == "Failed")
         #expect(BookingPaymentStatus.refunded.text == "Refunded")
         #expect(BookingPaymentStatus.partiallyRefunded.text == "Partially Refunded")
+        #expect(BookingPaymentStatus.authorized.text == "Authorized")
+        #expect(BookingPaymentStatus.authorizationVoided.text == "Authorization Voided")
     }
 }

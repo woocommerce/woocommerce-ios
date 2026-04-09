@@ -160,6 +160,7 @@ private extension BookingDetailsView {
                 TitleAndValueRow(
                     title: row.title,
                     value: .placeholder(row.value),
+                    isLoading: row.isLoading,
                     horizontalPadding: 0,
                     isMultiline: false
                 )
@@ -318,6 +319,7 @@ struct BookingDetailsView_Previews: PreviewProvider {
             allDay: false,
             cost: "$70.00",
             customerID: 456,
+            userID: 456,
             dateCreated: now,
             dateModified: now,
             endDate: hourFromNow,

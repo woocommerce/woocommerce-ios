@@ -100,7 +100,7 @@ extension FancyAlertViewController {
             message = NSLocalizedString("Incorrect username or password. Please try entering your login details again.", comment: "An error message shown when a user signed in with incorrect credentials.")
         }
 
-        if message.trim().count == 0 {
+        if message.trim().isEmpty {
             message = NSLocalizedString("Log in failed. Please try again.", comment: "A generic error message for a failed log in.")
         }
 
@@ -125,7 +125,12 @@ extension FancyAlertViewController {
                 }
 
                 let state = AuthenticatorAnalyticsTracker.shared.state
-                authDelegate.presentSupport(from: sourceViewController, sourceTag: sourceTag, lastStep: state.lastStep, lastFlow: state.lastFlow)
+                let siteAddress = loginFields.siteAddress.isEmpty ? nil : loginFields.siteAddress
+                authDelegate.presentSupport(from: sourceViewController,
+                                            sourceTag: sourceTag,
+                                            lastStep: state.lastStep,
+                                            lastFlow: state.lastFlow,
+                                            siteURL: siteAddress)
             }
         }
 

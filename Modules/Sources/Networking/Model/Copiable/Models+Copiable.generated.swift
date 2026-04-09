@@ -435,6 +435,7 @@ extension Networking.Booking {
         allDay: CopiableProp<Bool> = .copy,
         cost: CopiableProp<String> = .copy,
         customerID: CopiableProp<Int64> = .copy,
+        userID: CopiableProp<Int64> = .copy,
         dateCreated: NullableCopiableProp<Date> = .copy,
         dateModified: NullableCopiableProp<Date> = .copy,
         endDate: CopiableProp<Date> = .copy,
@@ -457,6 +458,7 @@ extension Networking.Booking {
         let allDay = allDay ?? self.allDay
         let cost = cost ?? self.cost
         let customerID = customerID ?? self.customerID
+        let userID = userID ?? self.userID
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
         let endDate = endDate ?? self.endDate
@@ -480,6 +482,7 @@ extension Networking.Booking {
             allDay: allDay,
             cost: cost,
             customerID: customerID,
+            userID: userID,
             dateCreated: dateCreated,
             dateModified: dateModified,
             endDate: endDate,
@@ -1301,6 +1304,45 @@ extension Networking.NotificationSettings.Device {
     }
 }
 
+extension Networking.OrderFulfillment {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        fulfillmentID: CopiableProp<Int64> = .copy,
+        status: NullableCopiableProp<String> = .copy,
+        isFulfilled: CopiableProp<Bool> = .copy,
+        dateUpdated: NullableCopiableProp<Date> = .copy,
+        dateFulfilled: NullableCopiableProp<Date> = .copy,
+        trackingNumber: NullableCopiableProp<String> = .copy,
+        shipmentProvider: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy
+    ) -> Networking.OrderFulfillment {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let fulfillmentID = fulfillmentID ?? self.fulfillmentID
+        let status = status ?? self.status
+        let isFulfilled = isFulfilled ?? self.isFulfilled
+        let dateUpdated = dateUpdated ?? self.dateUpdated
+        let dateFulfilled = dateFulfilled ?? self.dateFulfilled
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let shipmentProvider = shipmentProvider ?? self.shipmentProvider
+        let trackingURL = trackingURL ?? self.trackingURL
+
+        return Networking.OrderFulfillment(
+            siteID: siteID,
+            orderID: orderID,
+            fulfillmentID: fulfillmentID,
+            status: status,
+            isFulfilled: isFulfilled,
+            dateUpdated: dateUpdated,
+            dateFulfilled: dateFulfilled,
+            trackingNumber: trackingNumber,
+            shipmentProvider: shipmentProvider,
+            trackingURL: trackingURL
+        )
+    }
+}
+
 extension Networking.POSProduct {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -1584,7 +1626,10 @@ extension Networking.Product {
         maxAllowedQuantity: NullableCopiableProp<String> = .copy,
         groupOfQuantity: NullableCopiableProp<String> = .copy,
         combineVariationQuantities: NullableCopiableProp<Bool> = .copy,
-        customFields: CopiableProp<[MetaData]> = .copy
+        customFields: CopiableProp<[MetaData]> = .copy,
+        bookingDuration: NullableCopiableProp<Int64> = .copy,
+        bookingDurationUnit: NullableCopiableProp<String> = .copy,
+        bookingResourceIDs: NullableCopiableProp<[Int64]> = .copy
     ) -> Networking.Product {
         let siteID = siteID ?? self.siteID
         let productID = productID ?? self.productID
@@ -1664,6 +1709,9 @@ extension Networking.Product {
         let groupOfQuantity = groupOfQuantity ?? self.groupOfQuantity
         let combineVariationQuantities = combineVariationQuantities ?? self.combineVariationQuantities
         let customFields = customFields ?? self.customFields
+        let bookingDuration = bookingDuration ?? self.bookingDuration
+        let bookingDurationUnit = bookingDurationUnit ?? self.bookingDurationUnit
+        let bookingResourceIDs = bookingResourceIDs ?? self.bookingResourceIDs
 
         return Networking.Product(
             siteID: siteID,
@@ -1743,7 +1791,10 @@ extension Networking.Product {
             maxAllowedQuantity: maxAllowedQuantity,
             groupOfQuantity: groupOfQuantity,
             combineVariationQuantities: combineVariationQuantities,
-            customFields: customFields
+            customFields: customFields,
+            bookingDuration: bookingDuration,
+            bookingDurationUnit: bookingDurationUnit,
+            bookingResourceIDs: bookingResourceIDs
         )
     }
 }

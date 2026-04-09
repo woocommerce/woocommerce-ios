@@ -11,7 +11,7 @@ struct Queue<T> {
     fileprivate var head = 0
 
     public var isEmpty: Bool {
-        return count == 0
+        return count == 0 // swiftlint:disable:this empty_count
     }
 
     public var count: Int {

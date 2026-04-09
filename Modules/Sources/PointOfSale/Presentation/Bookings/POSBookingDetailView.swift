@@ -12,7 +12,7 @@ struct POSBookingDetailView: View {
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(POSBookingsModel.self) private var bookingsModel
     @Environment(\.posAnalytics) private var analytics
-    @State private var cancelModalState: CancelBookingModalState?
+    @State private var showCancelModal = false
     @State private var showPaymentView = false
     @State private var paymentModel: POSPaymentModel?
     @State private var inlineButtonMinY: CGFloat = .infinity
@@ -64,7 +64,9 @@ struct POSBookingDetailView: View {
                     }))
                 }
             }
-        .posFullScreenCover(isPresented: $showPaymentView) {
+        .posFullScreenCover(isPresented: $showPaymentView, onDismiss: {
+            cleanUpPaymentModel()
+        }) {
             if let paymentModel {
                 POSBookingPaymentView(booking: booking, paymentModel: paymentModel, onDismiss: dismissPayment)
             }
@@ -132,11 +134,14 @@ struct POSBookingDetailView: View {
         }
         .background(Color.posSurface)
         .navigationBarHidden(true)
-        .posModal(item: $cancelModalState) { state in
+        .posModal(isPresented: $showCancelModal) {
             POSCancelBookingModalContent(
-                state: state,
                 booking: booking,
-                cancelModalState: $cancelModalState
+                showCancelModal: $showCancelModal,
+                onSuccess: {
+                    showCancelModal = false
+                    bookingsModel.successState = .cancel
+                }
             )
         }
     }
@@ -172,7 +177,7 @@ struct POSBookingDetailView: View {
             }
             if booking.isCancellable {
                 Button(Localization.cancelBookingAction, role: .destructive) {
-                    cancelModalState = .confirmation
+                    showCancelModal = true
                 }
             }
         } label: {
@@ -314,8 +319,11 @@ struct POSBookingDetailView: View {
     // MARK: - Payment Action
 
     private func dismissPayment() {
-        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         showPaymentView = false
+    }
+
+    private func cleanUpPaymentModel() {
+        let paymentSucceeded = paymentModel?.paymentState.isSuccess == true
         paymentModel = nil
         guard paymentSucceeded else { return }
         Task { @MainActor in
@@ -327,6 +335,7 @@ struct POSBookingDetailView: View {
 
     private func startPaymentCollection() {
         guard booking.orderID != nil else { return }
+        guard paymentModel == nil else { return }
         paymentModel = bookingsModel.makePaymentModel(
             for: booking, onDismiss: dismissPayment, analytics: analytics)
         showPaymentView = true
@@ -413,7 +422,7 @@ struct POSBookingDetailView: View {
 
 private extension POSBooking {
     var isGuest: Bool {
-        customerID == 0
+        userID == 0
     }
 }
 

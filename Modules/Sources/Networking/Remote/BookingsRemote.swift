@@ -30,6 +30,9 @@ public protocol BookingsRemoteProtocol {
     func fetchResources(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [BookingResource]
+
+    func fetchBookingLocationResponse(for siteID: Int64,
+                                     productID: Int64) async throws -> BookingLocationResponse
 }
 
 /// Filters for booking queries
@@ -135,7 +138,7 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
             }
 
             if filters.customerIDs.isNotEmpty {
-                parameters[ParameterKey.customer] = filters.customerIDs.map(String.init)
+                parameters[ParameterKey.user] = filters.customerIDs.map(String.init)
             }
 
             if filters.resourceIDs.isNotEmpty {
@@ -281,6 +284,28 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
 
         return try await enqueue(request, mapper: mapper)
     }
+
+    /// Fetches the `booking_location` field from a product.
+    ///
+    public func fetchBookingLocationResponse(
+        for siteID: Int64,
+        productID: Int64
+    ) async throws -> BookingLocationResponse {
+        let path = "\(Path.products)/\(productID)"
+        let parameters = [
+            ParameterKey.fields: FieldValue.bookingLocationFields
+        ]
+        let request = JetpackRequest(
+            wooApiVersion: .mark3,
+            method: .get,
+            siteID: siteID,
+            path: path,
+            parameters: parameters,
+            availableAsRESTRequest: true
+        )
+
+        return try await enqueue(request)
+    }
 }
 
 // MARK: - Constants
@@ -304,6 +329,7 @@ public extension BookingsRemote {
     private enum Path {
         static let bookings = "bookings"
         static let resources = "resources/team-members"
+        static let products = "products"
     }
 
     private enum ParameterKey {
@@ -315,12 +341,17 @@ public extension BookingsRemote {
         static let order: String           = "order"
         static let orderBy: String         = "orderby"
         static let product: String         = "product"
-        static let customer: String        = "customer"
+        static let user: String            = "user"
         static let resource: String        = "resource"
         static let attendanceStatus        = "attendance_status"
         static let paymentStatus           = "booking_status" // to be updated later when payment filtering is supported
         static let bookingStatusExclude    = "booking_status_exclude"
         static let status: String          = "status"
         static let note: String            = "note"
+        static let fields: String          = "_fields"
+    }
+
+    private enum FieldValue {
+        static let bookingLocationFields = "id,booking_location"
     }
 }

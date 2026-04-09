@@ -11,9 +11,6 @@ extension Booking {
     }
 
     var paymentStatusBadge: BookingPaymentStatus {
-        BookingPaymentStatus(orderStatusKey: orderInfo?.statusKey ?? "",
-                             datePaid: orderInfo?.datePaid,
-                             refundTotal: orderInfo?.refundTotal ?? 0,
-                             total: orderInfo?.total ?? 0)
+        BookingPaymentStatus(paymentStatusMetadata: orderInfo?.paymentStatusMetadata)
     }
 }

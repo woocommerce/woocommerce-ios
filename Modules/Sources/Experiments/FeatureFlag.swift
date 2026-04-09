@@ -26,10 +26,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case updateOrderOptimistically
 
-    /// Enable Shipping Labels Onboarding M1 (display the banner in Order Detail screen for installing the WCShip plugin)
-    ///
-    case shippingLabelsOnboardingM1
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU
@@ -221,10 +217,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case selfDrivenPushTokenAppPasswords
 
-    /// Enables POS-only products filtering
-    ///
-    case pointOfSaleOnlyProducts
-
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///
     case clientSideDashboardBanner
@@ -233,4 +225,12 @@ public enum FeatureFlag: Int, CaseIterable {
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
+
+    /// Enables FedEx as a carrier option in WooShipping label creation
+    ///
+    case wooShippingFedEx
+
+    /// Enables the feature flag override panel in the Help screen during the login flow
+    ///
+    case loggedOutFFPanel
 }

@@ -893,7 +893,7 @@ extension UIImage {
         return UIImage(named: "stripe-payments-plugin")!
     }
 
-    /// WooCommerce Payments plugin
+    /// WooPayments plugin
     ///
     static var wcPayPlugin: UIImage {
         return UIImage(named: "woo-payments-plugin")!
@@ -1220,12 +1220,6 @@ extension UIImage {
 
     static var puzzleImage: UIImage {
         return UIImage(named: "puzzle")!
-    }
-
-    /// Install WCShip banner Image
-    ///
-    static var installWCShipImage: UIImage {
-        return UIImage(named: "woo-wcship-install-banner")!
     }
 
     /// Payments Feature Banner

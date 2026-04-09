@@ -10,4 +10,5 @@ struct POSRefundReviewData: Equatable {
     let paymentMethodDescription: String
     let customerEmail: String?
     var refundReason: String?
+    let isFullRefund: Bool
 }

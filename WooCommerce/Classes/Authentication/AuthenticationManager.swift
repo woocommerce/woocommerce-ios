@@ -16,6 +16,7 @@ import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
+import struct NetworkingCore.WordPressAPIDiscovery
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -289,6 +290,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 exists: site.exists,
                 hasWordPress: site.isWP,
                 isWPCom: site.isWPCom,
+                isCommerceGarden: site.isCommerceGarden,
                 isJetpackInstalled: site.hasJetpack,
                 isJetpackActive: site.isJetpackActive,
                 isJetpackConnected: site.isJetpackConnected,
@@ -308,7 +310,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        if site.isWPCom || site.isJetpackConnected {
+        if site.isWPCom || site.isCommerceGarden || site.isJetpackConnected {
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
             onCompletion(authenticationResult)
         } else {
@@ -323,6 +325,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
                                                          isWPCom: siteInfo?.isWPCom ?? false,
+                                                         isCommerceGarden: siteInfo?.isCommerceGarden ?? false,
                                                          isJetpackInstalled: siteInfo?.hasJetpack ?? false,
                                                          isJetpackActive: siteInfo?.isJetpackActive ?? false,
                                                          isJetpackConnected: siteInfo?.isJetpackConnected ?? false))
@@ -332,8 +335,37 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
+        // Check if the site already belongs to the current account before showing
+        // an error. The user may have typed a URL for a site they already have.
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+        if let matchedSite = matcher.matchedSite(originalURL: site.url) {
+            if matchedSite.isWooCommerceActive {
+                switchToAlreadyConnectedSite(matchedSite, in: navigationController)
+                return
+            } else {
+                let noWoo = noWooUI(for: matchedSite,
+                                    with: matcher,
+                                    navigationController: navigationController,
+                                    onStorePickerDismiss: {})
+                navigationController.show(noWoo, sender: nil)
+                return
+            }
+        }
+
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
+    }
+
+    /// Navigates back to the store picker and selects the site that the user
+    /// entered via site discovery, as if they had tapped it in the list.
+    private func switchToAlreadyConnectedSite(_ site: Site, in navigationController: UINavigationController) {
+        navigationController.popToRootViewController(animated: true)
+        if let storePicker = navigationController.viewControllers
+            .compactMap({ $0 as? StorePickerViewController })
+            .first {
+            storePicker.selectSite(site)
+        }
     }
 
     /// Handles site credential login
@@ -452,16 +484,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///     - from: UIViewController instance from which to present the support interface
     ///     - screen: A case from `CustomHelpCenterContent.Screen` enum. This represents authentication related screens from WCiOS.
     ///
-    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
+    func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen, siteURL: URL?) {
         let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
                                                               flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil, siteURL: siteURL)
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag)
+    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
+        presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: siteURL)
     }
 
     /// Presents the Support Interface from a given ViewController.
@@ -475,13 +507,24 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func presentSupport(from sourceViewController: UIViewController,
                         sourceTag: WordPressSupportSourceTag,
                         lastStep: AuthenticatorAnalyticsTracker.Step,
-                        lastFlow: AuthenticatorAnalyticsTracker.Flow) {
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow,
+                        siteURL: String?) {
+        let parsedURL: URL? = {
+            // swiftlint:disable:next control_statement
+            guard let siteURL, let url = URL(string: siteURL),
+                  let scheme = url.scheme?.lowercased(),
+                  (scheme == "http" || scheme == "https"),
+                  url.host != nil else {
+                return nil
+            }
+            return url
+        }()
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
-            presentSupport(from: sourceViewController, sourceTag: sourceTag)
+            presentSupport(from: sourceViewController, sourceTag: sourceTag, siteURL: parsedURL)
             return
         }
 
-        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag, siteURL: parsedURL)
     }
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
@@ -537,6 +580,19 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
+        DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
+
+        let discovery = WordPressAPIDiscovery()
+        Task { @MainActor in
+            let discoveredRoot = await discovery.discoverRESTAPIRootURL(for: siteURL)
+            let hasRESTAPI = discoveredRoot != nil
+
+            DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
+            completion(hasRESTAPI)
+        }
     }
 
     /// Tracks a given Analytics Event.
@@ -743,7 +799,7 @@ private extension AuthenticationManager {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        guard !site.isWPCom else {
+        guard !site.isWPCom && !site.isCommerceGarden else {
             // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
         }
@@ -944,18 +1000,20 @@ private extension AuthenticationManager {
 
     func presentHelpAndSupport(from sourceViewController: UIViewController,
                                customHelpCenterContent: CustomHelpCenterContent? = nil,
-                               sourceTag: WordPressSupportSourceTag?) {
+                               sourceTag: WordPressSupportSourceTag?,
+                               siteURL: URL?) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
-            guard let customHelpCenterContent = customHelpCenterContent else {
-                /// Returning nil as we don't need to customise the HelpAndSupportViewController
-                /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
-                ///
-                return nil
+            if let customHelpCenterContent {
+                return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent,
+                                                    sourceTag: sourceTag?.origin,
+                                                    loginSiteURL: siteURL,
+                                                    coder: coder)
             }
-
-            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag?.origin, coder: coder)
+            return HelpAndSupportViewController(sourceTag: sourceTag?.origin,
+                                                loginSiteURL: siteURL,
+                                                coder: coder)
         })
         supportViewController.displaysDismissAction = true
 

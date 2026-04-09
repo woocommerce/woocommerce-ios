@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.5
+The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.
+
+## 24.4
+This update improves reliability and consistency across your store management experience. We fixed site connection issues, aligned revenue with wp-admin, smoothed bookings and dashboard behavior, improved iPad layouts, and resolved product duplication gaps. Plus several UI polish and stability fixes throughout.
+
 ## 24.3
 Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.
 

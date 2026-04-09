@@ -391,8 +391,8 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
-    func startCashPayment() async {
-        await paymentModel.startCashPayment()
+    func startCashPayment() {
+        paymentModel.startCashPayment()
     }
 
     @MainActor

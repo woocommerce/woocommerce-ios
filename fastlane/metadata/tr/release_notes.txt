@@ -1,1 +1,0 @@
-Bu güncelleme, mağaza kurulum görevlerini daha güvenilir bir şekilde gösterir, Barkod taramanın Satış Noktası'nda kesintisiz çalışmasını sağlar ve ortam kütüphanesinin güvenilirliğini artırır. Daha sorunsuz bir mağaza yönetimi deneyimi için şimdi güncelle!

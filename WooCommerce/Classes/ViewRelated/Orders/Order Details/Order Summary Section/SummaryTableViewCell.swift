@@ -33,6 +33,7 @@ final class SummaryTableViewCell: UITableViewCell {
         subtitleLabel.text = viewModel.subtitle
         salesChannelLabel.text = viewModel.salesChannel
         salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
+        updateStatusButton.isHidden = !viewModel.isEditButtonVisible
         display(presentation: viewModel.presentation)
     }
 

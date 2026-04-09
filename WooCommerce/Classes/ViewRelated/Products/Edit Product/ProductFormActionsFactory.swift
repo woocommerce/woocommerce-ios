@@ -447,7 +447,7 @@ private extension ProductFormActionsFactory {
         case .tags:
             return product.product.tags.isNotEmpty
         case .linkedProducts:
-            return (product.upsellIDs.count > 0 || product.crossSellIDs.count > 0)
+            return (!product.upsellIDs.isEmpty || !product.crossSellIDs.isEmpty)
         // Downloadable files. Only core product types for downloadable files are able to handle downloadable files.
         case .downloadableFiles:
             return product.downloadable

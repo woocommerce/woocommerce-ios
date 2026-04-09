@@ -52,6 +52,7 @@ final class POSPaymentModel {
     /// `startPaymentOnCardReaderConnection` callbacks (which may already
     /// have been enqueued as Tasks) can detect they've been superseded.
     private var startPaymentGeneration: Int = 0
+    private var cardPaymentCancelTask: Task<Void, Never>?
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
@@ -224,22 +225,38 @@ extension POSPaymentModel {
 
 // MARK: - Cash Payment Methods
 extension POSPaymentModel {
-    func startCashPayment() async {
-        DDLogInfo("💵 [CashPayment] startCashPayment called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
+    func startCashPayment() {
+        guard paymentState.cash == .idle else { return }
+        guard paymentState.allowsCashPayment else { return }
+
+        DDLogInfo("💵 [CashPayment] startCashPayment called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
         analytics.track(.pointOfSaleCheckoutCashPaymentTapped)
-        DDLogInfo("💵 [CashPayment] awaiting cancelPayment...")
-        try? await cardPresentPaymentService.cancelPayment()
-        DDLogInfo("💵 [CashPayment] cancelPayment completed — card state: \(paymentState.card), cash state: \(paymentState.cash)")
+
+        startPaymentOnCardReaderConnection?.cancel()
+        startPaymentOnCardReaderConnection = nil
+        startPaymentGeneration += 1
+
         paymentState.cash = .collectingCash
-        DDLogInfo("💵 [CashPayment] cash state set to .collectingCash")
+
+        cardPaymentCancelTask = Task { [weak self] in
+            do {
+                try await self?.cardPresentPaymentService.cancelPayment()
+            } catch {
+                DDLogWarn("💵 [CashPayment] failed to cancel card payment: \(error)")
+            }
+        }
     }
 
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
         paymentState.cash = .idle
-        if case .connected = cardReaderConnectionStatus {
-            await collectCardPayment()
-        }
+        paymentState.card = .idle
+        cardPresentPaymentInlineMessage = nil
+
+        await cardPaymentCancelTask?.value
+        cardPaymentCancelTask = nil
+
+        await startPayment()
     }
 
     func collectCashPayment(changeDueAmount: String?) async throws {
@@ -285,7 +302,7 @@ extension POSPaymentModel {
     /// Cancels any in-progress card payment, removes subscriptions, but preserves
     /// payment state and order data so `activate()` can resume where we left off.
     func deactivate() {
-        DDLogInfo("⏸️ [Session] deactivate called — card state: \(paymentState.card), cash state: \(paymentState.cash)")
+        DDLogInfo("⏸️ [Session] deactivate called - card state: \(paymentState.card), cash state: \(paymentState.cash)")
         paymentSessionCancellables.removeAll()
         cancelReaderPreparation()
     }
@@ -351,9 +368,19 @@ private extension POSPaymentModel {
     func publishCardReaderConnectionStatus() {
         cardPresentPaymentService.readerConnectionStatusPublisher
             .sink(receiveValue: { [weak self] connectionStatus in
-                self?.cardReaderConnectionStatus = connectionStatus
+                guard let self else { return }
+                cardReaderConnectionStatus = connectionStatus
+                if connectionStatus == .disconnected {
+                    resetTransientCardStateOnDisconnect()
+                }
             })
             .store(in: &cancellables)
+    }
+
+    func resetTransientCardStateOnDisconnect() {
+        guard paymentState.card.resetsToIdleOnDisconnect else { return }
+        DDLogInfo("🔌 [Disconnect] resetting transient card state \(paymentState.card) to idle")
+        paymentState.card = .idle
     }
 
     func publishCardReaderUpdateState() {
@@ -441,9 +468,20 @@ private extension POSPaymentModel {
                 return newCardPaymentState
             }
             .sink(receiveValue: { [weak self] cardPaymentState in
+                guard let self else { return }
+                if paymentState.cash != .idle {
+                    if cardPaymentState.requiresCashExit {
+                        DDLogWarn("💵 [CashPayment] committed card event \(cardPaymentState) during cash flow " +
+                                  "- transitioning to card view")
+                        paymentState.cash = .idle
+                    } else {
+                        DDLogInfo("💵 [CashPayment] ignoring non-committed card event \(cardPaymentState) during cash flow")
+                        return
+                    }
+                }
                 DDLogInfo("🃏 [CardPayment] subscription setting card state: \(cardPaymentState), " +
-                          "current cash state: \(String(describing: self?.paymentState.cash))")
-                self?.paymentState.card = cardPaymentState
+                          "current cash state: \(paymentState.cash)")
+                paymentState.card = cardPaymentState
             })
             .store(in: &paymentSessionCancellables)
     }

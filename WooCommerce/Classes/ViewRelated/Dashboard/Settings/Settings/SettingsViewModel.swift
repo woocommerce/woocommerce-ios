@@ -6,6 +6,7 @@ import class Networking.UserAgent
 import Experiments
 import protocol WooFoundation.Analytics
 import class WooFoundation.VersionHelpers
+import enum WooFoundation.BuildConfiguration
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
@@ -41,10 +42,6 @@ protocol SettingsViewModelActionsHandler {
     /// Presenter (SettingsViewController in this case) is responsible for calling this method when store picker is dismissed.
     ///
     func onStorePickerDismiss()
-
-    /// Reloads settings if the site is no longer Jetpack CP.
-    ///
-    func onJetpackInstallDismiss()
 
     /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
     ///
@@ -97,7 +94,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let sitesResultsController: ResultsController<StorageSite>
 
     /// Payment Gateway Accounts Results Controller: Loads Payment Gateway Accounts from the Storage Layer
-    /// e.g. WooCommerce Payments, but eventually other in-person payment accounts too
+    /// e.g. WooPayments, but eventually other in-person payment accounts too
     ///
     private let paymentGatewayAccountsResultsController: ResultsController<StoragePaymentGatewayAccount>?
 
@@ -107,6 +104,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let defaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -119,13 +117,15 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
         self.pushNotesManager = pushNotesManager
         self.analytics = analytics
+        self.ciabEligibilityChecker = ciabEligibilityChecker
 
         /// Initialize Sites Results Controller
         ///
@@ -172,15 +172,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
-        reloadSettings()
-    }
-
-    /// Reloads settings if the site is no longer Jetpack CP.
-    ///
-    func onJetpackInstallDismiss() {
-        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
-            return
-        }
         reloadSettings()
     }
 
@@ -243,6 +234,11 @@ private extension SettingsViewModel {
             // Show the plugins section only if the user has an `admin` role for the default store site.
             //
             guard stores.sessionManager.defaultRoles.contains(.administrator) else {
+                return nil
+            }
+
+            // Hide plugins section for CIAB sites
+            guard !ciabEligibilityChecker.isCurrentSiteCIAB else {
                 return nil
             }
 
@@ -341,12 +337,10 @@ private extension SettingsViewModel {
 
         // Other
         let otherSection: Section = {
-            let rows: [Row]
-#if DEBUG
-            rows = [.deviceSettings, .wormholy]
-#else
-            rows = [.deviceSettings]
-#endif
+            var rows: [Row] = [.deviceSettings]
+            if !BuildConfiguration.current.isProduction {
+                rows.append(contentsOf: [.wormholy, .debugPanel])
+            }
 
             return Section(title: Localization.otherTitle,
                            rows: rows,

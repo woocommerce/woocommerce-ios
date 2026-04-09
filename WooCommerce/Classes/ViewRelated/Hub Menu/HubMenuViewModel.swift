@@ -86,6 +86,10 @@ final class HubMenuViewModel: ObservableObject {
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+
+    private var isIPPHiddenForCIAB: Bool {
+        siteCIABEligibilityChecker.isIPPHiddenForCurrentSite
+    }
     private let posEligibilityService: POSEligibilityServiceProtocol
     private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
     private let isPad: Bool
@@ -226,6 +230,14 @@ final class HubMenuViewModel: ObservableObject {
         analytics.track(.hubMenuOptionTapped, withProperties: [AnalyticsKeys.trackingOption: menu.trackingOption])
     }
 
+    /// Whether the current site is a CIAB (Commerce in a Box) site.
+    /// On CIAB sites, WC Admin opens in an SFSafariViewController (Safari sheet) instead of the
+    /// in-app webview, because the in-app webview hides the Admin navigation sidebar which is
+    /// needed for full WC Admin navigation.
+    func isCIABSite() -> Bool {
+        siteCIABEligibilityChecker.isCurrentSiteCIAB
+    }
+
     func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {
         GoogleAdsCampaignCoordinator(
             siteID: siteID,
@@ -293,7 +305,11 @@ private extension HubMenuViewModel {
                                eligibleForBlaze: Bool,
                                eligibleForInbox: Bool,
                                eligibleForBookings: Bool) -> [HubMenuItem] {
-        var items: [HubMenuItem] = [Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)]
+        var items: [HubMenuItem] = []
+
+        if !isIPPHiddenForCIAB {
+            items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
+        }
 
         if shouldShowBookingsInMenu, eligibleForBookings {
             items.append(Bookings())

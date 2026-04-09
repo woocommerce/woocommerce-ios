@@ -220,6 +220,107 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
+    // MARK: - CIAB Plan Eligibility Tests
+
+    @Test func checkEligibility_when_ciab_site_with_pro_monthly_plan_then_eligible() async throws {
+        // Given
+        let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_monthly", isGarden: true, gardenName: "commerce")
+        stores.updateDefaultStore(ciabSite)
+        setupCountry(country: .us)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test func checkEligibility_when_ciab_site_with_pro_yearly_plan_then_eligible() async throws {
+        // Given
+        let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_yearly", isGarden: true, gardenName: "commerce")
+        stores.updateDefaultStore(ciabSite)
+        setupCountry(country: .us)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test(arguments: [
+        "woo_hosted_free_plan",
+        "woo_hosted_basic_plan_monthly",
+        "woo_hosted_basic_plan_yearly",
+        "woo_hosted_free_trial_plan_monthly"
+    ])
+    func checkEligibility_when_ciab_site_with_non_pro_plan_then_ineligible(planSlug: String) async throws {
+        // Given
+        let ciabSite = Site.fake().copy(siteID: siteID, plan: planSlug, isGarden: true, gardenName: "commerce")
+        stores.updateDefaultStore(ciabSite)
+        setupCountry(country: .us)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        guard case .ineligible(reason: .ciabPlanUpgradeRequired) = result else {
+            Issue.record("Expected .ineligible(reason: .ciabPlanUpgradeRequired) but got \(result)")
+            return
+        }
+    }
+
+    @Test func checkEligibility_when_non_ciab_site_then_not_blocked_by_plan_check() async throws {
+        // Given
+        let nonCIABSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_free_plan", isGarden: false)
+        stores.updateDefaultStore(nonCIABSite)
+        setupCountry(country: .us)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        #expect(result == .eligible)
+    }
+
+    @Test func refreshEligibility_when_ciabPlanUpgradeRequired_then_rechecks_eligibility() async throws {
+        // Given
+        let ciabSite = Site.fake().copy(siteID: siteID, plan: "woo_hosted_pro_plan_monthly", isGarden: true, gardenName: "commerce")
+        stores.updateDefaultStore(ciabSite)
+        stores.whenReceivingAction(ofType: SiteAction.self) { action in
+            guard case let .syncSite(_, completion) = action else { return }
+            completion(.success(ciabSite))
+        }
+        setupCountry(country: .us, currency: .USD)
+        let checker = POSTabEligibilityChecker(siteID: siteID,
+                                               siteSettings: siteSettings,
+                                               stores: stores,
+                                               systemStatusService: mockSystemStatusService)
+
+        // When
+        let dummyURL = URL(string: "https://example.com")!
+        let result = try await checker.refreshEligibility(ineligibleReason: .ciabPlanUpgradeRequired(learnMoreURL: dummyURL))
+
+        // Then
+        #expect(result == .eligible)
+    }
+
     // MARK: - `refreshEligibility` Tests
 
     @Test(arguments: [

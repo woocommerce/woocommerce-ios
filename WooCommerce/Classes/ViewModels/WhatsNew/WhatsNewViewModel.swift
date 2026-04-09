@@ -15,11 +15,18 @@ final class WhatsNewViewModel: ReportListPresentable {
     /// Title of the Call to action button
     let ctaTitle = Localization.ctaTitle
 
+    /// Optional URL for the "Learn more" button
+    let learnMoreURL: URL?
+
     /// StoresManager that will be handling actions
     private let stores: StoresManager
 
-    init(items: [ReportItem], stores: StoresManager = ServiceLocator.stores, onDismiss: @escaping () -> Void) {
+    init(items: [ReportItem],
+         learnMoreURL: URL? = nil,
+         stores: StoresManager = ServiceLocator.stores,
+         onDismiss: @escaping () -> Void) {
         self.items = items
+        self.learnMoreURL = learnMoreURL
         self.stores = stores
         self.onDismiss = onDismiss
     }

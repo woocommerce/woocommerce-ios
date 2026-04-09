@@ -75,7 +75,7 @@
         {
             "plugin": "woocommerce-payments/woocommerce-payments",
             "status": "active",
-            "name": "WooCommerce Payments",
+            "name": "WooPayments",
             "plugin_uri": "https://woocommerce.com/payments/",
             "author": "Automattic",
             "author_uri": "https://woocommerce.com/",

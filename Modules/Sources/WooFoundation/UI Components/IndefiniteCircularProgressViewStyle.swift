@@ -1,20 +1,23 @@
 import SwiftUI
 
+// MARK: - Progress View Style
+
 public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
     public var size: CGFloat
-    public var lineWidth: CGFloat = Constants.lineWidth
-    public var lineCap: CGLineCap = .round
-    public var circleColor: Color = Color(.primaryButtonBackground).opacity(Constants.backgroundOpacity)
-    public var fillColor: Color = Color(.primaryButtonBackground)
+    public var lineWidth: CGFloat
+    public var lineCap: CGLineCap
+    public var circleColor: Color
+    public var fillColor: Color
 
-    private let animationDuration: Double = 1.6
+    private let cycleDuration: Double = 1.6
 
-    @State private var arcEnd: Double = Constants.initialArcEnd
-    @State private var rotation: Angle = Constants.threeQuarterRotation
-    @State private var viewRotation: Angle = .radians(0)
-    @State private var arcTimer: Timer?
-
-    public init(size: CGFloat, lineWidth: CGFloat = Constants.lineWidth, lineCap: CGLineCap = .round, circleColor: Color? = nil, fillColor: Color? = nil) {
+    public init(
+        size: CGFloat,
+        lineWidth: CGFloat = Constants.lineWidth,
+        lineCap: CGLineCap = .round,
+        circleColor: Color? = nil,
+        fillColor: Color? = nil
+    ) {
         self.size = size
         self.lineWidth = lineWidth
         self.lineCap = lineCap
@@ -24,66 +27,104 @@ public struct IndefiniteCircularProgressViewStyle: ProgressViewStyle {
 
     public func makeBody(configuration: ProgressViewStyleConfiguration) -> some View {
         VStack {
-            ZStack {
-                progressCircleView()
-                    .rotationEffect(viewRotation)
-            }
+            SpinnerView(
+                size: size,
+                lineWidth: lineWidth,
+                lineCap: lineCap,
+                circleColor: circleColor,
+                fillColor: fillColor,
+                cycleDuration: cycleDuration
+            )
             configuration.label
-        }
-        .onAppear() {
-            animateArc()
-            arcTimer = Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
-                animateArc()
-            }
-            // Gradual rotation of the view to avoid the arc stopping and starting in the same place each spin.
-            withAnimation(.linear(duration: animationDuration*8)
-                .repeatForever(autoreverses: false)) {
-                    viewRotation += Constants.fullRotation
-                }
-        }
-        .onDisappear() {
-            arcTimer?.invalidate()
         }
         .accessibilityLabel(Localization.inProgressAccessibilityLabel)
     }
+}
 
-    private func progressCircleView() -> some View {
-        Circle()
-            .stroke(
-                circleColor,
-                lineWidth: lineWidth)
-            .overlay(progressFill())
+// MARK: - Spinner View
+
+/// Self-contained spinner using `AnimatableShape` for render-thread interpolation
+/// and structured concurrency (.task) instead of Timer.
+private struct SpinnerView: View {
+    let size: CGFloat
+    let lineWidth: CGFloat
+    let lineCap: CGLineCap
+    let circleColor: Color
+    let fillColor: Color
+    let cycleDuration: Double
+
+    @State private var arcEnd: Double = Constants.initialArcEnd
+    @State private var arcRotation: Angle = .zero
+    @State private var globalRotation: Angle = .zero
+
+    typealias Constants = IndefiniteCircularProgressViewStyle.Constants
+
+    var body: some View {
+        SpinnerShape(arcStart: Constants.initialArcStart, arcEnd: arcEnd)
+            .stroke(fillColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: lineCap))
             .frame(width: size, height: size)
+            .background(
+                Circle().stroke(circleColor, lineWidth: lineWidth)
+            )
+            .rotationEffect(globalRotation + arcRotation)
+            .onAppear {
+                withAnimation(
+                    .linear(duration: cycleDuration * 8)
+                    .repeatForever(autoreverses: false)
+                ) {
+                    globalRotation = Constants.fullRotation
+                }
+            }
+            .task {
+                await runArcCycle()
+            }
     }
 
-    private func progressFill() -> some View {
-        Circle()
-            .trim(
-                from: CGFloat(Constants.initialArcStart),
-                to: CGFloat(arcEnd))
-            .stroke(
-                fillColor,
-                style: StrokeStyle(lineWidth: lineWidth, lineCap: lineCap))
-            .frame(width: size)
-            .rotationEffect(rotation)
-    }
-
-    private func animateArc() {
-        // Animate the end of the arc going to 100%
-        withAnimation(
-            .easeInOut(duration: animationDuration/2)) {
+    @MainActor
+    private func runArcCycle() async {
+        while !Task.isCancelled {
+            withAnimation(.easeInOut(duration: cycleDuration / 2)) {
                 arcEnd = Constants.fullCircle
             }
-        // Halfway through the above, but slower, rotate the arc 1 turn, and move the end back to the start
-        // This is a bit of a trick, and results in an apparently growing/shrinking arc around the circle.
-        withAnimation(
-            .easeOut(duration: animationDuration)
-            .delay(animationDuration/4)) {
+            withAnimation(.easeOut(duration: cycleDuration).delay(cycleDuration / 4)) {
                 arcEnd = Constants.initialArcEnd
-                rotation += Constants.fullRotation
+                arcRotation += Constants.fullRotation
             }
+            try? await Task.sleep(for: .seconds(cycleDuration))
+        }
     }
 }
+
+// MARK: - Shape
+
+/// Trimmed circle arc. Exposes `animatableData` so SwiftUI interpolates
+/// the path on the render thread without re-evaluating the view body.
+private struct SpinnerShape: Shape {
+    var arcStart: Double
+    var arcEnd: Double
+
+    var animatableData: AnimatablePair<Double, Double> {
+        get { .init(arcStart, arcEnd) }
+        set {
+            arcStart = newValue.first
+            arcEnd = newValue.second
+        }
+    }
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.addArc(
+            center: CGPoint(x: rect.midX, y: rect.midY),
+            radius: min(rect.width, rect.height) / 2,
+            startAngle: .degrees(360 * arcStart - 90),
+            endAngle: .degrees(360 * arcEnd - 90),
+            clockwise: false
+        )
+        return path
+    }
+}
+
+// MARK: - Constants & Localization
 
 public extension IndefiniteCircularProgressViewStyle {
     enum Constants {
@@ -94,13 +135,13 @@ public extension IndefiniteCircularProgressViewStyle {
         public static let initialArcEnd: Double = 0.05
         public static let fullCircle: Double = 1
 
-        public static let threeQuarterRotation: Angle = .radians((9 * Double.pi)/6)
-        public static let fullRotation: Angle = .radians(Double.pi * 2)
+        public static let fullRotation: Angle = .radians(.pi * 2)
     }
 
     enum Localization {
         public static let inProgressAccessibilityLabel = NSLocalizedString(
             "In progress",
-            comment: "Accessibility label for an indeterminate loading indicator")
+            comment: "Accessibility label for an indeterminate loading indicator"
+        )
     }
 }

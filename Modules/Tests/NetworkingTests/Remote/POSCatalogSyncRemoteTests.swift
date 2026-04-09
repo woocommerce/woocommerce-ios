@@ -214,7 +214,7 @@ struct POSCatalogSyncRemoteTests {
         let pagedVariations = try await remote.loadProductVariations(modifiedAfter: modifiedAfter, siteID: sampleSiteID, pageNumber: 1)
 
         // Then
-        #expect(pagedVariations.items.count > 0)
+        #expect(!pagedVariations.items.isEmpty)
 
         let firstVariation = try #require(pagedVariations.items.first)
         #expect(firstVariation.siteID == sampleSiteID)
@@ -714,7 +714,7 @@ struct POSCatalogSyncRemoteTests {
         #expect(variableProduct.siteID == sampleSiteID)
         #expect(variableProduct.productID == 31)
         #expect(variableProduct.sku == "incredible-silk-chair-13060312")
-        #expect(variableProduct.globalUniqueID == "")
+        #expect(variableProduct.globalUniqueID?.isEmpty == true)
         #expect(variableProduct.name == "Incredible Silk Chair")
         #expect(variableProduct.price == "134.58")
         #expect(variableProduct.stockQuantity == -83)
@@ -736,8 +736,8 @@ struct POSCatalogSyncRemoteTests {
         #expect(variation.siteID == sampleSiteID)
         #expect(variation.productVariationID == 32)
         #expect(variation.productID == 31)
-        #expect(variation.sku == "")
-        #expect(variation.globalUniqueID == "")
+        #expect(variation.sku?.isEmpty == true)
+        #expect(variation.globalUniqueID?.isEmpty == true)
         #expect(variation.price == "330.34")
         #expect(variation.attributes.count == 3)
         #expect(variation.image?.src == "https://example.com/wp-content/uploads/2025/08/img-quae.png")
@@ -761,8 +761,8 @@ struct POSCatalogSyncRemoteTests {
         let catalog = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true)
 
         // Then
-        #expect(catalog.products.count == 0)
-        #expect(catalog.variations.count == 0)
+        #expect(catalog.products.isEmpty)
+        #expect(catalog.variations.isEmpty)
     }
 
     @Test func downloadCatalog_throws_error_for_empty_url() async throws {

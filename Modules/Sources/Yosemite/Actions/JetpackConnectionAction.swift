@@ -7,16 +7,16 @@ public enum JetpackConnectionAction: Action {
     /// Call this before triggering any other case in this action.
     case authenticate(siteURL: String, network: Network)
     /// Retrieves details about Jetpack plugin for the current site.
-    case retrieveJetpackPluginDetails(completion: (Result<SitePlugin, Error>) -> Void)
+    case retrieveJetpackPluginDetails(siteID: Int64, completion: (Result<SitePlugin, Error>) -> Void)
     /// Installs Jetpack the plugin for the current site.
-    case installJetpackPlugin(completion: (Result<Void, Error>) -> Void)
+    case installJetpackPlugin(siteID: Int64, completion: (Result<Void, Error>) -> Void)
     /// Updates Jetpack the plugin for the current site.
-    case activateJetpackPlugin(completion: (Result<Void, Error>) -> Void)
+    case activateJetpackPlugin(siteID: Int64, completion: (Result<Void, Error>) -> Void)
     /// Fetches the URL used for setting up Jetpack connection.
     case fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
                                    completion: (Result<URL, Error>) -> Void)
     /// Fetches connection state with the given site's Jetpack.
-    case fetchJetpackConnectionData(completion: (Result<JetpackConnectionData, Error>) -> Void)
+    case fetchJetpackConnectionData(siteID: Int64, completion: (Result<JetpackConnectionData, Error>) -> Void)
     /// Establishes site-level connection and returns WordPress.com blog ID.
     case registerSite(completion: (Result<Int64, Error>) -> Void)
     /// Provisions connection and returns provision response with scope and secret.

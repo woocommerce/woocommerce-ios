@@ -1,0 +1,37 @@
+{
+  "sites": [
+    {
+      "ID": 9998887776665554,
+      "name": "Commerce Garden Site",
+      "description": "A CIAB commerce garden site",
+      "URL": "https:\/\/commerce-garden.testing.blog",
+      "capabilities": {
+        "own_site": true,
+        "manage_options": true
+      },
+      "jetpack": true,
+      "jetpack_connection": true,
+      "was_ecommerce_trial": false,
+      "is_garden": true,
+      "garden_name": "commerce",
+      "garden_partner": "ciab",
+      "plan": {
+        "product_id": 1008,
+        "product_slug": "business-bundle",
+        "features": {
+          "active": []
+        }
+      },
+      "options": {
+        "timezone": "",
+        "gmt_offset": 0,
+        "blog_public": 1,
+        "login_url": "https:\/\/commerce-garden.testing.blog\/wp-login.php",
+        "admin_url": "https:\/\/commerce-garden.testing.blog\/wp-admin\/",
+        "is_wpcom_store": true,
+        "woocommerce_is_active": false,
+        "frame_nonce": "abc123"
+      }
+    }
+  ]
+}

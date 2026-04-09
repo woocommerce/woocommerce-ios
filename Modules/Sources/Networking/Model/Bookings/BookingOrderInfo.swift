@@ -6,6 +6,7 @@ public struct BookingOrderInfo: Hashable {
     public let datePaid: Date?
     public let total: Decimal
     public let refundTotal: Decimal
+    public let paymentStatusMetadata: String?
     public let paymentInfo: BookingPaymentInfo?
     public let customerInfo: BookingCustomerInfo?
     public let productInfo: BookingProductInfo?
@@ -14,6 +15,7 @@ public struct BookingOrderInfo: Hashable {
                 datePaid: Date?,
                 total: Decimal = 0,
                 refundTotal: Decimal = 0,
+                paymentStatusMetadata: String? = nil,
                 paymentInfo: BookingPaymentInfo?,
                 customerInfo: BookingCustomerInfo?,
                 productInfo: BookingProductInfo?) {
@@ -21,6 +23,7 @@ public struct BookingOrderInfo: Hashable {
         self.datePaid = datePaid
         self.total = total
         self.refundTotal = refundTotal
+        self.paymentStatusMetadata = paymentStatusMetadata
         self.paymentInfo = paymentInfo
         self.customerInfo = customerInfo
         self.productInfo = productInfo
@@ -33,6 +36,7 @@ public struct BookingOrderInfo: Hashable {
             .compactMap { Decimal(string: $0.total) }
             .map { abs($0) }
             .reduce(0, +)
+        self.paymentStatusMetadata = order.paymentStatusMetadata
         self.customerInfo = {
             guard let billingAddress = order.billingAddress else {
                 return nil

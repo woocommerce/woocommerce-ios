@@ -12,6 +12,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
     private var connectionWebView: UINavigationController?
 
     init(siteURL: String,
+         siteID: Int64,
          connectionOnly: Bool,
          wpcomCredentials: Credentials,
          stores: StoresManager = ServiceLocator.stores,
@@ -19,6 +20,7 @@ final class JetpackSetupHostingController: UIHostingController<JetpackSetupView>
          analytics: Analytics = ServiceLocator.analytics,
          onStoreNavigation: @escaping (String?) -> Void) {
         self.viewModel = JetpackSetupViewModel(siteURL: siteURL,
+                                               siteID: siteID,
                                                connectionOnly: connectionOnly,
                                                wpcomCredentials: wpcomCredentials,
                                                stores: stores,
@@ -121,8 +123,7 @@ private extension JetpackSetupHostingController {
     }
 }
 
-/// View to show the process of Jetpack setup for non-JCP sites.
-/// For JCP sites, look for `JCPJetpackInstallView`.
+/// View to show the process of Jetpack setup.
 ///
 struct JetpackSetupView: View {
     /// To be set by the hosting controller

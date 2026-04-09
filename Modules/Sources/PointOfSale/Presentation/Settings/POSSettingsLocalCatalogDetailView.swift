@@ -9,25 +9,23 @@ struct POSSettingsLocalCatalogDetailView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        NavigationStack {
-            VStack(spacing: POSSpacing.none) {
-                POSPageHeaderView(title: Localization.localCatalogTitle)
-                    .foregroundColor(.posSurface)
-                    .accessibilityAddTraits(.isHeader)
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(title: Localization.localCatalogTitle)
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
 
-                ScrollView {
-                    VStack(spacing: POSSpacing.medium) {
-                        catalogStatus
-                        if viewModel.deviceHasCellularCapability {
-                            managingDataUsage
-                        }
-                        manualCatalogUpdate
+            ScrollView {
+                VStack(spacing: POSSpacing.medium) {
+                    catalogStatus
+                    if viewModel.deviceHasCellularCapability {
+                        managingDataUsage
                     }
-                    .padding(.horizontal, POSPadding.medium)
+                    manualCatalogUpdate
                 }
+                .padding(.horizontal, POSPadding.medium)
             }
-            .background(Style.backgroundColor)
         }
+        .background(Style.backgroundColor)
         .task {
             await viewModel.loadCatalogData()
         }

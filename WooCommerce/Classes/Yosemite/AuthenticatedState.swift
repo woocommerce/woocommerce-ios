@@ -90,6 +90,7 @@ class AuthenticatedState: StoresManagerState {
                 storageManager: storageManager,
                 network: network,
             ),
+            OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -181,15 +182,12 @@ class AuthenticatedState: StoresManagerState {
             appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
             grdbManager: ServiceLocator.grdbManager
            ) {
-            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
-
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
                 catalogSizeChecker: POSCatalogSizeChecker(
                     credentials: credentials,
                     selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                    posProductsOnlyEnabled: posProductsOnlyEnabled
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
                 ),
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
@@ -198,6 +196,7 @@ class AuthenticatedState: StoresManagerState {
                     storageManager: ServiceLocator.storageManager
                 ),
                 isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                isCatalogAPIFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {
@@ -214,8 +213,7 @@ class AuthenticatedState: StoresManagerState {
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
-                connectivityObserver: ServiceLocator.connectivityObserver,
-                posProductsOnlyEnabled: posProductsOnlyEnabled
+                connectivityObserver: ServiceLocator.connectivityObserver
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility

@@ -2,10 +2,13 @@ import SwiftUI
 
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
+    private let animation: POSCardPresentPaymentInLineMessageAnimation
     @Environment(POSPaymentModel.self) private var paymentModel
 
-    init(messageType: PointOfSaleCardPresentPaymentMessageType) {
+    init(messageType: PointOfSaleCardPresentPaymentMessageType,
+         animation: POSCardPresentPaymentInLineMessageAnimation) {
         self.messageType = messageType
+        self.animation = animation
     }
 
     var body: some View {
@@ -28,7 +31,6 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSalePaymentSuccessView(
                 viewModel: viewModel,
                 customerEmail: paymentModel.customerBillingEmail,
-                onSendReceipt: { email in try await paymentModel.sendReceipt(to: email) },
                 successAction: paymentModel.configuration.successAction,
                 onSuccessScreenBarcodeScanned: paymentModel.configuration.onSuccessScreenBarcodeScanned)
         case .paymentError(let viewModel):
@@ -44,20 +46,15 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
         }
     }
 
-    // MARK: - Animations
-
-    /// Used together with .matchedGeometryEffect
-    /// This makes SwiftUI treat different messages as a single view in the context of animation.
-    /// Allows to smoothly transition from one view to another while also transitioning to full-screen
-    @Namespace private var namespace
-    private var animation: POSCardPresentPaymentInLineMessageAnimation { .init(namespace: namespace) }
 }
 
 #if DEBUG
 #Preview {
+    @Previewable @Namespace var namespace
     let model = POSPreviewHelpers.makePreviewAggregateModel()
-    PointOfSaleCardPresentPaymentInLineMessage(messageType: .processing(
-        viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()))
+    PointOfSaleCardPresentPaymentInLineMessage(
+        messageType: .processing(viewModel: PointOfSaleCardPresentPaymentProcessingMessageViewModel()),
+        animation: .init(namespace: namespace))
     .environment(model.paymentModel)
 }
 #endif

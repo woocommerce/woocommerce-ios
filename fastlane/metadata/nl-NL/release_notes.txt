@@ -1,1 +1,0 @@
-Deze update toont winkelsetup-taken betrouwbaarder, zorgt ervoor dat het scannen van barcodes naadloos werkt in Point of Sale, en verbetert de betrouwbaarheid van de mediabibliotheek. Update nu voor een soepelere winkelbeheerervaring!

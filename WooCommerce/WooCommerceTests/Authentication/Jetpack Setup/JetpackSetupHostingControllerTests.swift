@@ -16,6 +16,7 @@ final class JetpackSetupHostingControllerTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewController = JetpackSetupHostingController(siteURL: testURL,
+                                                           siteID: 0,
                                                            connectionOnly: true,
                                                            wpcomCredentials: credentials,
                                                            stores: stores,

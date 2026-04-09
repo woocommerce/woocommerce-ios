@@ -107,7 +107,7 @@
                     "network_activated": false
                 }, {
                     "plugin": "woocommerce-payments\/woocommerce-payments.php",
-                    "name": "WooCommerce Payments",
+                    "name": "WooPayments",
                     "version": "3.3.0",
                     "version_latest": "3.3.0",
                     "url": "https:\/\/woocommerce.com\/payments\/",

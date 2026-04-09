@@ -35,17 +35,17 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         switch action {
         case .authenticate(let siteURL, let network):
             updateRemote(with: siteURL, network: network)
-        case .retrieveJetpackPluginDetails(let completion):
-            retrieveJetpackPluginDetails(completion: completion)
-        case .installJetpackPlugin(let completion):
-            installJetpackPlugin(completion: completion)
-        case .activateJetpackPlugin(let completion):
-            activateJetpackPlugin(completion: completion)
+        case .retrieveJetpackPluginDetails(let siteID, let completion):
+            retrieveJetpackPluginDetails(siteID: siteID, completion: completion)
+        case .installJetpackPlugin(let siteID, let completion):
+            installJetpackPlugin(siteID: siteID, completion: completion)
+        case .activateJetpackPlugin(let siteID, let completion):
+            activateJetpackPlugin(siteID: siteID, completion: completion)
         case let .fetchJetpackConnectionURL(authenticatedWithWPCom, completion):
             fetchJetpackConnectionURL(authenticatedWithWPCom: authenticatedWithWPCom,
                                       completion: completion)
-        case .fetchJetpackConnectionData(let completion):
-            fetchJetpackConnectionData(completion: completion)
+        case .fetchJetpackConnectionData(let siteID, let completion):
+            fetchJetpackConnectionData(siteID: siteID, completion: completion)
         case .registerSite(let completion):
             registerSite(completion: completion)
         case .provisionConnection(let completion):
@@ -63,12 +63,12 @@ private extension JetpackConnectionStore {
         self.jetpackConnectionRemote = JetpackConnectionRemote(siteURL: siteURL, network: network)
     }
 
-    func retrieveJetpackPluginDetails(completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        jetpackConnectionRemote?.retrieveJetpackPluginDetails(completion: completion)
+    func retrieveJetpackPluginDetails(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
+        jetpackConnectionRemote?.retrieveJetpackPluginDetails(siteID: siteID, completion: completion)
     }
 
-    func installJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
-        jetpackConnectionRemote?.installJetpackPlugin(completion: { result in
+    func installJetpackPlugin(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+        jetpackConnectionRemote?.installJetpackPlugin(siteID: siteID, completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -78,8 +78,8 @@ private extension JetpackConnectionStore {
         })
     }
 
-    func activateJetpackPlugin(completion: @escaping (Result<Void, Error>) -> Void) {
-        jetpackConnectionRemote?.activateJetpackPlugin(completion: { result in
+    func activateJetpackPlugin(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+        jetpackConnectionRemote?.activateJetpackPlugin(siteID: siteID, completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -111,8 +111,8 @@ private extension JetpackConnectionStore {
         }
     }
 
-    func fetchJetpackConnectionData(completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
-        jetpackConnectionRemote?.fetchJetpackConnectionData(completion: completion)
+    func fetchJetpackConnectionData(siteID: Int64, completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
+        jetpackConnectionRemote?.fetchJetpackConnectionData(siteID: siteID, completion: completion)
     }
 
     func registerSite(completion: @escaping (Result<Int64, Error>) -> Void) {

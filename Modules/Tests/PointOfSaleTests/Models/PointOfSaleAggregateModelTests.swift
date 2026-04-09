@@ -192,7 +192,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(sut.cart.purchasableItems.count == 2)
-            #expect(sut.cart.coupons.count == 0)
+            #expect(sut.cart.coupons.isEmpty)
         }
 
         enum CartTestError: Error {
@@ -491,15 +491,19 @@ struct PointOfSaleAggregateModelTests {
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
 
-            // When
-            await sut.startCashPayment()
+            // When / Then
+            await withCheckedContinuation { continuation in
+                cardPresentPaymentService.onCancelPaymentCalled = {
+                    continuation.resume()
+                }
+                sut.startCashPayment()
 
-            // Then
+                #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
+            }
             #expect(cardPresentPaymentService.cancelPaymentCalled == true)
-            #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
         }
 
-        @Test func startCashPayment_sets_payment_state_to_collectingCash() async {
+        @Test func startCashPayment_sets_payment_state_to_collectingCash() {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
@@ -508,7 +512,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // When
-            await sut.startCashPayment()
+            sut.startCashPayment()
 
             // Then
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
@@ -521,7 +525,7 @@ struct PointOfSaleAggregateModelTests {
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
                 orderController: orderController)
-            await sut.startCashPayment()
+            sut.startCashPayment()
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
 
             // When
@@ -543,7 +547,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.checkOut()
             #expect(sut.orderStage == .finalizing)
 
-            await sut.startCashPayment()
+            sut.startCashPayment()
             #expect(sut.paymentState == PointOfSalePaymentState(card: .idle, cash: .collectingCash))
 
             // When
@@ -1053,12 +1057,12 @@ struct PointOfSaleAggregateModelTests {
             #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
         }
 
-        @Test func startCashPayment_when_invoked_tracks_expected_event() async throws {
+        @Test func startCashPayment_when_invoked_tracks_expected_event() throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
 
             // When
-            await sut.startCashPayment()
+            sut.startCashPayment()
 
             // Then
             #expect(analytics.events.first(where: { $0.eventName == "checkout_cash_payment_tapped" }) != nil)

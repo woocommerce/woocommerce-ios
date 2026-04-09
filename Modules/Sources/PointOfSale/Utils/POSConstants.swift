@@ -19,7 +19,7 @@ enum POSConstants {
         /// URL for Point of Sale's IPP Woo Payments documentation
         ///
         case inPersonPaymentsLearnMoreWCPay =
-                "https://woocommerce.com/document/woocommerce-payments/in-person-payments/getting-started-with-in-person-payments/"
+                "https://woocommerce.com/document/getting-started-with-in-person-payments-woopayments/"
 
         /// URL for WooCommerce blog
         ///

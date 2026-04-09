@@ -18,6 +18,7 @@ final class OrderDetailsViewModel {
     private let currencyFormatter: CurrencyFormatter
     private let pluginsService: PluginsServiceProtocol
     let featureFlagService: FeatureFlagService
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private(set) var order: Order
 
@@ -38,7 +39,8 @@ final class OrderDetailsViewModel {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-         pluginsService: PluginsServiceProtocol? = nil) {
+         pluginsService: PluginsServiceProtocol? = nil,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -50,6 +52,7 @@ final class OrderDetailsViewModel {
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase
         self.pluginsService = pluginsService ?? PluginsService(storageManager: storageManager)
+        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     func update(order newOrder: Order) {
@@ -331,6 +334,18 @@ extension OrderDetailsViewModel {
             onReloadSections?()
         }
 
+        /// Temporary `ciabEligibilityChecker.isCurrentSiteCIAB`
+        // TODO: Rework CIAB gating in favour of new approach.
+        if ciabEligibilityChecker.isCurrentSiteCIAB {
+            group.enter()
+            Task { @MainActor in
+                defer {
+                    group.leave()
+                }
+                await syncOrderFulfillments()
+            }
+        }
+
         group.enter()
         syncSavedReceipts {_ in
             group.leave()
@@ -415,18 +430,33 @@ extension OrderDetailsViewModel {
             )
         }
     }
+
+    /// Syncs order fulfillments from the fulfillments endpoint.
+    @MainActor
+    func syncOrderFulfillments() async {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(
+                OrderFulfillmentAction.synchronizeOrderFulfillments(
+                    siteID: siteID,
+                    orderID: orderID
+                ) { error in
+                    if let error {
+                        DDLogError("⛔️ Error synchronizing order fulfillments: \(error.localizedDescription)")
+                    }
+                    continuation.resume(returning: ())
+                }
+            )
+        }
+    }
 }
 
 // MARK: - Configuring results controllers
 //
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        dataSource.configureResultsControllers(onReload: { [weak self] in
-            guard let self = self else { return }
-
-            self.updateMissingInfoInOrderAfterReload()
-            onReload()
-        })
+        dataSource.configureResultsControllers(onReload: onReload)
     }
 }
 
@@ -453,7 +483,6 @@ extension OrderDetailsViewModel {
             ButtonTableViewCell.self,
             IssueRefundTableViewCell.self,
             ImageAndTitleAndTextTableViewCell.self,
-            WCShipInstallTableViewCell.self,
             OrderSubscriptionTableViewCell.self,
             TitleAndValueTableViewCell.self
         ]
@@ -614,10 +643,6 @@ extension OrderDetailsViewModel {
             let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
-        case .installWCShip:
-            //TODO: add analytics
-            let wcShipInstallationFlowVC = Inject.ViewControllerHost(WCShipCTAHostingController())
-            viewController.present(wcShipInstallationFlowVC, animated: true)
         case .trashOrder:
             onCellAction?(.trashOrder, indexPath)
         default:
@@ -964,12 +989,6 @@ extension OrderDetailsViewModel {
     ///
     private func insertNote(_ orderNote: OrderNote) {
         orderNotes.insert(orderNote, at: 0)
-    }
-
-    private func updateMissingInfoInOrderAfterReload() {
-        // Listening for changes in the order listener do not include changes in their relationships' properties.
-        // Update them here.
-        update(order: order.copy(fees: self.dataSource.customAmounts))
     }
 }
 

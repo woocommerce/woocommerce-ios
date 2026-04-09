@@ -2382,6 +2382,7 @@ extension WooAnalyticsEvent {
             case tapToPaySummary
             case manageCardReader
             case aboutTapToPay
+            case ciabUpgrade
 
             var trackingValue: String {
                 switch self {
@@ -2395,6 +2396,8 @@ extension WooAnalyticsEvent {
                     return "manage_card_reader"
                 case .aboutTapToPay:
                     return "about_tap_to_pay"
+                case .ciabUpgrade:
+                    return "ciab_upgrade"
                 }
             }
         }
@@ -2573,6 +2576,7 @@ extension WooAnalyticsEvent {
         enum Key: String {
             case hasWordPress = "has_wordpress"
             case isWPCom = "is_wpcom"
+            case isCommerceGarden = "is_commerce_garden"
             case isJetpackInstalled = "is_jetpack_installed"
             case isJetpackActive = "is_jetpack_active"
             case isJetpackConnected = "is_jetpack_connected"
@@ -2582,11 +2586,13 @@ extension WooAnalyticsEvent {
         /// Tracks when the result for site discovery is returned
         static func siteDiscovery(hasWordPress: Bool,
                                   isWPCom: Bool,
+                                  isCommerceGarden: Bool,
                                   isJetpackInstalled: Bool,
                                   isJetpackActive: Bool,
                                   isJetpackConnected: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .sitePickerSiteDiscovery, properties: [Key.hasWordPress.rawValue: hasWordPress,
                                                                                Key.isWPCom.rawValue: isWPCom,
+                                                                               Key.isCommerceGarden.rawValue: isCommerceGarden,
                                                                                Key.isJetpackInstalled.rawValue: isJetpackInstalled,
                                                                                Key.isJetpackActive.rawValue: isJetpackActive,
                                                                                Key.isJetpackConnected.rawValue: isJetpackConnected])
@@ -2863,6 +2869,7 @@ extension WooAnalyticsEvent {
             case exists
             case hasWordPress = "is_wordpress"
             case isWPCom = "is_wp_com"
+            case isCommerceGarden = "is_commerce_garden"
             case isJetpackInstalled = "has_jetpack"
             case isJetpackActive = "is_jetpack_active"
             case isJetpackConnected = "is_jetpack_connected"
@@ -2904,6 +2911,7 @@ extension WooAnalyticsEvent {
         static func siteInfoFetched(exists: Bool,
                                     hasWordPress: Bool,
                                     isWPCom: Bool,
+                                    isCommerceGarden: Bool,
                                     isJetpackInstalled: Bool,
                                     isJetpackActive: Bool,
                                     isJetpackConnected: Bool,
@@ -2912,6 +2920,7 @@ extension WooAnalyticsEvent {
                 Key.exists.rawValue: exists,
                 Key.hasWordPress.rawValue: hasWordPress,
                 Key.isWPCom.rawValue: isWPCom,
+                Key.isCommerceGarden.rawValue: isCommerceGarden,
                 Key.isJetpackInstalled.rawValue: isJetpackInstalled,
                 Key.isJetpackActive.rawValue: isJetpackActive,
                 Key.isJetpackConnected.rawValue: isJetpackConnected,

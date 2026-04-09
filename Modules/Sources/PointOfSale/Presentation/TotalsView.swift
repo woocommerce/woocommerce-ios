@@ -17,8 +17,17 @@ struct TotalsView: View {
     // _should be_ showing, so that we can animate the change.
     // Default true so totals fields would be included in the view hiearchy on first render and animate with TotalsView
     @State private var isShowingTotalsFields: Bool = true
+
+    /// Payment state with cash collection neutralized. Only `.collectingCash` is handled
+    /// by NavigationStack push. Success and idle are visible to TotalsView.
+    /// TODO: Consider removing cash state entirely - it no longer drives the cash view.
+    private var displayPaymentState: PointOfSalePaymentState {
+        let cash: PointOfSaleCashPaymentState = paymentModel.paymentState.cash == .collectingCash ? .idle : paymentModel.paymentState.cash
+        return PointOfSalePaymentState(card: paymentModel.paymentState.card, cash: cash)
+    }
+
     private var shouldShowTotalsFields: Bool {
-        viewHelper.shouldShowTotalsFields(for: paymentModel.paymentState)
+        viewHelper.shouldShowTotalsFields(for: displayPaymentState)
     }
 
     var body: some View {
@@ -27,46 +36,46 @@ struct TotalsView: View {
             case .idle, .syncing, .loaded:
                 VStack(alignment: .center) {
                     Spacer()
-                        .renderedIf(cardReaderViewLayout.topPadding == nil)
 
-                    VStack(alignment: .center, spacing: 0) {
-                        if isShowingPaymentView {
-                            PaymentViewContent(
-                                paymentState: paymentModel.paymentState,
-                                cardReaderViewLayout: cardReaderViewLayout,
-                                isShowingTotalsFields: isShowingTotalsFields,
-                                backgroundColor: backgroundColor,
-                                orderState: posModel.orderState,
-                                cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                                connectCardReaderAction: paymentModel.connectCardReader,
-                                cancelReconnectionAction: posModel.cancelReconnection
-                            )
-                        }
+                    if isShowingPaymentView {
+                        PaymentViewContent(
+                            paymentState: displayPaymentState,
+                            cardReaderViewLayout: cardReaderViewLayout,
+                            isShowingTotalsFields: isShowingTotalsFields,
+                            backgroundColor: backgroundColor,
+                            orderState: posModel.orderState,
+                            cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                            cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
+                            connectCardReaderAction: paymentModel.connectCardReader,
+                            cancelReconnectionAction: posModel.cancelReconnection
+                        )
+                    }
 
-                        if isShowingTotalsFields {
-                            TotalsFieldsContent(
-                                orderState: posModel.orderState,
-                                paymentState: paymentModel.paymentState,
-                                cart: posModel.cart,
-                                totalsFieldAnimation: totalsFieldAnimation
-                            )
-                            .opacity(shouldShowTotalsFields ? 1 : 0)
-                        }
+                    if isShowingPaymentView && isShowingTotalsFields {
+                        Spacer()
+                    }
+
+                    if isShowingTotalsFields {
+                        TotalsFieldsContent(
+                            orderState: posModel.orderState,
+                            paymentState: displayPaymentState,
+                            cart: posModel.cart,
+                            totalsFieldAnimation: totalsFieldAnimation
+                        )
+                        .opacity(shouldShowTotalsFields ? 1 : 0)
                     }
 
                     Spacer()
-                        .renderedIf(viewHelper.shouldApplyPadding(paymentState: paymentModel.paymentState))
 
                     CashPaymentButton(
                         orderState: posModel.orderState,
-                        paymentState: paymentModel.paymentState,
+                        paymentState: displayPaymentState,
                         cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                        startCashPaymentAction: { await paymentModel.startCashPayment() }
+                        startCashPaymentAction: { paymentModel.startCashPayment() }
                     )
                 }
-                .animation(.default, value: isShowingPaymentView)
                 .scrollVerticallyIfNeeded()
+                .animation(.default, value: isShowingPaymentView)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -80,7 +89,6 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: paymentModel.paymentState)
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
@@ -88,11 +96,10 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
-        .geometryGroup()
     }
 
     private var backgroundColor: Color {
-        viewHelper.paymentBackgroundColor(for: paymentModel.paymentState)
+        viewHelper.paymentBackgroundColor(for: displayPaymentState)
     }
 }
 
@@ -143,24 +150,22 @@ private extension TotalsView {
 
         switch paymentModel.cardReaderConnectionStatus {
         case .connected, .disconnecting, .cancellingConnection:
-            // Show card payment UI if there's a message, or cash payment UI when not idle
-            switch paymentModel.paymentState.activePaymentMethod {
+            switch displayPaymentState.activePaymentMethod {
             case .cash:
                 return true
             case .card:
                 return paymentModel.cardPresentPaymentInlineMessage != nil
             }
         case .reconnecting:
-            switch paymentModel.paymentState.activePaymentMethod {
+            switch displayPaymentState.activePaymentMethod {
             case .cash:
                 return true
             case .card:
                 return paymentModel.cardPresentPaymentInlineMessage != nil ||
                        totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                                      paymentState: paymentModel.paymentState)
+                                                                      paymentState: displayPaymentState)
             }
         case .disconnected:
-            // Since the reader is disconnected, this will show the "Connect your reader" CTA button view.
             return true
         }
     }
@@ -170,13 +175,13 @@ private extension TotalsView {
             return .primary
         }
 
-        switch paymentModel.paymentState.activePaymentMethod {
+        switch displayPaymentState.activePaymentMethod {
         case .cash:
             return PaymentViewLayout(topPadding: POSPadding.none,
-                                     bottomPadding: paymentModel.paymentState.cash == .collectingCash ? nil : POSPadding.none,
+                                     bottomPadding: POSPadding.none,
                                      sidePadding: POSPadding.none)
         case .card:
-            switch paymentModel.paymentState.card {
+            switch displayPaymentState.card {
             case .validatingOrderError,
                     .paymentIntentCreationError:
                 return .outlined
@@ -195,12 +200,12 @@ private extension TotalsView {
                     .preparingReader,
                     .processingPayment:
                 if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                                paymentState: paymentModel.paymentState) {
+                                                                paymentState: displayPaymentState) {
                     return .primary
                 }
                 if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                          paymentState: paymentModel.paymentState) {
-                    return .outlined
+                                                          paymentState: displayPaymentState) {
+                    return .primary
                 }
             }
         }
@@ -443,11 +448,13 @@ private struct PaymentViewContent: View {
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
     let cancelReconnectionAction: () -> Void
+    @Namespace private var paymentMessageNamespace
 
     private let viewHelper = POSPaymentViewHelper()
 
     var body: some View {
         paymentView
+            .animation(.default, value: paymentState.card)
             .font(.title)
             .if(viewHelper.shouldApplyPadding(paymentState: paymentState)) {
                 $0.paymentViewPadding(layout: cardReaderViewLayout)
@@ -457,18 +464,16 @@ private struct PaymentViewContent: View {
             .background(backgroundColor.ignoresSafeArea(.all))
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
-            .geometryGroup()
     }
 
     @ViewBuilder private var paymentView: some View {
-        switch paymentState.activePaymentMethod {
-        case .cash:
-            if case .loaded(let total) = orderState {
-                POSCashPaymentContentView(
-                    cashPaymentState: paymentState.cash,
-                    formattedOrderTotal: total.orderTotal)
-            }
-        case .card:
+        if paymentState.cash == .paymentSuccess, case .loaded(let total) = orderState {
+            PointOfSaleCardPresentPaymentInLineMessage(
+                messageType: .paymentSuccess(
+                    viewModel: .init(formattedOrderTotal: total.orderTotal,
+                                     paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
+        } else {
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: cardReaderConnectionStatus,
                 paymentState: paymentState,
@@ -483,15 +488,13 @@ private struct CashPaymentButton: View {
     let orderState: PointOfSaleOrderState
     let paymentState: PointOfSalePaymentState
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
-    let startCashPaymentAction: () async -> Void
+    let startCashPaymentAction: () -> Void
 
     private let viewHelper = TotalsViewHelper()
 
     var body: some View {
         Button(action: {
-            Task { @MainActor in
-                await startCashPaymentAction()
-            }
+            startCashPaymentAction()
         }, label: {
             Text(TotalsView.Localization.cashPaymentButtonTitle)
                 .font(POSFontStyle.posBodyLargeBold)

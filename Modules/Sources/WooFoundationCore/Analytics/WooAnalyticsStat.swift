@@ -1086,24 +1086,9 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
     case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
-    // MARK: - Bookings
-    case mainTabBookingsSelect = "main_tab_bookings_select"
-    case mainTabBookingsReselect = "main_tab_bookings_reselect"
-    case bookingDetailCancelBooking = "booking_detail_cancel_booking"
-    case bookingDetailAttendanceStatusUpdate = "booking_detail_attendance_status_update"
-    case bookingDetailAddNoteTap = "booking_detail_add_note_tap"
-    case bookingDetailViewLinkedOrderTap = "booking_detail_view_linked_order_tap"
-    case bookingDetailRefundTap = "booking_detail_refund_tap"
-    case bookingListTabSelect = "booking_list_tab_select"
-    case bookingListView = "booking_list_view"
+    // MARK: - Bookings (error events only — other booking events use EventHorizon codegen)
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
     case bookingListFailedToUpdateBookingDetails = "booking_list_failed_to_update_booking_details"
-    case bookingListBookingTap = "booking_list_booking_tap"
-    case bookingListFiltersTap = "booking_list_filters_tap"
-    case bookingListApplyFilters = "booking_list_apply_filters"
-    case bookingListSearchTap = "booking_list_search_tap"
-    case bookingListSortByTap = "booking_list_sort_by_tap"
-    case bookingListSortByOptionTap = "booking_list_sort_by_option_tap"
 
     // MARK: Hub Menu
     //
@@ -1291,6 +1276,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleTabVisibilityChecked = "pos_tab_visibility_checked"
     case pointOfSaleIneligibleUIShown = "pos_ineligible_ui_shown"
     case pointOfSaleIneligibleUIRetryTapped = "pos_ineligible_ui_retry_tapped"
+    case pointOfSaleIneligibleUILearnMoreTapped = "pos_ineligible_ui_learn_more_tapped"
     case pointOfSaleLoaded = "loaded"
     case pointOfSaleItemsFetched = "items_fetched"
     case pointOfSaleItemsPullToRefresh = "items_pull_to_refresh"
@@ -1354,6 +1340,13 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleOrdersListSearchResultsFetched = "orders_list_search_results_fetched"
     case pointOfSaleOrderDetailsLoaded = "order_details_loaded"
     case pointOfSaleOrderDetailsEmailReceiptTapped = "order_details_email_receipt_tapped"
+    case pointOfSaleRefundFlowStarted = "refund_flow_started"
+    case pointOfSaleRefundConfirmTapped = "refund_confirm_tapped"
+    case pointOfSaleRefundProcessingStarted = "refund_processing_started"
+    case pointOfSaleRefundProcessingSuccess = "refund_processing_success"
+    case pointOfSaleRefundProcessingFailed = "refund_processing_failed"
+    case pointOfSaleRefundFlowAborted = "refund_flow_aborted"
+    case pointOfSaleRefundSelectAllTapped = "refund_select_all_tapped"
     case pointOfSaleLocalCatalogDownloadingScreenShown = "local_catalog_downloading_screen_shown"
     case pointOfSaleLocalCatalogDownloadingScreenExitPosTapped = "local_catalog_downloading_screen_exit_pos_tapped"
     case pointOfSaleSplashScreenErrorShown = "splash_screen_error_shown"

@@ -9,7 +9,7 @@ struct POSCatalogSizeCheckerTests {
 
     init() throws {
         self.mockSyncRemote = MockPOSCatalogSyncRemote()
-        self.sut = POSCatalogSizeChecker(syncRemote: mockSyncRemote, posProductsOnlyEnabled: false)
+        self.sut = POSCatalogSizeChecker(syncRemote: mockSyncRemote)
     }
 
     @Test func checkCatalogSize_returns_combined_count_from_remote() async throws {

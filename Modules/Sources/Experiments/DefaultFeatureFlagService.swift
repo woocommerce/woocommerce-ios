@@ -19,9 +19,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .shippingLabelsOnboardingM1:
-            // We need to adapt this functionality to the new Woo Shipping plugin before enabling it
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
         case .performanceMonitoring,
@@ -99,19 +96,21 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleCatalogAPI:
             return false
         case .pointOfSaleRefundsi1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .pointOfSaleBookings:
             return true
         case .selfDrivenPushTokenWPCom:
             return false
         case .selfDrivenPushTokenAppPasswords:
             return false
-        case .pointOfSaleOnlyProducts:
-            return true
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
+        case .wooShippingFedEx:
+            return false
+        case .loggedOutFFPanel:
+            return !buildConfig.isProduction
         default:
             return true
         }

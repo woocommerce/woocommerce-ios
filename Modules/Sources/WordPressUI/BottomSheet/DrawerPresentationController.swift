@@ -138,7 +138,12 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         }
 
         var frame = containerView.frame
-        let y = collapsedYPosition
+        let y: CGFloat
+        if currentPosition != .collapsed {
+            y = max(collapsedYPosition - containerView.safeAreaInsets.bottom, containerView.safeAreaInsets.top)
+        } else {
+            y = collapsedYPosition
+        }
         var width: CGFloat = containerView.bounds.width - (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)
 
         frame.origin.y = y
@@ -219,13 +224,11 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         configureScrollViewInsets()
     }
 
-    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        transition(to: currentPosition)
-    }
+    private var traitChangeRegistration: UITraitChangeRegistration?
 
     public override func presentationTransitionDidEnd(_ completed: Bool) {
         super.presentationTransitionDidEnd(completed)
+        hasCompletedPresentation = completed
 
         configureScrollViewInsets()
     }
@@ -304,6 +307,17 @@ public class DrawerPresentationController: FancyAlertPresentationController {
 
         addGestures()
         observe(scrollView: presentableViewController?.scrollableView)
+        registerTraitChanges()
+    }
+
+    private var hasCompletedPresentation = false
+
+    private func registerTraitChanges() {
+        guard traitChangeRegistration == nil else { return }
+        traitChangeRegistration = registerForTraitChanges([UITraitVerticalSizeClass.self, UITraitHorizontalSizeClass.self]) { [weak self] (_: DrawerPresentationController, _: UITraitCollection) in
+            guard let self, self.hasCompletedPresentation else { return }
+            self.transition(to: self.currentPosition)
+        }
     }
 
     /// Represents whether the view is animating to a new position

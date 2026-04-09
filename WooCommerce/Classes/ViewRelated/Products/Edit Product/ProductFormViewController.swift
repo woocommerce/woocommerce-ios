@@ -1652,7 +1652,7 @@ private extension ProductFormViewController {
                 self?.viewModel.updateProductType(productType: selectedProductType)
             })
         }
-        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
+        let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command, initialPosition: .expanded)
         productTypesListPresenter.show(from: self, sourceView: cell, arrowDirections: .any)
     }
 }

@@ -41,7 +41,11 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         self.socialUser = socialUser
     }
 
-    func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: AuthenticatorAnalyticsTracker.Step, lastFlow: AuthenticatorAnalyticsTracker.Flow) {
+    func presentSupport(from sourceViewController: UIViewController,
+                        sourceTag: WordPressSupportSourceTag,
+                        lastStep: AuthenticatorAnalyticsTracker.Step,
+                        lastFlow: AuthenticatorAnalyticsTracker.Flow,
+                        siteURL: String?) {
         // no-op
     }
 
@@ -65,6 +69,10 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
 
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
         // no-op
+    }
+
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
+        completion(false)
     }
 
     func track(event: WPAnalyticsStat) {

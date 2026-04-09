@@ -3,18 +3,19 @@ import UIKit
 import class WooFoundation.CurrencySettings
 import enum WooFoundation.CountryCode
 import enum WooFoundation.CurrencyCode
-import protocol Experiments.FeatureFlagService
 import struct Yosemite.SiteSetting
 import struct Yosemite.Site
 import protocol Yosemite.StoresManager
 import struct Yosemite.SystemPlugin
 import enum Yosemite.FeatureFlagAction
 import enum Yosemite.SettingAction
+import enum Yosemite.SiteAction
 import protocol Yosemite.POSSystemStatusServiceProtocol
 import class Yosemite.POSSystemStatusService
 import protocol Yosemite.POSSiteSettingServiceProtocol
 import class Yosemite.POSSiteSettingService
 import class Yosemite.SiteAddress
+import class Yosemite.CIABEligibilityChecker
 import enum Networking.SiteSettingsFeature
 import class WooFoundation.VersionHelpers
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
@@ -63,6 +64,11 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return .eligible
         }
 
+        let ciabEligibility = checkCIABPlanEligibility()
+        if case .ineligible = ciabEligibility {
+            return ciabEligibility
+        }
+
         async let siteSettingsEligibility = checkSiteSettingsEligibility()
         async let pluginEligibility = checkPluginEligibility()
 
@@ -98,6 +104,13 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility()
         case .selfDeallocated:
+            return await checkEligibility()
+        case .ciabPlanUpgradeRequired:
+            do {
+                try await syncSiteRemotely()
+            } catch {
+                DDLogError("⛔️ Error syncing site for CIAB plan re-check: \(error)")
+            }
             return await checkEligibility()
         }
     }
@@ -247,6 +260,49 @@ private extension POSTabEligibilityChecker {
                 continuation.resume(returning: ())
             })
         }
+    }
+
+    @MainActor
+    func syncSiteRemotely() async throws {
+        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
+            guard let self else {
+                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+            }
+            let action = SiteAction.syncSite(siteID: siteID) { [weak self] result in
+                guard let self else {
+                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
+                }
+                switch result {
+                case .success(let site):
+                    self.stores.updateDefaultStore(site)
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
+// MARK: - CIAB Plan Eligibility Check
+
+private extension POSTabEligibilityChecker {
+    /// Checks whether a CIAB site has a Pro plan required for POS access.
+    func checkCIABPlanEligibility() -> POSEligibilityState {
+        guard let site = stores.sessionManager.defaultSite else {
+            return .eligible
+        }
+        guard Site.isCIAB(isGarden: site.isGarden, gardenName: site.gardenName) else {
+            return .eligible
+        }
+        guard CIABEligibilityChecker.Constants.ciabProPlanSlugs.contains(site.plan) else {
+            guard let learnMoreURL = CIABEligibilityChecker.learnMoreURL(siteURL: site.url) else {
+                return .eligible
+            }
+            return .ineligible(reason: .ciabPlanUpgradeRequired(learnMoreURL: learnMoreURL))
+        }
+        return .eligible
     }
 }
 

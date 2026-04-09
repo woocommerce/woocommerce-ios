@@ -1,19 +1,10 @@
 import Foundation
 import enum NetworkingCore.OrderStatusEnum
 
-/// Payment status resolved from order data associated with a booking.
+/// Payment status resolved from the `_payment_status` order metadata.
 ///
-/// Matches the Android `WooPosPaymentStatusResolver` logic.
-/// Both POS and Store Management booking screens use this type,
-/// passing whichever order fields they have available.
-///
-/// Priority:
-/// 1. refundTotal > 0 && refundTotal >= total → refunded
-/// 2. refundTotal > 0 → partiallyRefunded
-/// 3. orderStatus == .refunded → refunded (fallback when refund amounts unavailable)
-/// 4. datePaid != nil → paid
-/// 5. orderStatus == .failed || .cancelled → failed
-/// 6. else → unpaid
+/// Matches the web dashboard behavior which uses this metadata to determine payment status badges.
+/// When the metadata is missing, defaults to `.unpaid`.
 ///
 public enum BookingPaymentStatus: Equatable, Sendable {
     case paid
@@ -21,31 +12,30 @@ public enum BookingPaymentStatus: Equatable, Sendable {
     case failed
     case refunded
     case partiallyRefunded
+    case authorized
+    case authorizationVoided
 
-    /// Resolves payment status from raw order fields.
+    /// Resolves payment status from the `_payment_status` order metadata value.
     ///
-    /// - Parameters:
-    ///   - orderStatusKey: The raw order status string (e.g. "processing", "refunded").
-    ///   - datePaid: When the order was paid, if ever.
-    ///   - refundTotal: Total amount refunded. Defaults to 0 when unavailable.
-    ///   - total: Order total. Defaults to 0 when unavailable.
-    public init(orderStatusKey: String,
-                datePaid: Date?,
-                refundTotal: Decimal = 0,
-                total: Decimal = 0) {
-        let orderStatus = OrderStatusEnum(rawValue: orderStatusKey)
-
-        if refundTotal > 0, refundTotal >= total {
-            self = .refunded
-        } else if refundTotal > 0 {
-            self = .partiallyRefunded
-        } else if orderStatus == .refunded {
-            self = .refunded
-        } else if datePaid != nil {
+    /// - Parameter paymentStatusMetadata: The raw string value from `_payment_status` metadata.
+    ///   When `nil` or unrecognized, defaults to `.unpaid` (matching web behavior).
+    public init(paymentStatusMetadata: String?) {
+        switch paymentStatusMetadata {
+        case "paid":
             self = .paid
-        } else if orderStatus == .failed || orderStatus == .cancelled {
+        case "unpaid":
+            self = .unpaid
+        case "failed":
             self = .failed
-        } else {
+        case "refunded":
+            self = .refunded
+        case "partially_refunded":
+            self = .partiallyRefunded
+        case "authorized":
+            self = .authorized
+        case "authorization_voided":
+            self = .authorizationVoided
+        default:
             self = .unpaid
         }
     }

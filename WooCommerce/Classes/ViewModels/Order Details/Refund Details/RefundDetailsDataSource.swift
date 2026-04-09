@@ -65,7 +65,7 @@ final class RefundDetailsDataSource: NSObject {
     /// Refund Method
     ///
     private var refundMethod: String {
-        guard refund.isAutomated == true else {
+        guard order.refundShowsPaymentMethod(refund) else {
             return NSLocalizedString("Refunded manually", comment: "Title of the refund detail cell when the refund was done manually.")
         }
 

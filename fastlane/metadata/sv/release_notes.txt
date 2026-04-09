@@ -1,1 +1,0 @@
-Den här uppdateringen visar butikens installationsuppgifter mer pålitligt, säkerställer att streckkodsskanning fungerar sömlöst i försäljningsstället, och förbättrar mediabibliotekets pålitlighet. Uppdatera nu för en smidigare hantering av butiken!

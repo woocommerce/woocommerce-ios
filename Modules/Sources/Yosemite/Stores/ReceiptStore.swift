@@ -147,7 +147,7 @@ private extension ReceiptStore {
 
     func discountLineDescription(order: Order) -> String {
         var couponCodes = ""
-        if order.coupons.count > 0 {
+        if !order.coupons.isEmpty {
             couponCodes = order.coupons.map {
                 $0.code
             }
@@ -225,7 +225,7 @@ private extension ReceiptStore {
     ///  - onCompletion: The completion block to call when the operation is complete.
     ///
     func sendReceipt(order: Order, email: String, onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        guard order.billingAddress?.email == nil || order.billingAddress?.email == "" else {
+        guard order.billingAddress?.email == nil || order.billingAddress?.email?.isEmpty == true else {
             onCompletion(.failure(ReceiptStoreError.customerEmailAlreadySet))
             return
         }

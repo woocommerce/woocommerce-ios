@@ -8,6 +8,30 @@ struct EditStoreListViewModelTests {
     private let site1 = Site.fake().copy(siteID: 123)
     private let site2 = Site.fake().copy(siteID: 135)
 
+    @Test func unhideStoreID_removes_store_from_hidden_list() {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        userDefaults.saveHiddenStoreIDs([site1.siteID, site2.siteID])
+
+        // When
+        userDefaults.unhideStoreID(site1.siteID)
+
+        // Then
+        #expect(userDefaults.hiddenStoreIDs == [site2.siteID])
+    }
+
+    @Test func unhideStoreID_does_nothing_when_store_is_not_hidden() {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        userDefaults.saveHiddenStoreIDs([site2.siteID])
+
+        // When
+        userDefaults.unhideStoreID(site1.siteID)
+
+        // Then
+        #expect(userDefaults.hiddenStoreIDs == [site2.siteID])
+    }
+
     @Test func hasChanges_returns_correct_values() {
         // Given
         let availableSites = [site1, site2]

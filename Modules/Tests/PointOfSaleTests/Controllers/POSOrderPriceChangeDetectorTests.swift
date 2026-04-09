@@ -13,36 +13,44 @@ struct POSOrderPriceChangeDetectorTests {
 
     // MARK: - No change scenarios
 
-    @Test func exTaxPriceMatches_returnsNoChange() {
+    @Test func detectsPriceChange_when_exTax_price_matches_then_returns_false() {
         // Given
         let cart = makeCart(price: "10.00", productID: 42)
         let order = makeOrder(productID: 42, quantity: 1, subtotal: "10.00", subtotalTax: "0.00")
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == false)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == false)
     }
 
-    @Test func taxInclusivePriceMatches_returnsNoChange() {
+    @Test func detectsPriceChange_when_taxInclusive_price_matches_then_returns_false() {
         // Given
         let cart = makeCart(price: "11.00", productID: 42)
         let order = makeOrder(productID: 42, quantity: 1, subtotal: "10.00", subtotalTax: "1.00")
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == false)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == false)
     }
 
-    @Test func taxInclusivePriceWithServerRounding_returnsNoChange() {
-        // Given: real-world scenario where subtotal + subtotalTax doesn't exactly equal the price
-        // Product price $180 (incl tax), server returns subtotal "178.21782200" + tax "1.78000000" = 179.99782200
+    @Test func detectsPriceChange_when_server_tax_rounding_differs_then_returns_false() {
+        // Given: product price $180 (incl tax), server returns subtotal + tax = 179.99782200
         let cart = makeCart(price: "180", productID: 80)
         let order = makeOrder(productID: 80, quantity: 1, subtotal: "178.21782200", subtotalTax: "1.78000000")
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == false)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == false)
     }
 
-    @Test func multipleItemsWithMatchingPrices_returnsNoChange() {
-        // Given: two items of the same product consolidated into one order line
+    @Test func detectsPriceChange_when_consolidated_items_match_then_returns_false() {
+        // Given: two cart items of the same product consolidated into one order line
         let product = makeSimpleProduct(price: "10.00", productID: 42)
         let cart = Cart(purchasableItems: [
             Cart.PurchasableItem(id: UUID(), item: product, title: "Widget", subtitle: nil, quantity: 1),
@@ -50,31 +58,40 @@ struct POSOrderPriceChangeDetectorTests {
         ])
         let order = makeOrder(productID: 42, quantity: 2, subtotal: "20.00", subtotalTax: "0.00")
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == false)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == false)
     }
 
-    @Test func emptyCart_returnsNoChange() {
+    @Test func detectsPriceChange_when_cart_empty_then_returns_false() {
         // Given
         let cart = Cart()
         let order = Order.fake()
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == false)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == false)
     }
 
     // MARK: - Change detected scenarios
 
-    @Test func simpleProductPriceChanged_returnsChange() {
+    @Test func detectsPriceChange_when_simple_product_price_changed_then_returns_true() {
         // Given: cart price $12 but order shows $10 ex-tax / $11 tax-inclusive
         let cart = makeCart(price: "12.00", productID: 42)
         let order = makeOrder(productID: 42, quantity: 1, subtotal: "10.00", subtotalTax: "1.00")
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == true)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == true)
     }
 
-    @Test func variationPriceChanged_returnsChange() {
+    @Test func detectsPriceChange_when_variation_price_changed_then_returns_true() {
         // Given
         let variation = POSVariation(id: POSItemIdentifier(underlyingType: .variation, itemID: 99),
                                      name: "Blue / Large",
@@ -90,17 +107,23 @@ struct POSOrderPriceChangeDetectorTests {
             OrderItem.fake().copy(productID: 10, variationID: 99, quantity: 1, subtotal: "8.00", subtotalTax: "0.80")
         ])
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == true)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == true)
     }
 
-    @Test func oneCentPriceChange_returnsChange() {
-        // Given: price changed by exactly $0.01
+    @Test func detectsPriceChange_when_one_cent_change_then_returns_true() {
+        // Given
         let cart = makeCart(price: "10.00", productID: 42)
         let order = makeOrder(productID: 42, quantity: 1, subtotal: "9.99", subtotalTax: "0.00")
 
-        // When / Then
-        #expect(sut.detectsPriceChange(cart: cart, order: order) == true)
+        // When
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then
+        #expect(result == true)
     }
 }
 

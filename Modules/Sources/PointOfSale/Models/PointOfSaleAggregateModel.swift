@@ -79,7 +79,6 @@ protocol PointOfSaleAggregateModelProtocol {
     let isLocalCatalogEligible: Bool
 
     private var cancellables: Set<AnyCancellable> = []
-    private var cartProductObservationCancellable: AnyCancellable?
 
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
@@ -168,6 +167,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
+        subscribeToCartProductUpdates()
         performInitialSyncIfNeeded()
     }
 }
@@ -297,7 +297,6 @@ extension PointOfSaleAggregateModel {
         do throws(PointOfSaleBarcodeScanError) {
             let item = try await barcodeScanService.getItem(barcode: barcode)
             if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
-        
                 analytics.track(
                     event: .PointOfSale.addItemToCart(
                         sourceViewType: .scanner,
@@ -495,6 +494,15 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Cart product observation
 private extension PointOfSaleAggregateModel {
+    func subscribeToCartProductUpdates() {
+        cartProductObserver?.items
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] updatedItems in
+                self?.applyProductUpdatesToCart(updatedItems)
+            }
+            .store(in: &cancellables)
+    }
+
     func rebuildCartProductObservation() {
         guard let cartProductObserver else { return }
 
@@ -513,12 +521,7 @@ private extension PointOfSaleAggregateModel {
             }
         }
 
-        cartProductObservationCancellable = cartProductObserver
-            .observe(productIDs: productIDs, variationIDs: variationIDs)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] updatedItems in
-                self?.applyProductUpdatesToCart(updatedItems)
-            }
+        cartProductObserver.observe(productIDs: productIDs, variationIDs: variationIDs)
     }
 
     func applyProductUpdatesToCart(_ observedItems: [POSItem]) {
@@ -570,7 +573,6 @@ extension PointOfSaleAggregateModel {
         // Ideally, we could rely on the POS being deallocated to cancel all these. Since we have memory leak issues,
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         paymentModel.tearDown()
-        cartProductObservationCancellable?.cancel()
         cancellables.forEach { $0.cancel() }
     }
 }

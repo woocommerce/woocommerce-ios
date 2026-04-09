@@ -1,3 +1,4 @@
+import CocoaLumberjackSwift
 import Foundation
 import GRDB
 import Combine
@@ -7,17 +8,31 @@ import class WooFoundation.CurrencySettings
 /// Observes GRDB product/variation rows for items currently in a POS cart.
 /// When observed rows change (e.g. after an incremental catalog sync), publishes
 /// updated `POSItem` values so the cart can reflect current prices.
+///
+/// Caches the observed IDs internally — calling `observe` with the same IDs is a no-op.
 public protocol POSCartProductObserving {
     /// Starts observing the given product and variation IDs in GRDB.
-    /// Publishes an array of updated `POSItem` values whenever the underlying rows change.
-    /// Each call replaces the previous observation.
-    func observe(productIDs: Set<Int64>, variationIDs: Set<Int64>) -> AnyPublisher<[POSItem], Never>
+    /// Publishes updated `POSItem` values through the `items` publisher whenever the underlying rows change.
+    /// Skips rebuilding the observation if the IDs haven't changed since the last call.
+    func observe(productIDs: Set<Int64>, variationIDs: Set<Int64>)
+
+    /// Publisher that emits updated `POSItem` values when observed GRDB rows change.
+    var items: AnyPublisher<[POSItem], Never> { get }
 }
 
 public final class POSCartProductObserver: POSCartProductObserving {
     private let siteID: Int64
     private let grdbManager: GRDBManagerProtocol
     private let itemMapper: PointOfSaleItemMapperProtocol
+
+    private var currentProductIDs: Set<Int64> = []
+    private var currentVariationIDs: Set<Int64> = []
+    private var observationCancellable: AnyCancellable?
+    private let itemsSubject = PassthroughSubject<[POSItem], Never>()
+
+    public var items: AnyPublisher<[POSItem], Never> {
+        itemsSubject.eraseToAnyPublisher()
+    }
 
     public init(siteID: Int64,
                 grdbManager: GRDBManagerProtocol,
@@ -28,9 +43,14 @@ public final class POSCartProductObserver: POSCartProductObserving {
         self.itemMapper = itemMapper ?? PointOfSaleItemMapper(currencySettings: currencySettings)
     }
 
-    public func observe(productIDs: Set<Int64>, variationIDs: Set<Int64>) -> AnyPublisher<[POSItem], Never> {
+    public func observe(productIDs: Set<Int64>, variationIDs: Set<Int64>) {
+        guard productIDs != currentProductIDs || variationIDs != currentVariationIDs else { return }
+        currentProductIDs = productIDs
+        currentVariationIDs = variationIDs
+
         guard !productIDs.isEmpty || !variationIDs.isEmpty else {
-            return Just([]).eraseToAnyPublisher()
+            observationCancellable = nil
+            return
         }
 
         let siteID = self.siteID
@@ -38,7 +58,6 @@ public final class POSCartProductObserver: POSCartProductObserving {
 
         let observation = ValueObservation
             .tracking { database -> ObservationResult in
-                // Fetch products by ID
                 let products: [POSProduct] = try productIDs.isEmpty ? [] : {
                     struct ProductWithRelations: Decodable, FetchableRecord {
                         let product: PersistedProduct
@@ -62,7 +81,6 @@ public final class POSCartProductObserver: POSCartProductObserving {
                     }
                 }()
 
-                // Fetch variations by ID, with their parent products for name generation
                 let variationResults: [(POSProductVariation, POSProduct)] = try variationIDs.isEmpty ? [] : {
                     struct VariationWithRelations: Decodable, FetchableRecord {
                         let persistedProductVariation: PersistedProductVariation
@@ -111,15 +129,13 @@ public final class POSCartProductObserver: POSCartProductObserving {
                 return ObservationResult(products: products, variationResults: variationResults)
             }
 
-        return observation
+        observationCancellable = observation
             .publisher(in: grdbManager.databaseConnection)
             .map { result -> [POSItem] in
                 var items: [POSItem] = []
 
-                // Map simple products
                 items.append(contentsOf: itemMapper.mapProductsToPOSItems(products: result.products))
 
-                // Map variations with their parent products
                 for (variation, parentProduct) in result.variationResults {
                     let parentPOSProduct = POSVariableParentProduct(
                         id: POSItemIdentifier(underlyingType: .product, itemID: parentProduct.productID),
@@ -138,8 +154,13 @@ public final class POSCartProductObserver: POSCartProductObserving {
 
                 return items
             }
-            .catch { _ in Just([]) }
-            .eraseToAnyPublisher()
+            .catch { error -> Just<[POSItem]> in
+                DDLogError("⛔️ POSCartProductObserver: GRDB observation error: \(error)")
+                return Just([])
+            }
+            .sink { [weak self] items in
+                self?.itemsSubject.send(items)
+            }
     }
 }
 

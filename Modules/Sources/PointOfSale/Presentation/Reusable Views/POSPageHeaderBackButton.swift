@@ -22,9 +22,7 @@ struct POSPageHeaderBackButton: View {
                 .padding(.horizontal, backButtonPadding)
         }
         .disabled(configuration.state == .disabled || configuration.state == .shimmering)
-        .if(configuration.state == .shimmering) { view in
-            view.shimmering()
-        }
+        .shimmering(active: configuration.state == .shimmering)
     }
 }
 

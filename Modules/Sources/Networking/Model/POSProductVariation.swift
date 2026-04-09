@@ -22,6 +22,8 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
     public let sku: String?
     public let globalUniqueID: String?
 
+    public let typeKey: String
+
     public let price: String
     public let downloadable: Bool
 
@@ -41,6 +43,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 fullDescription: String?,
                 sku: String?,
                 globalUniqueID: String?,
+                typeKey: String = "variation",
                 price: String,
                 downloadable: Bool,
                 manageStock: Bool,
@@ -54,6 +57,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
         self.fullDescription = fullDescription
         self.sku = sku
         self.globalUniqueID = globalUniqueID
+        self.typeKey = typeKey
         self.price = price
         self.downloadable = downloadable
         self.manageStock = manageStock
@@ -102,6 +106,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                 })
         ]) ?? false
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
+        let typeKey = try container.decodeIfPresent(String.self, forKey: .typeKey) ?? "variation"
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
 
         self.init(siteID: siteID,
@@ -112,6 +117,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                   fullDescription: fullDescription,
                   sku: sku,
                   globalUniqueID: globalUniqueID,
+                  typeKey: typeKey,
                   price: price,
                   downloadable: downloadable,
                   manageStock: manageStock,
@@ -143,6 +149,7 @@ private extension POSProductVariation {
         case fullDescription = "description"
         case sku
         case globalUniqueID = "global_unique_id"
+        case typeKey = "type"
         case downloadable
         case manageStock = "manage_stock"
         case stockQuantity = "stock_quantity"

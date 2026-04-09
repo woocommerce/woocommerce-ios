@@ -818,6 +818,7 @@ extension Networking.POSProductVariation {
             fullDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
+            typeKey: .fake(),
             price: .fake(),
             downloadable: .fake(),
             manageStock: .fake(),

@@ -83,27 +83,32 @@ final class InMemoryPINStorage: POSPINStoring {
 }
 
 /// Manages POS PINs with SHA-256 hashing and configurable storage backend.
-final class POSPINService {
+public final class POSPINService {
     private let storage: POSPINStoring
 
-    init(storage: POSPINStoring = KeychainPINStorage()) {
+    /// Creates a POS PIN service with the default Keychain-backed storage.
+    public convenience init() {
+        self.init(storage: KeychainPINStorage())
+    }
+
+    init(storage: POSPINStoring) {
         self.storage = storage
     }
 
     /// Validates that the PIN is 4-6 digits.
-    func isValidFormat(_ pin: String) -> Bool {
+    public func isValidFormat(_ pin: String) -> Bool {
         let pattern = #"^\d{4,6}$"#
         return pin.range(of: pattern, options: .regularExpression) != nil
     }
 
     /// Stores a SHA-256 hashed PIN for the given role.
-    func setPIN(_ pin: String, for role: PINRole) {
+    public func setPIN(_ pin: String, for role: PINRole) {
         let hash = hashPIN(pin)
         storage.store(hash, forKey: role.rawValue)
     }
 
     /// Verifies a PIN against the stored hash for a specific role.
-    func verifyPIN(_ pin: String, for role: PINRole) -> Bool {
+    public func verifyPIN(_ pin: String, for role: PINRole) -> Bool {
         guard let storedHash = storage.retrieve(forKey: role.rawValue) else {
             return false
         }
@@ -111,7 +116,7 @@ final class POSPINService {
     }
 
     /// Checks all roles and returns the matching role, or nil if no match.
-    func verifyPIN(_ pin: String) -> PINRole? {
+    public func verifyPIN(_ pin: String) -> PINRole? {
         for role in PINRole.allCases {
             if verifyPIN(pin, for: role) {
                 return role
@@ -121,12 +126,12 @@ final class POSPINService {
     }
 
     /// Whether a PIN is configured for the given role.
-    func hasPIN(for role: PINRole) -> Bool {
+    public func hasPIN(for role: PINRole) -> Bool {
         storage.retrieve(forKey: role.rawValue) != nil
     }
 
     /// Removes the PIN for the given role.
-    func deletePIN(for role: PINRole) {
+    public func deletePIN(for role: PINRole) {
         storage.delete(forKey: role.rawValue)
     }
 

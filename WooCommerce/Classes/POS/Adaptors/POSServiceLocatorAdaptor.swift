@@ -42,8 +42,20 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSExternalViewAdaptor()
     }
 
+    private lazy var _permissions: POSPermissionProviding = {
+        let sessionManager = ServiceLocator.stores.sessionManager
+        let userID = sessionManager.defaultAccount?.userID ?? 0
+        let displayName = sessionManager.defaultAccount?.displayName ?? ""
+        let siteID = sessionManager.defaultSite?.siteID ?? 0
+        return POSPermissionAdaptor.createProvider(
+            siteID: siteID,
+            userID: userID,
+            displayName: displayName
+        )
+    }()
+
     var permissions: POSPermissionProviding {
-        EmptyPOSPermissionAdaptor()
+        _permissions
     }
 }
 
@@ -129,13 +141,4 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
     func createAuthenticatedWebView(url: URL, title: String, completion: @escaping () -> Void) -> AnyView {
         AnyView(WCAuthenticatedWebView(url: url, title: title, completion: completion))
     }
-}
-
-private final class EmptyPOSPermissionAdaptor: POSPermissionProviding {
-    var currentOperator: PointOfSale.POSOperator? { nil }
-    var isLocked: Bool { false }
-    func checkPermission(_ capability: String) -> PointOfSale.POSPermissionResult { .allowed }
-    func hasCapability(_ capability: String) -> Bool { true }
-    func signIn(_ posOperator: PointOfSale.POSOperator) {}
-    func lock() {}
 }

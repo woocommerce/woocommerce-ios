@@ -4,11 +4,11 @@ import Observation
 /// Local POS permission provider that uses on-device PINs with hardcoded capability sets.
 /// Authenticates operators via PIN verification against the local Keychain.
 @Observable
-final class LocalPOSPermissionProvider: POSPermissionProviding {
+public final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Capability Sets
 
-    static let managerCapabilities: Set<String> = [
+    public static let managerCapabilities: Set<String> = [
         "woocommerce_pos_access",
         "woocommerce_pos_manage_settings",
         "woocommerce_void_orders",
@@ -24,7 +24,7 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
         "woocommerce_view_audit_logs",
     ]
 
-    static let cashierCapabilities: Set<String> = [
+    public static let cashierCapabilities: Set<String> = [
         "woocommerce_pos_access",
         "woocommerce_view_personal_sales",
         "woocommerce_view_customer_data",
@@ -32,8 +32,8 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - POSPermissionProviding
 
-    private(set) var currentOperator: POSOperator?
-    private(set) var isLocked: Bool = false
+    public private(set) var currentOperator: POSOperator?
+    public private(set) var isLocked: Bool = false
 
     // MARK: - Private
 
@@ -43,9 +43,9 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Init
 
-    init(pinService: POSPINService,
-         appAccountUserID: Int64,
-         appAccountDisplayName: String) {
+    public init(pinService: POSPINService,
+                appAccountUserID: Int64,
+                appAccountDisplayName: String) {
         self.pinService = pinService
         self.appAccountUserID = appAccountUserID
         self.appAccountDisplayName = appAccountDisplayName
@@ -53,7 +53,7 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - POSPermissionProviding
 
-    func checkPermission(_ capability: String) -> POSPermissionResult {
+    public func checkPermission(_ capability: String) -> POSPermissionResult {
         guard let op = currentOperator else {
             return .requiresOverride
         }
@@ -63,16 +63,16 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
         return .requiresOverride
     }
 
-    func hasCapability(_ capability: String) -> Bool {
+    public func hasCapability(_ capability: String) -> Bool {
         currentOperator?.hasCapability(capability) ?? false
     }
 
-    func signIn(_ posOperator: POSOperator) {
+    public func signIn(_ posOperator: POSOperator) {
         currentOperator = posOperator
         isLocked = false
     }
 
-    func lock() {
+    public func lock() {
         currentOperator = nil
         isLocked = true
     }
@@ -80,13 +80,13 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
     // MARK: - PIN Authentication
 
     /// Whether any PINs are configured in the PIN service.
-    var hasAnyPINs: Bool {
+    public var hasAnyPINs: Bool {
         PINRole.allCases.contains { pinService.hasPIN(for: $0) }
     }
 
     /// Verifies a PIN against all roles and signs in the matching operator.
     /// Returns the created operator on success, or nil if no match.
-    func authenticatePIN(_ pin: String) -> POSOperator? {
+    public func authenticatePIN(_ pin: String) -> POSOperator? {
         guard let role = pinService.verifyPIN(pin) else {
             return nil
         }
@@ -116,12 +116,12 @@ final class LocalPOSPermissionProvider: POSPermissionProviding {
     }
 
     /// Verifies a manager PIN without signing in. Used for manager override approval.
-    func verifyManagerPIN(_ pin: String) -> Bool {
+    public func verifyManagerPIN(_ pin: String) -> Bool {
         pinService.verifyPIN(pin, for: .manager)
     }
 
     /// Verifies the app account holder PIN. Used for exiting POS.
-    func verifyAccountHolderPIN(_ pin: String) -> Bool {
+    public func verifyAccountHolderPIN(_ pin: String) -> Bool {
         pinService.verifyPIN(pin, for: .manager)
     }
 }

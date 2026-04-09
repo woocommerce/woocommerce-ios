@@ -97,7 +97,7 @@ private extension SearchHeader {
         static let cornerRadius: CGFloat = 10
         static let externalPadding = EdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
     }
-    
+
     enum Localization {
         static let clearAccessibilityLabel = NSLocalizedString(
             "searchHeader.clearButton.accessibilityLabel",

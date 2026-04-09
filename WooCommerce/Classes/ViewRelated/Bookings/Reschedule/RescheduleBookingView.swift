@@ -22,7 +22,7 @@ private extension RescheduleBookingView {
     enum Localization {
         static let title = NSLocalizedString(
             "RescheduleBookingView.title",
-            value: "Reschedule Booking",
+            value: "Reschedule booking",
             comment: "Navigation bar title for the reschedule booking screen."
         )
     }

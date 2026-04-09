@@ -101,7 +101,10 @@ struct ItemListView: View {
         )
     }
 
+    @Environment(\.posPermissions) private var permissions
     @State private var showCouponCreationModal: Bool = false
+    @State private var showCouponManagerOverride: Bool = false
+    @State private var couponManagerOverrideState: POSManagerOverrideState = .awaitingPIN
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -157,6 +160,19 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
+        .posModal(isPresented: $showCouponManagerOverride) {
+            POSManagerOverrideView(
+                actionDescription: Localization.couponOverrideDescription,
+                capability: "woocommerce_apply_discounts",
+                overrideState: $couponManagerOverrideState,
+                onPINEntered: { pin in
+                    handleCouponOverridePIN(pin)
+                },
+                onCancelled: {
+                    showCouponManagerOverride = false
+                }
+            )
+        }
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }
@@ -494,7 +510,7 @@ private extension ItemListView {
     private var createCouponButton: some View {
         POSPageHeaderActionButton(systemName: "plus") {
             analytics.track(.pointOfSaleCouponsCreateTapped)
-            showCouponCreationModal = true
+            requestPermissionForCouponCreation()
         }
         .renderedIf(isAddingCouponAllowed)
         .transition(.opacity.combined(with: .scale))
@@ -517,7 +533,7 @@ private extension ItemListView {
                 viewModel: POSListEmptyViewModel(
                     itemListType: selectedItemListType,
                     baseItem: .root)) {
-                showCouponCreationModal = true
+                requestPermissionForCouponCreation()
             }
         }
     }
@@ -585,6 +601,36 @@ private extension ItemListView {
     }
 }
 
+// MARK: - Permission Checks
+
+private extension ItemListView {
+    func requestPermissionForCouponCreation() {
+        switch permissions.checkPermission("woocommerce_apply_discounts") {
+        case .allowed:
+            showCouponCreationModal = true
+        case .requiresOverride:
+            couponManagerOverrideState = .awaitingPIN
+            showCouponManagerOverride = true
+        }
+    }
+
+    func handleCouponOverridePIN(_ pin: String) {
+        guard let localProvider = permissions as? LocalPOSPermissionProvider else {
+            couponManagerOverrideState = .error(message: Localization.invalidPIN)
+            return
+        }
+        if localProvider.verifyManagerPIN(pin) {
+            couponManagerOverrideState = .approved
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showCouponManagerOverride = false
+                showCouponCreationModal = true
+            }
+        } else {
+            couponManagerOverrideState = .error(message: Localization.invalidPIN)
+        }
+    }
+}
+
 /// Constants
 ///
 private extension ItemListView {
@@ -633,6 +679,18 @@ private extension ItemListView {
         static func staleSyncWarningDescription(days: Int) -> String {
             String.localizedStringWithFormat(staleSyncWarningDescriptionFormat, days)
         }
+
+        static let couponOverrideDescription = NSLocalizedString(
+            "pos.itemlistview.managerOverride.coupon.description",
+            value: "Create a coupon",
+            comment: "Description shown in the manager override modal when coupon creation requires approval"
+        )
+
+        static let invalidPIN = NSLocalizedString(
+            "pos.itemlistview.managerOverride.invalidPIN",
+            value: "Invalid PIN",
+            comment: "Error message shown when an incorrect manager PIN is entered during coupon creation override"
+        )
     }
 }
 

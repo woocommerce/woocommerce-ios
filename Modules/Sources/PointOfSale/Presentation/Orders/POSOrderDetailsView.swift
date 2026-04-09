@@ -21,9 +21,13 @@ struct POSOrderDetailsView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
+    @Environment(\.posPermissions) private var permissions
     @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
     @State private var selectedRefundForDetail: POSOrderRefund?
+    @State private var showManagerOverride: Bool = false
+    @State private var managerOverrideState: POSManagerOverrideState = .awaitingPIN
+    @State private var pendingOverrideAction: (() -> Void)?
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -142,6 +146,22 @@ struct POSOrderDetailsView: View {
                 try await orderListModel.sendReceipt(order: order, email: email)
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
+        }
+        .posModal(isPresented: $showManagerOverride, onDismiss: {
+            pendingOverrideAction = nil
+        }) {
+            POSManagerOverrideView(
+                actionDescription: Localization.refundOverrideDescription(order.number),
+                capability: "woocommerce_refund_orders",
+                overrideState: $managerOverrideState,
+                onPINEntered: { pin in
+                    handleManagerOverridePIN(pin)
+                },
+                onCancelled: {
+                    showManagerOverride = false
+                    pendingOverrideAction = nil
+                }
+            )
         }
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
@@ -473,7 +493,7 @@ private extension POSOrderDetailsView {
                 isShowingEmailReceiptView = true
             }
         case .issueRefund:
-            return { initiateRefundFlow() }
+            return { requestPermissionForRefund() }
         }
     }
 
@@ -545,6 +565,40 @@ private extension POSOrderDetailsView {
     var divider: some View {
         POSDivider()
             .padding(.vertical, POSSpacing.small)
+    }
+}
+
+// MARK: - Permission Checks
+
+private extension POSOrderDetailsView {
+    func requestPermissionForRefund() {
+        switch permissions.checkPermission("woocommerce_refund_orders") {
+        case .allowed:
+            initiateRefundFlow()
+        case .requiresOverride:
+            pendingOverrideAction = { [self] in
+                initiateRefundFlow()
+            }
+            managerOverrideState = .awaitingPIN
+            showManagerOverride = true
+        }
+    }
+
+    func handleManagerOverridePIN(_ pin: String) {
+        guard let localProvider = permissions as? LocalPOSPermissionProvider else {
+            managerOverrideState = .error(message: Localization.invalidPIN)
+            return
+        }
+        if localProvider.verifyManagerPIN(pin) {
+            managerOverrideState = .approved
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showManagerOverride = false
+                pendingOverrideAction?()
+                pendingOverrideAction = nil
+            }
+        } else {
+            managerOverrideState = .error(message: Localization.invalidPIN)
+        }
     }
 }
 
@@ -713,6 +767,23 @@ private enum Localization {
         label += ", " + String(format: format, quantity, unitPrice, total)
         return label
     }
+
+    // MARK: - Manager Override
+
+    static func refundOverrideDescription(_ orderNumber: String) -> String {
+        let format = NSLocalizedString(
+            "pos.orderDetailsView.managerOverride.refund.description",
+            value: "Issue a refund for Order #%1$@",
+            comment: "Description shown in the manager override modal when a refund requires approval. %1$@ is the order number."
+        )
+        return String(format: format, orderNumber)
+    }
+
+    static let invalidPIN = NSLocalizedString(
+        "pos.orderDetailsView.managerOverride.invalidPIN",
+        value: "Invalid PIN",
+        comment: "Error message shown when an incorrect manager PIN is entered during override approval"
+    )
 
     // MARK: - Refund Error Messages
 

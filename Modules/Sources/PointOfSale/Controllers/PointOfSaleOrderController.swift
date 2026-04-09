@@ -9,7 +9,6 @@ import struct Yosemite.Order
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCoupon
-import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 import struct Yosemite.CouponsError
 import enum Yosemite.OrderAction
@@ -41,12 +40,6 @@ protocol PointOfSaleOrderControllerProtocol {
     func sendReceipt(recipientEmail: String) async throws
     func clearOrder()
     func collectCashPayment(changeDueAmount: String?) async throws
-
-    /// Checks whether any cart item prices differ from the order's line item prices.
-    /// Compares against both the ex-tax and tax-inclusive unit price from each order item,
-    /// so a match on either means the price hasn't changed (just a different tax representation).
-    /// Returns true if any item's price genuinely changed.
-    func detectsPriceChange(for cart: Cart) -> Bool
 }
 
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
@@ -139,55 +132,6 @@ protocol PointOfSaleOrderControllerProtocol {
         }
     }
 
-    func detectsPriceChange(for cart: Cart) -> Bool {
-        guard let order else { return false }
-
-        return cart.purchasableItems.contains { purchasableItem in
-            guard case .loaded(let orderableItem) = purchasableItem.state else { return false }
-            guard let orderItem = order.items.first(where: { orderableItem.matches(orderItem: $0) }) else { return false }
-
-            // Extract raw price string from the concrete product/variation type
-            let cartPriceString: String?
-            if let simpleProduct = orderableItem as? POSSimpleProduct {
-                cartPriceString = simpleProduct.price
-            } else if let variation = orderableItem as? POSVariation {
-                cartPriceString = variation.price
-            } else {
-                cartPriceString = nil
-            }
-            guard let cartPriceString else { return false }
-            let cartPrice = NSDecimalNumber(string: cartPriceString)
-            let quantityDecimal = NSDecimalNumber(decimal: orderItem.quantity)
-
-            // Multiply cart price by order quantity to compare against line totals.
-            // This avoids division and the precision issues it introduces with tax rounding.
-            let expectedTotal = cartPrice.multiplying(by: quantityDecimal)
-
-            let subtotalDecimal = NSDecimalNumber(string: orderItem.subtotal)
-            let subtotalTaxDecimal = NSDecimalNumber(string: orderItem.subtotalTax)
-            let subtotalWithTax = subtotalDecimal.adding(subtotalTaxDecimal)
-
-            // Use tolerance for comparison because the server's tax rounding can cause
-            // subtotal + subtotalTax to differ slightly from the original tax-inclusive price.
-            // For example: price $180 (incl tax) → subtotal "178.21782200" + tax "1.78000000" = 179.99782200
-            let matchesExTax = approximatelyEqual(expectedTotal, subtotalDecimal)
-            let matchesTaxInclusive = approximatelyEqual(expectedTotal, subtotalWithTax)
-
-            return !matchesExTax && !matchesTaxInclusive
-        }
-    }
-
-    /// Compares two decimal amounts with a tolerance to account for tax rounding differences.
-    /// Half a cent (0.005) absorbs server-side tax rounding (typically ~0.002) while still
-    /// detecting real price changes of $0.01 or more.
-    private func approximatelyEqual(_ a: NSDecimalNumber, _ b: NSDecimalNumber) -> Bool {
-        let halfCent = NSDecimalNumber(string: "0.005")
-        let difference = a.subtracting(b)
-        let absoluteDifference = difference.compare(NSDecimalNumber.zero) == .orderedAscending
-            ? difference.multiplying(by: NSDecimalNumber(value: -1))
-            : difference
-        return absoluteDifference.compare(halfCent) != .orderedDescending
-    }
 }
 
 private extension PointOfSaleOrderController {

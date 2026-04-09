@@ -25,7 +25,5 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
     func clearOrder() { }
 
     func collectCashPayment(changeDueAmount: String?) async throws {}
-
-    func detectsPriceChange(for cart: Cart) -> Bool { false }
 }
 #endif

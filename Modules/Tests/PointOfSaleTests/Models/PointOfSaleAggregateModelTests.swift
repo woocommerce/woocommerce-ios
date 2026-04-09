@@ -8,6 +8,7 @@ import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
+import struct Yosemite.OrderItem
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import enum Yosemite.POSItemType
@@ -1049,17 +1050,17 @@ struct PointOfSaleAggregateModelTests {
         private let orderController = MockPointOfSaleOrderController()
 
         @Test func checkOut_when_price_change_detected_then_triggers_incremental_sync() async throws {
-            // Given
+            // Given: cart price $10 but order subtotal $8 (price changed)
             let catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
-            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
-            orderController.detectsPriceChangeResult = true
+            let orderItem = OrderItem.fake().copy(productID: 1, quantity: 1, subtotal: "8.00", subtotalTax: "0.00")
+            orderController.orderStateToReturn = makeLoadedOrderState(order: Order.fake().copy(items: [orderItem]))
             let siteID: Int64 = 777
             let sut = makePointOfSaleAggregateModel(
                 orderController: orderController,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator
             )
-            sut.addToCart(makePurchasableItem())
+            sut.addToCart(makePurchasableItem(price: "10.00"))
 
             // Then: set the callback before checkOut so it fires when the fire-and-forget Task runs
             await withCheckedContinuation { continuation in
@@ -1078,15 +1079,15 @@ struct PointOfSaleAggregateModelTests {
         }
 
         @Test func checkOut_when_no_price_change_then_does_not_trigger_incremental_sync() async throws {
-            // Given
+            // Given: cart price $10 matches order subtotal $10 (no change)
             let catalogSyncCoordinator = MockPOSCatalogSyncCoordinator()
-            orderController.orderStateToReturn = makeLoadedOrderState(cartTotal: "$0.00")
-            orderController.detectsPriceChangeResult = false
+            let orderItem = OrderItem.fake().copy(productID: 1, quantity: 1, subtotal: "10.00", subtotalTax: "0.00")
+            orderController.orderStateToReturn = makeLoadedOrderState(order: Order.fake().copy(items: [orderItem]))
             let sut = makePointOfSaleAggregateModel(
                 orderController: orderController,
                 catalogSyncCoordinator: catalogSyncCoordinator
             )
-            sut.addToCart(makePurchasableItem())
+            sut.addToCart(makePurchasableItem(price: "10.00"))
 
             // When
             await sut.checkOut()
@@ -1098,13 +1099,13 @@ struct PointOfSaleAggregateModelTests {
     }
 }
 
-private func makePurchasableItem(name: String = "") -> POSItem {
+private func makePurchasableItem(name: String = "", price: String = "") -> POSItem {
     return .simpleProduct(POSSimpleProduct(
         id: POSItemIdentifier(underlyingType: .product, itemID: 1),
         name: name,
-        formattedPrice: "",
+        formattedPrice: "$\(price)",
         productID: 1,
-        price: "",
+        price: price,
         manageStock: false,
         stockQuantity: nil,
         stockStatusKey: ""))

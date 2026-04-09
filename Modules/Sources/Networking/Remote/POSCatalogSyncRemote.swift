@@ -550,4 +550,3 @@ public enum POSCatalogSyncConstants {
     /// Background download session identifier prefix for POS catalog downloads
     public static let backgroundDownloadSessionPrefix = "com.woocommerce.pos.catalog.download"
 }
-

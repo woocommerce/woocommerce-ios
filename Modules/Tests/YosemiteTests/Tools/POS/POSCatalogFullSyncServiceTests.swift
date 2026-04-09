@@ -390,7 +390,6 @@ struct POSCatalogFullSyncServiceTests {
         #expect(POSCatalogFullSyncService.PollingConfig.initialDelay == 3.0)
         #expect(POSCatalogFullSyncService.PollingConfig.multiplier == 1.3)
         #expect(POSCatalogFullSyncService.PollingConfig.maxInterval == 20.0)
-        #expect(POSCatalogFullSyncService.PollingConfig.foregroundMaxAttempts == 20)
         #expect(POSCatalogFullSyncService.PollingConfig.backgroundMaxAttempts == 4)
     }
 }

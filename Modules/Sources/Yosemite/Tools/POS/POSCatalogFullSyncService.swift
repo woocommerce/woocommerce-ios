@@ -56,8 +56,6 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
         static let multiplier: Double = 1.3
         /// Maximum delay between poll attempts (20 seconds)
         static let maxInterval: TimeInterval = 20.0
-        /// Maximum polling attempts for foreground execution (~2.5 min total)
-        static let foregroundMaxAttempts = 20
         /// Maximum polling attempts for background execution (~18/20s total, within iOS 30s limit)
         static let backgroundMaxAttempts = 4
     }
@@ -111,7 +109,7 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
             // Sync from network
             let catalog: POSCatalog
             if usesCatalogAPI {
-                let maxAttempts = isBackgroundSync ? PollingConfig.backgroundMaxAttempts : PollingConfig.foregroundMaxAttempts
+                let maxAttempts = isBackgroundSync ? PollingConfig.backgroundMaxAttempts : .max
                 catalog = try await loadCatalogFromCatalogAPI(for: siteID,
                                                               syncRemote: syncRemote,
                                                               regenerateCatalog: regenerateCatalog,
@@ -188,7 +186,7 @@ private extension POSCatalogFullSyncService {
                                    syncRemote: POSCatalogSyncRemoteProtocol,
                                    regenerateCatalog: Bool,
                                    allowCellular: Bool,
-                                   maxAttempts: Int = PollingConfig.foregroundMaxAttempts) async throws -> POSCatalog {
+                                   maxAttempts: Int) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
         let catalog = try await downloadCatalog(for: siteID,
                                                 syncRemote: syncRemote,
@@ -207,7 +205,7 @@ private extension POSCatalogFullSyncService {
                          syncRemote: POSCatalogSyncRemoteProtocol,
                          regenerateCatalog: Bool,
                          allowCellular: Bool,
-                         maxAttempts: Int = PollingConfig.foregroundMaxAttempts) async throws -> POSCatalogResponse {
+                         maxAttempts: Int) async throws -> POSCatalogResponse {
         DDLogInfo("🟣 Starting catalog request...")
 
         // 1. Requests catalog until download URL is available.
@@ -237,16 +235,18 @@ private extension POSCatalogFullSyncService {
     ///   - siteID: The site ID to poll catalog generation for
     ///   - syncRemote: The remote service to use for polling
     ///   - allowCellular: Whether cellular data should be used
-    ///   - maxAttempts: Maximum number of polling attempts (defaults to foreground limit of 20)
+    ///   - maxAttempts: Maximum number of polling attempts.
+    ///     - Background passes a limit to stay within within iOS ~30s execution window
+    ///     - Foreground passes `.max` to poll indefinitely
     /// - Returns: The download URL when catalog generation completes
     /// - Throws: `POSCatalogSyncError.timeout` if max attempts exceeded, `.generationFailed` if job fails
     ///
     /// Uses exponential backoff starting at 3s, multiplied by 1.3x each attempt, capped at ~20s.
-    /// Ref: pdfdoF-8D7-p2
+    /// Foreground polling continues as long as the server reports progress.
     func pollForCatalogCompletion(siteID: Int64,
                                   syncRemote: POSCatalogSyncRemoteProtocol,
                                   allowCellular: Bool,
-                                  maxAttempts: Int = PollingConfig.foregroundMaxAttempts) async throws -> String {
+                                  maxAttempts: Int) async throws -> String {
         var attempts = 0
         var currentDelay = PollingConfig.initialDelay
 
@@ -263,10 +263,8 @@ private extension POSCatalogFullSyncService {
                 DDLogInfo("🟣 Catalog generation completed after \(attempts + 1) poll(s)")
                 return downloadURL
             case .scheduled, .inProgress:
-                // Only logs every 10th attempt to avoid flooding logs for large catalogs.
-                if attempts % 10 == 0 {
-                    DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1)/\(maxAttempts))")
-                }
+                DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1), " +
+                          "progress: \(response.progress ?? -1), processed: \(response.processed ?? -1)/\(response.total ?? -1))")
 
                 try await Task.sleep(nanoseconds: UInt64(currentDelay * 1_000_000_000))
                 attempts += 1
@@ -278,7 +276,7 @@ private extension POSCatalogFullSyncService {
             }
         }
 
-        DDLogWarn("🟣 Catalog polling timed out after \(maxAttempts) attempts")
+        DDLogWarn("🟣 Catalog polling timed out after \(attempts) attempts")
         throw POSCatalogSyncError.timeout
     }
 }

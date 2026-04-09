@@ -104,7 +104,7 @@ final class PointOfSaleObservableItemsController: PointOfSaleItemsControllerProt
         }
         loadingState = .init()
 
-        try? await catalogSyncCoordinator.performSmartSync(for: siteID, isBackgroundSync: false)
+        try? await catalogSyncCoordinator.performSmartSync(for: siteID)
     }
 
     func refreshItems(base: ItemListBaseItem) async {

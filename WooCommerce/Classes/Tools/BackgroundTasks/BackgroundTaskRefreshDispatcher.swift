@@ -181,7 +181,7 @@ final class BackgroundTaskRefreshDispatcher {
 
         let syncTask = Task {
             do {
-                try await coordinator.performSmartSync(for: siteID, isBackgroundSync: true)
+                try await coordinator.performSmartSync(for: siteID)
                 backgroundTask.setTaskCompleted(success: true)
             } catch {
                 DDLogError("⛔️ POS catalog sync background refresh failed: \(error)")

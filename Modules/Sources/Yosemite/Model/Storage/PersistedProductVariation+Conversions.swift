@@ -9,7 +9,7 @@ extension PersistedProductVariation {
             id: posProductVariation.productVariationID,
             siteID: posProductVariation.siteID,
             productID: posProductVariation.productID,
-            productTypeKey: posProductVariation.typeKey,
+            typeKey: posProductVariation.typeKey,
             sku: posProductVariation.sku,
             globalUniqueID: posProductVariation.globalUniqueID,
             price: posProductVariation.price,

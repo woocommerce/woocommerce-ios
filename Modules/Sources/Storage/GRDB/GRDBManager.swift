@@ -85,8 +85,8 @@ private extension GRDBManager {
             try V002FTSSearch.migrate(db)
         }
 
-        migrator.registerMigration("V003AddVariationProductTypeKey") { db in
-            try V003AddVariationProductTypeKey.migrate(db)
+        migrator.registerMigration("V003AddVariationTypeKey") { db in
+            try V003AddVariationTypeKey.migrate(db)
         }
 
         try migrator.migrate(databaseConnection)

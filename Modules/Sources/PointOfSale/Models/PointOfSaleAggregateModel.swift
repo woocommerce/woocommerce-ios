@@ -49,7 +49,9 @@ protocol PointOfSaleAggregateModelProtocol {
 
     @MainActor var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
 
-    private(set) var cart: Cart = .init()
+    private(set) var cart: Cart = .init() {
+        didSet { rebuildCartProductObservation() }
+    }
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
@@ -175,7 +177,7 @@ extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
         cart.add(item)
-        updateCartProductObservation()
+
     }
 
     func remove(cartItem: CartItem) {
@@ -185,12 +187,12 @@ extension PointOfSaleAggregateModel {
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }
         }
-        updateCartProductObservation()
+
     }
 
     func cancelLoadingItem(id: UUID) {
         cart.removeItem(id: id)
-        updateCartProductObservation()
+
     }
 
     func removeAllItemsFromCart(types: [CartItemType] =  CartItemType.allCases) {
@@ -202,7 +204,7 @@ extension PointOfSaleAggregateModel {
                 cart.coupons.removeAll()
             }
         }
-        updateCartProductObservation()
+
     }
 
     @MainActor
@@ -295,7 +297,7 @@ extension PointOfSaleAggregateModel {
         do throws(PointOfSaleBarcodeScanError) {
             let item = try await barcodeScanService.getItem(barcode: barcode)
             if let cartItem = cart.updateLoadingItem(id: placeholderItemID, with: item) {
-                updateCartProductObservation()
+        
                 analytics.track(
                     event: .PointOfSale.addItemToCart(
                         sourceViewType: .scanner,
@@ -493,10 +495,7 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Cart product observation
 private extension PointOfSaleAggregateModel {
-    /// Rebuilds the GRDB observation for products currently in the cart.
-    /// When the underlying product data changes (e.g. after an incremental sync),
-    /// the observer publishes updated items and the cart is updated reactively.
-    func updateCartProductObservation() {
+    func rebuildCartProductObservation() {
         guard let cartProductObserver else { return }
 
         var productIDs = Set<Int64>()
@@ -522,8 +521,6 @@ private extension PointOfSaleAggregateModel {
             }
     }
 
-    /// Compares observed product prices with current cart item prices
-    /// and updates cart items where the price has changed.
     func applyProductUpdatesToCart(_ observedItems: [POSItem]) {
         var changed = false
 

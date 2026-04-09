@@ -109,6 +109,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // Behind the flag while the TTP integration lands. localDeveloper-only so
             // alpha and beta keep showing only Cash + Card reader for now.
             return buildConfig == .localDeveloper
+        case .pointOfSaleLocalRoles:
+            return false
+        case .pointOfSaleRemoteRoles:
+            return false
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:

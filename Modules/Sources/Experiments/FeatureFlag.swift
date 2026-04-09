@@ -203,6 +203,14 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleCustomAmounts
 
+    /// Enables local POS roles with on-device PIN management
+    ///
+    case pointOfSaleLocalRoles
+
+    /// Enables remote POS roles with server-backed PIN auth and Application Passwords
+    ///
+    case pointOfSaleRemoteRoles
+
     /// Enables Point of Sale on iPhone (prototype).
     /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
     /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.

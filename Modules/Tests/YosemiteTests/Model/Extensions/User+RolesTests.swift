@@ -126,6 +126,52 @@ final class User_RolesTests: XCTestCase {
         // Then
         XCTAssertEqual(displayText, expected)
     }
+
+    // MARK: POS Roles
+
+    func test_posCashier_role_is_not_eligible() {
+        // Given
+        let role = User.Role.posCashier
+
+        // When
+        let isEligible = role.isEligible()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_posManager_role_is_not_eligible() {
+        // Given
+        let role = User.Role.posManager
+
+        // When
+        let isEligible = role.isEligible()
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_posCashier_displayString() {
+        // Given
+        let role = User.Role.posCashier
+
+        // When
+        let displayString = role.displayString()
+
+        // Then
+        XCTAssertEqual(displayString, "POS Cashier")
+    }
+
+    func test_posManager_displayString() {
+        // Given
+        let role = User.Role.posManager
+
+        // When
+        let displayString = role.displayString()
+
+        // Then
+        XCTAssertEqual(displayString, "POS Manager")
+    }
 }
 
 private extension User_RolesTests {
@@ -143,7 +189,9 @@ private extension User_RolesTests {
             "customer": NSLocalizedString("Customer", comment: "User's Customer role."),
             "editor": NSLocalizedString("Editor", comment: "User's Editor role."),
             "shop_manager": NSLocalizedString("Shop Manager", comment: "User's Shop Manager role."),
-            "subscriber": NSLocalizedString("Subscriber", comment: "User's Subscriber role.")
+            "subscriber": NSLocalizedString("Subscriber", comment: "User's Subscriber role."),
+            "pos_cashier": NSLocalizedString("user.role.posCashier", value: "POS Cashier", comment: "User's POS Cashier role."),
+            "pos_manager": NSLocalizedString("user.role.posManager", value: "POS Manager", comment: "User's POS Manager role.")
         ]
     }
 }

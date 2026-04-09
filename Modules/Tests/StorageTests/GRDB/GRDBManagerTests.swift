@@ -44,8 +44,8 @@ struct GRDBManagerTests {
     // MARK: - V003 Migration Tests
 
     struct V003MigrationTests {
-        @Test("V003 migration adds productTypeKey column to productVariation table")
-        func test_v003_migration_adds_productTypeKey_column() throws {
+        @Test("V003 migration adds typeKey column to productVariation table")
+        func test_v003_migration_adds_typeKey_column() throws {
             // Given
             let manager = try GRDBManager()
 
@@ -55,11 +55,11 @@ struct GRDBManagerTests {
             }
 
             // Then
-            #expect(columns.contains("productTypeKey"))
+            #expect(columns.contains("typeKey"))
         }
 
-        @Test("V003 migration defaults productTypeKey to 'variation' for existing rows")
-        func test_v003_migration_defaults_productTypeKey_to_variation() throws {
+        @Test("V003 migration defaults typeKey to 'variation' for existing rows")
+        func test_v003_migration_defaults_typeKey_to_variation() throws {
             // Given
             let manager = try GRDBManager()
             try manager.databaseConnection.write { db in
@@ -69,14 +69,14 @@ struct GRDBManagerTests {
                                 downloadable: false, parentID: 0,
                                 manageStock: false, stockStatusKey: "instock").insert(db)
                 try TestProductVariation(siteID: 1, id: 200, productID: 100,
-                                         productTypeKey: "variation",
+                                         typeKey: "variation",
                                          price: "12.00", downloadable: false,
                                          manageStock: false, stockStatusKey: "instock").insert(db)
             }
 
             // When
             let typeKey = try manager.databaseConnection.read { db in
-                try String.fetchOne(db, sql: "SELECT productTypeKey FROM productVariation WHERE id = 200")
+                try String.fetchOne(db, sql: "SELECT typeKey FROM productVariation WHERE id = 200")
             }
 
             // Then
@@ -98,14 +98,14 @@ struct GRDBManagerTests {
             // When
             try manager.databaseConnection.write { db in
                 try TestProductVariation(siteID: 1, id: 300, productID: 100,
-                                         productTypeKey: "subscription_variation",
+                                         typeKey: "subscription_variation",
                                          price: "15.00", downloadable: false,
                                          manageStock: false, stockStatusKey: "instock").insert(db)
             }
 
             // Then
             let typeKey = try manager.databaseConnection.read { db in
-                try String.fetchOne(db, sql: "SELECT productTypeKey FROM productVariation WHERE id = 300")
+                try String.fetchOne(db, sql: "SELECT typeKey FROM productVariation WHERE id = 300")
             }
             #expect(typeKey == "subscription_variation")
         }
@@ -124,13 +124,13 @@ struct GRDBManagerTests {
 
                 // Standard variation — should be included
                 try TestProductVariation(siteID: siteID, id: 200, productID: 100,
-                                         productTypeKey: "variation",
+                                         typeKey: "variation",
                                          price: "12.00", downloadable: false,
                                          manageStock: false, stockStatusKey: "instock").insert(db)
 
                 // Subscription variation — should be filtered out
                 try TestProductVariation(siteID: siteID, id: 201, productID: 100,
-                                         productTypeKey: "subscription_variation",
+                                         typeKey: "subscription_variation",
                                          price: "15.00", downloadable: false,
                                          manageStock: false, stockStatusKey: "instock").insert(db)
             }
@@ -143,7 +143,7 @@ struct GRDBManagerTests {
             // Then
             #expect(filteredVariations.count == 1)
             #expect(filteredVariations.first?.id == 200)
-            #expect(filteredVariations.first?.productTypeKey == "variation")
+            #expect(filteredVariations.first?.typeKey == "variation")
         }
     }
 
@@ -213,7 +213,7 @@ struct GRDBManagerTests {
                     siteID: 1,
                     id: 200,
                     productID: 100,
-                    productTypeKey: "variation",
+                    typeKey: "variation",
                     price: "12.00",
                     downloadable: false,
                     manageStock: false,
@@ -255,7 +255,7 @@ struct GRDBManagerTests {
                         siteID: 1,
                         id: Int64(200 + i),
                         productID: 100,
-                        productTypeKey: "variation",
+                        typeKey: "variation",
                         price: "\(10 + i).00",
                         downloadable: false,
                         manageStock: false,
@@ -343,7 +343,7 @@ struct GRDBManagerTests {
                     siteID: 1,
                     id: 200,
                     productID: 100,
-                    productTypeKey: "variation",
+                    typeKey: "variation",
                     price: "12.00",
                     downloadable: false,
                     manageStock: false,
@@ -401,7 +401,7 @@ struct GRDBManagerTests {
                     siteID: testSiteId,
                     id: 200,
                     productID: 100,
-                    productTypeKey: "variation",
+                    typeKey: "variation",
                     price: "12.00",
                     downloadable: false,
                     manageStock: false,
@@ -562,7 +562,7 @@ struct GRDBManagerTests {
                         siteID: sampleSiteID,
                         id: Int64(200 + i),
                         productID: 100,
-                        productTypeKey: "variation",
+                        typeKey: "variation",
                         price: "\(10 + i).00",
                         downloadable: false,
                         manageStock: false,
@@ -615,7 +615,7 @@ struct GRDBManagerTests {
                         siteID: sampleSiteID,
                         id: 200,
                         productID: 999, // Non-existent product
-                        productTypeKey: "variation",
+                        typeKey: "variation",
                         price: "12.00",
                         downloadable: false,
                         manageStock: false,
@@ -668,7 +668,7 @@ struct GRDBManagerTests {
                             siteID: siteID,
                             id: Int64(200 + i + (siteID == 1 ? 0 : 10)),
                             productID: product.id,
-                            productTypeKey: "variation",
+                            typeKey: "variation",
                             price: "\(i * 12).00",
                             downloadable: false,
                             manageStock: false,
@@ -831,7 +831,7 @@ struct TestProductVariation: Codable {
     let siteID: Int64
     let id: Int64
     let productID: Int64
-    let productTypeKey: String
+    let typeKey: String
     let sku: String?
     let globalUniqueID: String?
     let price: String
@@ -841,14 +841,14 @@ struct TestProductVariation: Codable {
     let stockQuantity: Double?
     let stockStatusKey: String
 
-    init(siteID: Int64, id: Int64, productID: Int64, productTypeKey: String,
+    init(siteID: Int64, id: Int64, productID: Int64, typeKey: String,
          price: String, downloadable: Bool, manageStock: Bool, stockStatusKey: String,
          sku: String? = nil, globalUniqueID: String? = nil, fullDescription: String? = nil,
          stockQuantity: Double? = nil) {
         self.siteID = siteID
         self.id = id
         self.productID = productID
-        self.productTypeKey = productTypeKey
+        self.typeKey = typeKey
         self.price = price
         self.downloadable = downloadable
         self.manageStock = manageStock

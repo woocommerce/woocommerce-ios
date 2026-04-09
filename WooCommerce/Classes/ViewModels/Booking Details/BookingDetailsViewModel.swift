@@ -394,7 +394,7 @@ extension BookingDetailsViewModel {
 
     func rescheduleBooking() {
         let duration = calculateBookingDuration()
-        let resourceIDs = bookingProduct?.bookingResourceIDs ?? []
+        let resourceIDs = bookingProduct?.bookingResourceIDs ?? [booking.resourceID]
         rescheduleInput = BookingRescheduleInput(
             booking: booking,
             durationInSeconds: duration,

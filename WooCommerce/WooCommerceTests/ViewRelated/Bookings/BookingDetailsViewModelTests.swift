@@ -622,11 +622,11 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.rescheduleInput?.booking.bookingID, booking.bookingID)
     }
 
-    func test_rescheduleBooking_uses_empty_resourceIDs_when_product_unavailable() {
+    func test_rescheduleBooking_uses_booking_resourceID_when_product_unavailable() {
         // Given
         let start = Date()
         let end = start.addingTimeInterval(1800)
-        let booking = Booking.fake().copy(endDate: end, startDate: start)
+        let booking = Booking.fake().copy(endDate: end, resourceID: 42, startDate: start)
         let viewModel = givenViewModel(booking: booking)
 
         // When
@@ -636,7 +636,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showingRescheduleSheet)
         XCTAssertNotNil(viewModel.rescheduleInput)
         XCTAssertEqual(viewModel.rescheduleInput?.durationInSeconds, 1800)
-        XCTAssertEqual(viewModel.rescheduleInput?.resourceIDs, [])
+        XCTAssertEqual(viewModel.rescheduleInput?.resourceIDs, [42])
     }
 }
 

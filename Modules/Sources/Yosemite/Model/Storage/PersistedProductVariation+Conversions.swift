@@ -31,6 +31,7 @@ extension PersistedProductVariation {
             fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
+            typeKey: typeKey,
             price: price,
             downloadable: downloadable,
             manageStock: manageStock,

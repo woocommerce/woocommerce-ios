@@ -118,6 +118,31 @@ struct PersistedProductVariationTests {
         #expect(pos.image?.imageID == varImage.id)
     }
 
+    @Test("PersistedProductVariation toPOSProductVariation preserves correct typeKey")
+    func variation_toPOSProductVariation_preserves_non_correct_typeKey() throws {
+        // Given
+        let persisted = PersistedProductVariation(
+            id: 700,
+            siteID: 7,
+            productID: 70,
+            typeKey: "subscription_variation",
+            sku: nil,
+            globalUniqueID: nil,
+            price: "15.00",
+            downloadable: false,
+            fullDescription: nil,
+            manageStock: false,
+            stockQuantity: nil,
+            stockStatusKey: "instock"
+        )
+
+        // When
+        let pos = persisted.toPOSProductVariation()
+
+        // Then
+        #expect(pos.typeKey == "subscription_variation")
+    }
+
     @Test("ProductVariation with associations fetches attributes and image automatically")
     func product_variation_with_associations_fetches_related_records() throws {
         // Given a persisted variation with associations

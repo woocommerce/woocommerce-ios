@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.6
 -----
+- [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]
 - [*] Add troubleshooting tool for login [https://github.com/woocommerce/woocommerce-ios/pull/16890]
 
 
@@ -13,7 +14,6 @@
 
 24.4
 -----
-- [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]
 - [*] Fix site discovery showing errors for stores already connected to the account [https://github.com/woocommerce/woocommerce-ios/pull/16835]
 - [*] Remove the flashing empty state in booking list when updating filters [https://github.com/woocommerce/woocommerce-ios/pull/16824]
 - [*] Fix My Store dashboard showing different revenue numbers than wp-admin by respecting the store's date type setting [https://github.com/woocommerce/woocommerce-ios/pull/16812]

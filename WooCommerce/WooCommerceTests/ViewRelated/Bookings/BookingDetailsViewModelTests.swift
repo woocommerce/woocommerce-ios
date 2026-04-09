@@ -2,7 +2,7 @@ import XCTest
 import TestKit
 import Yosemite
 import Fakes
-
+import protocol Experiments.FeatureFlagService
 import YosemiteTestHelpers
 @testable import WooCommerce
 
@@ -538,14 +538,17 @@ final class BookingDetailsViewModelTests: XCTestCase {
     func test_calculateBookingDuration_uses_product_duration_when_available() {
         // Given
         let booking = Booking.fake().copy(
-            startDate: Date(),
-            endDate: Date().addingTimeInterval(7200) // 2 hours
+            endDate: Date().addingTimeInterval(7200), // 2 hours
+            startDate: Date()
         )
+        let product = Product.fake().copy(
+            siteID: booking.siteID,
+            productID: booking.productID,
+            bookingDuration: 90,
+            bookingDurationUnit: "minute"
+        )
+        storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = givenViewModel(booking: booking)
-
-        // Simulate product being fetched with 90-minute duration
-        let product = Product.fake().copy(bookingDuration: 90, bookingDurationUnit: "minute")
-        viewModel.bookingProduct = product
 
         // When
         let duration = viewModel.calculateBookingDuration()
@@ -557,13 +560,17 @@ final class BookingDetailsViewModelTests: XCTestCase {
     func test_calculateBookingDuration_uses_hour_unit() {
         // Given
         let booking = Booking.fake().copy(
-            startDate: Date(),
-            endDate: Date().addingTimeInterval(3600)
+            endDate: Date().addingTimeInterval(3600),
+            startDate: Date()
         )
+        let product = Product.fake().copy(
+            siteID: booking.siteID,
+            productID: booking.productID,
+            bookingDuration: 2,
+            bookingDurationUnit: "hour"
+        )
+        storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = givenViewModel(booking: booking)
-
-        let product = Product.fake().copy(bookingDuration: 2, bookingDurationUnit: "hour")
-        viewModel.bookingProduct = product
 
         // When
         let duration = viewModel.calculateBookingDuration()
@@ -576,7 +583,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let start = Date()
         let end = start.addingTimeInterval(5400) // 90 minutes
-        let booking = Booking.fake().copy(startDate: start, endDate: end)
+        let booking = Booking.fake().copy(endDate: end, startDate: start)
 
         // When
         let viewModel = givenViewModel(booking: booking)
@@ -592,16 +599,17 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let start = Date()
         let end = start.addingTimeInterval(3600)
-        let booking = Booking.fake().copy(startDate: start, endDate: end)
-        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
-        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
-
+        let booking = Booking.fake().copy(endDate: end, startDate: start)
         let product = Product.fake().copy(
+            siteID: booking.siteID,
+            productID: booking.productID,
             bookingDuration: 60,
             bookingDurationUnit: "minute",
             bookingResourceIDs: [10, 20, 30]
         )
-        viewModel.bookingProduct = product
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let featureFlags = MockFeatureFlagService(isCIABBookingRescheduleEnabled: true)
+        let viewModel = givenViewModel(booking: booking, featureFlagService: featureFlags)
 
         // When
         viewModel.rescheduleBooking()
@@ -618,7 +626,7 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Given
         let start = Date()
         let end = start.addingTimeInterval(1800)
-        let booking = Booking.fake().copy(startDate: start, endDate: end)
+        let booking = Booking.fake().copy(endDate: end, startDate: start)
         let viewModel = givenViewModel(booking: booking)
 
         // When

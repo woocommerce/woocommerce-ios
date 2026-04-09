@@ -29,7 +29,7 @@ final class BookingDetailsViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
 
     /// Product fetched for the booking, used to calculate duration and get resources.
-    private(set) var bookingProduct: Product?
+    private var bookingProduct: Product?
 
     // EntityListener: Update / Deletion Notifications.
     ///

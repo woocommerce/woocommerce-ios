@@ -166,7 +166,7 @@ struct ItemListView: View {
             if posModel.showSunsetWarning {
                 sunsetWarningBanner
                     .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.small)
+                    .padding(.vertical, POSPadding.medium)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 

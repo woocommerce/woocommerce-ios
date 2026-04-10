@@ -45,7 +45,7 @@ private struct POSStaffSettingsLocalView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(title: Localization.staffAndSecurityTitle)
+            POSPageHeaderView(title: Localization.staffTitle)
                 .foregroundColor(.posSurface)
                 .accessibilityAddTraits(.isHeader)
 
@@ -106,8 +106,8 @@ private extension POSStaffSettingsLocalView {
 
     var ownerPINRow: some View {
         pinRow(
-            label: Localization.ownerPINLabel,
-            description: Localization.ownerPINDescription,
+            label: Localization.adminPINLabel,
+            description: Localization.adminPINDescription,
             isPINSet: ownerPINSet,
             role: .manager
         )
@@ -132,14 +132,9 @@ private extension POSStaffSettingsLocalView {
                     .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
 
-                HStack(spacing: POSSpacing.xSmall) {
-                    Image(systemName: "info.circle")
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(.secondary)
-                    Text(description)
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                }
+                Text(description)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()
@@ -201,7 +196,7 @@ private extension POSStaffSettingsLocalView {
     var pinEntryTitle: String {
         switch pinEntryRole {
         case .manager:
-            return ownerPINSet ? Localization.changeOwnerPINTitle : Localization.setOwnerPINTitle
+            return ownerPINSet ? Localization.changeAdminPINTitle : Localization.setAdminPINTitle
         case .cashier:
             return cashierPINSet ? Localization.changeCashierPINTitle : Localization.setCashierPINTitle
         }
@@ -434,12 +429,6 @@ private enum Localization {
     )
 
     // MARK: Local Mode
-    static let staffAndSecurityTitle = NSLocalizedString(
-        "posStaffSettingsView.staffAndSecurityTitle",
-        value: "Staff & Security",
-        comment: "Navigation title for the local staff and security settings in POS."
-    )
-
     static let pinAccessLabel = NSLocalizedString(
         "posStaffSettingsView.pinAccessLabel",
         value: "PIN access",
@@ -452,16 +441,16 @@ private enum Localization {
         comment: "Description of the PIN access toggle in POS staff settings."
     )
 
-    static let ownerPINLabel = NSLocalizedString(
-        "posStaffSettingsView.ownerPINLabel",
-        value: "Owner PIN",
-        comment: "Label for the owner PIN row in POS staff settings."
+    static let adminPINLabel = NSLocalizedString(
+        "posStaffSettingsView.adminPINLabel",
+        value: "Admin PIN",
+        comment: "Label for the admin PIN row in POS staff settings."
     )
 
-    static let ownerPINDescription = NSLocalizedString(
-        "posStaffSettingsView.ownerPINDescription",
-        value: "Full access to all POS features and can approve restricted actions",
-        comment: "Description of the owner PIN role in POS staff settings."
+    static let adminPINDescription = NSLocalizedString(
+        "posStaffSettingsView.adminPINDescription",
+        value: "Full access to all POS features and can approve restricted actions.",
+        comment: "Description of the admin PIN role in POS staff settings."
     )
 
     static let cashierPINLabel = NSLocalizedString(
@@ -471,8 +460,8 @@ private enum Localization {
     )
 
     static let cashierPINDescription = NSLocalizedString(
-        "posStaffSettingsView.cashierPINDescription",
-        value: "Process sales and payments. Refunds and settings require owner approval",
+        "posStaffSettingsView.cashierPINDescription.v2",
+        value: "Process sales and payments. Restricted actions like refunds, coupon creation, and settings require admin approval.",
         comment: "Description of the cashier PIN role in POS staff settings."
     )
 
@@ -494,16 +483,16 @@ private enum Localization {
         comment: "Subtitle shown in the PIN entry modal when setting or changing a PIN."
     )
 
-    static let setOwnerPINTitle = NSLocalizedString(
-        "posStaffSettingsView.setOwnerPINTitle",
-        value: "Set Owner PIN",
-        comment: "Title for the PIN entry modal when setting the owner PIN."
+    static let setAdminPINTitle = NSLocalizedString(
+        "posStaffSettingsView.setAdminPINTitle",
+        value: "Set Admin PIN",
+        comment: "Title for the PIN entry modal when setting the admin PIN."
     )
 
-    static let changeOwnerPINTitle = NSLocalizedString(
-        "posStaffSettingsView.changeOwnerPINTitle",
-        value: "Change Owner PIN",
-        comment: "Title for the PIN entry modal when changing the owner PIN."
+    static let changeAdminPINTitle = NSLocalizedString(
+        "posStaffSettingsView.changeAdminPINTitle",
+        value: "Change Admin PIN",
+        comment: "Title for the PIN entry modal when changing the admin PIN."
     )
 
     static let setCashierPINTitle = NSLocalizedString(
@@ -527,13 +516,13 @@ private enum Localization {
     static let pinSetConfirmationFormat = NSLocalizedString(
         "posStaffSettingsView.pinUpdatedConfirmationFormat",
         value: "%1$@ PIN has been updated",
-        comment: "Confirmation message after successfully setting a PIN. %1$@ is the role name (Owner or Cashier)."
+        comment: "Confirmation message after successfully setting a PIN. %1$@ is the role name (Admin or Cashier)."
     )
 
-    static let ownerRoleName = NSLocalizedString(
-        "posStaffSettingsView.ownerRoleName",
-        value: "Owner",
-        comment: "Role name used in the PIN confirmation message for the owner role."
+    static let adminRoleName = NSLocalizedString(
+        "posStaffSettingsView.adminRoleName",
+        value: "Admin",
+        comment: "Role name used in the PIN confirmation message for the admin role."
     )
 
     static let cashierRoleName = NSLocalizedString(

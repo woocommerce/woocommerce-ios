@@ -97,6 +97,22 @@ struct RemotePOSPermissionProviderTests {
         #expect(credential?.idleTimeoutSeconds == 300)
     }
 
+    @Test func test_authenticateRemotePIN_when_locked_and_valid_pin_then_unlocks() async throws {
+        // Given
+        let response = makePINAuthResponse()
+        let sut = makeSUT(pinAuthResponse: response)
+        sut.lock()
+        #expect(sut.isLocked == true)
+        #expect(sut.currentOperator == nil)
+
+        // When
+        _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
+
+        // Then
+        #expect(sut.isLocked == false)
+        #expect(sut.currentOperator != nil)
+    }
+
     @Test func test_authenticateRemotePIN_when_closure_throws_then_propagates_error() async {
         // Given
         let sut = makeSUT(pinAuthError: TestError.authFailed)

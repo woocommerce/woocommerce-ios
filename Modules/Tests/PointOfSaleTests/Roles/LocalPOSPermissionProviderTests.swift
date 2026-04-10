@@ -167,6 +167,24 @@ struct LocalPOSPermissionProviderTests {
         #expect(sut.currentOperator == op)
     }
 
+    @Test func test_authenticatePIN_when_locked_and_valid_pin_then_unlocks() {
+        // Given
+        let pinService = makePINService()
+        pinService.setPIN("1234", for: .manager)
+        let sut = makeSUT(pinService: pinService)
+        sut.lock()
+        #expect(sut.isLocked == true)
+        #expect(sut.currentOperator == nil)
+
+        // When
+        let op = sut.authenticatePIN("1234")
+
+        // Then
+        #expect(op != nil)
+        #expect(sut.isLocked == false)
+        #expect(sut.currentOperator != nil)
+    }
+
     @Test func test_authenticatePIN_when_no_match_then_returns_nil() {
         // Given
         let pinService = makePINService()

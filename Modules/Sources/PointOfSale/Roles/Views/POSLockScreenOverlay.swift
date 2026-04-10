@@ -1,70 +1,96 @@
 import SwiftUI
+import Observation
+import Combine
 
-/// Overlay that conditionally shows the POS lock screen based on the permission provider state.
-/// Uses a timer to poll the provider's state since @Observable tracking doesn't work
-/// through protocol-typed references.
-struct POSLockScreenOverlay: View {
-    let permissionProvider: POSPermissionProviding
+/// Bridges a POSPermissionProviding protocol reference to SwiftUI observation.
+/// Uses withObservationTracking to detect changes on the @Observable providers
+/// and republish them as @Published for SwiftUI.
+@MainActor
+final class POSLockScreenModel: ObservableObject {
+    @Published private(set) var isShowingLockScreen: Bool = false
 
-    @State private var pinState: POSPINEntryState = .idle
-    @State private var shouldShowLockScreen: Bool = false
+    private let provider: POSPermissionProviding
+    private var observationTask: Task<Void, Never>?
 
-    var body: some View {
-        Group {
-            if shouldShowLockScreen {
-                POSLockScreenView(
-                    pinState: $pinState,
-                    onPINEntered: { pin in
-                        handlePINEntered(pin)
-                    }
-                )
-                .transition(.opacity)
+    init(provider: POSPermissionProviding) {
+        self.provider = provider
+        startObserving()
+    }
+
+    deinit {
+        observationTask?.cancel()
+    }
+
+    private func startObserving() {
+        observationTask?.cancel()
+        observationTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                let newValue = withObservationTracking {
+                    self.provider.isLocked && self.provider.currentOperator == nil
+                } onChange: { }
+
+                if newValue != self.isShowingLockScreen {
+                    self.isShowingLockScreen = newValue
+                }
+
+                // Yield to let onChange fire before re-entering the loop
+                try? await Task.sleep(for: .milliseconds(50))
             }
-        }
-        .onAppear {
-            refreshLockState()
-        }
-        .onReceive(Timer.publish(every: 0.3, on: .main, in: .common).autoconnect()) { _ in
-            refreshLockState()
         }
     }
 
-    private func refreshLockState() {
-        let newValue = permissionProvider.isLocked && permissionProvider.currentOperator == nil
-        if newValue != shouldShowLockScreen {
-            withAnimation(.easeInOut(duration: 0.25)) {
-                shouldShowLockScreen = newValue
+    func authenticatePIN(_ pin: String) async -> Bool {
+        if let local = provider as? LocalPOSPermissionProvider {
+            let success = local.authenticatePIN(pin) != nil
+            updateLockState()
+            return success
+        } else if let remote = provider as? RemotePOSPermissionProvider {
+            do {
+                _ = try await remote.authenticateRemotePIN(pin, registerID: "default")
+                updateLockState()
+                return true
+            } catch {
+                return false
             }
+        }
+        return false
+    }
+
+    private func updateLockState() {
+        isShowingLockScreen = provider.isLocked && provider.currentOperator == nil
+    }
+}
+
+/// Overlay that shows the POS lock screen when the permission provider is locked.
+struct POSLockScreenOverlay: View {
+    @StateObject private var model: POSLockScreenModel
+    @State private var pinState: POSPINEntryState = .idle
+
+    init(permissionProvider: POSPermissionProviding) {
+        _model = StateObject(wrappedValue: POSLockScreenModel(provider: permissionProvider))
+    }
+
+    var body: some View {
+        if model.isShowingLockScreen {
+            POSLockScreenView(
+                pinState: $pinState,
+                onPINEntered: { pin in
+                    handlePINEntered(pin)
+                }
+            )
+            .transition(.opacity)
+            .animation(.easeInOut(duration: 0.25), value: model.isShowingLockScreen)
         }
     }
 
     private func handlePINEntered(_ pin: String) {
-        if let localProvider = permissionProvider as? LocalPOSPermissionProvider {
-            handleLocalPIN(pin, provider: localProvider)
-        } else if let remoteProvider = permissionProvider as? RemotePOSPermissionProvider {
-            handleRemotePIN(pin, provider: remoteProvider)
-        } else {
-            pinState = .error(message: Localization.invalidPIN)
-        }
-    }
-
-    private func handleLocalPIN(_ pin: String, provider: LocalPOSPermissionProvider) {
-        if provider.authenticatePIN(pin) != nil {
-            pinState = .idle
-            refreshLockState()
-        } else {
-            pinState = .error(message: Localization.invalidPIN)
-        }
-    }
-
-    private func handleRemotePIN(_ pin: String, provider: RemotePOSPermissionProvider) {
         Task { @MainActor in
-            do {
-                _ = try await provider.authenticateRemotePIN(pin)
-                pinState = .idle
-                refreshLockState()
-            } catch {
+            let success = await model.authenticatePIN(pin)
+            if !success {
                 pinState = .error(message: Localization.invalidPIN)
+            } else {
+                pinState = .idle
             }
         }
     }

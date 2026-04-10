@@ -39,9 +39,8 @@ struct POSManagerOverrideView: View {
             closeButtonRow
             contentSection
         }
-        .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
-        .frame(width: Constants.modalWidth)
+        .posModalSizing()
         .onChange(of: overrideState) { _, newState in
             handleOverrideStateChange(newState)
         }
@@ -84,9 +83,6 @@ struct POSManagerOverrideView: View {
                 state: $pinState,
                 onPINEntered: { pin in
                     onPINEntered(pin)
-                },
-                onCancel: {
-                    onCancelled()
                 }
             )
         }
@@ -130,7 +126,6 @@ struct POSManagerOverrideView: View {
 
 private extension POSManagerOverrideView {
     enum Constants {
-        static let modalWidth: CGFloat = 500
         static let iconSize: CGFloat = 48
         static let successIconSize: CGFloat = 24
     }

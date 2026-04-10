@@ -378,18 +378,19 @@ extension BookingDetailsViewModel {
 // MARK: - Reschedule booking
 
 extension BookingDetailsViewModel {
-    /// Calculates the booking duration in seconds.
+    /// Returns the booking duration as a structured value and unit.
     /// Prefers the product's `bookingDuration` and `bookingDurationUnit` when available.
-    /// Falls back to the difference between booking end and start dates.
-    func calculateBookingDuration() -> TimeInterval {
+    /// Falls back to computing the duration in minutes from booking dates.
+    func calculateBookingDuration() -> BookingDuration {
         if let product = bookingProduct,
            let duration = product.bookingDuration,
            let unitString = product.bookingDurationUnit,
            let unit = Booking.DurationUnit(rawValue: unitString) {
-            return TimeInterval(duration) * unit.timeIntervalPerUnit
+            return BookingDuration(value: Int(duration), unit: unit)
         }
-        // Fallback: calculate from booking dates
-        return booking.endDate.timeIntervalSince(booking.startDate)
+        // Fallback: calculate from booking dates as minutes
+        let seconds = Int(booking.endDate.timeIntervalSince(booking.startDate))
+        return BookingDuration(value: seconds / 60, unit: .minute)
     }
 
     func rescheduleBooking() {
@@ -397,7 +398,7 @@ extension BookingDetailsViewModel {
         let resourceIDs = bookingProduct?.bookingResourceIDs ?? [booking.resourceID]
         rescheduleInput = BookingRescheduleInput(
             booking: booking,
-            durationInSeconds: duration,
+            duration: duration,
             resourceIDs: resourceIDs
         )
         showingRescheduleSheet = true

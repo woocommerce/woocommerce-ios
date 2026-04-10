@@ -554,7 +554,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let duration = viewModel.calculateBookingDuration()
 
         // Then
-        XCTAssertEqual(duration, 5400) // 90 minutes = 5400 seconds
+        XCTAssertEqual(duration.value, 90)
+        XCTAssertEqual(duration.unit, .minute)
     }
 
     func test_calculateBookingDuration_uses_hour_unit() {
@@ -576,10 +577,11 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let duration = viewModel.calculateBookingDuration()
 
         // Then
-        XCTAssertEqual(duration, 7200) // 2 hours = 7200 seconds
+        XCTAssertEqual(duration.value, 2)
+        XCTAssertEqual(duration.unit, .hour)
     }
 
-    func test_calculateBookingDuration_falls_back_to_dates_when_product_unavailable() {
+    func test_calculateBookingDuration_falls_back_to_minutes_when_product_unavailable() {
         // Given
         let start = Date()
         let end = start.addingTimeInterval(5400) // 90 minutes
@@ -590,7 +592,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         let duration = viewModel.calculateBookingDuration()
 
         // Then
-        XCTAssertEqual(duration, 5400)
+        XCTAssertEqual(duration.value, 90)
+        XCTAssertEqual(duration.unit, .minute)
     }
 
     // MARK: - Reschedule action
@@ -617,7 +620,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.showingRescheduleSheet)
         XCTAssertNotNil(viewModel.rescheduleInput)
-        XCTAssertEqual(viewModel.rescheduleInput?.durationInSeconds, 3600) // 60 minutes
+        XCTAssertEqual(viewModel.rescheduleInput?.duration.value, 60)
+        XCTAssertEqual(viewModel.rescheduleInput?.duration.unit, .minute)
         XCTAssertEqual(viewModel.rescheduleInput?.resourceIDs, [10, 20, 30])
         XCTAssertEqual(viewModel.rescheduleInput?.booking.bookingID, booking.bookingID)
     }
@@ -635,7 +639,8 @@ final class BookingDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.showingRescheduleSheet)
         XCTAssertNotNil(viewModel.rescheduleInput)
-        XCTAssertEqual(viewModel.rescheduleInput?.durationInSeconds, 1800)
+        XCTAssertEqual(viewModel.rescheduleInput?.duration.value, 30)
+        XCTAssertEqual(viewModel.rescheduleInput?.duration.unit, .minute)
         XCTAssertEqual(viewModel.rescheduleInput?.resourceIDs, [42])
     }
 }

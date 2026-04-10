@@ -263,18 +263,17 @@ public extension Booking {
         case day
         case month
 
-        /// The number of seconds in one unit.
-        /// For `month`, uses a 30-day approximation.
-        public var timeIntervalPerUnit: TimeInterval {
+        /// The `Calendar.Component` corresponding to this duration unit.
+        public var calendarComponent: Calendar.Component {
             switch self {
             case .minute:
-                return 60
+                return .minute
             case .hour:
-                return 3600
+                return .hour
             case .day:
-                return 86400
+                return .day
             case .month:
-                return 86400 * 30
+                return .month
             }
         }
     }

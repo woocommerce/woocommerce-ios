@@ -34,7 +34,7 @@ struct POSStaffSettingsView: View {
 private struct POSStaffSettingsLocalView: View {
     let pinService: POSPINService
 
-    @AppStorage("com.woocommerce.pos.passcodesEnabled") private var passcodesEnabled: Bool = false
+    @AppStorage("com.woocommerce.pos.pinAccessEnabled") private var pinAccessEnabled: Bool = false
 
     @State private var showPINEntry: Bool = false
     @State private var pinEntryRole: PINRole = .manager
@@ -52,9 +52,9 @@ private struct POSStaffSettingsLocalView: View {
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    passcodesToggleCard
+                    pinAccessToggleCard
 
-                    if passcodesEnabled {
+                    if pinAccessEnabled {
                         pinManagementCard
                     }
 
@@ -80,16 +80,16 @@ private struct POSStaffSettingsLocalView: View {
 // MARK: - Local Mode Subviews
 
 private extension POSStaffSettingsLocalView {
-    var passcodesToggleCard: some View {
+    var pinAccessToggleCard: some View {
         POSInformationCard {
             POSInformationCardFieldRowWithToggle(
-                label: Localization.passcodesLabel,
-                value: Localization.passcodesDescription,
+                label: Localization.pinAccessLabel,
+                value: Localization.pinAccessDescription,
                 showSeparator: false,
-                isOn: $passcodesEnabled
+                isOn: $pinAccessEnabled
             )
-            .onChange(of: passcodesEnabled) { _, newValue in
-                handlePasscodesToggleChanged(newValue)
+            .onChange(of: pinAccessEnabled) { _, newValue in
+                handlePINAccessToggleChanged(newValue)
             }
         }
     }
@@ -111,8 +111,8 @@ private extension POSStaffSettingsLocalView {
 
     var ownerPINRow: some View {
         pinRow(
-            label: Localization.ownerPasscodeLabel,
-            description: Localization.ownerPasscodeDescription,
+            label: Localization.ownerPINLabel,
+            description: Localization.ownerPINDescription,
             isPINSet: ownerPINSet,
             role: .manager
         )
@@ -120,8 +120,8 @@ private extension POSStaffSettingsLocalView {
 
     var cashierPINRow: some View {
         pinRow(
-            label: Localization.cashierPasscodeLabel,
-            description: Localization.cashierPasscodeDescription,
+            label: Localization.cashierPINLabel,
+            description: Localization.cashierPINDescription,
             isPINSet: cashierPINSet,
             role: .cashier
         )
@@ -206,13 +206,13 @@ private extension POSStaffSettingsLocalView {
     var pinEntryTitle: String {
         switch pinEntryRole {
         case .manager:
-            return ownerPINSet ? Localization.changeOwnerPasscodeTitle : Localization.setOwnerPasscodeTitle
+            return ownerPINSet ? Localization.changeOwnerPINTitle : Localization.setOwnerPINTitle
         case .cashier:
-            return cashierPINSet ? Localization.changeCashierPasscodeTitle : Localization.setCashierPasscodeTitle
+            return cashierPINSet ? Localization.changeCashierPINTitle : Localization.setCashierPINTitle
         }
     }
 
-    func handlePasscodesToggleChanged(_ enabled: Bool) {
+    func handlePINAccessToggleChanged(_ enabled: Bool) {
         if enabled {
             presentPINEntry(for: .manager)
         } else {
@@ -234,8 +234,8 @@ private extension POSStaffSettingsLocalView {
 
     func dismissPINEntry() {
         showPINEntry = false
-        if !ownerPINSet && passcodesEnabled {
-            passcodesEnabled = false
+        if !ownerPINSet && pinAccessEnabled {
+            pinAccessEnabled = false
         }
     }
 
@@ -271,11 +271,14 @@ private extension POSStaffSettingsLocalView {
 
 private struct POSStaffSettingsRemoteView: View {
     @Environment(\.posExternalViews) private var externalViews
+    @Environment(\.posPermissions) private var permissions
 
     let staffMembers: [StaffMemberInfo]
     let manageURL: URL
 
     @State private var showManageStaff: Bool = false
+    @State private var showManagerOverride: Bool = false
+    @State private var managerOverrideState: POSManagerOverrideState = .awaitingPIN
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -299,6 +302,19 @@ private struct POSStaffSettingsRemoteView: View {
                 title: Localization.manageStaffWebTitle,
                 completion: {
                     showManageStaff = false
+                }
+            )
+        }
+        .posModal(isPresented: $showManagerOverride) {
+            POSManagerOverrideView(
+                actionDescription: Localization.manageStaffOverrideDescription,
+                capability: POSCapability.posManageSettings.rawValue,
+                overrideState: $managerOverrideState,
+                onPINEntered: { pin in
+                    handleManagerOverridePIN(pin)
+                },
+                onCancelled: {
+                    showManagerOverride = false
                 }
             )
         }
@@ -365,7 +381,7 @@ private extension POSStaffSettingsRemoteView {
     var manageStaffCard: some View {
         POSInformationCard {
             Button {
-                showManageStaff = true
+                handleManageStaffTapped()
             } label: {
                 HStack(spacing: POSSpacing.small) {
                     Image(systemName: "link")
@@ -387,6 +403,37 @@ private extension POSStaffSettingsRemoteView {
             .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, POSPadding.small)
+    }
+}
+
+// MARK: - Remote Mode Logic
+
+private extension POSStaffSettingsRemoteView {
+    func handleManageStaffTapped() {
+        let result = permissions.checkPermission(.posManageSettings)
+        switch result {
+        case .allowed:
+            showManageStaff = true
+        case .requiresOverride:
+            managerOverrideState = .awaitingPIN
+            showManagerOverride = true
+        }
+    }
+
+    func handleManagerOverridePIN(_ pin: String) {
+        guard let localProvider = permissions as? LocalPOSPermissionProvider else {
+            managerOverrideState = .error(message: Localization.invalidPIN)
+            return
+        }
+        if localProvider.verifyManagerPIN(pin) {
+            managerOverrideState = .approved
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showManagerOverride = false
+                showManageStaff = true
+            }
+        } else {
+            managerOverrideState = .error(message: Localization.invalidPIN)
+        }
     }
 }
 
@@ -414,52 +461,52 @@ private enum Localization {
         comment: "Navigation title for the local staff and security settings in POS."
     )
 
-    static let passcodesLabel = NSLocalizedString(
-        "posStaffSettingsView.passcodesLabel",
-        value: "Passcodes",
-        comment: "Toggle label to enable or disable passcodes in POS staff settings."
+    static let pinAccessLabel = NSLocalizedString(
+        "posStaffSettingsView.pinAccessLabel",
+        value: "PIN access",
+        comment: "Toggle label to enable or disable PIN access in POS staff settings."
     )
 
-    static let passcodesDescription = NSLocalizedString(
-        "posStaffSettingsView.passcodesDescription",
+    static let pinAccessDescription = NSLocalizedString(
+        "posStaffSettingsView.pinAccessDescription",
         value: "When enabled, POS can be locked and staff use PINs to access the register.",
-        comment: "Description of the passcodes toggle in POS staff settings."
+        comment: "Description of the PIN access toggle in POS staff settings."
     )
 
-    static let ownerPasscodeLabel = NSLocalizedString(
-        "posStaffSettingsView.ownerPasscodeLabel",
-        value: "Owner passcode",
-        comment: "Label for the owner passcode row in POS staff settings."
+    static let ownerPINLabel = NSLocalizedString(
+        "posStaffSettingsView.ownerPINLabel",
+        value: "Owner PIN",
+        comment: "Label for the owner PIN row in POS staff settings."
     )
 
-    static let ownerPasscodeDescription = NSLocalizedString(
-        "posStaffSettingsView.ownerPasscodeDescription",
+    static let ownerPINDescription = NSLocalizedString(
+        "posStaffSettingsView.ownerPINDescription",
         value: "Full access to all POS features and can approve restricted actions",
-        comment: "Description of the owner passcode role in POS staff settings."
+        comment: "Description of the owner PIN role in POS staff settings."
     )
 
-    static let cashierPasscodeLabel = NSLocalizedString(
-        "posStaffSettingsView.cashierPasscodeLabel",
-        value: "Cashier passcode",
-        comment: "Label for the cashier passcode row in POS staff settings."
+    static let cashierPINLabel = NSLocalizedString(
+        "posStaffSettingsView.cashierPINLabel",
+        value: "Cashier PIN",
+        comment: "Label for the cashier PIN row in POS staff settings."
     )
 
-    static let cashierPasscodeDescription = NSLocalizedString(
-        "posStaffSettingsView.cashierPasscodeDescription",
+    static let cashierPINDescription = NSLocalizedString(
+        "posStaffSettingsView.cashierPINDescription",
         value: "Process sales and payments. Refunds and settings require owner approval",
-        comment: "Description of the cashier passcode role in POS staff settings."
+        comment: "Description of the cashier PIN role in POS staff settings."
     )
 
     static let setButton = NSLocalizedString(
         "posStaffSettingsView.setButton",
         value: "Set",
-        comment: "Button title to set a new passcode for a role in POS staff settings."
+        comment: "Button title to set a new PIN for a role in POS staff settings."
     )
 
     static let changeButton = NSLocalizedString(
         "posStaffSettingsView.changeButton",
         value: "Change",
-        comment: "Button title to change an existing passcode for a role in POS staff settings."
+        comment: "Button title to change an existing PIN for a role in POS staff settings."
     )
 
     static let pinEntrySubtitle = NSLocalizedString(
@@ -468,28 +515,28 @@ private enum Localization {
         comment: "Subtitle shown in the PIN entry modal when setting or changing a PIN."
     )
 
-    static let setOwnerPasscodeTitle = NSLocalizedString(
-        "posStaffSettingsView.setOwnerPasscodeTitle",
-        value: "Set Owner Passcode",
-        comment: "Title for the PIN entry modal when setting the owner passcode."
+    static let setOwnerPINTitle = NSLocalizedString(
+        "posStaffSettingsView.setOwnerPINTitle",
+        value: "Set Owner PIN",
+        comment: "Title for the PIN entry modal when setting the owner PIN."
     )
 
-    static let changeOwnerPasscodeTitle = NSLocalizedString(
-        "posStaffSettingsView.changeOwnerPasscodeTitle",
-        value: "Change Owner Passcode",
-        comment: "Title for the PIN entry modal when changing the owner passcode."
+    static let changeOwnerPINTitle = NSLocalizedString(
+        "posStaffSettingsView.changeOwnerPINTitle",
+        value: "Change Owner PIN",
+        comment: "Title for the PIN entry modal when changing the owner PIN."
     )
 
-    static let setCashierPasscodeTitle = NSLocalizedString(
-        "posStaffSettingsView.setCashierPasscodeTitle",
-        value: "Set Cashier Passcode",
-        comment: "Title for the PIN entry modal when setting the cashier passcode."
+    static let setCashierPINTitle = NSLocalizedString(
+        "posStaffSettingsView.setCashierPINTitle",
+        value: "Set Cashier PIN",
+        comment: "Title for the PIN entry modal when setting the cashier PIN."
     )
 
-    static let changeCashierPasscodeTitle = NSLocalizedString(
-        "posStaffSettingsView.changeCashierPasscodeTitle",
-        value: "Change Cashier Passcode",
-        comment: "Title for the PIN entry modal when changing the cashier passcode."
+    static let changeCashierPINTitle = NSLocalizedString(
+        "posStaffSettingsView.changeCashierPINTitle",
+        value: "Change Cashier PIN",
+        comment: "Title for the PIN entry modal when changing the cashier PIN."
     )
 
     static let invalidPINError = NSLocalizedString(
@@ -499,27 +546,27 @@ private enum Localization {
     )
 
     static let pinSetConfirmationFormat = NSLocalizedString(
-        "posStaffSettingsView.pinSetConfirmationFormat",
-        value: "%1$@ passcode has been updated",
-        comment: "Confirmation message after successfully setting a passcode. %1$@ is the role name (Owner or Cashier)."
+        "posStaffSettingsView.pinUpdatedConfirmationFormat",
+        value: "%1$@ PIN has been updated",
+        comment: "Confirmation message after successfully setting a PIN. %1$@ is the role name (Owner or Cashier)."
     )
 
     static let ownerRoleName = NSLocalizedString(
         "posStaffSettingsView.ownerRoleName",
         value: "Owner",
-        comment: "Role name used in the passcode confirmation message for the owner role."
+        comment: "Role name used in the PIN confirmation message for the owner role."
     )
 
     static let cashierRoleName = NSLocalizedString(
         "posStaffSettingsView.cashierRoleName",
         value: "Cashier",
-        comment: "Role name used in the passcode confirmation message for the cashier role."
+        comment: "Role name used in the PIN confirmation message for the cashier role."
     )
 
     static let localFooter = NSLocalizedString(
-        "posStaffSettingsView.localFooter",
-        value: "POS locks when you tap Lock POS from the menu.",
-        comment: "Footer text explaining how POS locking works in local mode."
+        "posStaffSettingsView.localAutoLockFooter",
+        value: "POS locks when you tap Lock POS from the menu, or automatically after 5 minutes of inactivity.",
+        comment: "Footer text explaining how POS locking works in local mode, including auto-lock timeout."
     )
 
     // MARK: Remote Mode
@@ -547,17 +594,29 @@ private enum Localization {
         comment: "Navigation title for the web view showing WordPress admin staff management."
     )
 
+    static let manageStaffOverrideDescription = NSLocalizedString(
+        "posStaffSettingsView.manageStaffOverrideDescription",
+        value: "Open WordPress admin staff management",
+        comment: "Description of the action shown in the manager override modal when opening wp-admin."
+    )
+
+    static let invalidPIN = NSLocalizedString(
+        "posStaffSettingsView.invalidPIN",
+        value: "Invalid PIN",
+        comment: "Error message shown when an incorrect manager PIN is entered for override."
+    )
+
     static let remoteFooter = NSLocalizedString(
-        "posStaffSettingsView.remoteFooter",
-        value: "POS locks when you tap Lock POS from the menu, or after 30 minutes of inactivity.",
-        comment: "Footer text explaining how POS locking works in remote mode."
+        "posStaffSettingsView.remoteAutoLockFooter",
+        value: "POS locks when you tap Lock POS from the menu, or automatically after 5 minutes of inactivity.",
+        comment: "Footer text explaining how POS locking works in remote mode, including auto-lock timeout."
     )
 }
 
 // MARK: - Previews
 
 #if DEBUG
-#Preview("Local - Passcodes Off") {
+#Preview("Local - PIN Off") {
     POSStaffSettingsView(mode: .local(pinService: POSPINService(storage: InMemoryPINStorage())))
 }
 

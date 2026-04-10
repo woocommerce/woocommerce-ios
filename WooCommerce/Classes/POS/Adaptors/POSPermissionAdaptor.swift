@@ -60,8 +60,10 @@ struct POSPermissionAdaptor {
 private final class EmptyPOSPermissionAdaptor: POSPermissionProviding {
     var currentOperator: PointOfSale.POSOperator? { nil }
     var isLocked: Bool { false }
+    var autoLockTimeoutSeconds: Int { 0 }
     func checkPermission(_ capability: String) -> PointOfSale.POSPermissionResult { .allowed }
     func hasCapability(_ capability: String) -> Bool { true }
     func signIn(_ posOperator: PointOfSale.POSOperator) {}
     func lock() {}
+    func resetInactivityTimer() {}
 }

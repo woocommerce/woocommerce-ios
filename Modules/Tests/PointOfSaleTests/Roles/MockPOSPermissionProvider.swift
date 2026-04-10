@@ -3,7 +3,9 @@
 final class MockPOSPermissionProvider: POSPermissionProviding {
     var currentOperator: POSOperator?
     var isLocked: Bool = false
+    var autoLockTimeoutSeconds: Int = 300
     var capabilityOverrides: [String: POSPermissionResult] = [:]
+    var resetInactivityTimerCallCount: Int = 0
 
     func checkPermission(_ capability: String) -> POSPermissionResult {
         if let override = capabilityOverrides[capability] {
@@ -27,5 +29,9 @@ final class MockPOSPermissionProvider: POSPermissionProviding {
     func lock() {
         currentOperator = nil
         isLocked = true
+    }
+
+    func resetInactivityTimer() {
+        resetInactivityTimerCallCount += 1
     }
 }

@@ -95,6 +95,14 @@ public struct POSApprovalResponse: Decodable, Equatable, Sendable {
 @Observable
 public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
+    // MARK: - Auto-Lock
+
+    public static let autoLockTimeout: TimeInterval = 300
+
+    public var autoLockTimeoutSeconds: Int {
+        Int(Self.autoLockTimeout)
+    }
+
     // MARK: - POSPermissionProviding
 
     public private(set) var currentOperator: POSOperator?
@@ -108,6 +116,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     // MARK: - Private
 
     private static let isLockedKey = "com.woocommerce.pos.isLocked"
+    private var autoLockTimer: Timer?
 
     // MARK: - Dependencies
 
@@ -137,6 +146,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         guard let op = currentOperator else {
             return .requiresOverride
         }
+        resetInactivityTimer()
         if op.hasCapability(capability) {
             return .allowed
         }
@@ -151,12 +161,29 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         currentOperator = posOperator
         isLocked = false
         UserDefaults.standard.set(false, forKey: Self.isLockedKey)
+        startAutoLockTimer()
     }
 
     public func lock() {
+        autoLockTimer?.invalidate()
+        autoLockTimer = nil
         currentOperator = nil
         isLocked = true
         UserDefaults.standard.set(true, forKey: Self.isLockedKey)
+    }
+
+    public func resetInactivityTimer() {
+        guard currentOperator != nil else { return }
+        startAutoLockTimer()
+    }
+
+    // MARK: - Auto-Lock Timer
+
+    private func startAutoLockTimer() {
+        autoLockTimer?.invalidate()
+        autoLockTimer = Timer.scheduledTimer(withTimeInterval: Self.autoLockTimeout, repeats: false) { [weak self] _ in
+            self?.lock()
+        }
     }
 
     // MARK: - Remote Authentication

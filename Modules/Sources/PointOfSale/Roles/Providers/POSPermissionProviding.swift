@@ -10,6 +10,8 @@ public protocol POSPermissionProviding: AnyObject {
     func hasCapability(_ capability: String) -> Bool
     func signIn(_ posOperator: POSOperator)
     func lock()
+    func resetInactivityTimer()
+    var autoLockTimeoutSeconds: Int { get }
 }
 
 // MARK: - POSCapability convenience

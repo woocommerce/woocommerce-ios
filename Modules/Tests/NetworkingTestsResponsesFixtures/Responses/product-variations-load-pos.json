@@ -2,6 +2,7 @@
   "data": [
     {
       "id": 123,
+      "type": "variation",
       "sku": "200815216",
       "global_unique_id": "",
       "price": "8",

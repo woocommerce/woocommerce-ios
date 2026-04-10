@@ -168,7 +168,9 @@ private extension POSCatalogFullSyncService {
         )
 
         let (products, variations) = try await (productsTask, variationsTask)
-        return POSCatalog(products: products, variations: variations, syncDate: syncStartDate)
+        return POSCatalog(products: products,
+                          variations: variations,
+                          syncDate: syncStartDate)
     }
 
     func loadCatalogFromCatalogAPI(for siteID: Int64,

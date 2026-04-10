@@ -277,6 +277,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                 products.append(product)
             case .variation(let variation):
                 variations.append(variation)
+            case .unsupported:
+                continue
             }
         }
 
@@ -507,6 +509,8 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
+    /// Items with malformed data that fail to decode are skipped during parsing
+    case unsupported
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -517,11 +521,18 @@ public enum POSCatalogItem: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
 
-        switch type {
-        case "variation":
-            self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
-        default:
-            self = .product(try container.decode(POSProduct.self, forKey: .data))
+        if type.contains("variation") {
+            do {
+                self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
+        } else {
+            do {
+                self = .product(try container.decode(POSProduct.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
         }
     }
 }
@@ -538,30 +549,4 @@ public struct POSCatalogResponse {
 public enum POSCatalogSyncConstants {
     /// Background download session identifier prefix for POS catalog downloads
     public static let backgroundDownloadSessionPrefix = "com.woocommerce.pos.catalog.download"
-}
-
-private extension POSProduct {
-    var toVariation: POSProductVariation {
-        let variationAttributes = attributes.compactMap { attribute in
-            try? attribute.toProductVariationAttribute()
-        }
-
-        let firstImage = images.first
-
-        return .init(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: variationAttributes,
-            image: firstImage,
-            fullDescription: fullDescription,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
-        )
-    }
 }

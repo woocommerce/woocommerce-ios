@@ -298,6 +298,40 @@ struct SiteSpecificAppSettingsStoreMethodsTests {
         #expect(savedData.storeSettingsBySite[otherSiteID]?.syncPOSCatalogOverCellular == true)
     }
 
+    // MARK: - Sunset Warning Tests
+
+    @Test func getSunsetWarningLastDismissedDate_returns_nil_when_no_date_set() {
+        // When
+        let date = sut.getSunsetWarningLastDismissedDate(siteID: siteID)
+
+        // Then
+        #expect(date == nil)
+    }
+
+    @Test func setSunsetWarningLastDismissedDate_persists_date() throws {
+        // Given
+        let expectedDate = Date()
+
+        // When
+        sut.setSunsetWarningLastDismissedDate(siteID: siteID, date: expectedDate)
+
+        // Then
+        let savedData: GeneralStoreSettingsBySite = try fileStorage.data(for: SiteSpecificAppSettingsStoreMethods.defaultGeneralStoreSettingsFileURL)
+        #expect(savedData.storeSettingsBySite[siteID]?.lastSunsetWarningDismissedDate == expectedDate)
+    }
+
+    @Test func getSunsetWarningLastDismissedDate_returns_persisted_date() {
+        // Given
+        let expectedDate = Date()
+        sut.setSunsetWarningLastDismissedDate(siteID: siteID, date: expectedDate)
+
+        // When
+        let date = sut.getSunsetWarningLastDismissedDate(siteID: siteID)
+
+        // Then
+        #expect(date == expectedDate)
+    }
+
 }
 
 // MARK: - Mock FileStorage

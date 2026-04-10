@@ -15,6 +15,10 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     var catalogRequestResult: Result<POSCatalogRequestResponse, Error> = .success(.init(status: .completed, downloadURL: "https://example.com/catalog.json"))
     var catalogDownloadResult: Result<POSCatalogResponse, Error> = .success(.init(products: [], variations: []))
 
+    var catalogRequestSequence: [Result<POSCatalogRequestResponse, Error>] = []
+    private var catalogRequestSequenceIndex = 0
+    private(set) var catalogRequestCallCount = 0
+
     let loadProductsCallCount = Counter()
     let loadProductVariationsCallCount = Counter()
     let loadIncrementalProductsCallCount = Counter()
@@ -195,9 +199,20 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     // MARK: - Protocol Methods - Catalog API
 
     func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
+        catalogRequestCallCount += 1
         lastCatalogRequestForceGeneration = forceGeneration
         lastCatalogDownloadAllowCellular = allowCellular
-        switch catalogRequestResult {
+
+        // Use sequential results if available, otherwise fall back to single result
+        let result: Result<POSCatalogRequestResponse, Error>
+        if catalogRequestSequenceIndex < catalogRequestSequence.count {
+            result = catalogRequestSequence[catalogRequestSequenceIndex]
+            catalogRequestSequenceIndex += 1
+        } else {
+            result = catalogRequestResult
+        }
+
+        switch result {
         case .success(let response):
             return response
         case .failure(let error):

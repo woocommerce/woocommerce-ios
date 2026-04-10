@@ -151,7 +151,7 @@ final actor ForegroundPOSCatalogSyncDispatcher {
 
         Task.detached(priority: .utility) {
             do {
-                try await coordinator.performSmartSync(for: siteID)
+                try await coordinator.performSmartSync(for: siteID, isBackgroundSync: false)
                 DDLogInfo("✅ ForegroundPOSCatalogSyncDispatcher: Sync completed for site \(siteID)")
             } catch let error as POSCatalogSyncError {
                 switch error {

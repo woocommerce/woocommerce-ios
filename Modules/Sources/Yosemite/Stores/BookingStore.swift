@@ -61,8 +61,8 @@ public class BookingStore: Store {
                            onCompletion: onCompletion)
         case let .fetchResource(siteID, resourceID, onCompletion):
             fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
-        case let .synchronizeResources(siteID, pageNumber, pageSize, onCompletion):
-            synchronizeResources(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .synchronizeResources(siteID, pageNumber, pageSize, include, onCompletion):
+            synchronizeResources(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, include: include, onCompletion: onCompletion)
         case .updateBookingAttendanceStatus(let siteID, let bookingID, let status, let onCompletion):
             performUpdateBookingAttendanceStatus(
                 siteID: siteID,
@@ -286,13 +286,15 @@ private extension BookingStore {
     func synchronizeResources(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
+                              include: [Int64]?,
                               onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let resources = try await remote.fetchResources(
                     for: siteID,
                     pageNumber: pageNumber,
-                    pageSize: pageSize
+                    pageSize: pageSize,
+                    include: include
                 )
 
                 await upsertBookingResourcesInBackground(siteID: siteID,

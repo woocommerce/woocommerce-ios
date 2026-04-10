@@ -29,7 +29,8 @@ public protocol BookingsRemoteProtocol {
 
     func fetchResources(for siteID: Int64,
                         pageNumber: Int,
-                        pageSize: Int) async throws -> [BookingResource]
+                        pageSize: Int,
+                        include: [Int64]?) async throws -> [BookingResource]
 
     func fetchBookingLocationResponse(for siteID: Int64,
                                      productID: Int64) async throws -> BookingLocationResponse
@@ -270,12 +271,16 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     public func fetchResources(
         for siteID: Int64,
         pageNumber: Int = Default.pageNumber,
-        pageSize: Int = Default.pageSize
+        pageSize: Int = Default.pageSize,
+        include: [Int64]? = nil
     ) async throws -> [BookingResource] {
-        let parameters = [
+        var parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize)
         ]
+        if let include, !include.isEmpty {
+            parameters[ParameterKey.include] = include.map { String($0) }.joined(separator: ",")
+        }
 
         let path = Path.resources
         let request = JetpackRequest(
@@ -396,6 +401,7 @@ public extension BookingsRemote {
         static let start: String           = "start"
         static let end: String             = "end"
         static let resourceID: String      = "resource_id"
+        static let include: String         = "include"
         static let fields: String          = "_fields"
     }
 

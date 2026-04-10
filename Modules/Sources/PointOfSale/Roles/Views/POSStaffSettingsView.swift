@@ -39,7 +39,6 @@ private struct POSStaffSettingsLocalView: View {
     @State private var showPINEntry: Bool = false
     @State private var pinEntryRole: PINRole = .manager
     @State private var pinEntryState: POSPINEntryState = .idle
-    @State private var confirmationMessage: String?
 
     @State private var ownerPINSet: Bool = false
     @State private var cashierPINSet: Bool = false
@@ -56,10 +55,6 @@ private struct POSStaffSettingsLocalView: View {
 
                     if pinAccessEnabled {
                         pinManagementCard
-                    }
-
-                    if let confirmationMessage {
-                        confirmationBanner(message: confirmationMessage)
                     }
 
                     footerText
@@ -248,17 +243,6 @@ private extension POSStaffSettingsLocalView {
         pinService.setPIN(pin, for: pinEntryRole)
         refreshPINStatus()
         dismissPINEntry()
-
-        let roleName = pinEntryRole == .manager ? Localization.ownerRoleName : Localization.cashierRoleName
-        withAnimation {
-            confirmationMessage = String(format: Localization.pinSetConfirmationFormat, roleName)
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.confirmationDismissDelay) {
-            withAnimation {
-                confirmationMessage = nil
-            }
-        }
     }
 
     func refreshPINStatus() {

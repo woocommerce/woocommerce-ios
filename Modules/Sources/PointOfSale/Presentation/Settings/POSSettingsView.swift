@@ -3,6 +3,7 @@ import SwiftUI
 struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
 
@@ -65,12 +66,14 @@ extension POSSettingsView {
                         selection = .localCatalog
                     })
                 }
-                POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
-                                    subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
-                                    isSelected: selection == .staff,
-                                    action: {
-                    selection = .staff
-                })
+                if isStaffSectionVisible {
+                    POSSettingsCard(title: POSSettingsView.SidebarNavigation.staff.title,
+                                        subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
+                                        isSelected: selection == .staff,
+                                        action: {
+                        selection = .staff
+                    })
+                }
                 Spacer()
 
                 helpView
@@ -98,6 +101,11 @@ extension POSSettingsView {
         case .help:
             POSSettingsHelpDetailView()
         }
+    }
+
+    private var isStaffSectionVisible: Bool {
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalRoles) ||
+        featureFlags.isFeatureFlagEnabled(.pointOfSaleRemoteRoles)
     }
 
     @ViewBuilder

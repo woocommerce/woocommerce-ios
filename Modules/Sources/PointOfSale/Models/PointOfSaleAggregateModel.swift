@@ -521,38 +521,38 @@ private extension PointOfSaleAggregateModel {
     }
 
     func applyProductUpdatesToCart(_ observedItems: [POSItem]) {
-        var changed = false
-
-        for observedItem in observedItems {
-            let observedOrderable: POSOrderableItem
-            switch observedItem {
-            case .simpleProduct(let product):
-                observedOrderable = product
-            case .variation(let variation):
-                observedOrderable = variation
-            default:
-                continue
-            }
-
-            for (index, cartItem) in cart.purchasableItems.enumerated() {
-                guard case .loaded(let currentOrderable) = cartItem.state,
-                      currentOrderable.id == observedOrderable.id,
-                      currentOrderable.formattedPrice != observedOrderable.formattedPrice else {
-                    continue
-                }
-
-                cart.purchasableItems[index] = Cart.PurchasableItem(
-                    id: cartItem.id,
-                    item: observedOrderable,
-                    title: cartItem.title,
-                    subtitle: cartItem.subtitle,
-                    quantity: cartItem.quantity
-                )
-                changed = true
+        let observedOrderables: [POSOrderableItem] = observedItems.compactMap { item in
+            switch item {
+            case .simpleProduct(let product): return product
+            case .variation(let variation): return variation
+            default: return nil
             }
         }
 
+        guard !observedOrderables.isEmpty else { return }
+
+        var updatedItems = cart.purchasableItems
+        var changed = false
+
+        for (index, cartItem) in updatedItems.enumerated() {
+            guard case .loaded(let currentOrderable) = cartItem.state,
+                  let observed = observedOrderables.first(where: { $0.id == currentOrderable.id }),
+                  currentOrderable.formattedPrice != observed.formattedPrice else {
+                continue
+            }
+
+            updatedItems[index] = Cart.PurchasableItem(
+                id: cartItem.id,
+                item: observed,
+                title: cartItem.title,
+                subtitle: cartItem.subtitle,
+                quantity: cartItem.quantity
+            )
+            changed = true
+        }
+
         if changed {
+            cart.purchasableItems = updatedItems
             DDLogInfo("💰 Cart item prices updated from catalog observation")
         }
     }

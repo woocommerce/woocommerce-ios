@@ -20,6 +20,7 @@ public protocol POSCartProductObserving {
     var items: AnyPublisher<[POSItem], Never> { get }
 }
 
+@MainActor
 public final class POSCartProductObserver: POSCartProductObserving {
     private let siteID: Int64
     private let grdbManager: GRDBManagerProtocol

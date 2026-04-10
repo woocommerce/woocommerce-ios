@@ -6,6 +6,7 @@ import Foundation
 @testable import Storage
 import class WooFoundation.CurrencySettings
 
+@MainActor
 struct POSCartProductObserverTests {
     private let siteID: Int64 = 1
 

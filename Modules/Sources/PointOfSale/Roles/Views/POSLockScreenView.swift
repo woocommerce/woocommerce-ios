@@ -1,18 +1,15 @@
 import SwiftUI
 
-/// Full-screen lock screen that wraps the PIN entry with branding
+/// Full-screen lock screen that wraps the PIN entry with a title
 /// and a "Forgot PIN?" link.
 struct POSLockScreenView: View {
-    let operatorName: String?
     let onPINEntered: (String) -> Void
 
     @Binding var pinState: POSPINEntryState
     @State private var showForgotPINInfo: Bool = false
 
-    init(operatorName: String?,
-         pinState: Binding<POSPINEntryState>,
+    init(pinState: Binding<POSPINEntryState>,
          onPINEntered: @escaping (String) -> Void) {
-        self.operatorName = operatorName
         self._pinState = pinState
         self.onPINEntered = onPINEntered
     }
@@ -25,13 +22,8 @@ struct POSLockScreenView: View {
             VStack(spacing: POSSpacing.xxLarge) {
                 Spacer()
 
-                if let operatorName {
-                    operatorAvatar(name: operatorName)
-                }
-
                 POSPINEntryView(
                     title: Localization.title,
-                    subtitle: subtitle,
                     state: $pinState,
                     onPINEntered: { pin in
                         onPINEntered(pin)
@@ -51,25 +43,6 @@ struct POSLockScreenView: View {
         }
     }
 
-    // MARK: - Subtitle
-
-    private var subtitle: String? {
-        guard let operatorName else { return nil }
-        return String(format: Localization.subtitleFormat, operatorName)
-    }
-
-    // MARK: - Operator Avatar
-
-    private func operatorAvatar(name: String) -> some View {
-        let initials = Self.initials(from: name)
-        return Text(initials)
-            .font(.posHeadingBold)
-            .foregroundColor(.posOnPrimary)
-            .frame(width: Constants.avatarSize, height: Constants.avatarSize)
-            .background(Color.posPrimary)
-            .clipShape(Circle())
-    }
-
     // MARK: - Forgot PIN Link
 
     private var forgotPINLink: some View {
@@ -82,30 +55,6 @@ struct POSLockScreenView: View {
         }
         .padding(.bottom, POSPadding.large)
     }
-
-    // MARK: - Helpers
-
-    static func initials(from name: String) -> String {
-        let components = name.split(separator: " ")
-        switch components.count {
-        case 0:
-            return "?"
-        case 1:
-            return String(components[0].prefix(1)).uppercased()
-        default:
-            let first = components[0].prefix(1)
-            let last = components[components.count - 1].prefix(1)
-            return "\(first)\(last)".uppercased()
-        }
-    }
-}
-
-// MARK: - Constants
-
-private extension POSLockScreenView {
-    enum Constants {
-        static let avatarSize: CGFloat = 72
-    }
 }
 
 // MARK: - Localization
@@ -116,12 +65,6 @@ private extension POSLockScreenView {
             "pos.lockScreen.title",
             value: "Enter your PIN",
             comment: "Title on the POS lock screen asking the user to enter their PIN"
-        )
-        static let subtitleFormat = NSLocalizedString(
-            "pos.lockScreen.subtitle",
-            value: "Signed in as %1$@",
-            comment: "Subtitle on the POS lock screen showing the signed-in operator name. "
-            + "%1$@ is the operator's display name."
         )
         static let forgotPINLink = NSLocalizedString(
             "pos.lockScreen.forgotPINLink",
@@ -153,21 +96,10 @@ private extension POSLockScreenView {
     @Previewable @State var pinState: POSPINEntryState = .idle
 
     POSLockScreenView(
-        operatorName: "Jane Smith",
         pinState: $pinState,
         onPINEntered: { _ in
             pinState = .error(message: "Invalid PIN")
         }
-    )
-}
-
-#Preview("Lock Screen - No Name") {
-    @Previewable @State var pinState: POSPINEntryState = .idle
-
-    POSLockScreenView(
-        operatorName: nil,
-        pinState: $pinState,
-        onPINEntered: { _ in }
     )
 }
 #endif

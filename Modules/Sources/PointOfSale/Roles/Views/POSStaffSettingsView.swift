@@ -246,8 +246,8 @@ private extension POSStaffSettingsLocalView {
         }
 
         pinService.setPIN(pin, for: pinEntryRole)
-        dismissPINEntry()
         refreshPINStatus()
+        dismissPINEntry()
 
         let roleName = pinEntryRole == .manager ? Localization.ownerRoleName : Localization.cashierRoleName
         withAnimation {
@@ -354,26 +354,27 @@ private extension POSStaffSettingsRemoteView {
 
             pinStatusBadge(hasPIN: member.hasPIN)
         }
+        .padding(.vertical, POSPadding.xSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
     func pinStatusBadge(hasPIN: Bool) -> some View {
         if hasPIN {
-            HStack(spacing: POSSpacing.xSmall) {
+            HStack(spacing: POSSpacing.small) {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(Color.posSuccess)
                 Text(Localization.pinSetLabel)
                     .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posSuccess)
+                    .foregroundStyle(.secondary)
             }
         } else {
-            HStack(spacing: POSSpacing.xSmall) {
+            HStack(spacing: POSSpacing.small) {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(Color.posError)
+                    .foregroundStyle(Color.posAlert)
                 Text(Localization.noPINLabel)
                     .font(.posBodySmallRegular())
-                    .foregroundStyle(Color.posError)
+                    .foregroundStyle(.secondary)
             }
         }
     }

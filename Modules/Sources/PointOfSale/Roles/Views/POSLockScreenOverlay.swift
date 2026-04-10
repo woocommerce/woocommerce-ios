@@ -11,7 +11,6 @@ struct POSLockScreenOverlay: View {
     var body: some View {
         if permissionProvider.isLocked && permissionProvider.currentOperator == nil {
             POSLockScreenView(
-                operatorName: nil,
                 pinState: $pinState,
                 onPINEntered: { pin in
                     handlePINEntered(pin)

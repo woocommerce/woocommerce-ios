@@ -97,9 +97,14 @@ extension WooAnalyticsEvent {
         }
 
         // MARK: - Sunset Warning Events
-        // TODO: WOOMOB-2057
-        // public static func sunsetWarningShown() -> WooAnalyticsEvent { }
-        // public static func sunsetWarningDismissed() -> WooAnalyticsEvent { }
+
+        public static func sunsetWarningShown() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSunsetWarningShown, properties: [:])
+        }
+
+        public static func sunsetWarningDismissed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSunsetWarningDismissed, properties: [:])
+        }
 
         // MARK: - Core Sync Events
 

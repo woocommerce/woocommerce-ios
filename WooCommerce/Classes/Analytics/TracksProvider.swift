@@ -265,7 +265,9 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncStarted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed
         ]
 
         // Local catalog events always get pos_ prefix since they're POS-specific features
@@ -280,7 +282,9 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncStarted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped
+            WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
+            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed
         ]
 
         // Apply prefix if: (POS mode is active AND event is in the list) OR event is a local catalog event

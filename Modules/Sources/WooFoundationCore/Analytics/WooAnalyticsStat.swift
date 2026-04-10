@@ -1372,6 +1372,8 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleLocalCatalogSyncCompleted = "local_catalog_sync_completed"
     case pointOfSaleLocalCatalogSyncFailed = "local_catalog_sync_failed"
     case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
+    case pointOfSaleLocalCatalogSunsetWarningShown = "local_catalog_sunset_warning_shown"
+    case pointOfSaleLocalCatalogSunsetWarningDismissed = "local_catalog_sunset_warning_dismissed"
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"

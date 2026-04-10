@@ -217,8 +217,7 @@ struct ItemListView: View {
             title: Localization.sunsetWarningTitle,
             icon: Image(systemName: "info.circle"),
             onDismiss: {
-                // TODO: WOOMOB-2057
-                //analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
                 withAnimation {
                     posModel.dismissSunsetWarning()
                 }
@@ -227,8 +226,7 @@ struct ItemListView: View {
                     .font(POSFontStyle.posBodyMediumRegular())
             })
             .task {
-                // TODO: WOOMOB-2057
-                //analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
+                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
             }
     }
 

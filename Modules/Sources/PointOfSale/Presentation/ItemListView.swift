@@ -488,7 +488,7 @@ private extension ItemListView {
 
         static let sunsetWarningDescription = NSLocalizedString(
             "pos.itemlistview.sunsetWarning.description",
-            value: "Starting August 1st, Point of Sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
+            value: "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
             comment: "Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
         )
 

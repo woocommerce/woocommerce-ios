@@ -672,11 +672,12 @@ extension UnderlyingError: LocalizedError {
         case .unsupportedMobileDeviceConfiguration:
             /// Sometimes there are different requirements in different countries but it's overly complicated to make this country specific.
             /// Use the highest version number required by a country in this message.
-            return NSLocalizedString("Please check that your phone meets these requirements: " +
-                                     "iPhone XS or newer running iOS 18.0.1 or above. Contact support if this error " +
-                                     "shows on a supported device.",
-                                     comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
-                                     "the device does not meet minimum requirements.")
+            return NSLocalizedString(
+                "cardReader.error.unsupportedMobileDeviceConfiguration.message",
+                value: "Please check that your phone meets these requirements: iPhone XS or newer running iOS 18.0.1 " +
+                "or above. Contact support if this error shows on a supported device.",
+                comment: "Error message shown when Tap to Pay on iPhone cannot be used because the device does not " +
+                "meet minimum requirements.")
 
         case .commandNotAllowedDuringCall:
             return NSLocalizedString("Tap to Pay on iPhone cannot be used during a phone call. Please try again after " +

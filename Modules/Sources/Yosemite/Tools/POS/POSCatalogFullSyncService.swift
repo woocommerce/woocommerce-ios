@@ -266,7 +266,7 @@ private extension POSCatalogFullSyncService {
                 DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1), " +
                           "progress: \(response.progress ?? -1), processed: \(response.processed ?? -1)/\(response.total ?? -1))")
 
-                try await Task.sleep(nanoseconds: UInt64(currentDelay * 1_000_000_000))
+                try await Task.sleep(nanoseconds: UInt64(currentDelay) * NSEC_PER_SEC)
                 attempts += 1
 
                 // Calculate next delay with exponential backoff, capped at max interval

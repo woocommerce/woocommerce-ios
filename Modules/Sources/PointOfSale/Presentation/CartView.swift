@@ -22,6 +22,7 @@ struct CartView: View {
         abs(offSetPosition) < maxOffset
     }
 
+    @State private var headerSize: CGSize = .zero
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
@@ -34,6 +35,7 @@ struct CartView: View {
                     backgroundColor: backgroundColor
                 )
                 .zIndex(1)
+                .trackSize(size: $headerSize)
 
                 if posModel.cart.isNotEmpty {
                     CartScrollViewContent(
@@ -54,6 +56,7 @@ struct CartView: View {
                         .zIndex(1)
                 }
             }
+            .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
@@ -156,6 +159,15 @@ private struct ScrollViewHeightPreferenceKey: PreferenceKey {
 }
 
 private extension CartView {
+    /// iOS 26 NavigationStack introduces container insets that shift the checkout button up.
+    static var containerRegionToIgnore: SafeAreaRegions {
+        if #available(iOS 26, *) {
+            return .container
+        } else {
+            return []
+        }
+    }
+
     var backgroundColor: Color {
         .posSurfaceBright
     }
@@ -217,7 +229,7 @@ private extension CartView {
 
     var cartEmptyView: some View {
         VStack {
-            Spacer()
+            Spacer(minLength: headerSize.height + Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing)
             // By designs, the text should be vertically centred with the image 40px above it.
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top

@@ -3,6 +3,7 @@
 final class MockPOSPermissionProvider: POSPermissionProviding {
     var currentOperator: POSOperator?
     var isLocked: Bool = false
+    var hasAnyPINs: Bool = false
     var autoLockTimeoutSeconds: Int = 300
     var capabilityOverrides: [String: POSPermissionResult] = [:]
     var resetInactivityTimerCallCount: Int = 0

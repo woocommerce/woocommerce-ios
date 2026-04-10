@@ -107,6 +107,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     public private(set) var currentOperator: POSOperator?
     public private(set) var isLocked: Bool = false
+    public var hasAnyPINs: Bool { true }
 
     // MARK: - Session State
 

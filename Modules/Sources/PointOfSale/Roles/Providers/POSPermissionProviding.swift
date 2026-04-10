@@ -13,6 +13,9 @@ public protocol POSPermissionProviding: AnyObject {
     func lock()
     func resetInactivityTimer()
     var autoLockTimeoutSeconds: Int { get }
+    /// Whether any PINs are configured (at least one staff member has a PIN).
+    /// Used to determine if "Lock POS" should be available.
+    var hasAnyPINs: Bool { get }
 }
 
 // MARK: - POSCapability convenience

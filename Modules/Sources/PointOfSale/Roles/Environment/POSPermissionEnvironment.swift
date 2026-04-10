@@ -15,6 +15,7 @@ extension EnvironmentValues {
 final class EmptyPOSPermissionProvider: POSPermissionProviding {
     var currentOperator: POSOperator? { nil }
     var isLocked: Bool { false }
+    var hasAnyPINs: Bool { false }
     var autoLockTimeoutSeconds: Int { 0 }
     func checkPermission(_ capability: String) -> POSPermissionResult { .allowed }
     func hasCapability(_ capability: String) -> Bool { true }

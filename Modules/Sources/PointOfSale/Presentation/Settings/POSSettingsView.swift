@@ -7,7 +7,7 @@ struct POSSettingsView: View {
     @State private var selection: SidebarNavigation?
 
     let settingsController: POSSettingsControllerProtocol
-    let pinService: POSPINService
+    let staffSettingsMode: POSStaffSettingsMode
 
     var body: some View {
         POSNavigationSplitView(selection: $selection) { _ in
@@ -94,7 +94,7 @@ extension POSSettingsView {
                 EmptyView()
             }
         case .staff:
-            POSStaffSettingsView(pinService: pinService)
+            POSStaffSettingsView(mode: staffSettingsMode)
         case .help:
             POSSettingsHelpDetailView()
         }
@@ -239,6 +239,6 @@ extension POSSettingsView {
 #if DEBUG
 #Preview {
     POSSettingsView(settingsController: POSSettingsPreviewController(),
-                    pinService: POSPINService(storage: InMemoryPINStorage()))
+                    staffSettingsMode: .local(pinService: POSPINService(storage: InMemoryPINStorage())))
 }
 #endif

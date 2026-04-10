@@ -161,7 +161,7 @@ struct PointOfSaleDashboardView: View {
         }
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController,
-                            pinService: POSPINService())
+                            staffSettingsMode: .local(pinService: POSPINService()))
         }
         .posFullScreenCover(isPresented: $phoneShowOrders) {
             POSOrdersView(isPresented: $phoneShowOrders)

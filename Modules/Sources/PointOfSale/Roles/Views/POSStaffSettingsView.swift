@@ -1,33 +1,68 @@
 import SwiftUI
 
+// MARK: - Mode & Data Types
+
+enum POSStaffSettingsMode {
+    case local(pinService: POSPINService)
+    case remote(staffMembers: [StaffMemberInfo], manageURL: URL)
+}
+
+struct StaffMemberInfo: Identifiable {
+    let id: Int64
+    let displayName: String
+    let role: String
+    let hasPIN: Bool
+}
+
+// MARK: - View
+
 struct POSStaffSettingsView: View {
+    let mode: POSStaffSettingsMode
+
+    var body: some View {
+        switch mode {
+        case .local(let pinService):
+            POSStaffSettingsLocalView(pinService: pinService)
+        case .remote(let staffMembers, let manageURL):
+            POSStaffSettingsRemoteView(staffMembers: staffMembers, manageURL: manageURL)
+        }
+    }
+}
+
+// MARK: - Local Mode View
+
+private struct POSStaffSettingsLocalView: View {
     let pinService: POSPINService
+
+    @AppStorage("com.woocommerce.pos.passcodesEnabled") private var passcodesEnabled: Bool = false
 
     @State private var showPINEntry: Bool = false
     @State private var pinEntryRole: PINRole = .manager
     @State private var pinEntryState: POSPINEntryState = .idle
     @State private var confirmationMessage: String?
 
-    @State private var managerPINSet: Bool = false
+    @State private var ownerPINSet: Bool = false
     @State private var cashierPINSet: Bool = false
-
-    init(pinService: POSPINService) {
-        self.pinService = pinService
-    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(title: Localization.staffTitle)
+            POSPageHeaderView(title: Localization.staffAndSecurityTitle)
                 .foregroundColor(.posSurface)
                 .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    staffPINsCard
+                    passcodesToggleCard
+
+                    if passcodesEnabled {
+                        pinManagementCard
+                    }
 
                     if let confirmationMessage {
                         confirmationBanner(message: confirmationMessage)
                     }
+
+                    footerText
                 }
                 .padding(.horizontal, POSPadding.medium)
             }
@@ -42,57 +77,92 @@ struct POSStaffSettingsView: View {
     }
 }
 
-// MARK: - Subviews
+// MARK: - Local Mode Subviews
 
-private extension POSStaffSettingsView {
-    var staffPINsCard: some View {
+private extension POSStaffSettingsLocalView {
+    var passcodesToggleCard: some View {
         POSInformationCard {
-            VStack(spacing: POSSpacing.small) {
-                pinRow(
-                    label: Localization.managerPINLabel,
-                    description: Localization.managerPINDescription,
-                    isPINSet: managerPINSet,
-                    role: .manager
-                )
-
-                Divider()
-                    .padding(.vertical, POSPadding.small)
-
-                pinRow(
-                    label: Localization.cashierPINLabel,
-                    description: Localization.cashierPINDescription,
-                    isPINSet: cashierPINSet,
-                    role: .cashier,
-                    showSeparator: false
-                )
+            POSInformationCardFieldRowWithToggle(
+                label: Localization.passcodesLabel,
+                value: Localization.passcodesDescription,
+                showSeparator: false,
+                isOn: $passcodesEnabled
+            )
+            .onChange(of: passcodesEnabled) { _, newValue in
+                handlePasscodesToggleChanged(newValue)
             }
         }
     }
 
     @ViewBuilder
+    var pinManagementCard: some View {
+        POSInformationCard {
+            VStack(spacing: POSSpacing.small) {
+                ownerPINRow
+
+                if ownerPINSet {
+                    Divider()
+                        .padding(.vertical, POSPadding.small)
+                    cashierPINRow
+                }
+            }
+        }
+    }
+
+    var ownerPINRow: some View {
+        pinRow(
+            label: Localization.ownerPasscodeLabel,
+            description: Localization.ownerPasscodeDescription,
+            isPINSet: ownerPINSet,
+            role: .manager
+        )
+    }
+
+    var cashierPINRow: some View {
+        pinRow(
+            label: Localization.cashierPasscodeLabel,
+            description: Localization.cashierPasscodeDescription,
+            isPINSet: cashierPINSet,
+            role: .cashier
+        )
+    }
+
     func pinRow(label: String,
                 description: String,
                 isPINSet: Bool,
-                role: PINRole,
-                showSeparator: Bool = true) -> some View {
+                role: PINRole) -> some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             VStack(alignment: .leading, spacing: POSPadding.small) {
                 Text(label)
                     .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
-                Text(description)
-                    .font(.posBodyMediumRegular())
-                    .foregroundStyle(.secondary)
+
+                HStack(spacing: POSSpacing.xSmall) {
+                    Image(systemName: "info.circle")
+                        .font(.posBodySmallRegular())
+                        .foregroundStyle(.secondary)
+                    Text(description)
+                        .font(.posBodyMediumRegular())
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Spacer()
 
-            Button(isPINSet ? Localization.changePINButton : Localization.setPINButton) {
+            Button(isPINSet ? Localization.changeButton : Localization.setButton) {
                 presentPINEntry(for: role)
             }
             .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    var footerText: some View {
+        Text(Localization.localFooter)
+            .font(.posBodyMediumRegular())
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, POSPadding.small)
     }
 
     func confirmationBanner(message: String) -> some View {
@@ -130,16 +200,30 @@ private extension POSStaffSettingsView {
     }
 }
 
-// MARK: - Logic
+// MARK: - Local Mode Logic
 
-private extension POSStaffSettingsView {
+private extension POSStaffSettingsLocalView {
     var pinEntryTitle: String {
         switch pinEntryRole {
         case .manager:
-            return managerPINSet ? Localization.changeManagerPINTitle : Localization.setManagerPINTitle
+            return ownerPINSet ? Localization.changeOwnerPasscodeTitle : Localization.setOwnerPasscodeTitle
         case .cashier:
-            return cashierPINSet ? Localization.changeCashierPINTitle : Localization.setCashierPINTitle
+            return cashierPINSet ? Localization.changeCashierPasscodeTitle : Localization.setCashierPasscodeTitle
         }
+    }
+
+    func handlePasscodesToggleChanged(_ enabled: Bool) {
+        if enabled {
+            presentPINEntry(for: .manager)
+        } else {
+            clearAllPINsAndUnlock()
+        }
+    }
+
+    func clearAllPINsAndUnlock() {
+        pinService.deletePIN(for: .manager)
+        pinService.deletePIN(for: .cashier)
+        refreshPINStatus()
     }
 
     func presentPINEntry(for role: PINRole) {
@@ -150,6 +234,9 @@ private extension POSStaffSettingsView {
 
     func dismissPINEntry() {
         showPINEntry = false
+        if !ownerPINSet && passcodesEnabled {
+            passcodesEnabled = false
+        }
     }
 
     func handlePINEntered(_ pin: String) {
@@ -162,7 +249,7 @@ private extension POSStaffSettingsView {
         dismissPINEntry()
         refreshPINStatus()
 
-        let roleName = pinEntryRole == .manager ? Localization.managerRoleName : Localization.cashierRoleName
+        let roleName = pinEntryRole == .manager ? Localization.ownerRoleName : Localization.cashierRoleName
         withAnimation {
             confirmationMessage = String(format: Localization.pinSetConfirmationFormat, roleName)
         }
@@ -175,134 +262,325 @@ private extension POSStaffSettingsView {
     }
 
     func refreshPINStatus() {
-        managerPINSet = pinService.hasPIN(for: .manager)
+        ownerPINSet = pinService.hasPIN(for: .manager)
         cashierPINSet = pinService.hasPIN(for: .cashier)
+    }
+}
+
+// MARK: - Remote Mode View
+
+private struct POSStaffSettingsRemoteView: View {
+    @Environment(\.posExternalViews) private var externalViews
+
+    let staffMembers: [StaffMemberInfo]
+    let manageURL: URL
+
+    @State private var showManageStaff: Bool = false
+
+    var body: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(title: Localization.staffTitle)
+                .foregroundColor(.posSurface)
+                .accessibilityAddTraits(.isHeader)
+
+            ScrollView {
+                VStack(spacing: POSSpacing.medium) {
+                    staffListCard
+                    manageStaffCard
+                    footerText
+                }
+                .padding(.horizontal, POSPadding.medium)
+            }
+        }
+        .background(Color.posSurface)
+        .posFullScreenCover(isPresented: $showManageStaff) {
+            externalViews.createAuthenticatedWebView(
+                url: manageURL,
+                title: Localization.manageStaffWebTitle,
+                completion: {
+                    showManageStaff = false
+                }
+            )
+        }
+    }
+}
+
+// MARK: - Remote Mode Subviews
+
+private extension POSStaffSettingsRemoteView {
+    var staffListCard: some View {
+        POSInformationCard {
+            VStack(spacing: POSSpacing.none) {
+                ForEach(Array(staffMembers.enumerated()), id: \.element.id) { index, member in
+                    staffRow(member: member)
+
+                    if index < staffMembers.count - 1 {
+                        Divider()
+                            .padding(.vertical, POSPadding.small)
+                    }
+                }
+            }
+        }
+    }
+
+    func staffRow(member: StaffMemberInfo) -> some View {
+        HStack(alignment: .center, spacing: POSSpacing.medium) {
+            VStack(alignment: .leading, spacing: POSPadding.xSmall) {
+                Text(member.displayName)
+                    .font(.posBodyMediumBold)
+                    .foregroundStyle(Color.posOnSurface)
+                Text(member.role)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            pinStatusBadge(hasPIN: member.hasPIN)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    func pinStatusBadge(hasPIN: Bool) -> some View {
+        if hasPIN {
+            HStack(spacing: POSSpacing.xSmall) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(Color.posSuccess)
+                Text(Localization.pinSetLabel)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posSuccess)
+            }
+        } else {
+            HStack(spacing: POSSpacing.xSmall) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(Color.posError)
+                Text(Localization.noPINLabel)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posError)
+            }
+        }
+    }
+
+    var manageStaffCard: some View {
+        POSInformationCard {
+            Button {
+                showManageStaff = true
+            } label: {
+                HStack(spacing: POSSpacing.small) {
+                    Image(systemName: "link")
+                        .font(.posBodyMediumBold)
+                        .foregroundStyle(Color.posPrimary)
+                    Text(Localization.manageStaffButton)
+                        .font(.posBodyMediumBold)
+                        .foregroundStyle(Color.posPrimary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    var footerText: some View {
+        Text(Localization.remoteFooter)
+            .font(.posBodyMediumRegular())
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, POSPadding.small)
     }
 }
 
 // MARK: - Constants
 
-private extension POSStaffSettingsView {
-    enum Constants {
-        static let pinEntryModalMaxWidth: CGFloat = 500
-        static let confirmationDismissDelay: TimeInterval = 3.0
-    }
+private enum Constants {
+    static let pinEntryModalMaxWidth: CGFloat = 500
+    static let confirmationDismissDelay: TimeInterval = 3.0
 }
 
 // MARK: - Localization
 
-private extension POSStaffSettingsView {
-    enum Localization {
-        static let staffTitle = NSLocalizedString(
-            "posStaffSettingsView.staffTitle",
-            value: "Staff",
-            comment: "Navigation title for the staff settings detail view in POS settings."
-        )
+private enum Localization {
+    // MARK: Common
+    static let staffTitle = NSLocalizedString(
+        "posStaffSettingsView.staffTitle",
+        value: "Staff",
+        comment: "Navigation title for the staff settings detail view in POS settings."
+    )
 
-        static let managerPINLabel = NSLocalizedString(
-            "posStaffSettingsView.managerPINLabel",
-            value: "Manager PIN",
-            comment: "Label for the manager PIN row in POS staff settings."
-        )
+    // MARK: Local Mode
+    static let staffAndSecurityTitle = NSLocalizedString(
+        "posStaffSettingsView.staffAndSecurityTitle",
+        value: "Staff & Security",
+        comment: "Navigation title for the local staff and security settings in POS."
+    )
 
-        static let cashierPINLabel = NSLocalizedString(
-            "posStaffSettingsView.cashierPINLabel",
-            value: "Cashier PIN",
-            comment: "Label for the cashier PIN row in POS staff settings."
-        )
+    static let passcodesLabel = NSLocalizedString(
+        "posStaffSettingsView.passcodesLabel",
+        value: "Passcodes",
+        comment: "Toggle label to enable or disable passcodes in POS staff settings."
+    )
 
-        static let managerPINDescription = NSLocalizedString(
-            "posStaffSettingsView.managerPINDescription",
-            value: "Used to access all POS features and approve restricted actions",
-            comment: "Description of the manager PIN role in POS staff settings."
-        )
+    static let passcodesDescription = NSLocalizedString(
+        "posStaffSettingsView.passcodesDescription",
+        value: "When enabled, POS can be locked and staff use PINs to access the register.",
+        comment: "Description of the passcodes toggle in POS staff settings."
+    )
 
-        static let cashierPINDescription = NSLocalizedString(
-            "posStaffSettingsView.cashierPINDescription",
-            value: "Used for basic sales and payments. Restricted actions require manager approval",
-            comment: "Description of the cashier PIN role in POS staff settings."
-        )
+    static let ownerPasscodeLabel = NSLocalizedString(
+        "posStaffSettingsView.ownerPasscodeLabel",
+        value: "Owner passcode",
+        comment: "Label for the owner passcode row in POS staff settings."
+    )
 
-        static let setPINButton = NSLocalizedString(
-            "posStaffSettingsView.setPINButton",
-            value: "Set PIN",
-            comment: "Button title to set a new PIN for a role in POS staff settings."
-        )
+    static let ownerPasscodeDescription = NSLocalizedString(
+        "posStaffSettingsView.ownerPasscodeDescription",
+        value: "Full access to all POS features and can approve restricted actions",
+        comment: "Description of the owner passcode role in POS staff settings."
+    )
 
-        static let changePINButton = NSLocalizedString(
-            "posStaffSettingsView.changePINButton",
-            value: "Change",
-            comment: "Button title to change an existing PIN for a role in POS staff settings."
-        )
+    static let cashierPasscodeLabel = NSLocalizedString(
+        "posStaffSettingsView.cashierPasscodeLabel",
+        value: "Cashier passcode",
+        comment: "Label for the cashier passcode row in POS staff settings."
+    )
 
-        static let pinEntrySubtitle = NSLocalizedString(
-            "posStaffSettingsView.pinEntrySubtitle",
-            value: "Enter a 4-digit PIN",
-            comment: "Subtitle shown in the PIN entry modal when setting or changing a PIN."
-        )
+    static let cashierPasscodeDescription = NSLocalizedString(
+        "posStaffSettingsView.cashierPasscodeDescription",
+        value: "Process sales and payments. Refunds and settings require owner approval",
+        comment: "Description of the cashier passcode role in POS staff settings."
+    )
 
-        static let setManagerPINTitle = NSLocalizedString(
-            "posStaffSettingsView.setManagerPINTitle",
-            value: "Set Manager PIN",
-            comment: "Title for the PIN entry modal when setting the manager PIN."
-        )
+    static let setButton = NSLocalizedString(
+        "posStaffSettingsView.setButton",
+        value: "Set",
+        comment: "Button title to set a new passcode for a role in POS staff settings."
+    )
 
-        static let changeManagerPINTitle = NSLocalizedString(
-            "posStaffSettingsView.changeManagerPINTitle",
-            value: "Change Manager PIN",
-            comment: "Title for the PIN entry modal when changing the manager PIN."
-        )
+    static let changeButton = NSLocalizedString(
+        "posStaffSettingsView.changeButton",
+        value: "Change",
+        comment: "Button title to change an existing passcode for a role in POS staff settings."
+    )
 
-        static let setCashierPINTitle = NSLocalizedString(
-            "posStaffSettingsView.setCashierPINTitle",
-            value: "Set Cashier PIN",
-            comment: "Title for the PIN entry modal when setting the cashier PIN."
-        )
+    static let pinEntrySubtitle = NSLocalizedString(
+        "posStaffSettingsView.pinEntrySubtitle",
+        value: "Enter a 4-digit PIN",
+        comment: "Subtitle shown in the PIN entry modal when setting or changing a PIN."
+    )
 
-        static let changeCashierPINTitle = NSLocalizedString(
-            "posStaffSettingsView.changeCashierPINTitle",
-            value: "Change Cashier PIN",
-            comment: "Title for the PIN entry modal when changing the cashier PIN."
-        )
+    static let setOwnerPasscodeTitle = NSLocalizedString(
+        "posStaffSettingsView.setOwnerPasscodeTitle",
+        value: "Set Owner Passcode",
+        comment: "Title for the PIN entry modal when setting the owner passcode."
+    )
 
-        static let invalidPINError = NSLocalizedString(
-            "posStaffSettingsView.invalidPINError",
-            value: "PIN must be 4-6 digits",
-            comment: "Error message shown when an invalid PIN format is entered in POS staff settings."
-        )
+    static let changeOwnerPasscodeTitle = NSLocalizedString(
+        "posStaffSettingsView.changeOwnerPasscodeTitle",
+        value: "Change Owner Passcode",
+        comment: "Title for the PIN entry modal when changing the owner passcode."
+    )
 
-        static let pinSetConfirmationFormat = NSLocalizedString(
-            "posStaffSettingsView.pinSetConfirmationFormat",
-            value: "%1$@ PIN has been updated",
-            comment: "Confirmation message after successfully setting or changing a PIN. %1$@ is the role name (Manager or Cashier)."
-        )
+    static let setCashierPasscodeTitle = NSLocalizedString(
+        "posStaffSettingsView.setCashierPasscodeTitle",
+        value: "Set Cashier Passcode",
+        comment: "Title for the PIN entry modal when setting the cashier passcode."
+    )
 
-        static let managerRoleName = NSLocalizedString(
-            "posStaffSettingsView.managerRoleName",
-            value: "Manager",
-            comment: "Role name used in the PIN confirmation message for the manager role."
-        )
+    static let changeCashierPasscodeTitle = NSLocalizedString(
+        "posStaffSettingsView.changeCashierPasscodeTitle",
+        value: "Change Cashier Passcode",
+        comment: "Title for the PIN entry modal when changing the cashier passcode."
+    )
 
-        static let cashierRoleName = NSLocalizedString(
-            "posStaffSettingsView.cashierRoleName",
-            value: "Cashier",
-            comment: "Role name used in the PIN confirmation message for the cashier role."
-        )
-    }
+    static let invalidPINError = NSLocalizedString(
+        "posStaffSettingsView.invalidPINError",
+        value: "PIN must be 4-6 digits",
+        comment: "Error message shown when an invalid PIN format is entered in POS staff settings."
+    )
+
+    static let pinSetConfirmationFormat = NSLocalizedString(
+        "posStaffSettingsView.pinSetConfirmationFormat",
+        value: "%1$@ passcode has been updated",
+        comment: "Confirmation message after successfully setting a passcode. %1$@ is the role name (Owner or Cashier)."
+    )
+
+    static let ownerRoleName = NSLocalizedString(
+        "posStaffSettingsView.ownerRoleName",
+        value: "Owner",
+        comment: "Role name used in the passcode confirmation message for the owner role."
+    )
+
+    static let cashierRoleName = NSLocalizedString(
+        "posStaffSettingsView.cashierRoleName",
+        value: "Cashier",
+        comment: "Role name used in the passcode confirmation message for the cashier role."
+    )
+
+    static let localFooter = NSLocalizedString(
+        "posStaffSettingsView.localFooter",
+        value: "POS locks when you tap Lock POS from the menu.",
+        comment: "Footer text explaining how POS locking works in local mode."
+    )
+
+    // MARK: Remote Mode
+    static let pinSetLabel = NSLocalizedString(
+        "posStaffSettingsView.pinSetLabel",
+        value: "PIN set",
+        comment: "Status label shown next to a staff member who has a PIN configured."
+    )
+
+    static let noPINLabel = NSLocalizedString(
+        "posStaffSettingsView.noPINLabel",
+        value: "No PIN",
+        comment: "Status label shown next to a staff member who does not have a PIN configured."
+    )
+
+    static let manageStaffButton = NSLocalizedString(
+        "posStaffSettingsView.manageStaffButton",
+        value: "Manage staff in WordPress admin",
+        comment: "Button to open the WordPress admin staff management page."
+    )
+
+    static let manageStaffWebTitle = NSLocalizedString(
+        "posStaffSettingsView.manageStaffWebTitle",
+        value: "Manage Staff",
+        comment: "Navigation title for the web view showing WordPress admin staff management."
+    )
+
+    static let remoteFooter = NSLocalizedString(
+        "posStaffSettingsView.remoteFooter",
+        value: "POS locks when you tap Lock POS from the menu, or after 30 minutes of inactivity.",
+        comment: "Footer text explaining how POS locking works in remote mode."
+    )
 }
 
-// MARK: - Preview
+// MARK: - Previews
 
 #if DEBUG
-#Preview("Staff Settings - No PINs Set") {
-    POSStaffSettingsView(pinService: POSPINService(storage: InMemoryPINStorage()))
+#Preview("Local - Passcodes Off") {
+    POSStaffSettingsView(mode: .local(pinService: POSPINService(storage: InMemoryPINStorage())))
 }
 
-#Preview("Staff Settings - PINs Set") {
+#Preview("Local - PINs Set") {
     let storage = InMemoryPINStorage()
     let service = POSPINService(storage: storage)
     service.setPIN("1234", for: .manager)
     service.setPIN("5678", for: .cashier)
-    return POSStaffSettingsView(pinService: service)
+    return POSStaffSettingsView(mode: .local(pinService: service))
+}
+
+#Preview("Remote - Staff List") {
+    let members: [StaffMemberInfo] = [
+        StaffMemberInfo(id: 1, displayName: "Alice", role: "Administrator", hasPIN: true),
+        StaffMemberInfo(id: 2, displayName: "Bob", role: "POS Manager", hasPIN: true),
+        StaffMemberInfo(id: 3, displayName: "Carol", role: "POS Cashier", hasPIN: false),
+        StaffMemberInfo(id: 4, displayName: "Dave", role: "Shop Manager", hasPIN: false)
+    ]
+    return POSStaffSettingsView(
+        mode: .remote(
+            staffMembers: members,
+            manageURL: URL(string: "https://example.com/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")!
+        )
+    )
 }
 #endif

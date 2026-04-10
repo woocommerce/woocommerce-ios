@@ -90,6 +90,7 @@ class AuthenticatedState: StoresManagerState {
                 storageManager: storageManager,
                 network: network,
             ),
+            OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -194,7 +195,8 @@ class AuthenticatedState: StoresManagerState {
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                     storageManager: ServiceLocator.storageManager
                 ),
-                isLocalCatalogFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
+                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                isCatalogAPIFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {

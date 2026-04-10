@@ -58,6 +58,7 @@ public enum BookingAction: Action {
     case synchronizeResources(siteID: Int64,
                              pageNumber: Int,
                              pageSize: Int = BookingsRemote.Default.pageSize,
+                             include: [Int64]? = nil,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Updates a booking attendance status.

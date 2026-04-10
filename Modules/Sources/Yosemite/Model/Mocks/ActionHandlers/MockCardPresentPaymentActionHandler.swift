@@ -28,7 +28,7 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
             // `WooCommerceScreenshots` to display it for screenshotting purpose.
             onCardReaderMessage(.waitingForInput([.tap, .swipe, .insert]))
         default:
-            break
+            unimplementedAction(action: action)
         }
     }
 

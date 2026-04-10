@@ -348,6 +348,11 @@ let package = Package(
                 "WooFoundation"
             ]
         ),
+        .binaryTarget(
+            name: "EventHorizonSDK",
+            url: "https://a8c-libs.s3.amazonaws.com/ios/EventHorizon/woocommerce-2026-04-02-12-32-41/EventHorizon-woocommerce-2026-04-02-12-32-41.xcframework.zip",
+            checksum: "24dcdee76b6280e87a8db163e5f8e87f2340585c5e0c1391ccea6746c97df879"
+        ),
     ]
 )
 
@@ -423,6 +428,7 @@ enum XcodeSupport {
                 XcodeTargetNames.wooCommerce,
                 dependencies: [
                     "Codegen",
+                    "EventHorizonSDK",
                     "Experiments",
                     "Hardware",
                     "Networking",

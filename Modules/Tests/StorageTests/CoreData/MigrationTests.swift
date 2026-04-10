@@ -2550,6 +2550,86 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertEqual(migratedOrder.value(forKey: "fulfillmentStatusKey") as? String, updatedValue)
     }
+
+    func test_migrating_from_135_to_136_adds_OrderFulfillment_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 135")
+        let sourceContext = sourceContainer.viewContext
+
+        // Verify OrderFulfillment entity does not exist in Model 135
+        let sourceEntities = sourceContainer.managedObjectModel.entities.map { $0.name }
+        XCTAssertFalse(sourceEntities.contains("OrderFulfillment"), "Precondition. Entity should not exist.")
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 136")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let targetEntities = targetContainer.managedObjectModel.entities.map { $0.name }
+        XCTAssertTrue(targetEntities.contains("OrderFulfillment"))
+
+        // Verify we can insert and save an OrderFulfillment
+        let fulfillment = NSEntityDescription.insertNewObject(forEntityName: "OrderFulfillment", into: targetContext)
+        fulfillment.setValue(Int64(123), forKey: "siteID")
+        fulfillment.setValue(Int64(456), forKey: "orderID")
+        fulfillment.setValue(Int64(42), forKey: "fulfillmentID")
+        fulfillment.setValue("fulfilled", forKey: "statusKey")
+        fulfillment.setValue(true, forKey: "isFulfilled")
+        fulfillment.setValue("1Z999AA10123456784", forKey: "trackingNumber")
+        fulfillment.setValue("ups", forKey: "shipmentProvider")
+        fulfillment.setValue("https://ups.com/track", forKey: "trackingURL")
+        fulfillment.setValue(Date(), forKey: "dateUpdated")
+        fulfillment.setValue(Date(), forKey: "dateFulfilled")
+
+        try targetContext.save()
+
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "OrderFulfillment")
+        let results = try targetContext.fetch(fetchRequest)
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results.first?.value(forKey: "fulfillmentID") as? Int64, 42)
+        XCTAssertEqual(results.first?.value(forKey: "trackingNumber") as? String, "1Z999AA10123456784")
+    }
+
+    func test_migrating_from_135_to_136_adds_booking_attributes_to_product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 135")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 135)
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["bookingDuration"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(product.entity.attributesByName["bookingDurationUnit"], "Precondition. Attribute does not exist.")
+        XCTAssertNil(product.entity.attributesByName["bookingResourceIDs"], "Precondition. Attribute does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 136")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        XCTAssertNotNil(migratedProduct.entity.attributesByName["bookingDuration"])
+        XCTAssertNotNil(migratedProduct.entity.attributesByName["bookingDurationUnit"])
+        XCTAssertNotNil(migratedProduct.entity.attributesByName["bookingResourceIDs"])
+
+        // Default values should be nil
+        XCTAssertNil(migratedProduct.value(forKey: "bookingDuration"))
+        XCTAssertNil(migratedProduct.value(forKey: "bookingDurationUnit"))
+        XCTAssertNil(migratedProduct.value(forKey: "bookingResourceIDs"))
+
+        // Verify values can be set and saved
+        migratedProduct.setValue(30, forKey: "bookingDuration")
+        migratedProduct.setValue("minute", forKey: "bookingDurationUnit")
+        migratedProduct.setValue([1, 2, 3] as NSArray, forKey: "bookingResourceIDs")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedProduct.value(forKey: "bookingDuration") as? Int64, 30)
+        XCTAssertEqual(migratedProduct.value(forKey: "bookingDurationUnit") as? String, "minute")
+        XCTAssertEqual(migratedProduct.value(forKey: "bookingResourceIDs") as? [Int], [1, 2, 3])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

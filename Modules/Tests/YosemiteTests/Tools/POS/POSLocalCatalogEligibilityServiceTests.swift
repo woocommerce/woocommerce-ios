@@ -558,6 +558,170 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
 
+    // MARK: - Catalog API (usesCatalogAPI = true)
+
+    @Test("Catalog API skips size check for large catalogs")
+    func test_usesCatalogAPI_when_large_catalog_then_skips_size_check() async throws {
+        // Given
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 3000, variationCount: 2000))
+        )
+        let systemStatusService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .success(
+                POSPluginAndFeatureInfo(
+                    wcPlugin: makeSystemPlugin(version: "10.5.0"),
+                    featureValue: true
+                )
+            )
+        )
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            isCatalogAPIFeatureFlagEnabled: true,
+            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
+            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // When
+        let state = try await service.catalogEligibility(for: siteID)
+
+        // Then
+        #expect(state == .eligible)
+        #expect(sizeChecker.checkCatalogSizeCallCount == 0)
+    }
+
+    @Test("Catalog API requires WC 10.5+",
+          arguments: [
+            ("10.3.0", false),
+            ("10.4.0", false),
+            ("10.5.0", true),
+            ("11.0.0", true),
+          ])
+    func test_usesCatalogAPI_when_version_then_checks_minimum_10_5(
+        version: String,
+        expectEligible: Bool
+    ) async throws {
+        // Given
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
+        )
+        let systemStatusService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .success(
+                POSPluginAndFeatureInfo(
+                    wcPlugin: makeSystemPlugin(version: version),
+                    featureValue: true
+                )
+            )
+        )
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            isCatalogAPIFeatureFlagEnabled: true,
+            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
+            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // When
+        let state = try await service.catalogEligibility(for: siteID)
+
+        // Then
+        if expectEligible {
+            #expect(state == .eligible)
+        } else {
+            guard case .ineligible(let reason) = state else {
+                Issue.record("Expected ineligible state for version \(version)")
+                return
+            }
+            guard case .unsupportedWooCommerceVersion(let minimumVersion) = reason else {
+                Issue.record("Expected unsupportedWooCommerceVersion reason for version \(version)")
+                return
+            }
+            #expect(minimumVersion == "10.5.0")
+        }
+    }
+
+    @Test("Paginated sync enforces size limit")
+    func test_usesCatalogAPI_false_when_over_limit_then_ineligible() async throws {
+        // Given
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 501, variationCount: 500))
+        )
+        let systemStatusService = MockPOSSystemStatusService()
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            isCatalogAPIFeatureFlagEnabled: false,
+            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
+            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // When
+        let state = try await service.catalogEligibility(for: siteID)
+
+        // Then
+        guard case .ineligible(let reason) = state else {
+            Issue.record("Expected ineligible state")
+            return
+        }
+        guard case .catalogSizeTooLarge(let totalCount, let limit) = reason else {
+            Issue.record("Expected catalogSizeTooLarge reason")
+            return
+        }
+        #expect(totalCount == 1001)
+        #expect(limit == 1000)
+        #expect(sizeChecker.checkCatalogSizeCallCount == 1)
+    }
+
+    @Test("Paginated sync requires WC 10.3+")
+    func test_usesCatalogAPI_false_when_version_below_10_3_then_ineligible() async throws {
+        // Given
+        let sizeChecker = MockPOSCatalogSizeChecker(
+            sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
+        )
+        let systemStatusService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .success(
+                POSPluginAndFeatureInfo(
+                    wcPlugin: makeSystemPlugin(version: "10.2.0"),
+                    featureValue: true
+                )
+            )
+        )
+        let service = POSLocalCatalogEligibilityService(
+            catalogSizeChecker: sizeChecker,
+            systemStatusService: systemStatusService,
+            isLocalCatalogFeatureFlagEnabled: true,
+            isCatalogAPIFeatureFlagEnabled: false,
+            remoteFeatureFlagProvider: makeRemoteFeatureFlagProvider(),
+            betaFeatureToggleProvider: makeBetaFeatureToggleProvider(),
+            catalogSizeLimit: 1000
+        )
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // When
+        let state = try await service.catalogEligibility(for: siteID)
+
+        // Then
+        guard case .ineligible(let reason) = state else {
+            Issue.record("Expected ineligible state")
+            return
+        }
+        guard case .unsupportedWooCommerceVersion(let minimumVersion) = reason else {
+            Issue.record("Expected unsupportedWooCommerceVersion reason")
+            return
+        }
+        #expect(minimumVersion == "10.3.0-beta")
+        #expect(sizeChecker.checkCatalogSizeCallCount == 0)
+    }
+
     // MARK: - Skip Reason Analytics
 
     @Test("POSLocalCatalogIneligibleReason skipReason returns correct analytics string")
@@ -583,5 +747,22 @@ struct POSLocalCatalogEligibilityServiceTests {
         let checkFailed1 = POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error1")
         let checkFailed2 = POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error2")
         #expect(checkFailed1.skipReason == checkFailed2.skipReason)
+    }
+
+    // MARK: - Helpers
+
+    private func makeSystemPlugin(version: String, active: Bool = true) -> SystemPlugin {
+        SystemPlugin(
+            siteID: siteID,
+            plugin: "woocommerce/woocommerce.php",
+            name: "WooCommerce",
+            version: version,
+            versionLatest: "11.0.0",
+            url: "https://woocommerce.com",
+            authorName: "WooCommerce",
+            authorUrl: "https://woocommerce.com",
+            networkActivated: false,
+            active: active
+        )
     }
 }

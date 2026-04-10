@@ -86,6 +86,7 @@ private extension POSProduct {
                 fullDescription: fullDescription,
                 sku: sku,
                 globalUniqueID: globalUniqueID,
+                typeKey: productTypeKey,
                 price: price,
                 downloadable: downloadable,
                 manageStock: manageStock,

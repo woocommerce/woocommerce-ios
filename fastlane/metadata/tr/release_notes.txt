@@ -1,1 +1,0 @@
-Bu güncelleme mağaza yönetimi deneyiminiz genelinde güvenilirliği ve tutarlılığı artırır. Site bağlantısı sorunlarını düzelttik, wp yöneticisi ile gelir uyumunu sağladık, rezervasyonları ve pano davranışlarını düzelttik, iPad düzenlerini iyileştirdik ve ürün çoğaltma boşluklarını düzelttik. Ayrıca her yerde çeşitli kullanıcı arayüzü ve kararlılık düzeltmeleri yaptık.

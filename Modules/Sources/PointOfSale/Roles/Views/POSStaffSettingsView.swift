@@ -58,6 +58,8 @@ private struct POSStaffSettingsLocalView: View {
                     }
 
                     footerText
+
+                    guidedAccessSection
                 }
                 .padding(.horizontal, POSPadding.medium)
             }
@@ -153,6 +155,41 @@ private extension POSStaffSettingsLocalView {
             .foregroundStyle(.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, POSPadding.small)
+    }
+
+    var guidedAccessSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
+            Text(Localization.deviceSecurityTitle)
+                .font(.posBodyMediumBold)
+                .foregroundStyle(Color.posOnSurface)
+
+            HStack(spacing: POSSpacing.small) {
+                Text(Localization.guidedAccessDescription)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(.secondary)
+
+                if UIAccessibility.isGuidedAccessEnabled {
+                    HStack(spacing: POSSpacing.xSmall) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .foregroundStyle(Color.posSuccess)
+                        Text(Localization.guidedAccessActive)
+                            .font(.posBodySmallRegular())
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            Button {
+                if let url = URL(string: "App-prefs:ACCESSIBILITY") {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text(Localization.guidedAccessButton)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, POSPadding.small)
     }
 
     func confirmationBanner(message: String) -> some View {
@@ -535,6 +572,30 @@ private enum Localization {
         "posStaffSettingsView.localAutoLockFooter",
         value: "POS locks when you tap Lock POS from the menu, or automatically after 5 minutes of inactivity.",
         comment: "Footer text explaining how POS locking works in local mode, including auto-lock timeout."
+    )
+
+    static let deviceSecurityTitle = NSLocalizedString(
+        "posStaffSettingsView.deviceSecurityTitle",
+        value: "Device security",
+        comment: "Title for the device security section in POS staff settings."
+    )
+
+    static let guidedAccessDescription = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessDescription",
+        value: "For additional security, enable Guided Access to prevent staff from leaving the app.",
+        comment: "Description of the Guided Access feature in POS staff settings."
+    )
+
+    static let guidedAccessButton = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessButton",
+        value: "Set up Guided Access",
+        comment: "Button to open iOS Settings to set up Guided Access in POS staff settings."
+    )
+
+    static let guidedAccessActive = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessActive",
+        value: "Active",
+        comment: "Status label shown when Guided Access is currently enabled on the device."
     )
 
     // MARK: Remote Mode

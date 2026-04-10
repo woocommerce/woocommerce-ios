@@ -16,7 +16,10 @@ struct POSFloatingControlView: View {
     @State private var showOrders: Bool = false
     @State private var showSettingsOverride: Bool = false
     @State private var settingsOverrideState: POSManagerOverrideState = .awaitingPIN
+    @State private var showExitOverride: Bool = false
+    @State private var exitOverrideState: POSManagerOverrideState = .awaitingPIN
     @Environment(\.posPermissions) private var permissions
+    @Environment(\.dismiss) private var dismiss
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -79,6 +82,21 @@ struct POSFloatingControlView: View {
                 }
             )
         }
+        .posModal(isPresented: $showExitOverride) {
+            POSManagerOverrideView(
+                actionDescription: Localization.exitOverrideDescription,
+                capability: POSCapability.posManageSettings.rawValue,
+                overrideState: $exitOverrideState,
+                onPINEntered: { pin in
+                    Task { @MainActor in
+                        await handleExitOverridePIN(pin)
+                    }
+                },
+                onCancelled: {
+                    showExitOverride = false
+                }
+            )
+        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -88,18 +106,16 @@ struct POSFloatingControlView: View {
 
 private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
-        if !permissions.isLocked {
-            Button {
-                analytics.track(.pointOfSaleExitMenuItemTapped)
-                showExitPOSModal = true
-            } label: {
-                Label(
-                    title: { Text(Localization.exitPointOfSale) },
-                    icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-                )
-            }
-            .accessibilityIdentifier("pos-exit-menu-item")
+        Button {
+            analytics.track(.pointOfSaleExitMenuItemTapped)
+            handleExitPOSTapped()
+        } label: {
+            Label(
+                title: { Text(Localization.exitPointOfSale) },
+                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+            )
         }
+        .accessibilityIdentifier("pos-exit-menu-item")
         if horizontalSizeClass == .regular || featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype) {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)
@@ -146,6 +162,37 @@ private extension POSFloatingControlView {
 // MARK: - Permission Checks
 
 private extension POSFloatingControlView {
+    func handleExitPOSTapped() {
+        guard isRolesEnabled else {
+            showExitPOSModal = true
+            return
+        }
+        if permissions.currentOperator?.isAppAccountHolder == true || !permissions.isLocked {
+            showExitPOSModal = true
+        } else {
+            exitOverrideState = .awaitingPIN
+            showExitOverride = true
+        }
+    }
+
+    @MainActor
+    func handleExitOverridePIN(_ pin: String) async {
+        do {
+            _ = try await permissions.requestManagerApproval(
+                managerPIN: pin,
+                for: .posManageSettings,
+                orderID: nil
+            )
+            exitOverrideState = .approved
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                showExitOverride = false
+                dismiss()
+            }
+        } catch {
+            exitOverrideState = .error(message: error.posOverrideErrorMessage)
+        }
+    }
+
     func requestPermissionForSettings() {
         guard isRolesEnabled else {
             showSettings = true
@@ -241,6 +288,12 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.settingsOverride.description",
             value: "Access POS settings",
             comment: "Description shown in the manager override modal when settings access requires approval."
+        )
+
+        static let exitOverrideDescription = NSLocalizedString(
+            "pointOfSale.floatingButtons.exitOverride.description",
+            value: "Exit Point of Sale",
+            comment: "Description shown in the manager override modal when exiting POS requires admin approval."
         )
     }
 }

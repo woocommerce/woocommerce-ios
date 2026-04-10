@@ -108,7 +108,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return false
         case .wooShippingFedEx:
-            return false
+            return !buildConfig.isProduction
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:

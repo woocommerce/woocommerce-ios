@@ -132,7 +132,7 @@ extension Storage.GeneralStoreSettings {
         lastPOSOpenedDate: NullableCopiableProp<Date> = .copy,
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
-        lastSunsetWarningShownDate: NullableCopiableProp<Date> = .copy
+        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
         let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
@@ -157,7 +157,7 @@ extension Storage.GeneralStoreSettings {
         let lastPOSOpenedDate = lastPOSOpenedDate ?? self.lastPOSOpenedDate
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
-        let lastSunsetWarningShownDate = lastSunsetWarningShownDate ?? self.lastSunsetWarningShownDate
+        let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
 
         return Storage.GeneralStoreSettings(
             storeID: storeID,
@@ -183,7 +183,7 @@ extension Storage.GeneralStoreSettings {
             lastPOSOpenedDate: lastPOSOpenedDate,
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
-            lastSunsetWarningShownDate: lastSunsetWarningShownDate
+            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate
         )
     }
 }

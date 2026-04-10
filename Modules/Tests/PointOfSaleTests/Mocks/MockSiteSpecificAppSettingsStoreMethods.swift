@@ -58,9 +58,9 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
 
     func setFirstPOSCatalogSyncDate(siteID: Int64, date: Date) {}
 
-    func getSunsetWarningLastShownDate(siteID: Int64) -> Date? {
+    func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date? {
         nil
     }
 
-    func setSunsetWarningLastShownDate(siteID: Int64, date: Date) {}
+    func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {}
 }

@@ -26,7 +26,7 @@ struct POSSunsetWarningChecker: POSSunsetWarningChecking {
             return false
         }
 
-        if let lastDismissedDate = siteSettings.getSunsetWarningLastShownDate(siteID: siteID) {
+        if let lastDismissedDate = siteSettings.getSunsetWarningLastDismissedDate(siteID: siteID) {
             let daysSinceDismissal = Calendar.current.dateComponents([.day], from: lastDismissedDate, to: currentDate()).day ?? 0
             if daysSinceDismissal < Constants.dismissalThresholdDays {
                 return false
@@ -48,7 +48,7 @@ struct POSSunsetWarningChecker: POSSunsetWarningChecking {
     }
 
     func recordDismissal(siteID: Int64) {
-        siteSettings.setSunsetWarningLastShownDate(siteID: siteID, date: currentDate())
+        siteSettings.setSunsetWarningLastDismissedDate(siteID: siteID, date: currentDate())
     }
 }
 

@@ -23,8 +23,8 @@ public protocol SiteSpecificAppSettingsStoreMethodsProtocol {
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64) -> Bool
 
     // POS sunset warning
-    func getSunsetWarningLastShownDate(siteID: Int64) -> Date?
-    func setSunsetWarningLastShownDate(siteID: Int64, date: Date)
+    func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date?
+    func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date)
 }
 
 /// Methods for managing site-specific app settings
@@ -149,13 +149,13 @@ extension SiteSpecificAppSettingsStoreMethods {
 }
 
 extension SiteSpecificAppSettingsStoreMethods {
-    public func getSunsetWarningLastShownDate(siteID: Int64) -> Date? {
-        getStoreSettings(for: siteID).lastSunsetWarningShownDate
+    public func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date? {
+        getStoreSettings(for: siteID).lastSunsetWarningDismissedDate
     }
 
-    public func setSunsetWarningLastShownDate(siteID: Int64, date: Date) {
+    public func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {
         let storeSettings = getStoreSettings(for: siteID)
-        let updatedSettings = storeSettings.copy(lastSunsetWarningShownDate: date)
+        let updatedSettings = storeSettings.copy(lastSunsetWarningDismissedDate: date)
         setStoreSettings(settings: updatedSettings, for: siteID)
     }
 }

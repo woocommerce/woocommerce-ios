@@ -40,9 +40,9 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var mockPOSLocalCatalogCellularDataAllowed: Bool?
 
     // POS sunset warning properties
-    var getSunsetWarningLastShownDateCalled = false
-    var setSunsetWarningLastShownDateCalled = false
-    var mockSunsetWarningLastShownDate: Date?
+    var getSunsetWarningLastDismissedDateCalled = false
+    var setSunsetWarningLastDismissedDateCalled = false
+    var mockSunsetWarningLastDismissedDate: Date?
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
@@ -132,13 +132,13 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         return mockPOSLocalCatalogCellularDataAllowed ?? false
     }
 
-    func getSunsetWarningLastShownDate(siteID: Int64) -> Date? {
-        getSunsetWarningLastShownDateCalled = true
-        return mockSunsetWarningLastShownDate
+    func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date? {
+        getSunsetWarningLastDismissedDateCalled = true
+        return mockSunsetWarningLastDismissedDate
     }
 
-    func setSunsetWarningLastShownDate(siteID: Int64, date: Date) {
-        setSunsetWarningLastShownDateCalled = true
-        mockSunsetWarningLastShownDate = date
+    func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {
+        setSunsetWarningLastDismissedDateCalled = true
+        mockSunsetWarningLastDismissedDate = date
     }
 }

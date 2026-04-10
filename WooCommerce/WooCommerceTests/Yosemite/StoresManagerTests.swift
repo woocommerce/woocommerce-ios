@@ -459,27 +459,6 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.numberOfTimesWriteWithAITooltipIsShown])
     }
 
-    /// Verifies that user is logged out when application password regeneration fails if authenticated with wporg
-    ///
-    @MainActor
-    func test_it_deauthenticates_upon_receiving_application_password_generation_failure_notification_when_authenticated_without_wpcom() {
-        // Given
-        let manager = DefaultStoresManager.testingInstance
-        var isLoggedInValues = [Bool]()
-        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
-            isLoggedInValues.append(isLoggedIn)
-        }
-        manager.authenticate(credentials: SessionSettings.wporgCredentials)
-
-        // When
-        let error = ApplicationPasswordUseCaseError.unauthorizedRequest
-        MockNotificationCenter.testingInstance.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
-
-        // Assert
-        XCTAssertFalse(manager.isAuthenticated)
-        XCTAssertEqual(isLoggedInValues, [false, true, false])
-    }
-
     /// Verifies that user is logged out when application password regeneration fails if authenticated with wpcom
     ///
     func test_it_does_not_deauthenticate_upon_receiving_application_password_generation_failure_notification_when_authenticated_with_wpcom() {

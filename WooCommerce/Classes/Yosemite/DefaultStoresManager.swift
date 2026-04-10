@@ -30,10 +30,6 @@ class DefaultStoresManager: StoresManager {
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
 
-    /// Observes application password generation failure notification
-    ///
-    private var applicationPasswordGenerationFailureObserver: NSObjectProtocol?
-
     /// Observes invalid WPCOM token notification
     ///
     private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
@@ -206,25 +202,13 @@ class DefaultStoresManager: StoresManager {
 
         if case .wpcom = credentials {
             listenToWPCOMInvalidWPCOMTokenNotification()
-            applicationPasswordGenerationFailureObserver = nil
             startObservingNetworkNotifications()
         } else {
-            listenToApplicationPasswordGenerationFailureNotification()
             invalidWPCOMTokenNotificationObserver = nil
             stopObservingNetworkNotifications()
         }
 
         return self
-    }
-
-    /// De-authenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
-    ///
-    func listenToApplicationPasswordGenerationFailureNotification() {
-        applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
-                                                                                      object: nil,
-                                                                                      queue: .main) { [weak self] note in
-            _ = self?.deauthenticate()
-        }
     }
 
     /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
@@ -303,7 +287,6 @@ class DefaultStoresManager: StoresManager {
             _ = currentState
         }
 
-        applicationPasswordGenerationFailureObserver = nil
         invalidWPCOMTokenNotificationObserver = nil
         stopObservingNetworkNotifications()
         trackedEligibleSites.removeAll()

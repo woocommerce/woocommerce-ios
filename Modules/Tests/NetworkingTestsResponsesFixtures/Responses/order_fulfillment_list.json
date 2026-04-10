@@ -1,0 +1,29 @@
+[
+  {
+    "id": 42,
+    "entity_type": "WC_Order",
+    "entity_id": "123",
+    "status": "fulfilled",
+    "is_fulfilled": true,
+    "date_updated": "2026-03-18 21:00:00",
+    "date_deleted": null,
+    "meta_data": [
+      { "id": 1, "key": "_date_fulfilled", "value": "2026-03-18 14:30:00" },
+      { "id": 2, "key": "_tracking_number", "value": "1Z999AA10123456784" },
+      { "id": 3, "key": "_shipment_provider", "value": "ups" },
+      { "id": 4, "key": "_provider_name", "value": "" },
+      { "id": 5, "key": "_tracking_url", "value": "https://www.ups.com/track?tracknum=1Z999AA10123456784" },
+      { "id": 6, "key": "_items", "value": [{"item_id": 456, "qty": 2}] }
+    ]
+  },
+  {
+    "id": 43,
+    "entity_type": "WC_Order",
+    "entity_id": "123",
+    "status": "unfulfilled",
+    "is_fulfilled": false,
+    "date_updated": null,
+    "date_deleted": null,
+    "meta_data": []
+  }
+]

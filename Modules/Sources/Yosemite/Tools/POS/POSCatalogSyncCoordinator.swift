@@ -15,7 +15,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - maxAge: Maximum age before a sync is considered stale
     ///   - regenerateCatalog: Whether to always generate a new catalog. If false, a cached catalog will be used if available.
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws
+    func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws
 
     /// Performs an incremental sync if applicable based on sync conditions
     /// - Parameters:
@@ -31,7 +31,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
     ///   - fullSyncMaxAge: Maximum age before a full sync is triggered. If the last full sync is older than this,
     ///                     performs full sync; otherwise, performs incremental sync
     /// - Throws: POSCatalogSyncError.syncAlreadyInProgress if a sync is already running for this site
-    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws
+    func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool) async throws
 
     /// Stream that emits full sync state updates
     var fullSyncStateModel: POSCatalogSyncStateModel { get }
@@ -77,7 +77,7 @@ public protocol POSCatalogSyncCoordinatorProtocol {
 
 public extension POSCatalogSyncCoordinatorProtocol {
     func performFullSync(for siteID: Int64, regenerateCatalog: Bool = false) async throws {
-        try await performFullSyncIfApplicable(for: siteID, maxAge: .zero, regenerateCatalog: regenerateCatalog)
+        try await performFullSyncIfApplicable(for: siteID, maxAge: .zero, regenerateCatalog: regenerateCatalog, isBackgroundSync: false)
     }
 
     func performIncrementalSync(for siteID: Int64) async throws {
@@ -85,10 +85,10 @@ public extension POSCatalogSyncCoordinatorProtocol {
     }
 
     /// Performs a smart sync with a default 24-hour threshold for full sync
-    func performSmartSync(for siteID: Int64) async throws {
+    func performSmartSync(for siteID: Int64, isBackgroundSync: Bool) async throws {
         let twentyFourHours: TimeInterval = 24 * 60 * 60
         let oneHour: TimeInterval = 60 * 60
-        try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours, incrementalSyncMaxAge: oneHour)
+        try await performSmartSync(for: siteID, fullSyncMaxAge: twentyFourHours, incrementalSyncMaxAge: oneHour, isBackgroundSync: isBackgroundSync)
     }
 }
 
@@ -148,7 +148,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.connectivityObserver = connectivityObserver
     }
 
-    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool) async throws {
+    public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
         guard maxAge >= 0 else {
             throw POSCatalogSyncError.negativeMaxAge
         }
@@ -182,7 +182,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let syncTask = Task<POSCatalog, Error> {
             try await fullSyncService.startFullSync(for: siteID,
                                                     regenerateCatalog: regenerateCatalog,
-                                                    allowCellular: allowCellular)
+                                                    allowCellular: allowCellular,
+                                                    isBackgroundSync: isBackgroundSync)
         }
 
         // Store the task for potential cancellation
@@ -246,13 +247,13 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     // When Background App Refresh or foreground app open triggers this, first check if there's a
     // pending catalog generation from a previous session (requires state persistence). If so,
     // poll once for status and download/parse if ready instead of starting a new generation.
-    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval) async throws {
+    public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool) async throws {
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
 
         if Date().timeIntervalSince(lastFullSync) >= fullSyncMaxAge {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing full sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
-            try await performFullSyncIfApplicable(for: siteID, maxAge: fullSyncMaxAge, regenerateCatalog: false)
+            try await performFullSyncIfApplicable(for: siteID, maxAge: fullSyncMaxAge, regenerateCatalog: false, isBackgroundSync: isBackgroundSync)
         } else {
             DDLogInfo("🔄 POSCatalogSyncCoordinator: Performing incremental sync for site \(siteID) (last full sync: \(lastFullSyncUTC) UTC)")
             try await performIncrementalSyncIfApplicable(for: siteID, maxAge: incrementalSyncMaxAge)

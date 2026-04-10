@@ -4,6 +4,8 @@
 -----
 - [*] POS: visual fixes in iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/16898]
 - [*] Add troubleshooting tool for login [https://github.com/woocommerce/woocommerce-ios/pull/16890]
+- [*] Add clear button to search fields [https://github.com/woocommerce/woocommerce-ios/pull/16913]
+- [Internal] Tag CIAB support tickets with commerce_in_a_box for proper routing [https://github.com/woocommerce/woocommerce-ios/pull/16910]
 
 
 24.5

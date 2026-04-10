@@ -167,6 +167,13 @@ struct ItemListView: View {
     @ViewBuilder
     private func listView(itemListType: ItemListType) -> some View {
         VStack(spacing: 0) {
+            if posModel.showSunsetWarning {
+                sunsetWarningBanner
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.medium)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
             // Stale sync warning banner
             if posModel.showStaleSyncWarning {
                 staleSyncWarningBanner
@@ -203,9 +210,30 @@ struct ItemListView: View {
             }
         }
         .task {
-            // Check stale sync status when view appears
             await posModel.checkStaleSyncStatus()
+            await posModel.checkSunsetWarningStatus()
         }
+    }
+
+    @ViewBuilder
+    private var sunsetWarningBanner: some View {
+        POSNoticeView(
+            title: Localization.sunsetWarningTitle,
+            icon: Image(systemName: "info.circle"),
+            onDismiss: {
+                // TODO: WOOMOB-2057
+                //analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
+                withAnimation {
+                    posModel.dismissSunsetWarning()
+                }
+            }, content: {
+                Text(Localization.sunsetWarningDescription)
+                    .font(POSFontStyle.posBodyMediumRegular())
+            })
+            .task {
+                // TODO: WOOMOB-2057
+                //analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
+            }
     }
 
     @ViewBuilder
@@ -447,13 +475,25 @@ private extension ItemListView {
         static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
-            comment: "Title at the top of the Point of Sale product selector screen."
+            comment: "Title at the top of the point of sale product selector screen."
         )
 
         static let couponsTitle = NSLocalizedString(
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let sunsetWarningTitle = NSLocalizedString(
+            "pos.itemlistview.sunsetWarning.title",
+            value: "Update WooCommerce Soon",
+            comment: "Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
+        )
+
+        static let sunsetWarningDescription = NSLocalizedString(
+            "pos.itemlistview.sunsetWarning.description",
+            value: "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
+            comment: "Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
         )
 
         static let staleSyncWarningTitle = NSLocalizedString(

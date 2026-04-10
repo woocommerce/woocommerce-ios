@@ -31,6 +31,10 @@ public class POSAuthStore: Store {
             authenticatePIN(siteID: siteID, pin: pin, registerID: registerID, onCompletion: onCompletion)
         case let .requestApproval(siteID, pin, action, context, onCompletion):
             requestApproval(siteID: siteID, pin: pin, action: action, context: context, onCompletion: onCompletion)
+        case let .fetchStaffStatus(siteID, onCompletion):
+            fetchStaffStatus(siteID: siteID, onCompletion: onCompletion)
+        case let .managePIN(siteID, userID, pin, action, onCompletion):
+            managePIN(siteID: siteID, userID: userID, pin: pin, action: action, onCompletion: onCompletion)
         }
     }
 }
@@ -62,6 +66,33 @@ private extension POSAuthStore {
             do {
                 let result = try await remote.requestApproval(siteID: siteID, pin: pin, action: action, context: context)
                 onCompletion(.success(result))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func fetchStaffStatus(siteID: Int64,
+                          onCompletion: @escaping (Result<[POSStaffUser], Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let users = try await remote.fetchStaffStatus(siteID: siteID)
+                onCompletion(.success(users))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func managePIN(siteID: Int64,
+                   userID: Int64,
+                   pin: String?,
+                   action: String,
+                   onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let success = try await remote.managePIN(siteID: siteID, userID: userID, pin: pin, action: action)
+                onCompletion(.success(success))
             } catch {
                 onCompletion(.failure(error))
             }

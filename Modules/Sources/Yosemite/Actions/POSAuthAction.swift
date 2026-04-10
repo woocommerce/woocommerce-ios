@@ -19,4 +19,17 @@ public enum POSAuthAction: Action {
                          action: String,
                          context: [String: Int64],
                          onCompletion: (Result<POSApprovalResult, Error>) -> Void)
+
+    /// Fetches staff status including PIN setup state for all POS users.
+    ///
+    case fetchStaffStatus(siteID: Int64,
+                          onCompletion: (Result<[POSStaffUser], Error>) -> Void)
+
+    /// Sets or deletes a PIN for a POS staff user.
+    ///
+    case managePIN(siteID: Int64,
+                   userID: Int64,
+                   pin: String?,
+                   action: String,
+                   onCompletion: (Result<Bool, Error>) -> Void)
 }

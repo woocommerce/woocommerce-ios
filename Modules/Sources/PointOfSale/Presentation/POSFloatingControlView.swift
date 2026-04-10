@@ -106,6 +106,18 @@ struct POSFloatingControlView: View {
 
 private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
+        if let op = permissions.currentOperator {
+            Label {
+                Text("\(op.displayName) - \(roleDisplayName(for: op.role))")
+            } icon: {
+                Image(systemName: "person.circle")
+            }
+            .foregroundStyle(.secondary)
+            .disabled(true)
+
+            Divider()
+        }
+
         Button {
             analytics.track(.pointOfSaleExitMenuItemTapped)
             handleExitPOSTapped()
@@ -149,6 +161,19 @@ private extension POSFloatingControlView {
                     )
                 }
             }
+        }
+    }
+
+    func roleDisplayName(for role: String) -> String {
+        switch role {
+        case "pos_cashier":
+            return Localization.roleCashier
+        case "pos_manager":
+            return Localization.roleManager
+        case "administrator", "shop_manager":
+            return Localization.roleAdmin
+        default:
+            return role
         }
     }
 
@@ -294,6 +319,24 @@ private extension POSFloatingControlView {
             "pointOfSale.floatingButtons.exitOverride.description",
             value: "Exit Point of Sale",
             comment: "Description shown in the manager override modal when exiting POS requires admin approval."
+        )
+
+        static let roleCashier = NSLocalizedString(
+            "pointOfSale.floatingButtons.role.cashier",
+            value: "Cashier",
+            comment: "Display name for the cashier role shown in the POS menu."
+        )
+
+        static let roleManager = NSLocalizedString(
+            "pointOfSale.floatingButtons.role.manager",
+            value: "Manager",
+            comment: "Display name for the manager role shown in the POS menu."
+        )
+
+        static let roleAdmin = NSLocalizedString(
+            "pointOfSale.floatingButtons.role.admin",
+            value: "Admin",
+            comment: "Display name for the admin role shown in the POS menu."
         )
     }
 }

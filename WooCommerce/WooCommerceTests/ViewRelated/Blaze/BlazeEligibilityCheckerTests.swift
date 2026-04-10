@@ -131,6 +131,53 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
+    func test_isEligible_is_true_when_site_is_non_ciab_and_other_requirements_met() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        let site = mockSite(isEligibleForBlaze: true,
+                            isJetpackThePluginInstalled: false,
+                            isJetpackConnected: true)
+        let siteIsCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: false,
+        )
+        let blazeEligibilityChecker = BlazeEligibilityChecker(
+            stores: stores,
+            siteCIABEligibilityChecker: siteIsCIABChecker
+        )
+        mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
+
+        // When
+        let isEligible = await blazeEligibilityChecker.isSiteEligible(site)
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    @MainActor
+    func test_isEligible_is_false_when_site_is_ciab_and_other_requirements_met() async {
+        // Given
+        stores.authenticate(credentials: .wpcom(username: "", authToken: "", siteAddress: ""))
+        let site = mockSite(isEligibleForBlaze: true,
+                            isJetpackThePluginInstalled: false,
+                            isJetpackConnected: true)
+        let siteIsCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let blazeEligibilityChecker = BlazeEligibilityChecker(
+            stores: stores,
+            siteCIABEligibilityChecker: siteIsCIABChecker
+        )
+        mockPluginFetch(remotePlugin: .fake().copy(plugin: Self.pluginSlug, active: true))
+
+        // When
+        let isEligible = await blazeEligibilityChecker.isSiteEligible(site)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
     // MARK: - `isProductEligible`
 
     @MainActor

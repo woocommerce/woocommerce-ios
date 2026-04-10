@@ -22,4 +22,14 @@ extension UICollectionViewCell {
     func applyGrayBackgroundStyle() {
         backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
+
+    func applyContentBorderColorOnInterfaceStyleChange(borderColor: @escaping () -> UIColor) {
+        let traits: [UITrait] = [
+            UITraitUserInterfaceStyle.self,
+            UITraitAccessibilityContrast.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+            self.contentView.layer.borderColor = borderColor().cgColor
+        }
+    }
 }

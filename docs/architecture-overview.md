@@ -25,24 +25,24 @@ Throughout the entire architecture design process, we've priorized several key c
 
 2.  **Separation of concerns**
 
-        We've emphasized a clean separation of concerns at the top level, by splitting our app into four targets:
+        We've emphasized a clean separation of concerns at the top level, by splitting our app into a number of modules. The main four are:
 
-        1.  Storage.framework:
+        1.  Storage (`Modules/Sources/Storage`):
             Wraps up all of the actual CoreData interactions, and exposes a framework-agnostic Public API.
 
-        2.  Networking.framework:
+        2.  Networking (`Modules/Sources/Networking`):
             In charge of providing a Swift API around the WooCommerce REST Endpoints.
 
-        3.  Yosemite.framework:
+        3.  Yosemite (`Models/Sources/Yosemite`):
             Encapsulates our Business Logic: is in charge of interacting with the Storage and Networking layers.
 
         4.  WooCommerce:
-            Our main target, which is expected to **only** interact with the entire stack thru the Yosemite.framework.
+            Our main target, which is expected to **only** interact with the entire stack through the Yosemite module.
 
 
 3.  **Immutability**
 
-        For a wide variety of reasons, we've opted for exposing Mutable Entities **ONLY** to our Service Layer (Yosemite.framework).
+        For a wide variety of reasons, we've opted for exposing Mutable Entities **ONLY** to our Service Layer (Yosemite).
         The main app's ViewControllers can gain access to [Remote, Cached] Entities only through ReadOnly instances.
 
         (A) Thread Safe: We're shielded from known CoreData Threading nightmares
@@ -199,9 +199,9 @@ tool, which was designed to simulate Backend Responses.
 
 
 
-## **Yosemite.framework**
+## Yosemite
 
-The [Yosemite framework](YOSEMITE.md) is the keystone of our architecture. Encapsulates all of the Business Logic of our app, and interacts with both the Networking and
+The [Yosemite module](YOSEMITE.md) is the keystone of our architecture. Encapsulates all of the Business Logic of our app, and interacts with both the Networking and
 Storage layers.
 
 More on [Yosemite](YOSEMITE.md)
@@ -255,9 +255,9 @@ for the iOS platform (and our specific requirements):
         callbacks will be executed.
 
 
-## **Hardware.framework**
+## **Hardware**
 
-The Hardware framework offers a Swift API around integrations with external hardware. 
+The Hardware module offers a Swift API around integrations with external hardware.
 key points.
 
 More on [Hardware](HARDWARE.md)

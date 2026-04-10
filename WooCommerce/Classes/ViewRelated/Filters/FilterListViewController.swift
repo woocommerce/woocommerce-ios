@@ -1,10 +1,12 @@
 import Combine
+import SwiftUI
 import UIKit
 import Yosemite
 
 enum FilterSource: String {
     case orders
     case products
+    case booking
 }
 
 protocol HumanReadable {
@@ -82,6 +84,8 @@ final class FilterTypeViewModel {
 enum FilterListValueSelectorConfig {
     // Standard list selector with fixed options
     case staticOptions(options: [FilterType])
+    // Multi-select list selector with fixed options
+    case multiSelectStaticOptions(options: [FilterType])
     // Filter list selector for categories linked to that site id, retrieved dynamically
     case productCategories(siteID: Int64)
     // Filter list selector for order statuses
@@ -92,7 +96,14 @@ enum FilterListValueSelectorConfig {
     case products(siteID: Int64)
     // Filter list selector for customer
     case customer(siteID: Int64)
-
+    // Filter list selector for booking team member
+    case bookingResource(siteID: Int64)
+    // Filter list selector for bookable product
+    case bookableProduct(siteID: Int64)
+    // Filter list selector for booking date time
+    case bookingDateTime
+    // Filter list selector for booking customers
+    case bookingCustomers(siteID: Int64)
 }
 
 /// Contains data for rendering a filter type row.
@@ -264,14 +275,10 @@ private extension FilterListViewController {
             }
 
             let selectedValueAction: (FilterType) -> Void = { [weak self] selectedOption in
-                guard let self = self else {
-                    return
-                }
-                if selectedOption.description != selected.selectedValue.description {
-                    selected.selectedValue = selectedOption
-                    self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                    self.listSelector.reloadData()
-                }
+                guard let self else { return }
+                selected.selectedValue = selectedOption
+                updateUI(numberOfActiveFilters: viewModel.filterTypeViewModels.numberOfActiveFilters)
+                listSelector.reloadData()
             }
 
             switch selected.listSelectorConfig {
@@ -280,9 +287,30 @@ private extension FilterListViewController {
                                                         data: options,
                                                         selected: selected.selectedValue,
                                                         hostViewController: self)
-                self.selectedFilterValueSubscription = command.onItemSelected.sink { selectedValueAction($0) }
+                self.selectedFilterValueSubscription = command.onItemSelected.sink {
+                    selectedValueAction($0)
+                }
                 let staticListSelector = ListSelectorViewController(command: command, tableViewStyle: .plain) { _ in }
                 self.listSelector.navigationController?.pushViewController(staticListSelector, animated: true)
+            case .multiSelectStaticOptions(let options):
+                let selectedItems: [any FilterType] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items
+                    }
+                    return []
+                }()
+
+                let multiSelectView = MultiSelectListView(
+                    title: selected.title,
+                    options: options,
+                    initialSelection: selectedItems,
+                    onSelection: { selectedOptions in
+                        let filterType = MultipleFilterSelection(items: selectedOptions)
+                        selectedValueAction(filterType)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: multiSelectView)
+                self.listSelector.navigationController?.pushViewController(hostingController, animated: true)
             case let .productCategories(siteID):
                 let selectedProductCategory = selected.selectedValue as? ProductCategory
                 let filterProductCategoryListViewController = FilterProductCategoryListViewController(siteID: siteID,
@@ -321,9 +349,8 @@ private extension FilterListViewController {
                         onProductSelectionStateChanged: { [weak self] product, _ in
                             guard let self else { return }
 
-                            selected.selectedValue = FilterOrdersByProduct(id: product.productID, name: product.name)
-                            self.updateUI(numberOfActiveFilters: self.viewModel.filterTypeViewModels.numberOfActiveFilters)
-                            self.listSelector.reloadData()
+                            let filterType = FilterOrdersByProduct(id: product.productID, name: product.name)
+                            selectedValueAction(filterType)
                             self.listSelector.dismiss(animated: true)
                         },
                         onCloseButtonTapped: { [weak self] in
@@ -338,25 +365,95 @@ private extension FilterListViewController {
                 self.listSelector.present(controller, animated: true)
 
             case .customer(let siteID):
+                let selectedCustomerID = (selected.selectedValue as? CustomerFilter)?.id
                 let controller: CustomerSelectorViewController = {
                     return CustomerSelectorViewController(
                         siteID: siteID,
                         configuration: .configurationForOrderFilter,
                         addressFormViewModel: nil,
-                        onCustomerSelected: { [weak self] customer in
-                            selected.selectedValue = CustomerFilter(customer: customer)
-
-                            self?.updateUI(numberOfActiveFilters: self?.viewModel.filterTypeViewModels.numberOfActiveFilters ?? 0)
-                            self?.listSelector.reloadData()
-                            self?.listSelector.dismiss(animated: true)
+                        selectedCustomerID: selectedCustomerID,
+                        onCustomerSelected: { customer in
+                            let filterType = CustomerFilter(customer: customer)
+                            selectedValueAction(filterType)
                         }
                     )
                 }()
 
-                self.listSelector.present(
-                    WooNavigationController(rootViewController: controller),
-                    animated: true
+                self.listSelector.navigationController?.pushViewController(controller, animated: true)
+            case .bookingResource(let siteID):
+                let selectedMembers: [BookingTeamMemberFilter] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items.compactMap { $0 as? BookingTeamMemberFilter }
+                    }
+                    return []
+                }()
+                let syncable = TeamMemberListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    initialSelections: selectedMembers,
+                    onSelection: { resources in
+                        let filterType = MultipleFilterSelection(items: resources)
+                        selectedValueAction(filterType)
+                    }
                 )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+
+            case .bookableProduct(let siteID):
+                let selectedProducts: [BookingProductFilter] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items.compactMap { $0 as? BookingProductFilter }
+                    }
+                    return []
+                }()
+                let syncable = BookableProductListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    initialSelections: selectedProducts,
+                    onSelection: { filters in
+                        let filterType = MultipleFilterSelection(items: filters)
+                        selectedValueAction(filterType)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+            case .bookingDateTime:
+                let selectedDateRange = selected.selectedValue as? BookingDateRangeFilter
+                let dateTimeFilterView = BookingDateTimeFilterView(
+                    startDate: selectedDateRange?.startDate,
+                    endDate: selectedDateRange?.endDate,
+                    onSelection: { startDate, endDate in
+                        let filterType = BookingDateRangeFilter(startDate: startDate, endDate: endDate)
+                        selectedValueAction(filterType)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: dateTimeFilterView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
+
+            case .bookingCustomers(let siteID):
+                let selectedCustomers: [BookingCustomerFilter] = {
+                    if let wrapper = selected.selectedValue as? MultipleFilterSelection {
+                        return wrapper.items.compactMap { $0 as? BookingCustomerFilter }
+                    }
+                    return []
+                }()
+                let syncable = CustomerListSyncable(siteID: siteID)
+                let viewModel = SyncableListSelectorViewModel(syncable: syncable)
+                let memberListSelectorView = SyncableListSelectorView(
+                    viewModel: viewModel,
+                    syncable: syncable,
+                    initialSelections: selectedCustomers,
+                    onSelection: { customers in
+                        let filterType = MultipleFilterSelection(items: customers)
+                        selectedValueAction(filterType)
+                    }
+                )
+                let hostingController = UIHostingController(rootView: memberListSelectorView)
+                listSelector.navigationController?.pushViewController(hostingController, animated: true)
             }
         }
     }
@@ -533,5 +630,33 @@ private extension FilterListViewController {
                 ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
             }
         }
+    }
+}
+
+/// Wrapper type for storing multiple filter selections
+/// This allows arrays of FilterType items to be stored in FilterTypeViewModel.selectedValue
+struct MultipleFilterSelection: FilterType {
+    let items: [any FilterType]
+
+    var isActive: Bool {
+        return !items.isEmpty
+    }
+
+    var description: String {
+        if items.isEmpty {
+            return NSLocalizedString(
+                "multipleFilterSelection.any",
+                value: "Any",
+                comment: "Display label for when no filter selected."
+            )
+        } else if items.count == 1 {
+            return items.first?.description ?? ""
+        } else {
+            return "\(items.count)"
+        }
+    }
+
+    init(items: [any FilterType]) {
+        self.items = items
     }
 }

@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsOnboardingError: View {
     let title: String
@@ -13,34 +14,36 @@ struct InPersonPaymentsOnboardingError: View {
     var secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel? = nil
 
     var body: some View {
-        VStack {
-            Spacer()
+        ScrollableVStack(padding: 0) {
+            VStack {
+                Spacer()
 
-            InPersonPaymentsOnboardingErrorMainContentView(
-                title: title,
-                message: message,
-                secondaryMessage: nil,
-                image: image,
-                supportLink: supportLink
-            )
+                InPersonPaymentsOnboardingErrorMainContentView(
+                    title: title,
+                    message: message,
+                    secondaryMessage: nil,
+                    image: image,
+                    supportLink: supportLink
+                )
 
-            Spacer()
+                Spacer()
 
-            if let buttonViewModel = buttonViewModel {
-                Button(buttonViewModel.text, action: buttonViewModel.action)
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(.bottom, secondaryButtonViewModel == nil ? 24.0 : 0)
-            }
-            if let secondaryButtonViewModel = secondaryButtonViewModel {
-                Button(secondaryButtonViewModel.text, action: secondaryButtonViewModel.action)
-                    .buttonStyle(SecondaryButtonStyle())
-            }
-            if learnMore {
-                InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(paymentGateway: plugin ?? .wcPay,
-                                                                        tappedAnalyticEvent: learnMoreAnalyticEvent))
+                if let buttonViewModel = buttonViewModel {
+                    Button(buttonViewModel.text, action: buttonViewModel.action)
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(.bottom, secondaryButtonViewModel == nil ? 24.0 : 0)
+                }
+                if let secondaryButtonViewModel = secondaryButtonViewModel {
+                    Button(secondaryButtonViewModel.text, action: secondaryButtonViewModel.action)
+                        .buttonStyle(SecondaryButtonStyle())
+                }
+                if learnMore {
+                    InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(paymentGateway: plugin ?? .wcPay,
+                                                                            tappedAnalyticEvent: learnMoreAnalyticEvent))
                     .padding(.vertical, 8)
-            }
-        }.padding()
+                }
+            }.padding()
+        }
     }
 }
 

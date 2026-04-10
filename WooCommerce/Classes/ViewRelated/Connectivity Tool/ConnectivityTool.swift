@@ -41,7 +41,18 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
     }
 
     private func showContactSupportForm() {
-        let supportController = SupportFormHostingController(viewModel: .init())
+        let attachments: [ZendeskAttachment] = {
+            guard let troubleshootingDescription = self.viewModel.troubleshootingDescription(),
+                  let data = troubleshootingDescription.data(using: .utf8) else { return [] }
+            return [
+                ZendeskAttachment(
+                    data: data,
+                    filename: "connectivitytest_log.txt",
+                    contentType: "text/plain"
+                )
+            ]
+        }()
+        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
         supportController.show(from: self)
 
         ServiceLocator.analytics.track(event: .ConnectivityTool.contactSupportTapped())
@@ -57,7 +68,7 @@ struct ConnectivityTool: View {
     struct Card {
         let title: String
         let icon: ConnectivityToolCard.Icon
-        let state: ConnectivityToolCard.State
+        let state: ConnectivityToolCard.ConnectivityState
     }
 
     /// Tool cards.
@@ -103,6 +114,8 @@ struct ConnectivityTool: View {
             .padding()
         }
         .background(Color(uiColor: .listBackground))
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -112,6 +125,11 @@ private extension ConnectivityTool {
                                                 comment: "Subtitle on the connectivity tool screen")
         static let contactSupport = NSLocalizedString("Contact Support",
                                                       comment: "Contact support button in the connectivity tool screen")
+        static let title = NSLocalizedString(
+            "connectivityTool.title",
+            value: "Troubleshoot Connection",
+            comment: "Screen title for the connectivity tool"
+        )
     }
 }
 
@@ -121,7 +139,7 @@ struct ConnectivityToolCard: View {
 
     /// Represents the state of the card.
     ///
-    enum State {
+    enum ConnectivityState {
 
         /// Represents an action to could be performed when presenting an error.
         ///
@@ -129,6 +147,14 @@ struct ConnectivityToolCard: View {
             let title: String
             let systemImage: String
             let action: () -> ()
+            let technicalDetails: String?
+
+            init(title: String, systemImage: String, action: @escaping () -> Void = {}, technicalDetails: String? = nil) {
+                self.title = title
+                self.systemImage = systemImage
+                self.action = action
+                self.technicalDetails = technicalDetails
+            }
         }
 
         case inProgress
@@ -196,11 +222,20 @@ struct ConnectivityToolCard: View {
 
     /// Card state
     ///
-    let state: State
+    let state: ConnectivityState
 
     /// Internal layout values
     ///
     private static let verticalSpacing = 16.0
+    private static let iconSize = 24.0
+
+    @State private var selectedTechnicalDetails: TechnicalDetailsItem?
+
+    init(icon: Icon, title: String, state: ConnectivityState) {
+        self.icon = icon
+        self.title = title
+        self.state = state
+    }
 
     var body: some View {
         VStack(spacing: Self.verticalSpacing) {
@@ -208,6 +243,7 @@ struct ConnectivityToolCard: View {
 
                 icon.buildAsset()
                     .foregroundColor(Color(uiColor: .text))
+                    .frame(width: Self.iconSize, height: Self.iconSize)
 
                 Text(title)
                     .bodyStyle()
@@ -226,14 +262,24 @@ struct ConnectivityToolCard: View {
                 cardMessage(message)
 
                 ForEach(actions, id: \.title) { action in
-                    Button(action.title, systemImage: action.systemImage, action: action.action)
-                        .foregroundColor(Color(uiColor: .accent))
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Button(action.title, systemImage: action.systemImage) {
+                        if let technicalDetails = action.technicalDetails {
+                            selectedTechnicalDetails = TechnicalDetailsItem(details: technicalDetails)
+                        } else {
+                            action.action()
+                        }
+                    }
+                    .foregroundColor(Color(uiColor: .accent))
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
             default:
                 EmptyView()
             }
+        }
+        .sheet(item: $selectedTechnicalDetails) { item in
+            TechnicalDetailsView(technicalDetails: item.details)
+                .presentationDetents([.medium, .large])
         }
     }
 
@@ -256,7 +302,7 @@ struct ConnectivityToolCard: View {
                     [.init(title: "Retry connection", systemImage: "arrow.clockwise", action: {}),
                      .init(title: "Read More", systemImage: "arrow.up.forward.app", action: {})])),
             .init(title: "Fetching your site orders", icon: .system("list.clipboard"), state: .inProgress),
-            .init(title: "No connection issues", icon: .empty, state: .empty("If your data still isn’t loading, contact our support team for assistance."))
+            .init(title: "No connection issues", icon: .empty, state: .empty("If your data still isn't loading, contact our support team for assistance."))
         ])
             .navigationTitle("Connectivity Test")
             .navigationBarTitleDisplayMode(.inline)

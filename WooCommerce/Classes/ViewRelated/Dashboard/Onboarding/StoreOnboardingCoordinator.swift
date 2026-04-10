@@ -5,14 +5,13 @@ import struct Yosemite.Site
 import struct Yosemite.StoreOnboardingTask
 
 /// Coordinates navigation for store onboarding.
-final class StoreOnboardingCoordinator: Coordinator {
+final class StoreOnboardingCoordinator {
     typealias TaskType = StoreOnboardingTask.TaskType
 
     let navigationController: UINavigationController
 
     private var storeDetailsCoordinator: StoreOnboardingStoreDetailsCoordinator?
     private var addProductCoordinator: AddProductCoordinator?
-    private var domainSettingsCoordinator: DomainSettingsCoordinator?
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
     private var wooPaySetupCelebrationViewBottomSheetPresenter: BottomSheetPresenter?
@@ -32,11 +31,15 @@ final class StoreOnboardingCoordinator: Coordinator {
     }
 
     /// Navigates to the fullscreen store onboarding view.
-    func start() {
+    func start(tasks: [StoreOnboardingTaskViewModel]) {
         Task { @MainActor in
+            let viewModel = StoreOnboardingViewModel(
+                siteID: site.siteID,
+                isExpanded: true,
+                taskViewModels: tasks
+            )
             let onboardingNavigationController = UINavigationController()
-            let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
-                                                                                                 isExpanded: true),
+            let onboardingViewController = StoreOnboardingViewHostingController(viewModel: viewModel,
                                                                                 navigationController: onboardingNavigationController,
                                                                                 site: site)
             onboardingNavigationController.pushViewController(onboardingViewController, animated: false)
@@ -52,8 +55,6 @@ final class StoreOnboardingCoordinator: Coordinator {
             showStoreDetails()
         case .addFirstProduct:
             addProduct()
-        case .customizeDomains:
-            showCustomDomains()
         case .launchStore:
             launchStore(task: task)
         case .woocommercePayments:
@@ -88,19 +89,6 @@ private extension StoreOnboardingCoordinator {
             self?.onTaskCompleted(.addFirstProduct)
         }
         coordinator.start()
-    }
-
-    func showCustomDomains() {
-        let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding,
-                                                    site: site,
-                                                    navigationController: navigationController,
-                                                    onDomainPurchased: { [weak self] in
-            self?.onTaskCompleted(.customizeDomains)
-        })
-        self.domainSettingsCoordinator = coordinator
-        Task { @MainActor in
-            coordinator.start()
-        }
     }
 
     func launchStore(task: StoreOnboardingTask) {
@@ -175,8 +163,8 @@ private extension StoreOnboardingCoordinator {
     /// Navigates the user to the plan subscription details view.
     ///
     func showPlanView() {
-        let subscriptionController = SubscriptionsHostingController(siteID: site.siteID)
-        navigationController.show(subscriptionController, sender: self)
+        // No longer needed.
+        // To be removed with continuation of 12401-gh
     }
 }
 

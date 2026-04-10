@@ -2,6 +2,7 @@ import XCTest
 import Foundation
 @testable import WooCommerce
 @testable import Networking
+@testable import NetworkingCore
 
 
 /// Note+Woo Tests

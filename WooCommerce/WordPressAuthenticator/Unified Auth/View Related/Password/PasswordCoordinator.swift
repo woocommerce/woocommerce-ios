@@ -47,7 +47,8 @@ private extension PasswordCoordinator {
 
     /// After a magic link is successfully sent, navigates the user to the requested screen.
     func showMagicLinkRequested() {
-        let vc = MagicLinkRequestedViewController(email: loginFields.username) { [weak self] in
+        let vc = MagicLinkRequestedViewController(email: loginFields.username,
+                                                  fallbackAction: .password) { [weak self] in
             self?.showPassword()
         }
         navigationController?.pushViewController(vc, animated: true)

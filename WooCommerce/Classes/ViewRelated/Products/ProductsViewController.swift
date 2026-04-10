@@ -195,10 +195,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @Published private var dataLoadingError: Error?
 
-    /// Store plan banner presentation handler.
-    ///
-    private var storePlanBannerPresenter: StorePlanBannerPresenter?
-
     private var subscriptions: Set<AnyCancellable> = []
 
     private var addProductCoordinator: AddProductCoordinator?
@@ -250,7 +246,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureToolbar()
         configureScrollWatcher()
         configurePaginationTracker()
-        configureStorePlanBannerPresenter()
         registerTableViewCells()
 
         showTopBannerViewIfNeeded()
@@ -299,7 +294,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
-        guard let firstProduct = resultsController.fetchedObjects.first else {
+        guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
             return
         }
         didSelectProduct(product: firstProduct)
@@ -307,6 +302,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     func startProductCreation() {
         addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
+    }
+
+    func resync() {
+        tableView.reloadData()
+        paginationTracker.resync()
     }
 }
 
@@ -802,14 +802,6 @@ private extension ProductsViewController {
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
-
-    func configureStorePlanBannerPresenter() {
-        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
-                                                                  containerView: view,
-                                                                  siteID: siteID) { [weak self] bannerHeight in
-            self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
-        }
-    }
 }
 
 // MARK: - Updates
@@ -1026,7 +1018,7 @@ private extension ProductsViewController {
                     .map { $0.productOrVariationID.id }
 
                 var indexPathsToReload: [IndexPath] = []
-                for (index, object) in resultsController.fetchedObjects.enumerated() {
+                for (index, object) in resultsController.listItems.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
                         indexPathsToReload.append(IndexPath(row: index, section: 0))
                     }
@@ -1114,8 +1106,7 @@ extension ProductsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.object(at: indexPath)
-
+        let product = resultsController.listItem(at: indexPath)
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
         cell.update(viewModel: viewModel, imageService: imageService)
@@ -1149,7 +1140,9 @@ extension ProductsViewController: UITableViewDelegate {
             updatedSelectedItems()
         } else {
             ServiceLocator.analytics.track(event:
-                    .Products.productListProductTapped(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                    .Products.productListProductTapped(
+                        productType: product.productType,
+                        horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
 
             didSelectProduct(product: product)
         }
@@ -1228,11 +1221,9 @@ extension ProductsViewController: UITableViewDelegate {
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
         guard isSplitViewEnabled else {
-            ProductDetailsFactory.productDetails(product: product,
-                                                 presentationStyle: .navigationStack,
-                                                 forceReadOnly: false) { [weak self] viewController in
-                self?.navigationController?.pushViewController(viewController, animated: true)
-            }
+            let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
+                                                                               isReadOnly: false)
+            navigationController?.pushViewController(viewController, animated: true)
             return
         }
         navigateToContent(.productForm(product: product))
@@ -1275,7 +1266,11 @@ private extension ProductsViewController {
 
     @objc func filterButtonTapped() {
         ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: .productsTab))
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID)
+        let viewModel = FilterProductListViewModel(
+            filters: filters,
+            siteID: siteID,
+            site: ServiceLocator.stores.sessionManager.defaultSite
+        )
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListShowProductsButtonTapped(source: .productsTab, filters: filters))
             self?.filters = filters
@@ -1315,9 +1310,6 @@ private extension ProductsViewController {
         let config = createFilterConfig()
         displayEmptyStateViewController(emptyStateViewController)
         emptyStateViewController.configure(config)
-
-        // Make sure the banner is on top of the empty state view
-        storePlanBannerPresenter?.bringBannerToFront()
     }
 
     func createFilterConfig() ->  EmptyStateViewController.Config {
@@ -1707,5 +1699,22 @@ private extension ProductsViewController {
             comment: "Message of the notice when inventory is updated successfully. Style may vary based on store settings." +
             "Reads like: 'Quantity updated: 2,345'"
         )
+    }
+}
+
+/// This is a workaround since the batch product update feature makes it hard
+/// to convert the results controller to GenericResultsController<StorageProduct, ProductListItem>.
+/// We should consider updating batch update to accept product IDs and clean this up.
+///
+extension ResultsController<StorageProduct> {
+    var listItems: [ProductListItem] {
+        controller.fetchedObjects?.compactMap { mutableObject in
+            ProductListItem(storageProduct: mutableObject)
+        } ?? []
+    }
+
+    func listItem(at indexPath: IndexPath) -> ProductListItem {
+        let mutableObject = controller.object(at: indexPath)
+        return ProductListItem(storageProduct: mutableObject)
     }
 }

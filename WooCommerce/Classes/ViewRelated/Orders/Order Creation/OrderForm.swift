@@ -90,7 +90,9 @@ private extension OrderFormHostingController {
     }
 
     func discardOrderAndDismiss() {
-        viewModel.discardOrder()
+        if viewModel.flow == .creation {
+            viewModel.discardOrder()
+        }
         dismiss(animated: true)
     }
 
@@ -122,64 +124,57 @@ struct OrderFormPresentationWrapper: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     var body: some View {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            AdaptiveModalContainer(
-                primaryView: { presentProductSelector in
-                    OrderForm(dismissHandler: dismissHandler,
-                              flow: flow,
-                              viewModel: viewModel,
-                              presentProductSelector: presentProductSelector)
+        AdaptiveModalContainer(
+            primaryView: { presentProductSelector in
+                OrderForm(dismissHandler: dismissHandler,
+                          flow: flow,
+                          viewModel: viewModel,
+                          presentProductSelector: presentProductSelector)
+                // When we're modal-on-modal, show the notices on both screens so they're definitely visible
+                .if(horizontalSizeClass == .compact, transform: {
+                    $0
+                        .notice($viewModel.autodismissableNotice)
+                        .notice($viewModel.fixedNotice, autoDismiss: false)
+                })
+            },
+            secondaryView: { isShowingProductSelector in
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorNavigationView(configuration: .loadConfiguration(for: horizontalSizeClass),
+                                        isPresented: isShowingProductSelector,
+                                        viewModel: productSelectorViewModel)
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
                     // When we're modal-on-modal, show the notices on both screens so they're definitely visible
                     .if(horizontalSizeClass == .compact, transform: {
                         $0
                             .notice($viewModel.autodismissableNotice)
                             .notice($viewModel.fixedNotice, autoDismiss: false)
                     })
-                },
-                secondaryView: { isShowingProductSelector in
-                    if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                        ProductSelectorView(configuration: .loadConfiguration(for: horizontalSizeClass),
-                                            isPresented: isShowingProductSelector,
-                                            viewModel: productSelectorViewModel)
-                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                            ConfigurableBundleProductView(viewModel: viewModel)
-                        }
-                        // When we're modal-on-modal, show the notices on both screens so they're definitely visible
-                        .if(horizontalSizeClass == .compact, transform: {
-                            $0
-                                .notice($viewModel.autodismissableNotice)
-                                .notice($viewModel.fixedNotice, autoDismiss: false)
-                        })
+                }
+            },
+            dismissBarButton: {
+                Button {
+                    dismissHandler()
+                } label: {
+                    switch dismissLabel {
+                    case .cancelButton:
+                        Text(OrderForm.Localization.cancelButton)
+                    case .backButton:
+                        Image(systemName: "chevron.backward")
+                            .headlineLinkStyle()
                     }
-                },
-                dismissBarButton: {
-                    Button {
-                        // By only calling the dismissHandler here, we wouldn't sync the selected items on dismissal
-                        // this is normally done via a callback through the ProductSelector's onCloseButtonTapped(),
-                        // but on split views we move this responsibility to the AdaptiveModalContainer
-                        viewModel.syncOrderItemSelectionStateOnDismiss()
-                        dismissHandler()
-                    } label: {
-                        switch dismissLabel {
-                            case .cancelButton:
-                                Text(OrderForm.Localization.cancelButton)
-                            case .backButton:
-                                Image(systemName: "chevron.backward")
-                                    .headlineLinkStyle()
-                        }
-                    }
-                    .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
-                },
-                isShowingSecondaryView: $viewModel.isProductSelectorPresented)
-            // When we're side-by-side, show the notices over the combined screen
-            .if(horizontalSizeClass == .regular, transform: {
-                $0
-                    .notice($viewModel.autodismissableNotice)
-                    .notice($viewModel.fixedNotice, autoDismiss: false)
-            })
-        } else {
-            OrderForm(dismissHandler: dismissHandler, flow: flow, viewModel: viewModel, presentProductSelector: nil)
-        }
+                }
+                .accessibilityIdentifier(OrderForm.Accessibility.cancelButtonIdentifier)
+            },
+            isShowingSecondaryView: $viewModel.isProductSelectorPresented,
+            isSecondaryViewInteractiveDismissable: false)
+        // When we're side-by-side, show the notices over the combined screen
+        .if(horizontalSizeClass == .regular, transform: {
+            $0
+                .notice($viewModel.autodismissableNotice)
+                .notice($viewModel.fixedNotice, autoDismiss: false)
+        })
     }
 }
 
@@ -228,6 +223,8 @@ struct OrderForm: View {
 
     @State private var shouldShowGiftCardForm = false
 
+    @State private var bannerWidth: CGFloat = 0
+
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -241,10 +238,16 @@ struct OrderForm: View {
             .onAppear {
                 updateSelectionSyncApproach(for: presentationStyle)
             }
-            .onChange(of: horizontalSizeClass) { _ in
+            .onChange(of: horizontalSizeClass) {
                 viewModel.saveInFlightOrderNotes()
                 viewModel.saveInflightCustomerDetails()
             }
+            .background(
+                GeometryReader { geometryProxy in
+                    Color.clear
+                        .preference(key: WidthPreferenceKey.self, value: geometryProxy.size.width)
+                }
+            )
     }
 
     private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
@@ -257,142 +260,141 @@ struct OrderForm: View {
     }
 
     @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
-        GeometryReader { geometry in
-            ScrollViewReader { scroll in
-                ScrollView {
-                    Group {
-                        VStack(spacing: Layout.noSpacing) {
-                            Spacer(minLength: Layout.sectionSpacing)
+        ScrollViewReader { scroll in
+            ScrollView {
+                Group {
+                    VStack(spacing: Layout.noSpacing) {
+                        Spacer(minLength: Layout.sectionSpacing)
 
+                        if viewModel.shouldShowNonEditableIndicators {
                             Group {
                                 Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
-                                NonEditableOrderBanner(width: geometry.size.width)
+                                NonEditableOrderBanner(width: bannerWidth)
                             }
-                            .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                        }
 
-                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                                Group {
-                                    OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                }
-                                .renderedIf(flow == .editing)
-                            } else {
-                                OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
-                                Spacer(minLength: Layout.sectionSpacing)
-                            }
+                        Group {
+                            OrderStatusSection(viewModel: viewModel,
+                                               topDivider: !viewModel.shouldShowNonEditableIndicators,
+                                               isEditButtonVisible: viewModel.isOrderStatusEditingEnabled)
+                            Spacer(minLength: Layout.sectionSpacing)
+                        }
+                        .renderedIf(flow == .editing)
 
-                            ProductsSection(scroll: scroll,
-                                            flow: flow,
-                                            presentProductSelector: presentProductSelector,
-                                            viewModel: viewModel,
-                                            navigationButtonID: $navigationButtonID,
-                                            isLoading: isLoading)
+                        ProductsSection(scroll: scroll,
+                                        flow: flow,
+                                        presentProductSelector: presentProductSelector,
+                                        viewModel: viewModel,
+                                        navigationButtonID: $navigationButtonID,
+                                        isLoading: isLoading)
+                        .disabled(viewModel.shouldShowNonEditableIndicators)
+
+                        Group {
+                            Divider()
+                            Spacer(minLength: Layout.sectionSpacing)
+                            Divider()
+                        }
+                        .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+
+                        OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
-                            Group {
-                                Divider()
-                                Spacer(minLength: Layout.sectionSpacing)
-                                Divider()
-                            }
-                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+                        Divider()
 
-                            OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
+                        Spacer(minLength: Layout.sectionSpacing)
+
+                        Group {
+                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
-
-                            Divider()
-
-                            Spacer(minLength: Layout.sectionSpacing)
-
-                            Group {
-                                OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
-                                Spacer(minLength: Layout.sectionSpacing)
-                            }
-                            .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
-
-                            Group {
-                                OrderCouponSectionView(viewModel: viewModel, couponViewModel: viewModel.couponLineViewModel)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
-                                Spacer(minLength: Layout.sectionSpacing)
-                            }
-                            .renderedIf(viewModel.couponLineViewModel.couponLineRows.isNotEmpty)
-
-                            AddOrderComponentsSection(
-                                viewModel: viewModel.paymentDataViewModel,
-                                shippingLineViewModel: viewModel.shippingLineViewModel,
-                                couponLineViewModel: viewModel.couponLineViewModel,
-                                shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                                shouldShowGiftCardForm: $shouldShowGiftCardForm)
-                            .addingTopAndBottomDividers()
-                            .disabled(viewModel.shouldShowNonEditableIndicators)
-
                             Spacer(minLength: Layout.sectionSpacing)
                         }
+                        .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
-                        VStack(spacing: Layout.noSpacing) {
-                            Group {
-                                NewTaxRateSection(text: viewModel.taxRateRowText) {
-                                    viewModel.onSetNewTaxRateTapped()
-                                    switch viewModel.taxRateRowAction {
-                                    case .storedTaxRateSheet:
-                                        shouldShowStoredTaxRateSheet = true
-                                        viewModel.onStoredTaxRateBottomSheetAppear()
-                                    case .taxSelector:
-                                        shouldShowNewTaxRateSelector = true
-                                    }
-
-                                }
-                                .sheet(isPresented: $shouldShowNewTaxRateSelector) {
-                                    NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
-                                                                                                  onTaxRateSelected: { taxRate in
-                                        viewModel.onTaxRateSelected(taxRate)
-                                    }),
-                                                           taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
-                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
-                                                           storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
-                                }
-                                .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
-                                    if #available(iOS 16.0, *) {
-                                        storedTaxRateBottomSheetContent
-                                            .presentationDetents([.medium])
-                                            .presentationDragIndicator(.visible)
-                                    } else {
-                                        storedTaxRateBottomSheetContent
-                                    }
-                                }
-
-                                Spacer(minLength: Layout.sectionSpacing)
-                            }
-                            .renderedIf(viewModel.shouldShowNewTaxRateSection)
-
-                            Divider()
-
-                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) {
-                                OrderCustomerSection(viewModel: viewModel.customerSectionViewModel)
-                            } else {
-                                LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
-                            }
-
-                            Group {
-                                Divider()
-
-                                Spacer(minLength: Layout.sectionSpacing)
-
-                                Divider()
-                            }
-                            .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
-
-                            CustomerNoteSection(viewModel: viewModel)
-
-                            Divider()
+                        Group {
+                            OrderCouponSectionView(viewModel: viewModel, couponViewModel: viewModel.couponLineViewModel)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                            Spacer(minLength: Layout.sectionSpacing)
                         }
+                        .renderedIf(viewModel.couponLineViewModel.couponLineRows.isNotEmpty)
+
+                        AddOrderComponentsSection(
+                            viewModel: viewModel.paymentDataViewModel,
+                            shippingLineViewModel: viewModel.shippingLineViewModel,
+                            couponLineViewModel: viewModel.couponLineViewModel,
+                            shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
+                            shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                        .addingTopAndBottomDividers()
+                        .disabled(viewModel.shouldShowNonEditableIndicators)
+
+                        Spacer(minLength: Layout.sectionSpacing)
                     }
-                    .disabled(viewModel.disabled)
+
+                    VStack(spacing: Layout.noSpacing) {
+                        Group {
+                            NewTaxRateSection(text: viewModel.taxRateRowText) {
+                                viewModel.onSetNewTaxRateTapped()
+                                switch viewModel.taxRateRowAction {
+                                case .storedTaxRateSheet:
+                                    shouldShowStoredTaxRateSheet = true
+                                    viewModel.onStoredTaxRateBottomSheetAppear()
+                                case .taxSelector:
+                                    shouldShowNewTaxRateSelector = true
+                                }
+
+                            }
+                            .sheet(isPresented: $shouldShowNewTaxRateSelector) {
+                                NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
+                                                                                              onTaxRateSelected: { taxRate in
+                                    viewModel.onTaxRateSelected(taxRate)
+                                }),
+                                                       taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
+                                                       onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
+                                                       storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
+                            }
+                            .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                if #available(iOS 16.0, *) {
+                                    storedTaxRateBottomSheetContent
+                                        .presentationDetents([.medium])
+                                        .presentationDragIndicator(.visible)
+                                } else {
+                                    storedTaxRateBottomSheetContent
+                                }
+                            }
+
+                            Spacer(minLength: Layout.sectionSpacing)
+                        }
+                        .renderedIf(viewModel.shouldShowNewTaxRateSection)
+
+                        Divider()
+
+                        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionsInOrderCreationCustomers) {
+                            OrderCustomerSection(viewModel: viewModel.customerSectionViewModel)
+                        } else {
+                            LegacyOrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                        }
+
+                        Group {
+                            Divider()
+
+                            Spacer(minLength: Layout.sectionSpacing)
+
+                            Divider()
+                        }
+                        .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
+
+                        CustomerNoteSection(viewModel: viewModel)
+
+                        Divider()
+                    }
                 }
-                .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
-                .background(Color(.listBackground).ignoresSafeArea())
-                .ignoresSafeArea(.container, edges: [.horizontal])
+                .disabled(viewModel.disabled)
             }
+            .accessibilityIdentifier(Accessibility.orderFormScrollViewIdentifier)
+            .background(Color(.listBackground).ignoresSafeArea())
+            .ignoresSafeArea(.container, edges: [.horizontal])
+        }
+        .onPreferenceChange(WidthPreferenceKey.self) { newWidth in
+            bannerWidth = newWidth
         }
         .safeAreaInset(edge: .bottom) {
             VStack {
@@ -431,13 +433,6 @@ struct OrderForm: View {
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(Localization.cancelButton) {
-                    dismissHandler()
-                }
-                .accessibilityIdentifier(Accessibility.cancelButtonIdentifier)
-                .renderedIf(viewModel.shouldShowCancelButton)
-            }
             ToolbarItem(placement: .confirmationAction) {
                 switch viewModel.navigationTrailingItem {
                 case .create:
@@ -464,13 +459,6 @@ struct OrderForm: View {
         .onTapGesture {
             shouldShowInformationalCouponTooltip = false
         }
-        // Avoids Notice duplication when the feature flag is enabled. These can be removed when the flag is removed.
-        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
-            $0.notice($viewModel.autodismissableNotice)
-        })
-        .if(!ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm), transform: {
-            $0.notice($viewModel.fixedNotice, autoDismiss: false)
-        })
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -642,8 +630,7 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: layoutVerticalSpacing) {
-                if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
-                    && presentationStyle == .sideBySide
+                if presentationStyle == .sideBySide
                     && !viewModel.shouldShowProductsSectionHeader {
                     HStack() {
                         scanProductRow
@@ -666,15 +653,6 @@ private struct ProductsSection: View {
                         if let presentProductSelector {
                             Button(action: {
                                 presentProductSelector()
-                            }) {
-                                Image(uiImage: .plusImage)
-                            }
-                            .accessibilityLabel(OrderForm.Localization.addProductButtonAccessibilityLabel)
-                            .id(addProductButton)
-                            .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                        } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                            Button(action: {
-                                viewModel.toggleProductSelectorVisibility()
                             }) {
                                 Image(uiImage: .plusImage)
                             }
@@ -712,13 +690,6 @@ private struct ProductsSection: View {
                         .id(addProductButton)
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                         .buttonStyle(PlusButtonStyle())
-                    } else if !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                        Button(OrderForm.Localization.addProducts) {
-                            viewModel.toggleProductSelectorVisibility()
-                        }
-                        .id(addProductButton)
-                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
-                        .buttonStyle(PlusButtonStyle())
                     }
                     scanProductButton
                         .renderedIf(presentationStyle != .sideBySide)
@@ -732,27 +703,6 @@ private struct ProductsSection: View {
             .sheet(item: $viewModel.configurableScannedProductViewModel) { configurableScannedProductViewModel in
                 ConfigurableBundleProductView(viewModel: configurableScannedProductViewModel)
             }
-            .sheet(isPresented: Binding<Bool>(
-                get: { viewModel.isProductSelectorPresented && !viewModel.sideBySideViewFeatureFlagEnabled },
-                set: { newValue in
-                    viewModel.isProductSelectorPresented = newValue
-                }
-            ), onDismiss: {
-                scroll.scrollTo(addProductButton)
-            }, content: {
-                if let productSelectorViewModel = viewModel.productSelectorViewModel {
-                    ProductSelectorNavigationView(
-                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                        isPresented: $viewModel.isProductSelectorPresented,
-                        viewModel: productSelectorViewModel)
-                    .onDisappear {
-                        navigationButtonID = UUID()
-                    }
-                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                        ConfigurableBundleProductView(viewModel: viewModel)
-                    }
-                }
-            })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(
                     title: Text(OrderForm.Localization.permissionsTitle),
@@ -814,7 +764,7 @@ private extension ProductsSection {
                 ProgressView()
             } else {
                 HStack() {
-                    Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                    Image(systemName: "barcode.viewfinder")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: Layout.scanImageSize * scale)
@@ -840,7 +790,7 @@ private extension ProductsSection {
             if showAddProductViaSKUScannerLoading {
                 ProgressView()
             } else {
-                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                Image(systemName: "barcode.viewfinder")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.scanImageSize * scale)
@@ -923,6 +873,15 @@ private extension OrderForm {
         static let addProductButtonIdentifier = "new-order-add-product-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
         static let orderFormScrollViewIdentifier = "order-form-scroll-view"
+    }
+}
+
+private extension OrderForm {
+    struct WidthPreferenceKey: PreferenceKey {
+        static var defaultValue: CGFloat = .zero
+        static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+            value = max(value, nextValue())
+        }
     }
 }
 

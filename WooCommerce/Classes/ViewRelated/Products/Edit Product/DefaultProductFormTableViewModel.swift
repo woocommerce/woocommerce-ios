@@ -293,8 +293,7 @@ private extension DefaultProductFormTableViewModel {
             inventoryDetails.append(String.localizedStringWithFormat(Localization.skuFormat, sku))
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport),
-            let globalUniqueID = product.globalUniqueID, !globalUniqueID.isEmpty {
+        if let globalUniqueID = product.globalUniqueID, !globalUniqueID.isEmpty {
             inventoryDetails.append(String.localizedStringWithFormat(Localization.globalUniqueIDFormat, globalUniqueID))
         }
 
@@ -453,8 +452,7 @@ private extension DefaultProductFormTableViewModel {
             inventoryDetails.append(String.localizedStringWithFormat(Localization.skuFormat, sku))
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.productGlobalUniqueIdentifierSupport),
-            let globalUniqueID = product.globalUniqueID, !globalUniqueID.isEmpty {
+        if let globalUniqueID = product.globalUniqueID, !globalUniqueID.isEmpty {
             inventoryDetails.append(String.localizedStringWithFormat(Localization.globalUniqueIDFormat, globalUniqueID))
         }
 

@@ -1,0 +1,7 @@
+{
+  "code": "status_error",
+  "message": "Successful refund, but there was an error getting label status: Error message from get_status",
+  "data": {
+    "message": "error message from get_status"
+  }
+}

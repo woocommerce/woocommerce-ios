@@ -7,85 +7,68 @@ struct AddCustomAmountView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
-
-                        if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
-                            Group {
-                                Text(Localization.amountTitle)
-                                    .font(.title3)
-                                    .foregroundColor(Color(.textSubtle))
-
-                                FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel)
-
-                                Divider()
-                                    .padding(.bottom, Layout.mainVerticalSpacing)
-                            }
-                        }
-
-                        if let percentageViewModel = viewModel.percentageViewModel {
-                            AddCustomAmountPercentageView(viewModel: percentageViewModel)
-                                .padding(.bottom, Layout.mainVerticalSpacing)
-                        }
-
-                        Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
-                            .font(.title3)
-                            .padding(.bottom, Layout.mainVerticalSpacing)
-
-                        Text(Localization.nameTitle)
+        NavigationStack {
+            List {
+                if let formattableAmountTextFieldViewModel = viewModel.formattableAmountTextFieldViewModel {
+                    VStack(alignment: .leading) {
+                        Text(Localization.amountTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
-
-                        TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
-                            .secondaryTitleStyle()
-                            .foregroundColor(Color(.textSubtle))
-                            .padding(.bottom, Layout.mainVerticalSpacing)
-
-                        Button(Localization.deleteButtonTitle) {
-                            viewModel.deleteButtonPressed()
-                            dismiss()
-                        }
-                        .foregroundColor(.init(uiColor: .error))
-                        .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
-                        .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
-                        .renderedIf(viewModel.shouldShowDeleteButton)
-
-                        Spacer()
-
-                        Button(viewModel.doneButtonTitle) {
-                            viewModel.doneButtonPressed()
-                            dismiss()
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                        .disabled(!viewModel.shouldEnableDoneButton)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
+                        FormattableAmountTextField(viewModel: formattableAmountTextFieldViewModel)
                     }
-                    .padding()
-                    .navigationTitle(Localization.navigationTitle)
-                    .navigationBarTitleDisplayMode(.inline)
-                    .frame(minHeight: geometry.size.height)
-                    .navigationBarItems(leading: Button(action: {
-                        dismiss()
-                    }) {
-                        Text(Localization.navigationCancelButtonTitle)
-                    })
                 }
-                .frame(width: geometry.size.width)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
-                .onTapGesture {
-                    dismissKeyboard()
+
+                if let percentageViewModel = viewModel.percentageViewModel {
+                    AddCustomAmountPercentageView(viewModel: percentageViewModel)
+                }
+
+                Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
+                    .font(.title3)
+
+                VStack(alignment: .leading) {
+                    Text(Localization.nameTitle)
+                        .font(.title3)
+                        .foregroundColor(Color(.textSubtle))
+                    TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
+                        .secondaryTitleStyle()
+                        .foregroundColor(Color(.textSubtle))
+                }
+
+                Button(Localization.deleteButtonTitle) {
+                    viewModel.deleteButtonPressed()
+                    dismiss()
+                }
+                .foregroundColor(.init(uiColor: .error))
+                .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
+                .listRowSeparator(.hidden, edges: .bottom)
+                .renderedIf(viewModel.shouldShowDeleteButton)
+            }
+            .listStyle(.plain)
+            .safeAreaInset(edge: .bottom) {
+                Button(viewModel.doneButtonTitle) {
+                    viewModel.doneButtonPressed()
+                    dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(!viewModel.shouldEnableDoneButton)
+                .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
+                .padding()
+                .background(Color(.systemBackground))
+            }
+            .navigationTitle(Localization.navigationTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text(Localization.navigationCancelButtonTitle)
+                    }
                 }
             }
         }
         .wooNavigationBarStyle()
-    }
-}
-
-private extension AddCustomAmountView {
-    func dismissKeyboard() {
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
@@ -104,10 +87,10 @@ private extension AddCustomAmountView {
                                                          comment: "Button title to delete the custom amount on the edit custom amount view in orders.")
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
-                                                                comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
+                                                                   comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
         static let chargeTaxesToggleTitle = NSLocalizedString("addCustomAmountView.chargeTaxesToggle.title",
-                                                             value: "Charge Taxes",
-                                                             comment: "Title for the charge taxes toggle in the custom amounts screen.")
+                                                              value: "Charge Taxes",
+                                                              comment: "Title for the charge taxes toggle in the custom amounts screen.")
     }
 
     enum AccessibilityIdentifiers {

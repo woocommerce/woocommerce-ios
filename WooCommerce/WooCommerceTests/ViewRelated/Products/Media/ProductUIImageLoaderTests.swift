@@ -132,7 +132,7 @@ final class ProductUIImageLoaderTests: XCTestCase {
         let mockPHAssetImageLoader = MockPHAssetImageLoader(imagesByAsset: [:])
         let mockImageService = MockImageService()
         mockImageService.whenRetrieveImageFromCache(thenReturn: nil)
-        mockImageService.whenDownloadImage(thenThrow: ImageServiceError.other(error: MockError()))
+        mockImageService.whenDownloadImage(thenThrow: ImageServiceError.other(error: MockError.anyError))
         let imageLoader = DefaultProductUIImageLoader(imageService: mockImageService,
                                                       phAssetImageLoaderProvider: { mockPHAssetImageLoader })
         let productImage = ProductImage(imageID: mockProductImageID,
@@ -165,5 +165,3 @@ final class ProductUIImageLoaderTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 }
-
-private class MockError: Error {}

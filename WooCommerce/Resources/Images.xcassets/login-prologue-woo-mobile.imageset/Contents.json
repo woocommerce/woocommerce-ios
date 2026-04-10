@@ -1,17 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "prologue-illustration.pdf",
-      "idiom" : "universal",
-      "language-direction" : "left-to-right"
+      "filename" : "login-prologue-woo-mobile.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "localizable" : true,
-    "preserves-vector-representation" : true
   }
 }

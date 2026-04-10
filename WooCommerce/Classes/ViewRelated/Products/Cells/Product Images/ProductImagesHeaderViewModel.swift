@@ -11,8 +11,24 @@ final class ProductImagesHeaderViewModel {
     /// Whether we should scroll to the beginning of the collection view.
     let shouldScrollToStart: Bool
 
-    // Fixed width/height of collection view cell
-    static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
+    // Base size for accessibility scaling
+    private static let baseCellSize: CGFloat = 128.0
+
+    /// Returns the appropriate cell size based on the content size category for accessibility
+    static func cellSize(for contentSizeCategory: UIContentSizeCategory) -> CGSize {
+        let scaledSize = scaledValue(baseCellSize, contentSizeCategory: contentSizeCategory, maximumContentSizeCategory: .accessibilityExtraExtraExtraLarge)
+        return CGSize(width: scaledSize, height: scaledSize)
+    }
+
+    /// Returns a scaled value using native iOS scaling, with a maximum cap for accessibility
+    private static func scaledValue(_ value: CGFloat, contentSizeCategory: UIContentSizeCategory, maximumContentSizeCategory: UIContentSizeCategory) -> CGFloat {
+        let metrics = UIFontMetrics.default
+        let scaledValue = metrics.scaledValue(for: value, compatibleWith: .init(preferredContentSizeCategory: contentSizeCategory))
+
+        let maximumScaledValue = metrics.scaledValue(for: value, compatibleWith: .init(preferredContentSizeCategory: maximumContentSizeCategory))
+
+        return min(scaledValue, maximumScaledValue)
+    }
 
     private(set) var items: [ProductImagesItem] = []
 

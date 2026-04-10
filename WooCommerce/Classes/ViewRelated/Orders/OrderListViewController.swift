@@ -144,10 +144,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
 
-    /// Store plan banner presentation handler.
-    ///
-    private var storePlanBannerPresenter: StorePlanBannerPresenter?
-
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -190,8 +186,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         configureViewModel()
         configureSyncingCoordinator()
-
-        configureStorePlanBannerPresenter()
     }
 
     private func createDataSource() {
@@ -366,14 +360,6 @@ private extension OrderListViewController {
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
-    }
-
-    func configureStorePlanBannerPresenter() {
-        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
-                                                                  containerView: view,
-                                                                  siteID: siteID) { [weak self] bannerHeight in
-            self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
-        }
     }
 }
 
@@ -640,8 +626,14 @@ extension OrderListViewController {
     /// Adds ability to select any order
     /// Used when opening an order with deep link
     /// - Parameter orderID: ID of the order to select in the list.
+    /// - Parameter isTriggeredByUserAction: Reflects if the order selection was triggered by a manual user action and not a view lifecycle update
+    /// Practically if the `isTriggeredByUserAction` is true, then the order details will be force presented
+    /// even if `selectedOrderID` is the same as the new `orderID`
     /// - Returns: Whether the order to select is in the list already (i.e. the order has been fetched and exists locally).
-    func selectOrderFromListIfPossible(for orderID: Int64) -> Bool {
+    func selectOrderFromListIfPossible(
+        for orderID: Int64,
+        isTriggeredByUserAction: Bool = false,
+    ) -> Bool {
         guard let dataSource else {
             return false
         }
@@ -651,7 +643,7 @@ extension OrderListViewController {
                 let orderNotAlreadySelected = selectedOrderID != orderID
                 let indexPath = dataSource.indexPath(for: identifier)
                 let indexPathNotAlreadySelected = selectedIndexPath != indexPath
-                let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected
+                let shouldSwitchDetails = orderNotAlreadySelected || indexPathNotAlreadySelected || isTriggeredByUserAction
                 if shouldSwitchDetails {
                     showOrderDetails(detailsViewModel.order)
                 }
@@ -729,9 +721,6 @@ private extension OrderListViewController {
             childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
         childController.didMove(toParent: self)
-
-        // Make sure the banner is on top of the empty state view
-        storePlanBannerPresenter?.bringBannerToFront()
     }
 
     func removeEmptyViewController() {
@@ -828,8 +817,8 @@ extension OrderListViewController: UITableViewDelegate {
         }
 
         guard let objectID = dataSource?.itemIdentifier(for: indexPath),
-            let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
-                return
+              let orderDetailsViewModel = viewModel.detailsViewModel(withID: objectID) else {
+            return
         }
 
         selectedIndexPath = indexPath

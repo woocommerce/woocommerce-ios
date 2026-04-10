@@ -1,5 +1,7 @@
 import Combine
 import UIKit
+import protocol WooFoundation.ConnectivityObserver
+import enum WooFoundation.ConnectivityStatus
 
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
 ///
@@ -55,7 +57,7 @@ extension WooNavigationController {
 private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
     private let connectivityObserver: ConnectivityObserver
-    private var currentController: UIViewController?
+    private weak var currentController: UIViewController?
     private var subscriptions: Set<AnyCancellable> = []
 
     init(connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {

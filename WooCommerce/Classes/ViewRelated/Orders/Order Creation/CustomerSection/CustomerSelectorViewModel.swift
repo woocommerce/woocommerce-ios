@@ -1,32 +1,33 @@
 import Foundation
 import Yosemite
+import class WooFoundation.VersionHelpers
 
 final class CustomerSelectorViewModel {
     private let stores: StoresManager
     private let siteID: Int64
+    private let pluginsService: PluginsServiceProtocol
 
     private let onCustomerSelected: (Customer) -> Void
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          onCustomerSelected: @escaping (Customer) -> Void) {
         self.siteID = siteID
         self.stores = stores
+        self.pluginsService = pluginsService
         self.onCustomerSelected = onCustomerSelected
     }
 
-    func isEligibleForAdvancedSearch(completion: @escaping (Bool) -> Void) {
+    @MainActor
+    func isEligibleForAdvancedSearch() -> Bool {
         // Fetches WC plugin.
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-            guard let wcPlugin = wcPlugin, wcPlugin.active else {
-                return completion(false)
-            }
-
-            let isCustomerAdvanceSearchSupportedByWCPlugin = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                               minimumRequired: Constants.wcPluginMinimumVersion)
-            completion(isCustomerAdvanceSearchSupportedByWCPlugin)
+        guard let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true), wcPlugin.active else {
+            return false
         }
-        stores.dispatch(action)
+
+        return VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                 minimumRequired: Constants.wcPluginMinimumVersion)
     }
 
     /// Loads the customer list data, a lighter version of the model without all the information
@@ -69,7 +70,6 @@ private extension CustomerSelectorViewModel {
     enum Constants {
         static let pageSize = 25
         static let firstPageNumber = 1
-        static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "8.0.0-beta.1"
     }
 }

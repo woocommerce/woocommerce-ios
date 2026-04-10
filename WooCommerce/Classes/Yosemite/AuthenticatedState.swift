@@ -2,10 +2,16 @@ import Foundation
 import Yosemite
 import Networking
 import Storage
+import Combine
+import enum NetworkingCore.RequestAuthenticationMode
 
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+
+    var requestAuthenticationMode: RequestAuthenticationMode? {
+        network.authenticationMode
+    }
 
     /// Dispatcher: Glues all of the Stores!
     ///
@@ -23,11 +29,40 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
+    private let network: AlamofireNetwork
+
+    private var cancellables: Set<AnyCancellable> = []
+
+    /// POS Catalog Sync Coordinator (session-scoped)
+    ///
+    private(set) var posCatalogSyncCoordinator: POSCatalogSyncCoordinator?
+
+    /// POS Catalog Eligibility Service (session-scoped)
+    /// Created during initialization alongside the sync coordinator
+    ///
+    var posCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
+
+    // periphery:ignore - keep strong reference to keep the state publisher alive
+    private var appPasswordSupportStateHandler: ApplicationPasswordsExperimentState?
+    private var appPasswordSupportState: PassthroughSubject<Bool, Never>
+
     /// Designated Initializer
     ///
-    init(credentials: Credentials) {
+    init(credentials: Credentials,
+         sessionManager: SessionManagerProtocol,
+         isLocalCatalogFeatureFlagEnabled: Bool) {
         let storageManager = ServiceLocator.storageManager
-        let network = AlamofireNetwork(credentials: credentials)
+
+        let site = sessionManager.defaultSitePublisher
+            .map { $0?.toJetpackSite() }
+            .eraseToAnyPublisher()
+
+        self.appPasswordSupportState = .init()
+        self.network = AlamofireNetwork(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        )
 
         var services: [ActionsProcessor] = [
             AppSettingsStore(dispatcher: dispatcher,
@@ -40,16 +75,21 @@ class AuthenticatedState: StoresManagerState {
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             DataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            DomainStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            FeatureFlagStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            InAppPurchaseStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            FeatureFlagStore(dispatcher: dispatcher,
+                            storageManager: storageManager,
+                            network: network,
+                            overrideStore: ServiceLocator.remoteFeatureFlagOverrideStore),
             InboxNotesStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             JustInTimeMessageStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
-            OrderCardPresentPaymentEligibilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            OrderCardPresentPaymentEligibilityStore(
+                dispatcher: dispatcher,
+                storageManager: storageManager,
+                network: network,
+            ),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -99,7 +139,8 @@ class AuthenticatedState: StoresManagerState {
             StoreOnboardingTasksStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             GoogleAdsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             MetaDataStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            BookingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
 
@@ -127,9 +168,66 @@ class AuthenticatedState: StoresManagerState {
 
         self.services = services
 
-        trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
+        // Initialize POS catalog sync coordinator and eligibility service if feature flag is enabled
+        if isLocalCatalogFeatureFlagEnabled,
+           let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
+                                                           selectedSite: site,
+                                                           appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                                                           grdbManager: ServiceLocator.grdbManager,
+                                                           usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)),
+           let incrementalSyncService = POSCatalogIncrementalSyncService(
+            credentials: credentials,
+            selectedSite: site,
+            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+            grdbManager: ServiceLocator.grdbManager
+           ) {
+            let posProductsOnlyEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOnlyProducts)
 
+            // Create eligibility service
+            let eligibilityService = POSLocalCatalogEligibilityService(
+                catalogSizeChecker: POSCatalogSizeChecker(
+                    credentials: credentials,
+                    selectedSite: site,
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                    posProductsOnlyEnabled: posProductsOnlyEnabled
+                ),
+                systemStatusService: POSSystemStatusService(
+                    credentials: credentials,
+                    selectedSite: site,
+                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
+                    storageManager: ServiceLocator.storageManager
+                ),
+                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
+                remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
+                betaFeatureToggleProvider: {
+                    await MainActor.run {
+                        ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
+                    }
+                }
+            )
+            posCatalogEligibilityChecker = eligibilityService
+
+            // Create sync coordinator with eligibility service
+            posCatalogSyncCoordinator = POSCatalogSyncCoordinator(
+                fullSyncService: fullSyncService,
+                incrementalSyncService: incrementalSyncService,
+                grdbManager: ServiceLocator.grdbManager,
+                catalogEligibilityChecker: eligibilityService,
+                analytics: ServiceLocator.analytics,
+                connectivityObserver: ServiceLocator.connectivityObserver,
+                posProductsOnlyEnabled: posProductsOnlyEnabled
+            )
+
+            // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility
+            // when the POS tab visibility check completes in MainTabBarController
+        } else {
+            posCatalogSyncCoordinator = nil
+            posCatalogEligibilityChecker = nil
+        }
+
+        trackEventRequestNotificationHandler = TrackEventRequestNotificationHandler()
         startListeningToNotifications()
+        observeAppPasswordSupportState()
     }
 
     /// Convenience Initializer
@@ -138,18 +236,15 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-
-        self.init(credentials: credentials)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        self.init(credentials: credentials,
+                  sessionManager: sessionManager,
+                  isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
     }
 
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {
-        let pushNotesManager = ServiceLocator.pushNotesManager
-
-        pushNotesManager.unregisterForRemoteNotifications()
-        pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
-
         resetServices()
     }
 
@@ -193,9 +288,29 @@ private extension AuthenticatedState {
         let resetOrdersSettings = AppSettingsAction.resetOrdersSettings
         let resetProductsSettings = AppSettingsAction.resetProductsSettings
         let resetGeneralStoreSettings = AppSettingsAction.resetGeneralStoreSettings
+        let resetBookingFilters = AppSettingsAction.resetBookingFilters
         ServiceLocator.stores.dispatch([resetStoredProviders,
                                         resetOrdersSettings,
                                         resetProductsSettings,
-                                        resetGeneralStoreSettings])
+                                        resetGeneralStoreSettings,
+                                        resetBookingFilters])
+    }
+}
+
+private extension AuthenticatedState {
+    func observeAppPasswordSupportState() {
+        DispatchQueue.main.async { [self] in
+            /// The state needs to be created on the main thread to avoid creating a new ServiceLocator.stores in a different thread.
+            /// Without this, race condition can happen.
+            let appPasswordSupportStateHandler = ApplicationPasswordsExperimentState()
+            self.appPasswordSupportStateHandler = appPasswordSupportStateHandler // strong ref to keep the stream alive
+            appPasswordSupportStateHandler
+                .$isAvailableAndEnabled
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] enabled in
+                    self?.appPasswordSupportState.send(enabled)
+                }
+                .store(in: &cancellables)
+        }
     }
 }

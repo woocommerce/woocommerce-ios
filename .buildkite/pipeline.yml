@@ -23,13 +23,23 @@ steps:
   #################
   # Create Prototype Build
   #################
-  - label: ":hammer_and_wrench: Prototype Build"
-    command: .buildkite/commands/prototype-build.sh
-    plugins: [$CI_TOOLKIT]
-    if: build.pull_request.id != null
-    notify:
-      - github_commit_status:
-          context: Prototype Build
+  - group: ":rocket: Prototype Build"
+    # Prototype Builds are on-demand on `trunk`, but always built on PRs
+    steps:
+      - input: Create Prototype Build?
+        prompt: Share a Prototype Build via Firebase App Distribution?
+        key: prototype_build_triggered
+        if: build.branch == "trunk"
+      - label: ":firebase: Prototype Build"
+        # Buildkite considers this implicitly satisfied if the `depends_on` step is skipped due to `if:` condition. So this will run unconditionally on PRs
+        # https://buildkite.com/docs/pipelines/configure/dependencies#how-skipped-steps-affect-dependencies
+        depends_on: prototype_build_triggered
+        if: build.pull_request.id != null || build.branch == "trunk"
+        command: .buildkite/commands/prototype-build.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: Prototype Build
 
   #################
   # Run Unit Tests
@@ -37,7 +47,13 @@ steps:
   - label: ":microscope: Unit Tests"
     command: .buildkite/commands/run-unit-tests.sh
     depends_on: build
-    plugins: [$CI_TOOLKIT]
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
     artifact_paths:
       - fastlane/test_output/*
     notify:
@@ -45,21 +61,7 @@ steps:
           context: Unit Tests
 
   - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
-    command: |
-      echo "--- :rubygems: Setting up Gems"
-      install_gems
-
-      echo "--- :cocoapods: Setting up Pods"
-      install_cocoapods
-
-      echo "--- :swift: Setting up Swift Packages"
-      install_swiftpm_dependencies
-
-      echo "--- 🧪 Testing"
-      bundle exec fastlane run scan \
-        scheme:WordPressAuthenticator \
-        prelaunch_simulator:true \
-        device:'iPhone 16'
+    command: .buildkite/commands/run-wordpress-authenticator-tests.sh
     plugins: [$CI_TOOLKIT]
     artifact_paths:
       - fastlane/test_output/*
@@ -93,6 +95,7 @@ steps:
         agents:
           queue: linter
 
+
       - label: 🧹 Lint Translations
         command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
         plugins:
@@ -111,29 +114,64 @@ steps:
           - github_commit_status:
               context: Lint Localized Strings Format
 
+      - label: ":swift: Ensure single Package.resolved"
+        command: .buildkite/commands/check-package-resolved.sh
+        agents:
+          queue: default
+        notify:
+          - github_commit_status:
+              context: Check Package.resolved
+
   #################
   # UI Tests
   #################
   - label: ":microscope: UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests 'iPhone 16'
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == 'trunk' || build.branch =~ /^release\//
-    plugins: [$CI_TOOLKIT]
+    if: build.branch == "trunk" || build.branch =~ /^release\//
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
     artifact_paths:
       - fastlane/test_output/*
+      - build/logs/wiremock.txt
     notify:
       - github_commit_status:
           context: UI Tests (iPhone)
 
   - label: ":microscope: UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad (10th generation)"
+    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
     # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == 'trunk' || build.branch =~ /^release\//
-    plugins: [$CI_TOOLKIT]
+    if: build.branch == "trunk" || build.branch =~ /^release\//
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: fastlane/test_output/report.junit
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
     artifact_paths:
       - fastlane/test_output/*
+      - build/logs/wiremock.txt
     notify:
       - github_commit_status:
           context: UI Tests (iPad)
+
+  #################
+  # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait
+  #################
+  - wait: ~
+    continue_on_failure: true
+
+  - label: ":claude: 🕵️ Check for Build Failures and Run Claude Analysis"
+    command: |
+      source .buildkite/shared-pipeline-vars
+      buildkite-agent pipeline upload .buildkite/claude-analysis.yml
+    agents:
+      queue: upload

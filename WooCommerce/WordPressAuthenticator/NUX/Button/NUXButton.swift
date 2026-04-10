@@ -51,6 +51,7 @@ public struct NUXButtonStyle {
     }
 
     var buttonStyle: NUXButtonStyle?
+    var contentInsets: UIEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
 
     open override var isEnabled: Bool {
         didSet {
@@ -130,11 +131,18 @@ public struct NUXButtonStyle {
     open override func didMoveToWindow() {
         super.didMoveToWindow()
         configureAppearance()
+        observeTraitChanges()
     }
 
     open override func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
+    }
+
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.didChangePreferredContentSize()
+        }
     }
 
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
@@ -150,7 +158,7 @@ public struct NUXButtonStyle {
     /// Setup: NUXButton's Default Settings
     ///
     private func configureInsets() {
-        contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
+        contentEdgeInsets = contentInsets
     }
 
     /// Setup: ActivityIndicator
@@ -251,16 +259,5 @@ public struct NUXButtonStyle {
         }
 
         return isEnabled ? style.normal.titleColor : style.disabled.titleColor
-    }
-}
-
-// MARK: -
-//
-extension NUXButton {
-    override open func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            didChangePreferredContentSize()
-        }
     }
 }

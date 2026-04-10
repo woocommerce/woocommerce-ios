@@ -1,13 +1,10 @@
 #!/bin/bash -eu
 
-echo "--- :rubygems: Setting up Gems"
-install_gems
+if .buildkite/commands/should-skip-job.sh --job-type build; then
+  exit 0
+fi
 
-echo "--- :cocoapods: Setting up Pods"
-install_cocoapods
-
-echo "--- :swift: Setting up Swift Packages"
-install_swiftpm_dependencies
+"$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
 echo "--- :writing_hand: Copy Files"
 mkdir -pv ~/.configure/woocommerce-ios/secrets
@@ -18,4 +15,4 @@ bundle exec fastlane build_for_testing
 
 echo "--- :arrow_up: Upload Build Products"
 tar -cf build-products.tar DerivedData/Build/Products/
-buildkite-agent artifact upload build-products.tar
+upload_artifact build-products.tar

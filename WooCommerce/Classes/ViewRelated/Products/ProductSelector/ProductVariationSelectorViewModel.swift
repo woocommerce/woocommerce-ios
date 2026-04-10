@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
@@ -115,10 +116,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         return resultsController
     }()
 
-    /// Whether the variation list should contains only purchasable items.
-    ///
-    private let purchasableItemsOnly: Bool
-
     private var orderSyncState: Published<OrderSyncState>.Publisher?
 
     init(siteID: Int64,
@@ -127,7 +124,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productAttributes: [ProductAttribute],
          allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
-         purchasableItemsOnly: Bool = false,
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
@@ -143,7 +139,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
         self.allowedProductVariationIDs = allowedProductVariationIDs
         self.selectedProductVariationIDs = selectedProductVariationIDs
-        self.purchasableItemsOnly = purchasableItemsOnly
         self.onSelectionsCleared = onSelectionsCleared
 
         configureSyncingCoordinator()
@@ -156,7 +151,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                      product: Product,
                      allowedProductVariationIDs: [Int64] = [],
                      selectedProductVariationIDs: [Int64] = [],
-                     purchasableItemsOnly: Bool = false,
                      orderSyncState: Published<OrderSyncState>.Publisher? = nil,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
                      stores: StoresManager = ServiceLocator.stores,
@@ -168,7 +162,6 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   productAttributes: product.attributesForVariations,
                   allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
-                  purchasableItemsOnly: purchasableItemsOnly,
                   orderSyncState: orderSyncState,
                   storageManager: storageManager,
                   stores: stores,
@@ -300,11 +293,7 @@ private extension ProductVariationSelectorViewModel {
     func updateProductVariationsResultsController() {
         do {
             try productVariationsResultsController.performFetch()
-            if purchasableItemsOnly {
-                productVariations = productVariationsResultsController.fetchedObjects.filter { $0.purchasable }
-            } else {
-                productVariations = productVariationsResultsController.fetchedObjects
-            }
+            productVariations = productVariationsResultsController.fetchedObjects
             observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching product variations for new order: \(error)")

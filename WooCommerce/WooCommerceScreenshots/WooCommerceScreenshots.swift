@@ -5,6 +5,10 @@ import XCTest
 
 class WooCommerceScreenshots: XCTestCase {
 
+    private var screenshotOrientation: UIDeviceOrientation {
+        UIDevice.current.userInterfaceIdiom == .pad ? .landscapeLeft : .portrait
+    }
+
     override func setUpWithError() throws {
         super.setUp()
         continueAfterFailure = false
@@ -24,9 +28,14 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
         app.launchArguments.append("mocked-network-layer")
+        app.launchArguments.append("use-mocked-card-present-payment")
         app.launchArguments.append("-simulate-stripe-card-reader")
         app.launchArguments.append("disable-animations")
         app.launchArguments.append("-mocks-push-notification")
+        app.launchArguments.append("bypass-pos-eligibility-checks")
+        app.launchArguments.append("load-mocked-pos-products")
+        app.launchArguments.append("bypass-pos-order-syncing")
+        app.launchArguments.append("bypass-card-present-payment")
         app.launchArguments.append(contentsOf: ["-mocks-port", "\(server.listenAddress.port)"])
 
         app.launch()
@@ -42,17 +51,21 @@ class WooCommerceScreenshots: XCTestCase {
             return false
         }
 
+        // Triggers any pending system dialogs (like push notification permissions).
+        // The interruption monitor above only activates when the app receives user interaction.
+        app.tap()
+
         // My Store
         try TabNavComponent()
             .goToMyStoreScreen()
             .dismissTopBannerIfNeeded()
-            .thenTakeScreenshot(named: "order-dashboard")
+            .thenTakeScreenshot(named: "order-dashboard", orientation: screenshotOrientation)
 
         // Orders
         try TabNavComponent()
         .goToOrdersScreen()
         .startOrderCreation()
-        .thenTakeScreenshot(named: "order-creation")
+        .thenTakeScreenshot(named: "order-creation", orientation: screenshotOrientation)
         .cancelOrderCreation()
 
         // Collect payment
@@ -60,20 +73,42 @@ class WooCommerceScreenshots: XCTestCase {
         .tapCollectPaymentButton()
 
         .tapCardPresentPayment()
-        .thenTakeScreenshot(named: "order-payment")
+        .thenTakeScreenshot(named: "order-payment", orientation: screenshotOrientation)
 
         .goBackToPaymentMethodsScreen()
         .goBackToOrderScreen()
         .goBackToOrdersScreen()
 
+        // POS - iPad only
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            try TabNavComponent()
+                .goToPOSScreen()
+                .tapAddProduct(productID: 1)
+                .tapAddProduct(productID: 2)
+                .thenTakeScreenshot(named: "pos-dashboard", orientation: .landscapeLeft)
+                .tapConnectReader()
+                .waitForReaderConnected()
+                .tapCheckout()
+                .waitForTotalsLoaded()
+                .waitForCardPaymentReady()
+                .thenTakeScreenshot(named: "pos-payment", orientation: .landscapeLeft)
+                .tapCashPayment()
+                .tapMarkPaymentComplete()
+                .waitForPaymentSuccess()
+                .thenTakeScreenshot(named: "pos-success", orientation: .landscapeLeft)
+                .tapMenuButton()
+                .tapExitMenuItem()
+                .confirmExitPOS()
+        }
+
         // Products
         try TabNavComponent()
         .goToProductsScreen()
         .tapAddProduct()
-        .thenTakeScreenshot(named: "product-add")
+        .thenTakeScreenshot(named: "product-add", orientation: screenshotOrientation)
 
         .lockScreenForNotificationScreenshot()
-        .thenTakeScreenshot(named: "order-notification")
+        .thenTakeScreenshot(named: "order-notification", orientation: screenshotOrientation)
     }
 
     private let loop = try! SelectorEventLoop(selector: try! KqueueSelector())
@@ -146,7 +181,8 @@ fileprivate var screenshotCount = 0
 extension BaseScreen {
 
     @MainActor @discardableResult
-    func thenTakeScreenshot(named title: String) -> Self {
+    func thenTakeScreenshot(named title: String, orientation: UIDeviceOrientation = .portrait) -> Self {
+        XCUIDevice.shared.orientation = orientation
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"
@@ -181,7 +217,8 @@ extension ScreenObject {
     }
 
     @MainActor @discardableResult
-    func thenTakeScreenshot(named title: String) -> Self {
+    func thenTakeScreenshot(named title: String, orientation: UIDeviceOrientation = .portrait) -> Self {
+        XCUIDevice.shared.orientation = orientation
         screenshotCount += 1
 
         let mode = XCUIDevice.inDarkMode ? "dark" : "light"

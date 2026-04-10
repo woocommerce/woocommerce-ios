@@ -21,7 +21,7 @@ struct BlazeAddParameterView: View {
                             .frame(width: Layout.keyWidth, alignment: .leading)
                         TextField(Localization.keyLabel, text: $viewModel.key)
                     }
-                    .onChange(of: viewModel.key) { _ in
+                    .onChange(of: viewModel.key) { _, _ in
                         viewModel.validateInputs()
                     }
 
@@ -31,7 +31,7 @@ struct BlazeAddParameterView: View {
                             .frame(width: Layout.keyWidth, alignment: .leading)
                         TextField(Localization.valueLabel, text: $viewModel.value)
                     }
-                    .onChange(of: viewModel.value) { _ in
+                    .onChange(of: viewModel.value) { _, _ in
                         viewModel.validateInputs()
                     }
                 } footer: {

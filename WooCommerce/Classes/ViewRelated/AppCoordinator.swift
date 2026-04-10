@@ -1,5 +1,6 @@
 import Combine
 import Experiments
+import SafariServices
 import UIKit
 import WordPressAuthenticator
 import Yosemite
@@ -20,7 +21,6 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
-    private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var authStatesSubscription: AnyCancellable?
@@ -32,6 +32,9 @@ final class AppCoordinator {
     ///
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
+    /// Handles the age range verification process and corresponding app/UI state behaviour.
+    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()
+
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -41,7 +44,6 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
@@ -61,12 +63,13 @@ final class AppCoordinator {
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
-        self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
+
+        schedulePOSSurveyNotificationIfNeeded()
     }
 
     func start() {
@@ -89,8 +92,8 @@ final class AppCoordinator {
                     self.displayLoggedInStateWithoutDefaultStore()
                 case (true, false):
                     self.validateRoleEligibility {
-                        self.configureAuthenticator()
                         self.displayLoggedInUI()
+                        self.triggerAgeVerification()
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
@@ -101,6 +104,14 @@ final class AppCoordinator {
             self?.handleLocalNotificationResponse(response)
         }
         updateSitePropertiesIfNeeded()
+    }
+}
+
+private extension AppCoordinator {
+    func schedulePOSSurveyNotificationIfNeeded() {
+        Task { @MainActor in
+            await POSNotificationScheduler(stores: stores).scheduleLocalNotificationIfEligible(for: .currentMerchant)
+        }
     }
 }
 
@@ -132,8 +143,30 @@ private extension AppCoordinator {
             return
         }
 
+        let posSurveyScenarios = [
+            LocalNotification.Scenario.pointOfSalePotentialMerchant.identifier,
+            LocalNotification.Scenario.pointOfSaleCurrentMerchant.identifier,
+        ]
+
+        if posSurveyScenarios.contains(identifier),
+           let surveyURLString = userInfo[LocalNotification.UserInfoKey.surveyURL] as? String,
+           let surveyURL = URL(string: surveyURLString) {
+            presentSurveyWebView(url: surveyURL)
+        }
+
         analytics.track(event: .LocalNotification.tapped(type: LocalNotification.Scenario.identifierForAnalytics(identifier),
                                                          userInfo: userInfo))
+    }
+
+    private func presentSurveyWebView(url: URL) {
+        let safariViewController = SFSafariViewController(url: url)
+        // POS mode is presented via a UIHostingController as full-screen view on top of the tabBarController, so
+        // we have to target the topmost VC if we want to present a web view on top of this when tapping on the local notification.
+        if let topmostPresentedViewController = window.topmostPresentedViewController {
+            topmostPresentedViewController.present(safariViewController, animated: true)
+        } else {
+            tabBarController.present(safariViewController, animated: true)
+        }
     }
 }
 
@@ -200,22 +233,20 @@ private extension AppCoordinator {
             presentLoginOnboarding { [weak self] in
                 guard let self = self else { return }
                 // Only displays the authenticator when dismissing onboarding to allow time for A/B test setup.
-                self.configureAndDisplayAuthenticator()
+                self.displayAuthenticator()
             }
         } else {
-            configureAndDisplayAuthenticator()
+            displayAuthenticator()
         }
-    }
-
-    /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
-    func configureAndDisplayAuthenticator() {
-        configureAuthenticator()
-        displayAuthenticator()
     }
 
     /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
     func configureAuthenticator() {
-        authenticationManager.initialize()
+        if isRunningTests {
+            /// This is needed to fix crashes in unit tests.
+            /// The authenticator is initialized in AppDelegate when running the app.
+            authenticationManager.initialize()
+        }
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         authenticationManager.displayAuthenticatorIfLoggedOut = { [weak self] in
             guard let self, self.isLoggedIn == false else { return nil }
@@ -296,7 +327,6 @@ private extension AppCoordinator {
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return displayAuthenticatorWithOnboardingIfNeeded()
         }
-        configureAuthenticator()
 
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
@@ -407,11 +437,82 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
+    func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
+        ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
+            hostingWindow: window
+        ) { [weak self] appAccessDescision, _ in
+            guard let self else { return }
+            if appAccessDescision == .allow {
+                onAllowed()
+            } else {
+                self.forceLogoutAndShowAgeAlert()
+            }
+
+            //TODO: consider adding analytics event with the result
+        }
+    }
+
+    /// Centralized flow to log out and present the login/onboarding UI.
+    func forceLogoutAndReturnToLogin() {
+        stores.deauthenticate()
+        displayAuthenticatorWithOnboardingIfNeeded()
+    }
+
+    func forceLogoutAndShowAgeAlert() {
+        forceLogoutAndReturnToLogin()
+
+        DispatchQueue.main.async { [weak self] in
+            guard
+                let self,
+                let presenter = self.window.topmostPresentedViewController
+            else { return }
+            let alert = UIAlertController(
+                title: Localization.AgeVerificationAlert.title,
+                message: String(
+                    format: Localization.AgeVerificationAlert.message,
+                    AgeRangeVerificationCoordinator.Constants.minimumTOSRequiredAge
+                ),
+                preferredStyle: .alert
+            )
+            alert.addAction(
+                UIAlertAction(
+                    title: Localization.AgeVerificationAlert.confirmationButton,
+                    style: .default,
+                    handler: nil
+                )
+            )
+            presenter.present(alert, animated: true)
+        }
+    }
+}
+
+private extension AppCoordinator {
     enum Constants {
         static let animationDuration = TimeInterval(0.3)
     }
 
     enum Localization {
+        enum AgeVerificationAlert {
+            static let title = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.title",
+                value: "Access Restricted",
+                comment: "Alert title displayed when user identified as underage and taken to force logout."
+            )
+
+            static let message = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.message",
+                value: "Your Apple account age is below the minimum required for this app (%1d+).",
+                comment: "Alert message displayed when user identified as underage and taken to force logout." +
+                "The %1d placeholder is the minimum required age."
+            )
+
+            static let confirmationButton = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.confirmationButton",
+                value: "Got it",
+                comment: "Alert confirmation button displayed when user identified as underage and taken to force logout."
+            )
+        }
+
         enum StoreReadyAlert {
             static let title = NSLocalizedString("appCoordinator.storeReadyAlert.title",
                                                  value: "Your new store is ready.",

@@ -5,8 +5,8 @@ import CoreLocation
 protocol CardReaderSupportDetermining {
     func connectedReader() async -> CardReader?
     func hasPreviousTapToPayUsage() async -> Bool
-    func siteSupportsLocalMobileReader() -> Bool
-    func deviceSupportsLocalMobileReader() async -> Bool
+    func siteSupportsTapToPayReader() -> Bool
+    func deviceSupportsTapToPayReader() async -> Bool
     func firstTapToPayTransactionDate() async -> Date?
     var locationIsAuthorized: Bool { get }
 }
@@ -16,7 +16,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     private let configuration: CardPresentPaymentsConfiguration
     private let siteID: Int64
     private var locationManager: CLLocationManager = CLLocationManager()
-    private static var deviceSupportsLocalMobileReader: [Int64: ExpiringBool] = [:]
+    private static var deviceSupportsTapToPayReader: [Int64: ExpiringBool] = [:]
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -54,33 +54,33 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         await firstTapToPayTransactionDate() != nil
     }
 
-    func siteSupportsLocalMobileReader() -> Bool {
-        configuration.supportedReaders.contains(.appleBuiltIn)
+    func siteSupportsTapToPayReader() -> Bool {
+        configuration.supportedReaders.contains(.tapToPay)
     }
 
     @MainActor
-    func deviceSupportsLocalMobileReader() async -> Bool {
+    func deviceSupportsTapToPayReader() async -> Bool {
         /// There may be crashes due to multiple consecutive calls checkDeviceSupport
         /// Limit the calls to once every 30 seconds and cache the result
         ///
-        if let cachedResult = Self.deviceSupportsLocalMobileReader[siteID], !cachedResult.isExpired {
+        if let cachedResult = Self.deviceSupportsTapToPayReader[siteID], !cachedResult.isExpired {
             return cachedResult.value
         }
 
 
-        let deviceSupportsLocalMobileReader = await withCheckedContinuation { continuation in
+        let deviceSupportsTapToPayReader = await withCheckedContinuation { continuation in
             let action = CardPresentPaymentAction.checkDeviceSupport(
                 siteID: siteID,
-                cardReaderType: .appleBuiltIn,
-                discoveryMethod: .localMobile,
+                cardReaderType: .tapToPay,
+                discoveryMethod: .tapToPay,
                 minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { result in
                     continuation.resume(returning: result)
                 }
             stores.dispatch(action)
         }
 
-        Self.deviceSupportsLocalMobileReader[siteID] = ExpiringBool(value: deviceSupportsLocalMobileReader, expirationInSeconds: 30)
-        return deviceSupportsLocalMobileReader
+        Self.deviceSupportsTapToPayReader[siteID] = ExpiringBool(value: deviceSupportsTapToPayReader, expirationInSeconds: 30)
+        return deviceSupportsTapToPayReader
     }
 
     @MainActor
@@ -88,7 +88,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
         await withCheckedContinuation { continuation in
             let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(
                 siteID: siteID,
-                cardReaderType: .appleBuiltIn) { date in
+                cardReaderType: .tapToPay) { date in
                     continuation.resume(returning: date)
             }
 

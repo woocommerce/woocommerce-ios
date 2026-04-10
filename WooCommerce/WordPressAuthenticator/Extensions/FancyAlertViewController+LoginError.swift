@@ -100,7 +100,7 @@ extension FancyAlertViewController {
             message = NSLocalizedString("Incorrect username or password. Please try entering your login details again.", comment: "An error message shown when a user signed in with incorrect credentials.")
         }
 
-        if message.trim().count == 0 {
+        if message.trim().isEmpty {
             message = NSLocalizedString("Log in failed. Please try again.", comment: "A generic error message for a failed log in.")
         }
 
@@ -184,7 +184,7 @@ extension FancyAlertViewController {
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
     }
 
-    /// Shows a WPWalkthroughOverlayView for a bad url error message.
+    /// Shows a view for a bad url error message.
     ///
     /// - Parameter message: The error message to show.
     ///

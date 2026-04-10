@@ -14,6 +14,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
     /// Failure handler with an optional error code if available
     let failureHandler: (Int?) -> Void
     let dismissalHandler: () -> Void
+    let authorizationHandler: (URL) -> Void
 
     private let stores: StoresManager
     private let analytics: Analytics
@@ -25,6 +26,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          completion: @escaping () -> Void,
+         onAuthorization: @escaping (URL) -> Void = { _ in },
          onFailure: @escaping (Int?) -> Void = { _ in },
          onDismissal: @escaping () -> Void = {}) {
         self.title = title
@@ -35,6 +37,7 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
         self.completionHandler = completion
         self.failureHandler = onFailure
         self.dismissalHandler = onDismissal
+        self.authorizationHandler = onAuthorization
     }
 
     func handleDismissal() {
@@ -56,7 +59,15 @@ final class JetpackConnectionWebViewModel: AuthenticatedWebViewModel {
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         let url = navigationURL.absoluteString
-        if handleCompletionIfPossible(url) {
+        if url.contains(Constants.authorizationURL),
+            initialURL?.absoluteString.contains(Constants.authorizationURL) == false {
+            await MainActor.run { [weak self] in
+                guard let self else { return }
+                shouldIgnoreDismissalHandling = true
+                authorizationHandler(navigationURL)
+            }
+            return .cancel
+        } else if handleCompletionIfPossible(url) {
             return .cancel
         }
         return .allow
@@ -104,6 +115,7 @@ private extension JetpackConnectionWebViewModel {
     enum Constants {
         static let mobileRedirectURL = "woocommerce://jetpack-connected"
         static let plansPage = "https://wordpress.com/jetpack/connect/plans"
+        static let authorizationURL = "jetpack.wordpress.com/jetpack.authorize"
     }
 
     enum Localization {

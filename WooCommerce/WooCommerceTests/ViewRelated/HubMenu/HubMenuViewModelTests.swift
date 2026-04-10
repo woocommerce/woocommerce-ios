@@ -417,12 +417,12 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_wpcom_site() {
+    func test_shouldAuthenticateAdminPage_returns_true_when_logged_in_with_wpcom_to_sso_site() {
         // Given
         let sampleStoreURL = "https://testshop.com"
         let sampleAdminURL = ""
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
-        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, isWordPressComStore: true)
+        let site = Site.fake().copy(url: sampleStoreURL, adminURL: sampleAdminURL, hasSSOEnabled: true)
         sessionManager.defaultSite = site
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -474,61 +474,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_menuElements_include_subscriptions_on_wp_com_sites_if_not_free_trial() {
-        // Given
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNotNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_does_not_include_subscriptions_on_wp_com_free_trial_sites() {
-        // Given
-        let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_does_not_include_subscriptions_on_self_hosted_sites() {
-        // Given
-        let sessionManager = SessionManager.testingInstance
-        sessionManager.defaultSite = Site.fake().copy(isWordPressComStore: false)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores)
-        viewModel.setupMenuElements()
-
-        XCTAssertNil(viewModel.settingsElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Subscriptions.id
-        }))
-    }
-
-    @MainActor
     func test_menuElements_include_customers() {
         // Given
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
@@ -540,6 +485,74 @@ final class HubMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
             item.id == HubMenuViewModel.Customers.id
+        }))
+    }
+
+    @MainActor
+    func test_menuElements_include_bookings_on_ipad_when_eligible() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker(isEligible: true)
+        let posEligibilityService = MockPOSEligibilityService()
+        posEligibilityService.cachedTabVisibility[sampleSiteID] = true
+
+        // When
+        let viewModel = HubMenuViewModel(
+            siteID: sampleSiteID,
+            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+            stores: stores,
+            posEligibilityService: posEligibilityService,
+            bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker },
+            isPad: true
+        )
+        viewModel.setupMenuElements()
+
+        waitUntil {
+            viewModel.generalElements.contains(where: { item in
+                item.id == HubMenuViewModel.Bookings.id
+            })
+        }
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Bookings.id
+        }))
+    }
+
+    @MainActor
+    func test_menuElements_exclude_bookings_on_ipad_when_pos_not_available() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID))
+
+        let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker(isEligible: true)
+        let posEligibilityService = MockPOSEligibilityService()
+        posEligibilityService.cachedTabVisibility[sampleSiteID] = false
+
+        // When
+        let viewModel = HubMenuViewModel(
+            siteID: sampleSiteID,
+            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+            stores: stores,
+            posEligibilityService: posEligibilityService,
+            bookingsEligibilityCheckerFactory: { _ in mockBookingsEligibilityChecker },
+            isPad: true
+        )
+        viewModel.setupMenuElements()
+
+        waitUntil {
+            viewModel.generalElements.firstIndex(where: { item in
+                item.id == HubMenuViewModel.Bookings.id
+            }) == nil
+        }
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
+            item.id == HubMenuViewModel.Bookings.id
         }))
     }
 
@@ -564,7 +577,7 @@ final class HubMenuViewModelTests: XCTestCase {
     @MainActor
     func test_navigateToDestination_replaces_navigationPath_with_specified_destination() throws {
         // Given
-        let generalAppSettings = try mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: true)
+        let generalAppSettings = try mockGeneralAppSettingsStorage()
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
         let inboxEligibilityChecker = MockInboxEligibilityChecker()
@@ -589,8 +602,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let expectedMenusAndDestinations: [HubMenuNavigationDestination: HubMenuItem] = [
             .settings: HubMenuViewModel.Settings(),
             .payments: HubMenuViewModel.Payments(),
-            .inAppPurchase: HubMenuViewModel.InAppPurchases(),
-            .subscriptions: HubMenuViewModel.Subscriptions(),
             .blaze: HubMenuViewModel.Blaze(),
             .wooCommerceAdmin: HubMenuViewModel.WoocommerceAdmin(),
             .viewStore: HubMenuViewModel.ViewStore(),
@@ -726,24 +737,6 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_trackMenuItemTapEvent_includes_payments_onboarding_state_for_pos_menu_item() throws {
-        // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         analytics: analytics)
-
-        // When
-        viewModel.trackMenuItemTapEvent(menu: HubMenuViewModel.PointOfSaleEntryPoint())
-
-        // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "hub_menu_option_tapped" }))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first(where: { $0.keys.contains("payments_onboarding_state") }))
-        XCTAssertNotNil(eventProperties["payments_onboarding_state"])
-    }
-
-    @MainActor
     func test_trackMenuItemTapEvent_does_not_include_payments_onboarding_state_for_non_pos_menu_items() throws {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -754,15 +747,14 @@ final class HubMenuViewModelTests: XCTestCase {
         let otherMenuItems: [HubMenuItem] = [
             HubMenuViewModel.Settings(),
             HubMenuViewModel.Payments(),
-            HubMenuViewModel.InAppPurchases(),
-            HubMenuViewModel.Subscriptions(),
             HubMenuViewModel.Blaze(),
             HubMenuViewModel.WoocommerceAdmin(),
             HubMenuViewModel.ViewStore(),
             HubMenuViewModel.Coupons(),
             HubMenuViewModel.Reviews(),
             HubMenuViewModel.Inbox(),
-            HubMenuViewModel.Customers()
+            HubMenuViewModel.Customers(),
+            HubMenuViewModel.Bookings()
         ]
 
         otherMenuItems.forEach { menuItem in
@@ -775,14 +767,60 @@ final class HubMenuViewModelTests: XCTestCase {
             XCTAssertNil(eventProperties)
         }
     }
+
+    // MARK: - CIAB IPP Gating
+
+    @MainActor
+    func test_generalElements_hides_payments_for_non_pro_ciab_site() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
+
+    @MainActor
+    func test_generalElements_shows_payments_for_pro_ciab_site() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true, mockedIsCurrentSiteCIABProPlan: true)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
+
+    @MainActor
+    func test_generalElements_shows_payments_for_non_ciab_site() {
+        // Given
+        let ciabChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
+                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
+                                         siteCIABEligibilityChecker: ciabChecker)
+
+        // When
+        viewModel.setupMenuElements()
+
+        // Then
+        XCTAssertNotNil(viewModel.generalElements.firstIndex(where: { $0.id == HubMenuViewModel.Payments.id }))
+    }
 }
 
 private extension HubMenuViewModelTests {
-    func mockGeneralAppSettingsStorage(isInAppPurchaseEnabled: Bool) throws -> GeneralAppSettingsStorage {
+    func mockGeneralAppSettingsStorage() throws -> GeneralAppSettingsStorage {
         let fileStorage = MockInMemoryStorage()
         let storage = GeneralAppSettingsStorage(fileStorage: fileStorage)
-        var settings = GeneralAppSettings.default
-        settings.isInAppPurchasesSwitchEnabled = isInAppPurchaseEnabled
+        let settings = GeneralAppSettings.default
         try storage.saveSettings(settings)
         return storage
     }
@@ -796,5 +834,21 @@ private extension HubMenuViewModelTests {
                 break
             }
         }
+    }
+}
+
+private final class MockBookingsEligibilityChecker: BookingsTabEligibilityCheckerProtocol {
+    private let isEligible: Bool
+
+    init(isEligible: Bool) {
+        self.isEligible = isEligible
+    }
+
+    func checkInitialVisibility() -> Bool {
+        isEligible
+    }
+
+    func checkVisibility() async -> Bool {
+        isEligible
     }
 }

@@ -1,0 +1,818 @@
+import Combine
+import Foundation
+import Networking
+import Storage
+
+
+// MARK: - OrderStore
+//
+public class OrderStore: Store {
+    private let remote: OrdersRemote
+
+    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+        self.remote = OrdersRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    /// Registers for supported Actions.
+    ///
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
+        dispatcher.register(processor: self, for: OrderAction.self)
+    }
+
+    /// Receives and executes Actions.
+    ///
+    override public func onAction(_ action: Action) {
+        guard let action = action as? OrderAction else {
+            assertionFailure("OrderStore received an unsupported action")
+            return
+        }
+
+        switch action {
+        case .resetStoredOrders(let onCompletion):
+            resetStoredOrders(onCompletion: onCompletion)
+        case .retrieveOrder(let siteID, let orderID, let onCompletion):
+            retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .retrieveOrderRemotely(let siteID, let orderID, let onCompletion):
+            retrieveOrderRemotely(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .fetchFilteredOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, createdVia, writeStrategy, pageSize, onCompletion):
+            fetchFilteredOrders(siteID: siteID,
+                                statuses: statuses,
+                                after: after,
+                                before: before,
+                                modifiedAfter: modifiedAfter,
+                                customerID: customerID,
+                                productID: productID,
+                                createdVia: createdVia,
+                                writeStrategy: writeStrategy,
+                                pageSize: pageSize,
+                                onCompletion: onCompletion)
+        case let .synchronizeOrders(siteID, statuses, after, before, modifiedAfter, customerID, productID, createdVia, pageNumber, pageSize, onCompletion):
+            synchronizeOrders(siteID: siteID,
+                              statuses: statuses,
+                              after: after,
+                              before: before,
+                              modifiedAfter: modifiedAfter,
+                              customerID: customerID,
+                              productID: productID,
+                              createdVia: createdVia,
+                              pageNumber: pageNumber,
+                              pageSize: pageSize,
+                              onCompletion: onCompletion)
+        case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
+            updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
+        case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
+            updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
+        case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
+            updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+        case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
+            createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
+        case let .createOrder(siteID, order, giftCard, onCompletion):
+            createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
+        case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, amountName, taxable, orderNote, email, onCompletion):
+            updateSimplePaymentsOrder(siteID: siteID,
+                                      orderID: orderID,
+                                      feeID: feeID,
+                                      status: status,
+                                      amount: amount,
+                                      amountName: amountName,
+                                      taxable: taxable,
+                                      orderNote: orderNote,
+                                      email: email,
+                                      onCompletion: onCompletion)
+        case let .markOrderAsPaidLocally(siteID, orderID, datePaid, onCompletion):
+            markOrderAsPaidLocally(siteID: siteID, orderID: orderID, datePaid: datePaid, onCompletion: onCompletion)
+        case let .deleteOrder(siteID, order, deletePermanently, onCompletion):
+            deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
+        case let .observeInsertedOrders(siteID, completion):
+            observeInsertedOrders(siteID: siteID, completion: completion)
+        case let .checkIfStoreHasOrders(siteID, completion):
+            checkIfStoreHasOrders(siteID: siteID, onCompletion: completion)
+        }
+    }
+}
+
+
+// MARK: - Services!
+//
+private extension OrderStore {
+
+    /// Nukes all of the Stored Orders.
+    ///
+    func resetStoredOrders(onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ storage in
+            storage.deleteAllObjects(ofType: Storage.Order.self)
+        }, completion: {
+            DDLogDebug("Orders deleted")
+            onCompletion()
+        }, on: .main)
+    }
+
+    /// Searches all of the orders that contain a given Keyword.
+    ///
+    func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+        Task { @MainActor in
+            do {
+                let orders = try await remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize)
+                upsertSearchResultsInBackground(for: siteID, keyword: keyword, readOnlyOrders: orders) {
+                    onCompletion(nil)
+                }
+            } catch {
+                onCompletion(error)
+            }
+        }
+    }
+
+    /// Performs a fetch for the first pages of a filtered list.
+    ///
+    /// If `deleteAllBeforeSaving` is true, all the orders will be deleted before saving any newly
+    /// fetched `Order`. The deletion only happens once, regardless of the which fetch request
+    /// finishes first.
+    ///
+    /// The orders will only be deleted if one of the executed `GET` requests succeed.
+    ///
+    /// - Parameters:
+    ///     - statuses: The statuses to use for the filtered list. If this is not provided,
+    ///                       only the all orders list will be fetched. See `OrderStatusEnum`
+    ///                       for possible values.
+    ///     - after: Limit response to resources published after a given ISO8601 compliant date.
+    ///     - before: Limit response to resources published before a given ISO8601 compliant date.
+    ///     - modifiedAfter: Limit response to resources modified after a given ISO8601 compliant date.
+    ///
+    func fetchFilteredOrders(siteID: Int64,
+                             statuses: [String]?,
+                             after: Date?,
+                             before: Date?,
+                             modifiedAfter: Date?,
+                             customerID: Int64?,
+                             productID: Int64?,
+                             createdVia: String?,
+                             writeStrategy: OrderAction.OrdersStorageWriteStrategy,
+                             pageSize: Int,
+                             onCompletion: @escaping (TimeInterval, Result<[Order], Error>) -> Void) {
+
+        let pageNumber = OrdersRemote.Defaults.pageNumber
+        let startTime = Date()
+        Task { @MainActor [weak self] in
+            do {
+                let orders = try await self?.remote.loadAllOrders(for: siteID,
+                                                                  statuses: statuses,
+                                                                  after: after,
+                                                                  before: before,
+                                                                  modifiedAfter: modifiedAfter,
+                                                                  customerID: customerID,
+                                                                  productID: productID,
+                                                                  createdVia: createdVia,
+                                                                  pageNumber: pageNumber,
+                                                                  pageSize: pageSize) ?? []
+                let result: Result<[Order], Error> = .success(orders)
+                switch writeStrategy {
+                case .doNotSave:
+                    onCompletion(Date().timeIntervalSince(startTime), result)
+                case .deleteAllBeforeSaving, .save:
+                    let removeAllStoredOrders = writeStrategy == .deleteAllBeforeSaving
+                    self?.upsertStoredOrdersInBackground(readOnlyOrders: orders, removeAllStoredOrders: removeAllStoredOrders) {
+                        onCompletion(Date().timeIntervalSince(startTime), result)
+                    }
+                }
+            } catch {
+                let result: Result<[Order], Error> = .failure(error)
+                onCompletion(Date().timeIntervalSince(startTime), result)
+            }
+        }
+    }
+
+    /// Retrieves the orders associated with a given Site ID (if any!).
+    ///
+    func synchronizeOrders(siteID: Int64,
+                           statuses: [String]?,
+                           after: Date?,
+                           before: Date?,
+                           modifiedAfter: Date?,
+                           customerID: Int64?,
+                           productID: Int64?,
+                           createdVia: String?,
+                           pageNumber: Int,
+                           pageSize: Int,
+                           onCompletion: @escaping (TimeInterval, Error?) -> Void) {
+        let startTime = Date()
+        Task { @MainActor in
+            do {
+                let orders = try await remote.loadAllOrders(for: siteID,
+                                                            statuses: statuses,
+                                                            after: after,
+                                                            before: before,
+                                                            modifiedAfter: modifiedAfter,
+                                                            customerID: customerID,
+                                                            productID: productID,
+                                                            createdVia: createdVia,
+                                                            pageNumber: pageNumber,
+                                                            pageSize: pageSize)
+                upsertStoredOrdersInBackground(readOnlyOrders: orders) {
+                    onCompletion(Date().timeIntervalSince(startTime), nil)
+                }
+            } catch {
+                onCompletion(Date().timeIntervalSince(startTime), error)
+            }
+        }
+    }
+
+    /// Checks if the store already has any orders.
+    ///
+    func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        // Check for locally stored products first.
+        let storage = storageManager.viewStorage
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        if storage.firstObject(ofType: StorageOrder.self, matching: predicate) != nil {
+            return onCompletion(.success(true))
+        }
+
+        // If there are no locally stored orders, then check remote.
+        Task { @MainActor in
+            do {
+                let orders = try await remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1)
+                onCompletion(.success(orders.isEmpty == false))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Retrieves a specific order associated with a given Site ID (if any!).
+    ///
+    func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
+        // Check first if the order exists in storage. If it doesn't, fetch it from remote.
+        let storage = storageManager.viewStorage
+        guard let storedOrder = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+            return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+        }
+
+        Task {
+            // If the order exists in storage, fetch the last modified date to see if it has been updated remotely.
+            let dateModified = try? await remote.fetchDateModified(for: siteID, orderID: orderID)
+
+            // If the stored order is up to date with remote, return it.
+            // Otherwise, fetch the updated order from remote.
+            await MainActor.run {
+                guard dateModified == storedOrder.dateModified else {
+                    return loadOrderFromRemote(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
+                }
+                onCompletion(storedOrder, nil)
+            }
+        }
+    }
+
+    func retrieveOrderRemotely(siteID: Int64, orderID: Int64, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        loadOrderFromRemote(siteID: siteID, orderID: orderID) { order, error in
+            if let error {
+                onCompletion(.failure(error))
+            } else if let order {
+                onCompletion(.success(order))
+            } else {
+                onCompletion(.failure(RetrieveOrderError.noErrorAndOrderFromRemote))
+            }
+        }
+    }
+
+    /// Loads a specific order associated with a given Site ID from remote.
+    ///
+    private func loadOrderFromRemote(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
+        remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
+            guard let order = order else {
+                if case NetworkError.notFound? = error {
+                    self?.deleteStoredOrder(siteID: siteID, orderID: orderID) {
+                        onCompletion(nil, error)
+                    }
+                } else {
+                    onCompletion(nil, error)
+                }
+                return
+            }
+
+            self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
+                onCompletion(order, nil)
+            }
+        }
+    }
+
+    /// Creates a simple payments order with a specific amount value and no tax.
+    ///
+    func createSimplePaymentsOrder(siteID: Int64,
+                                   status: OrderStatusEnum,
+                                   amount: String,
+                                   taxable: Bool,
+                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
+        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines]) { [weak self] result in
+            switch result {
+            case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure:
+                onCompletion(result)
+            }
+        }
+    }
+
+    /// Updates a simple payment order with the specified values.
+    ///
+    func updateSimplePaymentsOrder(siteID: Int64,
+                                   orderID: Int64,
+                                   feeID: Int64,
+                                   status: OrderStatusEnum,
+                                   amount: String,
+                                   amountName: String?,
+                                   taxable: Bool,
+                                   orderNote: String?,
+                                   email: String?,
+                                   onCompletion: @escaping (Result<Order, Error>) -> Void) {
+
+        // Recreate the original order
+        let originalOrder = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
+
+        // Create updated fields
+        let newFee = OrderFactory.simplePaymentFee(feeID: feeID, amount: amount, name: amountName, taxable: taxable)
+        let newBillingAddress = Address(firstName: "",
+                                        lastName: "",
+                                        company: nil,
+                                        address1: "",
+                                        address2: nil,
+                                        city: "",
+                                        state: "",
+                                        postcode: "",
+                                        country: "",
+                                        phone: nil,
+                                        email: email)
+
+        // Set new fields
+        let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
+        let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
+
+        updateOrder(siteID: siteID, order: updatedOrder, giftCard: nil, fields: updateFields, onCompletion: onCompletion)
+    }
+
+    /// Creates a manual order with the provided order details.
+    ///
+    func createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        let fields: [OrdersRemote.CreateOrderField] = [.status,
+                                                       .items,
+                                                       .billingAddress,
+                                                       .shippingAddress,
+                                                       .shippingLines,
+                                                       .feeLines,
+                                                       .couponLines,
+                                                       .customerNote,
+                                                       .customerID,
+                                                       .currency]
+        remote.createOrder(siteID: siteID,
+                           order: order,
+                           giftCard: giftCard,
+                           fields: fields) { [weak self] result in
+            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
+        }
+    }
+
+    /// Updates an Order with the specified Status.
+    ///
+    func updateOrder(siteID: Int64, orderID: Int64, status: OrderStatusEnum, onCompletion: @escaping (Error?) -> Void) {
+        /// Optimistically update the Status
+        updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: status) { [weak self] previousStatus in
+            guard let self else {
+                return onCompletion(UpdateOrderStatusError.undefinedState)
+            }
+            remote.updateOrder(from: siteID, orderID: orderID, statusKey: status) { [weak self] (order, error) in
+                guard let error else {
+                    if let order {
+                        self?.upsertStoredOrder(readOnlyOrder: order)
+                    }
+                    return onCompletion(nil)
+                }
+
+                /// Revert Optimistic Update
+                self?.updateOrderStatus(siteID: siteID, orderID: orderID, statusKey: previousStatus) { _ in
+                    onCompletion(error)
+                }
+            }
+        }
+    }
+
+    /// Updates the specified fields from an order.
+    ///
+    func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        /// When an order item has a remote ID and bundle configuration, the order's line items need to be updated in the following way:
+        /// - Set the original order item with the bundle configuration quantity to 0, and remove the bundle configuration
+        /// - Create a new order item with the bundle configuration
+        /// - Remove the child order items by setting the quantity to 0
+        let itemIDsWithBundleConfiguration = order.items.filter { !$0.bundleConfiguration.isEmpty }.map { $0.itemID }
+        let items: [OrderItem] = {
+            guard fields.contains(.items) && !itemIDsWithBundleConfiguration.isEmpty else {
+                return order.items
+            }
+
+            return order.items.flatMap { orderItem -> [OrderItem] in
+                // Removes the bundled item if its parent order item has bundle configuration.
+                // Excluding the order item does not work, setting its quantity to zero is required.
+                if let parentItemID = orderItem.parent, itemIDsWithBundleConfiguration.contains(parentItemID) {
+                    return [orderItem.copy(quantity: 0)]
+                }
+
+                // Returns the original order item if it doesn't have bundle configuration.
+                guard !orderItem.bundleConfiguration.isEmpty && orderItem.itemID != .zero else {
+                    return [orderItem]
+                }
+                let existingOrderItemWithBundleConfig = orderItem.copy(quantity: 0, bundleConfiguration: [])
+                let newOrderItemWithBundleConfig = orderItem.copy(itemID: 0)
+                return [existingOrderItemWithBundleConfig, newOrderItemWithBundleConfig]
+            }
+        }()
+
+        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
+            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
+        }
+    }
+
+    /// Updates the specified fields from an order optimistically.
+    ///
+    /// Updates will be reverted in case of failure.
+    ///
+    func updateOrderOptimistically(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically update the stored order.
+        let backupOrder = upsertStoredOrder(readOnlyOrder: order)
+
+        remote.updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { [weak self] result in
+            guard case .failure = result else {
+                onCompletion(.success(order))
+                return
+            }
+
+            /// Revert optimistic update.
+            ///
+            /// If the backup order is equal to the given order means that the order
+            /// didn't exist locally. So, we have to delete the stored order as workaround.
+            /// Otherwise, we have to revert the updated fields.
+            if order == backupOrder {
+                self?.deleteStoredOrder(siteID: siteID, orderID: order.orderID) {
+                    onCompletion(result)
+                }
+            } else {
+                self?.upsertStoredOrder(readOnlyOrder: backupOrder)
+                onCompletion(result)
+            }
+        }
+    }
+
+    /// Updates an order to be considered as paid locally, for use cases where the payment is captured in the
+    /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
+    ///
+    func markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        storageManager.performAndSave({ storage in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                throw MarkOrderAsPaidLocallyError.orderNotFoundInStorage
+            }
+            order.datePaid = datePaid
+            order.statusKey = OrderStatusEnum.processing.rawValue
+            return order.toReadOnly()
+        }, completion: { result in
+            switch result {
+            case .success(let readonlyOrder):
+                onCompletion(.success(readonlyOrder))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }, on: .main)
+    }
+
+    /// Deletes a given order.
+    ///
+    func deleteOrder(siteID: Int64, order: Order, deletePermanently: Bool, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        // Optimistically delete the order from storage
+        deleteStoredOrder(siteID: siteID, orderID: order.orderID)
+
+        remote.deleteOrder(for: siteID, orderID: order.orderID, force: deletePermanently) { [weak self] result in
+            switch result {
+            case .success:
+                onCompletion(result)
+            case .failure:
+                // Revert optimistic deletion unless the order is an auto-draft (shouldn't be stored)
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            }
+        }
+    }
+
+    func observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void) {
+        completion(
+            NotificationCenter.default
+                .publisher(for: .NSManagedObjectContextObjectsDidChange, object: storageManager.viewStorage)
+                .map { notification -> [Order] in
+                    guard let note = ManagedObjectsDidChangeNotification(notification: notification) else {
+                        return []
+                    }
+
+                    return note.insertedObjects.compactMap { ($0 as? StorageOrder)?.toReadOnly() }
+                }
+                .map { orders in
+                    orders.filter { $0.siteID == siteID }
+                }
+                .filter { $0.isEmpty == false }
+                .removeDuplicates()
+                .eraseToAnyPublisher()
+        )
+    }
+}
+
+
+// MARK: - Storage
+//
+extension OrderStore {
+
+    /// Deletes any Storage.Order with the specified OrderID
+    ///
+    func deleteStoredOrder(siteID: Int64, orderID: Int64, onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ storage in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+            storage.deleteObject(order)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates the Status of the specified Order, as requested.
+    ///
+    func updateOrderStatus(siteID: Int64, orderID: Int64,
+                           statusKey: OrderStatusEnum,
+                           onCompletion: @escaping (_ previousStatus: OrderStatusEnum) -> Void) {
+        storageManager.performAndSave({ storage -> OrderStatusEnum in
+            guard let order = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return statusKey
+            }
+            let oldStatus = order.statusKey
+            order.statusKey = statusKey.rawValue
+            return OrderStatusEnum(rawValue: oldStatus)
+        }, completion: { result in
+            switch result {
+            case .success(let status):
+                onCompletion(status)
+            case .failure:
+                // this case should not happen as we don't return any error in the operation closure above
+                onCompletion(statusKey)
+            }
+        }, on: .main)
+    }
+}
+
+
+// MARK: - Unit Testing Helpers
+//
+extension OrderStore {
+
+    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Order in a given Storage Layer.
+    ///
+    func upsertStoredOrder(readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false, in storage: StorageType) {
+        upsertStoredOrders(readOnlyOrders: [readOnlyOrder], insertingSearchResults: insertingSearchResults, in: storage)
+    }
+
+    /// Unit Testing Helper: Updates or Inserts a given Search Results page
+    ///
+    func upsertStoredResults(for siteID: Int64, keyword: String, readOnlyOrder: Networking.Order, in storage: StorageType) {
+        upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: [readOnlyOrder], in: storage)
+    }
+}
+
+
+// MARK: - Storage: Search Results
+//
+private extension OrderStore {
+    /// Updates or inserts the specified ReadOnly Order Entity.
+    ///
+    /// - Returns: The updated order, prior to performing the update operation or the given order when
+    /// the order doesn't exist locally.
+    ///
+    @discardableResult
+    func upsertStoredOrder(readOnlyOrder: Networking.Order) -> Networking.Order {
+        let storageOrder = storageManager.viewStorage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
+        let oldReadOnlyOrder = storageOrder?.toReadOnly()
+
+        upsertStoredOrdersInBackground(readOnlyOrders: [readOnlyOrder])
+
+        if storageOrder == nil {
+            DDLogWarn("⚠️ Unable to retrieve stored order with ID \(readOnlyOrder.orderID) to be updated - A new order has been stored as a workaround")
+        }
+
+        return oldReadOnlyOrder ?? readOnlyOrder
+    }
+
+    /// Upserts the Orders, and associates them to the SearchResults Entity (in Background)
+    ///
+    func upsertSearchResultsInBackground(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], onCompletion: @escaping () -> Void) {
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders, insertingSearchResults: true, in: derivedStorage)
+            upsertStoredResults(for: siteID, keyword: keyword, readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Upserts the Orders, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    func upsertStoredResults(for siteID: Int64, keyword: String, readOnlyOrders: [Networking.Order], in storage: StorageType) {
+        let searchResults = storage.loadOrderSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.OrderSearchResults.self)
+        searchResults.keyword = keyword
+
+        let orderIDs = readOnlyOrders.map { $0.orderID }
+        let storedOrders = storage.loadOrders(siteID: siteID, orderIDs: orderIDs)
+        for orderID in orderIDs {
+            guard let storedOrder = storedOrders.first(where: { $0.orderID == orderID }) else {
+                continue
+            }
+
+            storedOrder.addToSearchResults(searchResults)
+        }
+    }
+}
+
+
+// MARK: - Storage: Orders
+//
+private extension OrderStore {
+    func handleCreateOrUpdateOrderResult(_ result: Result<Order, Error>, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        switch result {
+            case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
+                if let giftCard, order.appliedGiftCards.contains(where: { $0.code == giftCard }) == false {
+                    return onCompletion(.failure(GiftCardError.notApplied))
+                }
+
+                upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure(let error):
+                if let dotcomError = error as? DotcomError,
+                   case let .unknown(code, message, _) = dotcomError {
+                    switch code {
+                        case "woocommerce_rest_gift_card_cannot_apply":
+                            return onCompletion(.failure(GiftCardError.cannotApply(reason: message)))
+                        case "woocommerce_rest_gift_card_cannot_parse_data":
+                            return onCompletion(.failure(GiftCardError.invalid(reason: message)))
+                        default:
+                            return onCompletion(result)
+                    }
+                }
+                onCompletion(result)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*.
+    ///
+    private func upsertStoredOrdersInBackground(readOnlyOrders: [Networking.Order],
+                                                removeAllStoredOrders: Bool = false,
+                                                onCompletion: (() -> Void)? = nil) {
+        storageManager.performAndSave({ [weak self] derivedStorage in
+            guard let self else { return }
+            if removeAllStoredOrders {
+                derivedStorage.deleteAllObjects(ofType: Storage.Order.self)
+            }
+            upsertStoredOrders(readOnlyOrders: readOnlyOrders, in: derivedStorage)
+        }, completion: onCompletion, on: .main)
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly Order Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyOrders: Remote Orders to be persisted.
+    ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be marked as "Search Results Only"
+    ///     - storage: Where we should save all the things!
+    ///
+    private func upsertStoredOrders(readOnlyOrders: [Networking.Order],
+                                    insertingSearchResults: Bool = false,
+                                    in storage: StorageType) {
+        let useCase = OrdersUpsertUseCase(storage: storage)
+        useCase.upsert(readOnlyOrders, insertingSearchResults: insertingSearchResults)
+    }
+}
+
+extension OrderStore {
+    enum MarkOrderAsPaidLocallyError: Error {
+        case orderNotFoundInStorage
+    }
+
+    enum UpdateOrderStatusError: Error {
+        case undefinedState
+    }
+
+    enum RetrieveOrderError: Error {
+        case noErrorAndOrderFromRemote
+    }
+
+    public enum GiftCardError: Error, Equatable {
+        /// When the gift card cannot be applied (e.g. the order total is 0).
+        case cannotApply(reason: String?)
+        /// When the gift card is invalid (e.g. invalid code).
+        case invalid(reason: String?)
+        /// When the input gift card code isn't included in the updated order response while the request is successful.
+        /// This can happen when the gift card has 0 balance and the order total is positive.
+        case notApplied
+    }
+}
+
+/// Gift Card UI errors
+///
+extension OrderStore.GiftCardError {
+    /// Title of the error notice in order form.
+    public var noticeTitle: String {
+        switch self {
+            case .cannotApply:
+                return Localization.Notice.cannotApplyTitle
+            case .invalid:
+                return Localization.Notice.invalidTitle
+            case .notApplied:
+                return Localization.Notice.notAppliedTitle
+        }
+    }
+
+    /// Message of the error notice in order form.
+    public var noticeMessage: String {
+        switch self {
+            case let .cannotApply(reason):
+                return reason ?? Localization.Notice.cannotApplyMessage
+            case let .invalid(reason):
+                return reason ?? Localization.Notice.invalidMessage
+            case .notApplied:
+                return Localization.Notice.notAppliedMessage
+        }
+    }
+}
+
+extension OrderStore.GiftCardError: CustomStringConvertible {
+    public var description: String {
+        switch self {
+            case let .cannotApply(reason):
+                return String.localizedStringWithFormat(Localization.Description.cannotApplyFormat, reason ?? "")
+            case let .invalid(reason):
+                return String.localizedStringWithFormat(Localization.Description.invalidFormat, reason ?? "")
+            case .notApplied:
+                return Localization.Description.notApplied
+        }
+    }
+}
+
+private extension OrderStore.GiftCardError {
+    enum Localization {
+        enum Description {
+            static let cannotApplyFormat = NSLocalizedString(
+                "Cannot apply gift card to order error: %1$@",
+                comment: "Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason."
+            )
+            static let invalidFormat = NSLocalizedString(
+                "Invalid gift card error: %1$@",
+                comment: "Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason."
+            )
+            static let notApplied = NSLocalizedString(
+                "The gift card is not applied.",
+                comment: "Order gift card error thrown when the gift card is not applied."
+            )
+        }
+
+        enum Notice {
+            static let cannotApplyTitle = NSLocalizedString(
+                "Cannot apply gift card to order",
+                comment: "Order gift card error notice title when the gift card cannot be applied."
+            )
+            static let invalidTitle = NSLocalizedString(
+                "Gift card is invalid",
+                comment: "Order gift card error notice title when the gift card is invalid."
+            )
+            static let notAppliedTitle = NSLocalizedString(
+                "Gift card is not applied",
+                comment: "Order gift card error notice title when the gift card is invalid."
+            )
+            static let cannotApplyMessage = NSLocalizedString(
+                "Cannot apply gift card to order",
+                comment: "Order gift card error notice message when the gift card cannot be applied."
+            )
+            static let invalidMessage = NSLocalizedString(
+                "Gift card is invalid",
+                comment: "Order gift card error notice message when the gift card is invalid."
+            )
+            static let notAppliedMessage = NSLocalizedString(
+                "Please check the remaining balance of the gift card.",
+                comment: "Order gift card error notice message when the gift card is invalid."
+            )
+        }
+    }
+}

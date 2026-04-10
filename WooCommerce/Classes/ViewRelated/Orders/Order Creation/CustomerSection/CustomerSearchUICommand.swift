@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import Experiments
 import protocol WooFoundation.Analytics
@@ -60,12 +61,20 @@ final class CustomerSearchUICommand: SearchUICommand {
     // Whether to hide button for creating customer in empty state
     private let disallowCreatingCustomer: Bool
 
+    // Whether to hide the detail text (username or "Guest") in each customer row
+    private let hideDetailText: Bool
+
+    // The currently selected customer ID to show checkmark
+    private var selectedCustomerID: Int64?
+
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
          showSearchFilters: Bool = false,
          showGuestLabel: Bool = false,
          shouldTrackCustomerAdded: Bool = true,
          disallowCreatingCustomer: Bool = false,
+         hideDetailText: Bool = false,
+         selectedCustomerID: Int64? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -79,6 +88,8 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.showGuestLabel = showGuestLabel
         self.shouldTrackCustomerAdded = shouldTrackCustomerAdded
         self.disallowCreatingCustomer = disallowCreatingCustomer
+        self.hideDetailText = hideDetailText
+        self.selectedCustomerID = selectedCustomerID
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -86,6 +97,10 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.onDidSelectSearchResult = onDidSelectSearchResult
         self.onDidStartSyncingAllCustomersFirstPage = onDidStartSyncingAllCustomersFirstPage
         self.onDidFinishSyncingAllCustomersFirstPage = onDidFinishSyncingAllCustomersFirstPage
+    }
+
+    func updateSelectedCustomerID(_ customerID: Int64?) {
+        self.selectedCustomerID = customerID
     }
 
     var hideCancelButton: Bool {
@@ -142,9 +157,12 @@ final class CustomerSearchUICommand: SearchUICommand {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let newCustomerSelectorIsEnabled = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-        let descriptor = newCustomerSelectorIsEnabled ?
-        NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true) : NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)
-        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let descriptors = newCustomerSelectorIsEnabled ?
+        [
+            NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true),
+            NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: true)
+        ] : [NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)]
+        return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: descriptors)
     }
 
     func createStarterViewController() -> UIViewController? {
@@ -170,7 +188,11 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
-        let detail = showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+        let detail: String = {
+            guard !hideDetailText else { return "" }
+            return showGuestLabel && model.customerID == 0 ? Localization.guestLabel : model.username ?? ""
+        }()
+        let isSelected = selectedCustomerID == model.customerID
 
         return CellViewModel(
             id: "\(model.customerID)",
@@ -180,7 +202,8 @@ final class CustomerSearchUICommand: SearchUICommand {
             subtitle: model.email,
             accessibilityLabel: "",
             detail: detail,
-            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
+            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "", // Only underline the search term if it's longer than 1 character
+            isSelected: isSelected
         )
     }
 
@@ -295,10 +318,11 @@ private extension CustomerSearchUICommand {
                                               filter: searchFilter,
                                               filterEmpty: .email) { result in
             switch result {
-            case .success:
-                onCompletion?(result.isSuccess)
+            case .success(let hasNextPage):
+                onCompletion?(hasNextPage)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
+                onCompletion?(false)
             }
         }
     }

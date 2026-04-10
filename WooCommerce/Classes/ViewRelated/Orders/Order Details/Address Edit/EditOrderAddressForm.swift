@@ -102,6 +102,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 SingleAddressForm(fields: $viewModel.fields,
                                   countryViewModelClosure: viewModel.createCountryViewModel,
                                   stateViewModelClosure: viewModel.createStateViewModel,
+                                  countryByCode: viewModel.findCountry(by:),
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
@@ -132,6 +133,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     SingleAddressForm(fields: $viewModel.secondaryFields,
                                       countryViewModelClosure: viewModel.createSecondaryCountryViewModel,
                                       stateViewModelClosure: viewModel.createSecondaryStateViewModel,
+                                      countryByCode: viewModel.findCountry(by:),
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
@@ -213,6 +215,7 @@ struct SingleAddressForm: View {
 
     let countryViewModelClosure: () -> CountrySelectorViewModel
     let stateViewModelClosure: () -> StateSelectorViewModel
+    let countryByCode: (_ countryCode: String) -> Country?
 
     let sectionTitle: String
     let showEmailField: Bool
@@ -227,6 +230,8 @@ struct SingleAddressForm: View {
     ///
     @State private var showStateSelector = false
 
+    @State private var showMapPicker = false
+
     /// Stores shared value derived from max title width among all the fields.
     ///
     @State private var titleWidth: CGFloat? = nil
@@ -237,6 +242,9 @@ struct SingleAddressForm: View {
                 if let value = value {
                     titleWidth = value
                 }
+            }
+            .sheet(isPresented: $showMapPicker) {
+                AddressMapPickerView(fields: $fields, countryByCode: countryByCode)
             }
     }
 
@@ -253,7 +261,8 @@ struct SingleAddressForm: View {
                                  text: $fields.firstName,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
                 .accessibilityIdentifier("order-address-form-first-name-field")
 
             Divider()
@@ -264,7 +273,8 @@ struct SingleAddressForm: View {
                                  text: $fields.lastName,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
             Divider()
                 .padding(.leading, Constants.dividerPadding)
 
@@ -275,7 +285,8 @@ struct SingleAddressForm: View {
                                      text: $fields.email,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .emailAddress)
+                                     keyboardType: .emailAddress,
+                                     autocapitalization: .never)
                     .autocapitalization(.none)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
@@ -311,6 +322,22 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
+                Button(action: {
+                    showMapPicker = true
+                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
+                                                   withProperties: ["locale": Locale.current.identifier])
+                }) {
+                    HStack {
+                        Image(systemName: "map")
+                        Text(Localization.pickOnMap)
+                    }
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.horizontal, Constants.horizontalPadding)
+                .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
+            }
+
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
                                      titleWidth: $titleWidth,
@@ -318,7 +345,8 @@ struct SingleAddressForm: View {
                                      text: $fields.company,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address1Field,
@@ -327,7 +355,8 @@ struct SingleAddressForm: View {
                                      text: $fields.address1,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.address2Field,
@@ -336,7 +365,8 @@ struct SingleAddressForm: View {
                                      text: $fields.address2,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.cityField,
@@ -345,7 +375,8 @@ struct SingleAddressForm: View {
                                      text: $fields.city,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .words)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
                 TitleAndTextFieldRow(title: Localization.postcodeField,
@@ -354,7 +385,8 @@ struct SingleAddressForm: View {
                                      text: $fields.postcode,
                                      symbol: nil,
                                      fieldAlignment: .leading,
-                                     keyboardType: .default)
+                                     keyboardType: .default,
+                                     autocapitalization: .characters)
                 Divider()
                     .padding(.leading, Constants.dividerPadding)
             }
@@ -396,6 +428,12 @@ struct SingleAddressForm: View {
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.systemBackground))
         .addingTopAndBottomDividers()
+        .onChange(of: showStateSelector) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .onChange(of: showCountrySelector) {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
     }
     }
 
@@ -417,7 +455,8 @@ struct SingleAddressForm: View {
                                  text: $fields.state,
                                  symbol: nil,
                                  fieldAlignment: .leading,
-                                 keyboardType: .default)
+                                 keyboardType: .default,
+                                 autocapitalization: .words)
         }
     }
 }
@@ -427,6 +466,7 @@ private enum Constants {
     static let dividerPadding: CGFloat = 16
     static let horizontalPadding: CGFloat = 16
     static let verticalPadding: CGFloat = 7
+    static let mapPickerButtonVerticalPadding: CGFloat = 16
 }
 
 private enum Localization {
@@ -460,6 +500,12 @@ private enum Localization {
 
     static let hintOptional = NSLocalizedString("Optional", comment: "Text field placeholder in Edit Address Form")
     static let hintSelectOption = NSLocalizedString("Select an option", comment: "Text field placeholder in Edit Address Form")
+
+    static let pickOnMap = NSLocalizedString(
+        "editOrderAddressForm.pickOnMap",
+        value: "Find on Map",
+        comment: "Button to open map address picker."
+    )
 }
 
 #if DEBUG
@@ -467,64 +513,80 @@ private enum Localization {
 import struct Yosemite.Order
 import struct Yosemite.Address
 
+private let sampleAddress = Address(firstName: "Johnny",
+                                    lastName: "Appleseed",
+                                    company: nil,
+                                    address1: "234 70th Street",
+                                    address2: nil,
+                                    city: "Niagara Falls",
+                                    state: "NY",
+                                    postcode: "14304",
+                                    country: "US",
+                                    phone: "333-333-3333",
+                                    email: "scrambled@scrambled.com")
+
+private let sampleOrder = Order(siteID: 123,
+                                orderID: 456,
+                                parentID: 2,
+                                customerID: 11,
+                                orderKey: "",
+                                isEditable: false,
+                                needsPayment: false,
+                                needsProcessing: false,
+                                number: "789",
+                                status: .processing,
+                                currency: "USD",
+                                currencySymbol: "$",
+                                customerNote: "",
+                                dateCreated: Date(),
+                                dateModified: Date(),
+                                datePaid: Date(),
+                                discountTotal: "0.00",
+                                discountTax: "0.00",
+                                shippingTotal: "0.00",
+                                shippingTax: "0.00",
+                                total: "31.20",
+                                totalTax: "1.20",
+                                paymentMethodID: "stripe",
+                                paymentMethodTitle: "Credit Card (Stripe)",
+                                paymentURL: nil,
+                                chargeID: nil,
+                                items: [],
+                                billingAddress: sampleAddress,
+                                shippingAddress: sampleAddress,
+                                shippingLines: [],
+                                coupons: [],
+                                refunds: [],
+                                fees: [],
+                                taxes: [],
+                                customFields: [],
+                                renewalSubscriptionID: nil,
+                                appliedGiftCards: [],
+                                attributionInfo: nil,
+                                shippingLabels: [],
+                                createdVia: "rest-api")
+
 struct EditAddressForm_Previews: PreviewProvider {
-    static let sampleOrder = Order(siteID: 123,
-                                   orderID: 456,
-                                   parentID: 2,
-                                   customerID: 11,
-                                   orderKey: "",
-                                   isEditable: false,
-                                   needsPayment: false,
-                                   needsProcessing: false,
-                                   number: "789",
-                                   status: .processing,
-                                   currency: "USD",
-                                   currencySymbol: "$",
-                                   customerNote: "",
-                                   dateCreated: Date(),
-                                   dateModified: Date(),
-                                   datePaid: Date(),
-                                   discountTotal: "0.00",
-                                   discountTax: "0.00",
-                                   shippingTotal: "0.00",
-                                   shippingTax: "0.00",
-                                   total: "31.20",
-                                   totalTax: "1.20",
-                                   paymentMethodID: "stripe",
-                                   paymentMethodTitle: "Credit Card (Stripe)",
-                                   paymentURL: nil,
-                                   chargeID: nil,
-                                   items: [],
-                                   billingAddress: sampleAddress,
-                                   shippingAddress: sampleAddress,
-                                   shippingLines: [],
-                                   coupons: [],
-                                   refunds: [],
-                                   fees: [],
-                                   taxes: [],
-                                   customFields: [],
-                                   renewalSubscriptionID: nil,
-                                   appliedGiftCards: [],
-                                   attributionInfo: nil)
-
-    static let sampleAddress = Address(firstName: "Johnny",
-                                       lastName: "Appleseed",
-                                       company: nil,
-                                       address1: "234 70th Street",
-                                       address2: nil,
-                                       city: "Niagara Falls",
-                                       state: "NY",
-                                       postcode: "14304",
-                                       country: "US",
-                                       phone: "333-333-3333",
-                                       email: "scrambled@scrambled.com")
-
     static let sampleViewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
 
     static var previews: some View {
         NavigationView {
             EditOrderAddressForm(viewModel: sampleViewModel)
         }
+    }
+}
+
+#Preview("Single address form") {
+    @Previewable @State var viewModel = EditOrderAddressFormViewModel(order: sampleOrder, type: .shipping)
+    ScrollView {
+        SingleAddressForm(fields: $viewModel.fields,
+                          countryViewModelClosure: viewModel.createCountryViewModel,
+                          stateViewModelClosure: viewModel.createStateViewModel,
+                          countryByCode: viewModel.findCountry(by:),
+                          sectionTitle: viewModel.sectionTitle,
+                          showEmailField: viewModel.showEmailField,
+                          showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
+                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
     }
 }
 

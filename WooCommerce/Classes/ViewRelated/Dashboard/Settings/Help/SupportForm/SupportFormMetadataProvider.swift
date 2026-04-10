@@ -3,13 +3,14 @@ import CoreTelephony
 import Yosemite
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
+import protocol WooFoundation.ConnectivityObserver
 
 /// Helper that provides general device & site zendesk metadata.
 ///
 class SupportFormMetadataProvider {
 
     /// Dependencies
-    private let fileLogger: Logs
+    private let applicationLogProvider: ApplicationLogProvider
     private let stores: StoresManager
     private let sessionManager: SessionManagerProtocol
     private let storageManager: StorageManagerType
@@ -23,12 +24,12 @@ class SupportFormMetadataProvider {
     ///
     private let systemStatusReportViewModel: SystemStatusReportViewModel
 
-    internal init(fileLogger: Logs = ServiceLocator.fileLogger,
+    internal init(applicationLogProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
                   stores: StoresManager = ServiceLocator.stores,
                   sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
                   storageManager: StorageManagerType = ServiceLocator.storageManager,
                   connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
-        self.fileLogger = fileLogger
+        self.applicationLogProvider = applicationLogProvider
         self.stores = stores
         self.sessionManager = sessionManager
         self.storageManager = storageManager
@@ -55,7 +56,8 @@ class SupportFormMetadataProvider {
             Constants.platformTag,
             site.isWordPressComStore ? Constants.wpComTag : nil,
             site.plan.isNotEmpty ? site.plan : nil,
-            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil
+            stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
+            stores.requestAuthenticationMode == .appPasswordsWithJetpack ? Constants.jetpackSiteUsingAppPasswords : nil
         ].compactMap { $0 } + getIPPTags()
     }
 
@@ -165,18 +167,7 @@ private extension SupportFormMetadataProvider {
     /// Gets the content of the main/first log file. Trimmed with a character limit.
     ///
     func getLogFile() -> String {
-        guard let logFileInformation = fileLogger.logFileManager.sortedLogFileInfos.first,
-              let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
-              let logText = String(data: logData, encoding: .utf8) else {
-            return ""
-        }
-
-        // Truncates the log text so it fits in the ticket field.
-        if logText.count > Constants.logFieldCharacterLimit {
-            return String(logText.suffix(Constants.logFieldCharacterLimit))
-        }
-
-        return logText
+        return applicationLogProvider.applicationLogs(cappedTo: Constants.logFieldCharacterLimit) ?? ""
     }
 
     /// Gets the current site description (site url + site description).
@@ -218,6 +209,7 @@ private extension SupportFormMetadataProvider {
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let sourcePlatform = "mobile_-_woo_ios"
+        static let jetpackSiteUsingAppPasswords = "jetpack_site_using_app_passwords"
     }
 
     /// Payments extensions Slugs

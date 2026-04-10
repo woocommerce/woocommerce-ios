@@ -28,11 +28,6 @@ extension WooAnalyticsEvent {
             case aztec = "aztec"
         }
 
-        /// Tracked when the Custom Fields row in Product Details is tapped
-        static func productDetailCustomFieldsTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailCustomFieldsTapped,
-                           properties: [:])
-        }
 
         /// Tracked when the Custom Fields List view is opened
         static func customFieldsListLoaded(

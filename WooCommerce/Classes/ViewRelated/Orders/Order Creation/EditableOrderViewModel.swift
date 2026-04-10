@@ -2,6 +2,7 @@ import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
 import Experiments
+import UIKit
 import WooFoundation
 import enum Networking.DotcomError
 
@@ -17,7 +18,9 @@ final class EditableOrderViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
+    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
     private let permissionChecker: CaptureDevicePermissionChecker
+    private let posNotificationScheduler: POSNotificationScheduling
 
     @Published var syncRequired: Bool = false
 
@@ -77,23 +80,11 @@ final class EditableOrderViewModel: ObservableObject {
         switch flow {
         case .creation: // Creation can be dismissed when there aren't changes pending to commit.
             return !hasChanges
-        case .editing: // Editing can always be dismissed because changes are committed instantly.
-            return true
+        case .editing:
+            // In a single-view layout: Editing can always be dismissed because changes are committed instantly.
+            // In a split-view layout: Editing can be dismissed when there aren't product changes pending to recalculate.
+            return !(selectionSyncApproach == .onRecalculateButtonTap && syncRequired)
         }
-    }
-
-    var sideBySideViewFeatureFlagEnabled: Bool {
-        featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm)
-    }
-
-    /// Indicates whether the cancel button is visible.
-    ///
-    var shouldShowCancelButton: Bool {
-        // The cancel button is handled by the AdaptiveModalContainer with the side-by-side view enabled, so this one should not be shown.
-        guard !sideBySideViewFeatureFlagEnabled else {
-            return false
-        }
-        return flow == .creation
     }
 
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
@@ -175,6 +166,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates if the order status list (selector) should be shown or not.
     ///
     @Published var shouldShowOrderStatusListSheet: Bool = false
+
+    /// Whether manual order status editing is supported for the current site.
+    ///
+    var isOrderStatusEditingEnabled: Bool {
+        ciabEligibilityChecker.isFeatureSupportedForCurrentSite(.manualOrderStatusUpdate)
+    }
 
     /// Defines if the view should be disabled.
     @Published private(set) var disabled: Bool = false
@@ -461,6 +458,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let quantityDebounceDuration: Double
 
+    @MainActor
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
@@ -468,8 +466,10 @@ final class EditableOrderViewModel: ObservableObject {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = ServiceLocator.ciabEligibilityChecker,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
+         posNotificationScheduler: POSNotificationScheduling = POSNotificationScheduler(),
          initialItem: OrderBaseItem? = nil,
          initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
@@ -481,8 +481,10 @@ final class EditableOrderViewModel: ObservableObject {
         self.analytics = analytics
         self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
         self.featureFlagService = featureFlagService
+        self.ciabEligibilityChecker = ciabEligibilityChecker
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
+        self.posNotificationScheduler = posNotificationScheduler
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
@@ -1026,7 +1028,7 @@ final class EditableOrderViewModel: ObservableObject {
         if orderIsNotEmpty {
             customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
         } else {
-            customAmountsSectionViewModel.showAddCustomAmount = true
+            customAmountsSectionViewModel.showCustomAmountView = true
         }
     }
 
@@ -1035,6 +1037,9 @@ final class EditableOrderViewModel: ObservableObject {
             guard let self else { return }
             self.onFinished(order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            Task {
+                await self.posNotificationScheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+            }
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }
             self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
@@ -1048,6 +1053,9 @@ final class EditableOrderViewModel: ObservableObject {
             guard let self else { return }
             self.collectPayment(for: order)
             self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
+            Task {
+                await self.posNotificationScheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+            }
         } onFailure: { [weak self] error, usesGiftCard in
             guard let self else { return }
             self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
@@ -1618,7 +1626,7 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.customAmountsSectionViewModel.showCustomAmountOptionsDialog = true
+                        self.customAmountsSectionViewModel.showCustomAmountView = true
                     })
                 }
             }
@@ -2012,9 +2020,6 @@ private extension EditableOrderViewModel {
     }
 
     func evaluateSelectionSync() {
-        guard sideBySideViewFeatureFlagEnabled else {
-            return
-        }
         switch selectionSyncApproach {
         case .immediate:
             syncOrderItems(products: selectedProducts, variations: selectedProductVariations)
@@ -2028,10 +2033,7 @@ private extension EditableOrderViewModel {
     func forwardSyncApproachToSynchronizer() {
         $selectionSyncApproach
             .sink { [weak self] selectionSyncApproach in
-                guard let self,
-                      sideBySideViewFeatureFlagEnabled else {
-                    return
-                }
+                guard let self else { return }
                 orderSynchronizer.updateBlockingBehavior(selectionSyncApproach == .immediate ? .allUpdates : .majorUpdates)
             }
             .store(in: &cancellables)
@@ -2041,10 +2043,7 @@ private extension EditableOrderViewModel {
         $selectionSyncApproach
             .removeDuplicates()
             .sink { [weak self] selectionSyncApproach in
-                guard let self,
-                      sideBySideViewFeatureFlagEnabled else {
-                    return
-                }
+                guard let self else { return }
                 if selectionSyncApproach != .onSelectorButtonTap || syncRequired {
                     /// When we change from `onSelectorButtonTap`, we would lose unsynced changes if we do nothing.
                     /// `syncRequired` indicates that we have unsynced side-by-side changes, which would be lost when
@@ -2529,7 +2528,7 @@ extension EditableOrderViewModel {
         ///
         private static func isEmailError(_ error: Error, order: Order) -> Bool {
             switch error as? DotcomError {
-            case .unknown(code: "rest_invalid_param", let message?):
+            case .unknown(code: "rest_invalid_param", let message?, _):
                 return message.contains("billing") && order.billingAddress?.hasEmailAddress == false
             default:
                 return false
@@ -2537,7 +2536,7 @@ extension EditableOrderViewModel {
         }
 
         private static func isCouponsError(_ error: Error) -> Bool {
-            if case .unknown(code: "woocommerce_rest_invalid_coupon", _) = error as? DotcomError {
+            if case .unknown(code: "woocommerce_rest_invalid_coupon", _, _) = error as? DotcomError {
                 return true
             }
 
@@ -2622,7 +2621,7 @@ private extension EditableOrderViewModel {
 }
 
 extension TaxBasedOnSetting {
-    var displayString: String {
+    var displayTaxCalculationHint: String {
         switch self {
         case .customerBillingAddress:
             return NSLocalizedString("editableOrderViewModel.taxBasedOnSetting.customerBillingAddress",

@@ -35,11 +35,18 @@ struct BadgeView: View {
     struct Customizations {
         let textColor: Color
         let backgroundColor: Color
+        /// Border color for the badge. When `nil`, no border is drawn.
+        let borderColor: Color?
+        let bold: Bool
 
         init(textColor: Color = Color(.textBrand),
-             backgroundColor: Color = Color(.wooCommercePurple(.shade0))) {
+             backgroundColor: Color = Color(.wooCommercePurple(.shade0)),
+             borderColor: Color? = .white,
+             bold: Bool = true) {
             self.textColor = textColor
             self.backgroundColor = backgroundColor
+            self.borderColor = borderColor
+            self.bold = bold
         }
     }
 
@@ -64,7 +71,9 @@ struct BadgeView: View {
     var body: some View {
         if let text = type.title {
             Text(text)
-                .bold()
+                .if(customizations.bold) {
+                    $0.bold()
+                }
                 .foregroundColor(customizations.textColor)
                 .captionStyle()
                 .padding(.leading, Layout.horizontalPadding)
@@ -96,21 +105,22 @@ private extension BadgeView {
     func backgroundView() -> some View {
         switch backgroundShape {
         case .circle:
-            if #available(iOS 17, *) {
-                Circle()
-                    .fill(customizations.backgroundColor)
-                    .stroke(Color.white, lineWidth: Layout.borderLineWidth)
-            } else {
-                ZStack {
-                    Circle()
-                        .fill(customizations.backgroundColor)
-                    Circle()
-                        .stroke(Color.white, lineWidth: Layout.borderLineWidth)
+            Circle()
+                .fill(customizations.backgroundColor)
+                .if(customizations.borderColor != nil) { view in
+                    view.overlay {
+                        Circle().stroke(customizations.borderColor ?? .clear, lineWidth: Layout.borderLineWidth)
+                    }
                 }
-            }
         case .roundedRectangle(let cornerRadius):
             RoundedRectangle(cornerRadius: cornerRadius)
                 .fill(customizations.backgroundColor)
+                .if(customizations.borderColor != nil) { view in
+                    view.overlay {
+                        RoundedRectangle(cornerRadius: cornerRadius)
+                            .stroke(customizations.borderColor ?? .clear, lineWidth: Layout.borderLineWidth)
+                    }
+                }
         }
     }
 }
@@ -124,7 +134,7 @@ private extension BadgeView.BadgeType {
 
 private extension BadgeView {
     enum Layout {
-        static let horizontalPadding: CGFloat = 6
+        static let horizontalPadding: CGFloat = 8
         static let verticalPadding: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
         static let cornerRadius: CGFloat = 8

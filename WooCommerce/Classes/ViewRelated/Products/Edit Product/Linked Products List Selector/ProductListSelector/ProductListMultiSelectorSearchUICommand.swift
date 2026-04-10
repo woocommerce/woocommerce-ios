@@ -1,3 +1,5 @@
+import Foundation
+import UIKit
 import Yosemite
 
 /// Implementation of `SearchUICommand` for selecting linked products to a grouped product from search UI.
@@ -69,7 +71,7 @@ final class ProductListMultiSelectorSearchUICommand: NSObject, SearchUICommand {
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
-        return ProductsTabProductViewModel(product: model, isSelected: isProductSelected(model))
+        return ProductsTabProductViewModel(product: model.toListItem(), isSelected: isProductSelected(model))
     }
 
     /// Synchronizes the Products matching a given Keyword

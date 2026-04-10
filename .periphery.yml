@@ -1,0 +1,67 @@
+# This option tells Periphery to not report any Swift code as unused if it's accessible from Objective-C. This includes any class that inherits from NSObject, and any method or property marked with the @objc or @objcMembers attribute.
+#  Woocommerce-ios, is a mixed Swift and Objective-C project. Swift code is often called from Objective-C and vice-versa. Without this flag, Periphery would incorrectly flag Swift code that is only used by Objective-C parts of the app as "unused," which would be a false positive. Setting this to true is essential for getting accurate results in a mixed-language codebase.
+retain_objc_accessible: true
+
+# This option prevents Periphery from flagging unused parameters in protocol method implementations.
+# Often, a protocol will define a method with parameters that are needed by some, but not all, conforming types. If a specific implementation doesn't need to use a parameter, Swift still requires that the method signature matches the protocol exactly. Periphery would normally see this unused parameter and flag it. However, removing it would cause a compile error because the method signature would no longer match the protocol. This flag tells Periphery to ignore these cases, avoiding false positives.
+retain_unused_protocol_func_params: true
+
+# This option retains all code within a previews struct that conforms to SwiftUI's PreviewProvider protocol.
+# SwiftUI Previews are a powerful feature for UI development in Xcode. The code you write for previews is often not directly called from your main application target; it's used by Xcode's canvas. Periphery would see this and incorrectly mark the preview code as unused. This flag correctly tells Periphery to always keep preview provider code, which is the desired behavior.
+retain_swift_ui_previews: true
+
+# This option disables the check for public declarations that are only used within their own module.
+# Normally, Periphery would suggest changing public to internal or private in these cases to reduce the public API surface of a module.
+disable_redundant_public_analysis: false
+
+# By default, Periphery will scan all targets in your project, including test targets. 
+# This can lead to false positives, as test code is not part of the main application. 
+# This option tells Periphery to exclude all test targets from the scan, ensuring that only the application code is analyzed.
+exclude_tests: true
+
+schemes:
+- WooCommerce
+
+project: WooCommerce.xcworkspace
+
+# Used for local run by `periphery scan`
+# This will not conflict with CI build configuration because of build skipping by `--skip-build` and `--index-store-path`
+build_arguments:
+- -xcconfig
+- config/WooCommerce.debug.xcconfig
+
+# A baseline is used to manage the large number of warnings from a mature codebase.
+# It contains a snapshot of all "existing/acceptable" warnings. Periphery will ignore all
+# warnings in this file, allowing you to focus on new issues in pull requests.
+#
+# After fixing existing warnings, regenerate this file with:
+# periphery scan --write-baseline Scripts/Periphery/periphery_baseline.json
+baseline: Scripts/Periphery/periphery_baseline.json
+
+exclude_targets:
+- GenerateCredentials
+- WooCommerceScreenshots
+- WordPressAuthenticator
+- WordPressAuthenticatorTests
+- WooCommerceTests
+- WooCommerceUITests
+- NotificationExtension
+- StoreWidgetsExtension
+- WatchWidgetsExtension
+- "Woo Watch App"
+- Fakes
+- XcodeTarget_WooCommerceTests
+- XcodeTarget_WooCommerceUITests
+- XcodeTarget_WordPressAuthenticatorTests
+
+index_exclude:
+- Pods/*
+- vendor/**
+- BuildTools/.build/**
+- "**/*Test*/*"
+- "docs/*"
+- "fastlane/*"
+- "config/*"
+- "**/*.xib"
+- "**/*.storyboard"
+- "**/*.generated.swift"

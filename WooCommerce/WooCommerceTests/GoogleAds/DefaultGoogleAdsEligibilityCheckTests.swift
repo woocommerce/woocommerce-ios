@@ -36,7 +36,6 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
         // Given
         let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
         let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
-        let connection = GoogleAdsConnection.fake().copy(rawStatus: "incomplete")
         mockRequests(adsConnection: nil)
 
         // When

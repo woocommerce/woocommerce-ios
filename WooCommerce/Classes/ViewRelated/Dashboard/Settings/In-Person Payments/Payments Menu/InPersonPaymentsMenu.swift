@@ -15,19 +15,6 @@ struct InPersonPaymentsMenu: View {
                                 .ignoresSafeArea()
                         }
 
-                    ScrollViewSection {
-                        PaymentsRow(image: Image(uiImage: .moneyIcon),
-                                    title: Localization.collectPayment)
-                        .accessibilityAddTraits(.isButton)
-                        .accessibilityIdentifier(AccessibilityIdentifiers.collectPaymentRow)
-                        .onTapGesture {
-                            viewModel.collectPaymentTapped()
-                        }
-                    } header: {
-                        Text(Localization.paymentActionsSectionTitle.uppercased())
-                            .accessibilityAddTraits(.isHeader)
-                    }
-
                     if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
                         ScrollViewSection {
                             PaymentsToggleRow(
@@ -95,13 +82,13 @@ struct InPersonPaymentsMenu: View {
                             viewModel.purchaseCardReaderTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                        title: Localization.purchaseCardReader,
-                                        isActive: $viewModel.presentPurchaseCardReader) {
-                                AuthenticatedWebView(isPresented: .constant(true),
-                                                     viewModel: viewModel.purchaseCardReaderWebViewModel)
-                            }
+                                        title: Localization.purchaseCardReader)
                         }
                         .buttonStyle(.scrollViewRow)
+                        .navigationDestination(isPresented: $viewModel.presentPurchaseCardReader) {
+                            AuthenticatedWebView(isPresented: .constant(true),
+                                                 viewModel: viewModel.purchaseCardReaderWebViewModel)
+                        }
 
                         Button {
                             viewModel.manageCardReadersTapped()
@@ -131,12 +118,12 @@ struct InPersonPaymentsMenu: View {
                             viewModel.cardReaderManualsTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                        title: Localization.cardReaderManuals,
-                                        isActive: $viewModel.presentCardReaderManuals) {
-                                CardReaderManualsView()
-                            }
+                                        title: Localization.cardReaderManuals)
                         }
                         .buttonStyle(.scrollViewRow)
+                        .navigationDestination(isPresented: $viewModel.presentCardReaderManuals) {
+                            CardReaderManualsView()
+                        }
                         .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
@@ -192,59 +179,13 @@ struct InPersonPaymentsMenu: View {
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
-                                  style: .medium)
+                if viewModel.backgroundOnboardingInProgress {
+                    ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
+                                      style: .medium)
+                }
             }
         }
         .navigationTitle(CardPresentPaymentsOnboardingView.Localization.title)
-        .navigationDestination(for: InPersonPaymentsMenuNavigationDestination.self) { destination in
-            if let orderViewModel = viewModel.orderViewModel {
-                OrderFormPresentationWrapper(dismissHandler: {
-                    viewModel.dismissPaymentCollection()
-                    Task { @MainActor in
-                        await viewModel.onAppear()
-                    }
-                },
-                                             flow: .creation,
-                                             dismissLabel: .backButton,
-                                             viewModel: orderViewModel)
-                .navigationBarHidden(true)
-                .sheet(isPresented: $viewModel.presentCollectPaymentMigrationSheet, onDismiss: {
-                    // Custom amount sheet needs to be presented when the migration sheet is dismissed to avoid conflicting modals.
-                    if viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet {
-                        orderViewModel.addCustomAmount()
-                    }
-                }) {
-                    SimplePaymentsMigrationView {
-                        viewModel.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
-                        viewModel.presentCollectPaymentMigrationSheet = false
-                    }
-                    .presentationDetents([.medium, .large])
-                }
-
-                .navigationDestination(for: CollectPaymentNavigationDestination.self) { destination in
-                    if let paymentMethodsViewModel = viewModel.paymentMethodsViewModel {
-                        PaymentMethodsWrapperHosted(viewModel: paymentMethodsViewModel,
-                                                    dismiss: {
-                            viewModel.dismissPaymentCollection()
-                        })
-                    } else {
-                        EmptyView()
-                    }
-                }
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        guard viewModel.hasPresentedCollectPaymentMigrationSheet == false else {
-                            return
-                        }
-                        viewModel.presentCollectPaymentMigrationSheet = true
-                        viewModel.hasPresentedCollectPaymentMigrationSheet = true
-                    }
-                }
-            } else {
-                EmptyView()
-            }
-        }
     }
 
     @ViewBuilder
@@ -292,11 +233,6 @@ private extension InPersonPaymentsMenu {
             "menu.payments.paymentOptions.section.title",
             value: "Payment options",
             comment: "Title for the section related to payments inside In-Person Payments settings")
-
-        static let paymentActionsSectionTitle = NSLocalizedString(
-            "menu.payments.actions.section.title",
-            value: "Actions",
-            comment: "Title for the section related to actions inside In-Person Payments settings")
 
         static let paymentSettingsSectionTitle = NSLocalizedString(
             "menu.payments.paymentSettings.section.title",
@@ -348,12 +284,6 @@ private extension InPersonPaymentsMenu {
             comment: "Navigates to Card Reader Manuals screen"
         ).localizedCapitalized
 
-        static let collectPayment = NSLocalizedString(
-            "menu.payments.actions.collectPayment.row.title",
-            value: "Collect Payment",
-            comment: "Navigates to Collect a payment via the Simple Payment screen"
-        ).localizedCapitalized
-
         static let aboutTapToPayOnIPhone = NSLocalizedString(
             "menu.payments.tapToPay.about.row.title",
             value: "About Tap to Pay",
@@ -395,7 +325,6 @@ private extension InPersonPaymentsMenu {
     }
 
     enum AccessibilityIdentifiers {
-        static let collectPaymentRow = "collect-payment"
         static let cardReaderManualRow = "card-reader-manuals"
     }
 }
@@ -407,8 +336,18 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: 0, credentials: .init(authToken: ""))),
-        navigationPath: .constant(NavigationPath()))
+            wooPaymentsPayoutService: WooPaymentsPayoutService(
+                siteID: 0,
+                credentials: .init(authToken: ""),
+                selectedSite: ServiceLocator.stores.sessionManager.defaultSitePublisher
+                    .map { $0?.toJetpackSite() }
+                    .eraseToAnyPublisher(),
+                appPasswordSupportState: ApplicationPasswordsExperimentState()
+                    .$isAvailableAndEnabled
+                    .eraseToAnyPublisher()
+            )
+        )
+    )
     static var previews: some View {
         NavigationStack {
             InPersonPaymentsMenu(viewModel: viewModel)

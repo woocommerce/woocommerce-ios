@@ -29,10 +29,6 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             icon = .launchStoreImage
             title = Localization.LaunchStore.title
             subtitle = Localization.LaunchStore.subtitle
-        case .customizeDomains:
-            icon = .customizeDomainsImage
-            title = Localization.CustomizeDomains.title
-            subtitle = Localization.CustomizeDomains.subtitle
         case .woocommercePayments:
             icon = .getPaidImage
             title = Localization.WooPayments.title
@@ -82,17 +78,6 @@ extension StoreOnboardingTaskViewModel {
             static let subtitle = NSLocalizedString(
                 "Publish your site to the world anytime you want!",
                 comment: "Subtitle of the store onboarding task to launch the store."
-            )
-        }
-
-        enum CustomizeDomains {
-            static let title = NSLocalizedString(
-                "Customize your domain",
-                comment: "Title of the store onboarding task to customize the store domain."
-            )
-            static let subtitle = NSLocalizedString(
-                "Have a custom URL to host your store.",
-                comment: "Subtitle of the store onboarding task to customize the store domain."
             )
         }
 

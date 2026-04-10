@@ -1,5 +1,6 @@
 import SwiftUI
 import Yosemite
+import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsPluginNotSetup: View {
     let plugin: CardPresentPaymentsPlugin
@@ -52,7 +53,9 @@ struct InPersonPaymentsPluginNotSetup: View {
                 tappedAnalyticEvent: learnMoreAnalyticEvent))
             .padding(.vertical, 8)
         }
-        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
+        .sheet(item: $presentedSetupURL, onDismiss: onRefresh) { url in
+            AuthenticatableWebView(url: url, title: Localization.primaryButton)
+        }
     }
 
     private var setupURL: URL? {

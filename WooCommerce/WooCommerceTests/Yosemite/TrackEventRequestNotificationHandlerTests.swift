@@ -107,7 +107,7 @@ final class TrackEventRequestNotificationHandlerTests: XCTestCase {
 
     func test_password_generation_failed_event_is_tracked_upon_any_error() {
         // When
-        let error = MockError.mockError
+        let error = MockError.anyError
         mockNotificationCenter.post(name: .ApplicationPasswordsGenerationFailed, object: error, userInfo: nil)
 
         // Then
@@ -168,7 +168,7 @@ private extension TrackEventRequestNotificationHandlerTests {
     func mockDecodingError() -> Error {
         do {
             _ = try JSONDecoder().decode(String.self, from: Data())
-            return MockError.mockError
+            return MockError.anyError
         } catch {
             return error
         }
@@ -176,5 +176,3 @@ private extension TrackEventRequestNotificationHandlerTests {
 }
 
 private class MockNotificationCenter: NotificationCenter { }
-
-private enum MockError: Error { case mockError }

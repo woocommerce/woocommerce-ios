@@ -1,7 +1,9 @@
 import XCTest
 import WooFoundation
+import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
+@testable import NetworkingCore
 @testable import Storage
 
 final class MarkOrderAsReadUseCaseTests: XCTestCase {

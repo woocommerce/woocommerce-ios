@@ -1,0 +1,8 @@
+sources:
+    include:
+        - ../../../../../Modules/Sources/Storage/
+templates:
+    - Models+Copiable.swifttemplate
+output: ../../../../../Modules/Sources/Storage/Model/Copiable/
+args:
+    moduleName: Storage

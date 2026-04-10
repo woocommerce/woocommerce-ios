@@ -178,6 +178,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         case .attributes(let attributes):
             return createAttributesText(from: attributes)
         default:
+            // TODO: use `String.createStockText(...)` to display bundle products if necessary
             return createStockText()
         }
     }

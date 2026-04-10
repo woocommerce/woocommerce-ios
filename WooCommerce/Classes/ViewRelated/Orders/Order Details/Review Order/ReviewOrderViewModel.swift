@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
 
@@ -16,7 +17,7 @@ final class ReviewOrderViewModel {
 
     /// Products in the order
     ///
-    private let products: [Product]
+    private let products: [OrderDetailsProduct]
 
     /// StorageManager to load details of order from storage
     ///
@@ -100,7 +101,7 @@ final class ReviewOrderViewModel {
     }()
 
     init(order: Order,
-         products: [Product],
+         products: [OrderDetailsProduct],
          showAddOns: Bool,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
@@ -179,7 +180,7 @@ extension ReviewOrderViewModel {
 
     /// Filter product for an order item
     ///
-    func filterProduct(for item: AggregateOrderItem) -> Product? {
+    func filterProduct(for item: AggregateOrderItem) -> OrderDetailsProduct? {
         products.first(where: { $0.productID == item.productID })
     }
 
@@ -270,7 +271,7 @@ private extension ReviewOrderViewModel {
         }()
 
         let shippingMethodRow: Row? = {
-            guard order.shippingLines.count > 0 else { return nil }
+            guard !order.shippingLines.isEmpty else { return nil }
             return Row.shippingMethod(method: shippingMethod)
         }()
 

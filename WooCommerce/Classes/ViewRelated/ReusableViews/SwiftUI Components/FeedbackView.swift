@@ -58,7 +58,7 @@ struct FeedbackView: View {
             configuration.backgroundColor
                 .cornerRadius(Layout.cornerRadius)
         )
-        .onChange(of: vote) { newValue in
+        .onChange(of: vote) { _, newValue in
             if let newValue {
                 configuration.onVote(newValue)
             }

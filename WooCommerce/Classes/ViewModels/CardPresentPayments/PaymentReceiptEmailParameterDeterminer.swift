@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import class WooFoundation.VersionHelpers
 
 /// Determines the email to be set (if any) on a receipt
 ///

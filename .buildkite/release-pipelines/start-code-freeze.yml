@@ -21,11 +21,9 @@ steps:
       bundle exec fastlane run configure_apply
 
       echo '--- :snowflake: Start Code Freeze'
-      bundle exec fastlane start_code_freeze skip_confirm:true
-
-      echo '--- :cocoapods: Check for Outdated Pods'
-      .buildkite/commands/log-outdated-pods.sh
+      bundle exec fastlane start_code_freeze version:"${RELEASE_VERSION}" skip_confirm:true
     retry:
       manual:
-        # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite
+        # If those jobs fail, one should always prefer re-triggering a new build from Releases V2 rather than retrying the individual job from Buildkite
+        reason: If release jobs fail, you should always re-trigger the task from Releases V2 rather than retrying the individual job from Buildkite
         allowed: false

@@ -123,6 +123,11 @@ final class AuthenticatedWebViewController: UIViewController {
             viewModel.handleDismissal()
         }
     }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.handleDisappear()
+        super.viewDidDisappear(animated)
+    }
 }
 
 private extension AuthenticatedWebViewController {
@@ -140,7 +145,6 @@ private extension AuthenticatedWebViewController {
         ])
 
         extendContentUnderSafeAreas()
-        webView.configureForSandboxEnvironment()
     }
 
     func configureActivityIndicator() {

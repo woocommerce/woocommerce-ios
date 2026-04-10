@@ -81,7 +81,13 @@ final class ProductSelectorViewModel: ObservableObject {
     /// View model for the filter list.
     ///
     var filterListViewModel: FilterProductListViewModel {
-        FilterProductListViewModel(filters: filtersSubject.value, siteID: siteID)
+        FilterProductListViewModel(
+            filters: filtersSubject.value,
+            siteID: siteID,
+            site: stores.sessionManager.defaultSite,
+            stores: stores,
+            storageManager: storageManager
+        )
     }
 
     /// Selected filters for the product list
@@ -409,7 +415,6 @@ final class ProductSelectorViewModel: ObservableObject {
         return ProductVariationSelectorViewModel(siteID: siteID,
                                                  product: variableProduct,
                                                  selectedProductVariationIDs: selectedItems,
-                                                 purchasableItemsOnly: purchasableItemsOnly,
                                                  orderSyncState: orderSyncState,
                                                  onVariationSelectionStateChanged: { [weak self] productVariation, product, selected in
             guard let self else { return }
@@ -849,6 +854,8 @@ private extension ProductSelectorViewModel {
                 switch (source, product.productType, product.variations) {
                 case (.orderForm, .booking, _):
                     return .unsupported(reason: Localization.bookableProductUnsupportedReason)
+                case (.orderForm, .subscription, _), (.orderForm, .variableSubscription, _):
+                    return .unsupported(reason: Localization.subscriptionProductUnsupportedReason)
                 case (_, _, let variations) where variations.isEmpty:
                     return selectedItemsIDs.contains(product.productID) ? .selected : .notSelected
                 default:
@@ -981,6 +988,11 @@ private extension ProductSelectorViewModel {
             "productSelectorViewModel.bookableProductUnsupportedReason",
             value: "Bookable products are not supported for order creation",
             comment: "Message explaining unsupported bookable products for order creation"
+        )
+        static let subscriptionProductUnsupportedReason = NSLocalizedString(
+            "productSelectorViewModel.subscriptionProductUnsupportedReason",
+            value: "Subscription products are not supported for order creation",
+            comment: "Message explaining unsupported subscription products for order creation"
         )
     }
 }

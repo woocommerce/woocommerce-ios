@@ -22,6 +22,7 @@ extension WooShippingDestinationAddress {
     func toWooShippingAddress() -> WooShippingAddress {
         WooShippingAddress(company: company,
                            name: name.isNotEmpty ? name : fullName,
+                           email: email,
                            phone: phone,
                            country: country,
                            state: state,

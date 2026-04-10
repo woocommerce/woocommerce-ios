@@ -1,8 +1,24 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 
 final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
+    var storageManager: MockStorageManager!
+    let sampleSiteID: Int64 = 123
+
+    override func setUp() {
+        super.setUp()
+
+        storageManager = MockStorageManager()
+        storageManager.insertSampleSite(
+            readOnlySite: Site.fake().copy(
+                siteID: sampleSiteID,
+                isGarden: false,
+            )
+        )
+    }
+
     func testZeroActiveFilters() {
         let filters = FilterProductListViewModel.Filters()
         let filterTypeViewModels = createFilterTypeViewModels(filters: filters)
@@ -76,11 +92,11 @@ final class FilterProductListViewModel_numberOfActiveFiltersTests: XCTestCase {
 private extension FilterProductListViewModel_numberOfActiveFiltersTests {
     func createFilterTypeViewModels(filters: FilterProductListViewModel.Filters) -> [FilterTypeViewModel] {
         return [
-            FilterProductListViewModel.ProductListFilter.stockStatus.createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.productStatus.createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.productType(siteID: 123).createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0).createViewModel(filters: filters),
-            FilterProductListViewModel.ProductListFilter.favoriteProducts.createViewModel(filters: filters)
+            FilterProductListViewModel.ProductListFilter.stockStatus.createViewModel(filters: filters, storageManager: storageManager),
+            FilterProductListViewModel.ProductListFilter.productStatus.createViewModel(filters: filters, storageManager: storageManager),
+            FilterProductListViewModel.ProductListFilter.productType(siteID: 123).createViewModel(filters: filters, storageManager: storageManager),
+            FilterProductListViewModel.ProductListFilter.productCategory(siteID: 0).createViewModel(filters: filters, storageManager: storageManager),
+            FilterProductListViewModel.ProductListFilter.favoriteProducts.createViewModel(filters: filters, storageManager: storageManager)
         ]
     }
 }

@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 @testable import WooCommerce
 
 final class MockImageService {
@@ -24,6 +25,10 @@ final class MockImageService {
 }
 
 extension MockImageService: ImageService {
+    func storeImageInCache(_ image: UIImage, for url: URL) {
+        // no-op
+    }
+
     func retrieveImageFromCache(with url: URL, completion: @escaping ImageCacheRetrievalCompletion) {
         retrieveImageFromCacheCalled = true
         completion(retrieveImageFromCacheCompletionImage)
@@ -42,6 +47,16 @@ extension MockImageService: ImageService {
                                            progressBlock: ImageDownloadProgressBlock?,
                                            completion: ImageDownloadCompletion?) {
         // no-op
+    }
+
+    func retrieveImage(
+        with url: URL,
+        targetSize: CGSize?,
+        shouldCacheImage: Bool,
+        completion: WooCommerce.ImageDownloadCompletion?
+    ) -> (any Cancellable)? {
+        // no-op
+        return nil
     }
 
     func clearMemoryCache() {

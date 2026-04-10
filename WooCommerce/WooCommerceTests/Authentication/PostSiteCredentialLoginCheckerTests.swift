@@ -253,7 +253,7 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
         throw mockGenerationError ?? NetworkError.notFound()
     }
 
-    func deletePassword() async throws {
+    func deletePassword(locally: Bool) async throws {
         throw mockDeletionError ?? NetworkError.notFound()
     }
 }

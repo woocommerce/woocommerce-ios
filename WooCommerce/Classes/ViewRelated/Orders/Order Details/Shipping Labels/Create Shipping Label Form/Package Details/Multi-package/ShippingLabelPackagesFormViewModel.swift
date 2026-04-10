@@ -61,7 +61,7 @@ final class ShippingLabelPackagesFormViewModel: ObservableObject {
 
     /// Products contained inside the Order and fetched from Core Data
     ///
-    @Published private var products: [Product] = []
+    @Published private var products: [ShippingLabelProduct] = []
 
     /// ProductVariations contained inside the Order and fetched from Core Data
     ///
@@ -488,7 +488,9 @@ extension ShippingLabelPackagesFormViewModel {
                      customFields: [],
                      renewalSubscriptionID: nil,
                      appliedGiftCards: [],
-                     attributionInfo: nil)
+                     attributionInfo: nil,
+                     shippingLabels: [],
+                     createdVia: "rest-api")
     }
 
     static func sampleAddress() -> Address {
@@ -539,6 +541,7 @@ extension ShippingLabelPackagesFormViewModel {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -557,6 +560,7 @@ extension ShippingLabelPackagesFormViewModel {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 

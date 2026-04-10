@@ -8,8 +8,14 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBOutlet private weak var mainLabel: UILabel!
     @IBOutlet private weak var lastUpdatedLabel: UILabel!
     @IBOutlet private weak var filterButton: UIButton!
+    @IBOutlet weak var headerBarLayoutStackView: UIStackView!
 
     private let bottomBorder = CALayer()
+
+    /// Retains the content trait registration token, so it's not deallocated immediately
+    ///
+    // periphery: ignore - False negative. Perhaps does not catch non-direct reads?
+    private var contentSizeTraitRegistration: UITraitChangeRegistration?
 
     /// The number of filters applied
     ///
@@ -26,6 +32,22 @@ final class FilteredOrdersHeaderBar: UIView {
         configureLabels()
         configureButtons()
         configureBackground()
+        updateStackViewAxis(for: traitCollection)
+    }
+
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+
+        if newSuperview != nil {
+            contentSizeTraitRegistration = registerForTraitChanges([
+                UITraitPreferredContentSizeCategory.self
+            ]) { [weak self] (_: FilteredOrdersHeaderBar, _: UITraitCollection) in
+                guard let self = self else { return }
+                self.updateStackViewAxis(for: self.traitCollection)
+            }
+        } else {
+            contentSizeTraitRegistration = nil
+        }
     }
 
     override func layoutSubviews() {
@@ -48,6 +70,18 @@ final class FilteredOrdersHeaderBar: UIView {
         onAction?()
     }
 
+}
+// MARK: - Dynamic type support
+/// The `Last updated: time` tends to get truncated at larger text sizes by the filter button.
+/// Laying out the overall stack view vertically avoids this with accessibility sizes.
+extension FilteredOrdersHeaderBar {
+    private func updateStackViewAxis(for traitCollection: UITraitCollection) {
+        if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
+            headerBarLayoutStackView.axis = .vertical
+        } else {
+            headerBarLayoutStackView.axis = .horizontal
+        }
+    }
 }
 
 // MARK: - Setup

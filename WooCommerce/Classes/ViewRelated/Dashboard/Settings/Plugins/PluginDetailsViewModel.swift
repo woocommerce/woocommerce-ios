@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
+import class WooFoundation.VersionHelpers
 
 final class PluginDetailsViewModel: ObservableObject {
     /// ID of the site to load plugins for
@@ -42,6 +43,8 @@ final class PluginDetailsViewModel: ObservableObject {
     ///
     let title: String
 
+    let updatePluginTitle: String
+
     var updateAvailable: Bool {
         guard let plugin = plugin else {
             return false
@@ -78,6 +81,7 @@ final class PluginDetailsViewModel: ObservableObject {
         self.storesManager = storesManager
         self.storageManager = storageManager
         self.title = String(format: Localization.pluginDetailTitle, pluginName)
+        self.updatePluginTitle = String.localizedStringWithFormat(Localization.updatePluginTitle, pluginName)
         self.plugin = nil
         self.updateURL = nil
         self.version = ""
@@ -101,13 +105,16 @@ final class PluginDetailsViewModel: ObservableObject {
 
 private extension PluginDetailsViewModel {
     private func updateURL(for plugin: SystemPlugin?) -> URL? {
-        guard let url = storesManager.sessionManager.defaultSite?.pluginsURL,
-              updateAvailable(for: plugin)
-        else {
+        guard let plugin, updateAvailable(for: plugin) else {
             return nil
         }
 
-        return URL(string: url)
+        if let pluginInfoURL = storesManager.sessionManager.defaultSite?.pluginUpdateURL(for: plugin) {
+            return URL(string: pluginInfoURL)
+        } else if let url = storesManager.sessionManager.defaultSite?.pluginsURL {
+            return URL(string: url)
+        }
+        return nil
     }
 
     private func updateAvailable(for plugin: SystemPlugin?) -> Bool {
@@ -123,6 +130,12 @@ private enum Localization {
         "%1$@",
         comment: "Title for the plugin detail row in settings. %1$@ is a placeholder for the plugin name. " +
         "This is displayed with the current version number, and whether an update is available.")
+
+    static let updatePluginTitle = NSLocalizedString(
+        "pluginDetailsViewModel.updatePluginTitle",
+        value: "Update %1$@",
+        comment: "Title of the web view to update an outdated plugin. %1$@ is a placeholder for the plugin name."
+    )
 
     static let unknownVersionValue = NSLocalizedString(
         "unknown",

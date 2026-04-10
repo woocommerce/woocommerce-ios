@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// View to set the schedule for a Blaze campaign.
 ///
@@ -43,6 +44,7 @@ struct BlazeScheduleSettingView: View {
                 AdaptiveStack(horizontalAlignment: .leading) {
                     Text(Localization.startDate)
                         .bodyStyle()
+                        .accessibilityHidden(true)
 
                     Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
 
@@ -51,7 +53,35 @@ struct BlazeScheduleSettingView: View {
                                displayedComponents: [.date]) {
                         EmptyView()
                     }
-                               .datePickerStyle(.compact)
+                    .if(sizeCategory.isAccessibilityCategory) { view in
+                        view.datePickerStyle(.graphical)
+                    }
+                    .if(!sizeCategory.isAccessibilityCategory) { view in
+                        view.datePickerStyle(.compact)
+                    }
+                }
+                .accessibilityHint(Localization.startDateAccessibilityHint)
+                .accessibilityLabel(
+                    String(
+                        format: Localization.startDateAccessibilityLabel,
+                        DateFormatter.localizedString(
+                            from: startDate,
+                            dateStyle: .medium,
+                            timeStyle: .none
+                        )
+                    )
+                )
+                // Apply accessibility grouping only for non-accessibility size categories.
+                // For accessibility size categories, we use .graphical date picker style which is embedded
+                // directly in the view and maintains its native "date picker" traits. For standard size
+                // categories, we use .compact date picker style which acts as a popover, so we group the
+                // elements with .combine and add .isButton trait to make the entire section actionable.
+                // Applying .combine to the graphical date picker would override its native accessibility
+                // traits and degrade the user experience.
+                .if(!sizeCategory.isAccessibilityCategory) { view in
+                    view
+                    .accessibilityElement(children: .combine)
+                    .accessibilityAddTraits(.isButton)
                 }
 
                 // Toggle to switch between evergreen and not. Hidden under a feature flag.
@@ -78,6 +108,9 @@ struct BlazeScheduleSettingView: View {
                            in: dayCountSliderRange,
                            step: Double(BlazeBudgetSettingViewModel.Constants.dayCountSliderStep))
                 }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(Localization.duration)
+                .accessibilityValue(durationTextFormatter(duration).string)
                 .renderedIf(hasEndDate)
 
                 Spacer()
@@ -148,6 +181,16 @@ private extension BlazeScheduleSettingView {
             "blazeScheduleSettingView.cancel",
             value: "Cancel",
             comment: "Button to dismiss the Blaze schedule setting screen"
+        )
+        static let startDateAccessibilityLabel = NSLocalizedString(
+            "blazeScheduleSettingView.startDateAccessibilityLabel",
+            value: "Campaign start date is %@",
+            comment: "Accessibility label for the start date picker on the Blaze campaign duration setting screen. %@ is replaced with the selected date."
+        )
+        static let startDateAccessibilityHint = NSLocalizedString(
+            "blazeScheduleSettingView.startDateAccessibilityHint",
+            value: "Double tap to edit the campaign start date",
+            comment: "Accessibility hint for the start date picker on the Blaze campaign duration setting screen"
         )
     }
 }

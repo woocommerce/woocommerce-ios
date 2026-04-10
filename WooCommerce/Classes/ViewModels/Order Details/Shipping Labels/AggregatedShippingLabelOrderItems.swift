@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import WooFoundation
 
@@ -22,7 +23,7 @@ struct AggregatedShippingLabelOrderItems {
     ///   - currencyFormatter: Used to convert a product/variation's price string to number.
     init(shippingLabels: [ShippingLabel],
          orderItems: [OrderItem],
-         products: [Product],
+         products: [OrderDetailsProduct],
          productVariations: [ProductVariation],
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
         self.currencyFormatter = currencyFormatter
@@ -46,7 +47,7 @@ struct AggregatedShippingLabelOrderItems {
 private extension AggregatedShippingLabelOrderItems {
     mutating func aggregateProductsToOrderItems(shippingLabels: [ShippingLabel],
                                                 orderItems: [OrderItem],
-                                                products: [Product],
+                                                products: [OrderDetailsProduct],
                                                 productVariations: [ProductVariation]) {
         orderItemsByShippingLabelID = shippingLabels.reduce(into: [Int64: [AggregateOrderItem]]()) { result, shippingLabel in
             result[shippingLabel.shippingLabelID] = aggregateProductsToOrderItems(shippingLabel: shippingLabel,
@@ -58,7 +59,7 @@ private extension AggregatedShippingLabelOrderItems {
 
     func aggregateProductsToOrderItems(shippingLabel: ShippingLabel,
                                        orderItems: [OrderItem],
-                                       products: [Product],
+                                       products: [OrderDetailsProduct],
                                        productVariations: [ProductVariation]) -> [AggregateOrderItem] {
         // ShippingLabel's `productNames` is always available, but `productIDs` is only available in WooCommerce Shipping & Tax v1.24.1+.
         // Here we map a ShippingLabel's `productNames` to `ProductInformation` with an optional product ID at the corresponding index.
@@ -89,7 +90,7 @@ private extension AggregatedShippingLabelOrderItems {
 
     func orderItemModel(productInfo: ProductInformation,
                         orderItems: [OrderItem],
-                        products: [Product],
+                        products: [OrderDetailsProduct],
                         productVariations: [ProductVariation]) -> OrderItemModel {
         guard let productID = productInfo.id else {
             return .productName(name: productInfo.name)
@@ -97,7 +98,7 @@ private extension AggregatedShippingLabelOrderItems {
 
         if let product = lookUpProduct(by: productID, products: products) {
             let orderItem = orderItems.first(where: { $0.productID == productID })
-            return .product(product: product, orderItem: orderItem, name: productInfo.name)
+            return .orderDetailsProduct(product: product, orderItem: orderItem, name: productInfo.name)
         } else if let productVariation = lookUpProductVariation(by: productID, productVariations: productVariations) {
             let orderItem = orderItems.first(where: { $0.variationID == productID })
             return .productVariation(productVariation: productVariation, orderItem: orderItem, name: productInfo.name)
@@ -120,27 +121,21 @@ private extension AggregatedShippingLabelOrderItems {
                          attributes: [],
                          addOns: [],
                          parent: nil)
-        case .product(let product, let orderItem, let name):
+        case let .orderDetailsProduct(item, orderItem, name):
             let itemID = orderItem?.itemID.description ?? "0"
             let productName = orderItem?.name ?? name
             let price = orderItem?.price ??
-                currencyFormatter.convertToDecimal(product.price) ?? 0
+                currencyFormatter.convertToDecimal(item.price) ?? 0
             let totalPrice = price.multiplying(by: .init(decimal: Decimal(quantity)))
-            let imageURL: URL?
-            if let encodedImageURLString = product.images.first?.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
-                imageURL = URL(string: encodedImageURLString)
-            } else {
-                imageURL = nil
-            }
             return .init(itemID: itemID,
-                         productID: product.productID,
+                         productID: item.productID,
                          variationID: 0,
                          name: productName,
                          price: price,
                          quantity: Decimal(quantity),
-                         sku: orderItem?.sku ?? product.sku,
+                         sku: orderItem?.sku ?? item.sku,
                          total: totalPrice,
-                         imageURL: imageURL,
+                         imageURL: item.imageURL,
                          attributes: orderItem?.attributes ?? [],
                          addOns: orderItem?.addOns ?? [],
                          parent: orderItem?.parent)
@@ -171,7 +166,7 @@ private extension AggregatedShippingLabelOrderItems {
         }
     }
 
-    func lookUpProduct(by productID: Int64, products: [Product]) -> Product? {
+    func lookUpProduct(by productID: Int64, products: [OrderDetailsProduct]) -> OrderDetailsProduct? {
         products.first(where: { $0.productID == productID })
     }
 
@@ -190,7 +185,7 @@ private extension AggregatedShippingLabelOrderItems {
     /// The underlying model for an order item.
     enum OrderItemModel {
         case productName(name: String)
-        case product(product: Product, orderItem: OrderItem?, name: String)
         case productVariation(productVariation: ProductVariation, orderItem: OrderItem?, name: String)
+        case orderDetailsProduct(product: OrderDetailsProduct, orderItem: OrderItem?, name: String)
     }
 }

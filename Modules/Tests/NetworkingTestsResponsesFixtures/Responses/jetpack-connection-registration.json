@@ -1,0 +1,4 @@
+{
+  "alternateAuthorizeUrl":"",
+  "authorizeUrl":"https://jetpack.wordpress.com/jetpack.authorize/1/?response_type=code&client_id=1234567890&redirect_uri=https://example.com"
+}

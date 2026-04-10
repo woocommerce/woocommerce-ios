@@ -1,11 +1,12 @@
 import Foundation
 import Yosemite
+import class WooFoundation.WaitingTimeTracker
 import protocol WooFoundation.Analytics
 
 /// Tracks the waiting time for app startup, allowing to evaluate as analytics
 /// how much time in seconds it took between the init and the final `end(action:)` function call.
 ///
-final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
+final class AppStartupWaitingTimeTracker {
 
     /// All actions tracked in the app startup waiting time.
     ///
@@ -19,10 +20,13 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     /// Represents all of the app startup actions waiting to be completed.
     ///
     private(set) var startupActionsPending = StartupAction.allCases
+    private let analyticsService: Analytics
+    private let waitingTimeTracker: WaitingTimeTracker
 
     init(analyticsService: Analytics = ServiceLocator.analytics,
          currentTimestampSeconds: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
-        super.init(trackScenario: .appStartup, analyticsService: analyticsService, currentTimestampSeconds: currentTimestampSeconds)
+        self.analyticsService = analyticsService
+        self.waitingTimeTracker = WaitingTimeTracker(trackScenario: .appStartup, currentTimestampSeconds: currentTimestampSeconds)
     }
 
     /// Ends the waiting time for the provided startup action.
@@ -39,7 +43,7 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
 
         // If all actions completed without any errors, send the analytics event.
         if startupActionsPending.isEmpty {
-            super.end()
+            analyticsService.track(event: waitingTimeTracker.end())
         }
     }
 
@@ -48,7 +52,7 @@ final class AppStartupWaitingTimeTracker: WaitingTimeTracker {
     /// This can be used to stop tracking in scenarios that would skew the waiting time analysis.
     /// For example, when the app is backgrounded or a startup action has an API error or network connection error.
     ///
-    override func end() {
+    func endWithoutTracking() {
         startupActionsPending.removeAll()
     }
 }

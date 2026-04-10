@@ -46,13 +46,11 @@ playground.xcworkspace
 # Package.pins
 .build/
 
-# CocoaPods
+# As of late May 2025, the project no longer uses CocoaPods.
+# We still ignore the Pods folder, however, to avoid transition issues.
 #
-# We recommend against adding the Pods directory to your .gitignore. However
-# you should judge for yourself, the pros and cons are mentioned at:
-# https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
-#
-
+# If you are reading this in 2026 or beyond, please remove this rule as enough
+# time has passed.
 Pods/
 
 # Carthage
@@ -64,19 +62,15 @@ Carthage/Build
 
 # fastlane
 #
-# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
-# screenshots whenever they are needed.
-# For more information about the recommended setup visit:
-# https://docs.fastlane.tools/best-practices/source-control/#source-control
-
 fastlane/report.xml
 fastlane/Preview.html
-fastlane/screenshots
-fastlane/promo_screenshots
 fastlane/metadata/review_information
-fastlane/test_output
+fastlane/**/test_output
 fastlane/README.md
 fastlane/logs
+# Notice that we ignore the raw screenshots but track (with Git LFS, see .gitattributes)
+# the annotated ones (promo_screenshots)
+fastlane/screenshots
 
 Preview.html
 default.profraw
@@ -95,7 +89,19 @@ default.profraw
 *.bak
 
 # WireMock (UI Tests)
-WooCommerce/WooCommerceScreenshots/Mocks/vendor/
+API-Mocks/vendor/
 
 # AppCode
 .idea
+
+# Local modules
+Modules/.build
+Modules/.swiftpm/configuration/registries.json
+Modules/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+# Periphery install
+vendor/Periphery/
+
+# AI Agents / Claude Code local config (personal, not shared)
+CLAUDE.local.md
+.claude/settings.local.json

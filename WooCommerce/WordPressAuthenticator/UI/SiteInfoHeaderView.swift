@@ -76,16 +76,13 @@ class SiteInfoHeaderView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
         refreshLabelStyles()
+        observeTraitChanges()
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        guard previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory else {
-            return
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.refreshLabelStyles()
         }
-
-        refreshLabelStyles()
     }
 }
 

@@ -5,6 +5,7 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
+    var cancellable: Cancellable?
     var cancellableTask: Task<Void, Never>?
 
     private(set) lazy var coverTagView: UIView = {
@@ -34,19 +35,23 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         configureImageView()
         configureCellAppearance()
         configureCoverTagView()
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        // Border color is not automatically updated on trait collection changes and thus manually updated here.
-        contentView.layer.borderColor = Colors.borderColor.cgColor
+        observeInterfaceStyleChange()
     }
 
     override func prepareForReuse() {
         super.prepareForReuse()
         cancellableTask?.cancel()
         cancellableTask = nil
+
+        cancellable?.cancel()
+        cancellable = nil
+
         imageView.image = nil
+    }
+
+    deinit {
+        cancellableTask?.cancel()
+        cancellable?.cancel()
     }
 }
 
@@ -75,6 +80,13 @@ private extension ProductImageCollectionViewCell {
             contentView.leadingAnchor.constraint(equalTo: coverTagView.leadingAnchor, constant: -Constants.tagPadding),
             contentView.topAnchor.constraint(equalTo: coverTagView.topAnchor, constant: -Constants.tagPadding),
         ])
+    }
+
+    func observeInterfaceStyleChange() {
+        /// Border color is not automatically updated on trait collection changes and thus manually updated here.
+        applyContentBorderColorOnInterfaceStyleChange {
+            return Colors.borderColor
+        }
     }
 }
 

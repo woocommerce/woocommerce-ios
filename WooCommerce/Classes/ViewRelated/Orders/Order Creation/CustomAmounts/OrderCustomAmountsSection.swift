@@ -3,8 +3,8 @@ import WooFoundation
 
 /// View model for `OrderCustomAmountsSection` that controls the visibility states of modals from various sources.
 final class OrderCustomAmountsSectionViewModel: ObservableObject {
-    /// Defines whether the new custom amount modal is presented.
-    @Published var showAddCustomAmount: Bool = false
+    /// Defines whether the custom amount modal is presented.
+    @Published var showCustomAmountView: Bool = false
 
     /// Defines whether the custom amount options dialog is presented.
     @Published var showCustomAmountOptionsDialog: Bool = false
@@ -93,7 +93,7 @@ struct OrderCustomAmountsSection: View {
         .sheet(isPresented: isCustomAmountOptionsSheetPresented) {
             optionsWithDetentsBottomSheetContent
         }
-        .sheet(isPresented: $sectionViewModel.showAddCustomAmount,
+        .sheet(isPresented: $sectionViewModel.showCustomAmountView,
                onDismiss: {
             viewModel.onDismissAddCustomAmountView()
             addCustomAmountOption = nil
@@ -228,7 +228,7 @@ private extension OrderCustomAmountsSection {
 
     func showAddCustomAmountsAfterOptionsDialog() {
         sectionViewModel.showCustomAmountOptionsDialog = false
-        sectionViewModel.showAddCustomAmount = true
+        sectionViewModel.showCustomAmountView = true
     }
 }
 

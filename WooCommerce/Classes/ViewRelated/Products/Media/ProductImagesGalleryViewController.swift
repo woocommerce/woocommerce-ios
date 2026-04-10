@@ -141,7 +141,7 @@ private extension ProductImagesGalleryViewController {
                 self.collectionView.reloadData()
             }
 
-            if self.productImages.count == 0 {
+            if self.productImages.isEmpty {
                 self.navigationController?.popViewController(animated: true)
             }
         }
@@ -200,19 +200,37 @@ private extension ProductImagesGalleryViewController {
         cell.imageView.image = .productsTabProductCellPlaceholderImage
         cell.contentView.layer.borderWidth = 0
 
-        cell.cancellableTask = Task {
-            guard let image = try? await productUIImageLoader.requestImage(productImage: productImage) else {
-                return
-            }
+        let useOptimizedImageRequest = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+            .productImageOptimizedHandling
+        )
 
-            /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
-            /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
-            ///
-            guard !Task.isCancelled else {
-                return
+        if useOptimizedImageRequest {
+            do {
+                cell.cancellable = try productUIImageLoader.requestImage(
+                    productImage: productImage,
+                    targetSize: cell.frame.size
+                ) { [weak cell] image in
+                    cell?.imageView.contentMode = .scaleAspectFit
+                    cell?.imageView.image = image
+                }
+            } catch {
+                assertionFailure(error.localizedDescription)
             }
-            cell.imageView.contentMode = .scaleAspectFit
-            cell.imageView.image = image
+        } else {
+            cell.cancellableTask = Task {
+                guard let image = try? await productUIImageLoader.requestImage(productImage: productImage) else {
+                    return
+                }
+
+                /// `ProductImageCollectionViewCell` cancels the task while preparing the cell for reuse
+                /// Checking Task cancellation status prevents us from showing the downloaded image in a different product's cell
+                ///
+                guard !Task.isCancelled else {
+                    return
+                }
+                cell.imageView.contentMode = .scaleAspectFit
+                cell.imageView.image = image
+            }
         }
     }
 }

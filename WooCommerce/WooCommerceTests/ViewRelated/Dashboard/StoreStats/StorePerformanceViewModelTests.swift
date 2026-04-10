@@ -5,6 +5,7 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import enum Networking.DotcomError
 import enum Networking.NetworkError
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 
@@ -169,7 +170,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
-        mockSyncAllStats(with: stores, retrieveStatsError: DotcomError.noRestRoute)
+        mockSyncAllStats(with: stores, retrieveStatsError: DotcomError.noRestRoute())
         XCTAssertTrue(viewModel.analyticsEnabled) // Initial value
 
         // When

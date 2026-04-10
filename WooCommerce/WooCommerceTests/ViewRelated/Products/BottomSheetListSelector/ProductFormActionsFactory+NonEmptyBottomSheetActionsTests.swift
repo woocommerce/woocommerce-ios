@@ -23,7 +23,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editDownloadableFiles,
-                                                                          .editShortDescription]
+                                                                          .editShortDescription,
+                                                                          .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -46,7 +47,8 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                                           .editCategories,
                                                                           .editTags,
                                                                           .editDownloadableFiles,
-                                                                          .editShortDescription]
+                                                                          .editShortDescription,
+                                                                          .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
@@ -66,7 +68,11 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                                        .productType(editable: true)]
         XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
 
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings, .editCategories, .editTags, .editShortDescription]
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editInventorySettings,
+                                                                          .editCategories,
+                                                                          .editTags,
+                                                                          .editShortDescription,
+                                                                          .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 

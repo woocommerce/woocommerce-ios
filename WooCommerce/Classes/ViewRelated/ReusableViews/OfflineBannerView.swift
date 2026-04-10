@@ -36,6 +36,8 @@ final class OfflineBannerView: UIView {
         messageLabel.text = NSLocalizedString("Offline - using cached data", comment: "Message for offline banner")
         messageLabel.applyCalloutStyle()
         messageLabel.textColor = .white
+        messageLabel.adjustsFontForContentSizeCategory = false
+        messageLabel.adjustsFontSizeToFitWidth = true
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
 
         stackView.addArrangedSubview(imageView)
@@ -43,8 +45,8 @@ final class OfflineBannerView: UIView {
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.safeLeadingAnchor.constraint(greaterThanOrEqualTo: safeLeadingAnchor, constant: 0),
-            stackView.safeBottomAnchor.constraint(greaterThanOrEqualTo: safeBottomAnchor, constant: 0),
+            stackView.safeLeadingAnchor.constraint(greaterThanOrEqualTo: safeLeadingAnchor, constant: 8),
+            stackView.safeBottomAnchor.constraint(greaterThanOrEqualTo: safeBottomAnchor, constant: 8),
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ])

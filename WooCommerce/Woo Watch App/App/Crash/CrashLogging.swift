@@ -1,6 +1,6 @@
 import Foundation
 import Sentry
-import WooFoundationWatchOS
+import WooFoundationCore
 import CocoaLumberjack
 
 /// This class is copied from the Tacks Library and it is adapted for the Woo Watch App.

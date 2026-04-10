@@ -5,6 +5,7 @@ import struct Yosemite.StoreOnboardingTask
 import struct Yosemite.Coupon
 import struct Yosemite.Order
 import struct Yosemite.DashboardCard
+import enum WooFoundation.ConnectivityStatus
 
 /// View for the dashboard screen
 ///
@@ -13,6 +14,7 @@ struct DashboardView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric private var scale = 1
 
     @State private var currentSite: Site?
     @State private var dismissedJetpackBenefitBanner = false
@@ -24,7 +26,7 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onboardingTaskTapped: ((Site, StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
-    var viewAllOnboardingTasksTapped: ((Site) -> Void)?
+    var viewAllOnboardingTasksTapped: ((Site, [StoreOnboardingTaskViewModel]) -> Void)?
 
     /// Set externally in the hosting controller.
     var showAllBlazeCampaignsTapped: (() -> Void)?
@@ -66,6 +68,9 @@ struct DashboardView: View {
     /// Set externally in the hosting controller.
     var onShowAllGoogleAdsCampaigns: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var onConnectWPComSetup: (() -> Void)?
+
     private let storePlanSynchronizer = ServiceLocator.storePlanSynchronizer
     private let connectivityObserver = ServiceLocator.connectivityObserver
 
@@ -75,6 +80,9 @@ struct DashboardView: View {
         return (isJetpackCPSite || isNonJetpackSite) &&
             viewModel.isSiteEligibleToInstallJetpack &&
             viewModel.jetpackBannerVisibleFromAppSettings &&
+            !viewModel.isSelfDrivenPushNotificationRegistered &&
+            !viewModel.shouldSuggestWPComConnection &&
+            !viewModel.dismissedWPComConnectionSuggestion &&
             dismissedJetpackBenefitBanner == false
     }
 
@@ -84,29 +92,31 @@ struct DashboardView: View {
 
     var body: some View {
         ScrollView {
-            // Store title
-            Text(currentSite?.name ?? Localization.title)
-                .subheadlineStyle()
-                .padding([.horizontal, .bottom], Layout.padding)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .renderedIf(verticalSizeClass == .regular)
+            VStack(spacing: Layout.padding) {
+                // Store title
+                Text(currentSite?.name ?? Localization.title)
+                    .subheadlineStyle()
+                    .padding(Layout.sectionHeadingPadding)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .renderedIf(verticalSizeClass == .regular)
 
-            // Feature announcement if any.
-            featureAnnouncementCard
+                // Feature announcement if any.
+                featureAnnouncementCard
 
-            // Card views
-            Group {
-                if horizontalSizeClass == .regular,
-                   !dynamicTypeSize.isAccessibilitySize,
-                   viewModel.showOnDashboardSecondColumn.isNotEmpty {
-                    // display cards in 2 columns for large screen sizes if there are more than 1 cards.
-                    HStack(alignment: .top, spacing: 0) {
-                        dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
-                        dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+                // Card views
+                Group {
+                    if horizontalSizeClass == .regular,
+                       !dynamicTypeSize.isAccessibilitySize,
+                       viewModel.showOnDashboardSecondColumn.isNotEmpty {
+                        // display cards in 2 columns for large screen sizes if there are more than 1 cards.
+                        HStack(alignment: .top, spacing: 0) {
+                            dashboardCardList(with: viewModel.showOnDashboardFirstColumn)
+                            dashboardCardList(with: viewModel.showOnDashboardSecondColumn)
+                        }
+                    } else {
+                        // display all cards in a single column
+                        dashboardCardList(with: viewModel.showOnDashboardCards)
                     }
-                } else {
-                    // display all cards in a single column
-                    dashboardCardList(with: viewModel.showOnDashboardCards)
                 }
             }
             .padding(.bottom, Layout.padding)
@@ -161,6 +171,10 @@ struct DashboardView: View {
 
             storePlanBanner
                 .renderedIf(connectivityStatus != .notReachable)
+
+            OfflineBannerViewRepresentable()
+                .frame(height: OfflineBannerView.height)
+                .renderedIf(connectivityStatus == .notReachable)
         }
         .sheet(isPresented: $showingSupportForm) {
             supportForm
@@ -210,9 +224,9 @@ private extension DashboardView {
                                             onTaskTapped: { task in
                             guard let currentSite else { return }
                             onboardingTaskTapped?(currentSite, task)
-                        }, onViewAllTapped: {
+                        }, onViewAllTapped: { tasks in
                             guard let currentSite else { return }
-                            viewAllOnboardingTasksTapped?(currentSite)
+                            viewAllOnboardingTasksTapped?(currentSite, tasks)
                         })
                     case .blaze:
                         BlazeCampaignDashboardView(viewModel: viewModel.blazeCampaignDashboardViewModel,
@@ -268,6 +282,8 @@ private extension DashboardView {
                         newCardsNoticeCard
                     case .shareStore:
                         shareStoreCard
+                    case .connectWPCom:
+                        connectWPComCard
                     }
                 }
             }
@@ -310,6 +326,20 @@ private extension DashboardView {
                 .stroke(Color(.border), lineWidth: 1)
         )
         .padding(.horizontal, Layout.padding)
+    }
+
+    var connectWPComCard: some View {
+        ConnectWPComCard(
+            setupAction: {
+                onConnectWPComSetup?()
+            },
+            hideAction: {
+                viewModel.hideWPComConnectionSuggestion()
+            }
+        )
+        .onAppear {
+            viewModel.onConnectWPComCardAppear()
+        }
     }
 
     var newCardsNoticeCard: some View {
@@ -378,12 +408,20 @@ private extension DashboardView {
 
     @ViewBuilder
     var featureAnnouncementCard: some View {
-        if let announcementViewModel = viewModel.announcementViewModel,
-           viewModel.dashboardCards.contains(where: { $0.type == .onboarding }) == false {
+        if viewModel.shouldShowAnnouncementBanner,
+           let announcementViewModel = viewModel.announcementViewModel {
             FeatureAnnouncementCardView(viewModel: announcementViewModel, dismiss: {
                 viewModel.announcementViewModel = nil
+            }, callToAction: {
+                // For client-side banners, use the universal link router to handle the URL
+                // (tries deep links first, falls back to web view)
+                if announcementViewModel is FeatureAnnouncementCardViewModel {
+                    viewModel.handleClientSideBannerCTATapped()
+                }
             })
             .background(Color(.listForeground(modal: false)))
+            .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
+            .padding(.horizontal, Layout.padding)
         }
     }
 }
@@ -393,6 +431,7 @@ private extension DashboardView {
     enum Layout {
         static let padding: CGFloat = 16
         static let elementPadding: CGFloat = 24
+        static let sectionHeadingPadding = EdgeInsets(top: 0, leading: 20, bottom: 8, trailing: 24)
         static let imagePadding: CGFloat = 40
         static let textPadding: CGFloat = 8
         static let cornerRadius: CGFloat = 8
@@ -400,7 +439,6 @@ private extension DashboardView {
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
         static let dotBadgeOffset = CGSize(width: 7, height: -7)
-
     }
     enum Localization {
         static let title = NSLocalizedString(
@@ -463,6 +501,7 @@ private extension DashboardView {
                 comment: "Label of the button to add sections"
             )
         }
+
     }
 }
 

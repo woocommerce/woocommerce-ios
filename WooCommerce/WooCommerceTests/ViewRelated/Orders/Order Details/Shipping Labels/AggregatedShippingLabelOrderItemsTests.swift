@@ -37,8 +37,12 @@ final class AggregatedShippingLabelOrderItemsTests: XCTestCase {
         let shippingLabel = MockShippingLabel.emptyLabel().copy(productIDs: [2020, 3013, 3013, 3013],
                                                                 productNames: ["Woo", "PW", "PW", "PW"])
         let imageURL1 = URL(string: "woocommerce.com/woocommerce.jpeg")!
-        let product1 = Product.fake().copy(productID: 2020, name: "Whoa", price: "25.9", images: [createProductImage(src: imageURL1.absoluteString)])
-        let product2 = Product.fake().copy(productID: 3013, name: "Password", price: "25.9")
+        let product1 = Product.fake()
+            .copy(productID: 2020, name: "Whoa", price: "25.9", images: [createProductImage(src: imageURL1.absoluteString)])
+            .toOrderDetailsProduct()
+        let product2 = Product.fake()
+            .copy(productID: 3013, name: "Password", price: "25.9")
+            .toOrderDetailsProduct()
         let orderItem1 = MockOrderItem.sampleItem(itemID: 1, name: "Woooo", productID: 2020, price: 59.2, sku: "woo")
         let aggregatedOrderItems = AggregatedShippingLabelOrderItems(shippingLabels: [shippingLabel],
                                                                      orderItems: [orderItem1],

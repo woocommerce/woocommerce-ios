@@ -1,0 +1,59 @@
+{
+  "data": {
+    "inactive_plugins": [],
+    "active_plugins":[
+      {
+        "plugin": "woocommerce/woocommerce.php",
+        "name": "WooCommerce",
+        "version": "10.0.0-dev",
+        "version_latest": "10.0.0-dev",
+        "url": "https://woocommerce.com/",
+        "author_name": "Automattic",
+        "author_url": "https://woocommerce.com",
+        "network_activated": false
+      }
+    ],
+    "settings": {
+      "api_enabled": false,
+      "force_ssl": false,
+      "currency": "USD",
+      "currency_symbol": "&#36;",
+      "currency_position": "left",
+      "thousand_separator": ",",
+      "decimal_separator": ".",
+      "number_of_decimals": 2,
+      "geolocation_enabled": false,
+      "taxonomies": {
+        "external": "external",
+        "grouped": "grouped",
+        "simple": "simple",
+        "variable": "variable"
+      },
+      "product_visibility_terms": {
+        "exclude-from-catalog": "exclude-from-catalog",
+        "exclude-from-search": "exclude-from-search",
+        "featured": "featured",
+        "outofstock": "outofstock",
+        "rated-1": "rated-1",
+        "rated-2": "rated-2",
+        "rated-3": "rated-3",
+        "rated-4": "rated-4",
+        "rated-5": "rated-5"
+      },
+      "woocommerce_com_connected": "no",
+      "enforce_approved_download_dirs": true,
+      "order_datastore": "Automattic\\WooCommerce\\Internal\\DataStores\\Orders\\OrdersTableDataStore",
+      "HPOS_enabled": true,
+      "HPOS_sync_enabled": false,
+      "enabled_features": [
+        "analytics",
+        "marketplace",
+        "order_attribution",
+        "site_visibility_badge",
+        "remote_logging",
+        "email_improvements",
+        "custom_order_tables"
+      ]
+    }
+  }
+}

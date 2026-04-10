@@ -62,13 +62,15 @@ final class ULAccountMismatchViewController: UIViewController {
         configureSecondaryButon()
 
         setUnifiedMargins(forWidth: view.frame.width)
+        observeTraitChanges()
 
         viewModel.viewDidLoad(self)
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        setUnifiedMargins(forWidth: view.frame.width)
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
+            self.setUnifiedMargins(forWidth: self.view.frame.width)
+        }
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

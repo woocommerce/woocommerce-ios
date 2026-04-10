@@ -6,7 +6,6 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
     private let tasks: [StoreOnboardingTask] = [
         .init(isComplete: true, type: .addFirstProduct),
         .init(isComplete: true, type: .launchStore),
-        .init(isComplete: true, type: .customizeDomains),
         .init(isComplete: true, type: .payments)
     ]
 
@@ -42,8 +41,6 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.icon, .addProductImage)
             case .launchStore:
                 XCTAssertEqual(sut.icon, .launchStoreImage)
-            case .customizeDomains:
-                XCTAssertEqual(sut.icon, .customizeDomainsImage)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.icon, .getPaidImage)
             case .unsupported:
@@ -62,8 +59,6 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.AddFirstProduct.title)
             case .launchStore:
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.LaunchStore.title)
-            case .customizeDomains:
-                XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.CustomizeDomains.title)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.Payments.title)
             case .unsupported:
@@ -82,8 +77,6 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.AddFirstProduct.subtitle)
             case .launchStore:
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.LaunchStore.subtitle)
-            case .customizeDomains:
-                XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.CustomizeDomains.subtitle)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.Payments.subtitle)
             case .unsupported:

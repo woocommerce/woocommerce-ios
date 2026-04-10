@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+import UIKit
 import Yosemite
 import Experiments
 
@@ -228,8 +230,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
-    private let featureFlagService: FeatureFlagService
-
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -238,8 +238,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
          productImagesUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         favoriteProductsUseCase: FavoriteProductsUseCase? = nil) {
         self.formType = formType
         self.productImageActionHandler = productImageActionHandler
         self.originalProduct = product
@@ -251,7 +250,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
-        self.featureFlagService = featureFlagService
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -314,9 +312,6 @@ extension ProductFormViewModel {
     }
 
     func canFavoriteProduct() -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
-            return false
-        }
         return formType != .add
     }
 
@@ -601,7 +596,7 @@ extension ProductFormViewModel {
                 }
             }
         case .edit:
-            guard hasChangesExcludingImageUploads() else {
+            guard hasChangesExcludingImageUploads(productModelToSave: productModelToSave) else {
                 /// Skip product update if there are no changes
                 saveProductImagesWhenNoneIsPendingUploadAnymore()
                 onCompletion(.success(product))
@@ -662,9 +657,9 @@ extension ProductFormViewModel {
 //
 private extension ProductFormViewModel {
 
-    func hasChangesExcludingImageUploads() -> Bool {
-        let hasProductChanges = product.product.copy(images: []) != originalProduct.product.copy(images: [])
-        let hasUploadedImageChanges = product.images.map(\.imageID) != originalProduct.images.map(\.imageID)
+    func hasChangesExcludingImageUploads(productModelToSave: EditableProductModel) -> Bool {
+        let hasProductChanges = productModelToSave.product.copy(images: []) != originalProduct.product.copy(images: [])
+        let hasUploadedImageChanges = productModelToSave.images.map(\.imageID) != originalProduct.images.map(\.imageID)
         return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
 
     }

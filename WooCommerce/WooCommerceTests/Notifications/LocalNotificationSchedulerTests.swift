@@ -22,7 +22,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 // Remote feature flag is enabled.
                 completion(true)
             }
@@ -42,7 +42,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 // Remote feature flag is disabled.
                 completion(false)
             }
@@ -75,7 +75,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         let scheduler = LocalNotificationScheduler(pushNotesManager: pushNotesManager, stores: stores)
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
+            case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 // Remote feature flag is enabled.
                 completion(true)
             }

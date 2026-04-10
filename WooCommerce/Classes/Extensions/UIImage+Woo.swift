@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Gridicons
+import WooFoundation
 
 
 /// WooCommerce UIImage Assets
@@ -40,13 +41,7 @@ extension UIImage {
     /// App icon (iPhone size)
     ///
     static var appIconDefault: UIImage {
-        return UIImage(named: "AppIcon60x60")!
-    }
-
-    /// Bell icon
-    ///
-    static var bell: UIImage {
-        UIImage(named: "bell")!
+        return UIImage(named: "AppIcon-Default60x60")!
     }
 
     /// Blaze icon
@@ -184,6 +179,10 @@ extension UIImage {
         return UIImage(named: "check-success")!
     }
 
+    static var circlePartialSuccessImage: UIImage {
+        return UIImage(named: "circle-partial-success")!
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
@@ -246,6 +245,12 @@ extension UIImage {
         return UIImage(named: "icon-connection")!
     }
 
+    /// Connect WPCom Icon
+    ///
+    static var connectWPComImage: UIImage {
+        return UIImage(named: "connect-wpcom")!
+    }
+
     /// Create order image
     ///
     static var createOrderImage: UIImage {
@@ -281,10 +286,6 @@ extension UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
-    static var bankIcon: UIImage {
-        UIImage(systemName: "building.columns")?.withRenderingMode(.alwaysTemplate) ?? .emptyBoxImage
-    }
-
     static var scanToPayIcon: UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
@@ -309,12 +310,6 @@ extension UIImage {
     ///
     static var deleteCellImage: UIImage {
         return UIImage.gridicon(.cross, size: CGSize(width: 22, height: 22))
-    }
-
-    /// Domain credit image.
-    ///
-    static var domainCreditImage: UIImage {
-        return UIImage(named: "domain-credit")!
     }
 
     /// Domain purchase success image.
@@ -343,7 +338,7 @@ extension UIImage {
     /// Coupons Image
     ///
     static var couponsImage: UIImage {
-        return UIImage(named: "coupons")!
+        SharedImageAsset.coupons.uiImage!
     }
 
     /// Empty Inbox Notes Icon
@@ -371,7 +366,7 @@ extension UIImage {
     }
 
     static var shoppingBagsImage: UIImage {
-        UIImage(named: "shopping-bags")!
+        SharedImageAsset.shoppingBags.uiImage!
     }
 
     /// Image showing boxes
@@ -422,6 +417,10 @@ extension UIImage {
 
     static var giftIcon: UIImage {
         return UIImage(named: "gift-icon")!
+    }
+
+    static var bellIcon: UIImage {
+        return UIImage(named: "bell-icon")!
     }
 
     /// Blaze success image
@@ -547,12 +546,6 @@ extension UIImage {
         UIImage(named: "icon-launch-store")!
     }
 
-    /// Customize domain image
-    ///
-    static var customizeDomainsImage: UIImage {
-        UIImage(named: "icon-customize-domain")!
-    }
-
     /// Get paid image
     ///
     static var getPaidImage: UIImage {
@@ -563,6 +556,10 @@ extension UIImage {
     ///
     static var cogImage: UIImage {
         return UIImage.gridicon(.cog)
+    }
+
+    static var wandAndRaysInverse: UIImage {
+        return UIImage(systemName: "wand.and.rays.inverse")!
     }
 
     static func prologueBackgroundBubbles(tint: UIColor) -> UIImage {
@@ -689,13 +686,13 @@ extension UIImage {
     /// Card Reader Update arrow
     ///
     static var cardReaderUpdateProgressArrow: UIImage {
-        return UIImage(named: "card-reader-update-progress-arrow")!
+        SharedImageAsset.cardReaderUpdateProgressArrow.uiImage!
     }
 
     /// Card Reader Update checkmark
     ///
     static var cardReaderUpdateProgressCheckmark: UIImage {
-        return UIImage(named: "card-reader-update-progress-checkmark")!
+        SharedImageAsset.cardReaderUpdateProgressCheckmark.uiImage!
     }
 
     /// Card Reader Low Battery
@@ -728,12 +725,6 @@ extension UIImage {
         return UIImage(named: "icon-shopping-cart")!
             .withRenderingMode(.alwaysTemplate)
             .imageFlippedForRightToLeftLayoutDirection()
-    }
-
-    /// Shopping cart Purple
-    ///
-    static var shoppingCartFilled: UIImage {
-        return UIImage(named: "icon-shopping-cart-filled")!
     }
 
     /// Bordered Custom Amount
@@ -843,6 +834,10 @@ extension UIImage {
     ///
     static var loginNoWordPressError: UIImage {
         return UIImage(named: "woo-wp-no-site")!.imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    static var noBookings: UIImage {
+        UIImage(named: "no-bookings")!
     }
 
     static var incorrectRoleError: UIImage {
@@ -1227,12 +1222,6 @@ extension UIImage {
         return UIImage(named: "puzzle")!
     }
 
-    /// Install WCShip banner Image
-    ///
-    static var installWCShipImage: UIImage {
-        return UIImage(named: "woo-wcship-install-banner")!
-    }
-
     /// Payments Feature Banner
     ///
     static var paymentsFeatureBannerImage: UIImage {
@@ -1318,40 +1307,44 @@ extension UIImage {
         return UIImage(named: "card-payments-select-reader-type")!
     }
 
-    /// Preparing built-in card reader: intended for use before we're ready to take payment
+    /// Preparing tap-to-pay card reader: intended for use before we're ready to take payment
     ///
-    static var preparingBuiltInReader: UIImage {
-        return UIImage(named: "built-in-reader-preparing")!
+    static var preparingTapToPayReader: UIImage {
+        return UIImage(named: "tap-to-pay-reader-preparing")!
     }
 
-    /// Built-in reader Processing: intended for use when a payment is
+    /// Tap to Pay reader Processing: intended for use when a payment is
     /// underway with the iPhone's built in reader.
     ///
-    static var builtInReaderProcessing: UIImage {
-        return UIImage(named: "built-in-reader-processing")!
+    static var tapToPayReaderProcessing: UIImage {
+        return UIImage(named: "tap-to-pay-reader-processing")!
     }
 
-    /// Built-in reader Success: intended for use when a transaction is complete
-    /// with the built-in reader
+    /// Tap to Pay reader Success: intended for use when a transaction is complete
+    /// with the tap-to-pay reader
     ///
-    static var builtInReaderSuccess: UIImage {
-        return UIImage(named: "built-in-reader-payment-success")!
+    static var tapToPayReaderSuccess: UIImage {
+        return UIImage(named: "tap-to-pay-reader-payment-success")!
     }
 
-    static var builtInReaderError: UIImage {
-        return UIImage(named: "built-in-reader-error")!
+    static var tapToPayReaderError: UIImage {
+        return UIImage(named: "tap-to-pay-reader-error")!
     }
 
-    static var setUpBuiltInReader: UIImage {
-        return UIImage(named: "built-in-reader-set-up")!
+    static var setUpTapToPayReader: UIImage {
+        return UIImage(named: "tap-to-pay-reader-set-up")!
     }
 
     static var shippingIcon: UIImage {
-        UIImage(imageLiteralResourceName: "icon-shipping")
+        UIImage(imageLiteralResourceName: "icon-shipping").withRenderingMode(.alwaysTemplate)
     }
 
     static var productIcon: UIImage {
-        UIImage(imageLiteralResourceName: "icon-product")
+        UIImage(imageLiteralResourceName: "icon-product").withRenderingMode(.alwaysTemplate)
+    }
+
+    static var creditCardIllustration: UIImage {
+        UIImage(imageLiteralResourceName: "credit-card")
     }
 
     static var appPasswordTutorialImage: UIImage {
@@ -1379,7 +1372,11 @@ extension UIImage {
 	}
 
     static var cardReaderLocationImage: UIImage {
-        UIImage(named: "location")!
+        SharedImageAsset.location.uiImage!
+    }
+
+    static var posOnPhonesPromotionBannerCorner: UIImage {
+        UIImage(named: "pos-on-phones-promotion-banner-corner")!
     }
 }
 

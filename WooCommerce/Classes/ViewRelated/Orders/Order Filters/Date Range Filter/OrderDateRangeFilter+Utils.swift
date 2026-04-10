@@ -1,3 +1,5 @@
+import Foundation
+import UIKit
 import Yosemite
 
 /// Extension of OrderDateRangeFilter struct

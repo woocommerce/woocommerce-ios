@@ -90,6 +90,7 @@ private extension BlazeEditAdView {
                                     selectMedia: { source in
                 viewModel.addImage(from: source)
             })
+            .accessibilityLabel(Localization.Accessibility.productImage)
 
             Button(Localization.Image.changeImage) {
                 isShowingMediaPickerSheet = true
@@ -130,6 +131,8 @@ private extension BlazeEditAdView {
                 .foregroundStyle(viewModel.isTaglineValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Localization.Accessibility.taglineGroup)
     }
 
     var description: some View {
@@ -164,6 +167,8 @@ private extension BlazeEditAdView {
                 .foregroundStyle(viewModel.isDescriptionValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Localization.Accessibility.descriptionGroup)
     }
 
     var ctaText: some View {
@@ -198,6 +203,8 @@ private extension BlazeEditAdView {
                 .foregroundStyle(viewModel.isCtaTextValidated ? .secondary : Color(.error))
                 .footnoteStyle()
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(Localization.Accessibility.ctaGroup)
     }
 
     var suggestedByAI: some View {
@@ -214,6 +221,9 @@ private extension BlazeEditAdView {
                     .foregroundColor(Color(uiColor: .label))
                     .bodyStyle()
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Localization.Accessibility.suggestedByAILabel)
+            .accessibilityHint(Localization.Accessibility.suggestedByAIHint)
 
             Spacer()
 
@@ -228,7 +238,10 @@ private extension BlazeEditAdView {
                     viewModel.didTapNext()
                 }
             }
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(Localization.Accessibility.suggestionNavigation)
         }
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -269,6 +282,26 @@ private extension BlazeEditAdView {
                     )
             })
             .disabled(!isEnabled)
+            .accessibilityLabel(accessibilityLabel)
+            .accessibilityHint(accessibilityHint)
+        }
+
+        private var accessibilityLabel: String {
+            switch type {
+            case .previous:
+                return Localization.Accessibility.previousSuggestion
+            case .next:
+                return Localization.Accessibility.nextSuggestion
+            }
+        }
+
+        private var accessibilityHint: String {
+            switch type {
+            case .previous:
+                return Localization.Accessibility.previousSuggestionHint
+            case .next:
+                return Localization.Accessibility.nextSuggestionHint
+            }
         }
     }
 }
@@ -349,6 +382,64 @@ private extension BlazeEditAdView {
             value: "Suggested by AI",
             comment: "Suggested by AI title in the Blaze Edit Ad screen."
         )
+        enum Accessibility {
+            static let productImage = NSLocalizedString(
+                "blazeEditAdView.accessibility.productImage",
+                value: "Product image for campaign",
+                comment: "Accessibility label for the product image in the Edit Image form for blaze campaign"
+            )
+            static let suggestionNavigation = NSLocalizedString(
+                "blazeEditAdView.accessibility.suggestionNavigation",
+                value: "Suggestion navigation",
+                comment: "Accessibility label for the suggestion navigation controls in the Blaze Edit Ad screen."
+            )
+            static let previousSuggestion = NSLocalizedString(
+                "blazeEditAdView.accessibility.previousSuggestion",
+                value: "Previous suggestion",
+                comment: "Accessibility label for the previous suggestion button in the Blaze Edit Ad screen."
+            )
+            static let nextSuggestion = NSLocalizedString(
+                "blazeEditAdView.accessibility.nextSuggestion",
+                value: "Next suggestion",
+                comment: "Accessibility label for the next suggestion button in the Blaze Edit Ad screen."
+            )
+            static let previousSuggestionHint = NSLocalizedString(
+                "blazeEditAdView.accessibility.previousSuggestionHint",
+                value: "Use this button to go to the previous suggestion",
+                comment: "Accessibility hint for the previous suggestion button in the Blaze Edit Ad screen."
+            )
+            static let nextSuggestionHint = NSLocalizedString(
+                "blazeEditAdView.accessibility.nextSuggestionHint",
+                value: "Use this button to go to the next suggestion",
+                comment: "Accessibility hint for the next suggestion button in the Blaze Edit Ad screen."
+            )
+            static let suggestedByAILabel = NSLocalizedString(
+                "blazeEditAdView.accessibility.suggestedByAILabel",
+                value: "This content was suggested by AI",
+                comment: "Accessibility label for the suggested by AI text in the Blaze Edit Ad screen."
+            )
+            static let suggestedByAIHint = NSLocalizedString(
+                "blazeEditAdView.accessibility.suggestedByAIHint",
+                value: "Use the navigation arrows on the right to explore different suggestions.",
+                comment: "Accessibility hint for the suggested by AI text in the Blaze Edit Ad screen."
+            )
+            static let taglineGroup = NSLocalizedString(
+                "blazeEditAdView.accessibility.taglineGroup",
+                value: "Edit tagline",
+                comment: "Accessibility label for the tagline group in the Blaze Edit Ad screen."
+            )
+            static let descriptionGroup = NSLocalizedString(
+                "blazeEditAdView.accessibility.descriptionGroup",
+                value: "Edit description",
+                comment: "Accessibility label for the description group in the Blaze Edit Ad screen."
+            )
+            static let ctaGroup = NSLocalizedString(
+                "blazeEditAdView.accessibility.ctaGroup",
+                value: "Edit call to action",
+                comment: "Accessibility label for the call to action group in the Blaze Edit Ad screen."
+            )
+
+        }
     }
 }
 

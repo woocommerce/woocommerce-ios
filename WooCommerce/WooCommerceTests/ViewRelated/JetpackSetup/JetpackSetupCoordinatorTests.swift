@@ -6,6 +6,7 @@ import WordPressAuthenticator
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
     private var navigationController: UINavigationController!
+    private let dotcomAuthScheme = "scheme"
 
     override func setUp() {
         navigationController = UINavigationController()
@@ -14,6 +15,9 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
+
+        AuthenticationManager().initialize()
+
         super.setUp()
     }
 
@@ -22,13 +26,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_benefit_modal_is_presented_correctly() {
+    func test_startSetup_when_feature_flag_disabled_then_presents_benefit_modal() {
         // Given
         let testSite = Site.fake()
-        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  featureFlagService: featureFlagService)
 
         // When
-        coordinator.showBenefitModal()
+        coordinator.startSetup()
         waitUntil {
             self.navigationController.presentedViewController != nil
         }
@@ -40,12 +47,11 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_handleAuthenticationUrl_returns_false_for_unsupported_url_scheme() throws {
         // Given
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
         let url = try XCTUnwrap(URL(string: "example://handle-authentication"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertFalse(result)
@@ -54,12 +60,11 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_handleAuthenticationUrl_returns_false_for_missing_queries() throws {
         // Given
         let testSite = Site.fake().copy(siteID: -1)
-        let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "scheme://magic-login"))
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertFalse(result)
@@ -68,12 +73,11 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_handleAuthenticationUrl_returns_false_for_incorrect_host_name() throws {
         // Given
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "scheme://handle-authentication?token=test"))
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://handle-authentication?token=test"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertFalse(result)
@@ -82,12 +86,11 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_handleAuthenticationUrl_returns_true_for_correct_url_and_sufficient_queries() throws {
         // Given
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController)
-        let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController)
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         // When
-        let result = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
         XCTAssertTrue(result)
@@ -97,17 +100,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultRoles: [.shopManager]))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
-        let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
-        let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackUser(completion):
-                completion(.success(JetpackUser.fake()))
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.failure(JetpackSetupCoordinator.JetpackCheckError.missingPermission))
             default:
                 break
             }
@@ -115,9 +117,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         stores.mockJetpackCheck()
 
         // When
-        _ = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
+        XCTAssertTrue(result)
         waitUntil {
             (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is AdminRoleRequiredHostingController
         }
@@ -127,17 +130,17 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
         let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
-        let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackUser(completion):
-                completion(.success(JetpackUser.fake()))
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.success(JetpackConnectionData.fake()))
             default:
                 break
             }
@@ -145,54 +148,30 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         stores.mockJetpackCheck()
 
         // When
-        _ = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
 
         // Then
+        XCTAssertTrue(result)
         waitUntil {
             (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController
         }
     }
 
-    func test_handleAuthenticationUrl_proceeds_to_authenticate_user_if_jetpack_is_already_connected() throws {
+    func test_handleAuthenticationUrl_presents_setup_flow_if_jetpack_is_already_connected() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let siteURL = "https://example.com"
-        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: siteURL)
-        let expectedScheme = "scheme"
-        let coordinator = JetpackSetupCoordinator(site: testSite, dotcomAuthScheme: expectedScheme, rootViewController: navigationController, stores: stores)
-        let url = try XCTUnwrap(URL(string: "scheme://magic-login?token=test"))
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite, rootViewController: navigationController, stores: stores)
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
 
         let expectedAccount = Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .loadWPComAccount(_, onCompletion):
                 onCompletion(expectedAccount)
-            case let .fetchJetpackUser(completion):
+            case let .fetchJetpackConnectionData(_, completion):
                 let dotcomUser = DotcomUser.fake().copy(id: expectedAccount.userID, username: expectedAccount.username, email: expectedAccount.email)
-                completion(.success(JetpackUser.fake().copy(wpcomUser: dotcomUser)))
-            default:
-                break
-            }
-        }
-
-        let expectedSite = Site.fake().copy(siteID: 44, url: siteURL)
-        stores.whenReceivingAction(ofType: SiteAction.self) { action in
-            switch action {
-            case let .syncSiteByDomain(domain, completion):
-                XCTAssertEqual(domain, "example.com")
-                completion(.success(expectedSite))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: AccountAction.self) { action in
-            switch action {
-            case .synchronizeAccount(let onCompletion):
-                onCompletion(.success(expectedAccount))
-            case .synchronizeAccountSettings(_, let onCompletion):
-                onCompletion(.success(AccountSettings.fake()))
-            case .synchronizeSites(_, let onCompletion):
-                onCompletion(.success(false))
+                completion(.success(JetpackConnectionData.fake().copy(currentUser: .fake().copy(wpcomUser: dotcomUser))))
             default:
                 break
             }
@@ -200,14 +179,122 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         stores.mockJetpackCheck()
 
         // When
-        _ = coordinator.handleAuthenticationUrl(url)
+        let result = coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme)
+
+        // Then
+        XCTAssertTrue(result)
+        waitUntil {
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController
+        }
+    }
+
+    func test_startSetup_when_feature_flag_enabled_then_presents_email_login_directly() throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores,
+                                                  featureFlagService: featureFlagService)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.success(JetpackConnectionData.fake()))
+            default:
+                break
+            }
+        }
+        stores.mockJetpackCheck()
+
+        // When
+        coordinator.startSetup()
 
         // Then
         waitUntil {
-            stores.sessionManager.defaultSite == expectedSite
+            self.navigationController.presentedViewController is LoginNavigationController
         }
-        assertEqual(expectedSite.siteID, stores.sessionManager.defaultStoreID)
-        assertEqual(expectedAccount, stores.sessionManager.defaultAccount)
+        let loginViewController = try XCTUnwrap(navigationController.presentedViewController as? LoginNavigationController)
+        XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
+    }
+
+    func test_startSetup_when_feature_flag_enabled_then_does_not_present_benefit_modal() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores,
+                                                  featureFlagService: featureFlagService)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.success(JetpackConnectionData.fake()))
+            default:
+                break
+            }
+        }
+        stores.mockJetpackCheck()
+
+        // When
+        coordinator.startSetup()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        XCTAssertFalse(navigationController.presentedViewController is JetpackBenefitsHostingController)
+    }
+
+    func test_startSetup_when_feature_flag_enabled_and_wpcom_credentials_then_presents_setup_steps_directly() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores,
+                                                  featureFlagService: featureFlagService)
+
+        // When
+        coordinator.startSetup()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+        XCTAssertTrue((navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController)
+    }
+
+    func test_startSetup_when_feature_flag_enabled_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let coordinator = JetpackSetupCoordinator(site: testSite,
+                                                  rootViewController: navigationController,
+                                                  stores: stores,
+                                                  featureFlagService: featureFlagService)
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            switch action {
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.success(JetpackConnectionData.fake()))
+            default:
+                break
+            }
+        }
+        stores.mockJetpackCheck()
+
+        // When
+        coordinator.startSetup()
+
+        // Then
+        waitUntil {
+            self.navigationController.presentedViewController is LoginNavigationController
+        }
+        let loginViewController = navigationController.presentedViewController as? LoginNavigationController
+        XCTAssertTrue(loginViewController?.topViewController is WPComEmailLoginHostingController)
     }
 
     func test_startAuthentication_proceeds_to_display_email_screen_when_email_is_not_found() {
@@ -283,7 +370,8 @@ private extension MockStoresManager {
         whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case let .synchronizeSystemInformation(_, onCompletion):
-                onCompletion(.success(.init(systemPlugins: [.fake().copy(name: isJetpackInstalled ? "Jetpack" : "Plugin", active: isJetpackActive)])))
+                onCompletion(.success(.init(systemPlugins: [.fake()
+                    .copy(plugin: isJetpackInstalled ? "jetpack/jetpack.php" : "plugin/plugin.php", active: isJetpackActive)])))
             default:
                 break
             }

@@ -203,13 +203,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published private(set) var isUsingAISuggestions: Bool = false
 
     private let storage: StorageManagerType
-    private var product: Product? {
-        guard let product = productsResultsController.fetchedObjects.first else {
-            assertionFailure("Unable to fetch product with ID: \(productID)")
-            return nil
-        }
-        return product
-    }
+    private var product: BlazeCampaignProduct?
 
     @Published private(set) var error: BlazeCampaignCreationError?
     private var suggestions: [BlazeAISuggestion] = []
@@ -221,9 +215,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     var canConfirmDetails: Bool {
-        tagline.isNotEmpty && description.isNotEmpty
+        tagline.isNotEmpty && description.isNotEmpty && isToSAccepted
     }
 
+    @Published var isToSAccepted = false
     @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
@@ -231,9 +226,14 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
     /// ResultController to get the product for the given product ID
     ///
-    private lazy var productsResultsController: ResultsController<StorageProduct> = {
+    private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
         let predicate = \StorageProduct.siteID == siteID && \StorageProduct.productID == productID
-        let controller = ResultsController<StorageProduct>(storageManager: storage, matching: predicate, sortedBy: [])
+        let controller = GenericResultsController<StorageProduct, BlazeCampaignProduct>(
+            storageManager: storage,
+            matching: predicate,
+            sortedBy: [],
+            transformer: { BlazeCampaignProduct(storageProduct: $0) }
+        )
         do {
             try controller.performFetch()
         } catch {
@@ -269,7 +269,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
                             targetUrn: targetUrn,
                             type: Constants.campaignType,
                             objective: campaignObjective?.id,
-                            ctaText: ctaText)
+                            ctaText: ctaText,
+                            acceptedTOS: true)
     }
 
     private let locale: Locale
@@ -303,6 +304,8 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
 
         // sets isEvergreen = true by default if evergreen campaigns are supported
         self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
+
+        product = productsResultsController.fetchedObjects.first
 
         initializeCampaignObjective()
         updateBudgetDetails()
@@ -396,6 +399,81 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 }
 
+// MARK: Duration type
+
+private extension BlazeCampaignCreationFormViewModel {
+    enum BlazeCampaignDuration {
+        case upToSevenDays
+        case moreThanSevenDays
+        case evergreen
+
+        var tosCheckboxFirstLineLocalizedFormat: String {
+            switch self {
+            case .evergreen:
+                return Localization.tosCheckboxFirstLinePartEvergreen
+            case .upToSevenDays:
+                return Localization.tosCheckboxFirstLinePartUpToSevenDays
+            case .moreThanSevenDays:
+                return Localization.tosCheckboxFirstLinePartMoreThanSevenDays
+            }
+        }
+    }
+
+    var campaignDuration: BlazeCampaignDuration {
+        if isEvergreen {
+            return .evergreen
+        } else if duration <= 7 {
+            return .upToSevenDays
+        } else {
+            return .moreThanSevenDays
+        }
+    }
+}
+
+// MARK: TOS checkbox
+extension BlazeCampaignCreationFormViewModel {
+    private var weeklyAmount: Double {
+        return dailyBudget * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+    }
+
+    var tosCheckboxAttributedText: AttributedString {
+        return tosCheckboxFirstLineAttributedText() +
+        AttributedString(" ") +
+        tosCheckboxSecondLineAttributedText()
+    }
+
+    private func tosCheckboxFirstLineAttributedText() -> AttributedString {
+        // Create the first line as AttributedString with bold formatting
+        let firstLineString = String.localizedStringWithFormat(
+            campaignDuration.tosCheckboxFirstLineLocalizedFormat,
+            weeklyAmount,
+            dateFormatter.string(for: startDate) ?? ""
+        )
+
+        let firstLineElements = BoldableTextParser().parseBoldableElements(string: firstLineString)
+        var firstLineAttributed = AttributedString()
+        for element in firstLineElements {
+            var elementText = AttributedString(element.content)
+            elementText.font = .body
+            elementText.foregroundColor = .init(.text)
+            if element.isBold {
+                elementText.font = .body.bold()
+            }
+            firstLineAttributed += elementText
+        }
+
+        return firstLineAttributed
+    }
+
+    private func tosCheckboxSecondLineAttributedText() -> AttributedString {
+        return AttributedString.withEmbeddedLink(
+            mainContent: Localization.tosCheckboxSecondLinePart,
+            linkText: Localization.campaignDetailsLinkText,
+            link: Links.stopAnAdCampaign
+        )
+    }
+}
+
 // MARK: Image download
 extension BlazeCampaignCreationFormViewModel {
     @MainActor
@@ -414,7 +492,7 @@ extension BlazeCampaignCreationFormViewModel {
 private extension BlazeCampaignCreationFormViewModel {
     @MainActor
     func loadProductImage() async -> MediaPickerImage? {
-        guard let firstImage = product?.images.first,
+        guard let firstImage = product?.firstImage,
               let image = try? await productImageLoader.requestImage(productImage: firstImage) else {
             return nil
         }
@@ -566,6 +644,9 @@ private extension BlazeCampaignCreationFormViewModel {
         static let targetUrnFormat = "urn:wpcom:post:%d:%d"
         static let defaultCurrency = "USD"
     }
+    enum Links {
+        static let stopAnAdCampaign = "https://wordpress.com/support/promote-a-post/manage-your-blaze-ad-campaign/#stop-an-ad-campaign"
+    }
     enum Localization {
         static let budgetSingleDay = NSLocalizedString(
             "blazeCampaignCreationFormViewModel.budgetSingleDay",
@@ -605,6 +686,40 @@ private extension BlazeCampaignCreationFormViewModel {
             "blazeCampaignCreationFormViewModel.everywhere",
             value: "Everywhere",
             comment: "Text indicating all locations for a Blaze campaign"
+        )
+
+        static let tosCheckboxFirstLinePartUpToSevenDays = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.upToSevenDays",
+            value: "I agree to be charged up to **$%1$.0f** starting **%2$@**. Charges may occur in one or more payments while the campaign is active.",
+            comment: "First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration up to 7 days. " +
+            "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
+        )
+
+        static let tosCheckboxFirstLinePartMoreThanSevenDays = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePart.MoreThanSevenDays",
+            value: "I agree to a recurring charge of up to **$%1$.0f weekly** starting **%2$@**. Charges may occur at varying times during the campaign.",
+            comment: "First part of checkbox text for accepting terms of service for finite Blaze campaigns with the duration of more than 7 days. " +
+            "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
+        )
+
+        static let tosCheckboxFirstLinePartEvergreen = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxFirstLinePartEvergreen",
+            value: "I agree to a recurring **weekly charge up to $%1$.0f** starting **%2$@**. Charges may occur at varying times during the campaign.",
+            comment: "First part of checkbox text for accepting terms of service for the endless Blaze campaign subscription. " +
+            "%1$.0f is the weekly budget amount, %2$@ is the formatted start date. The content inside two double asterisks **...** denote bolded text."
+        )
+
+        static let tosCheckboxSecondLinePart = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.tosCheckboxSecondLinePart",
+            value: "%@; I’ll only pay for ads delivered up to cancellation.",
+            comment: "Second part of checkbox text for accepting terms of service for finite Blaze campaigns. " +
+            "%@ is \"I can cancel anytime\" substring for a hyperlink."
+        )
+
+        static let campaignDetailsLinkText = NSLocalizedString(
+            "blazeCampaignCreationFormViewModel.campaignDetailsLinkText",
+            value: "I can cancel anytime",
+            comment: "Text that will become a hyperlink in the second line of the terms of service checkbox text."
         )
     }
 }

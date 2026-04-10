@@ -21,4 +21,24 @@ struct ProcessConfiguration {
     static var shouldSimulatePushNotification: Bool {
         ProcessInfo.processInfo.arguments.contains("-mocks-push-notification")
     }
+
+    /// Returns `true` when POS eligibility checks should be bypassed for screenshot tests.
+    static var shouldBypassPOSEligibilityChecks: Bool {
+        ProcessInfo.processInfo.arguments.contains("bypass-pos-eligibility-checks")
+    }
+
+    /// Returns `true` when we load mocked POS products for screenshot tests.
+    static var shouldLoadMockedPOSProducts: Bool {
+        ProcessInfo.processInfo.arguments.contains("load-mocked-pos-products")
+    }
+
+    /// Returns `true` when POS order syncing should be bypassed for screenshot tests.
+    static var shouldBypassPOSOrderSyncing: Bool {
+        ProcessInfo.processInfo.arguments.contains("bypass-pos-order-syncing")
+    }
+
+    /// Returns `true` when card present payment service should be mocked for screenshot tests.
+    static var shouldUseMockCardPresentPayment: Bool {
+        ProcessInfo.processInfo.arguments.contains("use-mocked-card-present-payment")
+    }
 }

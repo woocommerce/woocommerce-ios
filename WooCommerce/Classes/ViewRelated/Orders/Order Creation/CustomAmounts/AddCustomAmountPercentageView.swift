@@ -4,32 +4,27 @@ struct AddCustomAmountPercentageView: View {
     @ObservedObject private(set) var viewModel: AddCustomAmountPercentageViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
-            HStack() {
-                Text(Localization.percentageInputTitle)
-                    .font(.subheadline)
-                    .foregroundColor(Color(.textSubtle))
+        Group {
+            VStack(alignment: .leading) {
+                LabeledContent {
+                    Text(viewModel.baseAmountForPercentageString)
+                        .font(.subheadline)
+                        .foregroundColor(Color(.textSubtle))
+                } label: {
+                    Text(Localization.percentageInputTitle)
+                        .font(.subheadline)
+                        .foregroundColor(Color(.textSubtle))
+                }
 
-                Spacer()
-
-                Text("(\(viewModel.baseAmountForPercentageString))")
-                    .font(.subheadline)
-                    .foregroundColor(Color(.textSubtle))
+                PercentageInputField(text: $viewModel.percentage, onChangeText: viewModel.updatePercentageCalculatedAmount)
             }
 
-            PercentageInputField(text: $viewModel.percentage, onChangeText: viewModel.updatePercentageCalculatedAmount)
-
-            Divider()
-                .padding(.bottom, Layout.mainVerticalSpacing)
-
-            HStack() {
-                Text(Localization.amountTitle)
+            LabeledContent {
+                Text(viewModel.percentageCalculatedAmount)
                     .font(.subheadline)
                     .foregroundColor(Color(.textSubtle))
-
-                Spacer()
-
-                Text(viewModel.percentageCalculatedAmount)
+            } label: {
+                Text(Localization.amountTitle)
                     .font(.subheadline)
                     .foregroundColor(Color(.textSubtle))
             }
@@ -39,8 +34,6 @@ struct AddCustomAmountPercentageView: View {
 
 private extension AddCustomAmountPercentageView {
     enum Layout {
-        static let mainVerticalSpacing: CGFloat = 8
-        static let textFieldMaxWidth: CGFloat = 200
         static func percentageFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
@@ -62,27 +55,38 @@ private extension AddCustomAmountPercentageView {
 private extension AddCustomAmountPercentageView {
     struct PercentageInputField: View {
         @ScaledMetric private var scale: CGFloat = 1.0
+        @FocusState private var focusPercentageInput: Bool
         @Binding var text: String
         var onChangeText: (String) -> (Void)
 
         var body: some View {
-            HStack(spacing: 0) {
+            ZStack {
                 TextField("",
                           text: $text,
                           prompt: Text("0").foregroundColor(Color(.textSubtle))
                 )
-                .onChange(of: text, perform: onChangeText)
+                .onChange(of: text) {
+                    onChangeText(text)
+                }
                 .focused()
-                .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
+                .focused($focusPercentageInput)
                 .keyboardType(.decimalPad)
-                .frame(maxWidth: Layout.textFieldMaxWidth)
-                .fixedSize()
+                .opacity(0)
 
-                Text("%")
+                Text(text + "%")
                     .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
-                    .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .foregroundColor(text.isEmpty ? Color(.textSubtle) : Color(.text))
+                    .minimumScaleFactor(0.1)
+                    .lineLimit(1)
+                    .if(focusPercentageInput, transform: { field in
+                        field.roundedBorder(cornerRadius: 8, lineColor: Color(.wooCommercePurple(.shade60)), lineWidth: 1)
+                    })
+                    .onTapGesture {
+                        focusPercentageInput = true
+                    }
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

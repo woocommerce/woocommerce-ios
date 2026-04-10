@@ -369,11 +369,23 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
-        ServiceLocator.authenticationManager.initialize()
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
         }
         navigationController?.show(viewController, sender: nil)
+    }
+}
+
+
+// MARK: - Site Discovery Support
+//
+extension StorePickerViewController {
+    /// Selects a site programmatically, updating the UI as if the user tapped it.
+    /// Also unhides the site if it was hidden, so it remains visible in the picker.
+    func selectSite(_ site: Site) {
+        viewModel.unhideStoreIfNeeded(site.siteID)
+        currentlySelectedSite = site
+        tableView.reloadData()
     }
 }
 

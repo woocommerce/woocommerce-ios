@@ -19,6 +19,13 @@ enum WooShippingPackageSource {
         }
         return sourceID
     }
+
+    var isCustomPackage: Bool {
+        switch self {
+        case .custom: true
+        case .predefined: false
+        }
+    }
 }
 
 protocol WooShippingPackageDataRepresentable {
@@ -85,6 +92,9 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
 
 extension WooShippingPackageDataRepresentable {
     func dimensionsDescription(unit: String) -> String {
+        guard height.isNotEmpty, let numericHeight = Int(height), numericHeight > 0 else {
+            return "\(length) x \(width) \( unit)"
+        }
         return "\(length) x \(width) x \(height) \( unit)"
     }
 
@@ -147,6 +157,7 @@ struct WooSavedPackagesSelectionView: View {
                 addPackageButtonTapped()
             }
             .disabled(selectionButtonDisabled)
+            .renderedIf(viewModel.hasSavedPackages)
             .if(viewModel.previousSelectedAndSelectedSavedPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
             }
@@ -195,14 +206,16 @@ private extension WooSavedPackagesSelectionView {
             Text(Localization.emptyStateMessage)
                 .multilineTextAlignment(.center)
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
             Button(Localization.createCustomPackageCTA) {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }
-
+        .scrollVerticallyIfNeeded()
     }
 
     var selectionButtonDisabled: Bool {

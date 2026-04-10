@@ -1,5 +1,8 @@
 // This file is shared by all the projects in the WooCommerce workspace by
 // means of each project having a top-level xcconfig file that includes this.
-IPHONEOS_DEPLOYMENT_TARGET = 16.0
+
+// The deployment targets are currently duplicated in Modules/Package.swift.
+// If you change them here, make sure to update them there, too.
+IPHONEOS_DEPLOYMENT_TARGET = 17.0
 MACOSX_DEPLOYMENT_TARGET = 14.0
 WATCHOS_DEPLOYMENT_TARGET = 9.0

@@ -4,9 +4,11 @@ import UIKit
 import WordPressShared
 import WidgetKit
 import enum Alamofire.AFError
+import enum Networking.NetworkError
 import Yosemite
 import protocol WooFoundation.Analytics
 import protocol WooFoundation.AnalyticsProvider
+import WooFoundationCore
 
 final class WooAnalytics: Analytics {
 
@@ -192,10 +194,18 @@ private extension Analytics {
         let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
-        updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
-        updatedProperties[PropertyKeys.planKey] = site?.plan
         updatedProperties[PropertyKeys.siteURL] = site?.url
+        updatedProperties[PropertyKeys.isJetpackInstalled] = site?.isJetpackThePluginInstalled
+        updatedProperties[PropertyKeys.isJetpackConnected] = site?.isJetpackConnected
+        updatedProperties[PropertyKeys.isJetpackCPConnected] = site?.isJetpackCPConnected
         updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
+        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
+        if let site {
+            updatedProperties[PropertyKeys.isCIAB] = ServiceLocator.ciabEligibilityChecker.isSiteCIAB(site)
+            if let gardenPartner = site.gardenPartner {
+                updatedProperties[PropertyKeys.gardenPartner] = gardenPartner
+            }
+        }
         return updatedProperties
     }
 
@@ -218,18 +228,20 @@ private extension Analytics {
             return nil
         }
 
-        let err = error as NSError
+        let nsError = error as NSError
         let errorCode: String = {
-            if let networkError = error as? AFError {
-                if let responseCode = networkError.responseCode {
-                    return "\(responseCode)"
-                } else if let underlyingError = networkError.underlyingError as? NSError {
-                    return "\(underlyingError.code)"
+            if let networkError = error as? NetworkError, let code = networkError.responseCode {
+                return code.description
+            } else if let afError = error as? AFError {
+                if let responseCode = afError.responseCode {
+                    return responseCode.description
+                } else if let underlyingError = afError.underlyingError as? NSError {
+                    return underlyingError.code.description
                 }
             } else if let loginError = error as? SiteCredentialLoginError {
-                return "\(loginError.underlyingError.code)"
+                return loginError.underlyingError.code.description
             }
-            return "\(err.code)"
+            return nsError.code.description
         }()
 
         let errorDomain: String = {
@@ -237,10 +249,10 @@ private extension Analytics {
                let underlyingError = networkError.underlyingError as? NSError {
                 return underlyingError.domain
             }
-            return err.domain
+            return nsError.domain
         }()
 
-        let errorDescription = err.description
+        let errorDescription = nsError.description
 
         return [
             Constants.errorKeyCode: errorCode,
@@ -329,8 +341,12 @@ private enum PropertyKeys {
     static let propertyKeyTimeInApp = "time_in_app"
     static let blogIDKey            = "blog_id"
     static let wpcomStoreKey        = "is_wpcom_store"
-    static let ecommerceTrialKey    = "was_ecommerce_trial"
-    static let planKey              = "plan"
     static let siteURL              = "site_url"
     static let storeID              = "store_id"
+    static let cachedWooCommerceVersionKey = "cached_woo_core_version"
+    static let isCIAB               = "is_ciab"
+    static let gardenPartner        = "garden_partner"
+    static let isJetpackInstalled   = "is_jetpack_installed"
+    static let isJetpackConnected   = "is_jetpack_connected"
+    static let isJetpackCPConnected = "is_jetpack_cp_connected"
 }

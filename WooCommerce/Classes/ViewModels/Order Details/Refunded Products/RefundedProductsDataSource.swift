@@ -46,7 +46,7 @@ final class RefundedProductsDataSource: NSObject {
 
     /// Products from a Refund
     ///
-    var products: [Product] {
+    var products: [OrderDetailsProduct] {
         return resultsControllers.products
     }
 }
@@ -130,7 +130,7 @@ private extension RefundedProductsDataSource {
 // MARK: - Lookup products
 //
 private extension RefundedProductsDataSource {
-    func lookUpProduct(by productID: Int64) -> Product? {
+    func lookUpProduct(by productID: Int64) -> OrderDetailsProduct? {
         return products.filter({ $0.productID == productID }).first
     }
 }

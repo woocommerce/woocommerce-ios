@@ -1,5 +1,4 @@
 import SwiftUI
-import struct Yosemite.Product
 import Kingfisher
 import struct Yosemite.DashboardCard
 
@@ -150,11 +149,14 @@ private extension BlazeCampaignDashboardView {
         VStack(alignment: .leading, spacing: Layout.HeadingBlock.verticalSpacing) {
             // Title
             HStack {
-                Image(uiImage: .blaze)
-                    .resizable()
-                    .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                Text(DashboardCard.CardType.blaze.name)
-                    .headlineStyle()
+                HStack {
+                    Image(uiImage: .blaze)
+                        .resizable()
+                        .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                    Text(DashboardCard.CardType.blaze.name)
+                        .headlineStyle()
+                }
+                .accessibilityElement(children: .combine)
                 Spacer()
                 Menu {
                     Button(Localization.hideBlaze) {
@@ -291,15 +293,15 @@ private struct ProductInfoView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    private let product: Product
+    private let product: BlazeCampaignProduct
 
-    init(product: Product) {
+    init(product: BlazeCampaignProduct) {
         self.product = product
     }
 
     var body: some View {
         HStack(alignment: .center, spacing: Layout.contentSpacing) {
-            KFImage(product.imageURL)
+            KFImage(product.firstImage?.imageURL)
                 .placeholder {
                     Image(uiImage: .productPlaceholderImage)
                 }
@@ -307,6 +309,7 @@ private struct ProductInfoView: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
                 .cornerRadius(Layout.cornerRadius)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading) {
                 Text(Localization.suggestedProductLabel)

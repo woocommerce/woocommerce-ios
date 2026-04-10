@@ -44,7 +44,6 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                         wooPaymentsPayoutService: mockPayoutService,
                                         systemStatusService: systemStatusService,
                                         analytics: analytics),
-                                      navigationPath: .constant(.init()),
                                       payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
     }
 
@@ -100,16 +99,6 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPayoutSummaryError.rawValue))
-    }
-
-    func test_collectPaymentTapped_tracks_paymentsMenuCollectPaymentTapped() {
-        // Given
-
-        // When
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuCollectPaymentTapped.rawValue))
     }
 
     func test_setUpTryOutTapToPayTapped_tracks_setUpTryOutTapToPayOnIPhoneTapped() {
@@ -209,10 +198,10 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
          let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
                                                                        onboardingUseCase: mockOnboardingUseCase,
                                                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                       wooPaymentsPayoutService: mockPayoutService)
+                                                                       wooPaymentsPayoutService: mockPayoutService,
+                                                                       systemStatusService: systemStatusService)
          sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                             dependencies: dependencies,
-                                             navigationPath: .constant(.init()))
+                                             dependencies: dependencies)
 
          // When
          await sut.onAppear()
@@ -228,7 +217,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
             paymentMethods: [.cardPresent],
             currencies: [.INR],
             paymentGateways: [WCPayAccount.gatewayID],
-            supportedReaders: [.appleBuiltIn],
+            supportedReaders: [.tapToPay],
             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
             stripeSmallestCurrencyUnitMultiplier: 100,
@@ -238,156 +227,15 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
                                                                       onboardingUseCase: mockOnboardingUseCase,
                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
+                                                                      wooPaymentsPayoutService: mockPayoutService,
+                                                                      systemStatusService: systemStatusService)
         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: .constant(.init()))
+                                            dependencies: dependencies)
 
         // When
         await sut.onAppear()
 
         // Then
         XCTAssertFalse(sut.shouldShowTapToPaySection)
-    }
-
-    // MARK: - Collect Payment tests
-
-    func test_collectPaymentTapped_appends_collectPayment_to_navigation_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath()
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertTrue(sut.navigationPath.isEmpty)
-
-        // When
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
-    }
-
-    func test_navigate_to_collectPayment_appends_collectPayment_to_empty_navigation_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath()
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertTrue(sut.navigationPath.isEmpty)
-
-        // When
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-
-        // Then
-        XCTAssertEqual(navigationPath, NavigationPath([InPersonPaymentsMenuNavigationDestination.collectPayment]))
-    }
-
-    func test_navigate_to_collectPayment_appends_collectPayment_to_non_empty_navigation_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath(["testPath"])
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
-
-        // When
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-
-        // Then
-        XCTAssertEqual(navigationPath.count, 2)
-        let expectedPath = {
-            var path = NavigationPath(["testPath"])
-            path.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
-            return path
-        }()
-        XCTAssertEqual(navigationPath.codable, expectedPath.codable)
-    }
-
-    func test_dismissPaymentCollection_pops_paths_down_to_before_the_first_colletPayment_path() {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        var navigationPath = NavigationPath(["testPath"])
-        let navigationPathBinding = Binding<NavigationPath>(
-            get: { navigationPath },
-            set: { newValue in navigationPath = newValue }
-        )
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: navigationPathBinding)
-        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
-
-        // When navigating to collectPayment and pushing other views, then dismiss payment collection
-        sut.navigate(to: PaymentsMenuDestination.collectPayment)
-        navigationPath.append(InPersonPaymentsMenuNavigationDestination.collectPayment)
-        navigationPath.append("anotherPath")
-        XCTAssertEqual(navigationPath.count, 4)
-        sut.dismissPaymentCollection()
-
-        // Then
-        XCTAssertEqual(navigationPath.count, 1)
-        XCTAssertEqual(navigationPath, NavigationPath(["testPath"]))
-    }
-
-    func test_collectPaymentTapped_sets_orderViewModel() throws {
-        // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: .init(country: .US),
-                                                                      onboardingUseCase: mockOnboardingUseCase,
-                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                      wooPaymentsPayoutService: mockPayoutService)
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: dependencies,
-                                            navigationPath: .constant(.init()))
-        XCTAssertNil(sut.orderViewModel)
-
-        // When
-        sut.collectPaymentTapped()
-        XCTAssertNotNil(sut.orderViewModel)
-        sut.orderViewModel?.syncRequired = true
-
-        // Then
-        let originalOrderViewModel = try XCTUnwrap(sut.orderViewModel)
-        XCTAssertTrue(originalOrderViewModel.syncRequired)
-    }
-
-    func test_collectPaymentTapped_resets_presentCustomAmountAfterDismissingCollectPaymentMigrationSheet_and_hasPresentedCollectPaymentMigrationSheet_to_false() {
-        // Given
-        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
-        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
-
-        // When
-        sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet = true
-        sut.hasPresentedCollectPaymentMigrationSheet = true
-        sut.collectPaymentTapped()
-
-        // Then
-        XCTAssertFalse(sut.presentCustomAmountAfterDismissingCollectPaymentMigrationSheet)
-        XCTAssertFalse(sut.hasPresentedCollectPaymentMigrationSheet)
     }
 }

@@ -4,8 +4,10 @@ import TestKit
 import Yosemite
 import ViewInspector
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 final class EditOrderFormTests: XCTestCase {
 
     func test_addition_buttons_on_empty_orders() throws {

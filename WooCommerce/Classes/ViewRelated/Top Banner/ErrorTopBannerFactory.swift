@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import enum Networking.DotcomError
 
@@ -89,7 +90,7 @@ extension ErrorTopBannerFactory {
 
             if error is DecodingError {
                 self = .decodingError
-            } else if error as? DotcomError == .jetpackNotConnected {
+            } else if case .jetpackNotConnected = error as? DotcomError {
                 self = .jetpackConnectionError
             } else {
                 self = .generalError

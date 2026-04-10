@@ -43,7 +43,9 @@ enum ShippingLabelSampleData {
                      customFields: [],
                      renewalSubscriptionID: nil,
                      appliedGiftCards: [],
-                     attributionInfo: nil)
+                     attributionInfo: nil,
+                     shippingLabels: [],
+                     createdVia: nil)
     }
 
     static func samplePackageDetails() -> ShippingLabelPackagesResponse {
@@ -52,11 +54,27 @@ enum ShippingLabelSampleData {
                                              predefinedOptions: sampleShippingLabelPredefinedOptions(),
                                              unactivatedPredefinedOptions: sampleShippingLabelPredefinedOptions())
     }
+
+    static func sampleWooShippingConfig() -> WooShippingConfig {
+        WooShippingConfig(siteID: 123,
+                          shipments: [WooShippingShipment(
+                            siteID: 1,
+                            orderID: 2,
+                            index: "0",
+                            items: [sampleWooShippingShipmentItem()],
+                            shippingLabel: nil,
+                          )],
+                          shippingLabelData: nil)
+    }
 }
 
 // MARK: Helper methods
 //
 private extension ShippingLabelSampleData {
+    static func sampleWooShippingShipmentItem() -> WooShippingShipmentItem {
+        WooShippingShipmentItem(id: 123, subItems: ["123-sub-0", "123-sub-1"])
+    }
+
     static func sampleAddress() -> Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",
@@ -105,6 +123,7 @@ private extension ShippingLabelSampleData {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 
@@ -123,6 +142,7 @@ private extension ShippingLabelSampleData {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
+                              image: nil,
                               parent: nil,
                               bundleConfiguration: [])
 

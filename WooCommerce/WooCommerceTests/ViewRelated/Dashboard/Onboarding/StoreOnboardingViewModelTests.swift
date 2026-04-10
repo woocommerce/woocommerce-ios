@@ -38,7 +38,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -59,7 +58,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .woocommercePayments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -83,7 +81,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -98,7 +95,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
-        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .payments)
     }
 
     @MainActor
@@ -107,7 +104,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -118,7 +114,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertEqual(sut.tasksForDisplay.count, 4)
+        XCTAssertEqual(sut.tasksForDisplay.count, 3)
     }
 
     @MainActor
@@ -127,8 +123,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .woocommercePayments)
+            .init(isComplete: false, type: .woocommercePayments),
+            .init(isComplete: false, type: .storeDetails)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
@@ -143,8 +139,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 3)
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
-        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .woocommercePayments)
-        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .storeDetails)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .woocommercePayments)
     }
 
     @MainActor
@@ -218,7 +214,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .storeDetails),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments),
             .init(isComplete: false, type: .woocommercePayments),
         ]))
@@ -241,7 +236,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -261,8 +255,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
+            .init(isComplete: false, type: .payments),
+            .init(isComplete: false, type: .storeDetails)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
@@ -304,8 +298,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
+            .init(isComplete: false, type: .payments),
+            .init(isComplete: false, type: .storeDetails)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
@@ -325,8 +319,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
+            .init(isComplete: false, type: .payments),
+            .init(isComplete: false, type: .storeDetails)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
@@ -345,7 +339,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
@@ -405,7 +398,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -441,8 +433,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let initialTasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .woocommercePayments),
-            .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains)
+            .init(isComplete: false, type: .launchStore)
         ]
         mockLoadOnboardingTasks(result: .success(initialTasks))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -469,7 +460,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let initialTasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
 
@@ -489,11 +479,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     @MainActor
     func test_it_does_not_send_network_request_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
-        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["0": true]
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -518,7 +507,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -533,7 +521,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.count == 5)
+        XCTAssertTrue(sut.tasksForDisplay.count == 4)
     }
 
     // MARK: completedAllStoreOnboardingTasks user defaults
@@ -543,7 +531,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
@@ -555,7 +542,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
     }
 
     @MainActor
@@ -564,7 +551,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: true, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
@@ -576,7 +562,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(try XCTUnwrap(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? Bool))
+        XCTAssertTrue(try XCTUnwrap((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"]))
     }
 
     @MainActor
@@ -588,13 +574,13 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
     }
 
     @MainActor
@@ -606,13 +592,13 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            stores: stores,
                                            defaults: defaults)
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
+        XCTAssertNil((defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] as? [String: Bool])?["0"])
     }
 
     // MARK: - canShowInDashboard
@@ -652,7 +638,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
-            .init(isComplete: false, type: .customizeDomains),
             .init(isComplete: true, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
@@ -674,7 +659,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: true, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
@@ -693,7 +677,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     @MainActor
     func test_reloadTasks_notifies_waitingTimeTracker_when_completedAllStoreOnboardingTasks_is_true() async {
         // Given
-        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = true
+        defaults[UserDefaults.Key.completedAllStoreOnboardingTasks] = ["0": true]
         let tracker = AppStartupWaitingTimeTracker(analyticsService: analytics)
         XCTAssert(tracker.startupActionsPending.contains(.loadOnboardingTasks))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -734,7 +718,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: true, type: .addFirstProduct),
             .init(isComplete: true, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: true, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))

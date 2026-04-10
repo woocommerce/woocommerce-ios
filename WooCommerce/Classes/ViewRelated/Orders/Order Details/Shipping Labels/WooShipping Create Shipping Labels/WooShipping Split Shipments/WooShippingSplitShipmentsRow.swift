@@ -1,13 +1,8 @@
 import SwiftUI
+import Yosemite
 
 struct WooShippingSplitShipmentsRow: View {
-    @State private var isShowingDetailView = false
-
-    let viewModel: WooShippingSplitShipmentsViewModel
-
-    init(viewModel: WooShippingSplitShipmentsViewModel) {
-        self.viewModel = viewModel
-    }
+    var onShowingSplitShipments: () -> Void
 
     var body: some View {
         AdaptiveStack {
@@ -15,14 +10,11 @@ struct WooShippingSplitShipmentsRow: View {
                 .tertiaryTitleStyle()
             Spacer()
             Button(Localization.splitShipments) {
-                isShowingDetailView = true
+                onShowingSplitShipments()
             }
             .buttonStyle(TextButtonStyle())
         }
         .padding(.vertical, Layout.verticalPadding)
-        .fullScreenCover(isPresented: $isShowingDetailView) {
-            WooShippingSplitShipmentsDetailView(viewModel: viewModel)
-        }
     }
 }
 
@@ -42,8 +34,9 @@ private extension WooShippingSplitShipmentsRow {
     }
 }
 
+#if DEBUG
 #Preview {
-    WooShippingSplitShipmentsRow(viewModel: WooShippingSplitShipmentsViewModel(siteID: 123,
-                                                                               orderID: 123))
-    .padding()
+    WooShippingSplitShipmentsRow(onShowingSplitShipments: {})
+        .padding()
 }
+#endif

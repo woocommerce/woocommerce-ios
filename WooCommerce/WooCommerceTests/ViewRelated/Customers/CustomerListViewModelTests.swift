@@ -1,9 +1,11 @@
 import XCTest
 import Yosemite
+import YosemiteTestHelpers
 @testable import Storage
 @testable import WooCommerce
 import Combine
 
+@MainActor
 final class CustomerListViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 322
 
@@ -281,23 +283,18 @@ final class CustomerListViewModelTests: XCTestCase {
     func test_filter_is_updated_and_advanced_search_shows_when_store_is_eligible() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        var viewModel: CustomersListViewModel?
+
+        // Sets up plugin service to return a version that supports advanced search.
+        let mockPluginsService = MockPluginsService()
+        let wooPlugin = SystemPlugin.fake().copy(name: "WooCommerce", version: "8.0.0", active: true)
+        mockPluginsService.setMockPlugin(.wooCommerce, systemPlugin: wooPlugin)
 
         // When
-        _ = waitFor { promise in
-            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-                guard case let .fetchSystemPlugin(_, _, completion) = action else {
-                    return
-                }
-                completion(SystemPlugin.fake().copy(name: "WooCommerce", version: "8.0.0", active: true))
-                promise(true)
-            }
-            viewModel = CustomersListViewModel(siteID: self.sampleSiteID, stores: stores)
-        }
+        let viewModel = CustomersListViewModel(siteID: sampleSiteID, stores: stores, pluginsService: mockPluginsService)
 
         // Then
-        assertEqual(true, viewModel?.showAdvancedSearch)
-        assertEqual(.all, viewModel?.searchFilter)
+        assertEqual(true, viewModel.showAdvancedSearch)
+        assertEqual(.all, viewModel.searchFilter)
     }
 
     func test_search_includes_searchTerm_and_selected_filter() {
@@ -310,7 +307,7 @@ final class CustomerListViewModelTests: XCTestCase {
         // When
         _ = waitFor { promise in
             stores.whenReceivingAction(ofType: CustomerAction.self) { action in
-                guard case let .searchWCAnalyticsCustomers(_, _, _, keyword, filter, completion) = action else {
+                guard case let .searchWCAnalyticsCustomers(_, _, _, keyword, filter, _) = action else {
                     return
                 }
                 searchKeyword = keyword

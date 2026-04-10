@@ -86,7 +86,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
     func test_analyticsEnabled_is_updated_correctly_when_sync_stats_failed_with_noRestRoute_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
-        mockTopPerformersStats(with: stores, error: DotcomError.noRestRoute)
+        mockTopPerformersStats(with: stores, error: DotcomError.noRestRoute())
 
         // When
         let viewModel = TopPerformersDashboardViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())

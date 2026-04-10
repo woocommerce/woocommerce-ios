@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// View to set budget for a new Blaze campaign
 struct BlazeBudgetSettingView: View {
@@ -53,6 +54,7 @@ private extension BlazeBudgetSettingView {
                     .multilineTextAlignment(.center)
                     .subheadlineStyle()
             }
+            .accessibilityElement(children: .combine)
 
             // Daily budget amount details
             VStack(spacing: Layout.dailyBudgetSectionSpacing) {
@@ -69,6 +71,9 @@ private extension BlazeBudgetSettingView {
                        in: viewModel.dailyAmountSliderRange,
                        step: BlazeBudgetSettingViewModel.Constants.dailyAmountSliderStep)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(Localization.dailySpend)
+            .accessibilityValue(String(format: Localization.dailySpendValue, Int(viewModel.dailyAmount)))
 
             // Schedule
             VStack(alignment: .leading) {
@@ -89,8 +94,11 @@ private extension BlazeBudgetSettingView {
                 .tertiaryTitleStyle()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(Localization.scheduleAccessibilityHint)
 
-            // Estimated impressions
+            // Estimated impressions - grouped for accessibility
             VStack(alignment: .leading) {
                 Button {
                     showingImpressionInfo = true
@@ -102,12 +110,15 @@ private extension BlazeBudgetSettingView {
                     .font(.subheadline)
                 }
                 .buttonStyle(.plain)
-                .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
                 .renderedIf(viewModel.forecastedImpressionState != .failure)
 
                 forecastedImpressionsView
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint(Localization.estimatedImpressionsAccessibilityHint)
+            .accessibilityLabel(viewModel.impressionsSectionAccessibilityLabel)
         }
     }
 
@@ -116,7 +127,7 @@ private extension BlazeBudgetSettingView {
         switch viewModel.forecastedImpressionState {
         case .loading:
             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-        case .result(let formattedResult):
+        case .result(let formattedResult, _, _):
             Text(formattedResult)
                 .fontWeight(.semibold)
                 .tertiaryTitleStyle()
@@ -157,7 +168,7 @@ private extension BlazeBudgetSettingView {
                     .bodyStyle()
                     .padding(Layout.contentPadding)
             }
-            .navigationTitle(Localization.title)
+            .navigationTitle(Localization.impressions)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -214,6 +225,11 @@ private extension BlazeBudgetSettingView {
             value: "Daily spend",
             comment: "Title label for the daily spend amount on the Blaze ads campaign budget settings screen."
         )
+        static let dailySpendValue = NSLocalizedString(
+            "blazeBudgetSettingView.dailySpendValue",
+            value: "$%d",
+            comment: "Value format for the daily spend amount on the Blaze ads campaign budget settings screen."
+        )
         static let estimatedImpressions = NSLocalizedString(
             "blazeBudgetSettingView.estimatedTotalImpressions",
             value: "Estimated total impressions",
@@ -261,6 +277,11 @@ private extension BlazeBudgetSettingView {
             "blazeBudgetSettingView.estimatedImpressionsAccessibilityHint",
             value: "Tap for more information about estimated impressions",
             comment: "Accessibility hint for the estimated impression button on the Blaze campaign budget setting screen"
+        )
+        static let scheduleAccessibilityHint = NSLocalizedString(
+            "blazeBudgetSettingView.scheduleAccessibilityHint",
+            value: "Opens campaign schedule settings",
+            comment: "Accessibility hint for the schedule section on the Blaze budget setting screen"
         )
     }
 }

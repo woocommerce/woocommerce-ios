@@ -1,8 +1,12 @@
-swiftlint_version: 0.54.0
+swiftlint_version: 0.63.2
 
 excluded:
+  - build
+  - BuildTools/.build
   - DerivedData
   - fastlane
+  - Modules/.build
+  - Modules/DerivedData
   - Pods
   - Scripts
   # Automattic's CI caching setup may generate this in the project folder
@@ -24,6 +28,9 @@ only_rules:
   - discarded_notification_center_observer
 
   - duplicate_imports
+
+  # Prefer checking `isEmpty` over comparing `count` to zero.
+  - empty_count
 
   # Arguments can be omitted when matching enums with associated types if they
   # are not used.

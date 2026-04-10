@@ -518,23 +518,23 @@ private class TabBarButton: UIButton {
         super.init(frame: frame)
 
         setFont()
+        observeTraitChanges()
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
 
         setFont()
+        observeTraitChanges()
     }
 
     private func setFont() {
         titleLabel?.applySubheadlineStyle()
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            setFont()
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.setFont()
         }
     }
 }

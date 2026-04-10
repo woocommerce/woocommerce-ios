@@ -1,0 +1,17 @@
+configurations:
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/Networking/
+      templates:
+          - Fakes.swifttemplate
+      output: ../../../../../Modules/Sources/Fakes/Networking.generated.swift
+      args:
+          moduleName: Networking
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/NetworkingCore/
+      templates:
+          - Fakes.swifttemplate
+      output: ../../../../../Modules/Sources/Fakes/NetworkingCore.generated.swift
+      args:
+          moduleName: NetworkingCore

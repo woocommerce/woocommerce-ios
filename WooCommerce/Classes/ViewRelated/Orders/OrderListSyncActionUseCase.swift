@@ -63,6 +63,18 @@ struct OrderListSyncActionUseCase {
         let endDate = filters?.dateRange?.computedEndDate
         let productID = filters?.product?.id
         let customerID = filters?.customer?.id
+        let createdVia: String? = {
+            switch filters?.salesChannel {
+            case .pointOfSale:
+                return "pos-rest-api"
+            case .webCheckout:
+                return "checkout,store-api"
+            case .wpAdmin:
+                return "admin"
+            case .any, .none:
+                return nil
+            }
+        }()
 
         if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh || reason == SyncReason.newFiltersApplied
@@ -76,6 +88,7 @@ struct OrderListSyncActionUseCase {
                 modifiedAfter: modifiedAfter,
                 customerID: customerID,
                 productID: productID,
+                createdVia: createdVia,
                 writeStrategy: deleteAllBeforeSaving ? .deleteAllBeforeSaving : .save,
                 pageSize: pageSize,
                 onCompletion: { timeInterval, result in
@@ -96,6 +109,7 @@ struct OrderListSyncActionUseCase {
             before: endDate,
             customerID: customerID,
             productID: productID,
+            createdVia: createdVia,
             pageNumber: pageNumber,
             pageSize: pageSize,
             onCompletion: completionHandler

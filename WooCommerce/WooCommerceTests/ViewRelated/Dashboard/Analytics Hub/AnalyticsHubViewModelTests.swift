@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 import WooFoundation
+import YosemiteTestHelpers
 @testable import WooCommerce
 import enum Networking.DotcomError
 
@@ -27,9 +28,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
-                             SitePlugin.SupportedPlugin.WCGiftCards.first],
-                            to: storage)
+        insertPlugins([
+            "woocommerce-product-bundles/woocommerce-product-bundles.php",
+            "woocommerce-gift-cards/woocommerce-gift-cards.php"
+        ], active: true, to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -89,9 +91,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         var loadingBundlesSoldCardRedacted: Bool = false
         var loadingGiftCardsCardRedacted: Bool = false
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first,
-                             SitePlugin.SupportedPlugin.WCGiftCards.first],
-                            to: storage)
+        insertPlugins([
+            "woocommerce-product-bundles/woocommerce-product-bundles.php",
+            "woocommerce-gift-cards/woocommerce-gift-cards.php"
+        ], active: true, to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
             switch action {
@@ -243,7 +246,10 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_enabledCards_contains_new_cards_not_in_stored_customizations_when_extensions_are_active() async {
         // Given
         let storage = MockStorageManager()
-        insertActivePlugins([SitePlugin.SupportedPlugin.WCProductBundles.first, SitePlugin.SupportedPlugin.WCGiftCards.first], to: storage)
+        insertPlugins([
+            "woocommerce-product-bundles/woocommerce-product-bundles.php",
+            "woocommerce-gift-cards/woocommerce-gift-cards.php"
+        ], active: true, to: storage)
         let vm = createViewModel(storage: storage)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
@@ -320,7 +326,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 XCTFail("Request to retrieve site summary stats should not be dispatched when sessions card is hidden")
-                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog", data: nil)))
             default:
                 break
             }
@@ -351,7 +357,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, completion):
                 XCTFail("Request to retrieve site summary stats should not be dispatched for sites without Jetpack")
-                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog")))
+                completion(.failure(DotcomError.unknown(code: "unknown_blog", message: "Unknown blog", data: nil)))
             case let .retrieveSiteSummaryStats(_, _, _, _, _, _, completion):
                 completion(.success(.fake()))
             default:
@@ -472,9 +478,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_bundles_card_is_inactive_in_customizeAnalytics_when_extension_is_inactive() throws {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
-                                                                            active: false))
+        insertPlugin("woocommerce-product-bundles/woocommerce-product-bundles.php", active: false, to: storage)
         let vm = createViewModel(storage: storage)
 
         // When
@@ -489,9 +493,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_gift_cards_card_is_inactive_in_customizeAnalytics_when_extension_is_inactive() throws {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCGiftCards.first,
-                                                                            active: false))
+        insertPlugin("woocommerce-gift-cards/woocommerce-gift-cards.php", active: false, to: storage)
         let vm = createViewModel(storage: storage)
 
         // When
@@ -514,9 +516,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_product_bundles_card_displayed_when_plugin_active() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
-                                                                            active: true))
+        insertPlugin("woocommerce-product-bundles/woocommerce-product-bundles.php", active: true, to: storage)
         let vm = createViewModel(storage: storage)
 
         // Then
@@ -526,9 +526,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_product_bundles_card_not_displayed_when_plugin_inactive() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCProductBundles.first,
-                                                                            active: false))
+        insertPlugin("woocommerce-product-bundles/woocommerce-product-bundles.php", active: false, to: storage)
         let vm = createViewModel(storage: storage)
 
         // Then
@@ -538,9 +536,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_gift_cards_card_displayed_when_plugin_active() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCGiftCards.first,
-                                                                            active: true))
+        insertPlugin("woocommerce-gift-cards/woocommerce-gift-cards.php", active: true, to: storage)
         let vm = createViewModel(storage: storage)
 
         // Then
@@ -550,9 +546,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_gift_cards_card_not_displayed_when_plugin_inactive() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.WCGiftCards.first,
-                                                                            active: false))
+        insertPlugin("woocommerce-gift-cards/woocommerce-gift-cards.php", active: false, to: storage)
         let vm = createViewModel(storage: storage)
 
         // Then
@@ -563,9 +557,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     func test_google_campaigns_card_not_displayed_when_plugin_inactive() {
         // Given
         let storage = MockStorageManager()
-        storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID,
-                                                                            name: SitePlugin.SupportedPlugin.GoogleForWooCommerce.first,
-                                                                            active: false))
+        insertPlugin("google-listings-and-ads/google-listings-and-ads.php", active: false, to: storage)
 
         // When
         let vm = createViewModel(storage: storage)
@@ -585,9 +577,13 @@ private extension AnalyticsHubViewModelTests {
                               analytics: analytics)
     }
 
-    func insertActivePlugins(_ pluginNames: [String?], to storage: MockStorageManager) {
-        pluginNames.forEach { pluginName in
-            storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID, name: pluginName, active: true))
+    func insertPlugins(_ pluginPaths: [String], active: Bool, to storage: MockStorageManager) {
+        pluginPaths.forEach { pluginPath in
+            storage.insertSampleSystemPlugin(readOnlySystemPlugin: .fake().copy(siteID: sampleSiteID, plugin: pluginPath, active: active))
         }
+    }
+
+    func insertPlugin(_ pluginPath: String, active: Bool, to storage: MockStorageManager) {
+        insertPlugins([pluginPath], active: active, to: storage)
     }
 }

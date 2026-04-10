@@ -62,7 +62,7 @@ struct CustomFieldEditorView: View {
                                 Text(Localization.editorPickerHTML).tag(true)
                             }
                             .pickerStyle(.segmented)
-                            .onChange(of: showRichTextEditor) { newValue in
+                            .onChange(of: showRichTextEditor) { _, newValue in
                                 viewModel.trackEditorPickerTapped(showRichTextEditor: newValue)
                             }
                         }

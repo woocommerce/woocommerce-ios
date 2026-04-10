@@ -1,4 +1,4 @@
-import NetworkingWatchOS
+import NetworkingCore
 
 /// This wrapper to fetch orders resources.
 ///
@@ -13,17 +13,13 @@ final class OrdersDataService {
     private let network: AlamofireNetwork
 
     init(credentials: Credentials) {
-        network = AlamofireNetwork(credentials: credentials)
+        network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         ordersRemote = OrdersRemote(network: network)
     }
 
-    /// Async wrapper that fetches orders for a store ID.
+    /// Fetches orders for a store ID.
     ///
     func loadAllOrders(for storeID: Int64, pageNumber: Int, pageSize: Int) async throws -> [Order] {
-        try await withCheckedThrowingContinuation { continuation in
-            ordersRemote.loadAllOrders(for: storeID, pageNumber: pageNumber, pageSize: pageSize) { result in
-                continuation.resume(with: result)
-            }
-        }
+        try await ordersRemote.loadAllOrders(for: storeID, pageNumber: pageNumber, pageSize: pageSize)
     }
 }

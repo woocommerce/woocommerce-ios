@@ -8,18 +8,11 @@ final class OrderPaymentDetailsViewModel {
     private let currencyFormatter: CurrencyFormatter
 
     var subtotal: Decimal {
-        let subtotal = order.items.reduce(Constants.decimalZero) { (output, item) in
-            let itemSubtotal = Decimal(string: item.subtotal) ?? Constants.decimalZero
-            return output + itemSubtotal
-        }
-
-        return subtotal
+        return order.subtotal
     }
 
     var subtotalValue: String {
-        let subAmount = NSDecimalNumber(decimal: subtotal).stringValue
-
-        return currencyFormatter.formatAmount(subAmount, with: order.currency) ?? String()
+        return order.subtotalValue(currencyFormatter: currencyFormatter)
     }
 
     var shouldHideSubtotal: Bool {
@@ -66,11 +59,11 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var totalValue: String {
-        order.totalValue
+        order.totalValue(currencyFormatter: currencyFormatter)
     }
 
     var paymentTotal: String {
-        order.paymentTotal
+        order.paymentTotal(currencyFormatter: currencyFormatter)
     }
 
     private var feesTotal: Decimal {

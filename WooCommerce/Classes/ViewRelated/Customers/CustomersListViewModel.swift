@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 import Combine
+import class WooFoundation.VersionHelpers
 
 final class CustomersListViewModel: ObservableObject {
 
@@ -50,6 +51,9 @@ final class CustomersListViewModel: ObservableObject {
     /// Storage to fetch customer list.
     private let storageManager: StorageManagerType
 
+    /// Plugins service.
+    private let pluginsService: PluginsServiceProtocol
+
     /// Customers ResultsController.
     private lazy var resultsController: ResultsController<StorageWCAnalyticsCustomer> = {
         let predicate = resultsPredicate
@@ -67,12 +71,15 @@ final class CustomersListViewModel: ObservableObject {
     ///
     private var subscriptions = Set<AnyCancellable>()
 
+    @MainActor
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         storageManager: StorageManagerType = ServiceLocator.storageManager) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager)) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+        self.pluginsService = pluginsService
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
         configureResultsController()
@@ -214,26 +221,22 @@ private extension CustomersListViewModel {
     }
 
     /// Checks whether the store is eligible for searching all customer search filters at once.
+    @MainActor
     func configureSearchHeader() {
-        isEligibleForAdvancedSearch { [weak self] isEligible in
-            self?.searchFilter = isEligible ? .all : .name
-            self?.showAdvancedSearch = isEligible
-        }
+        let isEligible = isEligibleForAdvancedSearch()
+        searchFilter = isEligible ? .all : .name
+        showAdvancedSearch = isEligible
     }
 
     /// Checks whether the store is eligible for searching all customer search filters at once.
-    func isEligibleForAdvancedSearch(completion: @escaping (Bool) -> Void) {
+    @MainActor
+    func isEligibleForAdvancedSearch() -> Bool {
         // Fetches WC plugin.
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-            guard let wcPlugin, wcPlugin.active else {
-                return completion(false)
-            }
-
-            let isCustomerAdvanceSearchSupportedByWCPlugin = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                               minimumRequired: Constants.wcPluginMinimumVersion)
-            completion(isCustomerAdvanceSearchSupportedByWCPlugin)
+        guard let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {
+            return false
         }
-        stores.dispatch(action)
+        return VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                 minimumRequired: Constants.wcPluginMinimumVersion)
     }
 
     /// Performs initial fetch from storage and updates results.
@@ -327,7 +330,6 @@ private extension CustomersListViewModel {
     }
 
     enum Constants {
-        static let wcPluginName = "WooCommerce"
         static let wcPluginMinimumVersion = "8.0.0-beta.1"
     }
 }

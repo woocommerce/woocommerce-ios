@@ -1,0 +1,44 @@
+{
+    "data": {
+        "config": {
+            "shippingLabelData": {
+                "storedData": {
+                    "selected_destination": [
+                        {
+                            "address_1": "200 N SPRING ST"
+                        }
+                    ],
+                    "selected_origin": [
+                        {
+                            "address_1": "Test origin address line"
+                        }
+                    ]
+                },
+                "currentOrderLabels": [
+                  {
+                    "label_id": 4871,
+                    "tracking": null,
+                    "refundable_amount": 0,
+                    "created": 1742292110723,
+                    "carrier_id": "usps",
+                    "service_name": "USPS - Priority Mail",
+                    "status": "PURCHASE_IN_PROGRESS",
+                    "commercial_invoice_url": "",
+                    "is_commercial_invoice_submitted_electronically": false,
+                    "package_name": "Small Flat Rate Box",
+                    "is_letter": false,
+                    "product_names": [
+                      "BG upload"
+                    ],
+                    "product_ids": [
+                      522
+                    ],
+                    "id": "1",
+                    "receipt_item_id": -1,
+                    "created_date": 1742292110000
+                  }
+                ]
+            }
+        }
+    }
+} 

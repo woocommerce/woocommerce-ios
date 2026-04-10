@@ -1,4 +1,5 @@
 import Photos
+import UIKit
 import Yosemite
 import Combine
 
@@ -52,6 +53,27 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
                 return
             }
             self.update(from: asset, to: productImage)
+        }
+    }
+
+    func requestImage(
+        productImage: ProductImage,
+        targetSize: CGSize?,
+        completion: @escaping (UIImage?) -> Void
+    ) throws -> Cancellable? {
+        guard
+            let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+            let url = URL(string: encodedString)
+        else {
+            throw ImageLoaderError.invalidURL
+        }
+
+        return imageService.retrieveImage(
+            with: url,
+            targetSize: targetSize,
+            shouldCacheImage: true
+        ) { image, _ in
+            completion(image)
         }
     }
 
@@ -111,6 +133,15 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 
 private extension DefaultProductUIImageLoader {
     func update(from asset: ProductImageAssetType, to productImage: ProductImage) {
+        guard let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
+              let url = URL(string: encodedString) else {
+            return
+        }
+
+        let useImageServiceCache = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
+            .productImageOptimizedHandling
+        )
+
         switch asset {
         case .phAsset(let asset):
             phAssetImageLoader.requestImage(for: asset,
@@ -120,13 +151,21 @@ private extension DefaultProductUIImageLoader {
                 guard let image, let self else {
                     return
                 }
-                Task {
-                    await self.imageStorage.saveImage(image: image, id: productImage.imageID)
+                if useImageServiceCache {
+                    self.imageService.storeImageInCache(image, for: url)
+                } else {
+                    Task {
+                        await self.imageStorage.saveImage(image: image, id: productImage.imageID)
+                    }
                 }
             }
         case .uiImage(let image, _, _):
-            Task {
-                await imageStorage.saveImage(image: image, id: productImage.imageID)
+            if useImageServiceCache {
+                imageService.storeImageInCache(image, for: url)
+            } else {
+                Task {
+                    await self.imageStorage.saveImage(image: image, id: productImage.imageID)
+                }
             }
         }
     }

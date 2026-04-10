@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Protocol for `WCAnalyticsStatsTotals` that can be parsed with the `StatsIntervalDataParser`

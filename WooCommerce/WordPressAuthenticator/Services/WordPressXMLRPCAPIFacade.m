@@ -1,5 +1,5 @@
 #import "WordPressXMLRPCAPIFacade.h"
-#import <WPXMLRPC/WPXMLRPC.h>
+@import wpxmlrpc;
 #import "WordPressAuthenticator-Swift.h"
 
 @interface WordPressXMLRPCAPIFacade ()

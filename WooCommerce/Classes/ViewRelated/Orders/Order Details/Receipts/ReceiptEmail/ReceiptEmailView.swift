@@ -45,8 +45,8 @@ struct ReceiptEmailView: View {
                     })
                 }
             }
-            .onChange(of: viewModel.state) { state in
-                if state == .success {
+            .onChange(of: viewModel.state) { _, newState in
+                if newState == .success {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                         dismiss()
                     }

@@ -42,9 +42,9 @@ final class StoreOnboardingViewHostingController: SelfSizingHostingController<St
         }
 
         if !viewModel.isExpanded {
-            rootView.viewAllTapped = { [weak self] in
+            rootView.viewAllTapped = { [weak self] tasks in
                 guard let self else { return }
-                self.coordinator.start()
+                self.coordinator.start(tasks: tasks)
             }
         }
     }
@@ -93,13 +93,13 @@ struct StoreOnboardingView: View {
     /// Set externally in the hosting controller.
     var taskTapped: ((StoreOnboardingTask) -> Void)?
     /// Set externally in the hosting controller.
-    var viewAllTapped: (() -> Void)?
+    var viewAllTapped: (([StoreOnboardingTaskViewModel]) -> Void)?
 
     @ObservedObject private var viewModel: StoreOnboardingViewModel
 
     init(viewModel: StoreOnboardingViewModel,
          onTaskTapped: ((StoreOnboardingTask) -> Void)? = nil,
-         onViewAllTapped: (() -> Void)? = nil) {
+         onViewAllTapped: (([StoreOnboardingTaskViewModel]) -> Void)? = nil) {
         self.viewModel = viewModel
         self.taskTapped = onTaskTapped
         self.viewAllTapped = onViewAllTapped
@@ -159,7 +159,9 @@ struct StoreOnboardingView: View {
                         .padding(.leading, Layout.padding)
 
                     // View all button
-                    viewAllButton(action: viewAllTapped, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
+                    viewAllButton(action: {
+                        viewAllTapped?(viewModel.taskViewModels)
+                    }, text: String(format: Localization.viewAll, viewModel.taskViewModels.count))
                         .renderedIf(viewModel.shouldShowViewAllButton)
                         .padding(.horizontal, Layout.padding)
                 }

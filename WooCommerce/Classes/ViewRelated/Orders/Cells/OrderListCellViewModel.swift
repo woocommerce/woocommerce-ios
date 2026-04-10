@@ -1,17 +1,7 @@
 import Foundation
-
-#if canImport(Yosemite)
 import Yosemite
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
-#endif
-
-#if canImport(WooFoundation)
-import WooFoundation
-#elseif canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
-
+import UIKit
+import WooFoundationCore
 
 // MARK: - View Model for individual cells on the Order List screen
 //
@@ -27,7 +17,7 @@ struct OrderListCellViewModel {
     /// For example, #560 Pamela Nguyen
     ///
     var title: String {
-        Localization.title(orderNumber: order.number, customerName: customerName)
+        OrderListCellViewModelLocalization.title(orderNumber: order.number, customerName: customerName)
     }
 
     /// For example, Pamela Nguyen
@@ -36,7 +26,7 @@ struct OrderListCellViewModel {
         if let fullName = order.billingAddress?.fullName, fullName.isNotEmpty {
             return fullName
         }
-        return Localization.guestName
+        return OrderListCellViewModelLocalization.guestName
     }
 
     /// The localized unabbreviated total which includes the currency.
@@ -76,6 +66,12 @@ struct OrderListCellViewModel {
         return order.status.localizedName
     }
 
+    /// Sales channel
+    ///
+    var salesChannel: OrderSalesChannel? {
+        order.salesChannel
+    }
+
     /// The localized unabbreviated total for a given order item, which includes the currency.
     ///
     /// Example: $48,415,504.20
@@ -84,7 +80,6 @@ struct OrderListCellViewModel {
         currencyFormatter.formatAmount(orderItem.total, with: order.currency) ?? "$\(orderItem.total)"
     }
 
-#if !os(watchOS)
     /// Accessory view that renders the cell's disclosure indicator
     ///
     var accessoryView: UIImageView? {
@@ -94,22 +89,5 @@ struct OrderListCellViewModel {
         let accessoryView = UIImageView(image: image, highlightedImage: nil)
         accessoryView.tintColor = .tertiaryLabel
         return accessoryView
-    }
-#endif
-}
-
-// MARK: - Constants
-
-private extension OrderListCellViewModel {
-    enum Localization {
-        static func title(orderNumber: String, customerName: String) -> String {
-            let format = NSLocalizedString("#%@ %@", comment: "In Order List,"
-                + " the pattern to show the order number. For example, “#123456”."
-                + " The %@ placeholder is the order number.")
-
-            return String.localizedStringWithFormat(format, orderNumber, customerName)
-        }
-
-        static let guestName = NSLocalizedString("Guest", comment: "In Order List, the name of the billed person when there are no first and last name.")
     }
 }

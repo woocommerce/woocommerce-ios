@@ -6,7 +6,7 @@ protocol ReaderConnectionUnderlyingErrorDisplaying {
 }
 
 extension ReaderConnectionUnderlyingErrorDisplaying {
-    func builtInReaderDescription(for error: Error) -> String? {
+    func tapToPayReaderDescription(for error: Error) -> String? {
         if let error = error as? CardReaderServiceError {
             switch error {
             case .connection(let underlyingError),

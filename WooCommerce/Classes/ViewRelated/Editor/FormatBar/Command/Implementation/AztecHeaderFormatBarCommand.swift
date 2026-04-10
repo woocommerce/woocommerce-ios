@@ -1,4 +1,5 @@
 import Aztec
+import UIKit
 import WordPressEditor
 
 struct AztecHeaderFormatBarCommand: AztecFormatBarCommand {

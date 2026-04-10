@@ -1,3 +1,4 @@
+import UIKit
 import Yosemite
 
 protocol Editor {

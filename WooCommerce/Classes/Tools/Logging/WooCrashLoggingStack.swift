@@ -1,5 +1,6 @@
 import Foundation
 import AutomatticTracks
+import AutomatticEncryptedLogs
 import Experiments
 import Yosemite
 import Sentry

@@ -1,14 +1,18 @@
+import Foundation
 import Yosemite
 import Experiments
+import class WooFoundation.VersionHelpers
 
 protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void)
+    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, datePaid: Date?, onCompletion: @escaping (Bool) -> Void)
 }
 
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     private let stores: StoresManager
+    private let pluginsService: PluginsServiceProtocol
     private let featureFlagService: FeatureFlagService
 
     private var siteID: Int64 {
@@ -16,8 +20,10 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     }
 
     init(stores: StoresManager = ServiceLocator.stores,
+         pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
+        self.pluginsService = pluginsService
         self.featureFlagService = featureFlagService
     }
 
@@ -25,31 +31,9 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
         guard !featureFlagService.isFeatureFlagEnabled(.starReceiptPrinterSupport) else {
             return onCompletion(false)
         }
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
-            // 1. WooCommerce must be installed and active
-            guard let wcPlugin = wcPlugin, wcPlugin.active else {
-                return onCompletion(false)
-            }
-            // 2. If WooCommerce version is any of the specific API development branches, mark as eligible
-            if Constants.BackendReceipt.wcPluginDevVersion.contains(wcPlugin.version) {
-                onCompletion(true)
-            } else {
-                // 3. Else, if WooCommerce version is higher than minimum required version, mark as eligible
-                let isSupported = VersionHelpers.isVersionSupported(version: wcPlugin.version,
-                                                                    minimumRequired: Constants.BackendReceipt.wcPluginMinimumVersion)
-                onCompletion(isSupported)
-            }
-        }
-        stores.dispatch(action)
-    }
-
-    /// Returns true if Point of Sale allows sending successful payment email receipts via the API.
-    /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
-    ///
-    func isEligibleForPointOfSaleReceipts(onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
-            let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
-                                                                 minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
+            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
+                                                                 minimumVersion: Constants.BackendReceipt.wcPluginMinimumVersion)
             onCompletion(isWooCommerceSupported)
         }
     }
@@ -59,7 +43,7 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     ///
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
-            let isWooCommerceSupported = await isPluginSupported(Constants.wcPluginName,
+            let isWooCommerceSupported = await isPluginSupported(.wooCommerce,
                                                                  minimumVersion: Constants.PointOfSaleReceipts.wcPluginMinimumVersion)
             onCompletion(isWooCommerceSupported)
         }
@@ -67,22 +51,22 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 
     /// Returns true if In Person Payments allows sending failed payment email receipts via the API.
     /// WooCommerce 9.5 allows to attach a customer email after payment is made and send email receipt via the API.
-    /// WooCommerc 9.5 automatically sends failure receipt after the order fails if the customer email is attached to the order.
+    /// WooCommerce 9.5 automatically sends failure receipt after the order fails if the customer email is attached to the order.
     /// WooPayments 8.6 aligns the app with the web and automatically sets the order as failed when the payment processing fails.
     /// WooCommerce Stripe Gateway 9.1.0 aligns the app with the web and automatically sets the order as failed when the payment processing fails.
     ///
     func isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: String, onCompletion: @escaping (Bool) -> Void) {
         Task { @MainActor in
-            async let wooCommerceSupported = isPluginSupported(Constants.wcPluginName,
+            async let wooCommerceSupported = isPluginSupported(.wooCommerce,
                                                                minimumVersion: Constants.ReceiptAfterPayment.wcPluginMinimumVersion)
 
             async let gatewaySupported: Bool = {
                 switch paymentGatewayID {
                 case CardPresentPaymentsPlugin.wcPay.gatewayID:
-                    return await isPluginSupported(CardPresentPaymentsPlugin.wcPay.pluginName,
+                    return await isPluginSupported(.wooPayments,
                                                    minimumVersion: Constants.ReceiptAfterPayment.wcPayPluginMinimumVersion)
                 case CardPresentPaymentsPlugin.stripe.gatewayID:
-                    return await isPluginSupported(CardPresentPaymentsPlugin.stripe.pluginName,
+                    return await isPluginSupported(.stripe,
                                                    minimumVersion: Constants.ReceiptAfterPayment.stripePluginMinimumVersion)
                 default:
                     return false
@@ -93,40 +77,64 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
             onCompletion(isWooCommerceSupported && isGatewaySupported)
         }
     }
-}
 
-private extension ReceiptEligibilityUseCase {
-    @MainActor
-    func isPluginSupported(_ pluginName: String, minimumVersion: String) async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: pluginName) { plugin in
-                // Plugin must be installed and active
-                guard let plugin, plugin.active else {
-                    return continuation.resume(returning: false)
-                }
-
-                // Checking for concrete versions to cover dev and beta versions
-                if plugin.version.contains(minimumVersion) {
-                    return continuation.resume(returning: true)
-                }
-
-                // If plugin version is higher than minimum required version, mark as eligible
-                let isSupported = VersionHelpers.isVersionSupported(version: plugin.version,
-                                                                    minimumRequired: minimumVersion)
-                continuation.resume(returning: isSupported)
+    func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, datePaid: Date?, onCompletion: @escaping (Bool) -> Void) {
+        switch orderStatus {
+        case .completed, .processing, .refunded:
+            isEligibleForBackendReceipts { isEligibleForReceipt in
+                onCompletion(isEligibleForReceipt)
             }
-            stores.dispatch(action)
+        case .custom:
+            guard datePaid != nil else {
+                return onCompletion(false)
+            }
+            isEligibleForBackendReceipts { isEligibleForReceipt in
+                onCompletion(isEligibleForReceipt)
+            }
+        case .failed:
+            selectedPaymentGatewayID { [weak self] gatewayID in
+                guard let gatewayID else {
+                    return onCompletion(false)
+                }
+                self?.isEligibleForFailedPaymentEmailReceipts(paymentGatewayID: gatewayID) { isEligibleForReceipt in
+                    onCompletion(isEligibleForReceipt)
+                }
+            }
+        default:
+            return onCompletion(false)
         }
     }
 }
 
 private extension ReceiptEligibilityUseCase {
-    enum Constants {
-        static let wcPluginName = "WooCommerce"
+    @MainActor
+    func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
+        // Plugin must be installed and active
+        guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),
+              systemPlugin.active else {
+            return false
+        }
 
+        // If plugin version is higher than minimum required version, mark as eligible
+        let isSupported = VersionHelpers.isVersionSupported(version: systemPlugin.version,
+                                                            minimumRequired: minimumVersion)
+        return isSupported
+    }
+
+    // Returns the current payment gateway ID, needed when checking if a transaction is eligible for receipts
+    // based on which plugin and versions are active
+    private func selectedPaymentGatewayID(onCompletion: @escaping (String?) -> Void) {
+        let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in
+            onCompletion(paymentGatewayAccount?.gatewayID)
+        }
+        stores.dispatch(action)
+    }
+}
+
+private extension ReceiptEligibilityUseCase {
+    enum Constants {
         enum BackendReceipt {
             static let wcPluginMinimumVersion = "8.7.0"
-            static let wcPluginDevVersion: [String] = ["8.7.0-dev", "8.6.0-dev"]
         }
 
         enum ReceiptAfterPayment {

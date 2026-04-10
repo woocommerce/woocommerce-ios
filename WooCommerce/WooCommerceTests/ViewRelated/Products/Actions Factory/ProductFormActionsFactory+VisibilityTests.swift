@@ -175,8 +175,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
             let model = EditableProductModel(product: Fixtures.productWithCustomFields.copy(productTypeKey: productType.rawValue))
 
             // Act
-            let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
             // Assert
             XCTAssertTrue(factory.settingsSectionActions().contains(.customFields))
@@ -189,8 +188,7 @@ final class ProductFormActionsFactory_VisibilityTests: XCTestCase {
             let model = EditableProductModel(product: Fixtures.productWithNoCustomFields.copy(productTypeKey: productType.rawValue))
 
             // Act
-            let featureFlagService = MockFeatureFlagService(viewEditCustomFieldsInProductsAndOrders: true)
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit)
 
             // Assert
             XCTAssertFalse(factory.settingsSectionActions().contains(.customFields))

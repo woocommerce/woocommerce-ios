@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 /// Row for an item to ship with the Woo Shipping extension.
 struct WooShippingItemRow: View {
@@ -51,6 +52,21 @@ struct WooShippingItemRow: View {
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityValue(accessibilityValue)
+    }
+}
+
+/// Custom accessibility
+private extension WooShippingItemRow {
+    var accessibilityValue: String {
+        return ShippingItemRowAccessibility.accessibilityValue(
+            itemName: name,
+            quantity: quantityLabel,
+            details: detailsLabel,
+            weight: weightLabel,
+            price: priceLabel
+        )
     }
 }
 

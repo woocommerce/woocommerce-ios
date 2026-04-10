@@ -12,14 +12,12 @@ struct InfiniteScrollIndicator: View {
 
     @ViewBuilder func createProgressView() -> some View {
         ProgressView()
+            .opacity(showContent ? 1 : 0)
             .frame(maxWidth: .infinity, alignment: .center)
             .listRowInsets(EdgeInsets())
             .listRowBackground(Color(.listBackground))
             .accessibilityElement()
             .accessibilityLabel(Localization.accessibilityLabel)
-            .if(!showContent) { progressView in
-                progressView.hidden() // Hidden but still in view hierarchy so `onAppear` will trigger the load action when needed
-            }
     }
 }
 

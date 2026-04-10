@@ -19,10 +19,20 @@ final class MockStoresManager: DefaultStoresManager {
     ///
     var shouldDispatchActionsForReal = false
 
+    /// Optional test coordinator for POS catalog sync
+    ///
+    var testPOSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+
     /// Accept a concrete implementation (in addition to the pre-existing Protocol-based initializer)
     ///
     init(sessionManager: SessionManager) {
         super.init(sessionManager: sessionManager)
+    }
+
+    // MARK: - Overridden Properties
+
+    override var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        testPOSCatalogSyncCoordinator
     }
 
     // MARK: - Overridden Methods

@@ -65,7 +65,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     /// Controller to connect a card reader.
     ///
-    private var builtInConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
+    private var tapToPayConnectionController: TapToPayCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>
 
     private var tapToPayAlertProvider: TapToPayAlertProvider
 
@@ -88,7 +88,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          tapToPayAlertProvider: TapToPayAlertProvider,
          externalReaderConnectionController: CardReaderConnectionController<BluetoothAlertProvider, AlertPresenter>,
-         tapToPayConnectionController: BuiltInCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
+         tapToPayConnectionController: TapToPayCardReaderConnectionController<TapToPayAlertProvider, AlertPresenter>,
          tapToPayReconnectionController: TapToPayReconnectionController<TapToPayAlertProvider, AlertPresenter>,
          analyticsTracker: CardReaderConnectionAnalyticsTracker,
          stores: StoresManager = ServiceLocator.stores,
@@ -105,7 +105,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.analyticsTracker = analyticsTracker
         self.tapToPayAlertProvider = tapToPayAlertProvider
         self.connectionController = externalReaderConnectionController
-        self.builtInConnectionController = tapToPayConnectionController
+        self.tapToPayConnectionController = tapToPayConnectionController
 
         self.supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, configuration: configuration, stores: stores)
     }
@@ -124,11 +124,11 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             // The reader was already connected when the analyticsTracker was created,
             //`so we need to pass it along for properties to be correct
             analyticsTracker.setCandidateReader(connectedReader)
-            if connectedReader.discoveryMethod == discoveryMethod {
-                // If we're already connected to a reader of the correct type, return it
+            if connectedReader.discoveryMethod == discoveryMethod,
+               paymentGatewayAccount.siteID == siteID {
                 return handleConnectionResult(.success(.connected(connectedReader)), paymentGatewayAccount: paymentGatewayAccount)
             } else {
-                // If it's the wrong type, disconnect it automatically and check onboarding
+                // Wrong discovery method or different store - disconnect and reconnect
                 do {
                     try await automaticallyDisconnectFromReader()
                     analyticsTracker.automaticallyDisconnectedFromReader()
@@ -180,9 +180,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         guard !tapToPayReconnectionController.isReconnecting else {
             return adoptReconnection(using: paymentGatewayAccount)
         }
-        let localMobileReaderSupported = await supportDeterminer.deviceSupportsLocalMobileReader() && supportDeterminer.siteSupportsLocalMobileReader()
+        let tapToPayReaderSupported = await supportDeterminer.deviceSupportsTapToPayReader() && supportDeterminer.siteSupportsTapToPayReader()
 
-        switch (discoveryMethod, localMobileReaderSupported) {
+        switch (discoveryMethod, tapToPayReaderSupported) {
         case (.none, true):
             await promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
         case (.bluetoothScan, _),
@@ -190,12 +190,12 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
             connectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
-        case (.localMobile, true):
-            builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+        case (.tapToPay, true):
+            tapToPayConnectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
-        case (.localMobile, false):
-            handlePreflightFailure(error: CardPresentPaymentPreflightError.localMobileReaderNotSupported)
+        case (.tapToPay, false):
+            handlePreflightFailure(error: CardPresentPaymentPreflightError.tapToPayReaderNotSupported)
         }
     }
 
@@ -208,7 +208,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                     try await self?.automaticallyDisconnectFromReader()
                     await self?.startReaderConnection(using: paymentGatewayAccount)
                 }
-            case .localMobile, .none:
+            case .tapToPay, .none:
                 self.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             }
         }
@@ -220,10 +220,10 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                            countryCode: configuration.countryCode))
         alertsPresenter.present(viewModel: tapToPayAlertProvider.selectSearchType(tapToPay: {[weak self] in
             guard let self = self else { return }
-            self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeBuiltInTapped(
+            self.analytics.track(event: .InPersonPayments.cardReaderSelectTypeTapToPayTapped(
                 forGatewayID: paymentGatewayAccount.gatewayID,
                 countryCode: self.configuration.countryCode))
-            self.builtInConnectionController.searchAndConnect(onCompletion: { [weak self] result in
+            self.tapToPayConnectionController.searchAndConnect(onCompletion: { [weak self] result in
                 self?.handleConnectionResult(result, paymentGatewayAccount: paymentGatewayAccount)
             })
         }, bluetooth: { [weak self] in
@@ -290,5 +290,5 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 enum CardPresentPaymentPreflightError: Error, Equatable {
     case paymentGatewayAccountNotFound
     case failedToAutomaticallyDisconnect(reader: CardReader)
-    case localMobileReaderNotSupported
+    case tapToPayReaderNotSupported
 }

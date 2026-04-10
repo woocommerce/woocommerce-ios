@@ -20,6 +20,7 @@ final class SpacerTableViewCell: UITableViewCell {
         view.backgroundColor = .clear
         selectionStyle = .none
         configure(height: height)
+        disableAccessibility()
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -30,5 +31,10 @@ final class SpacerTableViewCell: UITableViewCell {
     /// Configures the height of the spacer cell.
     func configure(height: CGFloat) {
         self.height = height
+    }
+
+    private func disableAccessibility() {
+        isAccessibilityElement = false
+        accessibilityElementsHidden = true
     }
 }

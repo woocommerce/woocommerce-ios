@@ -23,7 +23,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: [])
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product.toOrderDetailsProduct(), addOnGroups: [])
         let addOns = useCase.addOns()
 
         // Then
@@ -43,7 +43,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: [])
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product.toOrderDetailsProduct(), addOnGroups: [])
         let addOns = useCase.addOns()
 
         // Then
@@ -62,7 +62,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: [])
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product.toOrderDetailsProduct(), addOnGroups: [])
         let addOns = useCase.addOns()
 
         // Then
@@ -82,7 +82,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         let product = Product.fake()
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: [])
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product.toOrderDetailsProduct(), addOnGroups: [])
         let addOns = useCase.addOns()
 
         // Then
@@ -98,7 +98,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ])
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: [], product: product, addOnGroups: [])
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: [], product: product.toOrderDetailsProduct(), addOnGroups: [])
         let addOns = useCase.addOns()
 
         // Then
@@ -119,7 +119,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ]
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: addOnGroups)
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product.toOrderDetailsProduct(), addOnGroups: addOnGroups)
         let addOns = useCase.addOns()
 
         // Then
@@ -148,7 +148,7 @@ class AddOnCrossreferenceTests: XCTestCase {
         ]
 
         // When
-        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product, addOnGroups: addOnGroups)
+        let useCase = AddOnCrossreferenceUseCase(orderItemAttributes: orderItemAttributes, product: product.toOrderDetailsProduct(), addOnGroups: addOnGroups)
         let addOns = useCase.addOns()
 
         // Then

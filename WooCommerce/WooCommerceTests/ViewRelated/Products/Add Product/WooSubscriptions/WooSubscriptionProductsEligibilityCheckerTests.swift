@@ -2,6 +2,7 @@ import XCTest
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
@@ -29,10 +30,7 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
 
     func test_isSiteEligible_is_true_when_woo_subscriptions_is_installed_and_active() throws {
         // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: sampleSiteID,
-                                                    name: "Woo Subscriptions",
-                                                    active: true)
-        insert(activePlugin)
+        insertPlugin("woocommerce-subscriptions/woocommerce-subscriptions.php", active: true)
 
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
                                                                 storage: storageManager)
@@ -46,10 +44,7 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
 
     func test_isSiteEligible_is_false_when_woo_subscriptions_is_installed_but_not_active() throws {
         // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: sampleSiteID,
-                                                    name: "Woo Subscriptions",
-                                                    active: false)
-        insert(activePlugin)
+        insertPlugin("woocommerce-subscriptions/woocommerce-subscriptions.php", active: false)
 
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
                                                                 storage: storageManager)
@@ -73,12 +68,9 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
-    func test_isSiteEligible_is_true_for_plugin_name_woocommerce_subscriptions() throws {
+    func test_isSiteEligible_is_true_for_plugin_path_woocommerce_subscriptions() throws {
         // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: sampleSiteID,
-                                                    name: "WooCommerce Subscriptions",
-                                                    active: true)
-        insert(activePlugin)
+        insertPlugin("woocommerce-subscriptions/woocommerce-subscriptions.php", active: true)
 
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
                                                                 storage: storageManager)
@@ -93,6 +85,11 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
 }
 
 private extension WooSubscriptionProductsEligibilityCheckerTests {
+    func insertPlugin(_ pluginPath: String, active: Bool) {
+        let systemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, plugin: pluginPath, active: active)
+        insert(systemPlugin)
+    }
+
     func insert(_ readOnlyPlugin: SystemPlugin) {
         let plugin = storage.insertNewObject(ofType: StorageSystemPlugin.self)
         plugin.update(with: readOnlyPlugin)

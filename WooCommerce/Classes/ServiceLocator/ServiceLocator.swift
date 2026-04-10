@@ -6,6 +6,7 @@ import Yosemite
 import Hardware
 import WooFoundation
 import WordPressShared
+import protocol Networking.RemoteFeatureFlagOverrideStore
 
 /// Provides global dependencies.
 ///
@@ -25,9 +26,30 @@ final class ServiceLocator {
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
 
+    private static var _ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+
+    private static var _featureFlagOverrideStore: FeatureFlagOverrideStore = UserDefaultsFeatureFlagOverrideStore()
+
+    private static var _remoteFeatureFlagOverrideStore: RemoteFeatureFlagOverrideStore? = {
+        if BuildConfiguration.current == .appStore {
+            return nil
+        } else {
+            return RemoteFeatureFlagOverrideStoreAdapter(baseStore: _featureFlagOverrideStore)
+        }
+    }()
+
     /// FeatureFlagService
     ///
-    private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
+    private static var _featureFlagService: FeatureFlagService = {
+        if BuildConfiguration.current == .appStore {
+            return DefaultFeatureFlagService()
+        } else {
+            return OverridableFeatureFlagService(
+                base: DefaultFeatureFlagService(),
+                overrides: _featureFlagOverrideStore
+            )
+        }
+    }()
 
     /// ImageService
     ///
@@ -61,9 +83,17 @@ final class ServiceLocator {
     ///
     private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName, crashLogger: crashLogging)
 
+    /// GRDB Manager for local catalog persistence
+    ///
+    private static var _grdbManager: GRDBManagerProtocol?
+
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+    /// Application Log Provider
+    ///
+    private static var _applicationLogProvider: ApplicationLogProvider = DefaultApplicationLogProvider()
 
     /// Crash Logging Stack
     ///
@@ -102,13 +132,24 @@ final class ServiceLocator {
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
-    private static var _tapToPayReconnectionController = TapToPayReconnectionController<BuiltInReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
-            connectionControllerFactory: BuiltInCardReaderConnectionControllerFactory(
-                alertProvider: BuiltInReaderConnectionAlertsProvider()))
+    private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
+            connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
+                alertProvider: TapToPayReaderConnectionAlertsProvider()))
 
     /// Tracker for app startup waiting time
     ///
     private static var _startupWaitingTimeTracker: AppStartupWaitingTimeTracker = AppStartupWaitingTimeTracker()
+
+    /// Age range verification (Declared Age Range API wrapper)
+    ///
+    private static var _ageRangeVerificationService: AgeRangeVerificationServiceProtocol = AgeRangeVerificationService()
+
+    /// Age rating change detector
+    ///
+    private static var _ageRatingChangeDetector: AgeRatingChangeDetector = AgeRatingChangeDetector(
+        defaults: .standard,
+        provider: StoreKitAgeRatingProvider()
+    )
 
     // MARK: - Getters
 
@@ -118,8 +159,20 @@ final class ServiceLocator {
         return _analytics
     }
 
+    /// Provides the access point to the store for overriding FFs.
+    /// - Returns: An implementation of the FeatureFlagOverrideStore protocol. It defaults to UserDefaultsFeatureFlagOverrideStore
+    static var featureFlagOverrideStore: FeatureFlagOverrideStore {
+        return _featureFlagOverrideStore
+    }
+
+    /// Provides the access point to the store for overriding remote FFs.
+    /// - Returns: An implementation of the RemoteFeatureFlagOverrideStore protocol. Returns nil for AppStore builds.
+    static var remoteFeatureFlagOverrideStore: RemoteFeatureFlagOverrideStore? {
+        return _remoteFeatureFlagOverrideStore
+    }
+
     /// Provides the access point to the feature flag service.
-    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to DefaultFeatureFlagService
+    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to OverridableFeatureFlagService
     static var featureFlagService: FeatureFlagService {
         return _featureFlagService
     }
@@ -160,6 +213,10 @@ final class ServiceLocator {
         return _authenticationManager
     }
 
+    static var ciabEligibilityChecker: CIABEligibilityCheckerProtocol {
+        return _ciabEligibilityChecker
+    }
+
     /// Shipping Settings
     ///
     static var shippingSettingsService: ShippingSettingsService {
@@ -193,10 +250,43 @@ final class ServiceLocator {
         return _storageManager
     }
 
+    /// Provides the access point to the GRDBManager for local catalog persistence.
+    /// - Returns: An instance of GRDBManagerProtocol when the pointOfSaleLocalCatalogi1 feature flag is enabled
+    /// - Throws: Fatal error if GRDBManager initialization fails
+    static var grdbManager: GRDBManagerProtocol {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+            fatalError("GRDBManager accessed when pointOfSaleLocalCatalogi1 feature flag is disabled")
+        }
+
+        guard let grdbManager = _grdbManager else {
+            do {
+                guard let documentsPath = FileManager.default.urls(
+                    for: .documentDirectory,
+                    in: .userDomainMask).first else {
+                    fatalError("Failed to get the path to the documents directory.")
+                }
+
+                let databasePath = documentsPath.appendingPathComponent(WooConstants.localSQLiteDatabaseName).path
+                let manager = try GRDBManager(databasePath: databasePath)
+                DDLogInfo("Started GRDBManager with database path: \(databasePath)")
+                _grdbManager = manager
+                return manager
+            } catch {
+                fatalError("Failed to initialize GRDBManager: \(error)")
+            }
+        }
+
+        return grdbManager
+    }
+
     /// Provides the access point to the FileLogger.
     /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
     static var fileLogger: Logs {
         return _fileLogger
+    }
+
+    static var applicationLogProvider: ApplicationLogProvider {
+        return _applicationLogProvider
     }
 
     /// Provides an instance of `WordPressLoggingDelegate` for logging in WordPress libraries.
@@ -262,7 +352,7 @@ final class ServiceLocator {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 
-    static var tapToPayReconnectionController: TapToPayReconnectionController<BuiltInReaderConnectionAlertsProvider,
+    static var tapToPayReconnectionController: TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider,
                                                                                 CardPresentPaymentAlertsPresenter> {
         _tapToPayReconnectionController
     }
@@ -271,6 +361,25 @@ final class ServiceLocator {
     ///
     static var startupWaitingTimeTracker: AppStartupWaitingTimeTracker {
         _startupWaitingTimeTracker
+    }
+
+    static var ageRangeVerificationService: AgeRangeVerificationServiceProtocol {
+        _ageRangeVerificationService
+    }
+
+    static var ageRatingChangeDetector: AgeRatingChangeDetector {
+        _ageRatingChangeDetector
+    }
+
+    /// Provides access point to the `POSCatalogSyncCoordinator`.
+    /// Returns nil if feature flag is disabled or user is not authenticated.
+    ///
+    static var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
+        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
+            return nil
+        }
+
+        return stores.posCatalogSyncCoordinator
     }
 }
 
@@ -400,6 +509,22 @@ extension ServiceLocator {
         _receiptPrinter = mock
     }
 
+    static func setAgeRangeVerificationService(_ mock: AgeRangeVerificationServiceProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _ageRangeVerificationService = mock
+    }
+
+    static func setAgeRatingChangeDetector(_ mock: AgeRatingChangeDetector) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _ageRatingChangeDetector = mock
+    }
+
     static func setConnectivityObserver(_ mock: ConnectivityObserver) {
         guard isRunningTests() else {
             return
@@ -422,6 +547,15 @@ extension ServiceLocator {
         }
 
         _productImageUploader = mock
+    }
+
+    /// periphery:ignore - for use in future tests.
+    static func setGRDBManager(_ testInstance: GRDBManagerProtocol) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _grdbManager = testInstance
     }
 }
 

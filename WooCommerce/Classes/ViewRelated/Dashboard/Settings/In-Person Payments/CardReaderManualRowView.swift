@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.SafariSheetView
 
 struct CardReaderManualRowView: View {
     // Environment safe areas

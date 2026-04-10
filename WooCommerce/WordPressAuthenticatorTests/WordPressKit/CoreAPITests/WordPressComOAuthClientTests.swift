@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import OHHTTPStubs
+import OHHTTPStubsSwift
 @testable import WordPressAuthenticator
 
 class WordPressComOAuthClientTests: XCTestCase {
@@ -132,6 +133,37 @@ class WordPressComOAuthClientTests: XCTestCase {
             failure: { (error) in
                 expect.fulfill()
                 XCTAssertEqual(error.authenticationFailureKind, .invalidRequest, "The code should be invalid request")
+            }
+        )
+        waitForExpectations(timeout: 2, handler: nil)
+    }
+
+    func testAuthenticateUsernameEmailLoginNotAllowedCase() throws {
+        // Given
+        let stubPath = try XCTUnwrap(
+            OHPathForFileInBundle("WordPressComOAuthEmailLoginNotAllowedFail.json", Bundle.coreAPITestsBundle)
+        )
+        stub(condition: isOauthTokenRequest(url: .oAuthTokenUrl)) { _ in
+            return fixture(filePath: stubPath, status: 403, headers: ["Content-Type" as NSObject: "application/json" as AnyObject])
+        }
+
+        let expect = expectation(description: "One callback should be invoked")
+        let client = WordPressComOAuthClient(clientID: "Fake", secret: "Fake")
+
+        // When
+        client.authenticate(
+            username: "email@example.com",
+            password: "fakePass",
+            multifactorCode: nil,
+            needsMultifactor: { _, _ in XCTFail("This closure should not be called") },
+            success: { (_) in
+                expect.fulfill()
+                XCTFail("This call should fail")
+            },
+            failure: { (error) in
+                // Then
+                expect.fulfill()
+                XCTAssertEqual(error.authenticationFailureKind, .emailLoginNotAllowed, "The error kind should be emailLoginNotAllowed")
             }
         )
         waitForExpectations(timeout: 2, handler: nil)

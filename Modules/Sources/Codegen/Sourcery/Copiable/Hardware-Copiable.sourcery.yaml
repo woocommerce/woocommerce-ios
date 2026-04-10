@@ -1,0 +1,8 @@
+sources:
+    include:
+        - ../../../../../Modules/Sources/Hardware/
+templates:
+    - Models+Copiable.swifttemplate
+output: ../../../../../Modules/Sources/Hardware/Model/Copiable/
+args:
+    moduleName: Hardware

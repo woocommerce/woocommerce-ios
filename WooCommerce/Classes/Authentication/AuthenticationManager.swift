@@ -4,6 +4,7 @@ import KeychainAccess
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
+import UIKit
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
@@ -15,6 +16,7 @@ import class Networking.DefaultApplicationPasswordUseCase
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
+import struct NetworkingCore.WordPressAPIDiscovery
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
@@ -288,6 +290,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 exists: site.exists,
                 hasWordPress: site.isWP,
                 isWPCom: site.isWPCom,
+                isCommerceGarden: site.isCommerceGarden,
                 isJetpackInstalled: site.hasJetpack,
                 isJetpackActive: site.isJetpackActive,
                 isJetpackConnected: site.isJetpackConnected,
@@ -307,7 +310,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         /// save the site to memory to check for jetpack requirement in epilogue
         currentSelfHostedSite = site
 
-        if site.isWPCom || site.isJetpackConnected {
+        if site.isWPCom || site.isCommerceGarden || site.isJetpackConnected {
             let authenticationResult: WordPressAuthenticatorResult = .presentEmailController
             onCompletion(authenticationResult)
         } else {
@@ -322,6 +325,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func troubleshootSite(_ siteInfo: WordPressComSiteInfo?, in navigationController: UINavigationController?) {
         analytics.track(event: .SitePicker.siteDiscovery(hasWordPress: siteInfo?.isWP ?? false,
                                                          isWPCom: siteInfo?.isWPCom ?? false,
+                                                         isCommerceGarden: siteInfo?.isCommerceGarden ?? false,
                                                          isJetpackInstalled: siteInfo?.hasJetpack ?? false,
                                                          isJetpackActive: siteInfo?.isJetpackActive ?? false,
                                                          isJetpackConnected: siteInfo?.isJetpackConnected ?? false))
@@ -331,8 +335,37 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             return
         }
 
+        // Check if the site already belongs to the current account before showing
+        // an error. The user may have typed a URL for a site they already have.
+        let matcher = ULAccountMatcher(storageManager: storageManager)
+        matcher.refreshStoredSites()
+        if let matchedSite = matcher.matchedSite(originalURL: site.url) {
+            if matchedSite.isWooCommerceActive {
+                switchToAlreadyConnectedSite(matchedSite, in: navigationController)
+                return
+            } else {
+                let noWoo = noWooUI(for: matchedSite,
+                                    with: matcher,
+                                    navigationController: navigationController,
+                                    onStorePickerDismiss: {})
+                navigationController.show(noWoo, sender: nil)
+                return
+            }
+        }
+
         let errorUI = errorUI(for: site, in: navigationController)
         navigationController.show(errorUI, sender: nil)
+    }
+
+    /// Navigates back to the store picker and selects the site that the user
+    /// entered via site discovery, as if they had tapped it in the list.
+    private func switchToAlreadyConnectedSite(_ site: Site, in navigationController: UINavigationController) {
+        navigationController.popToRootViewController(animated: true)
+        if let storePicker = navigationController.viewControllers
+            .compactMap({ $0 as? StorePickerViewController })
+            .first {
+            storePicker.selectSite(site)
+        }
     }
 
     /// Handles site credential login
@@ -345,7 +378,15 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication, error: error.underlyingError))
+            let challengeType: String? = {
+                if case .basicAuthenticationRequired = error {
+                    return "basic_auth"
+                }
+                return nil
+            }()
+            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication,
+                                                                    error: error.underlyingError,
+                                                                    challengeType: challengeType))
         })
         self.siteCredentialLoginUseCase = useCase
 
@@ -362,7 +403,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         let isAppPasswordAuthError = {
             switch error {
-            case SiteCredentialLoginError.genericFailure, SiteCredentialLoginError.invalidCredentials:
+            case SiteCredentialLoginError.genericFailure,
+                 SiteCredentialLoginError.invalidCredentials,
+                 SiteCredentialLoginError.basicAuthenticationRequired:
                 return false
             case is SiteCredentialLoginError:
                 return true
@@ -371,7 +414,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }()
 
-        // Only show the tutorial if the error can be solved by the app password flow.
+        // Show the tutorial immediately if it's obvious that the error can be solved by the app password flow.
         if isAppPasswordAuthError {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
@@ -526,6 +569,19 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             }
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
+        DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
+
+        let discovery = WordPressAPIDiscovery()
+        Task { @MainActor in
+            let discoveredRoot = await discovery.discoverRESTAPIRootURL(for: siteURL)
+            let hasRESTAPI = discoveredRoot != nil
+
+            DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
+            completion(hasRESTAPI)
+        }
     }
 
     /// Tracks a given Analytics Event.
@@ -732,7 +788,7 @@ private extension AuthenticationManager {
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 
-        guard !site.isWPCom else {
+        guard !site.isWPCom && !site.isCommerceGarden else {
             // The site doesn't belong to the current account since it was not included in the site picker.
             return accountMismatchUI(for: site.url, siteCredentials: nil, with: matcher, in: navigationController)
         }
@@ -797,10 +853,22 @@ private extension AuthenticationManager {
     /// Presents login error alert before redirecting user to the site login using a web view.
     ///
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
-
+        let shouldEnableWebFlow: Bool = {
+            /// Since our detection of invalid credentials error might be inaccurate,
+            /// adding the fallback to web flow would unblock users from login.
+            if let siteCredentialError = error as? SiteCredentialLoginError,
+               case .invalidCredentials = siteCredentialError {
+                return true
+            }
+            return false
+        }()
+        let defaultAction = shouldEnableWebFlow ? { [weak self] in
+            guard let self else { return }
+            presentApplicationPasswordWebView(for: siteURL, in: viewController)
+        } : nil
         let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
-            defaultAction: nil
+            defaultAction: defaultAction
         )
 
         viewController.present(alertController, animated: true)

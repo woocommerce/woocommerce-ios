@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Describes a data model that contains necessary properties for rendering a product form (`ProductFormViewController`).
@@ -70,8 +71,6 @@ protocol ProductFormDataModel {
 
     // Product Bundles
     var bundledItems: [ProductBundleItem] { get }
-    var bundleStockStatus: ProductStockStatus? { get }
-    var bundleStockQuantity: Int64? { get }
 
     // Password
     var password: String? { get }

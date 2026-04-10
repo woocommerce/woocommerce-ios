@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import WooFoundation
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -29,6 +30,11 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     private let analytics: Analytics
 
     private var resultsController: ResultsController<StorageTopEarnerStats>?
+
+    // Map of product IDs and their listeners
+    private var entityListeners: [Int64: EntityListener<Product>] = [:]
+
+    private var hasProductChanges = PassthroughSubject<Void, Never>()
 
     private var currentDate: Date {
         Date()
@@ -82,6 +88,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
         observeSyncingCompletion()
+        observeProductChanges()
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
@@ -207,9 +214,62 @@ private extension TopPerformersDashboardViewModel {
                     analytics.track(event: .Dashboard.dashboardTopPerformersLoaded(timeRange: timeRange))
                     analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .topPerformers))
                 }
-                waitingTracker?.end()
+                if let event = waitingTracker?.end() {
+                    analytics.track(event: event)
+                }
             }
             .store(in: &subscriptions)
+    }
+
+    func observeProductChanges() {
+        hasProductChanges
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] in
+                Task {
+                    await self?.reloadDataIfNeeded(forceRefresh: true)
+                }
+            }
+            .store(in: &subscriptions)
+    }
+
+    func observeProducts(for items: [TopEarnerStatsItem]) {
+        let ids = items.map { $0.productID }
+        entityListeners = entityListeners.filter { ids.contains($0.key) }
+        for item in items {
+            if entityListeners[item.productID] == nil {
+                let listener = createProductEntityListener(for: item)
+                entityListeners[item.productID] = listener
+            }
+        }
+    }
+
+    func createProductEntityListener(for item: TopEarnerStatsItem) -> EntityListener<Product> {
+        /// Mock product item out of details from top stat item
+        var product = Product(
+            siteID: siteID,
+            productID: item.productID,
+            name: item.productName ?? "",
+            images: [ProductImage(
+                imageID: -1,
+                dateCreated: Date(),
+                dateModified: nil,
+                src: item.imageUrl ?? "",
+                name: nil,
+                alt: nil)
+            ]
+        )
+        let entityListener = EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
+        entityListener.onUpsert = { [weak self] updatedProduct in
+            // reload stats if there are changes to product
+            guard let self,
+                  updatedProduct.name != product.name ||
+                    updatedProduct.imageURL != product.imageURL else {
+                return
+            }
+            product = updatedProduct
+            hasProductChanges.send(())
+        }
+        return entityListener
     }
 
     @MainActor
@@ -259,9 +319,11 @@ private extension TopPerformersDashboardViewModel {
             return
         }
         guard let items = topEarnerStats?.items?.sorted(by: >), items.isNotEmpty else {
+            entityListeners = [:]
             return periodViewModel.update(state: .loaded(rows: []))
         }
         periodViewModel.update(state: .loaded(rows: items))
+        observeProducts(for: items)
     }
 
     func createResultsController(timeRange: StatsTimeRangeV4) -> ResultsController<StorageTopEarnerStats> {

@@ -205,6 +205,12 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     override func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
 
+        if (error as? WordPressComOAuthError)?.authenticationFailureKind == .emailLoginNotAllowed {
+            tracker.track(failure: error.localizedDescription)
+            showMagicLinkRequestScreen()
+            return
+        }
+
         if (error as? WordPressComOAuthError)?.authenticationFailureKind == .invalidRequest {
             let message = NSLocalizedString("It seems like you've entered an incorrect password. Want to give it another try?", comment: "An error message shown when a wpcom user provides the wrong password.")
             displayError(message: message)
@@ -235,6 +241,13 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @objc func signinFormVerticalOffset() -> CGFloat {
         // the stackview-based layout shifts fine with this adjustment
         return 0
+    }
+
+    private func showMagicLinkRequestScreen() {
+        let vc = MagicLinkRequestViewController(fallbackAction: .wpcomUsernamePassword)
+        vc.loginFields = loginFields
+        vc.dismissBlock = dismissBlock
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 

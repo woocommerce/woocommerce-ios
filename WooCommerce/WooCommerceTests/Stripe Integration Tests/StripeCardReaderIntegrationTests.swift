@@ -26,7 +26,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
             readerService.cancelDiscovery()
                 .fulfillOnCompletion(expectation: receivedReaders)
         } receiveValue: { readers in
-            if readers.count > 0 {
+            if !readers.isEmpty {
                 readerService.cancelDiscovery()
                     .fulfillOnCompletion(expectation: receivedReaders)
             }
@@ -100,7 +100,7 @@ final class StripeCardReaderIntegrationTests: XCTestCase {
 
         // Test also that connectedReaders is updated
         readerService.connectedReaders.sink { connectedReader in
-            if connectedReader.count > 0 {
+            if !connectedReader.isEmpty {
                 connectedreaderIsPublished.fulfill()
             }
         }.store(in: &self.cancellables)

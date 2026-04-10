@@ -5,6 +5,14 @@ extension WooAnalyticsEvent {
             static let source = "source"
         }
 
+        /// Source of the share product action. The raw value is the event property value.
+        enum ShareProductSource: String {
+            /// From product form in the navigation bar.
+            case productForm = "product_form"
+            /// From product form > more menu in the navigation bar.
+            case moreMenu = "more_menu"
+        }
+
         /// Tracked when the user taps on the button to share a product.
         static func productDetailShareButtonTapped(source: ShareProductSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailShareButtonTapped,
@@ -22,15 +30,5 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailRemoveFromFavoriteButtonTapped,
                               properties: [:])
         }
-    }
-}
-
-extension WooAnalyticsEvent.ProductForm {
-    /// Source of the share product action. The raw value is the event property value.
-    enum ShareProductSource: String {
-        /// From product form in the navigation bar.
-        case productForm = "product_form"
-        /// From product form > more menu in the navigation bar.
-        case moreMenu = "more_menu"
     }
 }

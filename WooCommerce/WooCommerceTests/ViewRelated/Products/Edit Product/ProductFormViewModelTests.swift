@@ -232,8 +232,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = createViewModel(product: product,
-                                        formType: .edit,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        formType: .edit)
 
         // When
         XCTAssertTrue(viewModel.canFavoriteProduct())
@@ -243,8 +242,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        formType: .add)
 
         // When
         XCTAssertFalse(viewModel.canFavoriteProduct())
@@ -254,8 +252,7 @@ final class ProductFormViewModelTests: XCTestCase {
         // Given
         let product = Product.fake()
         let viewModel = createViewModel(product: product,
-                                        formType: .add,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: false))
+                                        formType: .add)
 
         // When
         XCTAssertFalse(viewModel.canFavoriteProduct())
@@ -268,8 +265,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let viewModel = createViewModel(product: product,
                                         formType: .edit,
                                         stores: stores,
-                                        favoriteProductsUseCase: mockUseCase,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        favoriteProductsUseCase: mockUseCase)
 
         // When
         viewModel.markAsFavorite()
@@ -285,8 +281,7 @@ final class ProductFormViewModelTests: XCTestCase {
         let viewModel = createViewModel(product: product,
                                         formType: .edit,
                                         stores: stores,
-                                        favoriteProductsUseCase: mockUseCase,
-                                        featureFlagService: MockFeatureFlagService(favoriteProducts: true))
+                                        favoriteProductsUseCase: mockUseCase)
 
         // When
         viewModel.removeFromFavorite()
@@ -850,8 +845,7 @@ private extension ProductFormViewModelTests {
                          stores: StoresManager = ServiceLocator.stores,
                          analytics: Analytics = ServiceLocator.analytics,
                          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-                         favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
-                         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> ProductFormViewModel {
+                         favoriteProductsUseCase: FavoriteProductsUseCase? = nil) -> ProductFormViewModel {
         let model = EditableProductModel(product: product)
         let siteID: Int64 = 123
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID, product: model)
@@ -861,7 +855,6 @@ private extension ProductFormViewModelTests {
                                     stores: stores,
                                     analytics: analytics,
                                     blazeEligibilityChecker: blazeEligibilityChecker,
-                                    favoriteProductsUseCase: favoriteProductsUseCase,
-                                    featureFlagService: featureFlagService)
+                                    favoriteProductsUseCase: favoriteProductsUseCase)
     }
 }

@@ -1,6 +1,78 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.4
+This update improves reliability and consistency across your store management experience. We fixed site connection issues, aligned revenue with wp-admin, smoothed bookings and dashboard behavior, added FedEx shipping, improved iPad layouts, and resolved product duplication gaps. Plus several UI polish and stability fixes throughout.
+
+## 24.3
+Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.
+
+## 24.2
+This update shows store setup tasks more reliably, ensures barcode scanning works seamlessly in Point of Sale, and enhances media library reliability. Update now for a smoother store management experience!
+
+## 24.0
+This update improves sign-in clarity by showing a clear error when site login fails due to authentication issues, adds a helpful “Learn more” flow to better explain POS features, and includes behind-the-scenes connection tracking to help us improve reliability and performance.
+
+## 23.9
+This update brings clearer feedback during checkout, more reliable syncing, and safer payment behavior. Troubleshooting is now more powerful with better diagnostics, plugin updates work more smoothly, and we fixed crashes, editing issues, and localization bugs to make everyday store management more stable and predictable.
+
+## 23.8
+This update brings smoother POS performance with a new local product catalog for lightning-fast barcode scanning, search, and selection. We’ve also improved login support for sites using captchas, fixed push notification issues, and ensured product and app stability across the board.
+
+## 23.7
+This update brings Tap to Pay on iPhone to UK stores using Stripe, and automatic SSO sign-ins for web admin tasks. We made card payment onboarding error tips clearer, and fixed an intermittent bug with adding variations to an order. Lastly, iPad users can share quick feedback about Point of Sale.
+
+## 23.6
+This update improves app stability and usability. We’ve enhanced compatibility for stores using HTTP site addresses, optimized how tabs load based on saved states, and fixed an issue that prevented dismissing the keyboard when editing product titles.
+
+## 23.5
+This update brings smoother store management and better control. You can now filter orders by source, and manage all POS orders directly within the POS interface. Plus, we fixed a scrolling issue on the Create Coupon screen for a more seamless experience.
+
+## 23.4
+This update delivers important fixes for a smoother store management experience. We've resolved navigation issues in order details and corrected store widget display on iOS 26. Update now for a more polished and reliable app experience.
+
+## 23.3
+Enjoy a smoother store management experience with clearer shipping labels for physical items, friendlier product code error messages, more reliable custom fields, and better app performance for users authenticated with WordPress.com. All designed to streamline your daily workflow.
+
+## 23.2
+This update smooths your WooCommerce experience with improved cash payments, easier access to POS settings, and accurate HAZMAT details on shipping labels. Plus, we fixed a Blaze flow issue so campaigns behave as expected. Faster, clearer, and more reliable — just how you need it!
+
+## 23.1
+Managing your store just got smoother with a more reliable shipping label workflow! Jetpack setup has also been improved for a faster, easier connection. Update now and enjoy the improvements!
+
+## 23.0
+Faster performance and smoother experience! This update brings improved product loading, better tax calculations, and enhanced address lookup with map support. We've added guided barcode scanning for POS users and strengthened shipping requirements for EU destinations. Plus, we've fixed stability issues for a more reliable experience.
+
+## 22.9
+This update enhances Shipping Labels with improved accessibility, smarter address validation, and faster performance. We’ve also made the dedicated Point of Sale tab more widely available for quicker access, and POS orders are now filterable in your order list for better organization. Plus, we've optimized assets to reduce the app’s size.
+
+## 22.8
+Our latest update brings smoother split shipment screens and improved accessibility for Shipping Labels, plus easier label size selection, and POS badges within the order list. In Point of Sale, enjoy a new barcode scan flow, and a safer cart clear button.
+
+## 22.7
+Say hello to smoother shipping and sales! We’ve enhanced Shipping Labels with UPS extras and smarter forms, fixed price and display glitches, and made shipment management easier. Plus, Point of Sale now has its own tab for eligible stores, barcode scanning, and smoother product refresh for faster checkout.
+
+## 22.6
+Shipping just got a major upgrade! Our revamped flow makes it easier than ever to create and manage shipping labels for stores using WooCommerce Shipping. We've also improved some icons and fixed a display issue with the order list's last updated time. This release includes some behind-the-scenes performance improvements too.
+
+## 22.5
+In this update we’ve fixed blurry payment icons, optimized image handling, improved accessibility, added a card payment timeout, and removed domain purchase features for a cleaner experience. We've also added new improvements to email receipts for POS (available from WooCommerce 10.0.0)
+
+## 22.4
+With this version of the Woo app, you'll be able to see receipts for failed transactions, and enter addresses more easily in order creation. On iPad, we've improved POS search by adding coupon search, and you'll see your most popular products before you search. We've also fixed a crash when reloading order details after a refund on the web.
+
+## 22.3
+This release brings major improvements to the WooCommerce Point of Sale (POS) experience, including the ability to search for products and apply coupons directly from the app. We’ve also improved the Tap to Pay onboarding flow and updated documentation links to ensure a smoother setup. Enhancements to the order form now make entering custom amounts more intuitive. Behind the scenes, we’ve made fixes to improve app stability and refined the POS interface for better usability.
+
+## 22.2
+We’ve tackled some important fixes for a smoother WooCommerce experience! This update resolves an issue where draft variable products couldn't be published. We've also improved the login flow during Jetpack setup for certain accounts, ensuring a more reliable connection. Update now!
+
+## 22.1
+We’ve squashed bugs and polished your WooCommerce experience! Enjoy smoother order creation with fixes for unsaved changes, recalculations, and multi-word names. Plus, sharper icons for scanning and payments. Behind the scenes, we’ve improved login flows, POS functionality, and app performance. Update now!
+
+## 22.0
+This update adds the option to set different notification preferences for each store. In Orders and Products, your filters stay around as you move through the app, and we've fixed a crash that could happen when you choose pictures for your products. Payments is improved too, with support for Puerto Rico in WooPayments, and better accessibility.
+
 ## 21.9
 We're dedicated to enhancing your WooCommerce app experience! We've ironed out the issues related to discarding images during uploads in the Product Form. Plus, we've ramped up our login flow accessibility to make your journey smoother and more intuitive. Enjoy the fresh update and newly polished features!
 

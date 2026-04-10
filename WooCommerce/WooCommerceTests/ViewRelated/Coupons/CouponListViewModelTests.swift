@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 
@@ -30,7 +31,7 @@ final class CouponListViewModelTests: XCTestCase {
     }
 
     private func setUpWithCouponFetched(injectedStores: StoresManager? = nil) {
-        let coupon = Coupon.fake().copy(siteID: 123, code: "coupon")
+        let coupon = Coupon.fake().copy(siteID: 123, couponID: 1234, code: "coupon")
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: coupon)
         if let stores = injectedStores {
             sut = CouponListViewModel(siteID: 123,
@@ -199,7 +200,7 @@ final class CouponListViewModelTests: XCTestCase {
     func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() {
         // Given
         let sampleSiteID: Int64 = 123
-        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: sampleSiteID))
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: sampleSiteID, couponID: 1, code: "senth"))
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
@@ -257,7 +258,7 @@ final class CouponListViewModelTests: XCTestCase {
 
     func test_state_is_empty_when_all_coupons_gets_deleted() {
         // Given
-        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123))
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123, couponID: 1, code: "riset"))
         sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
         assertEqual(.coupons, sut.state)
 
@@ -267,5 +268,60 @@ final class CouponListViewModelTests: XCTestCase {
 
         // Then
         assertEqual(.empty, sut.state)
+    }
+
+    func test_buildCouponViewModels_ignores_coupons_with_zero_id_or_empty_code() {
+        // Given
+        let validCoupon = Coupon.fake().copy(siteID: 123, couponID: 1, code: "VALID")
+        let zeroIdCoupon = Coupon.fake().copy(siteID: 123, couponID: 0, code: "ZERO_ID")
+        let emptyCodeCoupon = Coupon.fake().copy(siteID: 123, couponID: 2, code: "")
+
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: validCoupon)
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: zeroIdCoupon)
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: emptyCodeCoupon)
+
+        sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
+
+        // When
+        sut.buildCouponViewModels()
+
+        // Then
+        XCTAssertEqual(sut.couponViewModels.count, 1)
+        XCTAssertEqual(sut.couponViewModels.first?.id, "\(validCoupon.couponID)")
+        XCTAssertEqual(sut.state, .coupons)
+    }
+
+    func test_buildCouponViewModels_deduplicates_coupons_with_same_id() {
+        // Given
+        let firstCoupon = Coupon.fake().copy(siteID: 123, couponID: 10, code: "FIRST")
+        let duplicateIdCoupon = Coupon.fake().copy(siteID: 123, couponID: 10, code: "SECOND")
+
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: firstCoupon)
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: duplicateIdCoupon)
+
+        sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
+
+        // When
+        sut.buildCouponViewModels()
+
+        // Then
+        XCTAssertEqual(sut.couponViewModels.count, 1)
+        XCTAssertEqual(sut.couponViewModels.first?.id, "\(firstCoupon.couponID)")
+        XCTAssertEqual(sut.state, .coupons)
+    }
+
+    func test_buildCouponViewModels_sets_empty_state_when_all_coupons_filtered_out() {
+        // Given
+        let invalidCoupon = Coupon.fake().copy(siteID: 123, couponID: 0, code: "")
+        mockStorageManager.insertSampleCoupon(readOnlyCoupon: invalidCoupon)
+
+        sut = CouponListViewModel(siteID: 123, storageManager: mockStorageManager)
+
+        // When
+        sut.buildCouponViewModels()
+
+        // Then
+        XCTAssertTrue(sut.couponViewModels.isEmpty)
+        XCTAssertEqual(sut.state, .empty)
     }
 }

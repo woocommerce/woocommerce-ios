@@ -1,3 +1,4 @@
+import Foundation
 import Storage
 
 final class MockInMemoryStorage: FileStorage {

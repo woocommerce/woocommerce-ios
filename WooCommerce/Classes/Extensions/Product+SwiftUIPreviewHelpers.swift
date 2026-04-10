@@ -1,5 +1,6 @@
 #if canImport(SwiftUI) && DEBUG
 
+import Foundation
 import Yosemite
 
 extension Product {

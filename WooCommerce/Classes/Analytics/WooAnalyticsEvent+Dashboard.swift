@@ -1,5 +1,6 @@
 import Foundation
 import enum Yosemite.StatsTimeRangeV4
+import struct Yosemite.Site
 
 extension WooAnalyticsEvent {
     enum Dashboard {
@@ -8,6 +9,15 @@ extension WooAnalyticsEvent {
             static let range = "range"
             static let localTimezone = "local_timezone"
             static let storeTimezone = "store_timezone"
+            static let siteConnectionType = "site_connection_type"
+        }
+
+        /// Tracked once per session when the site connection type is identified on the dashboard.
+        /// - Parameter siteConnectionType: the type of connection for the site.
+        static func siteConnectionTypeIdentified(siteConnectionType: SiteConnectionType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteConnectionTypeIdentified, properties: [
+                Keys.siteConnectionType: siteConnectionType.analyticsValue
+            ])
         }
 
         /// Tracked when the store stats are loaded with fresh data either via first load, event driven refresh, or manual refresh.
@@ -60,6 +70,49 @@ private extension StatsTimeRangeV4 {
             return "years"
         case .custom:
             return "custom"
+        }
+    }
+}
+
+/// The type of connection for a site, for analytics purposes.
+enum SiteConnectionType {
+    /// Site is not connected to Jetpack
+    case nonJetpack
+    /// Site is connected via Jetpack Connection Package (not the full plugin)
+    case jetpackConnectionPackage
+    /// Site has the full Jetpack plugin installed and connected
+    case fullJetpack
+    /// Unknown connection type
+    case unknown
+
+    /// Creates a `SiteConnectionType` from a `Site`.
+    init(site: Site?) {
+        guard let site else {
+            self = .unknown
+            return
+        }
+
+        if !site.isJetpackConnected {
+            self = .nonJetpack
+        } else if site.isJetpackCPConnected {
+            self = .jetpackConnectionPackage
+        } else if site.isJetpackThePluginInstalled {
+            self = .fullJetpack
+        } else {
+            self = .unknown
+        }
+    }
+
+    var analyticsValue: String {
+        switch self {
+        case .nonJetpack:
+            return "non_jetpack"
+        case .jetpackConnectionPackage:
+            return "jetpack_connection_package"
+        case .fullJetpack:
+            return "full_jetpack"
+        case .unknown:
+            return "unknown"
         }
     }
 }

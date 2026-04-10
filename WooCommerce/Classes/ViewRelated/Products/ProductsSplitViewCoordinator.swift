@@ -122,14 +122,19 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showProductForm(product: Product) {
-        ProductDetailsFactory.productDetails(product: product,
-                                             presentationStyle: .navigationStack,
-                                             forceReadOnly: false,
-                                             onDeleteCompletion: { [weak self] in
-            self?.onSecondaryProductFormDeletion()
-        }) { [weak self] viewController in
-            self?.showSecondaryView(contentType: .productForm(product: product), viewController: viewController, replacesNavigationStack: true)
-        }
+        let viewController = ProductDetailNavigator.shared.makeDestination(
+            product: product,
+            isReadOnly: false,
+            onDismissWeb: { [weak self] in
+                self?.resyncProducts()
+            },
+            onDelete: { [weak self] in
+                self?.onSecondaryProductFormDeletion()
+            })
+
+        showSecondaryView(contentType: .productForm(product: product),
+                          viewController: viewController,
+                          replacesNavigationStack: true)
     }
 
     func startProductCreationIfNoUnsavedChanges(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool) {
@@ -194,6 +199,11 @@ private extension ProductsSplitViewCoordinator {
         }
     }
 
+    func resyncProducts() {
+        guard let productsViewController = primaryNavigationController.topViewController as? ProductsViewController else { return }
+        productsViewController.resync()
+    }
+
     func showEmptyViewOrFirstProduct() {
         showEmptyView()
         switch primaryNavigationController.topViewController {
@@ -227,7 +237,9 @@ private extension ProductsSplitViewCoordinator {
                 guard let self else {
                     return false
                 }
-                return selectedProduct == nil && !splitViewController.isCollapsed
+                return selectedProduct == nil &&
+                    !splitViewController.isCollapsed &&
+                    splitViewController.traitCollection.horizontalSizeClass == .regular
             }
             .first()
             .sink { [weak self] selectedProduct, onDataReloaded in

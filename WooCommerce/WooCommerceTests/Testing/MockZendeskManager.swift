@@ -104,14 +104,10 @@ extension MockZendeskManager {
         // no-op
     }
 
-    func createSupportRequest(formID: Int64,
-                              customFields: [Int64: String],
-                              tags: [String],
-                              subject: String,
-                              description: String,
+    func createSupportRequest(_ request: WooCommerce.ZendeskSupportRequest,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        latestInvokedTags = tags
-        latestInvokedCustomFields = customFields
+        latestInvokedTags = request.tags
+        latestInvokedCustomFields = request.customFields
         if let stubbedCreateSupportRequestResult {
             onCompletion(stubbedCreateSupportRequestResult)
         }

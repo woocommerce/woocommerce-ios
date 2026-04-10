@@ -6,6 +6,7 @@ import Foundation
 //
 extension UserDefaults {
     enum Key: String {
+        case applicationPasswordUnsupportedList
         case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
@@ -15,8 +16,6 @@ extension UserDefaults {
         case defaultStoreCurrencySettings
         case defaultAnonymousID
         case defaultRoles
-        case deviceID
-        case deviceToken
         case errorLoginSiteAddress
         case hasFinishedOnboarding
         case installationDate
@@ -50,6 +49,7 @@ extension UserDefaults {
 
         // Background Task Refresh
         case latestBackgroundOrderSyncDate
+        case lastBackgroundRefreshCompletionTime
 
         // Blaze Local notification
         case blazeNoCampaignReminderOpened
@@ -68,6 +68,21 @@ extension UserDefaults {
 
         // Hide stores from store picker
         case hiddenStoreIDs
+
+        // Application passwords experiment remote FF cached value
+        case applicationPasswordsExperimentRemoteFFValue
+
+        // CIAB Bookings tab availability
+        case ciabBookingsTabAvailable
+
+        /// Whether WPCom connection suggestion for Woo-driven push notifications is hidden
+        case hideWPComConnectionOnDashboard
+
+        /// Pending flow for magic link: notification setup or Jetpack setup
+        case pendingMagicLinkFlow
+
+        /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
+        case debugMinWooVersionForSelfDrivenPushNotifications
     }
 }
 

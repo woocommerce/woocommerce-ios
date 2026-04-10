@@ -1,0 +1,82 @@
+{
+  "data": {
+    "config": {
+      "shippingLabelData": {
+        "currentOrderLabels": [
+          {
+            "label_id": 4871,
+            "tracking": null,
+            "refundable_amount": 0,
+            "created": 1742292110723,
+            "carrier_id": "usps",
+            "service_name": "USPS - Priority Mail",
+            "status": "PURCHASED",
+            "commercial_invoice_url": "",
+            "is_commercial_invoice_submitted_electronically": false,
+            "package_name": "Small Flat Rate Box",
+            "is_letter": false,
+            "product_names": [
+              "BG upload"
+            ],
+            "product_ids": [
+              522
+            ],
+            "id": "1",
+            "receipt_item_id": -1,
+            "created_date": 1742292110000
+          },
+          {
+            "label_id": 4872,
+            "tracking": null,
+            "refundable_amount": 0,
+            "created": 1742292110723,
+            "carrier_id": "usps",
+            "service_name": "USPS - Priority Mail",
+            "status": "PURCHASE_ERROR",
+            "commercial_invoice_url": "",
+            "is_commercial_invoice_submitted_electronically": false,
+            "package_name": "Small Flat Rate Box",
+            "is_letter": false,
+            "product_names": [
+              "BG upload"
+            ],
+            "product_ids": [
+              522
+            ],
+            "id": "0",
+            "receipt_item_id": -1,
+            "created_date": 1742292110000
+          },
+          {
+            "label_id": 4873,
+            "tracking": null,
+            "refundable_amount": 0,
+            "created": 1742292110723,
+            "carrier_id": "usps",
+            "service_name": "USPS - Priority Mail",
+            "status": "PURCHASED",
+            "commercial_invoice_url": "",
+            "is_commercial_invoice_submitted_electronically": false,
+            "package_name": "Small Flat Rate Box",
+            "is_letter": false,
+            "product_names": [
+              "BG upload"
+            ],
+            "product_ids": [
+              522
+            ],
+            "refund": {
+              "request_date": 1603715617000,
+              "status": "pending",
+              "refund_date": 1
+            },
+            "id": "2",
+            "receipt_item_id": -1,
+            "created_date": 1742292110000
+          }
+        ]
+      },
+      "shipments": "{\"0\":[{\"id\":190,\"subItems\":[]}],\"1\":[{\"id\":189,\"subItems\":[]}],\"2\":[{\"id\":188,\"subItems\":[]}]}"
+    }
+  }
+}

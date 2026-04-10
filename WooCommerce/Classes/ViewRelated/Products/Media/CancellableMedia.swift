@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 import Combine
 
@@ -12,5 +13,9 @@ final class CancellableMedia: NSObject {
 
     init(media: Media) {
         self.media = media
+    }
+
+    deinit {
+        cancellableTask?.cancel()
     }
 }

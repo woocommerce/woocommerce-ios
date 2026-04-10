@@ -1,5 +1,6 @@
 import SwiftUI
 import WebKit
+import WooFoundation
 
 /// A default view model for authenticated web view
 ///
@@ -114,3 +115,44 @@ struct AuthenticatedWebView_Previews: PreviewProvider {
     }
 }
 #endif
+
+/// A web view that can be authenticated automatically if possible ╮(─▽─)╭
+struct AuthenticatableWebView: View {
+    let url: URL
+    var title: String = ""
+    var onDismiss: (() -> Void)? = nil
+
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationStack {
+            let stores = ServiceLocator.stores
+            let site = stores.sessionManager.defaultSite
+            if let site, stores.shouldAuthenticateAdminPage(for: site) {
+                AuthenticatedWebView(isPresented: .constant(true), url: url)
+                    .navigationTitle(title)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button(Localization.doneButton, action: { dismiss() })
+                        }
+                    }
+            } else {
+                SafariSheetView(url: url)
+            }
+        }
+        .onDisappear {
+            onDismiss?()
+        }
+    }
+}
+
+private extension AuthenticatableWebView {
+    enum Localization {
+        static let doneButton = NSLocalizedString(
+            "authenticatableWebView.done",
+            value: "Done",
+            comment: "Button to dismiss a web view"
+        )
+    }
+}

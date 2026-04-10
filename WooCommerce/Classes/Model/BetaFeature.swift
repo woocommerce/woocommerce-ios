@@ -1,10 +1,13 @@
 import Combine
+import Foundation
 import Storage
 import protocol WooFoundation.WooAnalyticsEventPropertyType
+import WooFoundationCore
 
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
-    case inAppPurchases
+    case applicationPasswords
+    case posLocalCatalog
 }
 
 extension BetaFeature {
@@ -12,8 +15,10 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsTitle
-        case .inAppPurchases:
-            return Localization.inAppPurchasesManagementTitle
+        case .applicationPasswords:
+            return Localization.applicationPasswordsTitle
+        case .posLocalCatalog:
+            return Localization.posLocalCatalogTitle
         }
     }
 
@@ -21,8 +26,10 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return Localization.viewAddOnsDescription
-        case .inAppPurchases:
-            return Localization.inAppPurchasesManagementDescription
+        case .applicationPasswords:
+            return Localization.applicationPasswordsDescription
+        case .posLocalCatalog:
+            return Localization.posLocalCatalogDescription
         }
     }
 
@@ -30,8 +37,10 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return \.isViewAddOnsSwitchEnabled
-        case .inAppPurchases:
-            return \.isInAppPurchasesSwitchEnabled
+        case .applicationPasswords:
+            return \.isApplicationPasswordsSwitchEnabled
+        case .posLocalCatalog:
+            return \.isPOSLocalCatalogSwitchEnabled
         }
     }
 
@@ -41,8 +50,10 @@ extension BetaFeature {
         switch self {
         case .viewAddOns:
             return .settingsBetaFeaturesOrderAddOnsToggled
-        default:
-            return .settingsBetaFeatureToggled
+        case .applicationPasswords:
+            return .settingsBetaFeaturesApplicationPasswordsToggled
+        case .posLocalCatalog:
+            return .settingsBetaFeaturesPOSLocalCatalogToggled
         }
     }
 
@@ -52,6 +63,28 @@ extension BetaFeature {
             properties["feature_name"] = self.rawValue
         }
         return properties
+    }
+}
+
+extension BetaFeature {
+    typealias DescriptionLink = (text: String, url: URL)
+
+    var descriptionLink: DescriptionLink? {
+        switch self {
+        case .viewAddOns:
+            return nil
+        case .applicationPasswords:
+            guard let url = URL(string: Constants.applicationPasswordsDocURL) else {
+                return nil
+            }
+
+            return DescriptionLink(
+                text: Localization.applicationPasswordsDescriptionLinkText,
+                url: url
+            )
+        case .posLocalCatalog:
+            return nil
+        }
     }
 }
 
@@ -95,11 +128,34 @@ private extension BetaFeature {
             "Test out viewing Order Add-Ons as we get ready to launch",
             comment: "Cell description on the beta features screen to enable the order add-ons feature")
 
-        static let inAppPurchasesManagementTitle = NSLocalizedString(
-            "In-app purchases",
-            comment: "Cell title on beta features screen to enable in-app purchases")
-        static let inAppPurchasesManagementDescription = NSLocalizedString(
-            "Test out in-app purchases as we get ready to launch",
-            comment: "Cell description on beta features screen to enable in-app purchases")
+        static let applicationPasswordsTitle = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.title",
+            value: "Application Passwords",
+            comment: "Cell title on the beta features screen to enable the application passwords feature")
+        static let applicationPasswordsDescription = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.description",
+            value: "Enable %@ to let the app fetch data directly from your WooCommerce site rather than via Jetpack connections",
+            comment: "Cell description on the beta features screen to enable application passwords feature. The placeholder will be replaced by a link title."
+        )
+
+        static let applicationPasswordsDescriptionLinkText = NSLocalizedString(
+            "experimentalFeatures.applicationPasswords.description.linkText",
+            value: "Application Passwords",
+            comment: "Link text to open Application Passwords documentation page"
+        )
+
+        static let posLocalCatalogTitle = NSLocalizedString(
+            "experimentalFeatures.posLocalCatalog.title",
+            value: "POS Local Catalog",
+            comment: "Cell title on the beta features screen to enable the POS local catalog feature")
+        static let posLocalCatalogDescription = NSLocalizedString(
+            "experimentalFeatures.posLocalCatalog.description",
+            value: "Store your product catalog locally for faster access in Point of Sale",
+            comment: "Cell description on the beta features screen to enable the POS local catalog feature")
+    }
+
+    enum Constants {
+        static let applicationPasswordsDocURL =
+            "https://wordpress.com/support/security/two-step-authentication/application-specific-passwords/"
     }
 }

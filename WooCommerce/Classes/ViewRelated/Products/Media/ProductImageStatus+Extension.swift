@@ -1,4 +1,5 @@
 import Photos
+import UIKit
 import Yosemite
 
 extension Collection where Element == ProductImageStatus {

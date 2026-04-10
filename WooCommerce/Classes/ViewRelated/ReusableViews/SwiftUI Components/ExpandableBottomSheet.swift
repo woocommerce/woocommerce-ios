@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View where AlwaysVisibleContent: View, ExpandableContent: View {
     @State private var isExpanded: Bool = false
@@ -59,11 +60,11 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         }
                     }
                     .trackSize(size: $expandingContentSize)
-                    .onChange(of: expandingContentSize, perform: { _ in
+                    .onChange(of: expandingContentSize) {
                         withAnimation {
                             panelHeight = calculateHeight()
                         }
-                    })
+                    }
                 }
                 .scrollVerticallyIfNeeded()
 
@@ -79,7 +80,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             // Always visible content
             alwaysVisibleContent()
                 .trackSize(size: $fixedContentSize)
-                .onChange(of: fixedContentSize, perform: { [fixedContentSize] _ in
+                .onChange(of: fixedContentSize) {
                     guard fixedContentSize.width > 0,
                           fixedContentSize.height > 0 else {
                         // No animation for initial load
@@ -88,7 +89,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     withAnimation {
                         panelHeight = calculateHeight()
                     }
-                })
+                }
                 .contentShape(Rectangle())
                 .onTapGesture {
                     withAnimation {
@@ -104,8 +105,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                         panelHeight = calculateHeight()
                     }
                 })
-                .onChange(of: geometryProxy.size.height,
-                          perform: { newValue in
+                .onChange(of: geometryProxy.size.height) { _, newValue in
                     if !isDragging {
                         DispatchQueue.main.async {
                             withAnimation {
@@ -113,16 +113,16 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                             }
                         }
                     }
-                })
+                }
         })
-        .onChange(of: isExpanded, perform: { newValue in
+        .onChange(of: isExpanded) { _, newValue in
             onChangeOfExpansion?(newValue)
             DispatchQueue.main.async {
                 withAnimation {
                     panelHeight = calculateHeight()
                 }
             }
-        })
+        }
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
         .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
         .cornerRadius(Layout.sheetCornerRadius)
@@ -157,13 +157,18 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .ignoresSafeArea(edges: .bottom)
         .background(Color(.listForeground(modal: false)))
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
+            /// This workaround cancels the dragging when the app re-enters the foreground
+            /// and fixes the glitch caused by the divider at the bottom of the scroll view.
+            revealContentDuringDrag = false
+        }
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
         let collapsedHeight = fixedContentSize.height + chevronSize.height + Layout.chevronPadding
-        let screenHeight = UIScreen.main.bounds.height
+        let screenHeight = UIScreen.main.bounds.height - safeAreaInsets.bottom - safeAreaInsets.top
         let maxExpandedHeight = screenHeight * 0.8
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
@@ -202,28 +207,5 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
             Text("Can be hidden")
         }
 
-    }
-}
-
-struct SizeTracker: ViewModifier {
-    @Binding var size: CGSize
-
-    func body(content: Content) -> some View {
-        content
-            .background(GeometryReader { proxy in
-                Color.clear
-                    .onAppear {
-                        self.size = proxy.size
-                    }
-                    .onChange(of: proxy.size) { newSize in
-                        self.size = newSize
-                    }
-            })
-    }
-}
-
-extension View {
-    func trackSize(size: Binding<CGSize>) -> some View {
-        modifier(SizeTracker(size: size))
     }
 }

@@ -26,6 +26,14 @@ extension Site {
         adminURL + "admin.php?page=wc-settings&tab=checkout&section=" + plugin.setupURLSectionPath
     }
 
+    /// URL to update a plugin
+    func pluginUpdateURL(for plugin: SystemPlugin) -> String? {
+        if let directoryName = plugin.plugin.components(separatedBy: "/").first {
+            return adminURL + "plugin-install.php?tab=plugin-information&plugin=" + directoryName
+        }
+        return nil
+    }
+
     /// Returns the plugin URL from wp-admin that handles pending tasks or requirements during onboarding.
     ///
     func cardPresentPluginHasPendingTasksURL(plugin: CardPresentPaymentsPlugin) -> String {

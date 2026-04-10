@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import class UIKit.UIColor
+import class WooFoundation.WaitingTimeTracker
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
 
@@ -164,11 +165,11 @@ final class AnalyticsHubViewModel: ObservableObject {
         case .sessions:
             isEligibleForSessionsCard
         case .bundles:
-            isPluginActive(SitePlugin.SupportedPlugin.WCProductBundles)
+            isPluginActive(.wooProductBundles)
         case .giftCards:
-            isPluginActive(SitePlugin.SupportedPlugin.WCGiftCards)
+            isPluginActive(.wooGiftCards)
         case .googleCampaigns:
-            isPluginActive(SitePlugin.SupportedPlugin.GoogleForWooCommerce) && googleCampaignsCard.isEligibleForGoogleAds
+            isPluginActive(.googleListingsAndAds) && googleCampaignsCard.isEligibleForGoogleAds
         default:
             true
         }
@@ -258,9 +259,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     ///
     private var timeRangeSelection: AnalyticsHubTimeRangeSelection
 
-    /// Names of the active plugins on the store.
+    /// A list of known active plugins on the store.
     ///
-    private lazy var activePlugins: [String] = {
+    private lazy var activePlugins: [Plugin] = {
         let predicate = NSPredicate(format: "siteID == %lld && active == true", siteID)
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storage, matching: predicate, sortedBy: [])
         do {
@@ -268,7 +269,7 @@ final class AnalyticsHubViewModel: ObservableObject {
         } catch {
             DDLogError("⛔️ Error fetching active plugins for Analytics Hub")
         }
-        return resultsController.fetchedObjects.map { $0.name }
+        return resultsController.fetchedObjects.compactMap { Plugin(systemPlugin: $0) }
     }()
 
     /// Request stats data from network
@@ -278,9 +279,9 @@ final class AnalyticsHubViewModel: ObservableObject {
     func updateData(for cards: [AnalyticsCard.CardType]? = nil) async {
         let cardsNeedingData = cards ?? enabledCards
         do {
-            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub, analyticsService: analytics)
+            let tracker = WaitingTimeTracker(trackScenario: .analyticsHub)
             try await retrieveData(for: cardsNeedingData)
-            tracker.end()
+            analytics.track(event: tracker.end())
         } catch is AnalyticsHubTimeRangeSelection.TimeRangeGeneratorError {
             dismissNotice = Notice(title: Localization.timeRangeGeneratorError, feedbackType: .error)
             ServiceLocator.analytics.track(event: .AnalyticsHub.dateRangeSelectionFailed(for: timeRangeSelectionType))
@@ -570,11 +571,11 @@ private extension AnalyticsHubViewModel {
         }
     }
 
-    /// Helper function that returns `true` in its callback if the provided plugin name is active on the  store.
+    /// Helper function that returns `true` in its callback if the provided plugin is active on the store.
     ///
-    /// - Parameter plugin: A list of names for the plugin (provide all possible names for plugins that have changed names).
-    private func isPluginActive(_ plugin: [String]) -> Bool {
-        activePlugins.contains(where: plugin.contains)
+    /// - Parameter plugin: Plugin to check.
+    private func isPluginActive(_ plugin: Plugin) -> Bool {
+        activePlugins.contains(plugin)
     }
 }
 

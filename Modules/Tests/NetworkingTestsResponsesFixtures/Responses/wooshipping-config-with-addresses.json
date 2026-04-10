@@ -1,0 +1,52 @@
+{
+    "data": {
+        "config": {
+            "shippingLabelData": {
+                "storedData": {
+                    "selected_destination": {
+                        "shipment_1": {
+                            "address_1": "200 N SPRING ST",
+                            "city": "LOS ANGELES",
+                            "state": "CA",
+                            "postcode": "90012-4801",
+                            "country": "US"
+                        }
+                    },
+                    "selected_origin": {
+                        "shipment_1": {
+                            "address_1": "Test origin address line",
+                            "city": "Test origin city",
+                            "state": "CA",
+                            "postcode": "90012-4801",
+                            "country": "US"
+                        }
+                    }
+                },
+                "currentOrderLabels": [
+                    {
+                      "label_id": 4871,
+                      "tracking": null,
+                      "refundable_amount": 0,
+                      "created": 1742292110723,
+                      "carrier_id": "usps",
+                      "service_name": "USPS - Priority Mail",
+                      "status": "PURCHASE_IN_PROGRESS",
+                      "commercial_invoice_url": "",
+                      "is_commercial_invoice_submitted_electronically": false,
+                      "package_name": "Small Flat Rate Box",
+                      "is_letter": false,
+                      "product_names": [
+                        "BG upload"
+                      ],
+                      "product_ids": [
+                        522
+                      ],
+                      "id": "1",
+                      "receipt_item_id": -1,
+                      "created_date": 1742292110000
+                    }
+                ]
+            }
+        }
+    }
+} 

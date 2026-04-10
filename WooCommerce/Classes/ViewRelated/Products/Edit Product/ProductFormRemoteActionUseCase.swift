@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Makes network requests for each product form remote action that includes adding/editing a product and password.
@@ -79,9 +80,24 @@ final class ProductFormRemoteActionUseCase {
             guard let self else { return }
             switch result {
             case .success(let data):
+                let originalCustomFields = originalProduct.product.customFields
+
+                // Copy custom fields from the original product to the duplicated product.
+                self.copyCustomFields(originalCustomFields,
+                                      toProductID: data.product.productID,
+                                      siteID: data.product.siteID)
+
+                // Wrap completion to optimistically inject custom fields so the UI shows them immediately.
+                let onCompletionWithCustomFields: DuplicateProductCompletion = { result in
+                    onCompletion(result.map { data in
+                        ResultData(product: EditableProductModel(product: data.product.product.copy(customFields: originalCustomFields)),
+                                   password: data.password)
+                    })
+                }
+
                 let variableTypes: [ProductType] = [.variable, .variableSubscription]
                 guard variableTypes.contains(data.product.productType) else {
-                    return onCompletion(.success(data))
+                    return onCompletionWithCustomFields(.success(data))
                 }
                 self.duplicateVariations(originalProduct.product.variations,
                                          from: originalProduct.productID,
@@ -90,10 +106,10 @@ final class ProductFormRemoteActionUseCase {
                     switch result {
                     case .success(let product):
                         ServiceLocator.analytics.track(successEventName)
-                        onCompletion(.success(ResultData(product: product, password: data.password)))
+                        onCompletionWithCustomFields(.success(ResultData(product: product, password: data.password)))
                     case .failure(let error):
                         ServiceLocator.analytics.track(failureEventName, withError: error)
-                        onCompletion(.failure(error))
+                        onCompletionWithCustomFields(.failure(error))
                     }
                 })
             case .failure(let error):
@@ -343,6 +359,24 @@ private extension ProductFormRemoteActionUseCase {
                 self?.stores.dispatch(action)
             }
         } as ProductVariation?
+    }
+
+    func copyCustomFields(_ customFields: [MetaData],
+                           toProductID newProductID: Int64,
+                           siteID: Int64) {
+        if customFields.isEmpty { return }
+        let metadata: [[String: Any?]] = customFields.map { ["key": $0.key, "value": $0.value.stringValue] }
+        let action = MetaDataAction.updateMetaData(
+            siteID: siteID,
+            parentItemID: newProductID,
+            metaDataType: .product,
+            metadata: metadata
+        ) { result in
+            if case .failure(let error) = result {
+                DDLogError("⚠️ Failed to copy custom fields to duplicated product: \(error)")
+            }
+        }
+        stores.dispatch(action)
     }
 
     func duplicateProductVariation(_ newVariation: CreateProductVariation, parent: EditableProductModel) async {

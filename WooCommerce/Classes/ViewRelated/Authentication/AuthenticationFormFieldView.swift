@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooRoundedBorderTextFieldStyle
 
 /// Necessary data for the account creation / authentication form field.
 struct AuthenticationFormFieldViewModel {
@@ -56,12 +57,12 @@ struct AuthenticationFormFieldView: View {
                         }
                     }
                     .font(.body)
-                    .textFieldStyle(RoundedBorderTextFieldStyle(
+                    .textFieldStyle(WooRoundedBorderTextFieldStyle(
                         focused: viewModel.isFocused,
                         // Custom insets to leave trailing space for the reveal button.
-                        insets: .init(top: RoundedBorderTextFieldStyle.Defaults.insets.top,
-                                      leading: RoundedBorderTextFieldStyle.Defaults.insets.leading,
-                                      bottom: RoundedBorderTextFieldStyle.Defaults.insets.bottom,
+                        insets: .init(top: WooRoundedBorderTextFieldStyle.Defaults.insets.top,
+                                      leading: WooRoundedBorderTextFieldStyle.Defaults.insets.leading,
+                                      bottom: WooRoundedBorderTextFieldStyle.Defaults.insets.bottom,
                                       trailing: Layout.secureFieldRevealButtonHorizontalPadding * 2 + Layout.secureFieldRevealButtonDimension * scale),
                         height: 44 * scale
                     ))
@@ -81,7 +82,7 @@ struct AuthenticationFormFieldView: View {
                 }
             } else {
                 TextField(viewModel.placeholder, text: viewModel.text)
-                    .textFieldStyle(RoundedBorderTextFieldStyle(focused: viewModel.isFocused))
+                    .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: viewModel.isFocused))
                     .keyboardType(viewModel.keyboardType)
                     .autocapitalization(viewModel.autocapitalization)
             }

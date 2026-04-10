@@ -1,4 +1,6 @@
 import Combine
+import Foundation
+import UIKit
 import Yosemite
 import protocol WooFoundation.Analytics
 
@@ -112,7 +114,7 @@ final class ProductSearchUICommand: SearchUICommand {
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
         let hasPendingUploads = activeUploadIds.contains(where: { $0 ==  model.productID })
-        return ProductsTabProductViewModel(product: model, hasPendingUploads: hasPendingUploads, isSKUShown: true)
+        return ProductsTabProductViewModel(product: model.toListItem(), hasPendingUploads: hasPendingUploads, isSKUShown: true)
     }
 
     /// Synchronizes the Products matching a given Keyword
@@ -198,22 +200,27 @@ private extension ProductSearchUICommand {
 }
 
 extension ProductSearchFilter {
+    /// The title of the option on the picker of product selector view.
     var title: String {
         switch self {
         case .all:
             return NSLocalizedString("All Products", comment: "Title of the product search filter to search for all products.")
         case .sku:
             return NSLocalizedString("SKU", comment: "Title of the product search filter to search for products that match the SKU.")
+        case .name:
+            fatalError("This option is not supported on the product selector UI")
         }
     }
 
-    /// The value that is set in the analytics event property.
+    /// The value that is set in the analytics event property when selecting the option on the product selector view.
     var analyticsValue: String {
         switch self {
         case .all:
             return "all"
         case .sku:
             return "sku"
+        case .name:
+            fatalError("This option is not supported on the product selector UI")
         }
     }
 }

@@ -1,0 +1,19 @@
+# At the time of writing and with Sourcery 2.3.0, running the tool via `swift
+# package plugin` ignores the --config parameter, looking instead for the
+# .sourcery.yml configuration file.
+#
+# That means we cannot invoke Sourcery individually for each target.
+#
+# Luckily, the configuration files supports child configurations, so we can
+# achieve the same result this way.
+configurations:
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Hardware-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Networking-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Storage-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/WooCommerce-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/WooFoundation-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Copiable/Yosemite-Copiable.sourcery.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Hardware-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Networking-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/WooFoundation-Fakes.yaml
+  - child: ../Modules/Sources/Codegen/Sourcery/Fakes/Yosemite-Fakes.yaml

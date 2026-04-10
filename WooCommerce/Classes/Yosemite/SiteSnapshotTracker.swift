@@ -83,7 +83,9 @@ private struct PaymentGatewaySnapshot {
     }
 
     func status(of plugin: Plugin) -> Status {
-        guard let systemPlugin = plugins.first(where: { $0.fileNameWithoutExtension == plugin.rawValue }) else {
+        guard let systemPlugin = plugins.first(where: {
+            Yosemite.Plugin(systemPlugin: $0) == Yosemite.Plugin(fileNameWithoutExtension: plugin.rawValue)
+        }) else {
             return .notInstalled
         }
         return systemPlugin.active ? .active: .installed

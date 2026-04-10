@@ -9,6 +9,23 @@ import SafariServices
 import Yosemite
 import Experiments
 
+/// Represents a Zendesk Attachment
+struct ZendeskAttachment {
+    let data: Data
+    let filename: String
+    let contentType: String
+}
+
+/// Represents a Zendesk Support Request
+struct ZendeskSupportRequest {
+    let formID: Int64
+    let customFields: [Int64: String]
+    let tags: [String]
+    let subject: String
+    let description: String
+    let attachments: [ZendeskAttachment]
+}
+
 /// Defines methods for showing Zendesk UI.
 ///
 /// This is primarily used for testability. Not all methods in `ZendeskManager` are defined but
@@ -29,11 +46,7 @@ protocol ZendeskManagerProtocol {
 
     /// Creates a support request using the API-Providers SDK.
     ///
-    func createSupportRequest(formID: Int64,
-                              customFields: [Int64: String],
-                              tags: [String],
-                              subject: String,
-                              description: String,
+    func createSupportRequest(_ request: ZendeskSupportRequest,
                               onCompletion: @escaping (Result<Void, Error>) -> Void)
 
     var zendeskEnabled: Bool { get }
@@ -57,11 +70,7 @@ struct NoZendeskManager: ZendeskManagerProtocol {
         // no-op
     }
 
-    func createSupportRequest(formID: Int64,
-                              customFields: [Int64: String],
-                              tags: [String],
-                              subject: String,
-                              description: String,
+    func createSupportRequest(_ request: ZendeskSupportRequest,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
         // no-op
     }
@@ -213,24 +222,71 @@ final class ZendeskManager: NSObject, ZendeskManagerProtocol {
 
     /// Creates a support request using the API-Providers SDK.
     ///
-    func createSupportRequest(formID: Int64,
-                              customFields: [Int64: String],
-                              tags: [String],
-                              subject: String,
-                              description: String,
+    func createSupportRequest(_ request: ZendeskSupportRequest,
                               onCompletion: @escaping (Result<Void, Error>) -> Void) {
 
-        let requestProvider = ZDKRequestProvider()
-        let request = createAPIRequest(formID: formID, customFields: customFields, tags: tags, subject: subject, description: description)
-        requestProvider.createRequest(request) { _, error in
-            // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
-            // Lets make sure we always dispatch the completion block on the main queue.
-            DispatchQueue.main.async {
-                if let error {
-                    return onCompletion(.failure(error))
+        uploadAttachments(request.attachments) { uploadResponses  in
+            let request = self.createAPIRequest(request: request,
+                                                attachments: uploadResponses)
+            ZDKRequestProvider().createRequest(request) { _, error in
+                // `requestProvider.createRequest` invokes it's completion block on a background thread when the request creation fails.
+                // Lets make sure we always dispatch the completion block on the main queue.
+                DispatchQueue.main.async {
+                    if let error {
+                        return onCompletion(.failure(error))
+                    }
+                    onCompletion(.success(()))
                 }
-                onCompletion(.success(()))
             }
+
+        }
+    }
+
+    private func uploadAttachments(
+        _ attachments: [ZendeskAttachment],
+        _ completionHandler: @escaping ([ZDKUploadResponse]) -> Void
+    ) {
+        guard !attachments.isEmpty else {
+            completionHandler([])
+            return
+        }
+
+        let dispatchGroup = DispatchGroup()
+        var responses: [ZDKUploadResponse] = []
+        let lock = NSLock()
+
+        attachments.forEach { attachment in
+            dispatchGroup.enter()
+
+            uploadSingleAttachment(attachment) { response in
+                if let response {
+                    lock.lock()
+                    responses.append(response)
+                    lock.unlock()
+                }
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            completionHandler(responses)
+        }
+    }
+
+    private func uploadSingleAttachment(_ attachment: ZendeskAttachment?, _ completionHandler: @escaping (ZDKUploadResponse?) -> Void) {
+        guard let attachment else {
+            return completionHandler(nil)
+        }
+
+        let uploadProvider = ZDKUploadProvider()
+        uploadProvider.uploadAttachment(attachment.data,
+                                        withFilename: attachment.filename,
+                                        andContentType: attachment.contentType) { response, error in
+            if let error {
+                DDLogError("Could not uploadt attachment: \(error.localizedDescription)")
+            }
+
+            completionHandler(response)
         }
     }
 
@@ -340,14 +396,16 @@ private extension ZendeskManager {
 
     /// Creates a Zendesk Request to be consumed by a Request Provider.
     ///
-    func createAPIRequest(formID: Int64, customFields: [Int64: String], tags: [String], subject: String, description: String) -> ZDKCreateRequest {
-        let request = ZDKCreateRequest()
-        request.ticketFormId = formID as NSNumber
-        request.customFields = customFields.map { CustomField(fieldId: $0, value: $1) }
-        request.tags = tags
-        request.subject = subject
-        request.requestDescription = description
-        return request
+    func createAPIRequest(request: ZendeskSupportRequest,
+                          attachments: [ZDKUploadResponse]) -> ZDKCreateRequest {
+        let zdkRequest = ZDKCreateRequest()
+        zdkRequest.ticketFormId = request.formID as NSNumber
+        zdkRequest.customFields = request.customFields.map { CustomField(fieldId: $0, value: $1) }
+        zdkRequest.tags = request.tags
+        zdkRequest.subject = request.subject
+        zdkRequest.requestDescription = request.description
+        zdkRequest.attachments = attachments
+        return zdkRequest
     }
 
     // MARK: - User Defaults

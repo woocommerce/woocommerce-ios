@@ -70,10 +70,11 @@ struct CardPresentPaymentsOnboardingView: View {
                 InPersonPaymentsStripeAccountOverdue(analyticReason: viewModel.state.reasonForAnalytics,
                                                      onRefresh: viewModel.refresh,
                                                      plugin: plugin)
-            case .stripeAccountPendingRequirement(_, let deadline):
+            case .stripeAccountPendingRequirement(let plugin, let deadline):
                 InPersonPaymentsStripeAccountPending(
                     deadline: deadline,
                     analyticReason: viewModel.state.reasonForAnalytics,
+                    plugin: plugin,
                     onSkip: viewModel.skipPendingRequirements)
             case .stripeAccountUnderReview:
                 InPersonPaymentsStripeAccountReview(analyticReason: viewModel.state.reasonForAnalytics)

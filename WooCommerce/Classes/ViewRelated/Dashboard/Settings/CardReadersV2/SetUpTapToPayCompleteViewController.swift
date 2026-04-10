@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// This view controller is used when no reader is connected. It assists
 /// the merchant in connecting to a reader.

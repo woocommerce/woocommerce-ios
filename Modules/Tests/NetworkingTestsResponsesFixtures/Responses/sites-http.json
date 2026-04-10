@@ -1,0 +1,34 @@
+{
+  "sites": [
+    {
+      "ID": 7777888899990000,
+      "name": "HTTP Site",
+      "description": "Testing HTTP to HTTPS conversion",
+      "URL": "http://insecure-site.testing.blog",
+      "capabilities": {
+        "edit_pages": true,
+        "edit_posts": true,
+        "manage_options": true,
+        "own_site": true
+      },
+      "jetpack": true,
+      "jetpack_connection": true,
+      "was_ecommerce_trial": false,
+      "plan": {
+          "product_id": 1008,
+          "product_slug": "business-bundle"
+      },
+      "jetpack_modules": [],
+      "options": {
+        "timezone": "",
+        "gmt_offset": 0,
+        "blog_public": 1,
+        "login_url": "http://insecure-site.testing.blog/wp-login.php",
+        "admin_url": "http://insecure-site.testing.blog/wp-admin/",
+        "is_wpcom_store": true,
+        "woocommerce_is_active": true,
+        "frame_nonce": "abc123def4"
+      }
+    }
+  ]
+}

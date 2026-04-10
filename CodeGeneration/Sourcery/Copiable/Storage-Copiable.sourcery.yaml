@@ -1,7 +1,0 @@
-project: 
-    file: ../../../Storage/Storage.xcodeproj
-    target: 
-        name: Storage
-templates:
-    - Models+Copiable.swifttemplate
-output: ../../../Storage/Storage/Model/Copiable/

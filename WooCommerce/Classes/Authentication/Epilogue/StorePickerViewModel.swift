@@ -1,5 +1,6 @@
 import Foundation
 import Experiments
+import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -96,6 +97,12 @@ final class StorePickerViewModel {
     func updateDisplayedStores() {
         let hiddenStoreIDs = userDefaults.hiddenStoreIDs
         displayedStores = allFetchedSites.filter { hiddenStoreIDs.contains($0.siteID) == false }
+    }
+
+    /// Ensures the given store is not hidden, so it appears in the picker.
+    func unhideStoreIfNeeded(_ siteID: Int64) {
+        userDefaults.unhideStoreID(siteID)
+        updateDisplayedStores()
     }
 }
 

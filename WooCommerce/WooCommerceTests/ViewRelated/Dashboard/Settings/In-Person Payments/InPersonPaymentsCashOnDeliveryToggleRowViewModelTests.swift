@@ -1,6 +1,7 @@
 import XCTest
 import TestKit
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 import Networking
@@ -102,7 +103,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
             switch action {
             case let .updatePaymentGateway(_, onCompletion):
-                onCompletion(.failure(DotcomError.noRestRoute))
+                onCompletion(.failure(DotcomError.noRestRoute()))
             default:
                 break
             }
@@ -148,7 +149,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
             switch action {
             case let .updatePaymentGateway(_, onCompletion):
-                onCompletion(.failure(DotcomError.noRestRoute))
+                onCompletion(.failure(DotcomError.noRestRoute()))
             default:
                 break
             }

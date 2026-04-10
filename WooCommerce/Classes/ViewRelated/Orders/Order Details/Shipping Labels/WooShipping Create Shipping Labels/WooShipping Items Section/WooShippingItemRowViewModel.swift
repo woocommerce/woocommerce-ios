@@ -71,8 +71,23 @@ private extension ShippingLabelPackageItem {
 
     /// Formats the item dimensions with the provided dimension unit.
     ///
-    func formatDimensions(with unit: String) -> String {
-        String(format: Localization.dimensionsFormat, dimensions.length, dimensions.width, dimensions.height, unit)
+    func formatDimensions(with unit: String) -> String? {
+        var validDimensions = [String]()
+        if dimensions.length.isNotEmpty {
+            validDimensions.append(dimensions.length)
+        }
+        if dimensions.width.isNotEmpty {
+            validDimensions.append(dimensions.width)
+        }
+        if dimensions.height.isNotEmpty {
+            validDimensions.append(dimensions.height)
+        }
+
+        if validDimensions.isEmpty {
+            return nil
+        }
+
+        return validDimensions.joined(separator: Constants.dimensionsFormatSeparator) + " " + unit
     }
 
     /// Formats the total item weight (per-unit weight x quantity) with the provided weight unit.
@@ -91,11 +106,8 @@ private extension ShippingLabelPackageItem {
         return currencyFormatter.formatAmount(totalPrice, with: currency) ?? totalPrice.description
     }
 
-    enum Localization {
-        static let dimensionsFormat = NSLocalizedString("wooShipping.createLabels.items.dimensions",
-                                                        value: "%1$@ x %2$@ x %3$@ %4$@",
-                                                        comment: "Length, width, and height dimensions with the unit for an item to ship. "
-                                                        + "Reads like: '20 x 35 x 5 cm'")
+    enum Constants {
+        static let dimensionsFormatSeparator = " × "
     }
 }
 

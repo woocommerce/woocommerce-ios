@@ -10,6 +10,9 @@ struct ShippingLabelPackageItem: Equatable {
     /// ID of the product or variation
     let productOrVariationID: Int64
 
+    /// ID of the order Item
+    let orderItemID: Int64
+
     /// Name of the product or variation
     let name: String
 
@@ -37,6 +40,7 @@ struct ShippingLabelPackageItem: Equatable {
 extension ShippingLabelPackageItem {
     init(copy: ShippingLabelPackageItem, quantity: Decimal) {
         self.name = copy.name
+        self.orderItemID = copy.orderItemID
         self.productOrVariationID = copy.productOrVariationID
         self.quantity = quantity
         self.weight = copy.weight
@@ -46,8 +50,9 @@ extension ShippingLabelPackageItem {
         self.imageURL = copy.imageURL
     }
 
-    init?(orderItem: OrderItem, products: [Product], productVariations: [ProductVariation]) {
+    init?(orderItem: OrderItem, products: [ShippingLabelProduct], productVariations: [ProductVariation]) {
         self.name = orderItem.name
+        self.orderItemID = orderItem.itemID
         self.quantity = orderItem.quantity
         self.value = orderItem.price.doubleValue
         self.attributes = orderItem.attributes.map { VariationAttributeViewModel(orderItemAttribute: $0) }

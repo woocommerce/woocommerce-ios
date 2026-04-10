@@ -10,8 +10,12 @@ extension WooTab {
             return 1
         case .products:
             return 2
-        case .hubMenu:
+        case .bookings:
             return 3
+        case .pointOfSale:
+            return 4
+        case .hubMenu:
+            return 5
         }
     }
 }

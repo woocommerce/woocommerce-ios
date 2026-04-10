@@ -2,59 +2,6 @@ import UIKit
 import Yosemite
 import Gridicons
 
-/// The ViewModel for `SummaryTableViewCell`.
-///
-/// TODO This and that cell class should be renamed to be less ambiguous.
-///
-struct SummaryTableViewCellViewModel {
-    fileprivate struct OrderStatusPresentation {
-        let style: OrderStatusEnum
-        let title: String
-    }
-
-    private let billingAddress: Address?
-    private let dateCreated: Date
-
-    fileprivate let presentation: OrderStatusPresentation
-
-    private let calendar: Calendar
-
-    init(order: Order,
-         status: OrderStatus?,
-         calendar: Calendar = .current) {
-
-        billingAddress = order.billingAddress
-        dateCreated = order.dateCreated
-
-        presentation = OrderStatusPresentation(
-            style: status?.status ?? order.status,
-            title: status?.name ?? order.status.rawValue
-        )
-
-        self.calendar = calendar
-    }
-
-    /// The full name from the billing address
-    ///
-    var billedPersonName: String {
-        if let fullName = billingAddress?.fullName, fullName.isNotEmpty {
-            return fullName
-        } else {
-            return Localization.guestName
-        }
-    }
-
-    /// The date, time, and the order number concatenated together. Example, “Jan 22, 2018, 11:23 AM”.
-    ///
-    var subtitle: String {
-        let formatter = DateFormatter.dateAndTimeFormatter
-        formatter.timeZone = .siteTimezone
-        return formatter.string(from: dateCreated)
-    }
-}
-
-// MARK: - SummaryTableViewCell
-//
 final class SummaryTableViewCell: UITableViewCell {
 
     /// Label: Title
@@ -64,6 +11,10 @@ final class SummaryTableViewCell: UITableViewCell {
     /// Shows the dateCreated and order number.
     ///
     @IBOutlet private weak var subtitleLabel: UILabel!
+
+    /// Shows the sales channel if appropiate, at the moment only Point of Sale
+    ///
+    @IBOutlet private weak var salesChannelLabel: PaddedLabel!
 
     /// Label: Payment Status
     ///
@@ -80,7 +31,9 @@ final class SummaryTableViewCell: UITableViewCell {
     func configure(_ viewModel: SummaryTableViewCellViewModel) {
         titleLabel.text = viewModel.billedPersonName
         subtitleLabel.text = viewModel.subtitle
-
+        salesChannelLabel.text = viewModel.salesChannel
+        salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
+        updateStatusButton.isHidden = !viewModel.isEditButtonVisible
         display(presentation: viewModel.presentation)
     }
 
@@ -90,8 +43,6 @@ final class SummaryTableViewCell: UITableViewCell {
         paymentStatusLabel.applyStyle(for: presentation.style)
         paymentStatusLabel.text = presentation.title
     }
-
-    // MARK: - Overridden Methods
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -124,9 +75,6 @@ final class SummaryTableViewCell: UITableViewCell {
     }
 }
 
-
-// MARK: - Private
-//
 private extension SummaryTableViewCell {
 
     /// Preserves the current Payment BG Color
@@ -154,6 +102,13 @@ private extension SummaryTableViewCell {
         subtitleLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
         paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1) {
+            salesChannelLabel.isHidden = false
+            configureSalesChannelLabel()
+        } else {
+            salesChannelLabel.isHidden = true
+        }
     }
 
     func configureIcon() {
@@ -164,14 +119,18 @@ private extension SummaryTableViewCell {
         configureIconForVoiceOver()
     }
 
+    func configureSalesChannelLabel() {
+        salesChannelLabel.numberOfLines = 1
+        salesChannelLabel.textInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
+        salesChannelLabel.applySalesChannelStyle()
+        salesChannelLabel.accessibilityIdentifier = "summary-table-view-cell-sales-channel-label"
+    }
+
     @objc func editWasTapped() {
         onEditTouchUp?()
     }
 }
 
-
-// MARK: - VoiceOver
-///
 private extension SummaryTableViewCell {
     func configureIconForVoiceOver() {
         updateStatusButton.accessibilityLabel = NSLocalizedString("Update Order Status",
@@ -179,14 +138,5 @@ private extension SummaryTableViewCell {
         updateStatusButton.accessibilityTraits = .button
         updateStatusButton.accessibilityHint = NSLocalizedString("Opens a list of available statuses.",
                                                                  comment: "Accessibility hint for the button to update the order status")
-    }
-}
-
-// MARK: - Localization
-
-private extension SummaryTableViewCellViewModel {
-    enum Localization {
-        static let guestName: String = NSLocalizedString("Guest",
-                                                         comment: "In Order Details, the name of the billed person when there are no name and last name.")
     }
 }

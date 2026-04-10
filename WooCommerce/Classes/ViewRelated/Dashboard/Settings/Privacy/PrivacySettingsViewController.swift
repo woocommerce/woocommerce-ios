@@ -501,9 +501,13 @@ private enum Row: CaseIterable {
 }
 
 extension PrivacySettingsViewController: UITextViewDelegate {
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        presentURL(URL)
-        trackURLPresentation(URL)
-        return false
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        if case .link(let url) = textItem.content {
+            presentURL(url)
+            trackURLPresentation(url)
+            // Prevent default action
+            return nil
+        }
+        return defaultAction
     }
 }

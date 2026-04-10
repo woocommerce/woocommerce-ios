@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Represents an editable data model based on `Product`.
@@ -161,14 +162,6 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
 
     var bundledItems: [ProductBundleItem] {
         product.bundledItems
-    }
-
-    var bundleStockStatus: ProductStockStatus? {
-        product.bundleStockStatus
-    }
-
-    var bundleStockQuantity: Int64? {
-        product.bundleStockQuantity
     }
 
     var password: String? {

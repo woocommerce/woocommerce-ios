@@ -1,0 +1,29 @@
+{
+    "id": "woocommerce_feature_point_of_sale_enabled",
+    "label": "Point of Sale",
+    "description": "Enable Point of Sale functionality in the WooCommerce mobile apps.",
+    "type": "checkbox",
+    "default": "yes",
+    "value": "",
+    "group_id": "advanced",
+    "_links": {
+        "self": [
+            {
+                "href": "https://test.mystagingwebsite.com/wp-json/wc/v3/settings/advanced/woocommerce_feature_point_of_sale_enabled",
+                "targetHints": {
+                    "allow": [
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "PATCH"
+                    ]
+                }
+            }
+        ],
+        "collection": [
+            {
+                "href": "https://test.mystagingwebsite.com/wp-json/wc/v3/settings/advanced"
+            }
+        ]
+    }
+}

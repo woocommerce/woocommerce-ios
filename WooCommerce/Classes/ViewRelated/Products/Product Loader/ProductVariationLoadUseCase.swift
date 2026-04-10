@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Encapsulates the async logic for loading product variation and related data (its parent product) for UI display.

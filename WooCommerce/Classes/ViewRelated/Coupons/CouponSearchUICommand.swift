@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import class SwiftUI.UIHostingController
 
@@ -6,7 +7,7 @@ import class SwiftUI.UIHostingController
 final class CouponSearchUICommand: SearchUICommand {
 
     typealias Model = Coupon
-    typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
+    typealias CellViewModel = CouponCellViewModel
     typealias ResultsControllerModel = StorageCoupon
 
     let searchBarPlaceholder = Localization.searchBarPlaceholder
@@ -37,12 +38,7 @@ final class CouponSearchUICommand: SearchUICommand {
     }
 
     func createCellViewModel(model: Coupon) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
-        CellViewModel(id: "\(model.couponID)",
-                      title: model.code,
-                      subtitle: model.discountType.localizedName, // to be updated after UI is finalized
-                      accessibilityLabel: model.description.isEmpty ? model.description : model.code,
-                      status: model.expiryStatus().localizedName,
-                      statusBackgroundColor: model.expiryStatus().statusBackgroundColor)
+        CouponCellViewModel.build(from: model)
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

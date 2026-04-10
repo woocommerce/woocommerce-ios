@@ -15,7 +15,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
     private var mockPaymentOrchestrator: MockPaymentCaptureOrchestrator!
-    private var useCase: CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+    private var useCase: CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
                                                         BluetoothCardReaderPaymentAlertsProvider,
                                                         MockCardPresentPaymentAlertsPresenter>!
     private var receiptEligibilityUseCase: MockReceiptEligibilityUseCase!
@@ -52,7 +52,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              stores: stores,
                                              paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
-                                             tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+                                             tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
                                              bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker,
@@ -127,7 +127,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
-        let useCase = CollectOrderPaymentUseCase<BuiltInCardReaderPaymentAlertsProvider,
+        let useCase = CollectOrderPaymentUseCase<TapToPayCardReaderPaymentAlertsProvider,
                                                     BluetoothCardReaderPaymentAlertsProvider,
                                                     MockCardPresentPaymentAlertsPresenter>(
             siteID: 122,
@@ -138,7 +138,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
             stores: stores,
             paymentOrchestrator: mockPaymentOrchestrator,
             alertsPresenter: alertsPresenter,
-            tapToPayAlertsProvider: BuiltInCardReaderPaymentAlertsProvider(),
+            tapToPayAlertsProvider: TapToPayCardReaderPaymentAlertsProvider(),
             bluetoothAlertsProvider: BluetoothCardReaderPaymentAlertsProvider(transactionType: .collectPayment),
             preflightController: mockPreflightController,
             analyticsTracker: mockAnalyticsTracker)
@@ -361,6 +361,111 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Then
         XCTAssertEqual(mockPaymentOrchestrator.spyChannel, .pos)
     }
+
+    func test_completion_called_after_alert_presentation() throws {
+        receiptEligibilityUseCase.isEligibleForBackendReceipts = true
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+        enum Event {
+            case receiptEligibilityCheck
+            case alertPresented
+            case paymentCompletion
+        }
+        var eventOrder: [Event] = []
+
+        receiptEligibilityUseCase.mockIsEligibleForBackendReceiptsHandler = { completion in
+            // Force receiptEligibilityCheck completion delay
+            DispatchQueue.main.async {
+                eventOrder.append(.receiptEligibilityCheck)
+                completion(true)
+            }
+        }
+
+        // Track when receipt alert is presented
+        alertsPresenter.onPresentCalled = { viewModel in
+            if viewModel is CardPresentModalSuccessWithoutEmail ||
+               viewModel is CardPresentModalSuccessEmailSent {
+                eventOrder.append(.alertPresented)
+            }
+        }
+
+        // When payment succeeds
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { _ in },
+                onCancel: {},
+                onPaymentCompletion: {
+                    eventOrder.append(.paymentCompletion)
+                    promise(())
+                },
+                onCompleted: {}
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then ensure payment completion happens after alert presentation to avoid CollectOrderPaymentUseCase deinit before alert presentation
+        XCTAssertEqual(eventOrder, [.receiptEligibilityCheck, .alertPresented, .paymentCompletion])
+    }
+
+    func test_collectPayment_succeeds_when_order_total_precision_differs_between_initial_and_retrieved_order() throws {
+        // Given an order with 2 decimal place precision
+        let initialOrder = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "22.56")
+
+        // And the retrieved order has 8 decimal place precision (same value, different formatting)
+        let retrievedOrder = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "22.56000000")
+
+        setUpUseCase(order: initialOrder)
+
+        // Mock the order retrieval to return the 8dp version
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .retrieveOrderRemotely(_, _, let completion):
+                completion(.success(retrievedOrder))
+            default:
+                break
+            }
+        }
+
+        let paymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: paymentMethod)])
+        let capturedPaymentData = CardPresentCapturedPaymentData(paymentMethod: paymentMethod, receiptParameters: .fake())
+        mockSuccessfulCardPresentPaymentActions(intent: intent, capturedPaymentData: capturedPaymentData)
+
+        // When collecting payment
+        var paymentCompleted = false
+        var paymentFailed = false
+
+        waitFor { promise in
+            self.useCase.collectPayment(
+                using: .bluetoothScan,
+                channel: .storeManagement,
+                onFailure: { error in
+                    paymentFailed = true
+                    // This should not happen with the decimal comparison fix
+                    XCTFail("Payment should not fail due to precision mismatch. Error: \(error)")
+                    promise(())
+                },
+                onCancel: {
+                    XCTFail("Payment should not be canceled")
+                    promise(())
+                },
+                onPaymentCompletion: {
+                    paymentCompleted = true
+                    promise(())
+                },
+                onCompleted: {}
+            )
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
+        }
+
+        // Then payment should succeed (with decimal comparison, "22.56" equals "22.56000000")
+        XCTAssertTrue(paymentCompleted)
+        XCTAssertFalse(paymentFailed)
+    }
 }
 
 private extension CollectOrderPaymentUseCaseTests {
@@ -368,6 +473,7 @@ private extension CollectOrderPaymentUseCaseTests {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
                                                               onProcessingMessage,
+                                                              onCardInserted,
                                                               onDisplayMessage,
                                                               onProcessingCompletion,
                                                               onCompletion in
@@ -380,6 +486,7 @@ private extension CollectOrderPaymentUseCaseTests {
         mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
                                                               onWaitingForInput,
                                                               onProcessingMessage,
+                                                              onCardInserted,
                                                               onDisplayMessage,
                                                               onProcessingCompletion,
                                                               onCompletion in

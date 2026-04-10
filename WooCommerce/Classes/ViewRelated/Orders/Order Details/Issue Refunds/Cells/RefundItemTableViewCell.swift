@@ -43,9 +43,17 @@ final class RefundItemTableViewCell: UITableViewCell {
         applyAccessibilityChanges()
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        applyAccessibilityChanges()
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+        let sizeTraits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitUserInterfaceIdiom.self,
+            UITraitVerticalSizeClass.self
+        ]
+
+        registerForTraitChanges(sizeTraits) { (self: Self, _: UITraitCollection) in
+            self.applyAccessibilityChanges()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -123,6 +131,7 @@ extension RefundItemTableViewCell {
         }
 
         placeholderImageView.image = nil
+
         imageService.downloadAndCacheImageForImageView(itemImageView,
                                                        with: productImage,
                                                        placeholder: nil,

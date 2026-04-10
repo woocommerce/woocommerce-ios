@@ -33,34 +33,29 @@ private struct StoreInfoView: View {
     }
 
     var body: some View {
-        ZStack {
-            // Background
-            Color(.brand)
-
-            VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
-                VStack(alignment: .leading, spacing: Layout.cardSpacing) {
-                    // Store Name
-                    HStack {
-                        Text(entryData.name)
-                            .storeNameStyle()
-                        Spacer()
-                        Text(entryData.range)
-                            .statRangeStyle()
-                    }
-                    // Updated at
-                    Text(Localization.updatedAt(entryData.updatedTime))
+        VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
+            VStack(alignment: .leading, spacing: Layout.cardSpacing) {
+                // Store Name
+                HStack {
+                    Text(entryData.name)
+                        .storeNameStyle()
+                    Spacer()
+                    Text(entryData.range)
                         .statRangeStyle()
                 }
-
-                if category > accessibilityCategory {
-                    AccessibilityStatsCard(entryData: entryData)
-                } else {
-                    StatsCard(entryData: entryData)
-                }
+                // Updated at
+                Text(Localization.updatedAt(entryData.updatedTime))
+                    .statRangeStyle()
             }
-            .padding(.horizontal)
-            .widgetBackground(backgroundView: Color(.brand))
+
+            if category > accessibilityCategory {
+                AccessibilityStatsCard(entryData: entryData)
+            } else {
+                StatsCard(entryData: entryData)
+            }
         }
+        .padding(.horizontal)
+        .widgetBackground(backgroundView: Color(.brand))
     }
 }
 
@@ -144,53 +139,43 @@ private struct AccessibilityStatsCard: View {
 
 private struct NotLoggedInView: View {
     var body: some View {
-        ZStack {
-            // Background
-            Color(.brand)
+        VStack {
+            Image(uiImage: .wooLogo)
+                .resizable()
+                .scaledToFit()
+                .frame(width: Layout.logoWidth)
 
-            VStack {
-                Image(uiImage: .wooLogo)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Layout.logoWidth)
+            Spacer()
 
-                Spacer()
+            Text(Localization.notLoggedIn)
+                .statTextStyle()
 
-                Text(Localization.notLoggedIn)
-                    .statTextStyle()
+            Spacer()
 
-                Spacer()
-
-                Text(Localization.login)
-                    .statButtonStyle()
-            }
-            .padding(.vertical, Layout.cardVerticalPadding)
+            Text(Localization.login)
+                .statButtonStyle()
         }
+        .padding(.vertical, Layout.cardVerticalPadding)
         .widgetBackground(backgroundView: Color(.brand))
     }
 }
 
 private struct UnableToFetchView: View {
     var body: some View {
-        ZStack {
-            // Background
-            Color(.brand)
+        VStack {
+            Image(uiImage: .wooLogo)
+                .resizable()
+                .scaledToFit()
+                .frame(width: Layout.logoWidth)
 
-            VStack {
-                Image(uiImage: .wooLogo)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Layout.logoWidth)
+            Spacer()
 
-                Spacer()
+            Text(Localization.unableToFetch)
+                .statTextStyle()
 
-                Text(Localization.unableToFetch)
-                    .statTextStyle()
-
-                Spacer()
-            }
-            .padding(.vertical, Layout.cardVerticalPadding)
+            Spacer()
         }
+        .padding(.vertical, Layout.cardVerticalPadding)
         .widgetBackground(backgroundView: Color(.brand))
     }
 }
@@ -202,9 +187,9 @@ private struct UnableToFetchView: View {
 private extension StoreInfoView {
     enum Localization {
         static let revenue = AppLocalizedString(
-            "storeWidgets.infoView.revenue",
-            value: "Revenue",
-            comment: "Revenue title label for the store info widget"
+            "storeWidgets.infoView.netSales",
+            value: "Net sales",
+            comment: "Net sales title label for the store info widget — shows revenue excluding taxes, shipping, and fees."
         )
         static let visitors = AppLocalizedString(
             "storeWidgets.infoView.visitors",

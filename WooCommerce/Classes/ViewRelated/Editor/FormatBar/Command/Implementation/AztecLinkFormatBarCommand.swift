@@ -1,4 +1,5 @@
 import Aztec
+import UIKit
 
 struct AztecLinkFormatBarCommand: AztecFormatBarCommand {
     let formattingIdentifier: FormattingIdentifier = .link

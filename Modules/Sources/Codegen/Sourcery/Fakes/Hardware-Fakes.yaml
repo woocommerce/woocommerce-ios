@@ -1,0 +1,8 @@
+sources:
+    include:
+        - ../../../../../Modules/Sources/Hardware/
+templates:
+    - Fakes.swifttemplate
+output: ../../../../../Modules/Sources/Fakes/Hardware.generated.swift
+args:
+    moduleName: Hardware

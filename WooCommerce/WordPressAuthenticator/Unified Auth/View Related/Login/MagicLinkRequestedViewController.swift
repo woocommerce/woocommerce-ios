@@ -14,11 +14,13 @@ final class MagicLinkRequestedViewController: LoginViewController {
 
     private let email: String
     private let loginWithPassword: () -> Void
+    private let fallbackAction: MagicLinkFallbackAction
 
     private lazy var buttonViewController: NUXButtonViewController = .instance()
 
-    init(email: String, loginWithPassword: @escaping () -> Void) {
+    init(email: String, fallbackAction: MagicLinkFallbackAction, loginWithPassword: @escaping () -> Void) {
         self.email = email
+        self.fallbackAction = fallbackAction
         self.loginWithPassword = loginWithPassword
         super.init(nibName: "MagicLinkRequestedViewController", bundle: WordPressAuthenticator.bundle)
     }
@@ -97,7 +99,7 @@ private extension MagicLinkRequestedViewController {
     /// Unfortunately, the plain text button style is not available in `NUXButton` as it currently supports primary or secondary.
     /// The plain text button is configured manually here.
     func setupLoginWithPasswordButton() {
-        loginWithPasswordButton.setTitle(Localization.loginWithPasswordAction, for: .normal)
+        loginWithPasswordButton.setTitle(fallbackButtonTitle(), for: .normal)
         loginWithPasswordButton.applyLinkButtonStyle()
         loginWithPasswordButton.on(.touchUpInside) { [weak self] _ in
             self?.loginWithPassword()
@@ -154,5 +156,19 @@ private extension MagicLinkRequestedViewController {
                                                 comment: "The subtitle text on the magic link requested screen followed by the email address.")
         static let loginWithPasswordAction = NSLocalizedString("Use password to sign in",
                                                                comment: "The button title text for logging in with WP.com password instead of magic link.")
+        static let loginWithWpcomUsernamePasswordAction = NSLocalizedString(
+            "login.magicLinkRequested.wpcomUsernamePasswordFallback",
+            value: "Use username and password instead",
+            comment: "Button title to fallback to WordPress.com username and password login."
+        )
+    }
+
+    func fallbackButtonTitle() -> String {
+        switch fallbackAction {
+        case .wpcomUsernamePassword:
+            return Localization.loginWithWpcomUsernamePasswordAction
+        case .password:
+            return Localization.loginWithPasswordAction
+        }
     }
 }

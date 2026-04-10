@@ -5,6 +5,7 @@ import Yosemite
 import protocol Storage.StorageType
 import protocol Storage.StorageManagerType
 
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class SettingsViewModelTests: XCTestCase {
@@ -54,7 +55,7 @@ final class SettingsViewModelTests: XCTestCase {
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.count > 0)
+        XCTAssertTrue(!viewModel.sections.isEmpty)
     }
 
     func test_sections_contain_install_jetpack_row_when_default_site_is_jcp() {
@@ -140,26 +141,6 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(presenter.refreshViewContentCalled)
     }
 
-    func test_onJetpackInstallDismiss_updates_sections_correctly() {
-        // Given
-        let site = Site.fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)
-        sessionManager.defaultSite = site
-        let viewModel = SettingsViewModel(
-            stores: stores,
-            storageManager: storageManager)
-
-        viewModel.onViewDidLoad()
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
-
-        // When
-        let updatedSite = site.copy(isJetpackThePluginInstalled: true, isJetpackConnected: false)
-        sessionManager.defaultSite = updatedSite
-        viewModel.onJetpackInstallDismiss()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
-    }
-
     // MARK: - `accountSettings` row visibility
 
     func test_accountSettings_section_is_shown_when_authenticated_with_wpcom() {
@@ -188,69 +169,6 @@ final class SettingsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.accountSettings) })
-    }
-
-    func test_domain_is_hidden_when_domainSettings_feature_is_disabled() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: false)
-        stores.updateDefaultStore(.fake().copy(isWordPressComStore: true))
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
-    }
-
-    func test_domain_is_hidden_when_domainSettings_feature_is_enabled_and_site_is_not_wpcom() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
-        sessionManager.defaultRoles = [.administrator]
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
-    }
-
-    func test_domain_is_not_shown_when_domainSettings_feature_is_enabled_and_site_is_wpcom_for_shop_manager_role() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
-        sessionManager.defaultRoles = [.shopManager]
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
-    }
-
-    func test_domain_is_shown_when_domainSettings_feature_is_enabled_and_site_is_wpcom_for_admin_role() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isDomainSettingsEnabled: true)
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
-        sessionManager.defaultRoles = [.administrator]
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          featureFlagService: featureFlagService)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.domain) })
     }
 
     func test_sections_contains_whats_new_row_when_announcement_for_this_version_is_available() {
@@ -313,6 +231,151 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.whatsNew) })
     }
 
+    func test_sections_does_not_contain_notifications_row_when_user_is_authenticated_without_WPCom() {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+    func test_sections_does_not_contain_notifications_row_when_site_is_JCP() {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+    func test_sections_contains_notifications_row_for_Jetpack_site_and_user_is_authenticated_with_WPCom() {
+        // Given
+        let featureFlagService = MockFeatureFlagService()
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores, featureFlagService: featureFlagService)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+    func test_sections_contains_does_not_contain_notifications_row_for_selfregisteredtoken() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123], hasStoredSiteIDsRegisteredForWooPNs: true)
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
+    }
+
+    func test_sections_contains_enable_push_notifications_row_for_app_password_users_when_feature_flag_on() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
+    }
+
+    func test_sections_does_not_contain_enable_push_notifications_row_when_feature_flag_off() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
+    }
+
+    func test_sections_contains_enablePushNotifications_row_when_site_is_JCP_and_feature_flag_enabled_and_not_registered() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = SettingsViewModel(stores: stores,
+                                          featureFlagService: featureFlagService,
+                                          defaults: defaults,
+                                          pushNotesManager: pushNotesManager)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
+    }
+
+    func test_sections_does_not_contain_connectivity_row_for_wpcom_site() {
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
+    }
+
+    func test_sections_contains_connectivity_row_if_user_authenticated_without_wpcom() {
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
+    }
+
+    func test_sections_contains_connectivity_row_if_user_authenticated_with_wpcom_to_non_wpcom_site() {
+        let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
+        let viewModel = SettingsViewModel(stores: stores)
+
+        // When
+        viewModel.onViewDidLoad()
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
+    }
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

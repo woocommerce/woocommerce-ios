@@ -212,4 +212,48 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_completed" }))
     }
+
+    func test_onAuthorization_is_triggered_correctly() async throws {
+        // Given
+        let siteURL = "https://test.com"
+        var authorizeTriggered = false
+        var authorizeURL: URL?
+        let authorizeHandler: (URL) -> Void = { url in
+            authorizeTriggered = true
+            authorizeURL = url
+        }
+        let initialURL = try XCTUnwrap(URL(string: "\(siteURL)/wp-admin/admin.php?page=jetpack"))
+        let viewModel = JetpackConnectionWebViewModel(initialURL: initialURL, siteURL: siteURL, completion: {}, onAuthorization: authorizeHandler)
+
+        // When
+        let url = "https://jetpack.wordpress.com/jetpack.authorize"
+        let policy = await viewModel.decidePolicy(for: try XCTUnwrap(URL(string: url)))
+
+        // Then
+        XCTAssertEqual(policy, .cancel)
+        XCTAssertTrue(authorizeTriggered)
+        XCTAssertEqual(authorizeURL?.absoluteString, url)
+    }
+
+    func test_onAuthorization_is_not_triggered_for_authorize_url() async throws {
+        // Given
+        let siteURL = "https://test.com"
+        var authorizeTriggered = false
+        var authorizeURL: URL?
+        let authorizeHandler: (URL) -> Void = { url in
+            authorizeTriggered = true
+            authorizeURL = url
+        }
+        let initialURL = try XCTUnwrap(URL(string: "https://jetpack.wordpress.com/jetpack.authorize/1/"))
+        let viewModel = JetpackConnectionWebViewModel(initialURL: initialURL, siteURL: siteURL, completion: {}, onAuthorization: authorizeHandler)
+
+        // When
+        let url = "https://jetpack.wordpress.com/jetpack.authorize"
+        let policy = await viewModel.decidePolicy(for: try XCTUnwrap(URL(string: url)))
+
+        // Then
+        XCTAssertEqual(policy, .allow)
+        XCTAssertFalse(authorizeTriggered)
+        XCTAssertNil(authorizeURL)
+    }
 }

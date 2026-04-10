@@ -1,0 +1,17 @@
+configurations:
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/WooFoundation
+      templates:
+          - Fakes.swifttemplate
+      output: ../../../../../Modules/Sources/Fakes/WooFoundation.generated.swift
+      args:
+          moduleName: WooFoundation
+    - sources:
+        include:
+            - ../../../../../Modules/Sources/WooFoundationCore
+      templates:
+          - Fakes.swifttemplate
+      output: ../../../../../Modules/Sources/Fakes/WooFoundationCore.generated.swift
+      args:
+          moduleName: WooFoundationCore

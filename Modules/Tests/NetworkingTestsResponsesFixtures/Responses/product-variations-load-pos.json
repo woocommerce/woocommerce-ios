@@ -1,0 +1,43 @@
+{
+  "data": [
+    {
+      "id": 123,
+      "sku": "200815216",
+      "global_unique_id": "",
+      "price": "8",
+      "regular_price": "8",
+      "sale_price": "",
+      "on_sale": false,
+      "downloadable": false,
+      "manage_stock": "parent",
+      "stock_quantity": 10,
+      "stock_status": "instock",
+      "image": {
+        "id": 118,
+        "date_created": "2024-10-30T15:01:52",
+        "date_created_gmt": "2024-10-30T15:01:52",
+        "date_modified": "2025-08-25T08:04:03",
+        "date_modified_gmt": "2025-08-25T08:04:03",
+        "src": "https://example.com/wp-content/uploads/2024/10/dsc01913.jpeg",
+        "name": "dsc01913",
+        "alt": ""
+      },
+      "attributes": [
+        {
+          "id": 2,
+          "name": "Size",
+          "slug": "pa_size",
+          "option": "Medium"
+        },
+        {
+          "id": 0,
+          "name": "Shot",
+          "slug": "shot",
+          "option": "triple"
+        }
+      ],
+      "parent_id": 119
+    }
+  ]
+}
+

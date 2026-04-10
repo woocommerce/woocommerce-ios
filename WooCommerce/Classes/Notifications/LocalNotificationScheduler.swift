@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 import Yosemite
 
 /// Handles the scheduling of local notifications with support of remote feature flags.

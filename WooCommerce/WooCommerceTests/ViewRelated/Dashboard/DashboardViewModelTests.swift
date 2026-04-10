@@ -1,9 +1,10 @@
 import XCTest
 import Fakes
 import Yosemite
-import enum Networking.DotcomError
+import enum NetworkingCore.DotcomError
 import protocol WooFoundation.Analytics
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class DashboardViewModelTests: XCTestCase {
@@ -27,18 +28,108 @@ final class DashboardViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private lazy var site = Site.fake().copy(
+        siteID: sampleSiteID,
+        isJetpackThePluginInstalled: true,
+        isJetpackConnected: true
+    )
+
     override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
-        userDefaults = try XCTUnwrap(UserDefaults(suiteName: "DashboardViewModelTests"))
+        userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
         storageManager = MockStorageManager()
+
+        stores.updateDefaultStore(storeID: sampleSiteID)
+        stores.updateDefaultStore(site)
+
+        // Set up basic mocks for actions dispatched during DashboardViewModel initialization.
+        // Child view models dispatch actions in Task blocks during init, so these mocks
+        // must be in place before any DashboardViewModel is created.
+        setUpBasicMocks()
+    }
+
+    /// Sets up mock handlers for actions that are dispatched during DashboardViewModel initialization.
+    /// This prevents Swift continuation leaks from unhandled async actions in child view models.
+    private func setUpBasicMocks(for targetStores: MockStoresManager? = nil) {
+        let storesManager = targetStores ?? stores!
+
+        // AppSettingsAction - dispatched by child view models during init and data loading
+        storesManager.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            switch action {
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedTopPerformersTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedMostActiveCouponsTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedStockType(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedOrderStatus(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            default:
+                break
+            }
+        }
+
+        // OrderAction - dispatched by configureOrdersResultController during init
+        storesManager.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .checkIfStoreHasOrders(_, onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+
+        // FeatureFlagAction - dispatched by child view models checking feature availability
+        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
+                onCompletion(false)
+            }
+        }
+
+        // StatsActionV4 - dispatched by stats view models during data sync
+        storesManager.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        // GoogleAdsAction - dispatched by Google Ads view models
+        storesManager.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .checkConnection(_, onCompletion):
+                onCompletion(.success(.fake()))
+            case let .fetchAdsCampaigns(_, onCompletion):
+                onCompletion(.success([]))
+            default:
+                break
+            }
+        }
     }
 
     @MainActor
     func test_default_statsVersion_is_v4() {
         // Given
-        let viewModel = DashboardViewModel(siteID: 0)
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // Then
         XCTAssertEqual(viewModel.statsVersion, .v4)
@@ -52,7 +143,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -68,7 +160,8 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -90,7 +183,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            analytics: analytics,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -118,7 +212,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            analytics: analytics,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -130,13 +225,14 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_fetch_failure_analytics_logged_when_just_in_time_message_errors() async {
         // Given
-        let error = DotcomError.noRestRoute
+        let error = DotcomError.noRestRoute()
         mockReloadingData(jitmResult: .failure(error))
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
                                            storageManager: storageManager,
                                            analytics: analytics,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         await viewModel.reloadAllData()
@@ -149,7 +245,7 @@ final class DashboardViewModelTests: XCTestCase {
         }
 
         assertEqual("my_store", properties["source"] as? String)
-        assertEqual("Networking.DotcomError", properties["error_domain"] as? String)
+        assertEqual("NetworkingCore.DotcomError", properties["error_domain"] as? String)
         assertEqual("Dotcom Invalid REST Route", properties["error_description"] as? String)
     }
 
@@ -162,7 +258,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            analytics: analytics,
-                                           blazeEligibilityChecker: blazeEligibilityChecker)
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         viewModel.announcementViewModel = JustInTimeMessageViewModel(
             justInTimeMessage: .fake(),
             screenName: "my_store",
@@ -180,8 +277,11 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let sessionManager = SessionManager.makeForTesting()
         sessionManager.defaultSite = Site.fake().copy(visibility: .privateSite)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-        let viewModel = DashboardViewModel(siteID: 123, stores: stores)
+        let localStores = MockStoresManager(sessionManager: sessionManager)
+        setUpBasicMocks(for: localStores)
+        let viewModel = DashboardViewModel(siteID: 123,
+                                           stores: localStores,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         let siteURLToShare = viewModel.siteURLToShare
@@ -196,8 +296,11 @@ final class DashboardViewModelTests: XCTestCase {
         let sessionManager = SessionManager.makeForTesting()
         let expectedURL = "https://example.com"
         sessionManager.defaultSite = Site.fake().copy(url: expectedURL, visibility: .publicSite)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-        let viewModel = DashboardViewModel(siteID: 123, stores: stores)
+        let localStores = MockStoresManager(sessionManager: sessionManager)
+        setUpBasicMocks(for: localStores)
+        let viewModel = DashboardViewModel(siteID: 123,
+                                           stores: localStores,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         let siteURLToShare = viewModel.siteURLToShare
@@ -211,7 +314,10 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -3600)
         let siteGMTOffset = 0.0
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           analytics: analytics,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -232,7 +338,10 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -5400)
         let siteGMTOffset = 2.50000
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           analytics: analytics,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -253,7 +362,10 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let localTimezone = TimeZone(secondsFromGMT: -7200)
         let siteGMTOffset = -2.0
-        let viewModel = DashboardViewModel(siteID: 0, stores: stores, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: 0,
+                                           stores: stores,
+                                           analytics: analytics,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
 
         // When
         viewModel.trackStatsTimezone(localTimezone: localTimezone!, siteGMTOffset: siteGMTOffset)
@@ -268,10 +380,11 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         let uuid = UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        defaults[.completedAllStoreOnboardingTasks] = true
+        defaults[.completedAllStoreOnboardingTasks] = ["0": true]
         let viewModel = DashboardViewModel(siteID: 0,
                                            stores: stores,
-                                           userDefaults: defaults)
+                                           userDefaults: defaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         var setDashboardCardsActionCalled = false
 
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -290,7 +403,10 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_editorSaveTapped_is_tracked_when_customizing_onboarding_card() throws {
         // Given
-        let viewModel = DashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           analytics: analytics,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         let cards: [DashboardCard] = [DashboardCard(type: .onboarding, availability: .show, enabled: false),
                                       DashboardCard(type: .performance, availability: .show, enabled: true),
                                       DashboardCard(type: .blaze, availability: .show, enabled: true),
@@ -448,7 +564,7 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_dashboard_cards_has_disabled_onboarding_card_if_all_tasks_are_completed() async throws {
         // Given
-        userDefaults[.completedAllStoreOnboardingTasks] = true
+        userDefaults[.completedAllStoreOnboardingTasks] = [String(sampleSiteID): true]
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
@@ -538,6 +654,110 @@ final class DashboardViewModelTests: XCTestCase {
         assertEqual([.performance, .googleAds], viewModel.showOnDashboardSecondColumn.map(\.type))
     }
 
+    @MainActor
+    func test_dashboard_cards_contain_stock_card_when_store_is_eligible_and_non_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData()
+
+        // Stock card need to be set with availability: .show and enabled: true by default if available.
+        let expectedStockCard = DashboardCard(type: .stock, availability: .show, enabled: false)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedStockCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_does_not_contain_stock_card_when_store_is_eligible_and_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData()
+
+        // Stock card need to be set with availability: .show and enabled: true by default if available.
+        let expectedStockCard = DashboardCard(type: .stock, availability: .show, enabled: false)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.dashboardCards.contains(expectedStockCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_contain_onboarding_card_when_store_is_non_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: false)
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.dashboardCards.contains(expectedOnboardingCard))
+    }
+
+    @MainActor
+    func test_dashboard_cards_does_not_contain_onboarding_card_when_store_is_ciab() async throws {
+        // Given
+        let siteCIABChecker = MockCIABEligibilityChecker(
+            mockedIsCurrentSiteCIAB: true,
+            mockedCIABSites: [site]
+        )
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
+                                           siteIsCIABEligibilityChecker: siteCIABChecker)
+
+        mockReloadingData(storeHasOrders: false)
+
+        let expectedOnboardingCard = DashboardCard(type: .onboarding, availability: .show, enabled: true)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.dashboardCards.contains(expectedOnboardingCard))
+    }
+
     // MARK: Show New Cards Notice
 
     @MainActor
@@ -547,7 +767,8 @@ final class DashboardViewModelTests: XCTestCase {
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         let completeCardsSet: [DashboardCard] = [
             .init(type: .inbox, availability: .show, enabled: true),
             .init(type: .reviews, availability: .show, enabled: true),
@@ -572,7 +793,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         let incompleteNewCardsSet: [DashboardCard] = []
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
 
@@ -595,7 +817,8 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker)
+                                           inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
 
         // When
@@ -670,6 +893,7 @@ final class DashboardViewModelTests: XCTestCase {
                                storageManager: storageManager,
                                blazeEligibilityChecker: blazeEligibilityChecker,
                                inboxEligibilityChecker: inboxEligibilityChecker,
+                               googleAdsEligibilityChecker: googleAdsEligibilityChecker,
                                localNotificationScheduler: scheduler)
 
         // Then
@@ -685,10 +909,12 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
                                            inboxEligibilityChecker: inboxEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
                                            localNotificationScheduler: scheduler)
         mockReloadingData()
 
         // When
+        await viewModel.reloadAllData()
         await viewModel.onViewAppear()
 
         // Then
@@ -696,6 +922,262 @@ final class DashboardViewModelTests: XCTestCase {
             scheduler.scheduleNoCampaignReminderCalled == true
         }
     }
+
+    // MARK: - Announcement Banner Visibility Tests
+
+    @MainActor
+    func test_shouldShowAnnouncementBanner_returns_false_when_no_announcement() async {
+        // Given
+        mockReloadingData(jitmResult: .success([]))
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertNil(viewModel.announcementViewModel)
+        XCTAssertFalse(viewModel.shouldShowAnnouncementBanner)
+    }
+
+    @MainActor
+    func test_shouldShowAnnouncementBanner_returns_true_when_announcement_exists() async throws {
+        // Given - announcement exists and onboarding card is not enabled (all tasks completed)
+        let message = Yosemite.JustInTimeMessage.fake().copy(title: "JITM Message")
+        mockReloadingData(jitmResult: .success([message]))
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then - banner should be visible
+        XCTAssertTrue(viewModel.shouldShowAnnouncementBanner)
+    }
+
+    // MARK: Self-driven push registration
+    @MainActor
+    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_not_registered_with_Woo_PN() async {
+        // Given
+        mockReloadingData()
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
+    }
+
+    @MainActor
+    func test_isSelfDrivenPushNotificationRegistered_returns_true_when_site_is_registered_and_not_wpcom_login() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.isSelfDrivenPushNotificationRegistered)
+    }
+
+    @MainActor
+    func test_isSelfDrivenPushNotificationRegistered_returns_false_when_site_is_registered_and_wpcom_login() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.isSelfDrivenPushNotificationRegistered)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_disabled() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_not_registered_and_not_wpcom_login_and_feature_flag_enabled() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_registered_with_Woo_PN_and_not_wpcom_login() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_false_when_site_is_not_registered_and_wpcom_login() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_shouldSuggestWPComConnection_returns_true_when_site_is_JCP_and_not_registered_and_feature_flag_enabled() async {
+        // Given
+        let jcpSite = Site.fake().copy(siteID: sampleSiteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        stores.updateDefaultStore(jcpSite)
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           featureFlags: featureFlagService,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldSuggestWPComConnection)
+    }
+
+    @MainActor
+    func test_hideWPComConnectionSuggestion_updates_relevant_properties() async {
+        // Given
+        mockReloadingData()
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID],
+                                                            hasStoredSiteIDsRegisteredForWooPNs: true)
+
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           userDefaults: userDefaults,
+                                           pushNotesManager: pushNotesManager,
+                                           blazeEligibilityChecker: blazeEligibilityChecker,
+                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker)
+
+        // When
+        viewModel.hideWPComConnectionSuggestion()
+        await viewModel.reloadAllData()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldSuggestWPComConnection)
+        XCTAssertTrue(viewModel.dismissedWPComConnectionSuggestion)
+    }
+
 }
 
 private extension DashboardViewModelTests {
@@ -723,8 +1205,29 @@ private extension DashboardViewModelTests {
                 onCompletion(storedDashboardCards)
             case let .loadFeedbackVisibility(_, onCompletion):
                 onCompletion(.success(shouldShowInAppFeedback))
+            case let .loadLastSelectedPerformanceTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedTopPerformersTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedMostActiveCouponsTimeRange(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedStockType(_, onCompletion):
+                onCompletion(nil)
+            case let .loadLastSelectedOrderStatus(_, onCompletion):
+                onCompletion(nil)
+            case let .getPOSSurveyPotentialMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
+            case let .getPOSSurveyCurrentMerchantNotificationScheduled(onCompletion):
+                onCompletion(false)
             default:
                 break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
+                onCompletion(false)
             }
         }
 
@@ -758,25 +1261,54 @@ private extension DashboardViewModelTests {
                 break
             }
         }
+
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            case let .retrieveTopEarnerStats(_, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
+            switch action {
+            case let .checkConnection(_, onCompletion):
+                onCompletion(.success(.fake()))
+            case let .fetchAdsCampaigns(_, onCompletion):
+                onCompletion(.success([]))
+            default:
+                break
+            }
+        }
     }
 
     func insertProduct(_ readOnlyProduct: Product) {
-        let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
-        newProduct.update(with: readOnlyProduct)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
+            newProduct.update(with: readOnlyProduct)
+        }, completion: nil, on: .main)
     }
 
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
-        readOnlyCampaigns.forEach { campaign in
-            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
-            newCampaign.update(with: campaign)
-        }
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            readOnlyCampaigns.forEach { campaign in
+                let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)
+                newCampaign.update(with: campaign)
+            }
+        }, completion: nil, on: .main)
     }
 
     func insertSampleOrder(readOnlyOrder: Order) {
-        let newOrder = storage.insertNewObject(ofType: StorageOrder.self)
-        newOrder.update(with: readOnlyOrder)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let newOrder = storage.insertNewObject(ofType: StorageOrder.self)
+            newOrder.update(with: readOnlyOrder)
+        }, completion: nil, on: .main)
     }
 }

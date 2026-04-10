@@ -6,7 +6,8 @@ extension CustomerSelectorViewController.Configuration {
         disallowSelectingGuest: true,
         disallowCreatingCustomer: true,
         showGuestLabel: true,
-        shouldTrackCustomerAdded: false
+        shouldTrackCustomerAdded: false,
+        isModal: false
     )
 
     enum OrderFilterLocalization {

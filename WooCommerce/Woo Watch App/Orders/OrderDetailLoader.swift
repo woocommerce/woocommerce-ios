@@ -1,5 +1,5 @@
 import SwiftUI
-import NetworkingWatchOS
+import NetworkingCore
 
 /// Loads an order form a notification
 ///
@@ -24,7 +24,8 @@ struct OrderDetailLoader: View {
             case .loaded(let order):
                 OrderDetailView(order: order)
                     .task {
-                        await viewModel.markOrderNoteAsReadIfNeeded(noteID: pushNotification.noteID, orderID: Int(order.orderID))
+                        guard let noteID = pushNotification.noteID else { return }
+                        await viewModel.markOrderNoteAsReadIfNeeded(noteID: noteID, orderID: Int(order.orderID))
                     }
             case .error:
                 Text(AppLocalizedString(
@@ -78,7 +79,7 @@ final class OrderDetailLoaderViewModel: ObservableObject {
     func fetchOrder() async {
         self.viewState = .loading
         do {
-            let (_, remoteOrder) = try await dataService.loadOrderFrom(notification: pushNotification)
+            let remoteOrder = try await dataService.loadOrderFrom(notification: pushNotification)
             let viewOrders = OrdersListViewModel.viewOrders(from: [remoteOrder], currencySettings: dependencies.currencySettings)
 
             // Should always succeed.

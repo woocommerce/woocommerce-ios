@@ -23,25 +23,11 @@ final class OrderDetailsResultsControllers {
 
     /// Product ResultsController.
     ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    private lazy var productResultsController: GenericResultsController<StorageProduct, OrderDetailsProduct> = createProductResultsController()
 
     /// ProductVariation ResultsController.
     ///
     private lazy var productVariationResultsController: ResultsController<StorageProductVariation> = getProductVariationResultsController()
-
-    /// Fee lines Results Controller.
-    ///
-    private lazy var feeLinesResultsController: ResultsController<StorageOrderFeeLine> = {
-        let predicate = NSPredicate(format: "order.orderID == %ld", order.orderID)
-        let descriptor = NSSortDescriptor(key: "feeID", ascending: true)
-
-        return ResultsController<StorageOrderFeeLine>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
 
     /// Status Results Controller.
     ///
@@ -61,17 +47,6 @@ final class OrderDetailsResultsControllers {
         let descriptor = NSSortDescriptor(keyPath: \StorageRefund.dateCreated, ascending: true)
 
         return ResultsController<StorageRefund>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
-    /// ShippingLabel Results Controller.
-    ///
-    private lazy var shippingLabelResultsController: ResultsController<StorageShippingLabel> = {
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld", order.siteID, order.orderID)
-        let dateCreatedDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.dateCreated, ascending: false)
-        let shippingLabelIDDescriptor = NSSortDescriptor(keyPath: \StorageShippingLabel.shippingLabelID, ascending: false)
-        return ResultsController<StorageShippingLabel>(storageManager: storageManager,
-                                                       matching: predicate,
-                                                       sortedBy: [dateCreatedDescriptor, shippingLabelIDDescriptor])
     }()
 
     /// AddOnGroup ResultsController.
@@ -95,6 +70,17 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// Shipments Results Controller.
+    ///
+    private lazy var shipmentResultsController: ResultsController<StorageWooShippingShipment> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    self.order.siteID,
+                                    self.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageWooShippingShipment.index, ascending: true)
+
+        return ResultsController<StorageWooShippingShipment>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -109,9 +95,7 @@ final class OrderDetailsResultsControllers {
 
     /// Products from an Order
     ///
-    var products: [Product] {
-        return productResultsController.fetchedObjects
-    }
+    private(set) var products: [OrderDetailsProduct] = []
 
     /// ProductVariations from an Order
     ///
@@ -128,7 +112,20 @@ final class OrderDetailsResultsControllers {
     /// Shipping labels for an Order
     ///
     var shippingLabels: [ShippingLabel] {
-        return shippingLabelResultsController.fetchedObjects
+        guard shipments.isEmpty else {
+            return shipments.compactMap { $0.shippingLabel }
+        }
+        return order.shippingLabels.sorted(by: { label1, label2 in
+            if let shipmentID1 = label1.shipmentID,
+               let shipmentID2 = label2.shipmentID {
+                return shipmentID1.localizedStandardCompare(shipmentID2) == .orderedAscending
+            }
+            return label1.dateCreated < label2.dateCreated
+        })
+    }
+
+    var shipments: [WooShippingShipment] {
+        shipmentResultsController.fetchedObjects
     }
 
     /// Site's add-on groups.
@@ -142,7 +139,7 @@ final class OrderDetailsResultsControllers {
     }
 
     var feeLines: [OrderFeeLine] {
-        return feeLinesResultsController.fetchedObjects
+        return order.fees
     }
 
     /// Shipping methods list
@@ -169,20 +166,21 @@ final class OrderDetailsResultsControllers {
         configureProductResultsController(onReload: onReload)
         configureProductVariationResultsController(onReload: onReload)
         configureRefundResultsController(onReload: onReload)
-        configureShippingLabelResultsController(onReload: onReload)
         configureAddOnGroupResultsController(onReload: onReload)
         configureSitePluginsResultsController(onReload: onReload)
-        configureFeeLinesResultsController(onReload: onReload)
         configureShippingMethodsResultsController(onReload: onReload)
+        configureShipmentResultsController(onReload: onReload)
     }
 
     func update(order: Order) {
         self.order = order
-        // Product variation results controller depends on order items to load variations,
+        // Product and variation results controller depends on order items to load variations,
         // so we need to recreate it whenever receiving an updated order.
         self.productVariationResultsController = getProductVariationResultsController()
+        self.productResultsController = createProductResultsController()
         if let onReload = onReload {
             configureProductVariationResultsController(onReload: onReload)
+            configureProductResultsController(onReload: onReload)
         }
     }
 }
@@ -196,6 +194,26 @@ private extension OrderDetailsResultsControllers {
         let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }
+
+    func configureShipmentResultsController(onReload: @escaping () -> Void) {
+        shipmentResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        shipmentResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        do {
+            try shipmentResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch shipments: \(error)")
+        }
     }
 
     func configureStatusResultsController() {
@@ -227,7 +245,9 @@ private extension OrderDetailsResultsControllers {
     }
 
     private func configureProductResultsController(onReload: @escaping () -> Void) {
-        productResultsController.onDidChangeContent = {
+        productResultsController.onDidChangeContent = { [weak self] in
+            guard let self else { return }
+            products = productResultsController.fetchedObjects
             onReload()
         }
 
@@ -241,6 +261,7 @@ private extension OrderDetailsResultsControllers {
 
         do {
             try productResultsController.performFetch()
+            products = productResultsController.fetchedObjects
         } catch {
             DDLogError("⛔️ Unable to fetch Products for Site \(siteID): \(error)")
         }
@@ -286,24 +307,6 @@ private extension OrderDetailsResultsControllers {
         }
     }
 
-    private func configureShippingLabelResultsController(onReload: @escaping () -> Void) {
-        shippingLabelResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        shippingLabelResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        do {
-            try shippingLabelResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch ShippingLabels for Site \(siteID) and Order \(order.orderID): \(error)")
-        }
-    }
-
     private func configureAddOnGroupResultsController(onReload: @escaping () -> Void) {
         addOnGroupResultsController.onDidChangeContent = {
             onReload()
@@ -340,24 +343,6 @@ private extension OrderDetailsResultsControllers {
         }
     }
 
-    private func configureFeeLinesResultsController(onReload: @escaping () -> Void) {
-        feeLinesResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        feeLinesResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
-            self.refetchAllResultsControllers()
-            onReload()
-        }
-
-        do {
-            try feeLinesResultsController.performFetch()
-        } catch {
-            DDLogError("⛔️ Unable to fetch Order Fee lines for Site \(siteID): \(error)")
-        }
-    }
-
     private func configureShippingMethodsResultsController(onReload: @escaping () -> Void) {
         shippingMethodsResultsController.onDidChangeContent = {
             onReload()
@@ -384,9 +369,21 @@ private extension OrderDetailsResultsControllers {
         try? refundResultsController.performFetch()
         try? trackingResultsController.performFetch()
         try? statusResultsController.performFetch()
-        try? shippingLabelResultsController.performFetch()
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
         try? shippingMethodsResultsController.performFetch()
+    }
+
+    func createProductResultsController() -> GenericResultsController<StorageProduct, OrderDetailsProduct> {
+        let productIDs = order.items.map { $0.productID }
+        let predicate = NSPredicate(format: "siteID == %lld AND productID IN %@", siteID, productIDs)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return GenericResultsController<StorageProduct, OrderDetailsProduct>(
+            storageManager: storageManager,
+            matching: predicate,
+            sortedBy: [descriptor],
+            transformer: { OrderDetailsProduct(storageProduct: $0) }
+        )
     }
 }

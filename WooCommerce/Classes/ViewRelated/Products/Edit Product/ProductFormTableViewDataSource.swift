@@ -9,6 +9,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
                                                            textTintColor: tintColor,
                                                            image: icon,
                                                            imageTintColor: tintColor ?? .textSubtle,
+                                                           numberOfLinesForTitle: 0,
                                                            numberOfLinesForText: numberOfLinesForDetails,
                                                            isActionable: isActionable,
                                                            showsDisclosureIndicator: isActionable,
@@ -162,7 +163,7 @@ private extension ProductFormTableViewDataSource {
                            productUIImageLoader: productUIImageLoader)
             return
         }
-        if productImageStatuses.count > 0 {
+        if !productImageStatuses.isEmpty {
             if allowsMultipleImages {
                 cell.configure(with: productImageStatuses,
                                config: .addImages,
@@ -207,6 +208,7 @@ private extension ProductFormTableViewDataSource {
                                                                    productStatus: productStatus,
                                                                    placeholder: placeholder,
                                                                    textViewMinimumHeight: 10.0,
+                                                                   shouldDismissOnReturn: true,
                                                                    isScrollEnabled: false,
                                                                    onNameChange: { [weak self] (newName) in self?.onNameChange?(newName) },
                                                                    style: .headline)
@@ -238,6 +240,7 @@ private extension ProductFormTableViewDataSource {
                                           comment: "Title in the Product description row on Product form screen when the description is non-empty.")
             let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: description, isActionable: isEditable)
             cell.updateUI(viewModel: viewModel)
+            cell.accessibilityHint = Localization.Accessibility.descriptionHint
         } else {
             guard let cell = cell as? BasicTableViewCell else {
                 fatalError()
@@ -336,6 +339,14 @@ private extension ProductFormTableViewDataSource {
             textColor: .accent
         )
         cell.hideSeparator()
+
+        // Configure accessibility for VoiceOver
+        cell.accessibilityTraits = .button
+        cell.accessibilityHint = NSLocalizedString(
+            "productFormTableViewDataSource.promoteWithBlazeAccessibilityHint",
+            value: "Opens Blaze campaign creation flow for this product",
+            comment: "VoiceOver accessibility hint for the Promote with Blaze button"
+        )
     }
 
     func configureSeparator(cell: UITableViewCell) {
@@ -482,5 +493,12 @@ private extension ProductFormTableViewDataSource {
             value: "Tap to learn more.",
             comment: "Text message prompting the user to tap to learn more about changing the privacy setting."
         )
+        enum Accessibility {
+            static let descriptionHint = NSLocalizedString(
+                "productFormTableViewDataSource.accessibility.descriptionHint",
+                value: "Tap to view more or edit product description",
+                comment: "Accessibility hint for product description on Product form screen"
+            )
+        }
     }
 }

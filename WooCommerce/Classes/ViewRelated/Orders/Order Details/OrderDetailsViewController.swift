@@ -96,7 +96,7 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         let waitingTracker = WaitingTimeTracker(trackScenario: .orderDetails)
         syncEverything { [weak self] in
-            waitingTracker.end()
+            ServiceLocator.analytics.track(event: waitingTracker.end())
 
             self?.topLoaderView.isHidden = true
 
@@ -109,6 +109,14 @@ final class OrderDetailsViewController: UIViewController {
 
     override var shouldShowOfflineBanner: Bool {
         true
+    }
+
+    func isPresentingViewModelOrder(_ viewModel: OrderDetailsViewModel) -> Bool {
+        return self.viewModel.order.orderID == viewModel.order.orderID
+    }
+
+    func isQuickOrderNavigationSupported() -> Bool {
+        viewModels.count > 1
     }
 }
 
@@ -206,14 +214,22 @@ private extension OrderDetailsViewController {
             guard let self = self else {
                 return
             }
+            let previousStatus = self.viewModel.order.status
             self.viewModel.update(order: order)
             self.reloadTableViewSectionsAndData()
+
+            if order.status != previousStatus {
+                Task { @MainActor [weak self] in
+                    await self?.viewModel.refreshReceiptEligibility()
+                    self?.reloadTableViewSectionsAndData()
+                }
+            }
         }
     }
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewDataIfPossible()
+            self?.reloadTableViewData()
         }
 
         viewModel.configureResultsControllers { [weak self] in
@@ -235,11 +251,7 @@ private extension OrderDetailsViewController {
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewDataIfPossible() {
-        guard isViewLoaded else {
-            return
-        }
-
+    func reloadTableViewData() {
         tableView.reloadData()
     }
 
@@ -248,7 +260,6 @@ private extension OrderDetailsViewController {
     func reloadTableViewSectionsAndData() {
         configureNavigationBar()
         reloadSections()
-        reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available TableViewCells
@@ -338,13 +349,8 @@ private extension OrderDetailsViewController {
     private func editOrder() {
         let viewModel = EditableOrderViewModel(siteID: viewModel.order.siteID, flow: .editing(initialOrder: viewModel.order))
         let viewController = OrderFormHostingController(viewModel: viewModel)
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-            viewController.modalPresentationStyle = .overFullScreen
-            present(viewController, animated: true)
-        } else {
-            let navController = UINavigationController(rootViewController: viewController)
-            present(navController, animated: true)
-        }
+        viewController.modalPresentationStyle = .fullScreen
+        present(viewController, animated: true)
 
         let hasMultipleShippingLines = self.viewModel.order.shippingLines.count > 1
         let hasMultipleFeeLines = self.viewModel.order.fees.count > 1
@@ -409,8 +415,18 @@ private extension OrderDetailsViewController {
             let printViewController = coordinator.createPrintViewController()
             printNavigationController.viewControllers = [printViewController]
             present(printNavigationController, animated: true)
-        case .createShippingLabel:
-            navigateToCreateShippingLabelForm()
+        case .createShippingLabel(let shipmentIndex):
+            let preselection: WooShippingCreateLabelSelection? = {
+                guard let shipmentIndex else { return nil }
+                return .shipment(index: shipmentIndex)
+            }()
+            navigateToCreateShippingLabelForm(preSelection: preselection)
+        case .openShippingLabelForm(let shippingLabel):
+            navigateToCreateShippingLabelForm(preSelection: .shippingLabel(label: shippingLabel))
+        case .viewShipmentItems(let shipment):
+            showShipmentItems(shipment: shipment)
+        case .refundShippingLabel(let shippingLabel):
+            refundShippingLabel(shippingLabel)
         case .shippingLabelTrackingMenu(let shippingLabel, let sourceView):
             shippingLabelTrackingMoreMenuTapped(shippingLabel: shippingLabel, sourceView: sourceView)
         case let .viewAddOns(addOns):
@@ -424,8 +440,8 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func navigateToCreateShippingLabelForm() {
-        guard viewModel.dataSource.isEligibleForWooShipping else {
+    func navigateToCreateShippingLabelForm(preSelection: WooShippingCreateLabelSelection? = nil) {
+        guard viewModel.shouldNavigateToNewShippingLabelFlow else {
             // Navigate to legacy shipping label creation form if Woo Shipping extension is not supported.
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
             shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
@@ -453,13 +469,15 @@ private extension OrderDetailsViewController {
             return
         }
 
-        let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order, onLabelPurchase: { [weak self] markOrderComplete in
+        let shippingLabelCreationVM = WooShippingCreateLabelsViewModel(order: viewModel.order,
+                                                                       preselection: preSelection,
+                                                                       onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {
                 self?.markOrderCompleteFromShippingLabels()
             }
         })
         let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController(viewModel: shippingLabelCreationVM)
-        shippingLabelCreationVC.modalPresentationStyle = .overFullScreen
+        shippingLabelCreationVC.modalPresentationStyle = .fullScreen
         navigationController?.present(shippingLabelCreationVC, animated: true)
     }
 
@@ -477,15 +495,18 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteFromShippingLabels() {
         let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
+        let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable: AnyCancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
-                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed)
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,
+                                               withProperties: ["is_revamped_flow": isRevampedFlow])
             }
             else {
-                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded)
+                ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded,
+                                               withProperties: ["is_revamped_flow": isRevampedFlow])
             }
             cancellables.remove(cancellable)
         } receiveValue: {
@@ -544,21 +565,15 @@ private extension OrderDetailsViewController {
 
         actionSheet.addCancelActionWithTitle(Localization.ShippingLabelMoreMenu.cancelAction)
 
-        actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
-            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
+        if shippingLabel.isRefundable {
+            actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.requestRefundAction) { [weak self] _ in
+                self?.refundShippingLabel(shippingLabel)
             }
-            // Disables the bottom bar (tab bar) when requesting a refund.
-            refundViewController.hidesBottomBarWhenPushed = true
-            self?.show(refundViewController, sender: self)
         }
 
         if let url = shippingLabel.commercialInvoiceURL, url.isNotEmpty {
             actionSheet.addDefaultActionWithTitle(Localization.ShippingLabelMoreMenu.printCustomsFormAction) { [weak self] _ in
-                let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
-                let hostingController = UIHostingController(rootView: printCustomsFormsView)
-                hostingController.hidesBottomBarWhenPushed = true
-                self?.show(hostingController, sender: self)
+                self?.printCustomsForm(url: url)
             }
         }
 
@@ -566,6 +581,53 @@ private extension OrderDetailsViewController {
         popoverController?.sourceView = sourceView
 
         present(actionSheet, animated: true)
+    }
+
+    func refundShippingLabel(_ shippingLabel: ShippingLabel) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
+            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+            // Disables the bottom bar (tab bar) when requesting a refund.
+            refundViewController.hidesBottomBarWhenPushed = true
+            show(refundViewController, sender: self)
+            return
+        }
+
+        let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
+        let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
+            guard let self else { return }
+            presentedViewController?.dismiss(animated: true)
+
+            var allLabels = viewModel.order.shippingLabels
+            guard let index = allLabels.firstIndex(where: { $0.shippingLabelID == updatedLabel.shippingLabelID }) else {
+                return
+            }
+            allLabels[index] = updatedLabel
+            let updatedOrder = viewModel.order.copy(shippingLabels: allLabels)
+
+            viewModel.update(order: updatedOrder)
+            reloadTableViewSectionsAndData()
+        }
+        let refundViewController = UIHostingController(rootView: view)
+        present(refundViewController, animated: true)
+    }
+
+    func printCustomsForm(url: String) {
+        let printCustomsFormsView = PrintCustomsFormsView(invoiceURLs: [url])
+        let hostingController = UIHostingController(rootView: printCustomsFormsView)
+        hostingController.hidesBottomBarWhenPushed = true
+        show(hostingController, sender: self)
+    }
+
+    func showShipmentItems(shipment: WooShippingShipment) {
+        let items = shipment.items.compactMap { item in
+            let orderItem = viewModel.order.items.first(where: { $0.itemID == item.id })
+            return orderItem?.copy(quantity: item.quantity)
+        }
+        let aggregateOrderItem = AggregateDataHelper.combineOrderItems(items, with: [])
+        let productListVC = AggregatedProductListViewController(viewModel: viewModel, items: aggregateOrderItem)
+        show(productListVC, sender: nil)
     }
 
     func shippingLabelTrackingMoreMenuTapped(shippingLabel: ShippingLabel, sourceView: UIView) {
@@ -860,6 +922,9 @@ private extension OrderDetailsViewController {
     private static func updateOrderStatusAction(viewModel: OrderDetailsViewModel, siteID: Int64, orderID: Int64, status: OrderStatusEnum) -> Action {
         return OrderAction.updateOrderStatus(siteID: siteID, orderID: orderID, status: status, onCompletion: { error in
             guard let error = error else {
+                let updatedOrder = viewModel.order.copy(status: status)
+                viewModel.update(order: updatedOrder)
+
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 viewModel.syncNotes()
                 ServiceLocator.analytics.track(.orderStatusChangeSuccess)

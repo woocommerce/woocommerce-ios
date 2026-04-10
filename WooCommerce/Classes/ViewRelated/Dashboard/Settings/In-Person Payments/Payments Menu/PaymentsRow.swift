@@ -1,25 +1,19 @@
 import SwiftUI
 
-struct PaymentsRow<Destination>: View where Destination: View {
+struct PaymentsRow: View {
     private let image: Image
     private let title: String
     private let subtitle: String?
     private let shouldBadgeImage: Bool
-    private var isActive: Binding<Bool>?
-    @ViewBuilder private let destination: (() -> Destination)?
 
     init(image: Image,
          title: String,
          subtitle: String? = nil,
-         shouldBadgeImage: Bool = false,
-         isActive: Binding<Bool>,
-         @ViewBuilder destination: @escaping () -> Destination) {
+         shouldBadgeImage: Bool = false) {
         self.image = image
         self.title = title
         self.subtitle = subtitle
         self.shouldBadgeImage = shouldBadgeImage
-        self.destination = destination
-        self.isActive = isActive
     }
 
     var body: some View {
@@ -49,36 +43,6 @@ struct PaymentsRow<Destination>: View where Destination: View {
             Spacer()
         }
         .contentShape(Rectangle())
-
-        navigationLink
-    }
-
-    @ViewBuilder
-    private var navigationLink: some View {
-        if let isActive,
-           let destination {
-            NavigationLink(isActive: isActive) {
-                destination()
-            } label: {
-                EmptyView()
-            }
-        } else {
-            EmptyView()
-        }
-    }
-}
-
-extension PaymentsRow where Destination == Never {
-    init(image: Image,
-         title: String,
-         subtitle: String? = nil,
-         shouldBadgeImage: Bool = false) {
-        self.image = image
-        self.title = title
-        self.subtitle = subtitle
-        self.shouldBadgeImage = shouldBadgeImage
-        self.destination = nil
-        self.isActive = nil
     }
 }
 

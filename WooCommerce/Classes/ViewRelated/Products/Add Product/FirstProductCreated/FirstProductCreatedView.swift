@@ -1,6 +1,7 @@
 import ConfettiSwiftUI
 import SwiftUI
 import struct Yosemite.Product
+import struct WooFoundation.ScrollableVStack
 
 final class FirstProductCreatedHostingController: UIHostingController<FirstProductCreatedView> {
     /// The coordinator for sharing products

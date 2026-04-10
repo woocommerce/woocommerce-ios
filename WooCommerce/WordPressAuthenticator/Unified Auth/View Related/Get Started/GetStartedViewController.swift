@@ -1,5 +1,6 @@
 import UIKit
 import SafariServices
+import WordPressShared
 
 /// The source for the sign in flow for external tracking.
 public enum SignInSource: Equatable {
@@ -134,6 +135,14 @@ class GetStartedViewController: LoginViewController, NUXKeyboardResponder {
             return .loginEmail
         }
     }
+
+    private static let isSupportSession: Bool = {
+        #if DEBUG
+        return ProcessInfo.processInfo.arguments.contains("-support-session")
+        #else
+        return false
+        #endif
+    }()
 
     // MARK: - View
 
@@ -516,22 +525,29 @@ private extension GetStartedViewController {
 
         configureViewLoading(true)
         let service = WordPressComAccountService()
-        service.isPasswordlessAccount(username: loginFields.username,
-                                      success: { [weak self] passwordless in
-                                        self?.configureViewLoading(false)
-                                        self?.loginFields.meta.passwordless = passwordless
-                                        passwordless ? self?.requestAuthenticationLink() : self?.showPasswordOrMagicLinkView()
+        service.isPasswordlessAccount(
+            username: loginFields.username,
+            success: { [weak self] passwordless in
+                guard let self else { return }
+                configureViewLoading(false)
+                loginFields.meta.passwordless = passwordless
+                if Self.isSupportSession {
+                    /// Always show password view when running in support session
+                    showPasswordView()
+                } else {
+                    passwordless ? requestAuthenticationLink() : showPasswordOrMagicLinkView()
+                }
             },
-                                      failure: { [weak self] error in
-                                        WordPressAuthenticator.track(.loginFailed, error: error)
-                                        WPAuthenticatorLogError(error.localizedDescription)
-                                        guard let self = self else {
-                                            return
-                                        }
-                                        self.configureViewLoading(false)
-
-                                        self.handleLoginError(error)
-        })
+            failure: { [weak self] error in
+                WordPressAuthenticator.track(.loginFailed, error: error)
+                WPAuthenticatorLogError(error.localizedDescription)
+                guard let self = self else {
+                    return
+                }
+                self.configureViewLoading(false)
+                self.handleLoginError(error)
+            }
+        )
     }
 
     /// Show the Password entry view.
@@ -578,10 +594,15 @@ private extension GetStartedViewController {
         if configuration.enableSignUp, errorCode == "unknown_user" {
             self.sendEmail()
         } else if errorCode == "email_login_not_allowed" {
-                // If we get this error, we know we have a WordPress.com user but their
-                // email address is flagged as suspicious.  They need to login via their
-                // username instead.
-                self.showSelfHostedWithError(error)
+            // If we get this error, we know we have a WordPress.com user but their
+            // email address is flagged as suspicious.
+            // Take the user to the magic link request screen to verify their email.
+            self.tracker.track(failure: error.localizedDescription)
+            if Self.isSupportSession {
+                showPasswordView()
+            } else {
+                showMagicLinkRequestScreen()
+            }
         } else {
             let signInError = SignInError(error: error, source: source) ?? error
             guard let authenticationDelegate = WordPressAuthenticator.shared.delegate,
@@ -742,23 +763,13 @@ private extension GetStartedViewController {
         validateFormAndLogin()
     }
 
-    /// Configures loginFields to log into wordpress.com and navigates to the selfhosted username/password form.
-    /// Displays the specified error message when the new view controller appears.
+    /// Show Magic Link request screen, the screen allows the user to request a magic link to be sent to their email.
     ///
-    func showSelfHostedWithError(_ error: Error) {
-        loginFields.siteAddress = "https://wordpress.com"
-        errorToPresent = error
-
-        tracker.track(failure: error.localizedDescription)
-
-        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
-            WPAuthenticatorLogError("Failed to navigate to SiteCredentialsViewController from GetStartedViewController")
-            return
-        }
+    func showMagicLinkRequestScreen() {
+        let vc = MagicLinkRequestViewController(fallbackAction: .wpcomUsernamePassword)
 
         vc.loginFields = loginFields
         vc.dismissBlock = dismissBlock
-        vc.errorToPresent = errorToPresent
 
         navigationController?.pushViewController(vc, animated: true)
     }

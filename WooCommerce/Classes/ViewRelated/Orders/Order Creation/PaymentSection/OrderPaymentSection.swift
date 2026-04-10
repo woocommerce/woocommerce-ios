@@ -234,7 +234,7 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var taxBasedOnLine: some View {
         HStack(spacing: Constants.taxBasedOnLineTextPadding) {
-            Text(viewModel.taxBasedOnSetting?.displayString ?? "")
+            Text(viewModel.taxBasedOnSetting?.displayTaxCalculationHint ?? "")
                 .footnoteStyle()
                 .multilineTextAlignment(.leading)
             Text(Localization.taxInformationLearnMore)
@@ -267,14 +267,6 @@ private extension OrderPaymentSection {
                          value: .content(viewModel.discountTotal),
                          isLoading: viewModel.isLoading)
             .renderedIf(viewModel.shouldShowDiscountTotal)
-    }
-
-    var rowsEditImage: Image {
-        viewModel.showNonEditableIndicators ? Image(uiImage: .lockImage) : Image(systemName: "pencil")
-    }
-
-    var editableRowsSelectionStyle: TitleAndValueRow.SelectionStyle {
-        viewModel.showNonEditableIndicators ? .none : .highlight
     }
 }
 

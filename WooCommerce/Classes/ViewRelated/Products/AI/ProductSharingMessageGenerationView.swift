@@ -1,5 +1,6 @@
 import SwiftUI
 import struct Yosemite.Product
+import struct WooFoundation.ScrollableVStack
 
 /// Hosting controller for `ProductSharingMessageGenerationView`.
 final class ProductSharingMessageGenerationHostingController: UIHostingController<ProductSharingMessageGenerationView> {

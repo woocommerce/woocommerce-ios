@@ -105,6 +105,8 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     func createStateViewModel() -> StateSelectorViewModel
 
+    func findCountry(by code: String) -> Country?
+
     /// Creates a view model to be used when selecting a country for secondary fields
     ///
     func createSecondaryCountryViewModel() -> CountrySelectorViewModel

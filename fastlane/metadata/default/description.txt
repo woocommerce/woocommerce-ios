@@ -7,7 +7,10 @@ Create orders on the fly
 Once you have some products created, it’s simple. Choose items from your catalog, add shipping, and then fill in customer details to quickly create an order that syncs with your inventory.
 
 Take payments in person
-Collect physical payments using WooCommerce In-Person Payments and a card reader (available in the US and Canada). Start a new order – or find an existing one that’s pending payment – and collect payment using the card reader or a digital wallet, such as Apple Pay.
+Collect physical payments using WooCommerce In-Person Payments and a card reader (available in the US, UK, and Canada), Tap to Pay on iPhone, or a digital wallet, such as Apple Pay. Start a new order — or find an existing one that’s pending payment – then seamlessly accept payment.
+
+Go from clicks to bricks
+Turn any tablet into a powerful point of sale with WooCommerce POS. Search products, scan barcodes, apply coupons, and send email receipts, with all of your online and physical sales synced in real time. Available in the US and UK.
 
 Get notified of every sale
 Now that you’re actively selling, never miss an order or a review. Keep yourself in the loop by enabling real-time alerts – and listen for that addictive “cha-ching” sound that comes with each new sale!

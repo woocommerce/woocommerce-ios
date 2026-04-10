@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 import Storage
@@ -50,6 +51,7 @@ final class OrderListViewModelTests: XCTestCase {
                                                        dateRange: nil,
                                                        product: nil,
                                                        customer: nil,
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
@@ -100,6 +102,7 @@ final class OrderListViewModelTests: XCTestCase {
                                                        dateRange: nil,
                                                        product: nil,
                                                        customer: nil,
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
@@ -136,6 +139,7 @@ final class OrderListViewModelTests: XCTestCase {
                                                        dateRange: nil,
                                                        product: nil,
                                                        customer: nil,
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 1)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            storageManager: storageManager,
@@ -233,7 +237,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil)
+        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil, meta: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -256,7 +260,7 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.activate()
 
         // Act
-        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil)
+        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
@@ -323,6 +327,7 @@ final class OrderListViewModelTests: XCTestCase {
                                                                           dateRange: nil,
                                                                           product: nil,
                                                                           customer: nil,
+                                                                          salesChannel: nil,
                                                                           numberOfActiveFilters: 1))
 
         // Assert
@@ -335,6 +340,7 @@ final class OrderListViewModelTests: XCTestCase {
                                                        dateRange: nil,
                                                        product: nil,
                                                        customer: nil,
+                                                       salesChannel: nil,
                                                        numberOfActiveFilters: 0)
         let notificationCenter = NotificationCenter()
         let viewModel = OrderListViewModel(siteID: siteID,

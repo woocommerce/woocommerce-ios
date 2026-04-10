@@ -1,1 +1,1 @@
-This update resolves a critical issue preventing shipping labels from displaying in some orders. Enhancements include a better experience for uploading product images and creating Blaze campaigns. Additionally, merchants can now mark and filter favorite products for easier access.
+Managing your store just got better. We improved scrolling in order and product lists, made receipts more reliable across payment methods and order statuses, and improved Tap to Pay reliability for multi-store setups. We also improved login, booking filters, and Scan to Pay tracking.

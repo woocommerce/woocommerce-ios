@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
+import YosemiteTestHelpers
 @testable import WooCommerce
 import struct Networking.BlazeAISuggestion
 
@@ -37,11 +38,6 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
     /// Mock Storage: InMemory
     private var storageManager: StorageManagerType!
-
-    /// View storage for tests
-    private var storage: StorageType {
-        storageManager.viewStorage
-    }
 
     private var stores: MockStoresManager!
 
@@ -219,12 +215,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
         mockDownloadImage(sampleImage)
-        var triggeredFetchAISuggestions = false
+        var fetchAISuggestionsTriggers = 0
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case let .fetchAISuggestions(_, _, completion):
-                triggeredFetchAISuggestions = true
-                completion(.failure(MockError()))
+                fetchAISuggestionsTriggers += 1
+                completion(.failure(MockError.anyError))
             default:
                 break
             }
@@ -238,13 +234,12 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
 
         // Preload AI suggestions and reset the flag
         await viewModel.onLoad()
-        triggeredFetchAISuggestions = false
 
         // When
         await viewModel.onLoad()
 
         // Then
-        XCTAssertFalse(triggeredFetchAISuggestions)
+        XCTAssertEqual(fetchAISuggestionsTriggers, 1)
     }
 
     @MainActor
@@ -294,7 +289,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_ad_can_be_edited_if_suggestions_failed_to_load() async throws {
         // Given
         insertProduct(sampleProduct)
-        mockAISuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError.anyError)
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -394,7 +389,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Given
         insertProduct(sampleProduct)
 
-        mockAISuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError.anyError)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
@@ -534,6 +529,53 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canConfirmDetails)
     }
 
+    @MainActor
+    func test_ad_cannot_be_confirmed_if_terms_of_service_is_not_accepted() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+        await viewModel.loadAISuggestions()
+
+        // When terms of service is not accepted
+        viewModel.isToSAccepted = false
+
+        // Then
+        XCTAssertFalse(viewModel.canConfirmDetails)
+    }
+
+    @MainActor
+    func test_ad_can_be_confirmed_when_all_requirements_are_met() async throws {
+        // Given
+        insertProduct(sampleProduct)
+        mockAISuggestionsSuccess(sampleAISuggestions)
+        mockDownloadImage(sampleImage)
+
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+        // Sets non-nil product image
+        await viewModel.downloadProductImage()
+        await viewModel.loadAISuggestions()
+
+        // When terms of service is accepted
+        viewModel.isToSAccepted = true
+
+        // Then
+        XCTAssertTrue(viewModel.canConfirmDetails)
+    }
 
     // MARK: `didTapConfirmDetails`
     @MainActor
@@ -905,7 +947,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_suggestion_request_failures_is_tracked() async throws {
         // Given
         insertProduct(sampleProduct)
-        mockAISuggestionsFailure(MockError())
+        mockAISuggestionsFailure(MockError.anyError)
         mockDownloadImage(sampleImage)
 
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
@@ -923,7 +965,156 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         // Then
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_suggestions_loading_failed"))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
-        XCTAssertEqual(eventProperties["error_code"] as? String, "1")
+        XCTAssertEqual(eventProperties["error_code"] as? String, "0")
+    }
+
+    // MARK: ToS Checkbox First Line - Evergreen Campaigns
+    func test_tos_checkbox_first_line_evergreen_displays_expected_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let weeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
+
+        let expectedFirstLine = "I agree to a recurring weekly charge up to $\(Int(weeklyAmount)) starting \(startDate). " +
+                                 "Charges may occur at varying times during the campaign."
+        XCTAssertTrue(
+            textContent.contains(expectedFirstLine),
+            "Evergreen campaign first line should match expected text"
+        )
+    }
+
+    // MARK: ToS Checkbox First Line - Finite Campaigns Up To 7 Days
+    func test_tos_checkbox_first_line_finite_up_to_seven_days_displays_expected_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let weeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
+
+        // Default duration is 7 days, which should trigger the "up to 7 days" scenario
+        let expectedFirstLine = "I agree to be charged up to $\(Int(weeklyAmount)) starting \(startDate). " +
+                                 "Charges may occur in one or more payments while the campaign is active."
+        XCTAssertTrue(
+            textContent.contains(expectedFirstLine),
+            "Finite campaign with default duration should match 'up to 7 days' expected text"
+        )
+    }
+
+    // MARK: ToS Checkbox First Line - Finite Campaigns More Than 7 Days
+    func test_tos_checkbox_first_line_finite_more_than_seven_days_displays_expected_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           featureFlagService: featureFlagService,
+                                                           onCompletion: {})
+
+        // When
+        // Set duration to more than 7 days to trigger the "more than 7 days" scenario
+        viewModel.budgetSettingViewModel.didTapApplyDuration(dayCount: 14, since: Date.now + 60 * 60 * 24)
+        viewModel.budgetSettingViewModel.confirmSettings()
+
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let weeklyAmount = BlazeBudgetSettingViewModel.Constants.minimumDailyAmount * Double(BlazeBudgetSettingViewModel.Constants.dayCountInWeek)
+        let dateFormatter = DateFormatter()
+        dateFormatter.timeStyle = .none
+        dateFormatter.dateStyle = .medium
+        let startDate = dateFormatter.string(for: Date.now + 60 * 60 * 24) ?? ""
+
+        let expectedFirstLine = "I agree to a recurring charge of up to $\(Int(weeklyAmount)) weekly starting \(startDate). " +
+                                 "Charges may occur at varying times during the campaign."
+        XCTAssertTrue(
+            textContent.contains(expectedFirstLine),
+            "Finite campaign with more than 7 days should match 'more than 7 days' expected text"
+        )
+    }
+
+    // MARK: ToS Checkbox Link Attributes
+    func test_tos_checkbox_attributed_text_has_proper_link_attributes() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+
+        // Then
+        let textContent = String(attributedText.characters)
+        if let range = textContent.range(of: "I can cancel anytime") {
+            let attributedRange = Range(range, in: attributedText)
+            if let attributedRange = attributedRange {
+                let linkAttributes = attributedText[attributedRange]
+                XCTAssertNotNil(linkAttributes.link, "I can cancel anytime text should have a link attribute")
+            }
+        }
+    }
+
+    // MARK: ToS Checkbox Second Line - Unified for All Campaign Types
+    func test_tos_checkbox_second_line_displays_unified_text() throws {
+        // Given
+        insertProduct(sampleProduct)
+        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
+                                                           productID: sampleProductID,
+                                                           stores: stores,
+                                                           storage: storageManager,
+                                                           productImageLoader: imageLoader,
+                                                           onCompletion: {})
+
+        // When
+        let attributedText = viewModel.tosCheckboxAttributedText
+        let textContent = String(attributedText.characters)
+
+        // Then
+        let expectedSecondLine = "I can cancel anytime; I’ll only pay for ads delivered up to cancellation."
+        XCTAssertTrue(
+            textContent.contains(expectedSecondLine),
+            "All campaign types should have the unified second line text"
+        )
     }
 }
 
@@ -931,25 +1122,25 @@ private extension BlazeCampaignCreationFormViewModelTests {
     /// Insert a `Product` into storage.
     ///
     func insertProduct(_ readOnlyProduct: Product) {
-        let product = storage.insertNewObject(ofType: StorageProduct.self)
-        product.update(with: readOnlyProduct)
+        storageManager.performAndSave({ storage in
+            let product = storage.insertNewObject(ofType: StorageProduct.self)
+            product.update(with: readOnlyProduct)
 
-        for readOnlyImage in readOnlyProduct.images {
-            let productImage = storage.insertNewObject(ofType: StorageProductImage.self)
-            productImage.update(with: readOnlyImage)
-            productImage.product = product
-        }
-        storage.saveIfNeeded()
+            for readOnlyImage in readOnlyProduct.images {
+                let productImage = storage.insertNewObject(ofType: StorageProductImage.self)
+                productImage.update(with: readOnlyImage)
+                productImage.product = product
+            }
+        }, completion: {}, on: .main)
     }
 
     func insertCampaignObjective(_ readOnlyObjective: BlazeCampaignObjective) {
-        let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
-        objective.update(with: readOnlyObjective)
-        storage.saveIfNeeded()
+        storageManager.performAndSave({ storage in
+            let objective = storage.insertNewObject(ofType: StorageBlazeCampaignObjective.self)
+            objective.update(with: readOnlyObjective)
+        }, completion: {}, on: .main)
     }
 }
-
-private final class MockError: Error { }
 
 private class MockProductUIImageLoader: ProductUIImageLoader {
     var imageRequestedForProductImage: Yosemite.ProductImage?
@@ -960,8 +1151,17 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
         if let requestImageStubbedResponse {
             return requestImageStubbedResponse
         } else {
-            throw MockError()
+            throw MockError.anyError
         }
+    }
+
+    func requestImage(
+        productImage: Yosemite.ProductImage,
+        targetSize: CGSize?,
+        completion: @escaping (UIImage?) -> Void
+    ) throws -> (any Cancellable)? {
+        // no-op
+        return nil
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {

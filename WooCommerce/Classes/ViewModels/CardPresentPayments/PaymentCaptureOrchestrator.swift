@@ -15,11 +15,12 @@ protocol PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        paymentMethodTypes: [String],
+                        paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                        onCardInserted: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
@@ -69,17 +70,19 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        paymentMethodTypes: [String],
+                        paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                        onCardInserted: @escaping () -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
                                                    onWaitingForInput: onWaitingForInput,
+                                                   onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
                                                    onProcessingCompletion: onProcessingCompletion)
@@ -110,7 +113,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
-                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                case .cardInserted:
+                    onCardInserted()
+                case .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
                     DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
             },
@@ -149,7 +154,9 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     handlers.onProcessingMessage()
-                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                case .cardInserted:
+                    handlers.onCardInserted()
+                case .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
                     DDLogInfo("💳 Unhandled card reader event received during retry: \(event)")
                 }
             },
@@ -281,7 +288,7 @@ private extension PaymentCaptureOrchestrator {
                            orderTotal: NSDecimalNumber,
                            country: String,
                            statementDescriptor: String?,
-                           paymentMethodTypes: [String],
+                           paymentMethodTypes: [PaymentMethodType],
                            stripeSmallestCurrencyUnitMultiplier: Decimal,
                            channel: PaymentChannel) -> PaymentParameters {
         let metadata = PaymentIntent.initMetadata(
@@ -380,6 +387,7 @@ private extension PaymentCaptureOrchestrator {
     struct PaymentHandlers {
         let onPreparingReader: () -> Void
         let onWaitingForInput: (CardReaderInput) -> Void
+        let onCardInserted: () -> Void
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void

@@ -14,13 +14,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var moreDetailsContainerView: UIView!
 
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
-    }()
-
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
 
@@ -79,6 +72,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
     private let subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
 
     private lazy var tooltipUseCase = ProductDescriptionAITooltipUseCase(isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
     private var didShowTooltip = false {
@@ -158,8 +152,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         configureMainView()
         configureTableView()
         configureMoreDetailsContainerView()
+        configureKeyboardAvoidance()
 
-        startListeningToNotifications()
         handleSwipeBackGesture()
 
         observeProduct()
@@ -167,6 +161,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
         observeUpdateBlazeEligibility()
+        observeTraitChanges()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self = self else {
@@ -200,12 +195,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     override var shouldShowOfflineBanner: Bool {
         return true
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        updateNavigationBarTitle()
     }
 
     // MARK: - Navigation actions handling
@@ -649,6 +638,7 @@ private extension ProductFormViewController {
         tableView.delegate = self
         tableView.accessibilityIdentifier = "product-form"
         tableView.cellLayoutMarginsFollowReadableWidth = true
+        tableView.keyboardDismissMode = .onDrag
 
         tableView.backgroundColor = .listForeground(modal: false)
         tableView.removeLastCellSeparator()
@@ -704,6 +694,23 @@ private extension ProductFormViewController {
         moreDetailsContainerView.setContentHuggingPriority(.required, for: .vertical)
 
         updateMoreDetailsButtonVisibility()
+    }
+
+    func configureKeyboardAvoidance() {
+        // This moves the bottom bar above the keyboard and naturally resizes the table view.
+        moreDetailsContainerView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
+            moreDetailsContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            moreDetailsContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            moreDetailsContainerView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor),
+            moreDetailsContainerView.topAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
     }
 }
 
@@ -947,6 +954,16 @@ private extension ProductFormViewController {
         }, onFailedImageUpload: { [weak self] (asset, error) in
             self?.displayImageUploadErrorAlert(error: error, for: asset)
         })
+    }
+
+    func observeTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitHorizontalSizeClass.self,
+            UITraitVerticalSizeClass.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _) in
+            self.updateNavigationBarTitle()
+        }
     }
 }
 
@@ -1369,22 +1386,6 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: - Keyboard management
-//
-private extension ProductFormViewController {
-    /// Registers for all of the related Notifications
-    ///
-    func startListeningToNotifications() {
-        keyboardFrameObserver.startObservingKeyboardFrame()
-    }
-}
-
-extension ProductFormViewController: KeyboardScrollable {
-    var scrollable: UIScrollView {
-        return tableView
-    }
-}
-
 // MARK: - Helper Methods
 
 private extension ProductFormViewController {
@@ -1601,8 +1602,7 @@ private extension ProductFormViewController {
             self.viewModel.updateProductCustomFields(customFields: customFields)
         })
 
-        let customFieldsListViewController = CustomFieldsListHostingController(isEditable: true,
-                                                                               viewModel: viewModel)
+        let customFieldsListViewController = CustomFieldsListHostingController(viewModel: viewModel)
 
         navigationController?.pushViewController(customFieldsListViewController, animated: true)
     }
@@ -1631,7 +1631,8 @@ private extension ProductFormViewController {
         let productType = BottomSheetProductType(productType: viewModel.productModel.productType, isVirtual: viewModel.productModel.virtual)
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .editForm(selected: productType),
-            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker
+            subscriptionProductsEligibilityChecker: subscriptionProductsEligibilityChecker,
+            siteCIABEligibilityChecker: siteCIABEligibilityChecker
         ) { [weak self] (selectedProductType) in
             self?.dismiss(animated: true, completion: nil)
 

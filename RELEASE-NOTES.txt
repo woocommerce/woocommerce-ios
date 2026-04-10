@@ -1,5 +1,274 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+24.5
+-----
+
+
+24.4
+-----
+- [*] Fix site discovery showing errors for stores already connected to the account [https://github.com/woocommerce/woocommerce-ios/pull/16835]
+- [*] Remove the flashing empty state in booking list when updating filters [https://github.com/woocommerce/woocommerce-ios/pull/16824]
+- [*] Fix My Store dashboard showing different revenue numbers than wp-admin by respecting the store's date type setting [https://github.com/woocommerce/woocommerce-ios/pull/16812]
+- [Internal] Skip Jetpack benefits screen during setup when self driven push notifications feature is enabled [https://github.com/woocommerce/woocommerce-ios/pull/16791]
+- [*] Update booking badge styling to match design [https://github.com/woocommerce/woocommerce-ios/pull/16802#pullrequestreview-3927676114]
+- [*] Fix dashboard showing inflated revenue by displaying net sales instead of total sales, matching wp-admin [https://github.com/woocommerce/woocommerce-ios/pull/16814]
+- [*] Display details of legacy bookable product type in a web view [https://github.com/woocommerce/woocommerce-ios/pull/16798]
+- [*] Update logic for payment status of bookings [https://github.com/woocommerce/woocommerce-ios/pull/16805]
+- [Internal] Unify Jetpack setup flow for JCP sites [https://github.com/woocommerce/woocommerce-ios/pull/16816]
+- [*] Fix hiding coupon and product options when opending drawer [https://github.com/woocommerce/woocommerce-ios/pull/16806]
+- [*] Add FedEx as a supported carrier in the shipping label creation flow [https://github.com/woocommerce/woocommerce-ios/pull/16815]
+- [Internal] Treat ecommerce garden sites as having WooCommerce by default [https://github.com/woocommerce/woocommerce-ios/pull/16820]
+- [*] Remove the redundant Price row from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16821]
+- [*] Fix sheet/popover presentation showing trimmed content on iPad [https://github.com/woocommerce/woocommerce-ios/pull/16817]
+- [*] Hide edit status button in order details and order edit form for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16827]
+- [*] Offer site credentials login when the site info check fails but the site has a WordPress REST API [https://github.com/woocommerce/woocommerce-ios/pull/16832]
+- [*] Display booking location from product data in booking details [https://github.com/woocommerce/woocommerce-ios/pull/16826]
+- [*] Fix product duplication missing custom fields [https://github.com/woocommerce/woocommerce-ios/pull/16831]
+- [*] Fix sheets with being dismissable [https://github.com/woocommerce/woocommerce-ios/pull/16836]
+
+
+24.3
+-----
+- [*] Fix issue displaying onboarding tasks when logging in to sites with pretty permalinks using site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16731]
+- [*] Fix scrolling glitch on Orders and Products lists [https://github.com/woocommerce/woocommerce-ios/pull/16714]
+- [*] POS: Fix bookings/orders/settings dismissal when switching apps [https://github.com/woocommerce/woocommerce-ios/pull/16757]
+- [*] Fix "See Receipt" button not appearing for orders with custom statuses [https://github.com/woocommerce/woocommerce-ios/pull/16673]
+- [*] Payments: A note is added to the order when Scan to Pay is used [https://github.com/woocommerce/woocommerce-ios/pull/16549]
+- [*] Fix infinite retries in InfiniteScrollIndicator [https://github.com/woocommerce/woocommerce-ios/pull/16778]
+- [*] Fix attendance status filter in Bookings [https://github.com/woocommerce/woocommerce-ios/pull/16779]
+- [*] Fix Custom Fields closing immediately when opened from a product in the Orders tab [https://github.com/woocommerce/woocommerce-ios/pull/16782]
+- [*] Fix See Receipt button missing after collecting payment [https://github.com/woocommerce/woocommerce-ios/pull/16788]
+
+
+24.2
+-----
+- [*] Fix onboarding tasks not displayed after switching stores [https://github.com/woocommerce/woocommerce-ios/pull/16740]
+- [*] POS: Fix barcode scanning not working after completing a payment [https://github.com/woocommerce/woocommerce-ios/pull/16672]
+- [*] Media library: Fix decoding failure when media details are returned as array [https://github.com/woocommerce/woocommerce-ios/pull/16715]
+- [Internal] Enable Bookings MVP for CIAB sites [https://github.com/woocommerce/woocommerce-ios/pull/16738]
+
+24.1
+-----
+- [Internal]: Update Stripe SDK to 5.1.1 [https://github.com/woocommerce/woocommerce-ios/pull/16493]
+- [*] Fix product type filters issue when adding a product to order [https://github.com/woocommerce/woocommerce-ios/pull/16580]
+- [**] POS: Full Text Search for both products and variations, when local catalog used. Prefix matching, any word order, relevance scoring. [https://github.com/woocommerce/woocommerce-ios/pull/16626]
+- [*] Make phone number mandatory for shipping destination addresses [https://github.com/woocommerce/woocommerce-ios/pull/16625]
+
+24.0
+-----
+- [*] Login: Show error alert when login with site credentials fails due to basic auth [https://github.com/woocommerce/woocommerce-ios/pull/16485]
+- [internal] Track WPCom connection type [https://github.com/woocommerce/woocommerce-ios/pull/16509]
+- [*] Add POS learn more modal flow [https://github.com/woocommerce/woocommerce-ios/pull/16528]
+
+23.9
+-----
+- [*] Show specific error when a variation is missing at POS checkout via WPCom login [https://github.com/woocommerce/woocommerce-ios/pull/16430]
+- [Internal] Moved the request for push notification authorization after login [https://github.com/woocommerce/woocommerce-ios/pull/16428]
+- [Internal] Cleaned up logic for push notification token registration [https://github.com/woocommerce/woocommerce-ios/pull/16434]
+- [*] Fixed possible sync issue in POS (https://github.com/woocommerce/woocommerce-ios/pull/16423)
+- [*] Prevent POS cash payment button showing during a card payment (https://github.com/woocommerce/woocommerce-ios/pull/16440)
+- [*] Enabled site troubleshooting for users authenticated with site credentials [https://github.com/woocommerce/woocommerce-ios/pull/16441]
+- [*] Troubleshooting tool: Add step to load products and technical details for decoding errors [https://github.com/woocommerce/woocommerce-ios/pull/16444]
+- [*] Use authenticated web view for updating plugins [https://github.com/woocommerce/woocommerce-ios/pull/16448]
+- [*] Fix a rare crash when opening the Coupon list [https://github.com/woocommerce/woocommerce-ios/pull/16478]
+- [*] Fixed an issue that could cause the keyboard to cover the product title when edited [https://github.com/woocommerce/woocommerce-ios/pull/16470]
+- [*] Fix application logs showing wrong year for some locales. (https://github.com/woocommerce/woocommerce-ios/pull/16471)
+- [*] Updated barcode scanner documentation URL in POS [https://github.com/woocommerce/woocommerce-ios/pull/16490]
+- [internal] Update Stripe Terminal to 4.7.3 [https://github.com/woocommerce/woocommerce-ios/pull/16467]
+- [Internal] Fix display of Just in Time Message banners [https://github.com/woocommerce/woocommerce-ios/pull/16480]
+
+23.8
+-----
+- [*] Better support site credential login for sites with captcha plugins [https://github.com/woocommerce/woocommerce-ios/pull/16372]
+- [*] Crash fix attempt to resolve the race condition in request authenticator swapping [https://github.com/woocommerce/woocommerce-ios/pull/16370]
+- [*] Update products on the Top Performers card when there are changes made to displayed products [https://github.com/woocommerce/woocommerce-ios/pull/16380]
+- [*] Fixed issue unregistering device from push notifications [https://github.com/woocommerce/woocommerce-ios/pull/16386]
+- [Internal] Fix broken navigation to a variable product selector [https://github.com/woocommerce/woocommerce-ios/pull/16363]
+-[***] POS uses a local on-device product catalog for fast barcode scanning, search, and product selection [https://github.com/woocommerce/woocommerce-ios/pull/16395]
+
+23.7
+-----
+- [**] We added support for collecting in-person payments (including Tap To Pay) using Stripe Payment Gateway extension in the UK. [https://github.com/woocommerce/woocommerce-ios/pull/16287]
+- [*] Improve card payments onboarding error handling to show network errors correctly [https://github.com/woocommerce/woocommerce-ios/pull/16304]
+- [*] Authenticate the admin page automatically for sites with SSO enabled in custom fields, in-person payment setup, and editing tax rates flows. [https://github.com/woocommerce/woocommerce-ios/pull/16318]
+- [*] Fix order details presentation when opened from booking details [https://github.com/woocommerce/woocommerce-ios/pull/16331]
+- [*] Show POS feedback surveys for eligible merchants [https://github.com/woocommerce/woocommerce-ios/pull/16325]
+- [*] Fix product variation selection for order creation [https://github.com/woocommerce/woocommerce-ios/pull/16317]
+- [internal] Hide non-CIAB product types from filters [https://github.com/woocommerce/woocommerce-ios/pull/16354] 
+- [Internal] Fix warning when displaying offline banner on My Store [https://github.com/woocommerce/woocommerce-ios/pull/16347]
+
+23.6
+-----
+- [*] Handle sites configured with `http` siteAddress. [https://github.com/woocommerce/woocommerce-ios/pull/16279]
+- [*] Use tabs cache state to display conditional tabs initially. [https://github.com/woocommerce/woocommerce-ios/pull/16292]
+- [*] Handle sites configured with `http` siteAddress.
+- [*] Fix: Unable to dismiss keyboard when editing Product Title. [https://github.com/woocommerce/woocommerce-ios/pull/16288]
+
+23.5
+-----
+- [internal] POS code was moved to its own module, including POS specific color and image assets. [https://github.com/woocommerce/woocommerce-ios/pull/16176]
+- [*] Fix Create Coupon screen scrolling issue. [https://github.com/woocommerce/woocommerce-ios/pull/16218]
+- [*] Order list: Allow filtering of Web, Point of Sale, and WP-Admin orders. [https://github.com/woocommerce/woocommerce-ios/pull/16228]
+- [**] POS: Allow merchants to view, search, and manage POS orders directly within the POS interface. [https://github.com/woocommerce/woocommerce-ios/pull/16198]
+
+23.4
+-----
+- [*] Order details: Fixes broken country selector navigation and "Non editable banner" width. [https://github.com/woocommerce/woocommerce-ios/pull/16171]
+- [*] Store widget: Fixes widget background colours for default and clean Liquid Glass mode. [https://github.com/woocommerce/woocommerce-ios/pull/16183]
+
+23.3
+-----
+- [*] Order details: Display only physical items in the Shipping Labels section. [https://github.com/woocommerce/woocommerce-ios/pull/16127]
+- [*] Product form: Display user-friendly error message when saving duplicated GTIN/UPC/EAN/ISBN. [https://github.com/woocommerce/woocommerce-ios/pull/16146]
+- [internal] Address deprecated view modifiers usage following iOS17 API updates [https://github.com/woocommerce/woocommerce-ios/pull/16080]
+- [***] Performance improvements for users logging in with WordPress.com accounts [https://github.com/woocommerce/woocommerce-ios/pull/16126]
+- [internal] Fix back swipe gesture detection compatibility for iOS26 [https://github.com/woocommerce/woocommerce-ios/pull/16133]
+- [internal] POS Modularization: Removed direct ServiceLocator usage within POS by requiring complex Woo app target dependencies to be injected via POS dependency protocols, and moved reusable dependencies to WooFoundation and Yosemite [https://github.com/woocommerce/woocommerce-ios/pull/16132]
+- [internal] Replace deprecated code on performance chart [https://github.com/woocommerce/woocommerce-ios/pull/16145]
+- [*] Workaround to make custom field decoding more reliable with sites which return incorrectly formatted meta_data for products, variations, and orders. [https://github.com/woocommerce/woocommerce-ios/pull/16141]
+
+23.2
+-----
+- [*] Blaze: Fixed issue dismissing the Blaze flow from an empty campaign list. [https://github.com/woocommerce/woocommerce-ios/pull/16085]
+- [*] POS: Enhanced cash payment experience with pre-filled amounts. [https://github.com/woocommerce/woocommerce-ios/pull/16058]
+- [*] POS: Point of Sale settings are now accessible in POS mode [https://github.com/woocommerce/woocommerce-ios/pull/16067]
+- [*] Shipping Labels: Show correct HAZMAT category for purchased labels. [https://github.com/woocommerce/woocommerce-ios/pull/16081]
+
+23.1
+-----
+- [internal] Remove oldest (<30) core data models [https://github.com/woocommerce/woocommerce-ios/pull/15987]
+- [***] Increased app's minimum deployment target to iOS17 [https://github.com/woocommerce/woocommerce-ios/pull/16003]
+- [*] Jetpack setup: Native experience for the connection step [https://github.com/woocommerce/woocommerce-ios/pull/15983]
+- [*] Payments: Updated the In-Person Payments `Learn More` redirection to display the correct page based on the selected payment provider [https://github.com/woocommerce/woocommerce-ios/pull/15998]
+- [*] Add "POS" label in Most recent orders in My store dashboard [https://github.com/woocommerce/woocommerce-ios/pull/16006]
+- [*] Order details: Always show shipping labels section if order is eligible for label creation. [https://github.com/woocommerce/woocommerce-ios/pull/16010]
+- [*] Order details: Remove print buttons from shipment details [https://github.com/woocommerce/woocommerce-ios/pull/16012]
+- [*] Shipping labels: Mark manually saved addresses as unverified [https://github.com/woocommerce/woocommerce-ios/pull/16013]
+- [*] Shipping Labels: Updated incorrect HS Tariff info page. [https://github.com/woocommerce/woocommerce-ios/pull/16016]
+
+23.0
+-----
+- [*] Increased decimal sensitivity in order creation to mitigate tax rounding issues [https://github.com/woocommerce/woocommerce-ios/pull/15957]
+- [*] Fix initialization of authenticator to avoid crashes during login [https://github.com/woocommerce/woocommerce-ios/pull/15953]
+- [*] Shipping Labels: Made HS tariff number field required in customs form for EU destinations [https://github.com/woocommerce/woocommerce-ios/pull/15946]
+- [*] Order Details: Attempt to improve performance by using a simplified version of product objects. [https://github.com/woocommerce/woocommerce-ios/pull/15959]
+- [*] Use simple product objects in Shipping Labels and Blaze flows. [https://github.com/woocommerce/woocommerce-ios/pull/15965]
+- [*] Product List: Load list with simplified product objects to improve performance. [https://teamkiwip2.wordpress.com/2025/08/01/hack-week-improving-performance-when-loading-cached-products/]
+- [*] Order Details > Edit Shipping/Billing Address: Added map-based address lookup support for iOS 17+. [https://github.com/woocommerce/woocommerce-ios/pull/15964]
+- [*] Order Creation: Prevent subscription products to be added to an order [https://github.com/woocommerce/woocommerce-ios/pull/15960]
+- [internal] Replace COTS_DEVICE reader model name with TAP_TO_PAY_DEVICE. [https://github.com/woocommerce/woocommerce-ios/pull/15961]
+[**] POS: Added a guided setup flow for barcode scanning, and improved the scanning experience with better error handling and support for starting a new order on scan. [https://github.com/woocommerce/woocommerce-ios/pull/15979]
+
+22.9
+-----
+- [*] Shipping Labels: Empty dimensions are no longer presented for product cards [https://github.com/woocommerce/woocommerce-ios/pull/15912]
+- [*] Shipping Labels: Improved VoiceOver accessibility [https://github.com/woocommerce/woocommerce-ios/pull/15912]
+- [**] Order Details: Update Shipping Labels section for stores with Woo Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15889]
+- [*] Order List: New orders made through Point of Sale are now filterable via the Order List filters menu [https://github.com/woocommerce/woocommerce-ios/pull/15910]
+- [*] POS: a POS tab in the tab bar is now available in the app for stores in countries eligible for Point of Sale, instead of the tab is only shown when the store is eligible for POS. [https://github.com/woocommerce/woocommerce-ios/pull/15918]
+- [*] Shipping Labels: Display base rate on selected shipping service cards [https://github.com/woocommerce/woocommerce-ios/pull/15916]
+- [*] Shipping Labels: Update mark order completed toggle on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15917]
+- [*] Shipping Labels: Allow confirming destination addresses when validation fails. [https://github.com/woocommerce/woocommerce-ios/pull/15928]
+- [*] Shipping Labels: Validate custom package dimensions [https://github.com/woocommerce/woocommerce-ios/pull/15925]
+- [*] Shipping Labels: Show UPS TOS modal in full length for better accessibility. [https://github.com/woocommerce/woocommerce-ios/pull/15926]
+- [*] Shipping Labels: Optimize data loading on purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15919]
+- [*] Shipping Labels: Cache settings and origin addresses to improve loading experience for purchase form [https://github.com/woocommerce/woocommerce-ios/pull/15935]
+- [*] Shipping Labels: Fixed UI glitch on the bottom sheet of the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15940]
+- [internal] Optimized assets for app size reduction [https://github.com/woocommerce/woocommerce-ios/pull/15881]
+- [*] Shipping Labels: Allow dots in HS tariff number input field for customs settings [https://github.com/woocommerce/woocommerce-ios/pull/15933]
+
+22.8
+-----
+- [*] Shipping Labels: Improve UI of Split shipments screen. [https://github.com/woocommerce/woocommerce-ios/pull/15838]
+- [*] POS: icon button with confirmation step used for clearing the cart [https://github.com/woocommerce/woocommerce-ios/pull/15829]
+- [*] POS: Orders from Point of Sale now show a badge in order list and order details [https://github.com/woocommerce/woocommerce-ios/pull/15887]
+- [*] Shipping Labels: Fixed a portion of layout issues caused by bigger accessibility content size categories. [https://github.com/woocommerce/woocommerce-ios/pull/15844]
+- [*] Shipping Labels: Enable the confirm button on the payment method sheet even when there are no changes. [https://github.com/woocommerce/woocommerce-ios/pull/15856]
+- [*] POS: start a new cart by scanning a barcode on the payment success screen [https://github.com/woocommerce/woocommerce-ios/pull/15870]
+- [*] Watch app: Fixed connection issue upon fresh install [https://github.com/woocommerce/woocommerce-ios/pull/15867]
+- [Internal] Shipping Labels: Optimize requests for syncing countries [https://github.com/woocommerce/woocommerce-ios/pull/15875]
+- [*] Shipping Labels: Display label size from account settings as default [https://github.com/woocommerce/woocommerce-ios/pull/15873]
+- [*] Shipping Labels: Ensured customs form validation enforces non-zero product weight to fix shipping rate loading failure. [https://github.com/woocommerce/woocommerce-ios/pull/15927]
+- [*] Shipping Labels: ITN number is now required for shipments with total value more than 2500. [https://github.com/woocommerce/woocommerce-ios/pull/15937]
+
+22.7
+-----
+- [*] Shipping Labels: Fixed an issue where the origin and destination addresses were missing for previously purchased shipping labels. [https://github.com/woocommerce/woocommerce-ios/pull/15866]
+- [*] Shipping Labels: Fixed an issue where the purchase button would display a stale price after changing the origin address. [https://github.com/woocommerce/woocommerce-ios/pull/15795]
+- [*] Order Details: Fix crash when reloading data [https://github.com/woocommerce/woocommerce-ios/pull/15764]
+- [*] Shipping Labels: Improved shipment management UI by hiding remove/merge options instead of disabling them, hiding merge option for orders with 2 or fewer unfulfilled shipments, and hiding the ellipsis menu when no remove/merge actions are available [https://github.com/woocommerce/woocommerce-ios/pull/15760]
+- [**] POS: a POS tab in the tab bar is now available in the app for stores eligible for Point of Sale, instead of the previous entry point in the Menu tab. [https://github.com/woocommerce/woocommerce-ios/pull/15766]
+- [***] POS: Barcode scanning using Bluetooth scanners in Point of Sale (HID-based scanners are supported) [https://github.com/woocommerce/woocommerce-ios/pull/15776]
+- [*] POS: Support refreshing product list when it's empty [https://github.com/woocommerce/woocommerce-ios/pull/15782]
+- [*] Shipping Labels: Fixed issue displaying fulfilled shipment after purchasing a label and quickly navigating back to the purchase form. [https://github.com/woocommerce/woocommerce-ios/pull/15790]
+- [*] Shipping Labels: Fixed mismatched indices of purchased labels on the order details screen. [https://github.com/woocommerce/woocommerce-ios/pull/15800]
+- [*] POS: Prevent card reader connection success alert flashing when connecting during a payment [https://github.com/woocommerce/woocommerce-ios/pull/15784]
+- [**] Shipping Labels: Support UPS extra services [https://github.com/woocommerce/woocommerce-ios/pull/15819, https://github.com/woocommerce/woocommerce-ios/pull/15821]
+- [*] Shipping Labels: Pre-fill custom forms with item description, value, and weight [https://github.com/woocommerce/woocommerce-ios/pull/15811]
+- [*] Shipping Labels: Pre-fill custom forms with item origin country [https://github.com/woocommerce/woocommerce-ios/pull/15835]
+- [internal] POS: Improved scrolling and animation performance by refactoring the shadow implementation and updating the cart and checkout views. [https://github.com/woocommerce/woocommerce-ios/pull/15817]
+
+22.6
+-----
+- [internal] Updated Xcode version to 16.4 [https://github.com/woocommerce/woocommerce-ios/pull/15696]
+- [*] Orders: Updated edit icons design to be consistent: [https://github.com/woocommerce/woocommerce-ios/pull/15685]
+- [internal] Reduced fields fetched for variations in Point of Sale [https://github.com/woocommerce/woocommerce-ios/pull/15712]
+- [*] Order List: Prevent last updated time being truncated at larger font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15717]
+- [***] Creating shipping labels is now supported for stores with the WooCommerce Shipping extension [https://github.com/woocommerce/woocommerce-ios/pull/15738]
+- [internal] Optimized image handling with a fallback thumbnail size for image views that have empty bounds, preventing high memory usage. [https://github.com/woocommerce/woocommerce-ios/pull/15815]
+
+22.5
+-----
+- [*] Payments: payment method icons on the payment methods screen no longer appear blurry. [https://github.com/woocommerce/woocommerce-ios/pull/15659]
+- [*] POS: for WooCommerce version 10.0.0 and higher (betas available in June), a new check for POS feature switch value (in wp-admin WooCommerce Settings > Advanced > Features) was added for the POS entry point. [https://github.com/woocommerce/woocommerce-ios/pull/15662]
+- [*] POS: for WooCommerce version 10.0.0 and higher (betas available in June) and stores eligible for POS, sending email from the payment success screen sends out POS specific email receipts with product unit price, additional cash/card payment details, and customizable store details from POS settings in wp-admin WooCommerce Settings > Point of Sale. [https://github.com/woocommerce/woocommerce-ios/pull/15674]
+- [internal] Optimized product image handling to reduce memory pressure by leveraging KingFisher's built-in capabilities [https://github.com/woocommerce/woocommerce-ios/pull/15629]
+- [*] Payments: Added a two-minute timeout when waiting for card payments, to reduce the risk of battery drain or mistaken payments. [https://github.com/woocommerce/woocommerce-ios/pull/15665]
+- [internal] POS: Handle payment intent creation error. [https://github.com/woocommerce/woocommerce-ios/pull/15661]
+- [*] Fixed VoiceOver issues for Blaze campaign flows [https://github.com/woocommerce/woocommerce-ios/pull/15687]
+- [*] Fixed accessibility issues on the Product details screen [https://github.com/woocommerce/woocommerce-ios/pull/15686]
+- [*] Removed domain purchase from app settings [https://github.com/woocommerce/woocommerce-ios/pull/15680]
+- [*] Removed customize domain onboarding task [https://github.com/woocommerce/woocommerce-ios/pull/15681]
+
+22.4
+-----
+- [*] Payments: Receipts for failed transactions are now available in Order details  [https://github.com/woocommerce/woocommerce-ios/pull/15558]
+- [*] Order Details: Improvements to textfield capitalization rules [https://github.com/woocommerce/woocommerce-ios/pull/15611]
+- [*] POS: Scrolling search results now dismisses the keyboard [https://github.com/woocommerce/woocommerce-ios/pull/15606]
+- [*] POS: Product search shows popular products before a search is entered. [https://github.com/woocommerce/woocommerce-ios/pull/15625]
+- [*] Order Creation: Display non-purchasable, zero-priced variable product variations [https://github.com/woocommerce/woocommerce-ios/pull/15620]
+- [*] POS: Improve error display in search screens [https://github.com/woocommerce/woocommerce-ios/pull/15627]
+- [*] POS: Added coupon search functionality [https://github.com/woocommerce/woocommerce-ios/pull/15634]
+- [*] Order Details: Fixed crash reloading the screen after refunding an order on the web. [https://github.com/woocommerce/woocommerce-ios/pull/15633]
+
+22.3
+-----
+- [internal] POS: Reduced prominence of the simple/variable products only banner [https://github.com/woocommerce/woocommerce-ios/pull/15539]
+- [internal] Attempt fixing (incorrect) crash upon database dropping [https://github.com/woocommerce/woocommerce-ios/pull/15546]
+- [**] POS: Product search added [https://github.com/woocommerce/woocommerce-ios/pull/15545]
+- [*] Payments: Prevent sleep during Tap to Pay on iPhone configuration step [https://github.com/woocommerce/woocommerce-ios/pull/15555]
+- [*] Payments: Use correct documentation link for pending requirements onboarding step [https://github.com/woocommerce/woocommerce-ios/pull/15556]
+- [**] POS: Added functionality for selecting and applying coupons. [https://github.com/woocommerce/woocommerce-ios/pull/15549]
+- [*] Order Form: Improve custom amount entry forms [https://github.com/woocommerce/woocommerce-ios/pull/15573]
+
+22.2
+-----
+- [internal] Improved login flow during Jetpack Setup for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15491]
+- [internal] Update Sentry to 8.46.0 to allow building with Xcode 16.3 [https://github.com/woocommerce/woocommerce-ios/pull/15503]
+- [*] Product Form: Fixed an issue where a draft variable product cannot be published [https://github.com/woocommerce/woocommerce-ios/pull/15513]
+- [internal] Fixed the issue where some product thumbnails appeared blurry [https://github.com/woocommerce/woocommerce-ios/pull/15517]
+
+22.1
+-----
+- [*] Order Creation: Resolved an issue where the exit confirmation was not displayed when there were unsaved changes in a split view [https://github.com/woocommerce/woocommerce-ios/pull/15394].
+- [*] Order Creation: Fixed an issue where order recalculation would stop working after canceling a confirmation with unsaved changes [https://github.com/woocommerce/woocommerce-ios/pull/15392].
+- [*] [Internal] Improved login flow for accounts using emails marked as suspicious [https://github.com/woocommerce/woocommerce-ios/pull/15444]
+- [*] Order Creation: Updated the customer first/last name parsing after selecting a customer to support multi-word last names. [https://github.com/woocommerce/woocommerce-ios/pull/15462]
+- [*] Order Creation/Editing: Fixed blurry icons for product scanning, QR code & Tap To Pay payment methods. Polished checkmark icon color in selected product row. [https://github.com/woocommerce/woocommerce-ios/pull/15465]
+- [internal] POS: Always create a new order during the checkout [https://github.com/woocommerce/woocommerce-ios/pull/15427].
+- [internal] Improve data fetching in Order Details, to avoid I/O performance on the main thread. [https://github.com/woocommerce/woocommerce-ios/pull/14999]
+- [internal] POS: Show location pre-alert and error during reader connection [https://github.com/woocommerce/woocommerce-ios/pull/15456].
+- [internal] Payments: update reader preparation spinner color [https://github.com/woocommerce/woocommerce-ios/pull/15460]
 
 22.0
 -----
@@ -7,7 +276,11 @@
 - [*] Product Form: Fix crash related to picking photos [https://github.com/woocommerce/woocommerce-ios/pull/15275]
 - [internal] Assign `siteID` and `productID` to image product upload statuses. [https://github.com/woocommerce/woocommerce-ios/pull/15196]
 - [*] Payments: Improved payment views' adaptability to larger accessibility font sizes [https://github.com/woocommerce/woocommerce-ios/pull/15328].
+- [*] Added an entry point to Troubleshoot Connection from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/15391]
+- [**] Filters in Orders and Products lists are now persisted. [https://github.com/woocommerce/woocommerce-ios/issues/14791]
 - [internal] Add site related properties to crowdsignal surveys. [https://github.com/woocommerce/woocommerce-ios/pull/15353]
+- [internal] Update Stripe Terminal SDK to 4.2.0 [https://github.com/woocommerce/woocommerce-ios/pull/15377]
+- [**] Notification settings are now available for configuring notifications for each store. [https://github.com/woocommerce/woocommerce-ios/pull/15386]
 
 21.9
 -----
@@ -690,7 +963,7 @@
 - [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 - [Internal] Google sign in now defaults to bypassing the Google SDK [https://github.com/woocommerce/woocommerce-ios/pull/10341]
 - [*] Product list filter (Products tab and order creation > add products > filter): product types from extensions supported in the app are now available for product filtering - subscription, variable subscription, bundle, and composite. [https://github.com/woocommerce/woocommerce-ios/pull/10382]
- 
+
 14.7
 -----
 - [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]

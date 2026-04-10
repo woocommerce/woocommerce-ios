@@ -50,19 +50,6 @@ final class PaymentsRouteTests: XCTestCase {
         assertEqual(PaymentsMenuDestination.tapToPay, navigatedDestination)
     }
 
-    func test_performAction_forwards_collect_payment_deep_link_to_hub_menu() throws {
-        // Given
-        let path = "payments/collect-payment"
-
-        // When
-        let reportedHandled = sut.perform(for: path, with: [:])
-
-        // Then
-        XCTAssertTrue(reportedHandled)
-        let navigatedDestination = try XCTUnwrap(deepLinkNavigator.spyNavigatedDestination as? PaymentsMenuDestination)
-        assertEqual(PaymentsMenuDestination.collectPayment, navigatedDestination)
-    }
-
     func test_performAction_does_not_forward_unrecognised_deep_link_to_hub_menu() {
         // Given
         let path = "payments/some-future-feature"

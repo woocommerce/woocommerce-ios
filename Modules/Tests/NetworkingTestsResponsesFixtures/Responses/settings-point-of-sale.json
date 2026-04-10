@@ -1,0 +1,144 @@
+[
+    {
+        "id": "woocommerce_pos_store_name",
+        "label": "Store name",
+        "description": "The name of your physical store.",
+        "type": "text",
+        "default": "Best store",
+        "value": "Best store",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale/woocommerce_pos_store_name",
+                    "targetHints": {
+                        "allow": [
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                        ]
+                    }
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_pos_store_address",
+        "label": "Physical address",
+        "description": "",
+        "type": "textarea",
+        "default": "60 29th Street #3434\nSan Francisco, CA 94110",
+        "tip": "",
+        "value": "60 29th Street #343\r\nCalifornia, CA 94110",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale/woocommerce_pos_store_address",
+                    "targetHints": {
+                        "allow": [
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                        ]
+                    }
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_pos_store_phone",
+        "label": "Phone number",
+        "description": "",
+        "type": "text",
+        "default": "",
+        "value": "650-000-0000",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale/woocommerce_pos_store_phone",
+                    "targetHints": {
+                        "allow": [
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                        ]
+                    }
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_pos_store_email",
+        "label": "Email",
+        "description": "Your store contact email.",
+        "type": "email",
+        "default": "some@email.com",
+        "value": "some@email.com",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale/woocommerce_pos_store_email",
+                    "targetHints": {
+                        "allow": [
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                        ]
+                    }
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale"
+                }
+            ]
+        }
+    },
+    {
+        "id": "woocommerce_pos_refund_returns_policy",
+        "label": "Refund & Returns Policy",
+        "description": "Brief statement that will appear on the receipts.",
+        "type": "textarea",
+        "default": "",
+        "tip": "Brief statement that will appear on the receipts.",
+        "value": "This is a brief refunds and return policy",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale/woocommerce_pos_refund_returns_policy",
+                    "targetHints": {
+                        "allow": [
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "PATCH"
+                        ]
+                    }
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://mystagingwebsite.com/wp-json/wc/v3/settings/point-of-sale"
+                }
+            ]
+        }
+    }
+]

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.WooRoundedBorderTextFieldStyle
 
 /// Displays a collapsible customer card that shows customer details in the collapsed and expanded states.
 struct CollapsibleCustomerCard: View {
@@ -25,7 +26,7 @@ struct CollapsibleCustomerCard: View {
                 VStack(alignment: .leading) {
                     Text(Localization.emailAddressTitle)
                     TextField(Localization.emailAddressPlaceholder, text: $viewModel.email)
-                        .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                        .textFieldStyle(WooRoundedBorderTextFieldStyle(focused: true))
                 }
 
                 Text("Create new customer toggle")

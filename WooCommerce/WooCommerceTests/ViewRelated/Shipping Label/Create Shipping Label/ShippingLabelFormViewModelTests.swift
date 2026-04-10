@@ -1,4 +1,5 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 @testable import Storage
@@ -262,6 +263,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedDimensions = ProductDimensions(length: "10", width: "10", height: "10")
         let packageName = "package-name"
         let givenPackageItem = ShippingLabelPackageItem(productOrVariationID: 0,
+                                                        orderItemID: 123,
                                                         name: packageName,
                                                         weight: 10.0,
                                                         quantity: 1,
@@ -304,6 +306,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         let expectedDimensions = ProductDimensions(length: "10", width: "10", height: "10")
         let packageName = "package-name"
         let givenPackageItem = ShippingLabelPackageItem(productOrVariationID: 0,
+                                                        orderItemID: 123,
                                                         name: packageName,
                                                         weight: 10.0,
                                                         quantity: 1,

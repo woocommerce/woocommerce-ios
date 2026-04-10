@@ -102,11 +102,11 @@ private extension ProductCreationAIStartingInfoView {
             .padding(insets: Layout.messageContentInsets)
             .focused($editorIsFocused)
             // Scrolls to the "TextField" view with a smooth animation while typing.
-            .onChange(of: viewModel.features) { _ in
+            .onChange(of: viewModel.features) { _, _ in
                 scrollToTextField(using: proxy)
             }
             // Scrolls to the "TextField" view with a smooth animation when the editor is focused in a small screen.
-            .onChange(of: editorIsFocused) { isFocused in
+            .onChange(of: editorIsFocused) { _, isFocused in
                 if isFocused {
                     scrollToTextField(using: proxy)
                 }

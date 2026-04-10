@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 import class Photos.PHAsset
 import enum Networking.NetworkError

@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 
 /// Enables the user to select multiple products from a paginated list.
@@ -54,7 +55,7 @@ final class ProductListMultiSelectorDataSource: PaginatedListSelectorDataSource 
     func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .default
 
-        let viewModel = ProductsTabProductViewModel(product: model, isSelected: isSelected(model: model))
+        let viewModel = ProductsTabProductViewModel(product: model.toListItem(), isSelected: isSelected(model: model))
         cell.update(viewModel: viewModel, imageService: imageService)
     }
 

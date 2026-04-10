@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
@@ -87,7 +88,7 @@ struct ProductRow: View {
         Image(uiImage: viewModel.selectedState.image)
             .resizable()
             .frame(width: Layout.checkImageSize * scale, height: Layout.checkImageSize * scale)
-            .foregroundColor(isEnabled ? Color(.brand) : .gray)
+            .foregroundColor(isEnabled ? Color(.accent) : .gray)
     }
 }
 

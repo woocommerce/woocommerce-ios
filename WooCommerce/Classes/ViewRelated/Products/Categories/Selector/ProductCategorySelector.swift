@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// View showing a list of product categories to select from.
 ///

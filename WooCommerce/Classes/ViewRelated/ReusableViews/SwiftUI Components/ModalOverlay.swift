@@ -30,7 +30,6 @@ struct ModalOverlay<OverlayContent: View>: View {
                 GeometryReader { geometry in
                     VStack {
                         content()
-                            .padding(16)
                             .frame(width: geometry.size.width * 0.75)
                             .frame(maxHeight: geometry.size.height * 0.8)
                             .fixedSize(horizontal: false, vertical: true) // these three modifiers define the container size
@@ -44,7 +43,7 @@ struct ModalOverlay<OverlayContent: View>: View {
                 .animation(.easeInOut(duration: 0.25), value: internalIsPresented)
             }
         }
-        .onChange(of: isPresented) { newValue in
+        .onChange(of: isPresented) { _, newValue in
             withAnimation {
                 internalIsPresented = newValue
             }

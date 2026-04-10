@@ -5,11 +5,14 @@
 <p align="center">A Jetpack-powered companion app for WooCommerce.</p>
 
 <p align="center">
-    <a href="https://circleci.com/gh/woocommerce/woocommerce-ios">
-        <img src="https://circleci.com/gh/woocommerce/woocommerce-ios.svg?style=svg" alt="CircleCI">
+    <a href="https://buildkite.com/automattic/woocommerce-ios">
+        <img src="https://badge.buildkite.com/5ad3c27f663ae4f3a3b443c1f7a5ca20e737ffe78aad15e1ec.svg?branch=trunk">
     </a>
-    <a href="https://houndci.com">
-        <img src="https://img.shields.io/badge/Reviewed_by-Hound-8E64B0.svg" alt="Reviewed by Hound">
+    <a href="https://github.com/woocommerce/woocommerce-ios/releases">
+        <img alt="Release" src="https://img.shields.io/github/v/tag/woocommerce/woocommerce-ios?label=release&sort=semver">
+    </a>
+    <a href="https://github.com/woocommerce/woocommerce-ios/blob/trunk/LICENSE">
+        <img alt="License" src="https://img.shields.io/github/license/woocommerce/woocommerce-ios">
     </a>
 </p>
 
@@ -50,10 +53,10 @@
 
 
     ```bash
-    bundle install && bundle exec rake dependencies
+    brew install xz && bundle install && bundle exec rake dependencies
     ```
 
-    This command installs the required tools like [CocoaPods](https://cocoapods.org/). And then it installs the iOS project dependencies using CocoaPods.
+    This command installs the required build tools and dependencies.
 
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 

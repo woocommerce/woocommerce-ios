@@ -52,11 +52,16 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
         super.awakeFromNib()
         applyCellStyles()
         applyAccessibilityChanges()
-    }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        applyAccessibilityChanges()
+        let traits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitUserInterfaceIdiom.self,
+            UITraitVerticalSizeClass.self
+        ]
+
+        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+            self.applyAccessibilityChanges()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

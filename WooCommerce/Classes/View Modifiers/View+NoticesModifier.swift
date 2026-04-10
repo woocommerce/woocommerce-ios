@@ -64,13 +64,15 @@ struct NoticeModifier: ViewModifier {
                     Spacer()
                     HStack(spacing: 0.0) {
                         VStack {
-                            HStack {
-                                Text(notice.title)
-                                    .lineLimit(notice.message.isNilOrEmpty ? 0 : 2)
-                                Spacer()
+                            if let title = notice.title {
+                                HStack {
+                                    Text(title)
+                                        .lineLimit(notice.message.isNilOrEmpty ? 0 : 2)
+                                    Spacer()
+                                }
+                                .font(Constants.titleFont)
+                                .foregroundColor(Constants.titleColor)
                             }
-                            .font(Constants.titleFont)
-                            .foregroundColor(Constants.titleColor)
                             if let subtitle = notice.subtitle {
                                 HStack {
                                     Text(subtitle)
@@ -81,7 +83,7 @@ struct NoticeModifier: ViewModifier {
                             }
                             if let message = notice.message {
                                 HStack {
-                                    Text(message)
+                                    BoldableTextView(message)
                                     Spacer()
                                 }
                                 .font(Constants.messageFont)
@@ -118,7 +120,7 @@ struct NoticeModifier: ViewModifier {
                             performClearNoticeTask()
                         })
                     )
-                    .onChange(of: notice) { _ in
+                    .onChange(of: notice) {
                         provideHapticFeedbackIfNecessary(notice.feedbackType)
                         dispatchClearNoticeTask()
                     }

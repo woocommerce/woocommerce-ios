@@ -1,0 +1,111 @@
+{
+  "data": [
+    {
+      "id": 168,
+      "name": "Beanie",
+      "type": "simple",
+      "sku": "Woo-beanie",
+      "description": "",
+      "short_description": "",
+      "price": "18",
+      "regular_price": "20",
+      "sale_price": "18",
+      "on_sale": true,
+      "downloadable": false,
+      "parent_id": 0,
+      "images": [
+        {
+          "id": 192,
+          "date_created": "2024-10-31T05:19:56",
+          "date_created_gmt": "2024-10-31T05:19:56",
+          "date_modified": "2025-08-25T07:27:52",
+          "date_modified_gmt": "2025-08-25T07:27:52",
+          "src": "https://example.com/wp-content/uploads/2024/10/beanie-1.jpg",
+          "name": "beanie-1.jpg",
+          "alt": "",
+          "srcset": "",
+          "thumbnail": "https://example.com/wp-content/uploads/2024/10/beanie-300x300.jpg"
+        }
+      ],
+      "attributes": [
+        {
+          "id": 1,
+          "name": "Color",
+          "slug": "pa_color",
+          "position": 0,
+          "visible": true,
+          "variation": false,
+          "options": [
+            "Orange"
+          ]
+        }
+      ],
+      "manage_stock": false,
+      "stock_quantity": null,
+      "stock_status": "instock",
+      "status": "publish",
+      "global_unique_id": ""
+    },
+    {
+      "id": 119,
+      "name": "Latte",
+      "type": "variable",
+      "sku": "200815216",
+      "description": "",
+      "short_description": "",
+      "price": "7",
+      "regular_price": "",
+      "sale_price": "",
+      "on_sale": false,
+      "downloadable": false,
+      "parent_id": 0,
+      "images": [
+        {
+          "id": 118,
+          "date_created": "2024-10-30T15:01:52",
+          "date_created_gmt": "2024-10-30T15:01:52",
+          "date_modified": "2025-08-25T07:19:33",
+          "date_modified_gmt": "2025-08-25T07:19:33",
+          "src": "https://example.com/wp-content/uploads/2024/10/dsc01913.jpeg",
+          "name": "dsc01913",
+          "alt": "",
+          "srcset": "",
+          "sizes": "(max-width: 1616px) 100vw, 1616px",
+          "thumbnail": "https://example.com/wp-content/uploads/2024/10/dsc01913-300x300.jpeg"
+        }
+      ],
+      "attributes": [
+        {
+          "id": 2,
+          "name": "Size",
+          "slug": "pa_size",
+          "position": 0,
+          "visible": true,
+          "variation": true,
+          "options": [
+            "Large",
+            "Medium"
+          ]
+        },
+        {
+          "id": 0,
+          "name": "Espresso shot",
+          "slug": "Espresso shot",
+          "position": 0,
+          "visible": true,
+          "variation": true,
+          "options": [
+            "single",
+            "triple"
+          ]
+        }
+      ],
+      "manage_stock": true,
+      "stock_quantity": 10,
+      "stock_status": "instock",
+      "status": "publish",
+      "global_unique_id": ""
+    }
+  ]
+}
+

@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 /// View to be displayed when the Jetpack connection flow is dismissed.
 /// This screen is used only in the Jetpack setup flow for non-JCP sites.

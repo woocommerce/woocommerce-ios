@@ -62,7 +62,7 @@ class ErrorTopBannerFactoryTests: XCTestCase {
 
     func test_troubleshootUrl_for_jetpack_connection_error_returns_expected_Url() {
         // Given
-        let troubleshootUrl = ErrorTopBannerFactory.troubleshootUrl(for: DotcomError.jetpackNotConnected)
+        let troubleshootUrl = ErrorTopBannerFactory.troubleshootUrl(for: DotcomError.jetpackNotConnected())
 
         // Then
         XCTAssertEqual(troubleshootUrl, WooConstants.URLs.troubleshootJetpackConnection.asURL())

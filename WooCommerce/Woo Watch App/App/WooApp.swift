@@ -1,5 +1,6 @@
 import SwiftUI
-import NetworkingWatchOS
+import NetworkingCore
+import WooFoundationCore
 
 @main
 struct Woo_Watch_AppApp: App {
@@ -28,9 +29,14 @@ struct Woo_Watch_AppApp: App {
                                 .tag(WooWatchTab.ordersList)
                         }
                     }
-                    .sheet(item: $appBindings.orderNotification, content: { orderNotification in
-                        OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)
-                    })
+                    .sheet(isPresented: Binding(
+                        get: { appBindings.orderNotification != nil },
+                        set: { if !$0 { appBindings.orderNotification = nil } }
+                    )) {
+                        if let orderNotification = appBindings.orderNotification {
+                            OrderDetailLoader(dependencies: dependencies, pushNotification: orderNotification)
+                        }
+                    }
                     .compatibleVerticalStyle()
                     .environment(\.dependencies, dependencies)
                     .environment(\.appBindings, appBindings)

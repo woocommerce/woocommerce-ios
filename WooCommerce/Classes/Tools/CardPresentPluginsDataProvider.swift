@@ -1,6 +1,7 @@
 import Yosemite
 import Foundation
 import Storage
+import class WooFoundation.VersionHelpers
 
 /// Provides information about which of the payment plugins (WCPay and Stripe) are installed and active
 ///
@@ -95,12 +96,6 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
         }
         return storageManager.viewStorage
             .loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
-            .first(where: { $0.fileNameWithoutExtension == configuration.fileNameWithoutExtension })
-    }
-}
-
-extension Yosemite.SystemPlugin {
-    var fileNameWithoutExtension: String {
-        ((plugin as NSString).lastPathComponent as NSString).deletingPathExtension
+            .first(where: { Plugin(systemPlugin: $0) == configuration.plugin })
     }
 }

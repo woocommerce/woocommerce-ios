@@ -48,11 +48,32 @@ extension PromotableProductType: FilterType {
     }
 
     var description: String {
-        productType.description
+        productType.filterListPresentableDescription
     }
 
     var isActive: Bool {
         productType.isActive
+    }
+}
+
+private extension ProductType {
+    enum Localization {
+        static let service = NSLocalizedString(
+            "ProductType.service",
+            value: "Service",
+            comment: "Bookable product type label interpretation as Service. Presented in product type picker in filters."
+        )
+    }
+
+    /// Override the presentable label of `Booking` product presented in filters
+    /// "Booking" should be presented as "Service"
+    var filterListPresentableDescription: String {
+        switch self {
+        case .booking:
+            return Localization.service
+        default:
+            return description
+        }
     }
 }
 

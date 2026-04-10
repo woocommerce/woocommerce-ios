@@ -67,9 +67,6 @@ struct ProductSelectorView: View {
         guard viewModel.totalSelectedItemsCount > 0 else {
             return Localization.doneButton
         }
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) else {
-            return viewModel.selectProductsTitle
-        }
         return Localization.addProductsText
     }
 
@@ -77,8 +74,7 @@ struct ProductSelectorView: View {
     ///
     private var navigationTitle: String {
         let narrowView = (horizontalSizeClass == .compact || isViewWidthNarrowerThanConstantRowWidth)
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm),
-              narrowView, configuration.multipleSelectionEnabled else {
+        guard narrowView, configuration.multipleSelectionEnabled else {
             return configuration.title
         }
         return viewModel.selectProductsTitle
@@ -86,11 +82,7 @@ struct ProductSelectorView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.sideBySideViewForOrderForm) {
-                productSelectorHeader
-            } else {
-                legacyProductSelectorHeader
-            }
+            productSelectorHeader
 
             switch viewModel.syncStatus {
             case .results:
@@ -124,17 +116,23 @@ struct ProductSelectorView: View {
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
                     .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
-
-                    if let variationListViewModel = viewModel.productVariationListViewModel {
-                        LazyNavigationLink(destination: ProductVariationSelectorView(
-                            isPresented: $isPresented,
-                            viewModel: variationListViewModel,
-                            onMultipleSelections: { selectedIDs in
-                                viewModel.updateSelectedVariations(productID: variationListViewModel.productID, selectedVariationIDs: selectedIDs)
-                            }), isActive: $viewModel.isShowingProductVariationList) {
-                                EmptyView()
-                            }
-                            .renderedIf(configuration.treatsAllProductsAsSimple == false)
+                }
+                .if(configuration.treatsAllProductsAsSimple == false) { view in
+                    view.navigationDestination(isPresented: $viewModel.isShowingProductVariationList) {
+                        if let variationListViewModel = viewModel.productVariationListViewModel {
+                            ProductVariationSelectorView(
+                                isPresented: $isPresented,
+                                viewModel: variationListViewModel,
+                                onMultipleSelections: { selectedIDs in
+                                    viewModel.updateSelectedVariations(
+                                        productID: variationListViewModel.productID,
+                                        selectedVariationIDs: selectedIDs
+                                    )
+                                }
+                            )
+                        } else {
+                            EmptyView()
+                        }
                     }
                 }
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -177,9 +175,9 @@ struct ProductSelectorView: View {
             viewModel.onLoadTrigger.send()
             updateSyncApproach(for: horizontalSizeClass)
         }
-        .onChange(of: horizontalSizeClass, perform: { newSizeClass in
+        .onChange(of: horizontalSizeClass) { _, newSizeClass in
             updateSyncApproach(for: newSizeClass)
-        })
+        }
         // On the order form, this is not connected; the OrderForm displays the notices.
         .notice($viewModel.notice, autoDismiss: false)
         .sheet(isPresented: $showingFilters) {
@@ -193,7 +191,6 @@ struct ProductSelectorView: View {
                 // no-op
             }
         }
-        .interactiveDismissDisabled()
     }
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
@@ -224,16 +221,21 @@ struct ProductSelectorView: View {
                 ProductRow(multipleSelectionsEnabled: true,
                            viewModel: rowViewModel,
                            onCheckboxSelected: {
-                    viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
+                    if rowViewModel.selectionEnabled {
+                        viewModel.variationCheckboxTapped(for: rowViewModel.productOrVariationID)
+                    }
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .onTapGesture {
-                    viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
+                    if rowViewModel.selectionEnabled {
+                        viewModel.variationRowTapped(for: rowViewModel.productOrVariationID)
+                    }
                 }
                 .redacted(reason: viewModel.showPlaceholders ? .placeholder : [])
                 .disabled(viewModel.selectionDisabled)
 
                 DisclosureIndicator()
+                    .renderedIf(rowViewModel.selectionEnabled)
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
@@ -294,41 +296,6 @@ private extension ProductSelectorView {
         Divider()
     }
 
-    @ViewBuilder var legacyProductSelectorHeader: some View {
-        SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-            searchHeaderisBeingEdited = isEditing
-        })
-        .padding(.horizontal, insets: safeAreaInsets)
-        .accessibilityIdentifier("product-selector-search-bar")
-        Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-            ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
-        }
-        .pickerStyle(.segmented)
-        .padding(.leading)
-        .padding(.trailing)
-        .renderedIf(searchHeaderisBeingEdited)
-
-        HStack {
-            Button(Localization.clearSelection) {
-                viewModel.clearSelection()
-            }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
-            .disabled(isClearSelectionDisabled)
-            .renderedIf(configuration.multipleSelectionEnabled)
-
-            Spacer()
-
-            Button(viewModel.filterButtonTitle) {
-                showingFilters.toggle()
-                ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: viewModel.source.filterAnalyticsSource))
-            }
-            .buttonStyle(LinkButtonStyle())
-            .fixedSize()
-        }
-        .padding(.horizontal, insets: safeAreaInsets)
-    }
-
     @ViewBuilder private var productSelectorHeaderTitleRow: some View {
         GeometryReader { geometry in
             HStack {
@@ -357,7 +324,7 @@ private extension ProductSelectorView {
             .onAppear(perform: {
                 adjustViewWidthIfNeeded(using: geometry.size.width)
             })
-            .onChange(of: geometry.size.width) { newViewWidth in
+            .onChange(of: geometry.size.width) { _, newViewWidth in
                 adjustViewWidthIfNeeded(using: newViewWidth)
             }
         }
@@ -374,7 +341,7 @@ private extension ProductSelectorView {
                 .submitLabel(.done)
                 .accessibilityIdentifier("product-selector-search-bar")
                 Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                    ForEach(ProductSearchFilter.allCases, id: \.self) { option in Text(option.title) }
+                    ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
                 }
                 .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
                 .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }

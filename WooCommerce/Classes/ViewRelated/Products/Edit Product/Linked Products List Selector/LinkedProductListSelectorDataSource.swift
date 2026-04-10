@@ -74,7 +74,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     func configureCell(cell: ProductsTabProductTableViewCell, model: Product) {
         cell.selectionStyle = .none
 
-        let viewModel = ProductsTabProductViewModel(product: model, isDraggable: true)
+        let viewModel = ProductsTabProductViewModel(product: model.toListItem(), isDraggable: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in

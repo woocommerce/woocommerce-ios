@@ -1,0 +1,203 @@
+[
+  {
+    "type": "simple",
+    "data": {
+      "id": 48,
+      "sku": "synergistic-copper-clock-61732018",
+      "global_unique_id": "61732018",
+      "name": "Synergistic Copper Clock",
+      "short_description": "Aut nulla accusantium mollitia aut dolor. Nesciunt dolor eligendi enim voluptas.",
+      "description": "Assumenda id quidem iste incidunt velit. Illo quae voluptatem voluptatum tempore in fuga.",
+      "stock_status": "instock",
+      "manage_stock": false,
+      "stock_quantity": null,
+      "price": 220,
+      "images": [
+        {
+          "id": 77,
+          "date_created": "2025-08-06T02:37:12",
+          "date_created_gmt": "2025-08-06T02:37:12",
+          "date_modified": "2025-08-06T02:37:12",
+          "date_modified_gmt": "2025-08-06T02:37:12",
+          "src": "https://example.com/wp-content/uploads/2025/08/img-ad.png",
+          "name": "img-ad.png",
+          "alt": "",
+          "srcset": "https://example.com/wp-content/uploads/2025/08/img-ad.png 700w, https://example.com/wp-content/uploads/2025/08/img-ad-300x300.png 300w, https://example.com/wp-content/uploads/2025/08/img-ad-150x150.png 150w, https://example.com/wp-content/uploads/2025/08/img-ad-600x600.png 600w, https://example.com/wp-content/uploads/2025/08/img-ad-100x100.png 100w",
+          "sizes": "(max-width: 700px) 100vw, 700px",
+          "thumbnail": "https://example.com/wp-content/uploads/2025/08/img-ad-300x300.png"
+        }
+      ],
+      "parent_id": 0,
+      "attributes": [],
+      "downloadable": false,
+      "status": "publish",
+      "type": "simple"
+    }
+  },
+  {
+    "type": "variable",
+    "data": {
+      "id": 31,
+      "sku": "incredible-silk-chair-13060312",
+      "global_unique_id": "",
+      "name": "Incredible Silk Chair",
+      "short_description": "",
+      "description": "",
+      "stock_status": "onbackorder",
+      "manage_stock": true,
+      "stock_quantity": -83,
+      "price": 134.58,
+      "images": [
+        {
+          "id": 61,
+          "date_created": "2025-08-06T02:37:03",
+          "date_created_gmt": "2025-08-06T02:37:03",
+          "date_modified": "2025-08-06T02:37:03",
+          "date_modified_gmt": "2025-08-06T02:37:03",
+          "src": "https://example.com/wp-content/uploads/2025/08/img-harum.png",
+          "name": "img-harum.png",
+          "alt": "",
+          "srcset": "https://example.com/wp-content/uploads/2025/08/img-harum.png 700w, https://example.com/wp-content/uploads/2025/08/img-harum-300x300.png 300w, https://example.com/wp-content/uploads/2025/08/img-harum-150x150.png 150w, https://example.com/wp-content/uploads/2025/08/img-harum-600x600.png 600w, https://example.com/wp-content/uploads/2025/08/img-harum-100x100.png 100w",
+          "sizes": "(max-width: 700px) 100vw, 700px",
+          "thumbnail": "https://example.com/wp-content/uploads/2025/08/img-harum-300x300.png"
+        }
+      ],
+      "parent_id": 0,
+      "attributes": [
+        {
+          "id": 1,
+          "name": "Size",
+          "position": 0,
+          "visible": true,
+          "variation": true,
+          "options": [
+            "Earum"
+          ]
+        },
+        {
+          "id": 0,
+          "name": "Ab",
+          "position": 1,
+          "visible": true,
+          "variation": true,
+          "options": [
+            "deserunt",
+            "ea",
+            "ut"
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Numeric Size",
+          "position": 2,
+          "visible": true,
+          "variation": true,
+          "options": [
+            "19",
+            "8",
+            "9",
+            "At",
+            "Reiciendis"
+          ]
+        }
+      ],
+      "downloadable": false,
+      "status": "publish",
+      "type": "variable"
+    }
+  },
+  {
+    "type": "variation",
+    "data": {
+      "id": 32,
+      "sku": "",
+      "global_unique_id": "",
+      "name": "Incredible Silk Chair",
+      "short_description": "",
+      "description": "",
+      "stock_status": "instock",
+      "manage_stock": true,
+      "stock_quantity": 69,
+      "price": 330.34,
+      "image": {
+        "id": 62,
+        "date_created": "2025-08-06T02:37:04",
+        "date_created_gmt": "2025-08-06T02:37:04",
+        "date_modified": "2025-08-06T02:37:04",
+        "date_modified_gmt": "2025-08-06T02:37:04",
+        "src": "https://example.com/wp-content/uploads/2025/08/img-quae.png",
+        "name": "img-quae.png",
+        "alt": "",
+        "srcset": "https://example.com/wp-content/uploads/2025/08/img-quae.png 700w, https://example.com/wp-content/uploads/2025/08/img-quae-300x300.png 300w, https://example.com/wp-content/uploads/2025/08/img-quae-150x150.png 150w, https://example.com/wp-content/uploads/2025/08/img-quae-600x600.png 600w, https://example.com/wp-content/uploads/2025/08/img-quae-100x100.png 100w",
+        "sizes": "(max-width: 700px) 100vw, 700px",
+        "thumbnail": "https://example.com/wp-content/uploads/2025/08/img-quae-300x300.png"
+      },
+      "parent_id": 31,
+      "attributes": [
+        {
+          "id": 1,
+          "name": "Size",
+          "option": "Earum"
+        },
+        {
+          "id": 0,
+          "name": "ab",
+          "option": "deserunt"
+        },
+        {
+          "id": 2,
+          "name": "Numeric Size",
+          "option": "19"
+        }
+      ],
+      "downloadable": false
+    }
+  },
+  {
+    "type": "variation",
+    "data": {
+      "id": 33,
+      "sku": "",
+      "global_unique_id": "",
+      "name": "Incredible Silk Chair",
+      "short_description": "",
+      "description": "",
+      "stock_status": "instock",
+      "manage_stock": true,
+      "stock_quantity": 64,
+      "price": 580.05,
+      "image": {
+        "id": 63,
+        "date_created": "2025-08-06T02:37:05",
+        "date_created_gmt": "2025-08-06T02:37:05",
+        "date_modified": "2025-08-06T02:37:05",
+        "date_modified_gmt": "2025-08-06T02:37:05",
+        "src": "https://example.com/wp-content/uploads/2025/08/img-delectus-1.png",
+        "name": "img-delectus-1.png",
+        "alt": "",
+        "srcset": "https://example.com/wp-content/uploads/2025/08/img-delectus-1.png 700w, https://example.com/wp-content/uploads/2025/08/img-delectus-1-300x300.png 300w, https://example.com/wp-content/uploads/2025/08/img-delectus-1-150x150.png 150w, https://example.com/wp-content/uploads/2025/08/img-delectus-1-600x600.png 600w, https://example.com/wp-content/uploads/2025/08/img-delectus-1-100x100.png 100w",
+        "sizes": "(max-width: 700px) 100vw, 700px",
+        "thumbnail": "https://example.com/wp-content/uploads/2025/08/img-delectus-1-300x300.png"
+      },
+      "parent_id": 31,
+      "attributes": [
+        {
+          "id": 1,
+          "name": "Size",
+          "option": "Earum"
+        },
+        {
+          "id": 0,
+          "name": "ab",
+          "option": "deserunt"
+        },
+        {
+          "id": 2,
+          "name": "Numeric Size",
+          "option": "8"
+        }
+      ],
+      "downloadable": false
+    }
+  }
+]

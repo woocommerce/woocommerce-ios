@@ -14,6 +14,7 @@ struct WooAddCustomPackageView: View {
 
     @State private var isSavingPackage = false
     @State private var showingSavingError = false
+    @State private var foundInvalidDimensions = false
 
     @Environment(\.shippingDimensionsUnit) private var dimensionsUnit
     @Environment(\.shippingWeightUnit) private var weightUnit
@@ -68,6 +69,14 @@ struct WooAddCustomPackageView: View {
                                     unitInputView(for: dimensionUnit, unit: dimensionsUnit)
                                 }
                             }
+
+                            if foundInvalidDimensions {
+                                Text(Localization.invalidDimensions)
+                                    .font(.footnote)
+                                    .foregroundColor(Color(.error))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+
                             // showing weight input only if we are saving the template
                             if viewModel.showSaveTemplate {
                                 unitInputView(for: WooShippingPackageUnitType.weight, unit: weightUnit)
@@ -140,10 +149,10 @@ struct WooAddCustomPackageView: View {
                     .padding(.horizontal)
                     .frame(minHeight: geometry.size.height)
                     .frame(width: geometry.size.width)
-                    .onChange(of: viewModel.showSaveTemplate) { newValue in
+                    .onChange(of: viewModel.showSaveTemplate) { _, newValue in
                         packageTemplateNameFieldFocused = newValue
                     }
-                    .onChange(of: packageTemplateNameFieldFocused) { focused in
+                    .onChange(of: packageTemplateNameFieldFocused) { _, focused in
                         if focused {
                             // More info about why small delay is added:
                             // - https://github.com/woocommerce/woocommerce-ios/pull/14086#discussion_r1806036901
@@ -172,19 +181,21 @@ struct WooAddCustomPackageView: View {
             }
         }
     }
+}
 
-    private var selectionButtonDisabled: Bool {
+private extension WooAddCustomPackageView {
+    var selectionButtonDisabled: Bool {
         !viewModel.validateCustomPackageInputFields()
     }
 
-    private var selectionButtonText: String {
+    var selectionButtonText: String {
         if selectionButtonDisabled {
             return WooShippingAddPackageView.Localization.addPackageDetails
         }
         return WooShippingAddPackageView.Localization.addPackage
     }
 
-    private func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
+    func unitInputView(for unitType: WooShippingPackageUnitType, unit: String) -> some View {
         WooShippingAddPackageUnitInputView(unitType: unitType,
                                            unit: unit,
                                            fieldValue: Binding(get: {
@@ -196,15 +207,20 @@ struct WooAddCustomPackageView: View {
 
     // MARK: - actions
 
-    private func confirmPackage() {
-        guard let packageData = viewModel.packageData else {
+    func confirmPackage() {
+        foundInvalidDimensions = !viewModel.allDimensionsValid
+        guard !foundInvalidDimensions, let packageData = viewModel.packageData else {
             return
         }
         addPackageAction(packageData)
     }
 
     @MainActor
-    private func savePackageAsTemplateButtonTapped() async {
+    func savePackageAsTemplateButtonTapped() async {
+        foundInvalidDimensions = !viewModel.allDimensionsValid
+        guard !foundInvalidDimensions else {
+            return
+        }
         let packageDataResult = await viewModel.savePackageAsTemplateAction()
         // call addPackageAction with data
         switch packageDataResult {
@@ -216,7 +232,7 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func onBackwardButtonTapped() {
+    func onBackwardButtonTapped() {
         switch focusedField {
         case .length:
             return
@@ -231,7 +247,7 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func onForwardButtonTapped() {
+    func onForwardButtonTapped() {
         switch focusedField {
         case .length:
             focusedField = .width
@@ -246,7 +262,7 @@ struct WooAddCustomPackageView: View {
         }
     }
 
-    private func dismissKeyboard() {
+    func dismissKeyboard() {
         focusedField = nil
         packageTemplateNameFieldFocused = false
     }
@@ -269,6 +285,11 @@ extension WooAddCustomPackageView {
         static let savePackageTemplatePlaceholder = NSLocalizedString("wooShipping.createLabel.addPackage.savePackageTemplatePlaceholder",
                                                            value: "Enter a unique package name",
                                                            comment: "Placeholder text for package name field")
+        static let invalidDimensions = NSLocalizedString(
+            "wooShipping.createLabel.addPackage.invalidDimensions",
+            value: "Package dimensions should all be larger than 0",
+            comment: "Message when user attempts to confirm a package with invalid dimension in the shipping label creation flow"
+        )
         enum SavingPackageError {
             static let title = NSLocalizedString(
                 "wooShipping.createLabel.addPackage.savingPackageError.title",

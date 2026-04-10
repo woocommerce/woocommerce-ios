@@ -32,7 +32,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
-            fatalError()
+            fatalError("No delegate found for WordPressAuthenticator")
         }
 
         return delegate
@@ -53,6 +53,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         styleNavigationBar(forUnified: true)
         styleBackground()
         styleInstructions()
+        observeTraitChanges()
 
         if let error = errorToPresent {
             displayRemoteError(error)
@@ -100,7 +101,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     ///     You will want to set this to `true` if the error was caused after pressing a button
     ///     (e.g. Next button).
     func displayError(message: String, moveVoiceOverFocus: Bool = false) {
-        guard message.count > 0 else {
+        guard !message.isEmpty else {
             errorLabel?.isHidden = true
             return
         }
@@ -140,7 +141,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = navigationController else {
-            fatalError()
+            fatalError("No navigation controller found to show login epilogue")
         }
 
         authenticationDelegate.presentLoginEpilogue(in: navigationController,
@@ -349,16 +350,16 @@ extension LoginViewController {
 //
 extension LoginViewController {
 
-    open override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        // Update Dynamic Type
-        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
-            didChangePreferredContentSize()
+    func observeTraitChanges() {
+        // Register for content size category changes
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.didChangePreferredContentSize()
         }
 
-        // Update Table View size
-        setTableViewMargins(forWidth: view.frame.width)
+        // Register for size class changes
+        registerForTraitChanges([UITraitHorizontalSizeClass.self, UITraitVerticalSizeClass.self]) { (self: Self, _) in
+            self.setTableViewMargins(forWidth: self.view.frame.width)
+        }
     }
 
     open override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {

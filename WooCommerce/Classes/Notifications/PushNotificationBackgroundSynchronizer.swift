@@ -1,4 +1,6 @@
+import Foundation
 import protocol Storage.StorageType
+import UIKit
 import Yosemite
 
 protocol PushNotificationBackgroundSynchronizerProtocol {
@@ -39,8 +41,7 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
             let startTime = Date.now
             let orderID: Int64
 
-            if let note = pushNotification.note,
-               let noteOrderID = note.meta.identifier(forKey: .order) {
+            if let noteOrderID = pushNotification.meta?.identifier(forKey: .order) {
                 orderID = Int64(noteOrderID)
             } else {
                 // I'm not sure why we need to sync all notifications instead of only the current one.
@@ -48,7 +49,8 @@ struct PushNotificationBackgroundSynchronizer: PushNotificationBackgroundSynchro
                 try await synchronizeNotifications()
 
                 // Find the orderID from the previously synced notification.
-                guard let pushNotificationOrderID = getOrderID(noteID: pushNotification.noteID) else {
+                guard let noteID = pushNotification.noteID,
+                      let pushNotificationOrderID = getOrderID(noteID: noteID) else {
                     return .newData
                 }
                 orderID = pushNotificationOrderID

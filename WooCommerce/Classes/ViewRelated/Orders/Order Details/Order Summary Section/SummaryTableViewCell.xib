@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -17,26 +17,37 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="108"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Created eons ago at 9:51" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kz9-1h-fRY">
-                        <rect key="frame" x="16" y="16" width="288" height="16"/>
-                        <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="3xk-nT-znM">
+                        <rect key="frame" x="16" y="8" width="288" height="40"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="249" text="Created eons ago at 9:51" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kz9-1h-fRY">
+                                <rect key="frame" x="0.0" y="0.0" width="142" height="40"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Sales Channel" textAlignment="right" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kU8-dT-4zl" userLabel="Sales Channel Label" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                <rect key="frame" x="146" y="0.0" width="142" height="19"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="#00 Jane Doe" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VuR-wG-Bbc">
-                        <rect key="frame" x="16" y="40" width="288" height="28"/>
+                        <rect key="frame" x="16" y="56" width="288" height="24.5"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="740" text="Processing" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIV-Sn-Yeh" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                        <rect key="frame" x="16" y="76" width="67" height="16"/>
+                        <rect key="frame" x="16" y="88.5" width="67" height="3.5"/>
                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0jq-dU-DSt">
-                        <rect key="frame" x="284" y="74" width="20" height="20"/>
+                        <rect key="frame" x="284" y="80.5" width="20" height="20"/>
                         <constraints>
                             <constraint firstAttribute="width" secondItem="0jq-dU-DSt" secondAttribute="height" multiplier="1:1" id="JlF-NG-SGG"/>
                             <constraint firstAttribute="width" constant="20" id="weV-me-Oj4"/>
@@ -46,22 +57,23 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="0jq-dU-DSt" firstAttribute="centerY" secondItem="uIV-Sn-Yeh" secondAttribute="centerY" id="0cI-jv-Lbj"/>
-                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="0iO-Eg-LvT"/>
                     <constraint firstAttribute="bottom" secondItem="uIV-Sn-Yeh" secondAttribute="bottom" constant="16" id="3OU-Nl-wcg"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="top" secondItem="VuR-wG-Bbc" secondAttribute="bottom" constant="8" id="4yW-xe-vMw"/>
                     <constraint firstAttribute="trailingMargin" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="ALe-dT-Iae"/>
-                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="top" secondItem="Kz9-1h-fRY" secondAttribute="bottom" constant="8" id="B6Q-cI-ASJ"/>
                     <constraint firstItem="0jq-dU-DSt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uIV-Sn-Yeh" secondAttribute="trailing" constant="16" id="GXV-DS-eh5"/>
-                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="H8X-uc-vIl"/>
+                    <constraint firstItem="3xk-nT-znM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="L58-GD-bWI"/>
+                    <constraint firstItem="3xk-nT-znM" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="TnO-xe-26W"/>
+                    <constraint firstItem="VuR-wG-Bbc" firstAttribute="top" secondItem="3xk-nT-znM" secondAttribute="bottom" constant="8" id="V2y-BO-1WX"/>
+                    <constraint firstAttribute="trailing" secondItem="3xk-nT-znM" secondAttribute="trailing" constant="16" id="VFI-lp-YIc"/>
                     <constraint firstItem="0jq-dU-DSt" firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="Yrn-9W-9Dw"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="h9K-qI-gKu"/>
                     <constraint firstItem="VuR-wG-Bbc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="mSL-pS-fig"/>
-                    <constraint firstItem="Kz9-1h-fRY" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="uxx-qn-5Vc"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="paymentStatusLabel" destination="uIV-Sn-Yeh" id="7Go-fW-UgK"/>
+                <outlet property="salesChannelLabel" destination="kU8-dT-4zl" id="xwb-3Z-ADx"/>
                 <outlet property="subtitleLabel" destination="Kz9-1h-fRY" id="NEV-D0-Rfz"/>
                 <outlet property="titleLabel" destination="VuR-wG-Bbc" id="d7c-2Y-FFD"/>
                 <outlet property="updateStatusButton" destination="0jq-dU-DSt" id="f15-0P-cBB"/>

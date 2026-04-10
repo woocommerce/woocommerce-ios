@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// View for previewing product details generated with AI.
 ///
@@ -134,7 +135,7 @@ struct ProductDetailPreviewView: View {
             .onDisappear {
                 viewModel.onViewDisappear()
             }
-            .onChange(of: viewModel.errorState) { newValue in
+            .onChange(of: viewModel.errorState) { _, newValue in
                 isShowingErrorAlert = newValue != .none
             }
             .alert(viewModel.errorState.errorMessage, isPresented: $isShowingErrorAlert) {

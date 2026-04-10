@@ -61,4 +61,26 @@ final class OrderListCellViewModelTests: XCTestCase {
         XCTAssertEqual(accessoryView.image, expectedImage)
         XCTAssertEqual(accessoryView.tintColor, .tertiaryLabel)
     }
+
+    func test_salesChannel_when_createdVia_is_pos_rest_api_then_returns_POS() {
+        // Given
+        let order = MockOrders().sampleOrder().copy(createdVia: "pos-rest-api")
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.salesChannel?.description, "POS")
+    }
+
+    func test_salesChannel_when_createdVia_is_nil_then_returns_nil() {
+        // Given
+        let order = MockOrders().sampleOrder().copy(createdVia: nil)
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
+
+        // Then
+        XCTAssertNil(viewModel.salesChannel)
+    }
 }

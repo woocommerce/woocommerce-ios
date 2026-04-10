@@ -3,6 +3,20 @@ import Yosemite
 import WooFoundation
 import Combine
 import struct Networking.WooShippingAccountSettings
+import enum Networking.DotcomError
+import protocol Storage.StorageManagerType
+
+enum WooShippingCreateLabelSelection {
+    case shipment(index: Int)
+    case shippingLabel(label: ShippingLabel)
+
+    var selectedShippingLabel: ShippingLabel? {
+        switch self {
+        case .shipment: nil
+        case .shippingLabel(let label): label
+        }
+    }
+}
 
 /// Provides view data for `WooShippingCreateLabelsView`.
 ///
@@ -13,61 +27,64 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         case missingRequiredData
     }
 
+    private let order: Order
     private let shippingSettingsService: ShippingSettingsService
-    private let currencyFormatter: CurrencyFormatter
     private let itemsDataSource: WooShippingItemsDataSource
     private var destinationEmail: String?
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
+    private let currencySettings: CurrencySettings
     private var subscriptions: Set<AnyCancellable> = []
-    private var debounceDuration: Double = 1
+    private let initialNoticeDelay: RunLoop.SchedulerTimeType.Stride
+    private let analytics: Analytics
 
-    @Published var containsHazardousMaterials = false
-    @Published var hazmatCategory: ShippingLabelHazmatCategory?
+    private(set) var orderItems: WooShippingItemsViewModel
+
+    var canViewLabel: Bool {
+        currentShipmentDetailsViewModel.canViewLabel
+    }
+
+    var postPurchase: WooShippingPostPurchaseViewModel? {
+        currentShipmentDetailsViewModel.postPurchase
+    }
+
+    @Published private(set) var shipments: [Shipment] {
+        didSet {
+            updateShipmentDetailsViewModels()
+        }
+    }
+
+    @Published var selectedShipmentIndex = 0 {
+        didSet {
+            observeHAZMATNotices()
+            observeSelectedPackage()
+            observeSelectedRates()
+            observeShippingRates()
+        }
+    }
+
+    var currentShipment: Shipment {
+        shipments[selectedShipmentIndex]
+    }
+
+    var hasUnfulfilledShipments: Bool {
+        shipments.contains(where: { $0.purchasedLabel == nil })
+    }
 
     @Published var labelPurchaseErrorNotice: Notice?
 
-    let order: Order
-
     @Published private(set) var state = ContentState.loading
 
-    /// The purchased shipping label.
-    @Published private var shippingLabel: ShippingLabel?
-
-    /// Whether a purchased shipping label can be viewed (and printed, tracked, refunded, etc.).
-    var canViewLabel: Bool {
-        shippingLabel != nil
-    }
-
-    /// Whether the custom information is completed or not.
-    var customsInformationIsCompleted: Bool {
-        customsForm != nil && customsFormViewModel.requiredInformationIsEntered
-    }
-
-    /// View model for the section displayed after a shipping label is purchased.
-    @Published private(set) var postPurchase: WooShippingPostPurchaseViewModel?
-
-    /// View model for the items to ship.
-    @Published private(set) var items: WooShippingItemsViewModel
-
-    /// ID for the shipment.
-    ///
-    /// For now we support purchasing labels in a single shipment only, so we only need a single shipment ID.
-    let shipmentID = "shipment_0"
-
-    /// Selected package data for the shipping label.
-    @Published private(set) var selectedPackage: WooShippingPackageDataRepresentable?
-
-    /// String representing the total weight for the shipment.
-    @Published var shipmentWeight: String = ""
-
-    /// View model for the label shipping service.
-    private(set) var shippingService: WooShippingServiceViewModel?
+    @Published private(set) var shouldShowNotices = false
 
     /// View model for split shipments.
-    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel?
+    private(set) var splitShipmentsViewModel: WooShippingSplitShipmentsViewModel
 
-    /// Selected shipping rate when creating a shipping label.
-    @Published private var selectedRate: WooShippingSelectedRate?
+    private(set) var shipmentDetailViewModels: [WooShippingShipmentDetailsViewModel] = []
+
+    var currentShipmentDetailsViewModel: WooShippingShipmentDetailsViewModel {
+        shipmentDetailViewModels[selectedShipmentIndex]
+    }
 
     /// View model for a list of origin addresses to ship from.
     private(set) var originAddresses = WooShippingOriginAddressListViewModel(addresses: [])
@@ -76,15 +93,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     @Published private var selectedOriginAddress: WooShippingOriginAddress?
 
     /// Address to ship to (customer address),
-    @Published private var destinationAddress: WooShippingAddress? {
-        didSet {
-            guard let country = destinationAddress?.country else {
-                return
-            }
-            // Updating destination country code in the customs form to validate ITN
-            customsFormViewModel.updateDestinationCountry(code: country)
-        }
-    }
+    @Published private var destinationAddress: WooShippingAddress?
 
     /// Whether the origin address is unverified.
     var isOriginAddressUnverified: Bool {
@@ -96,7 +105,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship from (store address), formatted for display and split into separate lines to allow additional formatting.
     var originAddressLines: [String]? {
-        originAddress.components(separatedBy: ", ")
+        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+            shippingLabel.originAddress.formattedPostalAddress?.components(separatedBy: "\n")
+        } else {
+            originAddress.components(separatedBy: ", ")
+        }
     }
 
     /// This property can be set to display a notice with the provided label about the origin address status.
@@ -104,7 +117,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// Address to ship to (customer address), formatted for display and split into separate lines to allow additional formatting.
     var destinationAddressLines: [String]? {
-        (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
+        if let shippingLabel = currentShipmentDetailsViewModel.shippingLabel {
+            shippingLabel.destinationAddress.formattedPostalAddress?.components(separatedBy: "\n")
+        } else {
+            (destinationAddress?.formattedPostalAddress)?.components(separatedBy: ", ")
+        }
     }
 
     /// Possible statuses for a Woo Shipping destination address.
@@ -120,6 +137,9 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// This property can be set to display a notice with the provided label about the destination address status.
     @Published var destinationAddressStatusNoticeLabel: String?
 
+    /// This property can be set to display a notice with the provided label about the destination phone number.
+    @Published var destinationPhoneNumberNoticeLabel: String?
+
     /// View model for address to edit.
     /// Setting this property will navigate to the address edit screen.
     @Published var addressToEdit: WooShippingEditAddressViewModel?
@@ -128,30 +148,11 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     let shippingLines: [WooShipping_ShippingLineViewModel]
 
     /// Shipping rates for the purchased label, with formatted amount.
-    var shippingRates: [(title: String, amount: String)] {
-        if let shippingLabel {
-            return [formatShippingRate(name: shippingLabel.serviceName, rate: shippingLabel.rate)]
-        } else if let selectedRate {
-            let baseRate = selectedRate.rate.rate
-            let formattedBaseRate = formatShippingRate(name: Localization.baseRateLabel(for: selectedRate), rate: baseRate)
-            let formattedSignatureRate = [
-                selectedRate.signatureRate.map { self.formatShippingRate(name: Localization.signatureRequired, rate: $0.rate, basedOn: baseRate) },
-                selectedRate.adultSignatureRate.map { self.formatShippingRate(name: Localization.adultSignatureRequired,
-                                                                              rate: $0.rate,
-                                                                              basedOn: baseRate) }
-            ].compacted()
-            return [formattedBaseRate] + formattedSignatureRate
-        } else {
-            return []
-        }
-    }
+    @Published private(set) var shippingRates: [(title: String, amount: String)] = []
 
     /// Total cost of the shipping label, formatted for display.
     var totalCost: String? {
-        guard let amount = shippingLabel?.rate ?? selectedRate?.totalRate else {
-            return nil
-        }
-        return currencyFormatter.formatAmount(Decimal(amount))
+        currentShipmentDetailsViewModel.totalCost
     }
 
     private var isMissingStoreSettings: Bool {
@@ -163,10 +164,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
 
     /// If the purchase button should be enabled.
     var isPurchaseButtonEnabled: Bool {
-        // Don't allow purchasing if a label is already purchased
-        shippingLabel == nil
-        // or if any required fields are missing
-        && selectedOriginAddress != nil && destinationAddress != nil && selectedPackage != nil && selectedRate != nil
+        currentShipmentDetailsViewModel.isPurchaseButtonEnabled
     }
 
     /// If the label purchase is in progress.
@@ -178,83 +176,146 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     /// Unit to use for dimensions measurements.
     @Published var dimensionsUnit = ""
 
+    @Published var hazmatNotice: Notice?
+
+    @Published var refundNotice: Notice?
+
+    /// Selected package data for the shipping label.
+    @Published private var selectedPackage: WooShippingPackageDataRepresentable?
+
+    /// Selected shipment rate for the shipping label
+    @Published private(set) var selectedRate: WooShippingSelectedRate?
+
     /// Closure to execute after the label is successfully purchased.
     let onLabelPurchase: ((_ markOrderComplete: Bool) -> Void)?
 
-    private var customsForm: ShippingLabelCustomsForm?
+    @Published var showingPaymentMethods = false
+    @Published private var paymentMethod: ShippingLabelPaymentMethod?
+    @Published private(set) var paymentMethodLine: WooShippingPaymentMethodLine?
 
-    lazy var customsFormViewModel: WooShippingCustomsFormViewModel = {
-        WooShippingCustomsFormViewModel(order: order, onCompletion: { [weak self] form in
-            self?.onCustomsFormFilled(form: form)
-        })
-    }()
+    private(set) var paymentMethodsViewModel: ShippingLabelPaymentMethodsViewModel?
 
-    /// Check for the need of customs form
-    ///
-    @Published private(set) var customsFormRequired: Bool = false
+    @Published var shouldShowUPSTermsAndConditions = false
 
-    @Published var itnMissingNoticeLabel: String?
-
-    /// Initialize the view model without an existing shipping label.
-    init(order: Order,
-         selectedOriginAddress: WooShippingOriginAddress? = nil,
-         selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         selectedRate: WooShippingSelectedRate? = nil,
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
-         userDefaults: UserDefaults = .standard,
-         stores: StoresManager = ServiceLocator.stores,
-         itemsDataSource: WooShippingItemsDataSource? = nil,
-         debounceDuration: Double = 1,
-         onLabelPurchase: ((Bool) -> Void)? = nil) {
-        self.order = order
-        let itemsDataSource = itemsDataSource ?? DefaultWooShippingItemsDataSource(order: order)
-        self.itemsDataSource = itemsDataSource
-        self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.onLabelPurchase = onLabelPurchase
-        self.destinationAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress)
-        self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
-        self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.selectedOriginAddress = selectedOriginAddress
-        self.selectedPackage = selectedPackage
-        self.selectedRate = selectedRate
-        self.stores = stores
-        self.debounceDuration = debounceDuration
-        self.shippingSettingsService = shippingSettingsService
-
-        loadDestinationAddress()
-        observeSelectedOriginAddress()
-        observeDestinationAddress()
-        observeSelectedPackage()
-        observeForLabelRates()
-        observeForCustomsForm()
-        Task {
-            await loadRequiredData()
+    var upsTermsViewModel: UPSTermsViewModel? {
+        guard let originAddress = selectedOriginAddress?.toWooShippingAddress() else {
+            return nil
         }
+        return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
     }
 
-    /// Initialize the view model from an existing shipping label.
+    let isOrderCompleted: Bool
+
+    /// Shipments Results Controller.
+    ///
+    private lazy var shipmentResultsController: ResultsController<StorageWooShippingShipment> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    self.order.siteID,
+                                    self.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageWooShippingShipment.index, ascending: true)
+
+        return ResultsController<StorageWooShippingShipment>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Origin addresses Results Controller.
+    ///
+    private lazy var originAddressResultsController: ResultsController<StorageWooShippingOriginAddress> = {
+        let predicate = NSPredicate(format: "siteID = %ld", self.order.siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageWooShippingOriginAddress.id, ascending: true)
+
+        return ResultsController<StorageWooShippingOriginAddress>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Shipping Label Account Settings ResultsController
+    ///
+    private lazy var accountSettingsResultsController: ResultsController<StorageShippingLabelAccountSettings> = {
+        let predicate = NSPredicate(format: "siteID == %lld", order.siteID)
+        return ResultsController<StorageShippingLabelAccountSettings>(
+            storageManager: storageManager,
+            matching: predicate,
+            fetchLimit: 1,
+            sortedBy: []
+        )
+    }()
+
+    /// Provides checks for CIAB
+    /// Used to determine "Split Shipments" feature availability
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+
+    /// Initialize the view model with or without an existing shipping label.
     init(order: Order,
-         shippingLabel: ShippingLabel,
+         preselection: WooShippingCreateLabelSelection? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         initialNoticeDelay: RunLoop.SchedulerTimeType.Stride = .seconds(2),
+         onLabelPurchase: ((Bool) -> Void)? = nil) {
         self.order = order
-        self.shippingLabel = shippingLabel
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        self.shippingSettingsService = shippingSettingsService
-        self.postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
-        self.itemsDataSource = DefaultWooShippingItemsDataSource(order: order)
-        self.items = WooShippingItemsViewModel(dataSource: itemsDataSource)
+        self.itemsDataSource = DefaultWooShippingItemsDataSource(
+            order: order,
+            storageManager: storageManager,
+            stores: stores
+        )
+        self.orderItems = WooShippingItemsViewModel(dataSource: itemsDataSource)
+        self.onLabelPurchase = onLabelPurchase
+        self.currencySettings = currencySettings
+        self.destinationEmail = order.shippingAddress?.email ?? order.billingAddress?.email
         self.shippingLines = order.shippingLines.map({ WooShipping_ShippingLineViewModel(shippingLine: $0, currency: order.currency) })
-        self.originAddress = shippingLabel.originAddress.formattedPostalAddress?.replacingOccurrences(of: "\n", with: ", ") ?? ""
-        self.destinationAddress = shippingLabel.destinationAddress.toWooShippingAddress()
-        self.destinationAddressStatus = .verified
-        self.onLabelPurchase = nil
         self.stores = stores
-        Task {
+        self.storageManager = storageManager
+        self.analytics = analytics
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.shippingSettingsService = shippingSettingsService
+        self.weightUnit = shippingSettingsService.weightUnit ?? ""
+        self.dimensionsUnit = shippingSettingsService.dimensionUnit ?? ""
+        self.initialNoticeDelay = initialNoticeDelay
+        self.isOrderCompleted = order.status == .completed
+
+        let splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
+                                                                         remoteShipments: [],
+                                                                         items: itemsDataSource.items,
+                                                                         stores: stores)
+        self.splitShipmentsViewModel = splitShipmentsViewModel
+        self.shipments = splitShipmentsViewModel.shipments
+
+        if let label = preselection?.selectedShippingLabel {
+            destinationAddressStatus = .verified
+            destinationAddress = label.destinationAddress.toWooShippingAddress()
+            originAddress = label.originAddress.formattedInlineAddress ?? ""
+        } else {
+            destinationAddress = getDestinationAddress(order: order, address: order.shippingAddress)
+            loadDestinationAddress()
+        }
+
+        syncCountries()
+        updateShipmentDetailsViewModels()
+        observeSelectedOriginAddress()
+        observeDestinationAddress()
+        observeViewStates()
+        observePaymentMethod()
+        configureShipmentResultsController()
+        configureOriginAddressResultsController()
+        configureAccountSettingsResultsController()
+
+        Task { @MainActor in
             await loadRequiredData()
+
+            // After shipment configs are updated, shipments are updated with purchased label details.
+            // Update the selected tab now by checking the initial selected shipment index if available.
+            // Otherwise, compare the purchased labels with the initial selected label.
+            switch preselection {
+            case .shipment(let index):
+                self.selectedShipmentIndex = index
+            case .shippingLabel(let label):
+                if let matchingIndex = shipments.firstIndex(where: { $0.purchasedLabel?.shippingLabelID == label.shippingLabelID }) {
+                    self.selectedShipmentIndex = matchingIndex
+                }
+            case .none:
+                break
+            }
         }
     }
 
@@ -262,78 +323,92 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
     func loadRequiredData() async {
         state = .loading
         await withTaskGroup(of: Void.self) { group in
+            /// Only load store options synchronously if no settings have been saved in storage yet.
             if isMissingStoreSettings {
                 group.addTask {
                     await self.loadStoreOptions()
                 }
+            } else {
+                /// load asynchronously to update the local storage and unblock UI
+                stores.dispatch(WooShippingAction.loadAccountSettings(siteID: order.siteID, completion: { _ in }))
             }
 
-            if originAddress.isEmpty {
+            /// Only load origin addresses synchronously if no addresses have been saved in storage yet.
+            if hasUnfulfilledShipments, originAddress.isEmpty {
                 group.addTask {
                     await self.loadOriginAddresses()
                 }
-            }
-
-            group.addTask {
-                await self.loadShipmentsInfo()
+            } else if hasUnfulfilledShipments {
+                /// load asynchronously to update the local storage and unblock UI
+                stores.dispatch(WooShippingAction.loadOriginAddresses(siteID: order.siteID, completion: { _ in }))
             }
         }
 
         if isMissingStoreSettings ||
-            originAddress.isEmpty {
+            (originAddress.isEmpty && hasUnfulfilledShipments) {
             state = .missingRequiredData
         } else {
             state = .ready
+            let count = shipments.count(where: { $0.purchasedLabel == nil })
+            analytics.track(event: .WooShipping.createShippingLabelFormShown(unfulfilledShipmentsCount: count))
         }
     }
 
-    /// Handles package selection for the shipping label.
-    /// Selecting a package also refreshes the available rates for the shipping service.
-    func selectPackage(_ packageData: WooShippingPackageDataRepresentable) {
-        selectedPackage = packageData
+    func updateShipments(_ shipments: [Shipment]) {
+        self.selectedShipmentIndex = 0
+        self.shipments = shipments
+    }
+
+    func didUpdateAccountSettings(_ accountSettings: ShippingLabelAccountSettings) {
+        self.paymentMethod = accountSettings.paymentMethods.first(where: { $0.paymentMethodID == accountSettings.selectedPaymentMethodID })
+        self.paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
     }
 
     /// Purchases a shipping label with the provided label details and settings.
-    func purchaseLabel() {
-        guard isPurchaseButtonEnabled, !isPurchasingLabel, let selectedOriginAddress, let destinationAddress, let selectedPackage, let selectedRate else {
+    @MainActor
+    func purchaseLabel(shouldRefreshPackageAndRate: Bool) async {
+        guard paymentMethod != nil else {
+            showingPaymentMethods = true
             return
         }
         isPurchasingLabel = true
         labelPurchaseErrorNotice = nil
 
-        let packagePurchase = WooShippingPackagePurchase(shipmentID: shipmentID,
-                                                         package: fromPackageDataToPackageSelected(selectedPackage,
-                                                                                                   weight: Double(shipmentWeight) ?? 0,
-                                                                                                   shipmentID: shipmentID),
-                                                         rate: selectedRate.purchaseRate,
-                                                         productIDs: itemsDataSource.items.map(\.productOrVariationID))
-        let action = WooShippingAction.purchaseShippingLabel(siteID: order.siteID,
-                                                             orderID: order.orderID,
-                                                             originAddress: selectedOriginAddress.toWooShippingAddress(),
-                                                             destinationAddress: destinationAddress,
-                                                             package: packagePurchase) { [weak self] result in
-            guard let self else { return }
-            isPurchasingLabel = false
-            switch result {
-            case .success(let shippingLabel):
-                onLabelPurchase?(markOrderComplete)
-                self.shippingLabel = shippingLabel
-                postPurchase = WooShippingPostPurchaseViewModel(shippingLabel: shippingLabel)
-            case .failure(let error):
-                self.labelPurchaseErrorNotice = Notice(title: Localization.LabelPurchaseError.title,
-                                                       message: Localization.LabelPurchaseError.message,
-                                                       feedbackType: .error,
-                                                       actionTitle: Localization.LabelPurchaseError.retry) { [weak self] in
-                    self?.purchaseLabel()
-                }
-                DDLogError("⛔️ Error purchasing shipping label: \(error)")
+        do {
+            if shouldRefreshPackageAndRate {
+                try await currentShipmentDetailsViewModel.refreshPackagesAndShippingRates()
             }
+            let markOrderComplete = isOrderCompleted ? nil : self.markOrderComplete
+            try await currentShipmentDetailsViewModel.purchaseLabel(markOrderComplete: markOrderComplete)
+        } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
+            shouldShowUPSTermsAndConditions = true
+        } catch {
+            if let phoneMessage = invalidPhoneNumberMessage(from: error) {
+                labelPurchaseErrorNotice = Notice(
+                    title: Localization.PhoneNumberError.title,
+                    message: phoneMessage,
+                    feedbackType: .error,
+                    actionTitle: Localization.PhoneNumberError.editAddress
+                ) { [weak self] in
+                    self?.editDestinationAddress()
+                }
+            } else {
+                labelPurchaseErrorNotice = Notice(
+                    title: Localization.LabelPurchaseError.title,
+                    message: Localization.LabelPurchaseError.message,
+                    feedbackType: .error,
+                    actionTitle: Localization.LabelPurchaseError.retry
+                ) { [weak self] in
+                    Task {
+                        await self?.purchaseLabel(
+                            shouldRefreshPackageAndRate: shouldRefreshPackageAndRate
+                        )
+                    }
+                }
+            }
+            DDLogError("⛔️ Error purchasing shipping label: \(error)")
         }
-        stores.dispatch(action)
-    }
-
-    func onCustomsFormFilled(form: ShippingLabelCustomsForm) {
-        customsForm = form
+        isPurchasingLabel = false
     }
 
     func editSelectedOriginAddress() {
@@ -366,13 +441,13 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
                                                         isVerified: destinationAddressStatus == .verified,
                                                         originCountryCode: selectedOriginAddress?.country,
                                                         originStateCode: selectedOriginAddress?.state,
-                                                        onAddressEdited: { [weak self] editedAddress, editedEmail in
+                                                        onAddressEdited: { [weak self] result, editedEmail in
             guard let self else {
                 return
             }
-            destinationAddress = editedAddress
+            destinationAddress = result.address.toWooShippingAddress()
             destinationEmail = editedEmail
-            destinationAddressStatus = .verified
+            destinationAddressStatus = result.isVerified ? .verified : .unverified
             addressToEdit = nil // Dismisses address edit screen
         })
     }
@@ -398,6 +473,7 @@ private extension WooShippingCreateLabelsViewModel {
         }
         weightUnit = settings?.storeOptions.weightUnit ?? shippingSettingsService.weightUnit ?? ""
         dimensionsUnit = settings?.storeOptions.dimensionUnit ?? shippingSettingsService.dimensionUnit ?? ""
+        updateAccountSettings(accountSettings: settings?.accountSettings)
     }
 
     /// Syncs origin addresses to use for shipping label from remote.
@@ -416,21 +492,7 @@ private extension WooShippingCreateLabelsViewModel {
             }
             stores.dispatch(action)
         }
-        selectedOriginAddress = addresses.first(where: \.defaultAddress)
-        originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
-                                                                selectedAddressID: selectedOriginAddress?.id)
-        originAddresses.onSelect = { [weak self] selectedAddress in
-            self?.selectedOriginAddress = selectedAddress
-        }
-    }
-
-    /// Loads shipment info from remote and creates view model for split shipments.
-    ///
-    @MainActor
-    func loadShipmentsInfo() async {
-        splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(siteID: order.siteID,
-                                                                     orderID: order.orderID,
-                                                                     stores: stores)
+        updateSelectedOriginAddress(addresses: addresses)
     }
 
     /// Loads destination address of the order from remote.
@@ -446,7 +508,7 @@ private extension WooShippingCreateLabelsViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error loading destination addresses for Woo Shipping labels: \(error)")
 
-                if let orderShippingAddress = Self.getDestinationAddress(order: order, address: order.shippingAddress) {
+                if let orderShippingAddress = getDestinationAddress(order: order, address: order.shippingAddress) {
                     destinationAddress = orderShippingAddress
                     destinationAddressStatus = destinationAddressLines == nil ? .missing : .unverified
                 } else {
@@ -456,21 +518,111 @@ private extension WooShippingCreateLabelsViewModel {
         }
         stores.dispatch(action)
     }
+
+    /// Sync countries to update the storage with latest data from remote.
+    /// This is useful for checking countries in the customs form and listing countries in the edit address form.
+    func syncCountries() {
+        stores.dispatch(DataAction.synchronizeCountries(siteID: order.siteID) { _ in })
+    }
+}
+
+// MARK: Split Shipments
+// Accessors describing Split Shipments elements availability
+extension WooShippingCreateLabelsViewModel {
+    private var hasMultipleProducts: Bool {
+        return itemsDataSource.items.map(\.quantity).reduce(0, +) > 1
+    }
+
+    private var splitShipmentsFeatureAvailable: Bool {
+        return siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.splitShipments)
+    }
+
+    /// Determines if the "Edit split shipments" (pencil icon) is visible in top shipments bar.
+    var editSplitShipmentsOptionVisible: Bool {
+        splitShipmentsFeatureAvailable &&
+        hasMultipleProducts &&
+        hasUnfulfilledShipments
+    }
+
+    /// Determines if the "Split Shipments" row is visible above the "Products" section
+    var splitShipmentsRowVisible: Bool {
+        splitShipmentsFeatureAvailable &&
+        hasMultipleProducts &&
+        shipments.count == 1 &&
+        canViewLabel == false
+    }
 }
 
 // MARK: Utils
 private extension WooShippingCreateLabelsViewModel {
-    /// Observes the selected package and updates the shipment weight.
+
+    func observeHAZMATNotices() {
+        currentShipmentDetailsViewModel.$hazmatNotice
+            .assign(to: &$hazmatNotice)
+    }
+
     func observeSelectedPackage() {
-        let itemsWeight = itemsDataSource.items.map { $0.weight * Double(truncating: $0.quantity as NSDecimalNumber) }.reduce(0, +)
-        $selectedPackage
-            .map { selectedPackage in
-                guard let selectedPackage else {
-                    return itemsWeight.description
-                }
-                return (itemsWeight + (Double(selectedPackage.weight) ?? 0)).description
-            }
-            .assign(to: &$shipmentWeight)
+        currentShipmentDetailsViewModel.$selectedPackage
+            .assign(to: &$selectedPackage)
+    }
+
+    func observeSelectedRates() {
+        currentShipmentDetailsViewModel.$selectedRate
+            .assign(to: &$selectedRate)
+    }
+
+    func observeShippingRates() {
+        currentShipmentDetailsViewModel.$shippingRates
+            .assign(to: &$shippingRates)
+    }
+
+    func updateShipmentDetailsViewModels() {
+        shipmentDetailViewModels = shipments.map { shipment in
+            let originAddressPublisher = $selectedOriginAddress
+                .map { $0?.toWooShippingAddress() }
+                .eraseToAnyPublisher()
+            return WooShippingShipmentDetailsViewModel(
+                order: order,
+                shipment: shipment,
+                shippingLabel: shipment.purchasedLabel,
+                originAddress: originAddressPublisher,
+                destinationAddress: $destinationAddress.eraseToAnyPublisher(),
+                stores: stores,
+                onLabelPurchase: { [weak self] newLabel in
+                    self?.handleLabelPurchaseSuccess(newLabel: newLabel, in: shipment)
+                }, onLabelRefund: { [weak self] labelID in
+                    self?.handleLabelRefundRequested(labelID: labelID, in: shipment)
+                })
+        }
+        observeHAZMATNotices()
+        observeSelectedPackage()
+        observeSelectedRates()
+        observeShippingRates()
+    }
+
+    func handleLabelPurchaseSuccess(newLabel: ShippingLabel, in shipment: Shipment) {
+        let index = shipment.index
+        shipments[index] = Shipment(index: index,
+                                    contents: shipment.contents,
+                                    purchasedLabel: newLabel,
+                                    currency: order.currency,
+                                    currencySettings: currencySettings,
+                                    shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didPurchaseLabel(for: index, label: newLabel)
+        onLabelPurchase?(markOrderComplete)
+    }
+
+    func handleLabelRefundRequested(labelID: Int64,
+                                    in shipment: Shipment) {
+        let shipmentIndex = shipment.index
+        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
+                                            contents: shipment.contents,
+                                            purchasedLabel: nil,
+                                            currency: order.currency,
+                                            currencySettings: currencySettings,
+                                            shippingSettingsService: shippingSettingsService)
+        splitShipmentsViewModel.didRequestRefund(for: shipmentIndex)
+        refundNotice = Notice(message: Localization.refundNotice)
     }
 
     /// Observes the selected origin address and updates the displayed origin address and shipping service.
@@ -485,13 +637,6 @@ private extension WooShippingCreateLabelsViewModel {
                     }
                     return nil
                 }()
-
-                shippingService = WooShippingServiceViewModel(order: order,
-                                                              originAddress: selectedOriginAddress?.toWooShippingAddress(),
-                                                              destinationAddress: destinationAddress,
-                                                              stores: stores) { [weak self] selectedRate in
-                    self?.selectedRate = selectedRate
-                }
             }
             .store(in: &subscriptions)
     }
@@ -513,84 +658,53 @@ private extension WooShippingCreateLabelsViewModel {
             }
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
+        $destinationAddress
+            .map { [weak self] address -> String? in
+                return self?.destinationPhoneNoticeLabel(for: address)
+            }
+            .assign(to: &$destinationPhoneNumberNoticeLabel)
+
         /// Clear the notice after a delay when the address is verified.
-        $destinationAddressStatusNoticeLabel
-            .filter { $0 == Localization.DestinationAddressStatus.verified }
+        $shouldShowNotices
+            .combineLatest($destinationAddressStatusNoticeLabel)
+            .filter { shouldShowNotices, destinationNotice in
+                shouldShowNotices && destinationNotice == Localization.DestinationAddressStatus.verified
+            }
             .delay(for: .seconds(2), scheduler: RunLoop.current)
             .map { _ in nil }
             .assign(to: &$destinationAddressStatusNoticeLabel)
-
-        /// Observe destination address and update the shipping service.
-        $destinationAddress
-            .sink { [weak self] destinationAddress in
-                guard let self else { return }
-                let shippingService = WooShippingServiceViewModel(order: order,
-                                                                  originAddress: selectedOriginAddress?.toWooShippingAddress(),
-                                                                  destinationAddress: destinationAddress,
-                                                                  stores: stores) { [weak self] selectedRate in
-                    self?.selectedRate = selectedRate
-                }
-                self.shippingService = shippingService
-                if let selectedPackage {
-                    shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage,
-                                                                                         weight: Double(shipmentWeight) ?? 0,
-                                                                                         shipmentID: shipmentID))
-                }
-            }
-            .store(in: &subscriptions)
     }
 
-    /// Observes the selected package and shipment weight and requests the available shipping rates.
-    func observeForLabelRates() {
-        $shipmentWeight
-            .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .combineLatest($selectedPackage)
-            .sink { [weak self] weight, selectedPackage in
-                guard let self, let selectedPackage, let shippingService else { return }
-                shippingService.loadLabelRates(for: fromPackageDataToPackageSelected(selectedPackage, weight: Double(weight) ?? 0, shipmentID: shipmentID))
-            }
-            .store(in: &subscriptions)
+    func destinationPhoneNoticeLabel(for address: WooShippingAddress?) -> String? {
+        guard let address else {
+            return nil
+        }
+        if address.phoneDigits.isEmpty {
+            return Localization.DestinationPhoneNumber.missing
+        }
+        if !address.hasValidPhoneNumberForShipping {
+            return Localization.DestinationPhoneNumber.invalid
+        }
+        return nil
     }
 
-    func observeForCustomsForm() {
-        $selectedOriginAddress.combineLatest($destinationAddress)
-            .map { (originAddress, destinationAddress) -> Bool in
-                guard let originAddress, let destinationAddress else {
-                    return false
-                }
-                return WooShippingCustomsRequirements.isCustomsRequired(originCountry: originAddress.country,
-                                                                        originState: originAddress.state,
-                                                                        destinationCountry: destinationAddress.country,
-                                                                        destinationState: destinationAddress.state)
+    /// Ensures that initial notices are only displayed after the view is ready
+    /// to avoid overwhelming users with too many information at once when opening the screen.
+    func observeViewStates() {
+        $state
+            .filter { $0 == .ready }
+            .delay(for: initialNoticeDelay, scheduler: RunLoop.current)
+            .combineLatest($shipments, $selectedShipmentIndex)
+            .map { _, shipments, selectedIndex in
+                shipments[selectedIndex].isPurchased == false
             }
-            .assign(to: &$customsFormRequired)
-
-        customsFormViewModel.$isMissingITN.combineLatest($customsFormRequired)
-            .map { (isMissingITN, customsFormRequired) -> String? in
-                if customsFormRequired, isMissingITN {
-                    return Localization.itnMissing
-                }
-                return nil
-            }
-            .assign(to: &$itnMissingNoticeLabel)
-    }
-
-    /// Provides the formatted label and amount for a shipping rate, based on the provided base rate.
-    func formatShippingRate(name: String, rate: Double, basedOn baseRate: Double? = nil) -> (title: String, amount: String) {
-        let amount = {
-            guard let baseRate else {
-                return rate
-            }
-            return rate - baseRate
-        }()
-        return (name, currencyFormatter.formatAmount(Decimal(amount)) ?? amount.description)
+            .assign(to: &$shouldShowNotices)
     }
 
     /// Gets the destination address as a `ShippingLabelAddress`.
     /// The order's billing phone is used as a fallback if there is no shipping phone.
     ///
-    static func getDestinationAddress(order: Order, address: Address?) -> WooShippingAddress? {
+    func getDestinationAddress(order: Order, address: Address?) -> WooShippingAddress? {
         guard let phone = address?.phone, phone.isNotEmpty else {
             let destinationAddress = address?.copy(phone: order.billingAddress?.phone)
             return destinationAddress?.toWooShippingAddress()
@@ -598,50 +712,130 @@ private extension WooShippingCreateLabelsViewModel {
         return address?.toWooShippingAddress()
     }
 
-    static func getStoredAccountSettings() -> AccountSettings? {
-        let storageManager = ServiceLocator.storageManager
+    func observePaymentMethod() {
+        $paymentMethod
+            .combineLatest($shipments, $selectedShipmentIndex)
+            .map { paymentMethod, shipments, selectedIndex -> WooShippingPaymentMethodLine? in
+                if shipments[selectedIndex].isPurchased {
+                    return nil
+                }
 
-        let resultsController = ResultsController<StorageAccountSettings>(storageManager: storageManager, sortedBy: [])
-        try? resultsController.performFetch()
-        return resultsController.fetchedObjects.first
+                guard let paymentMethod else {
+                    return .add
+                }
+
+                return WooShippingPaymentMethodLine.cardLineWithPaymentMethod(
+                    paymentMethod,
+                    isEditable: true
+                )
+            }
+            .assign(to: &$paymentMethodLine)
     }
 
-    /// Converts the package data to a `ShippingLabelPackageSelected` object.
-    func fromPackageDataToPackageSelected(_ packageData: WooShippingPackageDataRepresentable, weight: Double, shipmentID: String) -> ShippingLabelPackageSelected {
-        ShippingLabelPackageSelected(id: shipmentID,
-                                     boxID: packageData.id,
-                                     length: Double(packageData.length) ?? 0,
-                                     width: Double(packageData.width) ?? 0,
-                                     height: Double(packageData.height) ?? 0,
-                                     weight: weight,
-                                     isLetter: WooShippingPackageType(rawValue: packageData.packageType) == .envelope,
-                                     hazmatCategory: nil, // Hazmat support will be added in a future milestone
-                                     customsForm: customsForm)
+    func setupPaymentMethod(accountSettings: ShippingLabelAccountSettings?) {
+        self.paymentMethod = accountSettings?.paymentMethods.first {
+            return $0.paymentMethodID == accountSettings?.selectedPaymentMethodID
+        }
+    }
+
+    func configureShipmentResultsController() {
+        let reloadShipments = { [weak self] in
+            guard let self else { return }
+            let fetchedShipments = shipmentResultsController.fetchedObjects
+            splitShipmentsViewModel = WooShippingSplitShipmentsViewModel(order: order,
+                                                                         remoteShipments: fetchedShipments,
+                                                                         items: itemsDataSource.items,
+                                                                         stores: stores)
+            shipments = splitShipmentsViewModel.shipments
+        }
+
+        shipmentResultsController.onDidChangeContent = {
+            reloadShipments()
+        }
+
+        shipmentResultsController.onDidResetContent = {
+            reloadShipments()
+        }
+
+        do {
+            try shipmentResultsController.performFetch()
+            reloadShipments()
+        } catch {
+            DDLogError("⛔️ Unable to fetch shipments: \(error)")
+        }
+    }
+
+    func configureOriginAddressResultsController() {
+        let updateSelectedAddress = { [weak self] in
+            guard let self else { return }
+            let addresses = originAddressResultsController.fetchedObjects
+            updateSelectedOriginAddress(addresses: addresses)
+        }
+        originAddressResultsController.onDidChangeContent = {
+            updateSelectedAddress()
+        }
+
+        originAddressResultsController.onDidResetContent = {
+            updateSelectedAddress()
+        }
+
+        do {
+            try originAddressResultsController.performFetch()
+            updateSelectedAddress()
+        } catch {
+            DDLogError("⛔️ Unable to fetch origin addresses: \(error)")
+        }
+    }
+
+    func updateSelectedOriginAddress(addresses: [WooShippingOriginAddress]) {
+        selectedOriginAddress = addresses.first(where: \.defaultAddress)
+        originAddresses = WooShippingOriginAddressListViewModel(addresses: addresses,
+                                                                selectedAddressID: selectedOriginAddress?.id)
+        originAddresses.onSelect = { [weak self] selectedAddress in
+            self?.selectedOriginAddress = selectedAddress
+        }
+    }
+
+    /// Shipping Label Account Settings ResultsController monitoring
+    ///
+    func configureAccountSettingsResultsController() {
+        let updateSettings = { [weak self] in
+            guard let self else { return }
+            let settings = accountSettingsResultsController.fetchedObjects.first
+            updateAccountSettings(accountSettings: settings)
+        }
+        accountSettingsResultsController.onDidChangeContent = {
+            updateSettings()
+        }
+
+        accountSettingsResultsController.onDidResetContent = {
+            updateSettings()
+        }
+
+        do {
+            try accountSettingsResultsController.performFetch()
+            updateSettings()
+        } catch {
+            DDLogError("⛔️ Unable to fetch woo shipping account settings: \(error)")
+        }
+    }
+
+    func updateAccountSettings(accountSettings: ShippingLabelAccountSettings?) {
+        markOrderComplete = accountSettings?.lastOrderCompleted ?? false
+
+        if let accountSettings {
+            paymentMethodsViewModel = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
+        }
+        setupPaymentMethod(accountSettings: accountSettings)
     }
 }
 
 private extension WooShippingCreateLabelsViewModel {
+    enum Constants {
+        static let missingUPSDAPTermsOfServiceAcceptance = "missing_upsdap_terms_of_service_acceptance"
+        static let serverErrorResponse = "wcc_server_error_response"
+    }
     enum Localization {
-        static func baseRateLabel(for selectedRate: WooShippingSelectedRate) -> String {
-            if selectedRate.signatureRate == nil && selectedRate.adultSignatureRate == nil {
-                return selectedRate.rate.title
-            } else {
-                return String.localizedStringWithFormat(baseFeeFormat, selectedRate.rate.title)
-            }
-        }
-        private static let baseFeeFormat = NSLocalizedString("wooShipping.createLabels.bottomSheet.baseFee",
-                                                             value: "%1$@ (base fee)",
-                                                             comment: "Label for row showing the base fee for the selected shipping service " +
-                                                             "on the shipping label creation screen. Reads like: 'USPS - Media Mail (base fee)'")
-        static let signatureRequired = NSLocalizedString("wooShipping.createLabels.bottomSheet.signatureRequired",
-                                                         value: "Signature Required",
-                                                         comment: "Label for row showing the additional cost to require a signature " +
-                                                         "on the shipping label creation screen")
-        static let adultSignatureRequired = NSLocalizedString("wooShipping.createLabels.bottomSheet.adultSignatureRequired",
-                                                              value: "Adult Signature Required",
-                                                              comment: "Label for row showing the additional cost to require an adult signature " +
-                                                              "on the shipping label creation screen")
-
         enum OriginAddressStatus {
             static let unverified = NSLocalizedString(
                 "wooShipping.createLabels.addressVerification.originUnverified",
@@ -662,12 +856,6 @@ private extension WooShippingCreateLabelsViewModel {
                                                               comment: "Notice when a destination address is missing on the shipping label creation screen")
         }
 
-        static let itnMissing = NSLocalizedString(
-            "wooShipping.createLabels.itnMissing",
-            value: "ITN is required.",
-            comment: "Notice when a International Transaction Number is missing on the shipping label creation screen"
-        )
-
         enum LabelPurchaseError {
             static let title = NSLocalizedString("wooShipping.createLabels.labelPurchaseError.title",
                                                    value: "Error purchasing shipping label.",
@@ -679,10 +867,62 @@ private extension WooShippingCreateLabelsViewModel {
                                                    value: "Retry",
                                                    comment: "Button to retry label purchase when an error occurs")
         }
+
+        enum DestinationPhoneNumber {
+            static let missing = NSLocalizedString(
+                "wooShipping.createLabels.destinationPhoneNumber.missing",
+                value: "Phone number is required for the destination address.",
+                comment: "Notice when the destination phone number is missing on the shipping label creation screen"
+            )
+            static let invalid = NSLocalizedString(
+                "wooShipping.createLabels.destinationPhoneNumber.invalid",
+                value: "Please enter a valid phone number for the destination address.",
+                comment: "Notice when the destination phone number is invalid"
+            )
+        }
+
+        enum PhoneNumberError {
+            static let title = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.title",
+                value: "Invalid phone number.",
+                comment: "Title for the notice when the label purchase fails due to an invalid destination phone number"
+            )
+            static let message = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.message",
+                value: "Please enter a valid phone number for the destination address.",
+                comment: "Message for the notice when the label purchase fails due to an invalid destination phone number"
+            )
+            static let editAddress = NSLocalizedString(
+                "wooShipping.createLabels.phoneNumberError.editAddress",
+                value: "Edit address",
+                comment: "Action button title to edit the destination address when phone number is invalid"
+            )
+        }
+
+        static let refundNotice = NSLocalizedString(
+            "wooShipping.createLabels.refundNotice",
+            value: "You have successfully submitted a request for refund. You can purchase a new label.",
+            comment: "Notice to display after requesting refund for a shipping label"
+        )
     }
 }
 
-private extension WooShippingOriginAddress {
+private extension WooShippingCreateLabelsViewModel {
+    func invalidPhoneNumberMessage(from error: Error) -> String? {
+        guard case let DotcomError.unknown(code, message, data) = error,
+              code == Constants.serverErrorResponse else {
+            return nil
+        }
+        let dataMessage = data?["message"]?.value as? String
+        let candidates = [message, dataMessage].compactMap { $0 }
+        guard candidates.contains(where: { $0.range(of: "phone", options: .caseInsensitive) != nil }) else {
+            return nil
+        }
+        return Localization.PhoneNumberError.message
+    }
+}
+
+extension WooShippingOriginAddress {
     /// Converts the origin address to a `WooShippingAddress`.
     ///
     /// This prepares the address for use in e.g. fetching available shipping rates or purchasing the label.
@@ -690,6 +930,7 @@ private extension WooShippingOriginAddress {
     func toWooShippingAddress() -> WooShippingAddress {
         WooShippingAddress(company: company,
                            name: fullName,
+                           email: email,
                            phone: phone,
                            country: country,
                            state: state,
@@ -708,6 +949,7 @@ private extension ShippingLabelAddress {
     func toWooShippingAddress() -> WooShippingAddress {
         WooShippingAddress(company: company,
                            name: name,
+                           email: nil, // ignoring as we don't display email on UI for purchased labels
                            phone: phone,
                            country: country,
                            state: state,
@@ -726,6 +968,7 @@ private extension Address {
     func toWooShippingAddress() -> WooShippingAddress {
         return WooShippingAddress(company: company ?? "",
                                   name: fullName,
+                                  email: email,
                                   phone: phone ?? "",
                                   country: country,
                                   state: state,

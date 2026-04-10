@@ -22,6 +22,9 @@ protocol AuthenticatedWebViewModel {
     /// Triggered when the web view is dismissed
     func handleDismissal()
 
+    /// Triggered when the web view is disappeared
+    func handleDisappear()
+
     /// Triggered when the web view redirects to a new URL
     func handleRedirect(for url: URL?)
 
@@ -51,6 +54,10 @@ extension AuthenticatedWebViewModel {
     }
 
     func didFailProvisionalNavigation(with error: Error) {
+        // NO-OP
+    }
+
+    func handleDisappear () {
         // NO-OP
     }
 }

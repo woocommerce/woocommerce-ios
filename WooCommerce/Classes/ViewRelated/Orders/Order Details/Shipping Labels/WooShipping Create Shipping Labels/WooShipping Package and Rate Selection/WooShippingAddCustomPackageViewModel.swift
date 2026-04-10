@@ -1,9 +1,11 @@
 import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 final class WooShippingAddCustomPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let siteID: Int64
+    private let analytics: Analytics
 
     // Holds values for all dimension input fields.
     // Using a dictionary so we can easily add/remove new types
@@ -15,13 +17,19 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
     @Published var showSaveTemplate: Bool = false
     @Published var packageTemplateName: String = ""
 
+    var packageID: String {
+        packageTemplateName.isEmpty ? Constants.defaultBoxID : packageTemplateName
+    }
+
     // MARK: Initialization
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.siteID = siteID
+        self.analytics = analytics
         if let selectedPackage {
             fieldValues = [
                 .length: selectedPackage.length,
@@ -35,10 +43,10 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         }
     }
 
-    // Field values are invalid if one of them is empty
+    // Field values are invalid if one of them is incomplete
     // - if we are saving template we check all field values
     // - if we are not saving template we check only dimensions
-    var areFieldValuesInvalid: Bool {
+    var areFieldValuesIncomplete: Bool {
         let keysToCheck: [WooShippingPackageUnitType] = showSaveTemplate ? WooShippingPackageUnitType.allCases : WooShippingPackageUnitType.dimensionUnits
 
         var validFieldsCount: Int = 0
@@ -53,8 +61,21 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
         return validFieldsCount != keysToCheck.count
     }
 
+    /// Ensure that all dimensions are larger than 0
+    var allDimensionsValid: Bool {
+        let keysToCheck = WooShippingPackageUnitType.dimensionUnits
+        for (key, value) in fieldValues {
+            guard keysToCheck.contains(key) else { continue }
+            let doubleValue = Double(value)
+            guard let doubleValue, doubleValue > 0 else {
+                return false
+            }
+        }
+        return true
+    }
+
     private var packageDataFromCurrentData: WooShippingPackageDataRepresentable {
-        return WooShippingPackageData(id: packageTemplateName,
+        return WooShippingPackageData(id: packageID,
                                       name: packageTemplateName,
                                       length: fieldValues[.length] ?? "",
                                       width: fieldValues[.width] ?? "",
@@ -109,7 +130,7 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
                     continuation.resume(returning: .success(packageData))
                 case let .failure(error):
                     DDLogError("⛔️ Error saving custom package with WCShip: \(error)")
-                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failedSavingTemplate))
+                    continuation.resume(returning: .failure(WooShippingAddCustomPackageViewModel.Error.failure(error)))
                 }
             }
             stores.dispatch(action)
@@ -117,20 +138,28 @@ final class WooShippingAddCustomPackageViewModel: ObservableObject {
 
         switch result {
         case .success(let success):
+            analytics.track(event: .WooShipping.packageSelectionStep(state: .savingSuccess))
             return .success(success)
         case .failure(let failure):
+            analytics.track(event: .WooShipping.packageSelectionStep(state: .savingFailed, error: failure))
             return .failure(WooShippingAddCustomPackageViewModel.Error.failure(failure))
         }
     }
 
     func validateCustomPackageInputFields() -> Bool {
-        guard !areFieldValuesInvalid else {
+        if areFieldValuesIncomplete {
             return false
         }
         if showSaveTemplate {
             return !packageTemplateName.isEmpty
         }
         return true
+    }
+}
+
+private extension WooShippingAddCustomPackageViewModel {
+    enum Constants {
+        static let defaultBoxID = "custom_box"
     }
 }
 

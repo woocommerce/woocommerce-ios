@@ -348,6 +348,7 @@ private class NoticeContainerView: UIView {
         ])
 
         activateNoticeWidthIfNeeded()
+        observeTraitChanges()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -359,20 +360,24 @@ private class NoticeContainerView: UIView {
         return noticeView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5)
     }()
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        activateNoticeWidthIfNeeded()
-
-        layoutIfNeeded()
+    private func activateNoticeWidthIfNeeded() {
+        noticeWidthConstraint.isActive = traitCollection.horizontalSizeClass == .regular
     }
 
-    private func activateNoticeWidthIfNeeded() {
-        let isRegularWidth = traitCollection.containsTraits(in: UITraitCollection(horizontalSizeClass: .regular))
-        noticeWidthConstraint.isActive = isRegularWidth
+    private func observeTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitUserInterfaceIdiom.self,
+            UITraitVerticalSizeClass.self,
+            UITraitHorizontalSizeClass.self
+        ]
+
+        registerForTraitChanges(traits) {(self: Self, _: UITraitCollection) in
+            self.activateNoticeWidthIfNeeded()
+            self.layoutIfNeeded()
+        }
     }
 }
-
 
 // MARK: - UNMutableNotificationContent Notice Methods
 //
@@ -380,7 +385,9 @@ private extension UNMutableNotificationContent {
     convenience init(notice: Notice) {
         self.init()
 
-        title = notice.notificationInfo?.title ?? notice.title
+        if let title = notice.notificationInfo?.title ?? notice.title {
+            self.title = title
+        }
 
         if let body = notice.notificationInfo?.body {
             self.body = body

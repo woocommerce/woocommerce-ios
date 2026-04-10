@@ -7,6 +7,14 @@ extension WooAnalyticsEvent {
             static let language = "language"
         }
 
+        /// Trigger of the product description AI flow. The raw value is the event property value.
+        enum ProductDescriptionAISource: String {
+            /// From product description Aztec editor.
+            case aztecEditor = "aztec_editor"
+            /// From the product form below the description row.
+            case productForm = "product_form"
+        }
+
         /// Tracked when the user taps on the button to start the product description AI flow.
         static func productDescriptionAIButtonTapped(source: ProductDescriptionAISource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDescriptionAIButtonTapped,
@@ -58,16 +66,6 @@ extension WooAnalyticsEvent {
         static func productDescriptionAIGenerationFailed(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDescriptionAIGenerationFailed, properties: [:], error: error)
         }
-    }
-}
-
-extension WooAnalyticsEvent.ProductFormAI {
-    /// Trigger of the product description AI flow. The raw value is the event property value.
-    enum ProductDescriptionAISource: String {
-        /// From product description Aztec editor.
-        case aztecEditor = "aztec_editor"
-        /// From the product form below the description row.
-        case productForm = "product_form"
     }
 }
 

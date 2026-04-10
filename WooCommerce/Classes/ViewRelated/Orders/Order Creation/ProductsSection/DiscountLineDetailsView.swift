@@ -64,7 +64,9 @@ private extension DiscountLineDetailsView {
 
         var body: some View {
             TextField(placeholder, text: $text)
-                .onChange(of: text, perform: onChangeText)
+                .onChange(of: text) {
+                    onChangeText(text)
+                }
                 .focused()
                 .keyboardType(.numbersAndPunctuation)
                 .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)

@@ -4,6 +4,7 @@ import Yosemite
 final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
 
     /// View Model
     ///
@@ -34,6 +35,8 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
         configureBackground()
         configureSeparator()
+        updateCollectionViewHeight()
+        observeInterfaceTraitChanges()
     }
 
     /// Configure cell
@@ -54,14 +57,11 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         }
     }
 
-    /// Rotation management
-    ///
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if traitCollection != previousTraitCollection {
-            collectionView.collectionViewLayout.invalidateLayout()
-            collectionView.reloadData()
-        }
+    /// Updates the collection view height based on current accessibility settings
+    private func updateCollectionViewHeight() {
+        let cellSize = ProductImagesHeaderViewModel.cellSize(for: traitCollection.preferredContentSizeCategory)
+        // Add padding to accommodate the cell size
+        collectionViewHeightConstraint.constant = cellSize.height + Layout.collectionViewPadding
     }
 }
 
@@ -98,7 +98,8 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
         case .extendedAddImage:
             return frame.size
         default:
-            return ProductImagesHeaderViewModel.defaultCollectionViewCellSize
+            // Use dynamic sizing based on current accessibility settings
+            return ProductImagesHeaderViewModel.cellSize(for: traitCollection.preferredContentSizeCategory)
         }
     }
 }
@@ -141,11 +142,46 @@ private extension ProductImagesHeaderTableViewCell {
 
         self.config = config
 
+        // Update height for the new configuration
+        updateCollectionViewHeight()
+
         switch config {
         case .extendedAddImages:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: frame.size, config: config)
         default:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesHeaderViewModel.defaultCollectionViewCellSize, config: config)
+            // Use dynamic sizing based on current accessibility settings
+            let dynamicSize = ProductImagesHeaderViewModel.cellSize(for: traitCollection.preferredContentSizeCategory)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: dynamicSize, config: config)
         }
+    }
+
+    /// Rotation management and accessibility changes
+    ///
+    func observeInterfaceTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitPreferredContentSizeCategory.self,
+            UITraitHorizontalSizeClass.self,
+            UITraitVerticalSizeClass.self,
+            UITraitUserInterfaceStyle.self,
+            UITraitAccessibilityContrast.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, previousTraitCollection: UITraitCollection) in
+            guard self.traitCollection != previousTraitCollection else {
+                return
+            }
+
+            /// Update collection view height for accessibility changes
+            self.updateCollectionViewHeight()
+            /// Invalidate layout when trait collection changes (including accessibility changes)
+            self.collectionView.collectionViewLayout.invalidateLayout()
+            self.collectionView.reloadData()
+        }
+    }
+}
+
+private extension ProductImagesHeaderTableViewCell {
+    enum Layout {
+        /// Padding around the collection view (16pt top and bottom)
+        static let collectionViewPadding: CGFloat = 32
     }
 }

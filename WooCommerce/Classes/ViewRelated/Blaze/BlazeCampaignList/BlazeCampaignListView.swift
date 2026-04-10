@@ -32,7 +32,12 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] productID in
-            self?.startCampaignCreation(productID: productID)
+            self?.startCampaignCoordinator(productID: productID)
+        }
+
+        rootView.onShowIntro = { [weak self] in
+            guard self?.coordinator == nil else { return }
+            self?.startCampaignCoordinator(showsIntro: true)
         }
     }
 
@@ -45,14 +50,14 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
         super.viewDidAppear(animated)
         if startsCampaignCreationOnAppear {
             startsCampaignCreationOnAppear = false
-            startCampaignCreation()
+            startCampaignCoordinator()
         }
     }
 }
 
 /// Private helper
 private extension BlazeCampaignListHostingController {
-    func startCampaignCreation(productID: Int64? = nil) {
+    func startCampaignCoordinator(productID: Int64? = nil, showsIntro: Bool = false) {
         guard let navigationController else {
             return
         }
@@ -61,7 +66,7 @@ private extension BlazeCampaignListHostingController {
             siteURL: viewModel.siteURL,
             productID: productID,
             source: .campaignList,
-            shouldShowIntro: viewModel.shouldShowIntroView,
+            shouldShowIntro: showsIntro,
             navigationController: navigationController,
             onCampaignCreated: { [weak self] in
                 self?.viewModel.didCreateCampaign()
@@ -104,6 +109,7 @@ struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
 
     var onCreateCampaign: (Int64?) -> Void = { _ in }
+    var onShowIntro: () -> Void = {}
 
     init(viewModel: BlazeCampaignListViewModel) {
         self.viewModel = viewModel
@@ -155,9 +161,12 @@ struct BlazeCampaignListView: View {
         }) { url in
             detailView(url: url)
         }
-        .onChange(of: viewModel.shouldShowIntroView) { shouldShow in
+        .onChange(of: viewModel.shouldShowIntroView) { _, shouldShow in
+            /// Hack: since the campaign creation coordinator takes care of the intro modal,
+            /// the view triggers creating coordinator in the hosting controller
+            /// and manually sets shouldShowIntroView to false.
             if shouldShow {
-                onCreateCampaign(nil)
+                onShowIntro()
                 viewModel.shouldShowIntroView = false
             }
         }

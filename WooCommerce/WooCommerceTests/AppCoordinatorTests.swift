@@ -2,6 +2,7 @@ import Experiments
 import TestKit
 import WordPressAuthenticator
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -495,7 +496,6 @@ private extension AppCoordinatorTests {
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
                          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
                          themeInstaller: ThemeInstaller = DefaultThemeInstaller()
     ) -> AppCoordinator {
@@ -508,7 +508,6 @@ private extension AppCoordinatorTests {
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
-                              upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator,
                               switchStoreUseCase: switchStoreUseCase,
                               themeInstaller: themeInstaller)
     }

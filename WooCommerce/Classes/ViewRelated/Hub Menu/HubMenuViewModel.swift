@@ -25,9 +25,8 @@ enum HubMenuNavigationDestination: Hashable {
     case inbox
     case reviews
     case coupons
-    case inAppPurchase
-    case subscriptions
     case customers
+    case bookings
     case reviewDetails(parcel: ProductReviewFromNoteParcel)
 }
 
@@ -57,10 +56,6 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private(set) var woocommerceAdminURL = WooConstants.URLs.blog.asURL()
 
-    /// POS Section Element
-    ///
-    @Published private(set) var posElement: HubMenuItem?
-
     /// Settings Elements
     ///
     @Published private(set) var settingsElements: [HubMenuItem] = []
@@ -82,27 +77,24 @@ final class HubMenuViewModel: ObservableObject {
     @Published private(set) var hasGoogleAdsCampaigns = false
     @Published private var currentSite: Yosemite.Site?
 
-    /// Whether the app is in POS mode for an eligible site.
-    @Published var showsPOS: Bool = false
-
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
-    private let posEligibilityChecker: POSEligibilityCheckerProtocol
     private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
-    private(set) lazy var posItemProvider: PointOfSaleItemServiceProtocol = {
-        let storage = ServiceLocator.storageManager
-        let currencySettings = ServiceLocator.currencySettings
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
-        return PointOfSaleItemService(siteID: siteID,
-                                      currencySettings: currencySettings,
-                                      credentials: credentials,
-                                      storage: storage)
-    }()
+    private var isIPPHiddenForCIAB: Bool {
+        siteCIABEligibilityChecker.isIPPHiddenForCurrentSite
+    }
+    private let posEligibilityService: POSEligibilityServiceProtocol
+    private let bookingsEligibilityCheckerFactory: (Site) -> BookingsTabEligibilityCheckerProtocol
+    private let isPad: Bool
+
+    private let appPasswordSupportState = ApplicationPasswordsExperimentState()
 
     private(set) lazy var inboxViewModel = InboxViewModel(siteID: siteID)
 
@@ -111,34 +103,34 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
     @Published private var isSiteEligibleForInbox = false
+    @Published private var isSiteEligibleForBookings = false
+    @Published private var isPOSTabCachedVisible = false
 
     private var cancellables: Set<AnyCancellable> = []
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
-        // There is no straightforward way to convert a @Published var to a Binding value because we cannot use $self.
-        let navigationPathBinding = Binding(
-            get: { [weak self] in
-                self?.navigationPath ?? NavigationPath()
-            },
-            set: { [weak self] in
-                self?.navigationPath = $0
-            }
-        )
-        return InPersonPaymentsMenuViewModel(
+        InPersonPaymentsMenuViewModel(
             siteID: siteID,
             dependencies: .init(
                 cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
                 onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
                 cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID),
-                wooPaymentsPayoutService: WooPaymentsPayoutService(siteID: siteID,
-                                                                     credentials: credentials)),
-            navigationPath: navigationPathBinding)
+                wooPaymentsPayoutService: WooPaymentsPayoutService(
+                    siteID: siteID,
+                    credentials: credentials,
+                    selectedSite: stores.sessionManager.defaultSitePublisher
+                        .map { $0?.toJetpackSite() }
+                        .eraseToAnyPublisher(),
+                    appPasswordSupportState: appPasswordSupportState
+                        .$isAvailableAndEnabled
+                        .eraseToAnyPublisher()
+                )
+            )
+        )
     }()
 
-    private(set) var cardPresentPaymentService: CardPresentPaymentFacade?
-    private(set) var collectOrderPaymentAnalyticsTracker = POSCollectOrderPaymentAnalytics()
     private let analytics: Analytics
 
     init(siteID: Int64,
@@ -149,6 +141,13 @@ final class HubMenuViewModel: ObservableObject {
          inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
+         bookingsEligibilityCheckerFactory: @escaping (Site) -> BookingsTabEligibilityCheckerProtocol = { site in
+             BookingsTabEligibilityChecker(site: site)
+         },
+         // Injected for mocking in tests.
+         isPad: Bool = UIDevice.isPad(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.credentials = stores.sessionManager.defaultCredentials
@@ -160,16 +159,16 @@ final class HubMenuViewModel: ObservableObject {
         self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.posEligibilityService = posEligibilityService
+        self.bookingsEligibilityCheckerFactory = bookingsEligibilityCheckerFactory
+        self.isPad = isPad
         self.cardPresentPaymentsOnboarding = CardPresentPaymentsOnboardingUseCase()
-        self.posEligibilityChecker = POSEligibilityChecker(siteSettings: ServiceLocator.selectedSiteSettings,
-                                                           currencySettings: ServiceLocator.currencySettings,
-                                                           featureFlagService: featureFlagService)
         self.analytics = analytics
         observeSiteForUIUpdates()
         observePlanName()
         observeGoogleAdsEntryPointAvailability()
         tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges.share().assign(to: &$shouldShowNewFeatureBadgeOnPayments)
-        createCardPresentPaymentService()
     }
 
     func viewDidAppear() async {
@@ -194,7 +193,6 @@ final class HubMenuViewModel: ObservableObject {
     /// Resets the menu elements displayed on the menu.
     ///
     func setupMenuElements() {
-        setupPOSElement()
         setupSettingsElements()
         setupGeneralElements()
     }
@@ -228,20 +226,8 @@ final class HubMenuViewModel: ObservableObject {
         isSiteEligibleForBlaze = await blazeEligibilityChecker.isSiteEligible(site)
     }
 
-    func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
-        updateInAppNotifications(isPointOfSaleActive)
-        updateTrackEventPrefix(isPointOfSaleActive)
-    }
-
     func trackMenuItemTapEvent(menu: HubMenuItem) {
-        let eventProperties: [AnyHashable: Any] = {
-            var properties: [AnyHashable: Any] = [AnalyticsKeys.trackingOption: menu.trackingOption]
-            if menu.id == HubMenuViewModel.PointOfSaleEntryPoint.id {
-                properties[AnalyticsKeys.paymentsOnboardingState] = cardPresentPaymentsOnboarding.state.reasonForAnalytics
-            }
-            return properties
-        }()
-        analytics.track(.hubMenuOptionTapped, withProperties: eventProperties)
+        analytics.track(.hubMenuOptionTapped, withProperties: [AnalyticsKeys.trackingOption: menu.trackingOption])
     }
 
     func createGoogleAdsCampaignCoordinator(with navigationController: UINavigationController) -> GoogleAdsCampaignCoordinator {
@@ -266,85 +252,60 @@ final class HubMenuViewModel: ObservableObject {
     }
 }
 
-// MARK: - Helper method for WooCommerce POS
-//
-private extension HubMenuViewModel {
-    // Disables foreground in-app notifications when Point of Sale is active
-    //
-    func updateInAppNotifications(_ isPointOfSaleActive: Bool) {
-        if isPointOfSaleActive {
-            ServiceLocator.pushNotesManager.disableInAppNotifications()
-        } else {
-            ServiceLocator.pushNotesManager.enableInAppNotifications()
-        }
-    }
-
-    // Decorates track events with a different prefix when Point of Sale is active
-    //
-    func updateTrackEventPrefix(_ isPointOfSaleActive: Bool) {
-        TracksProvider.setPOSMode(isPointOfSaleActive)
-    }
-}
-
 // MARK: - Helper methods
 //
 private extension HubMenuViewModel {
-    func createCardPresentPaymentService() {
-        Task {
-            self.cardPresentPaymentService = await CardPresentPaymentService(siteID: siteID,
-                                                                             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker)
-        }
-    }
-
-    func setupPOSElement() {
-        posEligibilityChecker.isEligible.map { isEligibleForPOS in
-            if isEligibleForPOS {
-                return PointOfSaleEntryPoint()
-            } else {
-                return nil
-            }
-        }
-        .assign(to: &$posElement)
-    }
-
     func setupSettingsElements() {
         settingsElements = [Settings()]
-
-        guard let site = stores.sessionManager.defaultSite,
-              // Only show the upgrades menu on WPCom sites and non free trial sites
-              site.isWordPressComStore,
-              !site.isFreeTrialSite else {
-            return
-        }
-
-        settingsElements.append(Subscriptions())
     }
 
     func setupGeneralElements() {
-        $shouldShowNewFeatureBadgeOnPayments
-            .combineLatest($isSiteEligibleForInbox,
-                           $isSiteEligibleForBlaze,
-                           $isSiteEligibleForGoogleAds)
-            .map { [weak self] combinedResult -> [HubMenuItem] in
-                guard let self else { return [] }
-                let (shouldShowBadgeOnPayments, eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds) = combinedResult
-                return createGeneralElements(
-                    shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
-                    eligibleForGoogleAds: eligibleForGoogleAds,
-                    eligibleForBlaze: eligibleForBlaze,
-                    eligibleForInbox: eligibleForInbox
-                )
-            }
-            .assign(to: &$generalElements)
+        Publishers.CombineLatest(
+            $shouldShowNewFeatureBadgeOnPayments,
+            $isSiteEligibleForBookings
+        )
+        .combineLatest(
+            Publishers.CombineLatest3(
+                $isSiteEligibleForInbox,
+                $isSiteEligibleForBlaze,
+                $isSiteEligibleForGoogleAds
+            )
+        )
+        .map { [weak self] combinedResults -> [HubMenuItem] in
+            guard let self else { return [] }
+
+            let ((shouldShowBadgeOnPayments, eligibleForBookings), (eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
+
+            return createGeneralElements(
+                shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
+                eligibleForGoogleAds: eligibleForGoogleAds,
+                eligibleForBlaze: eligibleForBlaze,
+                eligibleForInbox: eligibleForInbox,
+                eligibleForBookings: eligibleForBookings
+            )
+        }
+        .assign(to: &$generalElements)
+    }
+
+    enum PaymentsFeatureEligibility {
+        case ineligible
+        case eligible(shouldShowBadgeOnPayments: Bool)
     }
 
     func createGeneralElements(shouldShowBadgeOnPayments: Bool,
                                eligibleForGoogleAds: Bool,
                                eligibleForBlaze: Bool,
-                               eligibleForInbox: Bool) -> [HubMenuItem] {
-        var items: [HubMenuItem] = [
-            Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil)
-        ]
+                               eligibleForInbox: Bool,
+                               eligibleForBookings: Bool) -> [HubMenuItem] {
+        var items: [HubMenuItem] = []
+
+        if !isIPPHiddenForCIAB {
+            items.append(Payments(iconBadge: shouldShowBadgeOnPayments ? .dot : nil))
+        }
+
+        if shouldShowBookingsInMenu, eligibleForBookings {
+            items.append(Bookings())
+        }
 
         if eligibleForGoogleAds {
             items.append(GoogleAds())
@@ -361,10 +322,6 @@ private extension HubMenuViewModel {
 
         if eligibleForInbox {
             items.append(Inbox())
-        }
-
-        if generalAppSettings.betaFeatureEnabled(.inAppPurchases) {
-            items.append(InAppPurchases())
         }
 
         items.append(Customers())
@@ -424,8 +381,17 @@ private extension HubMenuViewModel {
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
-
         isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
+        isPOSTabCachedVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
+
+        if shouldShowBookingsInMenu {
+            let bookingsEligibilityChecker = bookingsEligibilityCheckerFactory(site)
+            Task { @MainActor in
+                isSiteEligibleForBookings = await bookingsEligibilityChecker.checkVisibility()
+            }
+        } else {
+            isSiteEligibleForBookings = false
+        }
 
         Task { @MainActor in
             isSiteEligibleForGoogleAds = await googleAdsEligibilityChecker.isSiteEligible(siteID: site.siteID)
@@ -488,6 +454,10 @@ private extension HubMenuViewModel {
                 continuation.resume(with: result)
             })
         }
+    }
+
+    var shouldShowBookingsInMenu: Bool {
+        isPad && isPOSTabCachedVisible
     }
 }
 
@@ -656,46 +626,6 @@ extension HubMenuViewModel {
         let navigationDestination: HubMenuNavigationDestination? = .reviews
     }
 
-    struct InAppPurchases: HubMenuItem {
-        static var id = "iap"
-
-        let title: String = "[Debug] IAP"
-        let description: String = "Debug your inApp Purchases"
-        let icon: UIImage = UIImage(systemName: "ladybug.fill")!
-        let iconColor: UIColor = .red
-        let accessibilityIdentifier: String = "menu-iap"
-        let trackingOption: String = "debug-iap"
-        let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .inAppPurchase
-    }
-
-    struct PointOfSaleEntryPoint: HubMenuItem {
-        static var id = "pointOfSale"
-
-        let title: String = Localization.pos
-        let description: String = Localization.posDescription
-        let icon: UIImage = .pointOfSaleImage
-        let iconColor: UIColor = .withColorStudio(.green, shade: .shade30)
-        let accessibilityIdentifier: String = "menu-pointOfSale"
-        let trackingOption: String = "pointOfSale"
-        let iconBadge: HubMenuBadgeType? = nil
-        // POS is presented with its own navigation stack as nested navigation stack is not supported.
-        let navigationDestination: HubMenuNavigationDestination? = nil
-    }
-
-    struct Subscriptions: HubMenuItem {
-        static var id = "subscriptions"
-
-        let title: String = Localization.subscriptions
-        let description: String = Localization.subscriptionsDescription
-        let icon: UIImage = .shoppingCartFilled
-        let iconColor: UIColor = .primary
-        let accessibilityIdentifier: String = "menu-subscriptions"
-        let trackingOption: String = "upgrades"
-        let iconBadge: HubMenuBadgeType? = nil
-        let navigationDestination: HubMenuNavigationDestination? = .subscriptions
-    }
-
     struct Customers: HubMenuItem {
         static var id = "customers"
 
@@ -707,6 +637,20 @@ extension HubMenuViewModel {
         let trackingOption: String = "customers"
         let iconBadge: HubMenuBadgeType? = nil
         let navigationDestination: HubMenuNavigationDestination? = .customers
+    }
+
+    struct Bookings: HubMenuItem {
+        static var id = "bookings"
+
+        let title: String = Localization.bookings
+        let description: String = Localization.bookingsDescription
+        let icon: UIImage = (UIImage(systemName: "calendar") ?? .productImage)
+            .withRenderingMode(.alwaysTemplate)
+        let iconColor: UIColor = .accent
+        let accessibilityIdentifier: String = "menu-bookings"
+        let trackingOption: String = "bookings"
+        let iconBadge: HubMenuBadgeType? = nil
+        let navigationDestination: HubMenuNavigationDestination? = .bookings
     }
 
     enum Localization {
@@ -750,15 +694,6 @@ extension HubMenuViewModel {
             "My Store",
             comment: "Title of the hub menu view in case there is no title for the store")
 
-        static let pos = NSLocalizedString(
-            "Point of Sale Mode",
-            comment: "Title of the POS menu in the hub menu")
-
-        static let posDescription = NSLocalizedString(
-            "hubMenu.pointOfSale.description",
-            value: "Accept payments at your physical store",
-            comment: "Description of the POS menu in the hub menu")
-
         static let woocommerceAdmin = NSLocalizedString(
             "WooCommerce Admin",
             comment: "Title of one of the hub menu options")
@@ -799,14 +734,6 @@ extension HubMenuViewModel {
             "Capture reviews for your store",
             comment: "Description of one of the hub menu options")
 
-        static let subscriptions = NSLocalizedString(
-            "Subscriptions",
-            comment: "Title of one of the hub menu options")
-
-        static let subscriptionsDescription = NSLocalizedString(
-            "Manage your subscription",
-            comment: "Description of one of the hub menu options")
-
         static let customers = NSLocalizedString(
             "hubMenu.customers",
             value: "Customers",
@@ -816,11 +743,22 @@ extension HubMenuViewModel {
             "hubMenu.customersDescription",
             value: "Get customer insights",
             comment: "Description of one of the hub menu options")
+
+        static let bookings = NSLocalizedString(
+            "hubMenu.bookings",
+            value: "Bookings",
+            comment: "Title of the Bookings menu in the hub menu"
+        )
+
+        static let bookingsDescription = NSLocalizedString(
+            "hubMenu.bookingsDescription",
+            value: "Manage your client appointments",
+            comment: "Description of the Bookings menu in the hub menu"
+        )
     }
 
     enum AnalyticsKeys {
         static let trackingOption = "option"
-        static let paymentsOnboardingState = "payments_onboarding_state"
     }
 }
 

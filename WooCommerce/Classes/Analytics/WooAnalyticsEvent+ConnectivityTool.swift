@@ -10,6 +10,7 @@ extension WooAnalyticsEvent {
             case wpCom
             case site
             case orders
+            case products
         }
 
         static func automaticTimeoutRetry() -> WooAnalyticsEvent {
@@ -18,6 +19,10 @@ extension WooAnalyticsEvent {
 
         static func topBannerTroubleshootTapped() -> WooAnalyticsEvent {
             .init(statName: .ordersListTopBannerTroubleshootTapped, properties: [:])
+        }
+
+        static func settingsTroubleshootTapped() -> WooAnalyticsEvent {
+            .init(statName: .settingsTroubleshootConnectionTapped, properties: [:])
         }
 
         static func requestResponse(test: Test, success: Bool, timeTaken: Double) -> WooAnalyticsEvent {

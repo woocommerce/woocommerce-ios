@@ -32,7 +32,12 @@ private extension EditableProductVariationModel {
     }
 
     func createStockStatusAttributedString() -> NSAttributedString {
-        let stockText = createStockText()
+        let stockText = String.createStockText(productType: productType,
+                                               manageStock: manageStock,
+                                               stockStatus: stockStatus,
+                                               stockQuantity: stockQuantity,
+                                               bundleStockStatus: bundleStockStatus,
+                                               bundleStockQuantity: bundleStockQuantity)
         return NSAttributedString(string: stockText,
                                   attributes: [
                                     .foregroundColor: UIColor.textSubtle,

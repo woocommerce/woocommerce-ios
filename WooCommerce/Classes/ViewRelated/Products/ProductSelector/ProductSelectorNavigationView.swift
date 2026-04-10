@@ -15,12 +15,11 @@ struct ProductSelectorNavigationView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ProductSelectorView(configuration: configuration,
                                 isPresented: $isPresented,
                                 viewModel: viewModel)
         }
-        .navigationViewStyle(.stack)
         .wooNavigationBarStyle()
     }
 }

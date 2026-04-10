@@ -5,6 +5,7 @@ import SafariServices
 import AutomatticAbout
 import Yosemite
 import SwiftUI
+import WooFoundationCore
 
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
@@ -28,8 +29,6 @@ final class SettingsViewController: UIViewController {
     /// Store Picker Coordinator
     ///
     private var storePickerCoordinator: StorePickerCoordinator?
-
-    private var domainSettingsCoordinator: DomainSettingsCoordinator?
 
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
@@ -115,8 +114,6 @@ private extension SettingsViewController {
         footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
-        footerView.icon.addGestureRecognizer(hiddenSettingsGestureRecognizer)
-        footerView.icon.isUserInteractionEnabled = true
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
@@ -142,20 +139,24 @@ private extension SettingsViewController {
             configurePlugins(cell: cell)
         case let cell as HostingTableViewCell<PluginDetailsRowContent> where row == .woocommerceDetails:
             configureWooCommmerceDetails(cell: cell)
-        case let cell as BasicTableViewCell where row == .domain:
-            configureDomain(cell: cell)
+        case let cell as BasicTableViewCell where row == .connectivity:
+            configureConnectivity(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
         case let cell as BasicTableViewCell where row == .themes:
             configureThemes(cell: cell)
         case let cell as BasicTableViewCell where row == .storeName:
             configureStoreName(cell: cell)
+        case let cell as BasicTableViewCell where row == .enablePushNotifications:
+            configureEnablePushNotifications(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
             configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .sendFeedback:
             configureSendFeedback(cell: cell)
+        case let cell as BasicTableViewCell where row == .notifications:
+            configureNotificationSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -166,6 +167,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
+        case let cell as BasicTableViewCell where row == .debugPanel:
+            configureDebugPanel(cell: cell)
         case let cell as BasicTableViewCell where row == .accountSettings:
             configureAccountSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
@@ -205,10 +208,10 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.helpAndSupport
     }
 
-    func configureDomain(cell: BasicTableViewCell) {
+    func configureConnectivity(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.domain
+        cell.textLabel?.text = Localization.connectivity
     }
 
     func configureInstallJetpack(cell: BasicTableViewCell) {
@@ -227,6 +230,18 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.storeName
+    }
+
+    func configureEnablePushNotifications(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.enablePushNotifications
+    }
+
+    func configureNotificationSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.notificationSettings
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -263,7 +278,13 @@ private extension SettingsViewController {
     func configureWormholy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.launchWormHolyDebug
+        cell.textLabel?.text = "Launch Wormholy Debug"
+    }
+
+    func configureDebugPanel(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = "Debug Panel"
     }
 
     func configureWhatsNew(cell: BasicTableViewCell) {
@@ -382,38 +403,21 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
-    func domainWasPressed() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite, let navigationController else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.settingsDomainsTapped)
-
-        let coordinator = DomainSettingsCoordinator(source: .settings, site: site, navigationController: navigationController)
-        domainSettingsCoordinator = coordinator
-        coordinator.start()
-    }
-
     func installJetpackWasPressed() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite,
+              let navigationController else {
             return
         }
 
         ServiceLocator.analytics.track(event: .jetpackInstallButtonTapped(source: .settings))
 
-        if site.isNonJetpackSite, let navigationController {
-            let coordinator = JetpackSetupCoordinator(site: site,
-                                                      rootViewController: navigationController)
-            self.jetpackSetupCoordinator = coordinator
-            return coordinator.showBenefitModal()
-        }
-        let installJetpackController = JCPJetpackInstallHostingController(siteID: site.siteID, siteURL: site.url, siteAdminURL: site.adminURL)
-
-        installJetpackController.setDismissAction { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-            self?.viewModel.onJetpackInstallDismiss()
-        }
-        present(installJetpackController, animated: true, completion: nil)
+        let coordinator = JetpackSetupCoordinator(site: site,
+                                                  rootViewController: navigationController,
+                                                  onCompletion: { [weak self] in
+            self?.viewModel.reloadSettings()
+        })
+        self.jetpackSetupCoordinator = coordinator
+        coordinator.startSetup()
     }
 
     func storeNameWasPressed() {
@@ -425,6 +429,25 @@ private extension SettingsViewController {
         })
         let controller = StoreNameSetupHostingController(viewModel: viewModel)
         present(controller, animated: true)
+    }
+
+    func enablePushNotificationsWasPressed() {
+        ServiceLocator.analytics.track(.settingsPushNotificationsButtonTap)
+        DDLogInfo("🔔 Settings: Enable Push Notifications tapped")
+        guard let site = stores.sessionManager.defaultSite else {
+            return DDLogError("⛔️ Cannot find ID for current site to enable push notifications!")
+        }
+        let viewModel = WPComPushNotificationsBenefitsViewModel(siteID: site.siteID, siteURL: site.url, onDismiss: { [weak self] in
+            self?.dismiss(animated: true)
+        })
+        let navigationController = WooNavigationController()
+        let controller = WPComPushNotificationsBenefitsHostingController(
+            viewModel: viewModel,
+            rootViewController: navigationController
+        )
+        navigationController.viewControllers = [controller]
+        navigationController.modalPresentationStyle = .formSheet
+        present(navigationController, animated: true)
     }
 
     func showThemeSettings() {
@@ -439,7 +462,8 @@ private extension SettingsViewController {
         guard let url = woocommercePluginViewModel.updateURL else {
             return
         }
-        let vc = SFSafariViewController(url: url)
+        let webView = AuthenticatableWebView(url: url, title: Localization.updateWooCommerce)
+        let vc = UIHostingController(rootView: webView)
         vc.modalPresentationStyle = .formSheet
 
         present(vc, animated: true)
@@ -476,6 +500,18 @@ private extension SettingsViewController {
         present(surveyNavigation, animated: true, completion: nil)
     }
 
+    func showNotificationSettings() {
+        ServiceLocator.analytics.track(.settingsNotificationSettingsTapped)
+        let controller = NotificationSettingsHostingController()
+        show(controller, sender: self)
+    }
+
+    func showConnectivityTool() {
+        ServiceLocator.analytics.track(event: .ConnectivityTool.settingsTroubleshootTapped())
+        let controller = ConnectivityToolViewController()
+        show(controller, sender: self)
+    }
+
     func deviceSettingsWasPressed() {
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             return
@@ -486,6 +522,11 @@ private extension SettingsViewController {
     func wormholyWasPressed() {
         // Fire a local notification, which fires Wormholy if enabled.
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
+    }
+
+    func debugPanelWasPressed() {
+        let hostingController = UIHostingController(rootView: DebugPanelView())
+        navigationController?.pushViewController(hostingController, animated: true)
     }
 
     func whatsNewWasPressed() {
@@ -510,56 +551,17 @@ private extension SettingsViewController {
 }
 
 
-// MARK: - Hidden Settings Debug Menu
-//
-private extension SettingsViewController {
-
-    var hiddenSettingsGestureRecognizer: UITapGestureRecognizer {
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didInvokeHiddenSettings))
-        gestureRecognizer.numberOfTapsRequired = 4
-        return gestureRecognizer
-    }
-
-    @objc func didInvokeHiddenSettings(_ sender: UITapGestureRecognizer? = nil) {
-        let hiddenSettingsMenu = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        hiddenSettingsMenu.addAction(resetPrivacyChoicesAction)
-        hiddenSettingsMenu.addAction(crashDebugMenuCrashAction)
-        hiddenSettingsMenu.addAction(crashDebugMenuCancelAction)
-
-        if let popoverController = hiddenSettingsMenu.popoverPresentationController {
-            popoverController.sourceView = sender?.view
-            popoverController.sourceRect = sender?.view?.bounds ?? .zero
-        }
-
-        present(hiddenSettingsMenu, animated: true, completion: nil)
-    }
-
-    var resetPrivacyChoicesAction: UIAlertAction {
-        return UIAlertAction(title: Localization.HiddenSettingsMenu.resetPrivacyChoices, style: .default) { _ in
-            UserDefaults.standard[.hasSavedPrivacyBannerSettings] = false
-        }
-    }
-
-    var crashDebugMenuCrashAction: UIAlertAction {
-        return UIAlertAction(title: Localization.HiddenSettingsMenu.crashImmediately, style: .destructive) { _ in
-            ServiceLocator.crashLogging.crash()
-        }
-    }
-
-    var crashDebugMenuCancelAction: UIAlertAction {
-        return UIAlertAction(title: Localization.HiddenSettingsMenu.cancel, style: .cancel, handler: nil)
-    }
-}
-
-
 // MARK: - UITextViewDelegate Conformance
 //
 extension SettingsViewController: UITextViewDelegate {
 
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        weAreHiringWasPressed(url: URL)
-        return false
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        if case .link(let url) = textItem.content {
+            weAreHiringWasPressed(url: url)
+            // Prevent default action
+            return nil
+        }
+        return defaultAction
     }
 }
 
@@ -627,12 +629,12 @@ extension SettingsViewController: UITableViewDelegate {
             openWoocommerceDetails()
         case .support:
             supportWasPressed()
-        case .domain:
-            domainWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
         case .storeName:
             storeNameWasPressed()
+        case .enablePushNotifications:
+            enablePushNotificationsWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -645,6 +647,8 @@ extension SettingsViewController: UITableViewDelegate {
             deviceSettingsWasPressed()
         case .wormholy:
             wormholyWasPressed()
+        case .debugPanel:
+            debugPanelWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
         case .accountSettings:
@@ -653,6 +657,10 @@ extension SettingsViewController: UITableViewDelegate {
             logoutWasPressed()
         case .themes:
             showThemeSettings()
+        case .notifications:
+            showNotificationSettings()
+        case .connectivity:
+            showConnectivityTool()
         default:
             break
         }
@@ -708,10 +716,11 @@ extension SettingsViewController {
         case woocommerceDetails
 
         // Store settings
-        case domain
         case installJetpack
         case storeName
         case themes
+        case connectivity
+        case enablePushNotifications
 
         // Help & Feedback
         case support
@@ -719,6 +728,7 @@ extension SettingsViewController {
         case sendFeedback
 
         // App Settings
+        case notifications
         case privacy
 
         // About the App
@@ -728,6 +738,7 @@ extension SettingsViewController {
         // Other
         case deviceSettings
         case wormholy
+        case debugPanel
 
         // Account settings
         case accountSettings
@@ -756,13 +767,15 @@ extension SettingsViewController {
                 return HostingTableViewCell<PluginDetailsRowContent>.self
             case .support:
                 return BasicTableViewCell.self
-            case .domain:
+            case .connectivity:
                 return BasicTableViewCell.self
             case .installJetpack:
                 return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
-            case .privacy:
+            case .privacy, .notifications:
+                return BasicTableViewCell.self
+            case .enablePushNotifications:
                 return BasicTableViewCell.self
             case .betaFeatures:
                 return BasicTableViewCell.self
@@ -773,6 +786,8 @@ extension SettingsViewController {
             case .deviceSettings:
                 return BasicTableViewCell.self
             case .wormholy:
+                return BasicTableViewCell.self
+            case .debugPanel:
                 return BasicTableViewCell.self
             case .whatsNew:
                 return BasicTableViewCell.self
@@ -827,9 +842,10 @@ private extension SettingsViewController {
             comment: "Navigates to In-Person Payments screen"
         )
 
-        static let domain = NSLocalizedString(
-            "Domains",
-            comment: "Navigates to domain settings screen."
+        static let connectivity = NSLocalizedString(
+            "settingsViewController.connectivity",
+            value: "Troubleshoot Connection",
+            comment: "Navigates to connectivity test screen."
         )
 
         static let installJetpack = NSLocalizedString(
@@ -848,9 +864,21 @@ private extension SettingsViewController {
             comment: "Navigates to the Store name setup screen"
         )
 
+        static let enablePushNotifications = NSLocalizedString(
+            "settings.enablePushNotifications",
+            value: "Enable Push Notifications",
+            comment: "Settings > Store Settings row that starts the flow to enable push notifications."
+        )
+
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",
             comment: "Navigates to Privacy Settings screen"
+        )
+
+        static let notificationSettings = NSLocalizedString(
+            "settingsViewController.notificationSettings",
+            value: "Notification Settings",
+            comment: "Navigates to the Notification Settings screen"
         )
 
         static let experimentalFeatures = NSLocalizedString(
@@ -868,14 +896,15 @@ private extension SettingsViewController {
             comment: "Navigates to about WooCommerce app screen"
         )
 
+        static let updateWooCommerce = NSLocalizedString(
+            "settingsViewController.title.updateWooCommerce",
+            value: "Update WooCommerce",
+            comment: "Title of the web view to update WooCommerce plugin"
+        )
+
         static let openDeviceSettings = NSLocalizedString(
             "Open Device Settings",
             comment: "Opens iOS's Device Settings for the app"
-        )
-
-        static let launchWormHolyDebug = NSLocalizedString(
-            "Launch Wormholy Debug",
-            comment: "Opens an internal library called Wormholy. Not visible to users."
         )
 
         static let whatsNew = NSLocalizedString(
@@ -897,23 +926,6 @@ private extension SettingsViewController {
             "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
             comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
-
-        enum HiddenSettingsMenu {
-            static let resetPrivacyChoices = NSLocalizedString(
-                "Reset Privacy Choice Banner State",
-                comment: "The title for a menu to reset the privacy choice banner presentation"
-            )
-
-            static let crashImmediately = NSLocalizedString(
-                "Crash Immediately",
-                comment: "The title for a button that causes the app to deliberately crash for debugging purposes"
-            )
-
-            static let cancel = NSLocalizedString(
-                "Cancel",
-                comment: "The title for a button that dismisses the crash debug menu"
-            )
-        }
 
         enum LogoutAlert {
             static let alertMessage = NSLocalizedString(

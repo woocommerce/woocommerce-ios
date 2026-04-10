@@ -1,0 +1,9 @@
+{
+  "scheduled_at": "2026-01-23T08:30:25",
+  "completed_at": "2026-01-23T08:31:47",
+  "state": "completed",
+  "progress": 100,
+  "processed": 803,
+  "total": 803,
+  "url": "https://example.com/wp-content/uploads/catalog.json"
+}

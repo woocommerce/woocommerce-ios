@@ -1,6 +1,7 @@
+import Combine
 import Foundation
 import Yosemite
-import Storage
+import protocol Storage.StorageManagerType
 import WooFoundation
 
 
@@ -11,11 +12,31 @@ extension Notification.Name {
     public static let selectedSiteSettingsRefreshed = Notification.Name(rawValue: "selectedSiteSettingsRefreshed")
 }
 
+/// Source of site settings update.
+enum SettingsUpdateSource {
+    case initialLoad
+    case storageChange
+    case refresh
+}
+
+/// Protocol for accessing, refreshing, and observing site settings.
+protocol SelectedSiteSettingsProtocol {
+    var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> { get }
+    var siteSettings: [SiteSetting] { get }
+    func refresh()
+}
+
 /// Settings for the selected Site
 ///
-final class SelectedSiteSettings: NSObject {
+final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+
+    /// CurrentValueSubject for observing site settings changes with current value behavior.
+    private let settingsSubject = CurrentValueSubject<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource)?, Never>(nil)
+    public var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> {
+        settingsSubject.compactMap { $0 }.eraseToAnyPublisher()
+    }
 
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
@@ -29,6 +50,7 @@ final class SelectedSiteSettings: NSObject {
     init(stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
         self.storageManager = storageManager
+
         super.init()
         configureResultsController()
     }
@@ -41,7 +63,7 @@ extension SelectedSiteSettings {
     /// Refreshes the currency settings for the current default site
     ///
     func refresh() {
-        refreshResultsPredicate()
+        refreshResultsPredicate(source: .refresh)
     }
 
     /// Setup: ResultsController
@@ -51,11 +73,16 @@ extension SelectedSiteSettings {
             guard let self = self else { return }
             ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
             self.siteSettings = self.resultsController.fetchedObjects
+            guard let siteID = stores.sessionManager.defaultStoreID else {
+                DDLogError("Error: no siteID found when setting site settings results.")
+                return
+            }
+            settingsSubject.send((siteID: siteID, settings: siteSettings, source: .storageChange))
         }
-        refreshResultsPredicate()
+        refreshResultsPredicate(source: .initialLoad)
     }
 
-    private func refreshResultsPredicate() {
+    private func refreshResultsPredicate(source: SettingsUpdateSource) {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             DDLogError("Error: no siteID found when attempting to refresh CurrencySettings results predicate.")
             return
@@ -70,6 +97,8 @@ extension SelectedSiteSettings {
         fetchedObjects.forEach {
             ServiceLocator.currencySettings.updateCurrencyOptions(with: $0)
         }
+
+        settingsSubject.send((siteID: siteID, settings: fetchedObjects, source: source))
 
         NotificationCenter.default.post(name: .selectedSiteSettingsRefreshed, object: nil)
 

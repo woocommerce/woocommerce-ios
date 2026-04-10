@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// Creates a new product given a set of parameters.

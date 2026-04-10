@@ -68,9 +68,6 @@ struct DefaultFavoriteProductsUseCase: FavoriteProductsUseCase {
 
     @MainActor
     func favoriteProductIDs() async -> [Int64] {
-        guard featureFlagService.isFeatureFlagEnabled(.favoriteProducts) else {
-            return []
-        }
         return await withCheckedContinuation { continuation in
             stores.dispatch(AppSettingsAction.loadFavoriteProductIDs(siteID: siteID, onCompletion: { savedFavProductIDs in
                 continuation.resume(returning: savedFavProductIDs)

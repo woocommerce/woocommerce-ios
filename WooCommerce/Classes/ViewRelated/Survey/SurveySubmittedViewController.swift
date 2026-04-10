@@ -67,6 +67,13 @@ final class SurveySubmittedViewController: UIViewController, SurveySubmittedView
         applyStyleToComponents()
         applyLocalizedTextsToComponents()
         configureStackViewsAxis()
+        observeTraitChanges()
+    }
+
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.configureStackViewsAxis()
+        }
     }
 
     @IBAction private func contactUsButtonTapped(_ sender: Any) {
@@ -115,15 +122,6 @@ private extension SurveySubmittedViewController {
     ///
     func configureStackViewsAxis() {
         linkButtonStackView.axis = traitCollection.preferredContentSizeCategory > .extraExtraExtraLarge ? .vertical : .horizontal
-    }
-}
-
-// MARK: Accessibility handling
-//
-extension SurveySubmittedViewController {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        configureStackViewsAxis()
     }
 }
 

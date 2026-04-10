@@ -1,7 +1,9 @@
 import XCTest
 import TestKit
+import YosemiteTestHelpers
 @testable import WooCommerce
 import Yosemite
+import enum Networking.WooShippingPackageType
 
 final class WooShippingAddPackageViewModelTests: XCTestCase {
     @MainActor
@@ -23,7 +25,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.selectedSavedPackage)
 
         XCTAssertEqual(viewModel.carrierPackages.count, 0)
-        XCTAssertEqual(viewModel.selectedCarriersTabIndex, nil)
+        XCTAssertEqual(viewModel.selectedCarriersTabIndex, 0)
         XCTAssertEqual(viewModel.selectedCarriersPackageId, nil)
         XCTAssertEqual(viewModel.starredCarriersPackages.count, 0)
         XCTAssertEqual(viewModel.carrierTabs.count, 0)
@@ -53,7 +55,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.starredCarriersPackages.count, 0)
     }
 
-    func test_starUnstarPackage_creates_notice_when_fails() {
+    func test_staring_package_creates_notice_when_fails() {
         // Given
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -61,6 +63,8 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
             switch action {
             case let .createPackage(_, _, _, completion):
                 completion(.failure(.duplicateCustomPackageNames))
+            case .deletePackage:
+                XCTFail("Delete package should not be triggered!")
             default:
                 break
             }
@@ -71,6 +75,72 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
         // When
         viewModel.starUnstarPackage("1", carrierID: "usps")
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.feedbackType, .error)
+    }
+
+    func test_unstaring_package_triggers_removing_package_correctly() {
+        // Given
+        let testSiteID: Int64 = 1234
+        let testPackageID = "1"
+
+        var triggeredSiteID: Int64?
+        var triggeredPackageID: String?
+        var triggeredPackageType: Networking.WooShippingPackageType?
+
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .createPackage:
+                XCTFail("Create package should not be triggered!")
+            case let .deletePackage(siteID, packageID, packageType, completion):
+                triggeredSiteID = siteID
+                triggeredPackageID = packageID
+                triggeredPackageType = packageType
+                completion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        let viewModel = WooShippingAddPackageViewModel(siteID: testSiteID,
+                                                       stores: mockStores)
+        viewModel.starredCarriersPackages.insert(testPackageID)
+
+        // When
+        viewModel.starUnstarPackage(testPackageID, carrierID: "usps")
+
+        // Then
+        XCTAssertEqual(triggeredSiteID, testSiteID)
+        XCTAssertEqual(triggeredPackageID, testPackageID)
+        XCTAssertEqual(triggeredPackageType, .predefined)
+    }
+
+    func test_unstaring_package_creates_notice_when_fails() {
+        // Given
+        let testSiteID: Int64 = 1234
+        let testPackageID = "1"
+
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .createPackage:
+                XCTFail("Create package should not be triggered!")
+            case let .deletePackage(_, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 400)))
+            default:
+                break
+            }
+        }
+        let viewModel = WooShippingAddPackageViewModel(siteID: testSiteID,
+                                                       stores: mockStores)
+        viewModel.starredCarriersPackages.insert(testPackageID)
+
+        // When
+        viewModel.starUnstarPackage(testPackageID, carrierID: "usps")
 
         // Then
         waitUntil {
@@ -116,7 +186,7 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         let expectedError = NSError(domain: "test", code: 400)
         mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .loadPackages(receivedSiteID, completion):
+            case let .loadPackages(_, completion):
                 completion(.failure(expectedError))
             default:
                 XCTFail("Received unexpected action: \(action)")
@@ -131,15 +201,17 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.packageLoadingError as? NSError, expectedError)
     }
 
-    @MainActor
-    func test_remove_saved_package_dispatches_deletePackage_action() {
+    func test_remove_saved_package_dispatches_deletePackage_action_correctly_for_predefined_package() {
         // Given
         let siteID: Int64 = 1234
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
         let viewModel = WooShippingAddPackageViewModel(siteID: siteID,
                                                        stores: mockStores)
 
-        let customPackage = WooShippingCustomPackage.fake().copy(id: "custom")
+        var triggeredSiteID: Int64?
+        var triggeredPackagedID: String?
+        var triggeredPackageType: Networking.WooShippingPackageType?
+
         let predefinedPackage = WooShippingPredefinedPackage(id: "predefined",
                                                              name: "name",
                                                              isLetter: false,
@@ -152,24 +224,85 @@ final class WooShippingAddPackageViewModelTests: XCTestCase {
 
         mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
-            case let .deletePackage(receivedSiteID, packageID, completion):
-                XCTAssertEqual(receivedSiteID, siteID)
-                XCTAssert(packageID == customPackage.id || packageID == predefinedSavedPackage.id)
+            case let .deletePackage(receivedSiteID, packageID, packageType, completion):
+                triggeredSiteID = siteID
+                triggeredPackagedID = packageID
+                triggeredPackageType = packageType
                 completion(.success(.fake()))
             default:
                 XCTFail("Received unexpected action: \(action)")
             }
         }
 
-        // When/Then
-        viewModel.removeSavedPackage(customPackage.toPackageData())
-        XCTAssertEqual(mockStores.receivedActions.count, 1)
-        assertThat(mockStores.receivedActions.first, isAnInstanceOf: WooShippingAction.self)
-
-        // When/Then
+        // When
         viewModel.removeSavedPackage(predefinedSavedPackage.toPackageData())
-        XCTAssertEqual(mockStores.receivedActions.count, 2)
-        assertThat(mockStores.receivedActions.first, isAnInstanceOf: WooShippingAction.self)
+
+        // Then
+        XCTAssertEqual(triggeredSiteID, siteID)
+        XCTAssertEqual(triggeredPackagedID, predefinedSavedPackage.id)
+        XCTAssertEqual(triggeredPackageType, .predefined)
+    }
+
+    func test_remove_saved_package_dispatches_deletePackage_action_correctly_for_custom_package() {
+        // Given
+        let siteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID,
+                                                       stores: mockStores)
+
+        let customPackage = WooShippingCustomPackage.fake().copy(id: "custom")
+
+        var triggeredSiteID: Int64?
+        var triggeredPackagedID: String?
+        var triggeredPackageType: Networking.WooShippingPackageType?
+
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .deletePackage(receivedSiteID, packageID, packageType, completion):
+                triggeredSiteID = receivedSiteID
+                triggeredPackagedID = packageID
+                triggeredPackageType = packageType
+                completion(.success(.fake()))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.removeSavedPackage(customPackage.toPackageData())
+
+        // Then
+        XCTAssertEqual(triggeredSiteID, siteID)
+        XCTAssertEqual(triggeredPackagedID, customPackage.id)
+        XCTAssertEqual(triggeredPackageType, .custom)
+    }
+
+    func test_remove_saved_package_creates_notice_when_fails() {
+        // Given
+        let siteID: Int64 = 1234
+        let mockStores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = WooShippingAddPackageViewModel(siteID: siteID,
+                                                       stores: mockStores)
+
+        let customPackage = WooShippingCustomPackage.fake().copy(id: "custom")
+
+        mockStores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .deletePackage(_, _, _, completion):
+                completion(.failure(NSError(domain: "Test", code: 400)))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.removeSavedPackage(customPackage.toPackageData())
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.feedbackType, .error)
     }
 
     func test_it_fetches_and_transforms_packages_from_storage() throws {

@@ -142,7 +142,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
         setUp(with: message)
-        let expectedError = DotcomError.resourceDoesNotExist as NSError
+        let expectedError = DotcomError.resourceDoesNotExist() as NSError
 
         stores.whenReceivingAction(ofType: JustInTimeMessageAction.self) { action in
             switch action {

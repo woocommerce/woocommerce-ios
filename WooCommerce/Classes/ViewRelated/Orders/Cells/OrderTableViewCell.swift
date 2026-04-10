@@ -23,9 +23,18 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
 
+    /// Sales channel
+    ///
+    @IBOutlet private var salesChannelLabel: PaddedLabel!
+
     /// Top-level stack view that contains the stack view of title and payment status labels, and total price label.
     ///
     @IBOutlet weak var contentStackView: UIStackView!
+
+    /// Retains the content trait registration token, so it's not deallocated immediately
+    ///
+    // periphery: ignore - False negative. Perhaps does not catch non-direct reads?
+    private var contentSizeTraitRegistration: UITraitChangeRegistration?
 
     static func register(for tableView: UITableView) {
         tableView.registerNib(for: self)
@@ -53,6 +62,15 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
         paymentStatusLabel.applyStyle(for: viewModel.status)
         paymentStatusLabel.text = viewModel.statusString
 
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
+           let salesChannel = viewModel.salesChannel, salesChannel == .pointOfSale {
+            salesChannelLabel.isHidden = false
+            salesChannelLabel.applySalesChannelStyle()
+            salesChannelLabel.text = salesChannel.description
+        } else {
+            salesChannelLabel.isHidden = true
+        }
+
         accessoryType = .none
         accessoryView = viewModel.accessoryView
 
@@ -62,17 +80,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        if traitCollection.preferredContentSizeCategory > .extraExtraLarge {
-            contentStackView.axis = .vertical
-        } else {
-            contentStackView.axis = .horizontal
-        }
-    }
-
     // MARK: - Overridden Methods
-
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -94,18 +102,40 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         paymentStatusLabel.layer.borderColor = UIColor.clear.cgColor
+        contentSizeTraitRegistration = nil
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
         super.updateConfiguration(using: state)
         updateDefaultBackgroundConfiguration(using: state)
     }
+
+    override func willMove(toSuperview newSuperview: UIView?) {
+        super.willMove(toSuperview: newSuperview)
+
+        // Registers for trait changes when the cell is about to be added to view hierarchy,
+        // applies initial layout, and cleans up when removed from hierarchy
+        if newSuperview != nil {
+            contentSizeTraitRegistration = registerForTraitChanges([
+                UITraitPreferredContentSizeCategory.self
+            ]) { [weak self] (_: OrderTableViewCell, _: UITraitCollection) in
+                self?.applyContentSizeCategoryLayout()
+            }
+            applyContentSizeCategoryLayout()
+        } else {
+            contentSizeTraitRegistration = nil
+        }
+    }
 }
 
-
-// MARK: - Private
-//
 private extension OrderTableViewCell {
+    func applyContentSizeCategoryLayout() {
+        if traitCollection.preferredContentSizeCategory > .extraExtraLarge {
+            contentStackView.axis = .vertical
+        } else {
+            contentStackView.axis = .horizontal
+        }
+    }
 
     /// Reset the UI to a "no data" state.
     ///
@@ -147,5 +177,8 @@ private extension OrderTableViewCell {
         paymentStatusLabel.numberOfLines = 0
 
         dateCreatedLabel.applyCaption1Style()
+
+        salesChannelLabel.applyFootnoteStyle()
+        salesChannelLabel.numberOfLines = 1
     }
 }

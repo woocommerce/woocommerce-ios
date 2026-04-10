@@ -13,6 +13,10 @@ public enum WooConstants {
     ///
     static let databaseStackName = "WooCommerce"
 
+    /// Local SQLite Database Name
+    ///
+    static let localSQLiteDatabaseName = "woo-local.sqlite"
+
     /// Keychain Access's Service Name
     ///
     public static let keychainServiceName = "com.automattic.woocommerce"
@@ -132,6 +136,10 @@ extension WooConstants {
         ///
         case helpCenter = "https://woocommerce.com/document/woocommerce-ios/"
 
+        /// POS Learn More URL
+        ///
+        case posLearnMore = "https://woocommerce.com/mobile/pos/learn-more"
+
         /// Help Center for "Enter your Store Address" screen
         ///
         case helpCenterForEnterStoreAddress = "https://woocommerce.com/document/android-ios-apps-login-help-faq/#enter-store-address"
@@ -246,10 +254,6 @@ extension WooConstants {
         ///
         case inPersonPaymentsLearnMoreStripe = "https://woocommerce.com/document/stripe/accept-in-person-payments-with-stripe/"
 
-        /// URL for Point of Sale documentation
-        ///
-        case pointOfSaleDocumentation = "https://woocommerce.com/document/woo-mobile-app-point-of-sale-mode/"
-
         /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
@@ -279,14 +283,6 @@ extension WooConstants {
         /// URL with the USPS instructions when shipping from US to EU countries with specific customs rules.
         ///
         case shippingCustomsInstructionsForEUCountries = "https://www.usps.com/international/new-eu-customs-rules.htm"
-
-        /// In-App Purchases subscriptions management URL
-        ///
-        case inAppPurchasesAccountSubscriptionsLink = "https://apps.apple.com/account/subscriptions"
-
-        /// URL for Woo Express, which shows plan details. Note that this includes links to start a free trial and pricing for plans, and is only
-        /// intended for use as a fallback. We should remove this when we fetch plan data from an API.
-        case fallbackWooExpressHome = "https://woocommerce.com/express"
 
         /// URL for USPS Hazmat instructions detailing to the user the possible categories and why declaring hazmat materials is mandatory
         ///
@@ -337,7 +333,7 @@ extension WooConstants {
 
         case customFieldsProductLearnMore = "https://woocommerce.com/document/custom-product-fields/"
         case customFieldsOrderLearnMore = "https://woocommerce.com/document/managing-orders/view-edit-or-add-an-order/#custom-fields"
-        case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-29"
+        case hsTariffURL = "https://woocommerce.com/document/woocommerce-shipping-and-tax/woocommerce-shipping/#section-35"
 
         /// Returns the URL version of the receiver
         ///

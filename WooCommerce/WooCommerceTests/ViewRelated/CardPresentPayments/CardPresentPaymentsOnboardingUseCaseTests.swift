@@ -1,6 +1,8 @@
 import XCTest
 import Fakes
 import Yosemite
+import enum Alamofire.AFError
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
@@ -202,7 +204,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertNotEqual(state, .countryNotSupported(countryCode: .GB))
     }
 
-    func test_onboarding_returns_country_unsupported_with_uk_when_stripe_plugin_installed() {
+    func test_onboarding_returns_setup_not_completed_with_uk_when_stripe_plugin_installed() {
         // Given
         setupCountry(country: .gb)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
@@ -214,10 +216,10 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .countryNotSupportedStripe(plugin: .stripe, countryCode: .GB))
+        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .stripe))
     }
 
-    func test_onboarding_returns_setup_not_completed_stripe_when_stripe_and_wcPay_plugins_are_installed_in_UK() {
+    func test_onboarding_returns_select_plugin_when_stripe_and_wcPay_plugins_are_installed_in_UK() {
         // Given
         setupCountry(country: .gb)
         setupStripePlugin(status: .active, version: .minimumSupportedVersion)
@@ -230,7 +232,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let state = useCase.state
 
         // Then
-        XCTAssertEqual(state, .pluginSetupNotCompleted(plugin: .wcPay))
+        XCTAssertEqual(state, .selectPlugin(pluginSelectionWasCleared: false))
     }
 
     func test_onboarding_returns_wcpay_plugin_unsupported_version_for_uk_when_version_unsupported() {
@@ -1216,6 +1218,72 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["country"] as? String, "US")
         XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
+
+    func test_CardPresentPaymentsPlugin_has_expected_name_and_fileNames() {
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.pluginName, "WooPayments")
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.plugin, .wooPayments)
+        XCTAssertEqual(CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension, "woocommerce-payments/woocommerce-payments")
+
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.pluginName, "WooCommerce Stripe Gateway")
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.plugin, .stripe)
+        XCTAssertEqual(CardPresentPaymentsPlugin.stripe.fileNameWithPathExtension, "woocommerce-gateway-stripe/woocommerce-gateway-stripe")
+    }
+
+    // MARK: - loadAccounts error handling tests
+
+    func test_onboarding_handles_network_error_when_loading_accounts() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+
+        // Use AFError.sessionTaskFailed which is what Alamofire returns for network errors
+        let urlError = URLError(.notConnectedToInternet)
+        let networkError = AFError.sessionTaskFailed(error: urlError)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .loadAccounts(_, onCompletion):
+                onCompletion(.failure(networkError))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.updateAccounts()
+
+        // Then - Should show no connection error
+        XCTAssertEqual(useCase.state, .noConnectionError)
+    }
+
+    func test_onboarding_handles_generic_error_when_both_accounts_fail_to_load() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+
+        let genericError = NSError(domain: "test.error", code: 500, userInfo: nil)
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case let .loadAccounts(_, onCompletion):
+                // Both accounts fail to load
+                onCompletion(.failure(genericError))
+            default:
+                break
+            }
+        }
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        useCase.updateAccounts()
+
+        // Then - Should show generic error
+        XCTAssertEqual(useCase.state, .genericError)
+    }
 }
 
 // MARK: - Settings helpers
@@ -1257,8 +1325,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                plugin: "woocommerce-payments/woocommerce-payments.php",
-                name: "WooCommerce Payments",
+                plugin: CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension,
+                name: CardPresentPaymentsPlugin.wcPay.pluginName,
                 version: version.rawValue,
                 networkActivated: networkActivated,
                 active: active
@@ -1273,8 +1341,8 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
             .fake()
             .copy(
                 siteID: sampleSiteID,
-                plugin: "woocommerce-gateway-stripe/woocommerce-gateway-stripe.php",
-                name: "WooCommerce Stripe Gateway",
+                plugin: CardPresentPaymentsPlugin.stripe.fileNameWithPathExtension,
+                name: CardPresentPaymentsPlugin.stripe.pluginName,
                 version: version.rawValue,
                 networkActivated: networkActivated,
                 active: active

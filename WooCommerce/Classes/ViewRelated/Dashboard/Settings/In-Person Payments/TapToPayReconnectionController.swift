@@ -1,19 +1,19 @@
 import Foundation
 import Yosemite
 
-protocol BuiltInCardReaderConnectionControllerBuilding<AlertProvider, AlertPresenter> {
+protocol TapToPayCardReaderConnectionControllerBuilding<AlertProvider, AlertPresenter> {
     associatedtype AlertProvider
     associatedtype AlertPresenter
     func createConnectionController(forSiteID: Int64,
                                     alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
-                                    allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling
+                                    allowTermsOfServiceAcceptance: Bool) -> TapToPayCardReaderConnectionControlling
 }
 
-final class BuiltInCardReaderConnectionControllerFactory<AlertProvider: CardReaderConnectionAlertsProviding,
+final class TapToPayCardReaderConnectionControllerFactory<AlertProvider: CardReaderConnectionAlertsProviding,
                                                          AlertPresenter: CardPresentPaymentAlertsPresenting>:
-                                                            BuiltInCardReaderConnectionControllerBuilding
+                                                            TapToPayCardReaderConnectionControllerBuilding
 where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
     private let alertProvider: AlertProvider
 
@@ -25,8 +25,8 @@ where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
                                     alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,
                                     analyticsTracker: CardReaderConnectionAnalyticsTracker,
-                                    allowTermsOfServiceAcceptance: Bool) -> BuiltInCardReaderConnectionControlling {
-        BuiltInCardReaderConnectionController(
+                                    allowTermsOfServiceAcceptance: Bool) -> TapToPayCardReaderConnectionControlling {
+        TapToPayCardReaderConnectionController(
             forSiteID: siteID,
             alertsPresenter: alertPresenter,
             alertsProvider: alertProvider,
@@ -52,17 +52,17 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let onboardingCache: CardPresentPaymentOnboardingStateCache
 
-    private let connectionControllerFactory: any BuiltInCardReaderConnectionControllerBuilding<
+    private let connectionControllerFactory: any TapToPayCardReaderConnectionControllerBuilding<
         AlertProvider, SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresenter>>
 
-    private var connectionController: BuiltInCardReaderConnectionControlling? = nil
+    private var connectionController: TapToPayCardReaderConnectionControlling? = nil
 
     private var silencingAlertsPresenter: SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresenter>
 
     private var adoptedConnectionCompletionHandler: ((Result<CardReaderConnectionResult, Error>) -> Void)? = nil
 
     init(stores: StoresManager = ServiceLocator.stores,
-         connectionControllerFactory: any BuiltInCardReaderConnectionControllerBuilding<
+         connectionControllerFactory: any TapToPayCardReaderConnectionControllerBuilding<
          AlertProvider, SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresenter>>,
          onboardingCache: CardPresentPaymentOnboardingStateCache = .shared) {
         self.stores = stores
@@ -86,8 +86,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         let supportDeterminer = supportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID)
         Task { @MainActor in
             guard supportDeterminer.locationIsAuthorized,
-                  supportDeterminer.siteSupportsLocalMobileReader(),
-                  await supportDeterminer.deviceSupportsLocalMobileReader(),
+                  supportDeterminer.siteSupportsTapToPayReader(),
+                  await supportDeterminer.deviceSupportsTapToPayReader(),
                   await supportDeterminer.hasPreviousTapToPayUsage(),
                   await supportDeterminer.connectedReader() == nil,
                   case .completed = onboardingCache.value else {
@@ -106,6 +106,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     ///   - alertsPresenter: The alerts presenter which can show the connection alerts.
     ///   It will be immediately called with the most recent alert
     ///   - onCompletion: A completion handler for the automatic reconnection, with success or an error.
+    func cancelReconnection() {
+        reset()
+    }
+
     func showAlertsForReconnection(from alertsPresenter: AlertPresenter,
                                    onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         guard isReconnecting else {
@@ -118,7 +122,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
 private extension TapToPayReconnectionController {
     func reconnectToTapToPayReader() {
-        let connectionController = builtInConnectionControllerForReconnection()
+        let connectionController = tapToPayConnectionControllerForReconnection()
 
         connectionController.searchAndConnect(onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -127,7 +131,7 @@ private extension TapToPayReconnectionController {
         })
     }
 
-    func builtInConnectionControllerForReconnection() -> BuiltInCardReaderConnectionControlling {
+    func tapToPayConnectionControllerForReconnection() -> TapToPayCardReaderConnectionControlling {
         // If we already have a connection controller, there may be a reconnection in progress.
         // Starting again now would result in an SDK failure, and lose our original reference to the controller.
         // Reusing the connection controller will only cause a restart if the controller is idle,

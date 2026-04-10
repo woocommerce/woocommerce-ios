@@ -163,6 +163,7 @@ struct AnalyticsHubView: View {
             NavigationView {
                 AnalyticsHubCustomizeView(viewModel: customizeViewModel)
             }
+            .interactiveDismissDisabled()
         }
     }
 }

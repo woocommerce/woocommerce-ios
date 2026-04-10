@@ -39,6 +39,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         configureDetailsLabel()
         configureProductImageView()
         configureBottomBorderView()
+        observeInterfaceTraitChanges()
         // From iOS 15.0, a focus effect will be applied automatically to a selected cell
         // modifying its style (e.g: by adding a border)
         focusEffect = nil
@@ -46,12 +47,6 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        // Border color is not automatically updated on trait collection changes and thus manually updated here.
-        productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -101,6 +96,9 @@ extension ProductsTabProductTableViewCell {
             productImageView.layer.borderWidth = 0
         } else {
             configureProductImageViewForBigImages()
+            /// Make sure `productImageView` is laid out and gained bounds
+            productImageView.layoutIfNeeded()
+
             productImageView.image = .productsTabProductCellPlaceholderImage
             if let productURLString = viewModel.imageUrl {
                 imageService.downloadAndCacheImageForImageView(productImageView,
@@ -263,6 +261,17 @@ private extension ProductsTabProductTableViewCell {
         productImageView.addSubview(view)
         productImageView.pinSubviewToAllEdges(view)
     }
+
+    func observeInterfaceTraitChanges() {
+        /// Border color is not automatically updated on trait collection changes and thus manually updated here.
+        let traits: [UITrait] = [
+            UITraitUserInterfaceStyle.self,
+            UITraitAccessibilityContrast.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+            self.productImageView.layer.borderColor = Colors.imageBorderColor.cgColor
+        }
+    }
 }
 
 /// Constants
@@ -302,9 +311,16 @@ private struct ProductsTabProductTableViewCellRepresentable: UIViewRepresentable
 }
 
 struct ProductsTabProductTableViewCell_Previews: PreviewProvider {
-    private static var nonSelectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample(), isSelected: false)
-    private static var selectedViewModel = ProductsTabProductViewModel(product: Product.swiftUIPreviewSample().copy(statusKey: ProductStatus.pending.rawValue),
-                                                                       isSelected: true)
+    private static var nonSelectedViewModel = ProductsTabProductViewModel(
+        product: Product.swiftUIPreviewSample().toListItem(),
+        isSelected: false
+    )
+    private static var selectedViewModel = ProductsTabProductViewModel(
+        product: Product.swiftUIPreviewSample()
+            .toListItem()
+            .copy(statusKey: ProductStatus.pending.rawValue),
+        isSelected: true
+    )
 
     private static func makeStack() -> some View {
         VStack {

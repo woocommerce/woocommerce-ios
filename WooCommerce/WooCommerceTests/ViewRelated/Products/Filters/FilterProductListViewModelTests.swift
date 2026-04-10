@@ -1,16 +1,29 @@
 import XCTest
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Yosemite
 
 final class FilterProductListViewModelTests: XCTestCase {
     let filterProductCategory = ProductCategory(categoryID: 0, siteID: 0, parentID: 0, name: "", slug: "category")
 
+    let sampleSiteID: Int64 = 0
+    var storageManager: MockStorageManager!
+    var sampleSite: Site!
+
+    override func setUp() {
+        super.setUp()
+
+        storageManager = MockStorageManager()
+        sampleSite = Site.fake().copy(siteID: sampleSiteID, isGarden: false)
+        storageManager.insertSampleSite(readOnlySite: sampleSite)
+    }
+
     func testCriteriaWithDefaultFilters() {
         // Given
         let filters = FilterProductListViewModel.Filters()
 
         // When
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, storageManager: storageManager)
 
         // Then
         let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
@@ -24,7 +37,6 @@ final class FilterProductListViewModelTests: XCTestCase {
 
     func test_criteria_with_non_nil_filters_then_it_returns_all_active_filters() {
         // Given
-        let featureFlagService = MockFeatureFlagService(favoriteProducts: true)
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
                                                          promotableProductType: PromotableProductType(productType: .grouped,
@@ -37,7 +49,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         // When
         let viewModel = FilterProductListViewModel(filters: filters,
                                                    siteID: 0,
-                                                   featureFlagService: featureFlagService)
+                                                   storageManager: storageManager)
 
         // Then
         let expectedCriteria = filters
@@ -56,7 +68,7 @@ final class FilterProductListViewModelTests: XCTestCase {
                                                          numberOfActiveFilters: 5)
 
         // When
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, storageManager: storageManager)
         viewModel.clearAll()
 
         // Then
@@ -84,33 +96,10 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(filters.analyticsDescription, "instock,draft,grouped,category,favorite_products")
     }
 
-    // MARK: Favorite product feature flag
-
-    func test_filterTypeViewModels_does_not_contain_favorite_filter_view_model_when_feature_flag_off() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(favoriteProducts: false)
-        let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
-                                                         productStatus: .draft,
-                                                         promotableProductType: PromotableProductType(productType: .grouped,
-                                                                                                      isAvailable: true,
-                                                                                                      promoteUrl: nil),
-                                                         productCategory: filterProductCategory,
-                                                         favoriteProduct: FavoriteProductsFilter(),
-                                                         numberOfActiveFilters: 5)
-
-        // When
-        let viewModel = FilterProductListViewModel(filters: filters,
-                                                   siteID: 0,
-                                                   featureFlagService: featureFlagService)
-
-        // Then
-        XCTAssertFalse(viewModel.filterTypeViewModels.contains(where: { $0.title == FilterProductListViewModel.ProductListFilter.Localization.favoriteProduct } ))
-    }
-
     func test_applyPastFilter_updates_the_filters_correctly() {
         // Given
         let filters = createMockFilters(stockStatus: .inStock)
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: 0, storageManager: storageManager)
 
         // When
         let newFilter = createMockFilters(stockStatus: .onBackOrder)
@@ -123,13 +112,12 @@ final class FilterProductListViewModelTests: XCTestCase {
     @MainActor
     func test_retrieveFilterHistory_returns_correct_results() async throws {
         // Given
-        let siteID: Int64 = 123
         let expectedFilters = createMockFilters(stockStatus: .outOfStock)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadProductFilterHistory(_, onCompletion):
-                onCompletion(.success([StoredProductSettings.Setting(siteID: siteID,
+                onCompletion(.success([StoredProductSettings.Setting(siteID: self.sampleSiteID,
                                                                      sort: nil,
                                                                      stockStatusFilter: expectedFilters.stockStatus,
                                                                      productStatusFilter: expectedFilters.productStatus,
@@ -141,7 +129,7 @@ final class FilterProductListViewModelTests: XCTestCase {
             }
         }
 
-        let viewModel = FilterProductListViewModel(filters: createMockFilters(), siteID: siteID, stores: stores)
+        let viewModel = FilterProductListViewModel(filters: createMockFilters(), siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         let retrievedFilters = try await viewModel.retrieveFilterHistory()
@@ -152,7 +140,6 @@ final class FilterProductListViewModelTests: XCTestCase {
 
     func test_saveSelectedFilterToHistory_sends_correct_settings_to_storage() {
         // Given
-        let siteID: Int64 = 123
         let filters = createMockFilters()
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         var savedSettings: StoredProductSettings.Setting?
@@ -165,7 +152,7 @@ final class FilterProductListViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID, stores: stores)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.saveSelectedFilterToHistory(filters)
@@ -180,7 +167,6 @@ final class FilterProductListViewModelTests: XCTestCase {
 
     func test_removeFilterFromHistory_removes_the_correct_settings_in_storage() {
         // Given
-        let siteID: Int64 = 123
         let filters = createMockFilters()
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         var removedSettings: StoredProductSettings.Setting?
@@ -193,7 +179,7 @@ final class FilterProductListViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID, stores: stores)
+        let viewModel = FilterProductListViewModel(filters: filters, siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.removeFilterFromHistory(filters)
@@ -204,6 +190,26 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(removedSettings?.productStatusFilter, filters.productStatus)
         XCTAssertEqual(removedSettings?.productCategoryFilter, filters.productCategory)
         XCTAssertEqual(removedSettings?.favoriteProduct, filters.favoriteProduct?.isActive ?? false)
+    }
+
+    func test_productTypeFilter_usesStorageSite_whenSiteIsNil() {
+        // Given
+        let checker = CIABEligibilityCheckerSiteCaptureMock()
+        let filters = FilterProductListViewModel.Filters()
+
+        // When
+        let viewModel = FilterProductListViewModel.ProductListFilter
+            .productType(siteID: sampleSiteID)
+            .createViewModel(filters: filters,
+                             storageManager: storageManager,
+                             site: nil,
+                             siteCIABEligibilityChecker: checker)
+
+        // Then
+        guard case .staticOptions = viewModel.listSelectorConfig else {
+            return XCTFail("Expected static options for product type filter.")
+        }
+        XCTAssertEqual(checker.lastSite, sampleSite)
     }
 }
 
@@ -217,5 +223,26 @@ private extension FilterProductListViewModelTests {
                                            productCategory: filterProductCategory,
                                            favoriteProduct: FavoriteProductsFilter(),
                                            numberOfActiveFilters: 5)
+    }
+}
+
+private final class CIABEligibilityCheckerSiteCaptureMock: CIABEligibilityCheckerProtocol {
+    private(set) var lastSite: Site?
+
+    var isCurrentSiteCIAB: Bool { false }
+    var isCurrentSiteCIABProPlan: Bool { false }
+
+    func isSiteCIAB(_ site: Site) -> Bool {
+        lastSite = site
+        return false
+    }
+
+    func isFeatureSupportedForCurrentSite(_ feature: CIABAffectedFeature) -> Bool {
+        true
+    }
+
+    func isFeatureSupported(_ feature: CIABAffectedFeature, for site: Site) -> Bool {
+        lastSite = site
+        return true
     }
 }

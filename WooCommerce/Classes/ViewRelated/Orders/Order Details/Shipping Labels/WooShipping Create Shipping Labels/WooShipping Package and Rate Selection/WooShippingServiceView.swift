@@ -1,14 +1,15 @@
+import Foundation
 import SwiftUI
 
 /// View to display the available shipping services (carriers and rates) with the Woo Shipping extension.
 struct WooShippingServiceView: View {
     @ObservedObject var viewModel: WooShippingServiceViewModel
 
-    private var carriers: [TopTabItem<WooShippingServiceCardListView>] {
+    private var carriers: [TopTabItem<EmptyView>] {
         viewModel.serviceTabs.map { tab in
             TopTabItem(name: tab.id.name,
                        icon: tab.id.logo) {
-                WooShippingServiceCardListView(cards: tab.cards)
+                EmptyView()
             }
         }
     }
@@ -38,8 +39,10 @@ struct WooShippingServiceView: View {
                             viewModel.loadLabelRates(for: package)
                         }
                     }
-                case .noRatesAvailable:
-                    ErrorState(message: Localization.noRatesAvailable)
+                case .noRatesAvailable(let isHAZMAT):
+                    ErrorState(message: isHAZMAT ?
+                               Localization.noRatesAvailableWithHAZMAT :
+                               Localization.noRatesAvailableNoHAZMAT)
                 }
             }
         }
@@ -75,12 +78,17 @@ struct WooShippingServiceView: View {
     }
 
     var contentView: some View {
-        TopTabView(tabs: carriers,
-                   tabsContainerHorizontalPadding: 16,
-                   unselectedStateColor: .secondary,
-                   tabsNameFont: .subheadline.bold(),
-                   tabItemContentHorizontalPadding: 6,
-                   tabItemContentVerticalPadding: 12)
+        VStack(spacing: 0) {
+            TopTabView(tabs: carriers,
+                       showContent: false,
+                       selectedTabIndex: $viewModel.selectedTabIndex,
+                       tabsContainerHorizontalPadding: 16,
+                       unselectedStateColor: .secondary,
+                       tabsNameFont: .subheadline.bold(),
+                       tabItemContentHorizontalPadding: 6,
+                       tabItemContentVerticalPadding: 12)
+            WooShippingServiceCardListView(cards: viewModel.displayedServiceCards)
+        }
         .padding(.horizontal, Layout.padding * -1) // Offset the additional padding in TopTabView
     }
 
@@ -161,7 +169,6 @@ private struct WooShippingServiceCardListView: View {
         VStack {
             ForEach(cards) { card in
                 WooShippingServiceCardView(viewModel: card)
-                    .fixedSize(horizontal: false, vertical: true) // Prevents card text from being truncated
             }
         }
         .padding()
@@ -206,11 +213,20 @@ private extension WooShippingServiceView {
                                                               value: "We are unable to load shipping rates",
                                                               comment: "Error message when loading shipping label rates "
                                                               + "failed on the shipping label creation screen")
-        static let noRatesAvailable = NSLocalizedString("wooShipping.createLabels.rates.noRatesAvailable",
-                                                        value: "We couldn't find a shipping service for the combination of the selected package "
-                                                        + "and the total shipment weight. Please adjust your input and try again.",
-                                                        comment: "Error message when no shipping rates were found "
-                                                        + "based on the combination of the selected package and the total shipment weight.")
+        static let noRatesAvailableNoHAZMAT = NSLocalizedString(
+            "wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT",
+            value: "We couldn't find a shipping service for the combination of the selected package "
+            + "and the total shipment weight. Please adjust your input and try again.",
+            comment: "Error message when no shipping rates were found "
+            + "based on the combination of the selected package and the total shipment weight."
+        )
+        static let noRatesAvailableWithHAZMAT = NSLocalizedString(
+            "wooShipping.createLabels.rates.noRatesAvailableWithHAZMAT",
+            value: "We couldn't find a shipping service for the combination of the selected HAZMAT category, "
+            + "the selected package, and the total shipment weight. Please adjust your input and try again.",
+            comment: "Error message when no shipping rates were found "
+            + "based on the combination of the selected HAZMAT category, package and the total shipment weight."
+        )
         static let retryCTA = NSLocalizedString("wooShipping.createLabels.rates.retryCTA",
                                                 value: "Retry",
                                                 comment: "Button to retry loading data on the shipping label creation screen")

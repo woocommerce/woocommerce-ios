@@ -2,6 +2,7 @@ import XCTest
 import Yosemite
 import Networking
 import Storage
+import YosemiteTestHelpers
 @testable import WooCommerce
 
 final class PushNotificationBackgroundSynchronizerTests: XCTestCase {
@@ -86,7 +87,12 @@ private extension PushNotificationBackgroundSynchronizerTests {
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadOrdersSettings(_, onCompletion):
-                onCompletion(.success(.init(siteID: order.siteID, orderStatusesFilter: nil, dateRangeFilter: nil, productFilter: nil, customerFilter: nil)))
+                onCompletion(.success(.init(siteID: order.siteID,
+                                            orderStatusesFilter: nil,
+                                            dateRangeFilter: nil,
+                                            productFilter: nil,
+                                            customerFilter: nil,
+                                            salesChannelFilter: nil)))
             default:
                 break
             }
@@ -95,7 +101,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock sync order list
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.storage.insertSampleOrder(readOnlyOrder: order)
                 onCompletion(0, .success([order]))
             default:
@@ -112,7 +118,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock sync order list & single order
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(0, .success([]))
             case let .retrieveOrderRemotely(_, _, onCompletion):
                 self.storage.insertSampleOrder(readOnlyOrder: order)
@@ -129,7 +135,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         // Mock sync order list & single order
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, onCompletion):
+            case let .fetchFilteredOrders(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(0, .success([]))
             case let .retrieveOrderRemotely(_, _, onCompletion):
                 self.storage.insertSampleOrder(readOnlyOrder: Self.sampleOrderWithNoteFullDataOrderID)

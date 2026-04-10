@@ -1,0 +1,765 @@
+import Photos
+import XCTest
+import YosemiteTestHelpers
+@testable import Yosemite
+@testable import Networking
+
+final class MediaStoreTests: XCTestCase {
+    /// Mock Dispatcher!
+    ///
+    private var dispatcher: Dispatcher!
+
+    /// Mock Storage: InMemory
+    ///
+    private var storageManager: MockStorageManager!
+
+    /// Mock Network: Allows us to inject predefined responses!
+    ///
+    private var network: MockNetwork!
+
+    /// Testing SiteID
+    ///
+    private let sampleSiteID: Int64 = 123
+
+    /// Testing Product ID
+    ///
+    private let sampleProductID: Int64 = 586
+
+    /// Testing Media ID
+    ///
+    private let sampleMediaID: Int64 = 2352
+
+    // MARK: - Overridden Methods
+
+    override func setUp() {
+        super.setUp()
+        dispatcher = Dispatcher()
+        storageManager = MockStorageManager()
+        network = MockNetwork()
+    }
+
+    // MARK: test cases for `MediaAction.retrieveMedia`
+
+    /// Verifies that `MediaAction.retrieveMedia` returns the expected response.
+    ///
+    func test_retrieveMedia_returns_media() throws {
+        // Given
+        let mediaID: Int64 = 22
+        let remote = MockMediaRemote()
+        let expectedMedia = WordPressMedia.fake()
+        remote.whenLoadingMedia(siteID: sampleSiteID, thenReturn: .success(expectedMedia))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.retrieveMedia(siteID: self.sampleSiteID,
+                                                   mediaID: mediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMedia(siteID: sampleSiteID, mediaID: mediaID)])
+
+        let media = try XCTUnwrap(result.get())
+        XCTAssertEqual(media, expectedMedia.toMedia())
+    }
+
+    func test_retrieveMedia_returns_error_upon_receiving_error_response() throws {
+        // Given
+        let mediaID: Int64 = 22
+        let remote = MockMediaRemote()
+        remote.whenLoadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized()))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.retrieveMedia(siteID: self.sampleSiteID,
+                                                   mediaID: mediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMedia(siteID: sampleSiteID, mediaID: mediaID)])
+
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized())
+    }
+
+    // MARK: test cases for `MediaAction.retrieveMediaLibrary`
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response.
+    ///
+    func test_retrieveMediaLibrary_returns_media_list() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
+        let expectedMedia = Media(mediaID: 22,
+                                  date: date(with: "2021-11-22T01:55:57"),
+                                  fileExtension: "jpeg",
+                                  filename: "2021/11/img_0111-2-scaled.jpeg",
+                                  mimeType: "image/jpeg",
+                                  src: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-scaled.jpeg",
+                                  thumbnailURL: "https://ninja.media/wp-content/uploads/2021/11/img_0111-2-150x150.jpeg",
+                                  name: "img_0111-2",
+                                  alt: "Floral",
+                                  height: 1920,
+                                  width: 2560)
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 3)
+        XCTAssertEqual(mediaItems.first, expectedMedia)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response for cases where URLs contain special chars.
+    ///
+    func test_retrieveMediaLibrary_returns_media_list_when_URLs_contain_special_chars() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
+
+        let expectedMedia = Media(mediaID: 20,
+                                  date: date(with: "2021-11-22T01:55:57"),
+                                  fileExtension: "jpeg",
+                                  filename: "img_0111-1-12-тест.jpeg",
+                                  mimeType: "image/jpeg",
+                                  src: "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест.jpeg",
+                                  thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0111-1-12-тест-150x150.jpeg",
+                                  name: "img_0111-1",
+                                  alt: "",
+                                  height: 1708,
+                                  width: 2560)
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaItems = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaItems.count, 3)
+        XCTAssertTrue(mediaItems.contains(expectedMedia))
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
+    ///
+    func test_retrieveMediaLibrary_returns_error_upon_response_error() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "media", filename: "generic_error")
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertTrue(error is DecodingError)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
+    ///
+    func test_retrieveMediaLibrary_returns_error_upon_empty_response() {
+        // Given
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` invokes `MediaRemoteProtocol.loadMediaLibrary` when there is no corresponding site in storage.
+    func test_retrieveMediaLibrary_without_storage_site_invokes_loadMediaLibrary_remote_call() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .success([]))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let _: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` for a placeholder site ID returns the media list from the remote response.
+    func test_retrieveMediaLibrary_returns_media_list_when_connecting_to_site_with_placeholder_site_id() throws {
+        // Given
+        let siteID = WooConstants.placeholderSiteID
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenLoadingMediaLibrary(siteID: siteID, thenReturn: .success([media]))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: siteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: siteID)])
+
+        let mediaList = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaList, [media.toMedia()])
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` for a placeholder site ID returns the media list from the remote response.
+    func test_retrieveMediaLibrary_from_jcp_site_returns_media_list() throws {
+        // Given
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .success([media]))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
+
+        let mediaList = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaList, [media.toMedia()])
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` from a JCP site returns an error from the remote response.
+    func test_retrieveMediaLibrary_from_jcp_site_returns_error_upon_empty_response() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenLoadingMediaLibrary(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized()))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<[Media], Error> = waitFor { promise in
+            let action = MediaAction.retrieveMediaLibrary(siteID: self.sampleSiteID,
+                                                          imagesOnly: true,
+                                                          pageNumber: 1,
+                                                          pageSize: 20) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.loadMediaLibrary(siteID: sampleSiteID)])
+
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized())
+    }
+
+    // MARK: test cases for `MediaAction.uploadMedia`
+
+    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager)
+
+        let path = "sites/\(sampleSiteID)/media"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
+
+        let asset = PHAsset()
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        _ = try XCTUnwrap(result.get())
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+    func test_uploadMedia_returns_error_upon_response_error() {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager)
+
+        let path = "sites/\(sampleSiteID)/media"
+
+        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+
+        let asset = PHAsset()
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+    /// Verifies that `MediaAction.uploadMedia` invokes `MediaRemoteProtocol.uploadMedia` when there is no corresponding site in storage.
+    func test_uploadMedia_without_storage_site_invokes_uploadMedia_remote_call() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let remote = MockMediaRemote()
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized()))
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
+
+        let asset = PHAsset()
+
+        // When
+        let _: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
+    }
+
+    /// Verifies that `MediaAction.uploadMedia` for a placeholder site ID returns the uploaded media from the remote response.
+    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file_when_connecting_to_site_with_placeholder_site_id() throws {
+        // Given
+        let siteID = WooConstants.placeholderSiteID
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenUploadingMedia(siteID: siteID, thenReturn: .success(media))
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
+
+        let asset = PHAsset()
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: siteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: siteID)])
+
+        let mediaList = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaList, media.toMedia())
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+
+    /// Verifies that `MediaAction.uploadMedia` from a JCP site returns the uploaded media from the remote response.
+    func test_uploadMedia_to_jcp_site_returns_uploaded_media_and_deletes_input_media_file() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let remote = MockMediaRemote()
+        let media = WordPressMedia.fake()
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .success(media))
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
+
+        let asset = PHAsset()
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
+
+        let mediaList = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaList, media.toMedia())
+
+        // Verifies that the temporary file is removed after the media is uploaded.
+        XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
+    }
+
+    /// Verifies that `MediaAction.uploadMedia` from a JCP site returns an error from the remote response.
+    func test_uploadMedia_to_jcp_site_returns_error_from_remote_response() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let targetURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let remote = MockMediaRemote()
+        remote.whenUploadingMedia(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized()))
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: targetURL, fileManager: fileManager, remote: remote)
+
+        let asset = PHAsset()
+
+        insertJCPSiteToStorage(siteID: sampleSiteID)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
+                                                 productID: self.sampleProductID,
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(remote.invocations, [.uploadMedia(siteID: sampleSiteID)])
+
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized())
+    }
+
+    // MARK: test cases for `MediaAction.uploadFile`
+
+    func test_uploadFile_returns_uploaded_media() throws {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let fileURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let path = "sites/\(sampleSiteID)/media"
+        network.simulateResponse(requestUrlSuffix: path, filename: "media-upload")
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: fileURL, fileManager: fileManager)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadFile(siteID: self.sampleSiteID, productID: self.sampleProductID, localURL: fileURL, altText: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let media = try XCTUnwrap(result.get())
+        XCTAssertNotNil(media)
+
+        // Verifies that the file is not removed after the media is uploaded.
+        XCTAssertTrue(fileManager.fileExists(atPath: fileURL.path))
+    }
+
+    func test_uploadFile_returns_error_upon_response_error() {
+        // Given
+        let fileManager = FileManager.default
+
+        // Creates a temporary file to simulate a uploadable media file.
+        let fileURL: URL = {
+            let filename = "test.txt"
+            return fileManager.temporaryDirectory.appendingPathComponent(filename, isDirectory: false)
+        }()
+
+        let path = "sites/\(sampleSiteID)/media"
+        network.simulateResponse(requestUrlSuffix: path, filename: "generic_error")
+
+        let mediaStore = createMediaStoreAndExportableMedia(at: fileURL, fileManager: fileManager)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.uploadFile(siteID: self.sampleSiteID, productID: self.sampleProductID, localURL: fileURL, altText: nil) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+
+        // Verifies that the file is not removed after the media is uploaded.
+        XCTAssertTrue(fileManager.fileExists(atPath: fileURL.path))
+    }
+
+    // MARK: test cases for `MediaAction.updateProductID`
+
+    /// Verifies that `MediaAction.updateProductID` returns the expected response.
+    ///
+    func test_updateProductID_returns_media() throws {
+        // Given
+        let remote = MockMediaRemote()
+        let wordPressMedia = WordPressMedia.fake()
+        remote.whenUpdatingProductID(siteID: sampleSiteID, thenReturn: .success(wordPressMedia))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let mediaFromResult = try XCTUnwrap(result.get())
+        XCTAssertEqual(mediaFromResult, wordPressMedia.toMedia())
+    }
+
+    /// Verifies that `MediaAction.updateProductID` returns an error whenever there is an error response from the backend.
+    ///
+    func test_updateProductID_returns_error_upon_response_error() throws {
+        // Given
+        let remote = MockMediaRemote()
+        remote.whenUpdatingProductID(siteID: sampleSiteID, thenReturn: .failure(DotcomError.unauthorized()))
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network,
+                                    remote: remote)
+
+        // When
+        let result: Result<Media, Error> = waitFor { promise in
+            let action = MediaAction.updateProductID(siteID: self.sampleSiteID,
+                                                     productID: self.sampleProductID,
+                                                     mediaID: self.sampleMediaID) { result in
+                promise(result)
+            }
+            mediaStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? DotcomError)
+        XCTAssertEqual(error, .unauthorized())
+    }
+
+    func test_toMedia_converts_rendered_title_to_file_name_if_media_detail_is_not_available() {
+        // Given
+        let wpMedia = WordPressMedia.fake().copy(slug: "test",
+                                                 details: nil,
+                                                 title: .init(rendered: "Test"))
+
+        // When
+        let converted = wpMedia.toMedia()
+
+        // Then
+        XCTAssertEqual(converted.filename, "Test")
+    }
+
+    func test_toMedia_converts_slug_to_file_name_if_rendered_title_and_media_detail_are_not_available() {
+        // Given
+        let wpMedia = WordPressMedia.fake().copy(slug: "test",
+                                                 details: nil,
+                                                 title: nil)
+
+        // When
+        let converted = wpMedia.toMedia()
+
+        // Then
+        XCTAssertEqual(converted.filename, "test")
+    }
+}
+
+private extension MediaStoreTests {
+    func createSampleUploadableMedia(targetURL: URL) -> UploadableMedia {
+        return UploadableMedia(localURL: targetURL,
+                               filename: "test.jpg",
+                               mimeType: "image/jpeg",
+                               altText: nil)
+    }
+
+    func createMediaStoreAndExportableMedia(at targetURL: URL, fileManager: FileManager, remote: MediaRemoteProtocol? = nil) -> MediaStore {
+        do {
+            try fileManager.createDirectory(at: fileManager.temporaryDirectory, withIntermediateDirectories: true)
+            try "testing".write(toFile: targetURL.path, atomically: true, encoding: String.Encoding.utf8)
+        } catch {
+            XCTFail("Cannot write to target URL: \(targetURL) with error: \(error)")
+        }
+
+        // Verifies that the temporary file exists.
+        XCTAssertTrue(fileManager.fileExists(atPath: targetURL.path))
+
+        let uploadableMedia = createSampleUploadableMedia(targetURL: targetURL)
+        let mediaExportService = MockMediaExportService(uploadableMedia: uploadableMedia)
+        if let remote = remote {
+            return MediaStore(mediaExportService: mediaExportService,
+                              dispatcher: dispatcher,
+                              storageManager: storageManager,
+                              network: network,
+                              remote: remote)
+        } else {
+            return MediaStore(mediaExportService: mediaExportService,
+                              dispatcher: dispatcher,
+                              storageManager: storageManager,
+                              network: network)
+        }
+    }
+
+    func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
+
+    func insertJCPSiteToStorage(siteID: Int64) {
+        // JCP site determination requires a `Site` in storage.
+        let jcpSite = Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)
+        storageManager.insertSampleSite(readOnlySite: jcpSite)
+    }
+}

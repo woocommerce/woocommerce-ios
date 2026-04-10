@@ -74,6 +74,13 @@ final class TopBannerView: UIView {
         actionButtons = viewModel.actionButtons.map { _ in UIButton() }
         super.init(frame: .zero)
         configureSubviews(with: viewModel)
+        observeTraitChanges()
+    }
+
+    private func observeTraitChanges() {
+        registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            self.updateStackViewsAxis()
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -309,15 +316,6 @@ private extension TopBannerView {
         self.isExpanded = !isExpanded
         updateExpandCollapseState(isExpanded: isExpanded)
         onTopButtonTapped?()
-    }
-}
-
-// MARK: Accessibility Handling
-//
-extension TopBannerView {
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        updateStackViewsAxis()
     }
 }
 

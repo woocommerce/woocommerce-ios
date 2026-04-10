@@ -1,3 +1,4 @@
+import Foundation
 import Yosemite
 
 /// ViewModel to format the text that goes into the Free Trial Banner.

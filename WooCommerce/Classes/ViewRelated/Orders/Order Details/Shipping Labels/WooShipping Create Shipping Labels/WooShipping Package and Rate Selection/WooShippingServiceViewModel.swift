@@ -1,4 +1,7 @@
+import Combine
+import Foundation
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Provides view data for `WooShippingServiceView`.
 ///
@@ -8,10 +11,15 @@ final class WooShippingServiceViewModel: ObservableObject {
     private let originAddress: WooShippingAddress?
     private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
     @Published private(set) var serviceTabs: [WooShippingServiceTab] = []
+
+    @Published var selectedTabIndex: Int = 0
+
+    @Published private(set) var displayedServiceCards: [WooShippingServiceCardViewModel] = []
 
     /// Selected shipping service rate.
     @Published private(set) var selectedRate: WooShippingSelectedRate?
@@ -34,6 +42,11 @@ final class WooShippingServiceViewModel: ObservableObject {
     /// Available shipping rates with adult signature required.
     private var adultSignatureRates: [ShippingLabelCarrierRate] = []
 
+    /// Additional rates
+    private var carbonNeutralRates: [ShippingLabelCarrierRate] = []
+    private var saturdayDeliveryRates: [ShippingLabelCarrierRate] = []
+    private var additionalHandlingRates: [ShippingLabelCarrierRate] = []
+
     /// Sort order for shipping services.
     @Published var sortOrder: SortOrder = .price
 
@@ -44,13 +57,16 @@ final class WooShippingServiceViewModel: ObservableObject {
          originAddress: WooShippingAddress?,
          destinationAddress: WooShippingAddress?,
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
         self.siteID = order.siteID
         self.orderID = order.orderID
         self.originAddress = originAddress
         self.destinationAddress = destinationAddress
         self.stores = stores
+        self.analytics = analytics
         self.onSelectRate = onSelectRate
+        observeSelectedTab()
     }
 
     /// Sorts the shipping services by the provided sort order.
@@ -60,23 +76,75 @@ final class WooShippingServiceViewModel: ObservableObject {
     }
 
     /// Selects the rate with the given title and signature requirement.
-    func selectRate(_ rate: ShippingLabelCarrierRate, signatureRate: ShippingLabelCarrierRate?, adultSignatureRate: ShippingLabelCarrierRate?) {
-        let selectedRate = WooShippingSelectedRate(rate: rate, signatureRate: signatureRate, adultSignatureRate: adultSignatureRate)
+    func selectRate(_ rate: ShippingLabelCarrierRate,
+                    signatureRate: ShippingLabelCarrierRate?,
+                    adultSignatureRate: ShippingLabelCarrierRate?,
+                    carbonNeutralRate: ShippingLabelCarrierRate?,
+                    saturdayDeliveryRate: ShippingLabelCarrierRate?,
+                    additionalHandlingRate: ShippingLabelCarrierRate?) {
+        let selectedRate = WooShippingSelectedRate(rate: rate,
+                                                   signatureRate: signatureRate,
+                                                   adultSignatureRate: adultSignatureRate,
+                                                   carbonNeutralRate: carbonNeutralRate,
+                                                   saturdayDeliveryRate: saturdayDeliveryRate,
+                                                   additionalHandlingRate: additionalHandlingRate)
         self.selectedRate = selectedRate
         generateServiceTabs()
         onSelectRate?(selectedRate)
+        analytics.track(event: .WooShipping.rateSelectionStep(state: .selected))
+    }
+
+    /// Clears the selected rate.
+    func clearSelectedRate() {
+        selectedRate = nil
+    }
+
+    func refreshSelectedRate(from oldRate: WooShippingSelectedRate) -> WooShippingSelectedRate? {
+        let updatedStandardRate = standardRates.first(where: {
+            $0.serviceID == oldRate.rate.serviceID
+        })
+        let updatedSignatureRate = signatureRates.first(where: {
+            $0.serviceID == oldRate.signatureRate?.serviceID
+        })
+        let updatedAdultSignatureRate = adultSignatureRates.first(where: {
+            $0.serviceID == oldRate.adultSignatureRate?.serviceID
+        })
+        let updatedCarbonNeutralRate = carbonNeutralRates.first(where: {
+            $0.serviceID == oldRate.carbonNeutralRate?.serviceID
+        })
+        let updatedSaturdayDeliveryRate = saturdayDeliveryRates.first(where: {
+            $0.serviceID == oldRate.saturdayDeliveryRate?.serviceID
+        })
+        let updatedAdditionalHandlingRate = additionalHandlingRates.first(where: {
+            $0.serviceID == oldRate.additionalHandlingRate?.serviceID
+        })
+        guard let updatedStandardRate else {
+            return nil
+        }
+        let newSelectedRate = WooShippingSelectedRate(rate: updatedStandardRate,
+                                                      signatureRate: updatedSignatureRate,
+                                                      adultSignatureRate: updatedAdultSignatureRate,
+                                                      carbonNeutralRate: updatedCarbonNeutralRate,
+                                                      saturdayDeliveryRate: updatedSaturdayDeliveryRate,
+                                                      additionalHandlingRate: updatedAdditionalHandlingRate)
+        self.selectedRate = newSelectedRate
+        generateServiceTabs()
+        return newSelectedRate
     }
 
     /// Retrieves shipping label rates for this shipment from remote.
-    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected) {
+    func loadLabelRates(for selectedPackage: ShippingLabelPackageSelected,
+                        onLoadingCompletion: @escaping (Result<Void, Swift.Error>) -> Void = { _ in }) {
         // Store the selected package for retrying if error occurs
         self.selectedPackage = selectedPackage
 
         guard let originAddress, let destinationAddress, hasDestinationAddress else {
+            onLoadingCompletion(.failure(Error.missingDestinationAddress))
             return updateLoadingState(to: .error(Error.missingDestinationAddress))
         }
 
         guard selectedPackage.weight > 0 else {
+            onLoadingCompletion(.failure(Error.missingShipmentWeight))
             return updateLoadingState(to: .error(Error.missingShipmentWeight))
         }
 
@@ -89,6 +157,7 @@ final class WooShippingServiceViewModel: ObservableObject {
             guard let self,
                   /// Avoids showing the obsolete rates if the user changes the package weight while loading.
                   [self.selectedPackage] == remotePackages else {
+                onLoadingCompletion(.success(()))
                 return
             }
 
@@ -97,17 +166,28 @@ final class WooShippingServiceViewModel: ObservableObject {
                 guard let rates = rates.first(where: { $0.packageID == selectedPackage.id }),
                       rates.defaultRates.isNotEmpty else {
                     DDLogError("⛔️ Fetched shipping label rates for Woo Shipping do not include rates for selected package: \(selectedPackage)")
-                    updateLoadingState(to: .error(Error.noRatesAvailable))
+                    let isHAZMAT = selectedPackage.hazmatCategory != nil
+                    let error = Error.noRatesAvailable(isHAZMAT: isHAZMAT)
+                    updateLoadingState(to: .error(error))
+                    analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                    onLoadingCompletion(.failure(error))
                     return
                 }
 
                 standardRates = rates.defaultRates
                 signatureRates = rates.signatureRequired
                 adultSignatureRates = rates.adultSignatureRequired
+                carbonNeutralRates = rates.carbonNeutral
+                saturdayDeliveryRates = rates.saturdayDelivery
+                additionalHandlingRates = rates.additionalHandling
                 updateLoadingState(to: .loaded)
+                analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingSuccess))
+                onLoadingCompletion(.success(()))
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
                 updateLoadingState(to: .error(Error.failedLoadingLabelRates))
+                analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
+                onLoadingCompletion(.failure(Error.failedLoadingLabelRates))
             }
         }
         stores.dispatch(action)
@@ -144,11 +224,11 @@ extension WooShippingServiceViewModel {
         case error(_ error: Error)
     }
 
-    enum Error: Swift.Error {
+    enum Error: Swift.Error, Equatable {
         case missingDestinationAddress
         case missingShipmentWeight
         case failedLoadingLabelRates
-        case noRatesAvailable
+        case noRatesAvailable(isHAZMAT: Bool)
     }
 }
 
@@ -176,17 +256,36 @@ private extension WooShippingServiceViewModel {
                     .map { rate in
                         let signature = signatureRates.first { rate.title == $0.title }
                         let adultSignature = adultSignatureRates.first { rate.title == $0.title }
-                        return WooShippingServiceCardViewModel(selected: selectedRate?.rate.title == rate.title,
-                                                               signatureRequired: signature != nil && selectedRate?.signatureRate == signature,
-                                                               adultSignatureRequired: adultSignature != nil && selectedRate?.adultSignatureRate == adultSignature,
-                                                               rate: rate,
-                                                               signatureRate: signature,
-                                                               adultSignatureRate: adultSignature) { [weak self] rateTitle, signatureRequirement in
+                        let carbonNeutral = carbonNeutralRates.first { rate.title == $0.title }
+                        let saturdayDelivery = saturdayDeliveryRates.first { rate.title == $0.title }
+                        let additionalHandling = additionalHandlingRates.first { rate.title == $0.title }
+                        return WooShippingServiceCardViewModel(
+                            selected: selectedRate?.rate.title == rate.title,
+                            signatureRequired: signature != nil && selectedRate?.signatureRate == signature,
+                            adultSignatureRequired: adultSignature != nil && selectedRate?.adultSignatureRate == adultSignature,
+                            carbonNeutralSelected: carbonNeutral != nil && selectedRate?.carbonNeutralRate == carbonNeutral,
+                            saturdayDeliverySelected: saturdayDelivery != nil && selectedRate?.saturdayDeliveryRate == saturdayDelivery,
+                            additionalHandlingSelected: additionalHandling != nil && selectedRate?.additionalHandlingRate == additionalHandling,
+                            rate: rate,
+                            signatureRate: signature,
+                            adultSignatureRate: adultSignature,
+                            carbonNeutralRate: carbonNeutral,
+                            saturdayDeliveryRate: saturdayDelivery,
+                            additionalHandlingRate: additionalHandling
+                        ) { [weak self] rateTitle, signatureRequirement, carbonNeutral, saturdayDelivery, additionalHandling in
                             guard let self, let rate = standardRates.first(where: { $0.title == rateTitle }) else { return }
                             let signatureRate = signatureRequirement == .signatureRequired ? signatureRates.first(where: { $0.title == rateTitle }) : nil
                             let adultSignatureRate = signatureRequirement == .adultSignatureRequired ?
-                                adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
-                            selectRate(rate, signatureRate: signatureRate, adultSignatureRate: adultSignatureRate)
+                            adultSignatureRates.first(where: { $0.title == rateTitle }) : nil
+                            let carbonNeutralRate = carbonNeutral ? carbonNeutralRates.first(where: { $0.title == rateTitle }) : nil
+                            let saturdayDeliveryRate = saturdayDelivery ? saturdayDeliveryRates.first(where: { $0.title == rateTitle }) : nil
+                            let additionalHandlingRate = additionalHandling ? additionalHandlingRates.first(where: { $0.title == rateTitle }) : nil
+                            selectRate(rate,
+                                       signatureRate: signatureRate,
+                                       adultSignatureRate: adultSignatureRate,
+                                       carbonNeutralRate: carbonNeutralRate,
+                                       saturdayDeliveryRate: saturdayDeliveryRate,
+                                       additionalHandlingRate: additionalHandlingRate)
                         }
                     }
                 return WooShippingServiceTab(id: carrier, cards: cards)
@@ -206,6 +305,14 @@ private extension WooShippingServiceViewModel {
             serviceTabs = []
         }
         loadingState = state
+    }
+
+    func observeSelectedTab() {
+        $serviceTabs.combineLatest($selectedTabIndex)
+            .map { tabs, index in
+                tabs[safe: index]?.cards ?? []
+            }
+            .assign(to: &$displayedServiceCards)
     }
 }
 

@@ -21,6 +21,11 @@ final class TabContainerController: UIViewController {
             view.addSubview(newWrappedController.view)
             newWrappedController.didMove(toParent: self)
 
+            if #available(iOS 18.0, *), UIDevice.current.userInterfaceIdiom == .pad,
+               let horizontalSize = UIApplication.wooKeyWindow?.traitCollection.horizontalSizeClass {
+                newWrappedController.traitOverrides.horizontalSizeClass = horizontalSize
+            }
+
             newWrappedController.view.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 newWrappedController.view.topAnchor.constraint(equalTo: view.topAnchor),

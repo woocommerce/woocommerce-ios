@@ -45,6 +45,9 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        // Recalculate cell heights so multiline labels wrap correctly
+        // when cell margins change during popover/formSheet presentation.
+        tableView.performBatchUpdates(nil)
         configurePreferredContentSize()
     }
 
@@ -103,6 +106,10 @@ private extension BottomSheetListSelectorViewController {
 
     func configureMainView() {
         view.backgroundColor = .listForeground(modal: false)
+
+        if let accessibilityIdentifier = viewProperties.accessibilityIdentifier {
+            view.accessibilityIdentifier = accessibilityIdentifier
+        }
     }
 
     func configureTableView() {

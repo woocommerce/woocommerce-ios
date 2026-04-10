@@ -42,8 +42,8 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
             return false
         }
 
-        async let deviceSupportsTapToPay = cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
-        async let siteSupportsTapToPay = cardReaderSupportDeterminer.siteSupportsLocalMobileReader()
+        async let deviceSupportsTapToPay = cardReaderSupportDeterminer.deviceSupportsTapToPayReader()
+        async let siteSupportsTapToPay = cardReaderSupportDeterminer.siteSupportsTapToPayReader()
         async let hasPreviousTapToPayUsage = cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
         let deviceSupportsTapToPayResult = await deviceSupportsTapToPay
         let siteSupportsTapToPayResult = await siteSupportsTapToPay

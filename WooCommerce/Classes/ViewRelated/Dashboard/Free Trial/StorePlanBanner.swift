@@ -1,21 +1,5 @@
 import SwiftUI
 
-/// Hosting controller for `StorePlanBanner`.
-///
-final class StorePlanBannerHostingViewController: UIHostingController<StorePlanBanner> {
-    /// Designated initializer.
-    ///
-    init(text: String) {
-        super.init(rootView: StorePlanBanner(text: text))
-    }
-
-    /// Needed for protocol conformance.
-    ///
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 /// Store Plan Banner. To be used inside the Dashboard.
 ///
 struct StorePlanBanner: View {

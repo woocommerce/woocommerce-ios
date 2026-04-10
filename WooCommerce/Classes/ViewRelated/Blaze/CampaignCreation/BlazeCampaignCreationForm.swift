@@ -76,6 +76,7 @@ struct BlazeCampaignCreationForm: View {
     @State private var isShowingLocationPicker = false
     @State private var isShowingAISuggestionsErrorAlert: Bool = false
     @State private var isShowingSupport: Bool = false
+    @State private var externalURL: URL?
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -89,6 +90,7 @@ struct BlazeCampaignCreationForm: View {
                 Text(Localization.details)
                     .subheadlineStyle()
                     .foregroundColor(.init(uiColor: .text))
+                    .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
                     VStack(spacing: 0) {
@@ -113,6 +115,7 @@ struct BlazeCampaignCreationForm: View {
                 Text(Localization.audience)
                     .subheadlineStyle()
                     .foregroundColor(.init(uiColor: .text))
+                    .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
                     // Language
@@ -154,25 +157,27 @@ struct BlazeCampaignCreationForm: View {
                     .background(rowBackground)
                     .overlay { roundedRectangleBorder }
                 }
+
+                VStack(spacing: 0) {
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: Layout.contentPadding) {
+                        tosCheckboxToggle
+
+                        Button {
+                            viewModel.didTapConfirmDetails()
+                        } label: {
+                            Text(Localization.confirmDetails)
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .disabled(!viewModel.canConfirmDetails)
+                    }
+                    .padding(.vertical, Layout.contentPadding)
+                }
             }
             .padding(.horizontal, Layout.contentPadding)
         }
         .background(Constants.backgroundViewColor)
-        .safeAreaInset(edge: .bottom) {
-            VStack(spacing: 0) {
-                Divider()
-
-                Button {
-                    viewModel.didTapConfirmDetails()
-                } label: {
-                    Text(Localization.confirmDetails)
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(Layout.contentPadding)
-                .disabled(!viewModel.canConfirmDetails)
-            }
-            .background(Constants.backgroundViewColor)
-        }
         .navigationTitle(BlazeCampaignCreationFormHostingController.Localization.title)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
@@ -217,7 +222,7 @@ struct BlazeCampaignCreationForm: View {
                 isShowingCampaignObjectivePicker = false
             }
         }
-        .onChange(of: viewModel.error) { newValue in
+        .onChange(of: viewModel.error) { _, newValue in
             isShowingAISuggestionsErrorAlert = newValue == .failedToLoadAISuggestions
         }
         .alert(Localization.AISuggestionsErrorAlert.fetchingAISuggestions, isPresented: $isShowingAISuggestionsErrorAlert) {
@@ -263,6 +268,20 @@ struct BlazeCampaignCreationForm: View {
             }
         }
     }
+
+    private var tosCheckboxToggle: some View {
+        Toggle(isOn: $viewModel.isToSAccepted) {
+            Text(viewModel.tosCheckboxAttributedText)
+                .bodyStyle()
+                .multilineTextAlignment(.leading)
+                .environment(\.openURL, OpenURLAction { url in
+                    externalURL = url
+                    return .handled
+                })
+                .safariSheet(url: $externalURL)
+        }
+        .toggleStyle(CheckboxToggleStyle())
+    }
 }
 
 private extension BlazeCampaignCreationForm {
@@ -276,6 +295,8 @@ private extension BlazeCampaignCreationForm {
                     .cornerRadius(Layout.cornerRadius)
                     .redacted(reason: viewModel.isLoadingProductImage ? .placeholder : [])
                     .shimmering(active: viewModel.isLoadingProductImage)
+                    .accessibilityLabel(Localization.Accessibility.productImage)
+                    .accessibilityHidden(viewModel.isLoadingProductImage)
 
                 // Tagline
                 Text(viewModel.isLoadingAISuggestions ? "Placeholder tagline" : viewModel.tagline)
@@ -283,6 +304,13 @@ private extension BlazeCampaignCreationForm {
                     .captionStyle()
                     .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
                     .shimmering(active: viewModel.isLoadingAISuggestions)
+                    .accessibilityLabel(
+                        String(
+                            format: Localization.Accessibility.campaignTagline,
+                            viewModel.tagline
+                        )
+                    )
+                    .accessibilityHidden(viewModel.isLoadingAISuggestions)
 
                 HStack(spacing: Layout.contentPadding) {
                     // Description
@@ -292,6 +320,13 @@ private extension BlazeCampaignCreationForm {
                         .multilineTextAlignment(.leading)
                         .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
                         .shimmering(active: viewModel.isLoadingAISuggestions)
+                        .accessibilityLabel(
+                            String(
+                                format: Localization.Accessibility.campaignDescription,
+                                viewModel.description
+                            )
+                        )
+                        .accessibilityHidden(viewModel.isLoadingAISuggestions)
 
                     Spacer()
 
@@ -303,13 +338,15 @@ private extension BlazeCampaignCreationForm {
                             .scaledToFit()
                             .frame(width: Layout.ctaDefaultButtonSize, height: Layout.ctaDefaultButtonSize)
                             .foregroundColor(Constants.ctaButtonColor)
+                            .accessibilityLabel(Localization.Accessibility.defaultCallToAction)
                     }
                 }
+                .accessibilityElement(children: .combine)
 
                 if viewModel.isLoadingAISuggestions ||
                     viewModel.ctaText.isNotEmpty {
                     Text(viewModel.isLoadingAISuggestions ? "CTA placeholder" : viewModel.ctaText)
-                        .font(.system(size: Constants.ctaButtonFontSize))
+                        .font(.caption)
                         .foregroundColor(Constants.backgroundViewColor)
                         .padding(Layout.ctaButtonPadding)
                         .background(Constants.ctaButtonColor)
@@ -317,6 +354,13 @@ private extension BlazeCampaignCreationForm {
                         .padding(.top, Layout.ctaButtonTopMargin)
                         .redacted(reason: viewModel.isLoadingAISuggestions ? .placeholder : [])
                         .shimmering(active: viewModel.isLoadingAISuggestions)
+                        .accessibilityLabel(
+                            String(
+                                format: Localization.Accessibility.callToActionButton,
+                                viewModel.ctaText
+                            )
+                        )
+                        .accessibilityHidden(viewModel.isLoadingAISuggestions)
                 }
             }
             .padding(Layout.contentPadding)
@@ -327,6 +371,9 @@ private extension BlazeCampaignCreationForm {
                     x: 0,
                     y: Layout.shadowYOffset)
             .environment(\.colorScheme, .light)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel(Localization.Accessibility.campaignPreview)
+            .accessibilityHint(Localization.Accessibility.campaignPreviewHint)
 
             VStack(spacing: Layout.contentPadding) {
                 // Label "Suggested by AI"
@@ -343,6 +390,7 @@ private extension BlazeCampaignCreationForm {
 
                     Spacer()
                 }
+                .accessibilityElement(children: .combine)
                 .renderedIf(viewModel.isUsingAISuggestions)
 
                 // Button to edit ad details
@@ -446,8 +494,6 @@ private extension BlazeCampaignCreationForm {
         static let ctaButtonColor = Color(red: 0, green: 0.219, blue: 1)
 
         static let ctaButtonTextColor = Color.white
-
-        static let ctaButtonFontSize: CGFloat = 13
 
         static let supportTag = "origin:blaze-native-campaign-creation"
     }
@@ -599,6 +645,43 @@ private extension BlazeCampaignCreationForm {
             comment: "Button to dismiss the support form from the Blaze campaign form screen."
         )
 
+        enum Accessibility {
+            static let productImage = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.productImage",
+                value: "Product image for campaign",
+                comment: "Accessibility label for the product image in the Blaze campaign creation form"
+            )
+            static let campaignTagline = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.campaignTagline",
+                value: "Campaign tagline: %@",
+                comment: "Accessibility label for the campaign tagline in the Blaze campaign creation form"
+            )
+            static let campaignDescription = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.campaignDescription",
+                value: "Campaign description: %@",
+                comment: "Accessibility label for the campaign description in the Blaze campaign creation form"
+            )
+            static let defaultCallToAction = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.defaultCallToAction",
+                value: "Default call to action button",
+                comment: "Accessibility label for the default call to action button in the Blaze campaign creation form"
+            )
+            static let callToActionButton = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.callToActionButton",
+                value: "Call to action button: %@",
+                comment: "Accessibility label for the call to action button in the Blaze campaign creation form"
+            )
+            static let campaignPreview = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.campaignPreview",
+                value: "Campaign preview",
+                comment: "Accessibility label for the campaign preview container in the Blaze campaign creation form"
+            )
+            static let campaignPreviewHint = NSLocalizedString(
+                "blazeCampaignCreationForm.accessibility.campaignPreviewHint",
+                value: "Shows how your Blaze campaign advertisement will appear to customers",
+                comment: "Accessibility hint for the campaign preview container in the Blaze campaign creation form"
+            )
+        }
     }
 }
 

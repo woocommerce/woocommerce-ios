@@ -1,6 +1,7 @@
 import UIKit
 import SwiftUI
 import SafariServices
+import struct WooFoundation.IndefiniteCircularProgressViewStyle
 
 /// UI containing modals presented in the Card Present Payments flows.
 final class CardPresentPaymentsModalViewController: UIViewController, CardReaderModalFlowViewControllerProtocol {
@@ -51,6 +52,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
         setButtonsActions()
         styleContent()
         populateContent()
+        observeTraitChanges()
     }
 
     func setViewModel(_ newViewModel: CardPresentPaymentsModalViewModel) {
@@ -61,13 +63,18 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
         }
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-        resetHeightAndWidth()
+    private func observeTraitChanges() {
+        let traits: [UITrait] = [
+            UITraitVerticalSizeClass.self,
+            UITraitHorizontalSizeClass.self
+        ]
+        registerForTraitChanges(traits) { (self: Self, _) in
+            self.resetHeightAndWidth()
+        }
     }
 
     private func resetHeightAndWidth() {
-        if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
+        if traitCollection.verticalSizeClass == .compact {
             primaryActionButtonsStackView.axis = .horizontal
             primaryActionButtonsStackView.distribution = .fillProportionally
 
@@ -91,7 +98,7 @@ final class CardPresentPaymentsModalViewController: UIViewController, CardReader
     }
 
     private func updateImageAndLoadingVisibility() {
-        if traitCollection.containsTraits(in: UITraitCollection(verticalSizeClass: .compact)) {
+        if traitCollection.verticalSizeClass == .compact {
             imageView.isHidden = true
             loadingView?.isHidden = true
         } else {

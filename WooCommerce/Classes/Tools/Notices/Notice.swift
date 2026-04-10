@@ -9,7 +9,7 @@ struct Notice {
 
     /// The title that contains the reason for the notice
     ///
-    let title: String
+    let title: String?
 
     /// An optional subtitle that contains a secondary description of the reason for the notice
     ///
@@ -34,7 +34,6 @@ struct Notice {
     /// An optional handler closure that will be called when the action button is tapped, if you've provided an action title
     ///
     let actionHandler: (() -> Void)?
-
 
     /// Designated Initializer
     ///
@@ -63,5 +62,43 @@ extension Notice: Equatable {
             lhs.feedbackType == rhs.feedbackType &&
             lhs.notificationInfo?.identifier == rhs.notificationInfo?.identifier &&
             lhs.actionTitle == rhs.actionTitle
+    }
+}
+
+/// Convenience initializers to init without  a`title`
+/// These initializers  help to ensure that at least one of title/subtitle/message is non-nil.
+///
+extension Notice {
+    /// To init using `subtitle` and/or `message`
+    ///
+    init(subtitle: String,
+         message: String? = nil,
+         feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
+         notificationInfo: NoticeNotificationInfo? = nil,
+         actionTitle: String? = nil,
+         actionHandler: ((() -> Void))? = nil) {
+        self.title = nil
+        self.subtitle = subtitle
+        self.message = message
+        self.feedbackType = feedbackType
+        self.notificationInfo = notificationInfo
+        self.actionTitle = actionTitle
+        self.actionHandler = actionHandler
+    }
+
+    /// To init using only `message`
+    ///
+    init(message: String,
+         feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
+         notificationInfo: NoticeNotificationInfo? = nil,
+         actionTitle: String? = nil,
+         actionHandler: ((() -> Void))? = nil) {
+        self.title = nil
+        self.subtitle = nil
+        self.message = message
+        self.feedbackType = feedbackType
+        self.notificationInfo = notificationInfo
+        self.actionTitle = actionTitle
+        self.actionHandler = actionHandler
     }
 }

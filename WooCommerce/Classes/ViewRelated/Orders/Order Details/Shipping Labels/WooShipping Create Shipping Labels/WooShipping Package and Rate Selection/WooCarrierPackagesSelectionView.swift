@@ -96,9 +96,9 @@ struct WooCarrierPackagesSelectionView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if viewModel.selectedCarriersTabIndex != nil, viewModel.carrierTabs.isNotEmpty {
+            if viewModel.carrierTabs.isNotEmpty {
                 TopTabView(tabs: viewModel.carrierTabs,
-                           showContent: .constant(false),
+                           showContent: false,
                            selectedTabIndex: $viewModel.selectedCarriersTabIndex,
                            tabsContainerHorizontalPadding: nil,
                            selectedStateColor: Color.accentColor,
@@ -136,6 +136,7 @@ struct WooCarrierPackagesSelectionView: View {
             Button(selectionButtonText) {
                 addPackageButtonTapped()
             }
+            .renderedIf(viewModel.carrierTabs.isNotEmpty)
             .disabled(selectionButtonDisabled)
             .if(viewModel.previousSelectedAndSelectedCarriersPackageAreSame) {
                 $0.buttonStyle(SecondaryButtonStyle())
@@ -202,14 +203,17 @@ private extension WooCarrierPackagesSelectionView {
             Text(Localization.emptyStateMessage)
                 .multilineTextAlignment(.center)
                 .bold()
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal)
             Button(Localization.createCustomPackageCTA) {
                 addingCustomPackageHandler()
             }
             .buttonStyle(PrimaryButtonStyle())
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, Layout.ctaPadding)
             Spacer()
         }
-
+        .scrollVerticallyIfNeeded()
     }
 
     func addPackageButtonTapped() {

@@ -2,6 +2,7 @@ import SwiftUI
 import Yosemite
 import Combine
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 final class WooShippingCustomsFormViewModel: ObservableObject {
     enum ITNValidationError {
@@ -16,7 +17,7 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published var returnToSenderIfNotDelivered = false
 
     @Published var requiredInformationIsEntered = false
-    @Published var itemsRequiredInformationIsEntered = false
+    @Published private var itemsRequiredInformationIsEntered = false
 
     @Published var contentExplanation = ""
     @Published var restrictionDetails = ""
@@ -29,43 +30,59 @@ final class WooShippingCustomsFormViewModel: ObservableObject {
     @Published private(set) var destinationCountryCode: String?
 
     private var cancellables = Set<AnyCancellable>()
-    private let onCompletion: (ShippingLabelCustomsForm) -> ()
 
-    init(order: Order, onCompletion: @escaping (ShippingLabelCustomsForm) -> ()) {
-        self.onCompletion = onCompletion
+    /// The callback that passes the `ShippingLabelCustomsForm` to outer environment
+    /// Called when:
+    /// - The customs form is closed
+    /// - The customs form is pre-filled with data and all required fields are completed.
+    private let onFormReady: (ShippingLabelCustomsForm) -> ()
 
-        itemsViewModels = order.items.map {
-            WooShippingCustomsItemViewModel(orderItem: $0, currencySymbol: currencySymbol(from: order))
+    @Published private(set) var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+
+    init(order: Order,
+         shipment: Shipment,
+         originCountryCode: AnyPublisher<String?, Never>? = nil,
+         isHSTariffNumberRequired: AnyPublisher<Bool, Never>? = nil,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         onFormReady: @escaping (ShippingLabelCustomsForm) -> ()) {
+        self.onFormReady = onFormReady
+
+        itemsViewModels = shipment.items.map {
+            WooShippingCustomsItemViewModel(itemName: $0.name,
+                                            itemProductID: $0.productOrVariationID,
+                                            itemQuantity: $0.quantity,
+                                            itemValue: $0.value,
+                                            itemWeight: $0.weight,
+                                            currencySymbol: currencySymbol(from: order),
+                                            originCountryCode: originCountryCode,
+                                            isHSTariffNumberRequired: isHSTariffNumberRequired,
+                                            storageManager: storageManager)
         }
 
         listenToItemsRequiredInformationValues()
         listenForRequiredInformation()
         listenForInternationalTransactionNumberIsRequired()
+        listenForRequiredInformationCompletedUponPreFill()
     }
 
-    @Published var itemsViewModels: [WooShippingCustomsItemViewModel] = []
+    /// WOOMOB-734
+    /// Solves the issue where a pre-filled form becomes complete without a manual submission
+    ///
+    /// Listens for the `requiredInformationIsEntered` state
+    /// As soon as all required info is entered, calls the `emitForm` just once
+    func listenForRequiredInformationCompletedUponPreFill() {
+        $requiredInformationIsEntered
+            .first { $0 == true }
+            .sink { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.emitForm()
+                }
+            }
+            .store(in: &cancellables)
+    }
 
     func onDismiss() {
-        // TODO: Add package Id and name to support multiple shipments, (where each shipment may have its own customs form)
-        let form = ShippingLabelCustomsForm(packageID: "",
-                                            packageName: "",
-                                            contentsType: contentType.toFormContentsType(),
-                                            contentExplanation: contentType == .other ? contentExplanation : "",
-                                            restrictionType: restrictionType.toFormRestrictionType(),
-                                            restrictionComments: restrictionType == .other ? restrictionDetails : "",
-                                            nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
-                                            itn: internationalTransactionNumber.isValidITN ? internationalTransactionNumber : "",
-                                            items: itemsViewModels.map {
-            ShippingLabelCustomsForm.Item(description: $0.description,
-                                          quantity: $0.orderItem.quantity,
-                                          value: Double($0.valuePerUnit) ?? 0,
-                                          weight: Double($0.weightPerUnit) ?? 0,
-                                          hsTariffNumber: $0.isValidTariffNumber ? $0.hsTariffNumber : "",
-                                          originCountry: $0.selectedCountry?.name ?? "",
-                                          productID: $0.orderItem.productID)
-            }
-        )
-        onCompletion(form)
+        emitForm()
     }
 
     func updateDestinationCountry(code: String) {
@@ -103,36 +120,29 @@ private extension WooShippingCustomsFormViewModel {
             }
             .assign(to: &$isMissingITN)
 
-         let hsTariffNumberTotalValueDictionary = $itemsViewModels
-            .map { childViewModels in
-                childViewModels.map { $0.$hsTariffNumberTotalValue.eraseToAnyPublisher() }
-            }
-            .flatMap { childPublishers in
-                childPublishers.combineLatest()
-            }
-            .map { values in
-                var hsTariffNumberTotalValueDictionary: [String: Decimal] = [:]
-                for (hsTariffNumber, totalValuePerItem) in values.compacted() {
-                    hsTariffNumberTotalValueDictionary[hsTariffNumber, default: 0] += totalValuePerItem
-                }
-                return hsTariffNumberTotalValueDictionary
-            }
+        let totalItemValue = $itemsViewModels
+           .map { childViewModels in
+               childViewModels.map { $0.$totalValue.eraseToAnyPublisher() }
+           }
+           .flatMap { childPublishers in
+               childPublishers.combineLatest()
+           }
+           .map { values in
+               return values.reduce(0) { partialResult, value in
+                   return partialResult + value
+               }
+           }
 
         $internationalTransactionNumber.combineLatest(
-            $itemsViewModels,
-            hsTariffNumberTotalValueDictionary,
+            totalItemValue,
             $destinationCountryCode)
         .map { input -> ITNValidationError? in
-            let (itn, items, hsTariffNumberTotalValueDictionary, countryCode) = input
+            let (itn, totalItemValue, countryCode) = input
             guard itn.isEmpty else {
-                return itn.isValidITN ? nil : .invalidFormat
+                return ITNNumberValidator.isValid(itn) ? nil : .invalidFormat
             }
 
-            let totalItemValue = items.reduce(0, { sum, item in
-                sum + item.totalValue
-            })
-            if hsTariffNumberTotalValueDictionary.isEmpty,
-                totalItemValue > Constants.minimumValueForRequiredITN {
+            if totalItemValue > Constants.minimumValueForRequiredITN {
                 return .missingForTotalShipmentValue
             }
 
@@ -144,11 +154,6 @@ private extension WooShippingCustomsFormViewModel {
                 return .missingForRequiredDestination
             }
 
-            for (_, value) in hsTariffNumberTotalValueDictionary {
-                if value > Constants.minimumValueForRequiredITN {
-                    return .missingForTariffClass
-                }
-            }
             return nil
         }
         .assign(to: &$itnValidationError)
@@ -178,6 +183,33 @@ private extension WooShippingCustomsFormViewModel {
         }
         return ServiceLocator.currencySettings.symbol(from: currencyCode)
     }
+
+    private func emitForm() {
+        /// Ignoring `packageID` and `packageName` as these are not needed in WooShipping plugin, only in WCS&T
+        let form = ShippingLabelCustomsForm(
+            packageID: "",
+            packageName: "",
+            contentsType: contentType.toFormContentsType(),
+            contentExplanation: contentType == .other ? contentExplanation : "",
+            restrictionType: restrictionType.toFormRestrictionType(),
+            restrictionComments: restrictionType == .other ? restrictionDetails : "",
+            nonDeliveryOption: returnToSenderIfNotDelivered ? .return : .abandon,
+            itn: ITNNumberValidator.isValid(internationalTransactionNumber) ? internationalTransactionNumber : "",
+            items: itemsViewModels.map {
+                ShippingLabelCustomsForm.Item(
+                    description: $0.description,
+                    quantity: $0.itemQuantity,
+                    value: Double($0.valuePerUnit) ?? 0,
+                    weight: Double($0.weightPerUnit) ?? 0,
+                    hsTariffNumber: $0.isValidTariffNumber ? $0.sanitizedHSTariffNumber : "",
+                    originCountry: $0.selectedCountry?.code ?? "",
+                    productID: $0.itemProductID
+                )
+            }
+        )
+
+        onFormReady(form)
+    }
 }
 
 private extension WooShippingCustomsFormViewModel {
@@ -204,9 +236,10 @@ extension WooShippingCustomsFormViewModel.ITNValidationError {
 
     private enum Localization {
         static let itnInvalidFormat = NSLocalizedString(
-            "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat",
-            value: "Please enter a valid ITN in one of these formats: X12345678901234, AES X12345678901234, or NOEEI 30.37(a).",
-            comment: "Message when the ITN field is invalid in the customs form of a shipping label"
+            "wooShippingCustomsFormViewModel.ITNValidationError.invalidFormat.mandatoryAES",
+            value: "Please enter a valid ITN in one of these formats: AES X12345678901234, or NOEEI 30.37(a).",
+            comment: "Message when the ITN field is invalid in the customs form of a shipping label. " +
+            "Doesn't contain X12345678901234 format example."
         )
         static let itnRequiredForTariffClass = NSLocalizedString(
             "wooShippingCustomsFormViewModel.ITNValidationError.missingForTariffClass",
@@ -343,18 +376,24 @@ extension WooShippingContentType {
     }
 }
 
-private extension String {
-    var isValidITN: Bool {
-        guard self.isNotEmpty else {
+enum ITNNumberValidator {
+    /// Validates AES/ITN (International Transaction Number) or NOEEI (No EEI) exemption codes
+    /// Accepts formats like:
+    /// - AES ITN: X12345678901234, AES 12345678901234 or AES ITN: 12345678901234
+    /// - NOEEI exemptions: NOEEI 30.36 or NOEEI 30.36(a) or NOEEI 30.36(a)(1)
+    /// AES/ITN numbers which are 14 digits long, optionally prefixed with 'X', 'AES', and/or 'ITN'
+    /// NOEEI exemption codes in the format "NOEEI 30.XX" with optional subsection letters and numbers
+    static func isValid(_ itnNumber: String) -> Bool {
+        guard itnNumber.isNotEmpty else {
             return true
         }
 
-        let pattern = "^(?:(?:AES X\\d{14})|(?:NOEEI 30\\.\\d{1,2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
+        let pattern = "^(?:(?:AES(?!\\S)\\s*(?:ITN:?\\s*)?X?\\d{14})|(?:NOEEI\\s+30\\.\\d{2}(?:\\([a-z]\\)(?:\\(\\d\\))?)?))$"
 
         do {
-            let regex = try NSRegularExpression(pattern: pattern)
-            let range = NSRange(self.startIndex..<self.endIndex, in: self)
-            return regex.firstMatch(in: self, options: [], range: range) != nil
+            let regex = try NSRegularExpression(pattern: pattern, options: .caseInsensitive)
+            let range = NSRange(itnNumber.startIndex..<itnNumber.endIndex, in: itnNumber)
+            return regex.firstMatch(in: itnNumber, options: [], range: range) != nil
         } catch {
             return false
         }

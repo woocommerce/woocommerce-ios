@@ -8,11 +8,13 @@ import Yosemite
 ///
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
     private var searchViewController: SearchViewController<UnderlineableTitleAndSubtitleAndDetailTableViewCell, CustomerSearchUICommand>?
+    private var customerSearchCommand: CustomerSearchUICommand?
     private var emptyStateViewController: UIViewController?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
     private let addressFormViewModel: CreateOrderAddressFormViewModel?
+    private let selectedCustomerID: Int64?
 
     let configuration: CustomerSelectorViewController.Configuration
 
@@ -35,11 +37,13 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     ///   - siteID: ID of the current site
     ///   - configuration: UI configuration for the view controller
     ///   - addressFormViewModel: Optional, has to be provided if the view has to include new customer creation.
+    ///   - selectedCustomerID: Optional, ID of the currently selected customer to show checkmark
     ///   - onCustomerSelected: Callback to be called when a customer is selected
     ///
     init(siteID: Int64,
          configuration: CustomerSelectorViewController.Configuration,
          addressFormViewModel: CreateOrderAddressFormViewModel?,
+         selectedCustomerID: Int64? = nil,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(
             siteID: siteID,
@@ -48,6 +52,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
         self.siteID = siteID
         self.configuration = configuration
         self.addressFormViewModel = addressFormViewModel
+        self.selectedCustomerID = selectedCustomerID
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -74,6 +79,9 @@ extension CustomerSelectorViewController {
         // Whether guest-type customers can be selected or not
         var disallowSelectingGuest: Bool
 
+        // Error message when selecting guest if disallowed
+        var guestDisallowedMessage = Localization.guestSelectionDisallowedError
+
         // Whether to show or hide button to create customer
         var disallowCreatingCustomer: Bool
 
@@ -82,63 +90,67 @@ extension CustomerSelectorViewController {
 
         // Whether to track when a customer cell is tapped.
         var shouldTrackCustomerAdded: Bool
+
+        // Whether the selector is presented modally
+        var isModal: Bool
+
+        // Whether to hide the detail text (username or "Guest") in each customer row
+        var hideDetailText: Bool = false
     }
 }
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        viewModel.isEligibleForAdvancedSearch(completion: { [weak self] isEligible in
-            if isEligible {
-                self?.viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-                    guard let self = self else {
-                        return
-                    }
+        if viewModel.isEligibleForAdvancedSearch() {
+            viewModel.loadCustomersListData(onCompletion: { [weak self] result in
+                guard let self = self else {
+                    return
+                }
 
-                    self.removeGhostContent()
-                    switch result {
-                    case .success(let thereAreResults):
-                        if thereAreResults {
-                            self.addSearchViewController(
-                                loadResultsWhenSearchTermIsEmpty: true,
-                                showSearchFilters: false,
-                                showGuestLabel: configuration.showGuestLabel,
-                                shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
-                                disallowCreatingCustomer: configuration.disallowCreatingCustomer
-                            )
-                            self.configureActivityIndicator()
-                        } else {
-                            if configuration.disallowCreatingCustomer {
-                                self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
-
-                            } else {
-                                self.showEmptyState(with: self.emptyStateConfiguration())
-                            }
-                        }
-                    case .failure:
-                        self.showEmptyState(with: self.errorStateConfiguration())
-                    }
-                })
-            } else {
-                guard let self else { return }
                 self.removeGhostContent()
-                self.addSearchViewController(
-                    loadResultsWhenSearchTermIsEmpty: false,
-                    showSearchFilters: true,
-                    showGuestLabel: self.configuration.showGuestLabel,
-                    shouldTrackCustomerAdded: self.configuration.shouldTrackCustomerAdded,
-                    disallowCreatingCustomer: self.configuration.disallowCreatingCustomer,
-                    onAddCustomerDetailsManually: {
-                        self.presentNewCustomerDetailsFlow()
-                    })
-                self.configureActivityIndicator()
+                switch result {
+                case .success(let thereAreResults):
+                    if thereAreResults {
+                        self.addSearchViewController(
+                            loadResultsWhenSearchTermIsEmpty: true,
+                            showSearchFilters: false,
+                            showGuestLabel: configuration.showGuestLabel,
+                            shouldTrackCustomerAdded: configuration.shouldTrackCustomerAdded,
+                            disallowCreatingCustomer: configuration.disallowCreatingCustomer
+                        )
+                        self.configureActivityIndicator()
+                    } else {
+                        if configuration.disallowCreatingCustomer {
+                            self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
 
-            }
-        })
+                        } else {
+                            self.showEmptyState(with: self.emptyStateConfiguration())
+                        }
+                    }
+                case .failure:
+                    self.showEmptyState(with: self.errorStateConfiguration())
+                }
+            })
+        } else {
+            removeGhostContent()
+            addSearchViewController(
+                loadResultsWhenSearchTermIsEmpty: false,
+                showSearchFilters: true,
+                showGuestLabel: self.configuration.showGuestLabel,
+                shouldTrackCustomerAdded: self.configuration.shouldTrackCustomerAdded,
+                disallowCreatingCustomer: self.configuration.disallowCreatingCustomer,
+                onAddCustomerDetailsManually: {
+                    self.presentNewCustomerDetailsFlow()
+                })
+            configureActivityIndicator()
+        }
     }
 
     func configureNavigation() {
         navigationItem.title = configuration.title
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelWasPressed))
+        if configuration.isModal {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelWasPressed))
+        }
 
         if !configuration.disallowCreatingCustomer {
             navigationItem.rightBarButtonItem = UIBarButtonItem(image: .plusBarButtonItemImage,
@@ -189,29 +201,34 @@ private extension CustomerSelectorViewController {
                                  shouldTrackCustomerAdded: Bool,
                                  disallowCreatingCustomer: Bool,
                                  onAddCustomerDetailsManually: (() -> Void)? = nil) {
+        let command = CustomerSearchUICommand(siteID: siteID,
+                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
+                                              showSearchFilters: showSearchFilters,
+                                              showGuestLabel: showGuestLabel,
+                                              shouldTrackCustomerAdded: shouldTrackCustomerAdded,
+                                              disallowCreatingCustomer: disallowCreatingCustomer,
+                                              hideDetailText: configuration.hideDetailText,
+                                              selectedCustomerID: selectedCustomerID,
+                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
+                                              onDidSelectSearchResult: onCustomerTapped,
+                                              onDidStartSyncingAllCustomersFirstPage: {
+                                                  Task { @MainActor [weak self] in
+                                                      guard let searchTableView = self?.searchViewController?.tableView else {
+                                                          return
+                                                      }
+                                                      self?.displayGhostContent(over: searchTableView)
+                                                  }
+                                              },
+                                              onDidFinishSyncingAllCustomersFirstPage: {
+                                                  Task { @MainActor [weak self] in
+                                                      self?.removeGhostContent()
+                                                  }
+                                              })
+        self.customerSearchCommand = command
+
         let searchViewController = SearchViewController(
             storeID: siteID,
-            command: CustomerSearchUICommand(siteID: siteID,
-                                             loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
-                                             showSearchFilters: showSearchFilters,
-                                             showGuestLabel: showGuestLabel,
-                                             shouldTrackCustomerAdded: shouldTrackCustomerAdded,
-                                             disallowCreatingCustomer: disallowCreatingCustomer,
-                                             onAddCustomerDetailsManually: onAddCustomerDetailsManually,
-                                             onDidSelectSearchResult: onCustomerTapped,
-                                             onDidStartSyncingAllCustomersFirstPage: {
-                                                 Task { @MainActor [weak self] in
-                                                     guard let searchTableView = self?.searchViewController?.tableView else {
-                                                         return
-                                                     }
-                                                     self?.displayGhostContent(over: searchTableView)
-                                                 }
-                                             },
-                                             onDidFinishSyncingAllCustomersFirstPage: {
-                                                 Task { @MainActor [weak self] in
-                                                     self?.removeGhostContent()
-                                                 }
-                                             }),
+            command: command,
             cellType: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )
@@ -268,13 +285,18 @@ private extension CustomerSelectorViewController {
 
         activityIndicator.startAnimating()
         viewModel.onCustomerSelected(customer, onCompletion: { [weak self] result in
-            self?.activityIndicator.stopAnimating()
+            guard let self else { return }
+            activityIndicator.stopAnimating()
+            customerSearchCommand?.updateSelectedCustomerID(customer.customerID)
+            searchViewController?.tableView.reloadData()
 
             switch result {
             case .success:
-                self?.dismiss(animated: true)
+                if configuration.isModal {
+                    dismiss(animated: true)
+                }
             case .failure:
-                self?.showErrorNotice()
+                showErrorNotice()
             }
         })
     }
@@ -286,7 +308,7 @@ private extension CustomerSelectorViewController {
 
     func showGuestSelectionDisallowedNotice() {
         noticePresenter.presentingViewController = self
-        noticePresenter.enqueue(notice: Notice(title: Localization.guestSelectionDisallowedError, feedbackType: .error))
+        noticePresenter.enqueue(notice: Notice(title: configuration.guestDisallowedMessage, feedbackType: .error))
     }
 }
 

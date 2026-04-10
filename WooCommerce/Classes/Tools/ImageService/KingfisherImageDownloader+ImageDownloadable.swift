@@ -1,5 +1,6 @@
 import Kingfisher
 import Combine
+import UIKit
 
 /// The `@retroactive` attribute is used to apply `ImageDownloadTask` conformance to `DownloadTask` from the Kingfisher module.
 /// At the same time, `ImageDownloadTask` conform to `Cancellable` part of Combine module,

@@ -13,9 +13,14 @@ protocol BlazeEligibilityCheckerProtocol {
 /// Checks for Blaze eligibility for a site and its products.
 final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     private let stores: StoresManager
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(
+        stores: StoresManager = ServiceLocator.stores,
+        siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
+    ) {
         self.stores = stores
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
     }
 
     /// Checks if the site is eligible for Blaze.
@@ -39,7 +44,11 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 private extension BlazeEligibilityChecker {
     @MainActor
     func checkSiteEligibility(_ site: Site) async -> Bool {
-        guard site.isAdmin && site.canBlaze else {
+        guard
+            site.isAdmin,
+            site.canBlaze,
+            siteCIABEligibilityChecker.isFeatureSupported(.blaze, for: site)
+        else {
             return false
         }
 
@@ -71,18 +80,12 @@ private extension BlazeEligibilityChecker {
             stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                 case .success(let info):
-                    let plugin = info.systemPlugins.first(where: { $0.plugin == Constants.pluginSlug })
+                    let plugin = info.systemPlugins.first(where: { Plugin(systemPlugin: $0) == .blaze && $0.active })
                     continuation.resume(returning: plugin)
                 case .failure:
                     continuation.resume(returning: nil)
                 }
             })
         }
-    }
-}
-
-private extension BlazeEligibilityChecker {
-    enum Constants {
-        static let pluginSlug = "blaze-ads/blaze-ads.php"
     }
 }

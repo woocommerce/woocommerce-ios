@@ -16,22 +16,9 @@ final class BetaFeaturesConfigurationViewModelTests: XCTestCase {
 
     func test_availableFeatures_include_viewAddOns() {
         // Given
-        let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings,
-                                                           posEligibilityChecker: MockPOSEligibilityChecker(isEligibleValue: true))
+        let viewModel = BetaFeaturesConfigurationViewModel(appSettings: appSettings)
 
         // Then
         XCTAssertTrue(viewModel.availableFeatures.contains(.viewAddOns))
-    }
-}
-
-private final class MockPOSEligibilityChecker: POSEligibilityCheckerProtocol {
-    @Published var isEligibleValue: Bool
-
-    init(isEligibleValue: Bool) {
-        self.isEligibleValue = isEligibleValue
-    }
-
-    var isEligible: AnyPublisher<Bool, Never> {
-        $isEligibleValue.eraseToAnyPublisher()
     }
 }

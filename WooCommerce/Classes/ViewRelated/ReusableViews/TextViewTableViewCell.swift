@@ -118,12 +118,16 @@ final class TextViewTableViewCell: UITableViewCell {
 }
 
 extension TextViewTableViewCell: UITextViewDelegate {
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if let onLinkTapped {
-            onLinkTapped(URL)
-            return false
+    func textView(_ textView: UITextView, primaryActionFor textItem: UITextItem, defaultAction: UIAction) -> UIAction? {
+        if case .link(let url) = textItem.content {
+            if let onLinkTapped {
+                onLinkTapped(url)
+                // Prevent default action
+                return nil
+            }
         }
-        return true
+        // Allow default behavior
+        return defaultAction
     }
 }
 

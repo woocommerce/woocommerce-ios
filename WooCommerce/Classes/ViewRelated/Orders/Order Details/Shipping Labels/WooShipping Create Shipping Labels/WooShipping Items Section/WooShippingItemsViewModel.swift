@@ -10,7 +10,7 @@ final class WooShippingItemsViewModel: ObservableObject {
     private let currencySettings: CurrencySettings
 
     /// Data source for items to be shipped.
-    private var dataSource: WooShippingItemsDataSource
+    private(set) var dataSource: WooShippingItemsDataSource
 
     /// Label with the total number of items to ship.
     @Published private(set) var itemsCountLabel: String = ""
@@ -97,14 +97,5 @@ private extension WooShippingItemsViewModel {
                                                         value: "%1$@ x %2$@ x %3$@ %4$@",
                                                         comment: "Length, width, and height dimensions with the unit for an item to ship. "
                                                         + "Reads like: '20 x 35 x 5 cm'")
-    }
-}
-
-/// Convenience extension to provide data to `WooShippingItemRow`
-extension WooShippingItems {
-    init(viewModel: WooShippingItemsViewModel) {
-        self.itemsCountLabel = viewModel.itemsCountLabel
-        self.itemsDetailLabel = viewModel.itemsDetailLabel
-        self.items = viewModel.itemRows
     }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 import Yosemite
 
 /// Controls navigation for the issue refund feedback flow. Meant to be presented modally.
@@ -16,6 +17,10 @@ final class IssueRefundCoordinatingController: WooNavigationController {
     /// Used to display a success notice after the flow has finished.
     ///
     private let systemNoticePresenter: NoticePresenter
+
+    /// Called when the refund flow is dismissed (whether refund was completed or cancelled).
+    ///
+    var onDismissCallback: (() -> Void)?
 
     init(order: Order, refunds: [Refund], systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
         self.order = order
@@ -150,6 +155,7 @@ private extension IssueRefundCoordinatingController {
             if presentSuccessNotice {
                 self?.systemNoticePresenter.enqueue(notice: .init(title: Localization.refundSuccess))
             }
+            self?.onDismissCallback?()
         }
     }
 }

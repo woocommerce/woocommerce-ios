@@ -77,6 +77,7 @@ private struct CurrentOrderListSyncUseCase {
                                                                    dateRange: settings.dateRangeFilter,
                                                                    product: settings.productFilter,
                                                                    customer: settings.customerFilter,
+                                                                   salesChannel: settings.salesChannelFilter,
                                                                    numberOfActiveFilters: settings.numberOfActiveFilters())
                     continuation.resume(returning: filters)
                 case .failure:

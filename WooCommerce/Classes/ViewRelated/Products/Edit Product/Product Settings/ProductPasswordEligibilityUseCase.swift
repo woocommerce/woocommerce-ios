@@ -1,5 +1,6 @@
 import Yosemite
 import Storage
+import class WooFoundation.VersionHelpers
 
 final class ProductPasswordEligibilityUseCase {
     private let stores: StoresManager
@@ -43,13 +44,12 @@ final class ProductPasswordEligibilityUseCase {
     private func getSystemPlugin(siteID: Int64) -> Yosemite.SystemPlugin? {
         return storageManager.viewStorage
             .loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
-            .first(where: { $0.fileNameWithoutExtension == Constants.wcPluginName })
+            .first(where: { Plugin(systemPlugin: $0) == .wooCommerce })
     }
 }
 
 private extension ProductPasswordEligibilityUseCase {
     enum Constants {
-        static let wcPluginName = "woocommerce"
         static let wcPluginMinimumVersion = "8.1.0"
     }
 }

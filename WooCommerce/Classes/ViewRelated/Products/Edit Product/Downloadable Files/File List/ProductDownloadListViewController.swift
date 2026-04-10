@@ -348,7 +348,7 @@ private extension ProductDownloadListViewController {
     func showMediaUploadAlert(error: Error) {
         let errorMessage: String = {
             switch error {
-            case DotcomError.unknown(let code, _) where code == Constants.unsupportedMimeTypeCode:
+            case DotcomError.unknown(let code, _, _) where code == Constants.unsupportedMimeTypeCode:
                 Localization.unsupportedFileType
             case MediaAssetExporter.AssetExportError.unsupportedPHAssetMediaType:
                 Localization.unsupportedFileType

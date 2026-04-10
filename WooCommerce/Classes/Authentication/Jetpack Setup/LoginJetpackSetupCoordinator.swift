@@ -44,11 +44,19 @@ final class LoginJetpackSetupCoordinator: Coordinator {
 //
 private extension LoginJetpackSetupCoordinator {
     func showSetupSteps() {
-        let setupUI = JetpackSetupHostingController(siteURL: siteURL, connectionOnly: connectionOnly, onStoreNavigation: { [weak self] connectedEmail in
+        guard let credentials = stores.sessionManager.defaultCredentials,
+              case .wpcom = credentials else {
+            fatalError("Unexpected error: No WPCom credentials found for setting up Jetpack")
+        }
+        let setupUI = JetpackSetupHostingController(
+            siteURL: siteURL,
+            siteID: WooConstants.placeholderStoreID,
+            connectionOnly: connectionOnly,
+            wpcomCredentials: credentials,
+            onStoreNavigation: { [weak self] connectedEmail in
             guard let self, let email = connectedEmail else { return }
             if email != self.stores.sessionManager.defaultAccount?.email {
                 // if the user authorized Jetpack with a different account, support them to log in with that account.
-                self.analytics.track(.loginJetpackSetupAuthorizedUsingDifferentWPCOMAccount)
                 self.showVerifyWPComAccount(email: email)
             } else {
                 // dismiss the setup view

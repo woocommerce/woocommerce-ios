@@ -4,41 +4,53 @@ struct WooShippingHazmatRow: View {
     /// Whether the interactions (navigation/setting selection) are enabled.
     private let enabled: Bool
 
-    @Binding private var isHazardous: Bool
-
     @Binding private var selectedCategory: ShippingLabelHazmatCategory?
 
     @State private var isShowingDetailView = false
 
-    init(isHazardous: Binding<Bool>,
-         selectedCategory: Binding<ShippingLabelHazmatCategory?>,
+    init(selectedCategory: Binding<ShippingLabelHazmatCategory?>,
          enabled: Bool) {
-        self._isHazardous = isHazardous
         self._selectedCategory = selectedCategory
         self.enabled = enabled
     }
 
     var body: some View {
-        Button(action: {
-            isShowingDetailView = true
-        }) {
-            AdaptiveStack {
-                Text(Localization.hazmatLabel)
-                    .bodyStyle()
-                Spacer()
-                Text(isHazardous ? Localization.yes : Localization.no)
-                    .secondaryBodyStyle()
-                Image(uiImage: .chevronImage)
-                    .secondaryBodyStyle()
-                    .renderedIf(enabled)
+        VStack {
+            Button(action: {
+                isShowingDetailView = true
+            }) {
+                HStack {
+                    Text(Localization.hazmatLabel)
+                        .bodyStyle()
+                    Spacer()
+                    Text(selectedCategory != nil ? Localization.yes : Localization.no)
+                        .secondaryBodyStyle()
+                    Image(uiImage: .chevronImage)
+                        .secondaryBodyStyle()
+                        .renderedIf(enabled)
+                }
             }
-            .padding(.vertical, Layout.verticalPadding)
+            .buttonStyle(.plain)
+            .disabled(!enabled)
+
+            if let category = selectedCategory {
+                Text(category.localizedName)
+                    .captionStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
+                    .padding(Layout.categoryPadding)
+                    .background(
+                        Color(.quaternarySystemFill)
+                            .clipShape(RoundedRectangle(cornerSize: .init(width: Layout.backgroundRadius,
+                                                                          height: Layout.backgroundRadius)))
+                    )
+            }
         }
-        .buttonStyle(.plain)
-        .disabled(!enabled)
+        .padding(.vertical, Layout.verticalPadding)
         .sheet(isPresented: $isShowingDetailView) {
-            WooShippingHazmatDetailView(isHazardous: isHazardous,
-                                        selectedCategory: selectedCategory)
+            WooShippingHazmatDetailView(selectedCategory: selectedCategory) { selectedCategory in
+                self.selectedCategory = selectedCategory
+            }
         }
     }
 }
@@ -47,6 +59,7 @@ private extension WooShippingHazmatRow {
     enum Layout {
         static let backgroundRadius: CGFloat = 8
         static let verticalPadding: CGFloat = 24
+        static let categoryPadding: CGFloat = 16
     }
 
     enum Localization {
@@ -67,8 +80,7 @@ private extension WooShippingHazmatRow {
 }
 
 #Preview {
-    WooShippingHazmatRow(isHazardous: .constant(false),
-                         selectedCategory: .constant(nil),
+    WooShippingHazmatRow(selectedCategory: .constant(nil),
                          enabled: true)
         .padding()
 }

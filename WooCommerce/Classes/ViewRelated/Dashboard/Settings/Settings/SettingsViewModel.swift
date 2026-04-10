@@ -1,9 +1,12 @@
 import UIKit
+import Combine
 import Yosemite
 import Storage
 import class Networking.UserAgent
 import Experiments
 import protocol WooFoundation.Analytics
+import class WooFoundation.VersionHelpers
+import enum WooFoundation.BuildConfiguration
 
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
@@ -39,10 +42,6 @@ protocol SettingsViewModelActionsHandler {
     /// Presenter (SettingsViewController in this case) is responsible for calling this method when store picker is dismissed.
     ///
     func onStorePickerDismiss()
-
-    /// Reloads settings if the site is no longer Jetpack CP.
-    ///
-    func onJetpackInstallDismiss()
 
     /// Reloads settings. This can be used to show or hide content depending on their visibility logic.
     ///
@@ -103,7 +102,10 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
     private let defaults: UserDefaults
+    private let pushNotesManager: PushNotesManager
     private let analytics: Analytics
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     /// Reference to the Zendesk shared instance
     ///
@@ -113,11 +115,13 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          defaults: UserDefaults = .standard,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.defaults = defaults
+        self.pushNotesManager = pushNotesManager
         self.analytics = analytics
 
         /// Initialize Sites Results Controller
@@ -157,6 +161,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         loadWhatsNewOnWooCommerce()
         loadSites()
         reloadSettings()
+        observeSelfDrivenPushTokenPersistence()
     }
 
     /// Reloads the sites when store picker gets dismissed.
@@ -164,15 +169,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     ///
     func onStorePickerDismiss() {
         loadSites()
-        reloadSettings()
-    }
-
-    /// Reloads settings if the site is no longer Jetpack CP.
-    ///
-    func onJetpackInstallDismiss() {
-        guard stores.sessionManager.defaultSite?.isJetpackCPConnected == false else {
-            return
-        }
         reloadSettings()
     }
 
@@ -204,14 +200,22 @@ private extension SettingsViewModel {
         sites = sitesResultsController.fetchedObjects
     }
 
+    func observeSelfDrivenPushTokenPersistence() {
+        pushNotesManager.siteIDsRegisteredForWooPNsPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.reloadSettings()
+            }
+            .store(in: &subscriptions)
+    }
+
     func configureSections() {
         let configureSection: Section? = {
             var rows: [Row] = []
 
-            if featureFlagService.isFeatureFlagEnabled(.domainSettings)
-                && stores.sessionManager.defaultSite?.isWordPressComStore == true
-                && stores.sessionManager.defaultRoles.contains(.administrator) {
-                rows.append(.domain)
+            if stores.isAuthenticated,
+               stores.sessionManager.defaultSite?.isWordPressComStore == false {
+                rows.append(.connectivity)
             }
 
             guard rows.isNotEmpty else {
@@ -241,6 +245,10 @@ private extension SettingsViewModel {
                 return nil
             }
             var rows: [Row] = [.storeName]
+
+            if shouldShowEnablePushNotificationsRow(siteID: site.siteID) {
+                rows.append(.enablePushNotifications)
+            }
 
             if defaults.wpcomSiteSuspended == false,
                site.isJetpackCPConnected == true ||
@@ -277,9 +285,33 @@ private extension SettingsViewModel {
         }()
 
         // App Settings
-        let appSettingsSection = Section(title: Localization.appSettingsTitle,
-                                         rows: [.privacy],
-                                         footerHeight: UITableView.automaticDimension)
+        let appSettingsSection: Section = {
+            let rows: [Row]
+            let notificationAvailable: Bool = {
+                guard stores.isAuthenticated && stores.isAuthenticatedWithoutWPCom == false else {
+                    return false
+                }
+                guard let site = stores.sessionManager.defaultSite else {
+                    return false
+                }
+                return site.isJetpackCPConnected == false
+            }()
+            let isSelfDrivenPushNotificationsRegistered: Bool = {
+                guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+                    return false
+                }
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+            }()
+            if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
+                rows = [.notifications, .privacy]
+            } else {
+                rows = [.privacy]
+            }
+            return Section(title: Localization.appSettingsTitle,
+                           rows: rows,
+                           footerHeight: UITableView.automaticDimension)
+        }()
 
         // About the App
         let aboutTheAppSection: Section = {
@@ -297,12 +329,11 @@ private extension SettingsViewModel {
 
         // Other
         let otherSection: Section = {
-            let rows: [Row]
-            #if DEBUG
-            rows = [.deviceSettings, .wormholy]
-            #else
-            rows = [.deviceSettings]
-            #endif
+            var rows: [Row] = [.deviceSettings]
+            if !BuildConfiguration.current.isProduction {
+                rows.append(contentsOf: [.wormholy, .debugPanel])
+            }
+
             return Section(title: Localization.otherTitle,
                            rows: rows,
                            footerHeight: UITableView.automaticDimension)
@@ -336,6 +367,18 @@ private extension SettingsViewModel {
             logoutSection
         ]
         .compactMap { $0 }
+    }
+
+    func shouldShowEnablePushNotificationsRow(siteID: Int64) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true else {
+            return false
+        }
+
+        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
+            return false
+        }
+
+        return pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false
     }
 
     /// Ask the CardPresentPaymentStore to loadAccounts from the network and update storage

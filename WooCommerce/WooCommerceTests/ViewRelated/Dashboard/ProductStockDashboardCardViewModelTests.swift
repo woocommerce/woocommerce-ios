@@ -151,7 +151,7 @@ final class ProductStockDashboardCardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .fetchStockReport(_, _, _, _, _, completion):
-                completion(.failure(DotcomError.noRestRoute))
+                completion(.failure(DotcomError.noRestRoute()))
             default:
                 break
             }

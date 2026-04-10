@@ -83,6 +83,7 @@ class StoreOnboardingViewModel: ObservableObject {
     ///   - defaults: UserDefaults for storing when all onboarding tasks are completed
     init(siteID: Int64,
          isExpanded: Bool,
+         taskViewModels: [StoreOnboardingTaskViewModel] = [],
          stores: StoresManager = ServiceLocator.stores,
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
@@ -94,6 +95,7 @@ class StoreOnboardingViewModel: ObservableObject {
         self.defaults = defaults
         self.analytics = analytics
         self.waitingTimeTracker = waitingTimeTracker
+        self.taskViewModels = taskViewModels
 
         $noTasksAvailableForDisplay
             .combineLatest(defaults.publisher(for: \.completedAllStoreOnboardingTasks))
@@ -106,18 +108,24 @@ class StoreOnboardingViewModel: ObservableObject {
                 }
                 return true
             }
-            .map { !($0 || $1) }
+            .map { [siteID] (noTasksAvailable, completedDict) in
+                !(noTasksAvailable || (completedDict[String(siteID)] == true))
+            }
             .assign(to: &$canShowInDashboard)
     }
 
     func reloadTasks() async {
-        guard !defaults.completedAllStoreOnboardingTasks else {
+        guard defaults.completedAllStoreOnboardingTasks[String(siteID)] != true else {
             waitingTimeTracker.end(action: .loadOnboardingTasks)
             return
         }
 
         analytics.track(event: .DynamicDashboard.cardLoadingStarted(type: .onboarding))
-        update(state: .loading)
+        if taskViewModels.isEmpty {
+            update(state: .loading)
+        } else {
+            update(state: .loaded(rows: taskViewModels))
+        }
 
         let tasks: [StoreOnboardingTaskViewModel]
         var syncingError: Error?
@@ -203,7 +211,9 @@ private extension StoreOnboardingViewModel {
         }
 
         // This will be reset to `nil` when session resets
-        defaults[.completedAllStoreOnboardingTasks] = true
+        var completedTasks: [String: Bool] = defaults[.completedAllStoreOnboardingTasks] ?? [:]
+        completedTasks[String(siteID)] = true
+        defaults[.completedAllStoreOnboardingTasks] = completedTasks
     }
 
     @MainActor
@@ -237,7 +247,7 @@ private extension StoreOnboardingViewModel {
                         return StoreOnboardingTask(isComplete: true, type: .launchStore)
                     }))
                 case .failure(let error):
-                    self?.waitingTimeTracker.end() // Stop the tracker if there is an error.
+                    self?.waitingTimeTracker.endWithoutTracking() // Stop the tracker if there is an error.
                     return continuation.resume(throwing: error)
                 }
             })
@@ -263,7 +273,7 @@ private extension StoreOnboardingTaskViewModel {
 }
 
 extension UserDefaults {
-    @objc dynamic var completedAllStoreOnboardingTasks: Bool {
-        bool(forKey: Key.completedAllStoreOnboardingTasks.rawValue)
+    @objc dynamic var completedAllStoreOnboardingTasks: [String: Bool] {
+        dictionary(forKey: Key.completedAllStoreOnboardingTasks.rawValue) as? [String: Bool] ?? [:]
     }
 }

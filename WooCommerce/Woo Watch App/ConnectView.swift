@@ -1,11 +1,13 @@
 import SwiftUI
-import NetworkingWatchOS
+import NetworkingCore
 
 /// View that instructs the user how to connect to the phone.
 ///
 struct ConnectView: View {
 
     @EnvironmentObject private var tracksProvider: WatchTracksProvider
+
+    @State private var didRequestSyncing = false
 
     let synchronizer: PhoneDependenciesSynchronizer
 
@@ -18,6 +20,12 @@ struct ConnectView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
 
+                if didRequestSyncing {
+                    Text(Localization.workaroundTip)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
                 Image(systemName: "bolt.fill")
                     .renderingMode(.original)
                     .resizable()
@@ -26,6 +34,7 @@ struct ConnectView: View {
 
                 Button(Localization.itsNotWorking) {
                     synchronizer.requestCredentialSync()
+                    didRequestSyncing = true
                 }
             }
         }
@@ -44,9 +53,14 @@ extension ConnectView {
 
     private enum Localization {
         static let connectMessage = AppLocalizedString(
-            "watch.connect.message",
-            value: "Open Woo on your iPhone, connect your store, and hold your Watch nearby",
+            "watch.connect.messageUpdated",
+            value: "Open Woo on your iPhone, log into your store, and hold your Watch nearby.",
             comment: "Info message when connecting your watch to the phone for the first time."
+        )
+        static let workaroundTip = AppLocalizedString(
+            "watch.connect.workaround",
+            value: "If the error persists, relaunch the app.",
+            comment: "Workaround when connecting the watch to the phone fails."
         )
         static let itsNotWorking = AppLocalizedString(
             "watch.connect.notworking.title",

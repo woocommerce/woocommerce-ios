@@ -1,7 +1,7 @@
 import WatchKit
 import UserNotifications
 import CocoaLumberjack
-import struct NetworkingWatchOS.Note
+import struct NetworkingCore.Note
 import Sentry
 
 

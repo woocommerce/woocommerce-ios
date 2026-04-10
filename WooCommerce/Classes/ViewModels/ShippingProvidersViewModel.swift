@@ -102,11 +102,11 @@ final class ShippingProvidersViewModel {
     /// Convenience property to check if the data collection is empty
     ///
     var isListEmpty: Bool {
-        return providersExcludingStoreCountry.fetchedObjects.count == 0
+        return providersExcludingStoreCountry.fetchedObjects.isEmpty
     }
 
     private var storeCountryHasProviders: Bool {
-        return providersForStoreCountry.fetchedObjects.count != 0
+        return !providersForStoreCountry.fetchedObjects.isEmpty
     }
 
     /// Designated initializer

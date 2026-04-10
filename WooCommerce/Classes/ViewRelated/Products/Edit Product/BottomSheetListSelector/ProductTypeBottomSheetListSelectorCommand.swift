@@ -16,9 +16,9 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
             .simple(isVirtual: false),
             .simple(isVirtual: true),
             isEligibleForSubscriptionProducts ? .subscription : nil,
-            .variable,
+            siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.variableProducts) ? .variable : nil,
             isEligibleForSubscriptionProducts ? .variableSubscription : nil,
-            .grouped,
+            siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.groupedProducts) ? .grouped : nil,
             .affiliate
         ].compactMap { $0 }
 
@@ -35,13 +35,16 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     private let source: Source
     private let onSelection: (BottomSheetProductType) -> Void
     private let isEligibleForSubscriptionProducts: Bool
+    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     init(source: Source,
          subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol,
+         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          onSelection: @escaping (BottomSheetProductType) -> Void) {
         self.source = source
         self.onSelection = onSelection
         self.isEligibleForSubscriptionProducts = subscriptionProductsEligibilityChecker.isSiteEligible()
+        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         if case let .editForm(selected) = source {
             self.selected = selected
         } else {
@@ -54,6 +57,7 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
                                                                     text: model.actionSheetDescription,
                                                                     image: model.actionSheetImage,
                                                                     imageTintColor: .gray(.shade20),
+                                                                    numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0)
         cell.updateUI(viewModel: viewModel)
     }

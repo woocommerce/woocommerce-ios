@@ -24,7 +24,7 @@ extension ProductVariation {
     }
 }
 
-private extension ProductImage {
+extension ProductImage {
     var imageURL: URL? {
         guard let encodedProductImageURLString = src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
             return nil

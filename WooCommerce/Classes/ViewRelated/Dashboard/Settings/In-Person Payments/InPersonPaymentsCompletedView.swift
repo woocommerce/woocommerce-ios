@@ -1,4 +1,5 @@
 import SwiftUI
+import struct WooFoundation.ScrollableVStack
 
 struct InPersonPaymentsCompleted: View {
     var body: some View {

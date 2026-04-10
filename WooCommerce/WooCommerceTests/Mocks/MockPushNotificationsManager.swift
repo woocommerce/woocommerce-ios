@@ -43,11 +43,17 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
+    let siteIDsRegisteredForWooPNs: [Int64]
+    let hasStoredSiteIDsRegisteredForWooPNs: Bool
+    var siteIDsRegisteredForWooPNsPublisher: AnyPublisher<[Int64], Never> {
+        siteIDsRegisteredForWooPNsSubject.eraseToAnyPublisher()
+    }
 
     var deviceID: String? {
         mockedDeviceID
     }
 
+    private let siteIDsRegisteredForWooPNsSubject: CurrentValueSubject<[Int64], Never>
     private let localNotificationResponsesSubject = PassthroughSubject<UNNotificationResponse, Never>()
 
     private(set) var requestedLocalNotifications: [LocalNotification] = []
@@ -56,9 +62,20 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var triggersForRequestedLocalNotificationsIfNeeded: [UNNotificationTrigger] = []
     private(set) var canceledLocalNotificationScenarios: [[LocalNotification.Scenario]] = []
     private(set) var resetBadgeCountKinds: [Note.Kind] = []
+    private(set) var registerForRemoteNotificationsCallCount = 0
+    private(set) var ensureAuthorizationCallCount = 0
+    private(set) var lastIncludesProvisionalAuth: Bool?
+    private var authorizationCompletion: ((Bool) -> Void)?
+    var onRequestLocalNotificationCalled: (() -> Void)?
+    var registerDeviceAndWaitForTokenAcceptanceResult: Result<Int64, Error> = .success(1)
 
-    init(mockedDeviceID: String? = nil) {
+    init(mockedDeviceID: String? = nil,
+         siteIDsRegisteredForWooPNs: [Int64] = [],
+         hasStoredSiteIDsRegisteredForWooPNs: Bool? = nil) {
         self.mockedDeviceID = mockedDeviceID
+        self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
+        self.hasStoredSiteIDsRegisteredForWooPNs = hasStoredSiteIDsRegisteredForWooPNs ?? !siteIDsRegisteredForWooPNs.isEmpty
+        self.siteIDsRegisteredForWooPNsSubject = CurrentValueSubject(siteIDsRegisteredForWooPNs)
     }
 
     func resetBadgeCount(type: Note.Kind) {
@@ -73,23 +90,32 @@ final class MockPushNotificationsManager: PushNotesManager {
 
     }
 
-    func registerForRemoteNotifications() {
-
+    @MainActor
+    func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64 {
+        // Yield to allow MainActor scheduling to settle
+        await Task.yield()
+        return try registerDeviceAndWaitForTokenAcceptanceResult.get()
     }
 
-    func unregisterForRemoteNotifications() {
+    func registerForRemoteNotifications() {
+        registerForRemoteNotificationsCallCount += 1
+    }
+
+    func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
 
     }
 
     func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> ())?) {
-
+        ensureAuthorizationCallCount += 1
+        lastIncludesProvisionalAuth = includesProvisionalAuth
+        authorizationCompletion = onCompletion
     }
 
     func registrationDidFail(with error: Error) {
 
     }
 
-    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64) {
+    func registerDeviceToken(with tokenData: Data) {
 
     }
 
@@ -111,6 +137,7 @@ final class MockPushNotificationsManager: PushNotesManager {
             if let trigger {
                 triggersForRequestedLocalNotifications.append(trigger)
             }
+            onRequestLocalNotificationCalled?()
         }
     }
 
@@ -140,6 +167,12 @@ final class MockPushNotificationsManager: PushNotesManager {
             triggersForRequestedLocalNotifications.removeAll()
             triggersForRequestedLocalNotificationsIfNeeded.removeAll()
         }
+    }
+}
+
+extension MockPushNotificationsManager {
+    func completeAuthorizationRequest(isAllowed: Bool) {
+        authorizationCompletion?(isAllowed)
     }
 }
 

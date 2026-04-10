@@ -62,7 +62,7 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasPreviousPresentation = false
         userDefaults.hasFirstAttempt = true
         cardPresentPaymentsOnboardingUseCase.state = .completed(plugin: .wcPayOnly)
-        cardReaderSupportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = false
+        cardReaderSupportDeterminer.shouldReturnDeviceSupportsTapToPayReader = false
 
         // When
         let shouldPresent = await sut.shouldPresent()
@@ -76,8 +76,8 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasPreviousPresentation = false
         userDefaults.hasFirstAttempt = true
         cardPresentPaymentsOnboardingUseCase.state = .completed(plugin: .wcPayOnly)
-        cardReaderSupportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
-        cardReaderSupportDeterminer.shouldReturnSiteSupportsLocalMobileReader = false
+        cardReaderSupportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
+        cardReaderSupportDeterminer.shouldReturnSiteSupportsTapToPayReader = false
 
         // When
         let shouldPresent = await sut.shouldPresent()
@@ -91,8 +91,8 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasPreviousPresentation = false
         userDefaults.hasFirstAttempt = true
         cardPresentPaymentsOnboardingUseCase.state = .completed(plugin: .wcPayOnly)
-        cardReaderSupportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
-        cardReaderSupportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
+        cardReaderSupportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
+        cardReaderSupportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = true
 
         // When
@@ -107,8 +107,8 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasPreviousPresentation = false
         userDefaults.hasFirstAttempt = true
         cardPresentPaymentsOnboardingUseCase.state = .completed(plugin: .wcPayOnly)
-        cardReaderSupportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
-        cardReaderSupportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
+        cardReaderSupportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
+        cardReaderSupportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = false
 
         // When
@@ -123,8 +123,8 @@ struct TapToPayAwarenessMomentDeterminerTests {
         userDefaults.hasPreviousPresentation = false
         userDefaults.hasFirstAttempt = true
         cardPresentPaymentsOnboardingUseCase.state = .codPaymentGatewayNotSetUp(plugin: .wcPay)
-        cardReaderSupportDeterminer.shouldReturnDeviceSupportsLocalMobileReader = true
-        cardReaderSupportDeterminer.shouldReturnSiteSupportsLocalMobileReader = true
+        cardReaderSupportDeterminer.shouldReturnDeviceSupportsTapToPayReader = true
+        cardReaderSupportDeterminer.shouldReturnSiteSupportsTapToPayReader = true
         cardReaderSupportDeterminer.shouldReturnHasPreviousTapToPayUsage = false
 
         // When

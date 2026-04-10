@@ -1,5 +1,6 @@
 import XCTest
 import OHHTTPStubs
+import OHHTTPStubsSwift
 import WordPressShared
 @testable import WordPressAuthenticator
 

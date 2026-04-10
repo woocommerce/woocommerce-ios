@@ -22,7 +22,9 @@ final class WPComEmailLoginHostingController: UIHostingController<WPComEmailLogi
         super.viewDidLoad()
         configureTransparentNavigationBar()
         navigationController?.presentationController?.delegate = self
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+        if navigationController?.viewControllers.first == self {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
+        }
     }
 
     @objc
@@ -61,33 +63,37 @@ struct WPComEmailLoginView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
-                JetpackInstallHeaderView()
+                headerView
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
                     Text(viewModel.titleString)
                         .largeTitleStyle()
+                        .bold()
                     Text(viewModel.subtitleString)
-                        .subheadlineStyle()
+                        .bodyStyle()
                 }
 
                 // Email field
-                AuthenticationFormFieldView(viewModel: .init(
-                    header: Localization.emailLabel,
-                    placeholder: Localization.enterEmail,
-                    keyboardType: .emailAddress,
-                    text: $viewModel.emailAddress,
-                    isSecure: false,
-                    errorMessage: nil,
-                    isFocused: isEmailFieldFocused,
-                    autocapitalization: .none
-                ))
-                .focused($isEmailFieldFocused)
+                VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
+                    AuthenticationFormFieldView(viewModel: .init(
+                        header: viewModel.usernameOnly ? Localization.usernameLabel : Localization.emailLabel,
+                        placeholder: viewModel.usernameOnly ? Localization.enterUsername : Localization.enterEmail,
+                        keyboardType: viewModel.usernameOnly ? .default : .emailAddress,
+                        text: $viewModel.emailOrUsername,
+                        isSecure: false,
+                        errorMessage: nil,
+                        isFocused: isEmailFieldFocused,
+                        autocapitalization: .none
+                    ))
+                    .focused($isEmailFieldFocused)
 
-                if viewModel.allowAccountCreation {
-                    // Account creation hint
-                    Text(Localization.accountCreationHint)
-                        .footnoteStyle()
+                    if viewModel.allowAccountCreation,
+                       !viewModel.usernameOnly {
+                        // Account creation hint
+                        Text(Localization.accountCreationHint)
+                            .footnoteStyle()
+                    }
                 }
 
                 Spacer()
@@ -97,22 +103,32 @@ struct WPComEmailLoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(viewModel.titleString) {
+                Button(viewModel.primaryButtonTitle) {
                     ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress, tap: .submit))
                     Task { @MainActor in
                         isPrimaryButtonLoading = true
-                        await viewModel.checkWordPressComAccount(email: viewModel.emailAddress)
+                        await viewModel.checkWordPressComAccount(emailOrUsername: viewModel.emailOrUsername)
                         isPrimaryButtonLoading = false
                     }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPrimaryButtonLoading))
-                .disabled(viewModel.emailAddress.isEmpty)
+                .disabled(viewModel.emailOrUsername.isEmpty)
 
                 // Terms label
-                AttributedText(viewModel.termsAttributedString)
+                Text(viewModel.termsAttributedString)
             }
             .padding(Constants.contentPadding)
             .background(Color(uiColor: .systemBackground))
+        }
+    }
+}
+
+private extension WPComEmailLoginView {
+    @ViewBuilder
+    var headerView: some View {
+        switch viewModel.flow {
+        case .jetpackSetup:
+            JetpackInstallHeaderView()
         }
     }
 }
@@ -129,9 +145,20 @@ private extension WPComEmailLoginView {
             "Email Address or Username",
             comment: "Label for the email field on the WPCom email login screen of the Jetpack setup flow."
         )
+        static let usernameLabel = NSLocalizedString(
+            "wpComEmailLoginView.usernameLabel",
+            value: "Username",
+            comment: "Label for the username field on the WPCom email login screen of the Jetpack setup flow."
+        )
         static let enterEmail = NSLocalizedString(
-            "Enter email or username",
+            "wpComEmailLoginView.enterEmail",
+            value: "Enter email address or username",
             comment: "Placeholder text for the email field on the WPCom email login screen of the Jetpack setup flow."
+        )
+        static let enterUsername = NSLocalizedString(
+            "wpComEmailLoginView.enterUsername",
+            value: "Enter username",
+            comment: "Placeholder text for the username field on the WPCom email login screen of the Jetpack setup flow."
         )
         static let accountCreationHint = NSLocalizedString(
             "wpComEmailLoginView.accountCreationHint",
@@ -141,14 +168,22 @@ private extension WPComEmailLoginView {
     }
 }
 
+#Preview("WPComEmailLoginView - Jetpack setup connection only") {
+    WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
+                                         flow: .jetpackSetup(requiresConnectionOnly: true),
+                                         allowAccountCreation: true,
+                                         onPasswordUIRequest: { _ in },
+                                         onMagicLinkRequest: { _ in },
+                                         onMagicLinkSent: { _, _ in },
+                                         onError: { _ in }))
+}
 
-struct WPComEmailLoginView_Previews: PreviewProvider {
-    static var previews: some View {
-        WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
-                                             requiresConnectionOnly: true,
-                                             allowAccountCreation: false,
-                                             onPasswordUIRequest: { _ in },
-                                             onMagicLinkUIRequest: { _, _ in },
-                                             onError: { _ in }))
-    }
+#Preview("WPComEmailLoginView - Jetpack setup") {
+    WPComEmailLoginView(viewModel: .init(siteURL: "https://example.com",
+                                         flow: .jetpackSetup(requiresConnectionOnly: false),
+                                         allowAccountCreation: true,
+                                         onPasswordUIRequest: { _ in },
+                                         onMagicLinkRequest: { _ in },
+                                         onMagicLinkSent: { _, _ in },
+                                         onError: { _ in }))
 }

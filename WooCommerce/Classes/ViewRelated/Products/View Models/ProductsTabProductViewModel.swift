@@ -1,5 +1,7 @@
 import Foundation
+import UIKit
 import Yosemite
+import WooFoundation
 
 private extension ProductStatus {
     var descriptionColor: UIColor {
@@ -30,7 +32,7 @@ struct ProductsTabProductViewModel {
     // Dependency for configuring the view.
     let imageService: ImageService
 
-    init(product: Product,
+    init(product: ProductListItem,
          hasPendingUploads: Bool = false,
          productVariation: ProductVariation? = nil,
          isSelected: Bool = false,
@@ -38,13 +40,13 @@ struct ProductsTabProductViewModel {
          isSKUShown: Bool = false,
          imageService: ImageService = ServiceLocator.imageService) {
 
-        imageUrl = product.images.first?.src
+        imageUrl = product.imageURL?.absoluteString
         name = product.name.isEmpty ? Localization.noTitle : product.name
         self.productVariation = productVariation
         self.isSelected = isSelected
         self.isDraggable = isDraggable
         self.hasPendingUploads = hasPendingUploads
-        detailsAttributedString = EditableProductModel(product: product).createDetailsAttributedString(isSKUShown: isSKUShown)
+        detailsAttributedString = product.createDetailsAttributedString(isSKUShown: isSKUShown)
 
         self.imageService = imageService
     }
@@ -62,10 +64,15 @@ struct ProductsTabProductViewModel {
     }
 }
 
-private extension EditableProductModel {
+private extension ProductListItem {
     func createDetailsAttributedString(isSKUShown: Bool) -> NSAttributedString {
         let statusText = createStatusText()
-        let stockText = createStockText()
+        let stockText = String.createStockText(productType: productType,
+                                               manageStock: manageStock,
+                                               stockStatus: productStockStatus,
+                                               stockQuantity: stockQuantity,
+                                               bundleStockStatus: bundleStockStatus,
+                                               bundleStockQuantity: bundleStockQuantity)
         let variationsText = createVariationsText()
 
         let detailsText = [statusText, stockText, variationsText]
@@ -80,37 +87,37 @@ private extension EditableProductModel {
                                                             .font: StyleManager.footerLabelFont
             ])
         if let statusText = statusText {
-            attributedString.addAttributes([.foregroundColor: status.descriptionColor],
+            attributedString.addAttributes([.foregroundColor: productStatus.descriptionColor],
                                            range: NSRange(location: 0, length: statusText.count))
         }
         return attributedString
     }
 
     func createStatusText() -> String? {
-        switch status {
+        switch productStatus {
         case .pending, .draft, .privateStatus:
-            return status.description
+            return productStatus.description
         default:
             return nil
         }
     }
 
     func createVariationsText() -> String? {
-        guard !product.variations.isEmpty else {
+        guard !variations.isEmpty else {
             return nil
         }
-        let numberOfVariations = product.variations.count
+        let numberOfVariations = variations.count
         let format = String.pluralize(numberOfVariations,
-                                      singular: Localization.VariationCount.singular,
-                                      plural: Localization.VariationCount.plural)
+                                      singular: EditableProductModel.Localization.VariationCount.singular,
+                                      plural: EditableProductModel.Localization.VariationCount.plural)
         return String.localizedStringWithFormat(format, numberOfVariations)
     }
 
     func createSKUText() -> String? {
-        guard let sku = product.sku, sku.isNotEmpty else {
+        guard let sku, sku.isNotEmpty else {
             return nil
         }
-        return String.localizedStringWithFormat(Localization.skuFormat, sku)
+        return String.localizedStringWithFormat(EditableProductModel.Localization.skuFormat, sku)
     }
 }
 

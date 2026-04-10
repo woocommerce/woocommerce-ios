@@ -125,7 +125,7 @@ struct AccountCreationForm: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
-        .onChange(of: viewModel.shouldTransitionToPasswordField) { shouldTransition in
+        .onChange(of: viewModel.shouldTransitionToPasswordField) { _, shouldTransition in
             if shouldTransition {
                 withAnimation {
                     viewModel.transitionToPasswordField()

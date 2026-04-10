@@ -13,6 +13,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let dateRange: OrderDateRangeFilter?
         let product: FilterOrdersByProduct?
         let customer: CustomerFilter?
+        let salesChannel: SalesChannelFilter?
 
         let numberOfActiveFilters: Int
 
@@ -21,6 +22,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
             dateRange = nil
             product = nil
             customer = nil
+            salesChannel = nil
             numberOfActiveFilters = 0
         }
 
@@ -28,17 +30,19 @@ final class FilterOrderListViewModel: FilterListViewModel {
              dateRange: OrderDateRangeFilter?,
              product: FilterOrdersByProduct?,
              customer: CustomerFilter?,
+             salesChannel: SalesChannelFilter?,
              numberOfActiveFilters: Int) {
             self.orderStatus = orderStatus
             self.dateRange = dateRange
             self.product = product
             self.customer = customer
+            self.salesChannel = salesChannel
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
         var readableString: String {
             var readable: [String] = []
-            if let orderStatus = orderStatus, orderStatus.count > 0 {
+            if let orderStatus = orderStatus, !orderStatus.isEmpty {
                 readable = orderStatus.map { $0.rawValue.capitalized }
             }
             if let dateRange = dateRange {
@@ -50,6 +54,11 @@ final class FilterOrderListViewModel: FilterListViewModel {
             if let customer = customer {
                 readable.append(customer.description)
             }
+
+            if let salesChannel = salesChannel {
+                readable.append(salesChannel.description)
+            }
+
             return readable.joined(separator: ", ")
         }
     }
@@ -66,6 +75,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
     private let dateRangeFilterViewModel: FilterTypeViewModel
     private let productFilterViewModel: FilterTypeViewModel
     private let customerFilterViewModel: FilterTypeViewModel
+    private let salesChannelFilterViewModel: FilterTypeViewModel
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -87,13 +97,23 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel = OrderListFilter.dateRange.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         productFilterViewModel = OrderListFilter.product(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
         customerFilterViewModel = OrderListFilter.customer(siteID: siteID).createViewModel(filters: filters, allowedStatuses: allowedStatuses)
+        salesChannelFilterViewModel = OrderListFilter.salesChannel.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
 
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
 
         shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
-        filterTypeViewModels = [orderStatusFilterViewModel, dateRangeFilterViewModel, customerFilterViewModel, productFilterViewModel]
+        var allFilterViewModels = [orderStatusFilterViewModel,
+                                   dateRangeFilterViewModel,
+                                   customerFilterViewModel,
+                                   productFilterViewModel]
+
+        if featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi2) {
+            allFilterViewModels.append(salesChannelFilterViewModel)
+        }
+
+        filterTypeViewModels = allFilterViewModels
     }
 
     var criteria: Filters {
@@ -101,11 +121,13 @@ final class FilterOrderListViewModel: FilterListViewModel {
         let dateRange = dateRangeFilterViewModel.selectedValue as? OrderDateRangeFilter ?? nil
         let product = productFilterViewModel.selectedValue as? FilterOrdersByProduct ?? nil
         let customer = customerFilterViewModel.selectedValue as? CustomerFilter ?? nil
+        let salesChannel = salesChannelFilterViewModel.selectedValue as? SalesChannelFilter ?? nil
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
         return Filters(orderStatus: orderStatus,
                        dateRange: dateRange,
                        product: product,
                        customer: customer,
+                       salesChannel: salesChannel,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
 
@@ -120,6 +142,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                 dateRange: item.dateRangeFilter,
                                 product: item.productFilter,
                                 customer: item.customerFilter,
+                                salesChannel: item.salesChannelFilter,
                                 numberOfActiveFilters: item.numberOfActiveFilters())
                     }
                     continuation.resume(returning: filters)
@@ -136,6 +159,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
         dateRangeFilterViewModel.selectedValue = filter.dateRange
         productFilterViewModel.selectedValue = filter.product
         customerFilterViewModel.selectedValue = filter.customer
+        salesChannelFilterViewModel.selectedValue = filter.salesChannel
         analytics.track(event: .FilterHistory.trackPastFilterApplied(source: source))
     }
 
@@ -144,7 +168,8 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                                    orderStatusesFilter: filter.orderStatus,
                                                    dateRangeFilter: filter.dateRange,
                                                    productFilter: filter.product,
-                                                   customerFilter: filter.customer)
+                                                   customerFilter: filter.customer,
+                                                   salesChannelFilter: filter.salesChannel)
         stores.dispatch(AppSettingsAction.upsertOrderFilterHistory(filter: settings, onCompletion: { error in
             if let error {
                 DDLogError("⛔️ Error saving filter history: \(error)")
@@ -158,7 +183,8 @@ final class FilterOrderListViewModel: FilterListViewModel {
                                                    orderStatusesFilter: filter.orderStatus,
                                                    dateRangeFilter: filter.dateRange,
                                                    productFilter: filter.product,
-                                                   customerFilter: filter.customer)
+                                                   customerFilter: filter.customer,
+                                                   salesChannelFilter: filter.salesChannel)
         stores.dispatch(AppSettingsAction.removeFromOrderFilterHistory(filter: settings, onCompletion: { error in
             if let error {
                 DDLogError("⛔️ Error removing from filter history: \(error)")
@@ -187,6 +213,9 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
         let clearedCustomer: CustomerFilter? = nil
         customerFilterViewModel.selectedValue = clearedCustomer
+
+        let clearSalesChannel: SalesChannelFilter? = nil
+        salesChannelFilterViewModel.selectedValue = clearSalesChannel
     }
 }
 
@@ -198,6 +227,7 @@ extension FilterOrderListViewModel {
         case dateRange
         case product(siteID: Int64)
         case customer(siteID: Int64)
+        case salesChannel
     }
 }
 
@@ -212,6 +242,8 @@ private extension FilterOrderListViewModel.OrderListFilter {
             return Localization.rowTitleProduct
         case .customer:
             return Localization.rowCustomer
+        case .salesChannel:
+            return Localization.rowSalesChannel
         }
     }
 }
@@ -235,6 +267,11 @@ extension FilterOrderListViewModel.OrderListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .customer(siteID: siteID),
                                        selectedValue: filters.customer)
+        case .salesChannel:
+            let salesChannelOptions: [SalesChannelFilter] = [.any, .pointOfSale, .webCheckout, .wpAdmin]
+            return FilterTypeViewModel(title: title,
+                                       listSelectorConfig: .staticOptions(options: salesChannelOptions),
+                                       selectedValue: filters.salesChannel)
         }
     }
 }
@@ -258,7 +295,7 @@ extension Array: FilterType where Element == OrderStatusEnum {
     /// Returns the localized text version of the array
     ///
     var description: String {
-        if self.count == 0 {
+        if self.isEmpty {
             return NSLocalizedString("Any", comment: "Display label for all order statuses selected in Order Filters")
         }
         else if self.count == 1 {
@@ -281,20 +318,39 @@ extension FilterOrdersByProduct: FilterType {
 // MARK: - Constants
 private extension FilterOrderListViewModel {
     enum Localization {
-        static let filterActionTitle = NSLocalizedString("Show Orders", comment: "Button title for applying filters to a list of orders.")
+        static let filterActionTitle = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.filterActionTitle",
+            value: "Show Orders",
+            comment: "Button title for applying filters to a list of orders.")
     }
 }
 
 private extension FilterOrderListViewModel.OrderListFilter {
     enum Localization {
-        static let rowTitleOrderStatus = NSLocalizedString("Order Status", comment: "Row title for filtering orders by order status.")
-        static let rowTitleDateRange = NSLocalizedString("Date Range", comment: "Row title for filtering orders by date range.")
-        static let rowTitleProduct = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowTitleProduct",
-                                                       value: "Product",
-                                                       comment: "Row title for filtering orders by Product.")
-        static let rowCustomer = NSLocalizedString("filterOrderListViewModel.OrderListFilter.rowCustomer",
-                                                   value: "Customer",
-                                                   comment: "Row title for filtering orders by customer.")
+        static let rowTitleOrderStatus = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleOrderStatus",
+            value: "Order Status",
+            comment: "Row title for filtering orders by order status.")
+
+        static let rowTitleDateRange = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleDateRange",
+            value: "Date Range",
+            comment: "Row title for filtering orders by date range.")
+
+        static let rowTitleProduct = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowTitleProduct",
+            value: "Product",
+            comment: "Row title for filtering orders by Product.")
+
+        static let rowCustomer = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowCustomer",
+            value: "Customer",
+            comment: "Row title for filtering orders by customer.")
+
+        static let rowSalesChannel = NSLocalizedString(
+            "filterOrderListViewModel.OrderListFilter.rowSalesChannel",
+            value: "Sales Channel",
+            comment: "Row title for filtering orders by sales channel.")
     }
 }
 
@@ -321,4 +377,40 @@ extension CustomerFilter: FilterType {
 
     /// Whether the filter is set to a non-empty value.
     var isActive: Bool { true }
+}
+
+extension SalesChannelFilter: FilterType {
+    var description: String {
+        switch self {
+        case .pointOfSale:
+            return NSLocalizedString(
+                "salesChannelFilter.row.pos.description",
+                value: "Point of Sale",
+                comment: "Description for the Sales channel filter option, when selecting 'Point of Sale' orders")
+        case .webCheckout:
+            return NSLocalizedString(
+                "salesChannelFilter.row.webCheckout.description",
+                value: "Web Checkout",
+                comment: "Description for the Sales channel filter option, when selecting 'Web Checkout' orders")
+        case .wpAdmin:
+            return NSLocalizedString(
+                "salesChannelFilter.row.wpAdmin.description",
+                value: "WP-Admin",
+                comment: "Description for the Sales channel filter option, when selecting 'WP-Admin' orders")
+        case .any:
+            return NSLocalizedString(
+                "salesChannelFilter.row.any.description",
+                value: "Any",
+                comment: "Description for the Sales channel filter option, when selecting 'Any' order")
+        }
+    }
+
+    var isActive: Bool {
+        switch self {
+        case .pointOfSale, .webCheckout, .wpAdmin:
+            return true
+        case .any:
+            return false
+        }
+    }
 }

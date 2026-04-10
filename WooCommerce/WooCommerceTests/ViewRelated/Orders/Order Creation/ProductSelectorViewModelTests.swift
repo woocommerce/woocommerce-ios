@@ -1,13 +1,14 @@
 import TestKit
 import XCTest
 import Yosemite
+import YosemiteTestHelpers
 @testable import WooCommerce
 @testable import Storage
 
 final class ProductSelectorViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
     private var storage: StorageType {
         storageManager.viewStorage
     }
@@ -19,6 +20,12 @@ final class ProductSelectorViewModelTests: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
+        storageManager.insertSampleSite(
+            readOnlySite: Site.fake().copy(
+                siteID: sampleSiteID,
+                isGarden: false,
+            )
+        )
         stores.reset()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -411,7 +418,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_clearSearchAndFilters_resets_searchTerm_and_filters() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 source: .orderForm(flow: .creation))
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
 
         // When
         let filters = FilterProductListViewModel.Filters(
@@ -466,7 +474,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_searchTerm_and_filters_are_clear_on_init() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
-                                                 source: .orderForm(flow: .creation))
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
 
         // Then
         let currentFilters = viewModel.filterListViewModel.criteria
@@ -1280,7 +1289,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.productRows.count == 0 // no product matches the filter and search term
+            viewModel.productRows.isEmpty // no product matches the filter and search term
         }
 
         // When
@@ -1448,6 +1457,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     }
 
+    @MainActor
     func test_productsSectionViewModels_when_we_have_top_products_and_filters_it_shows_one_section() async throws {
         // Given
         let popularProductId: Int64 = 1
@@ -1716,34 +1726,42 @@ final class ProductSelectorViewModelTests: XCTestCase {
 private extension ProductSelectorViewModelTests {
     @discardableResult
     func insert(_ readOnlyProduct: Yosemite.Product) -> StorageProduct {
-        let product = storage.insertNewObject(ofType: StorageProduct.self)
-        product.update(with: readOnlyProduct)
-        return product
+        storageManager.performAndSave({ storage in
+            let product = storage.insertNewObject(ofType: StorageProduct.self)
+            product.update(with: readOnlyProduct)
+        }, completion: {}, on: .main)
+        return storageManager.viewStorage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID)!
     }
 
     func insert(_ readOnlyProducts: [Yosemite.Product]) {
-        for readOnlyProduct in readOnlyProducts {
-            let product = storage.insertNewObject(ofType: StorageProduct.self)
-            product.update(with: readOnlyProduct)
-        }
+        storageManager.performAndSave({ storage in
+            for readOnlyProduct in readOnlyProducts {
+                let product = storage.insertNewObject(ofType: StorageProduct.self)
+                product.update(with: readOnlyProduct)
+            }
+        }, completion: {}, on: .main)
     }
 
     func insert(_ readOnlyProduct: Yosemite.Product, withSearchTerm keyword: String, filterKey: String = "all") {
         insert(readOnlyProduct)
 
-        let searchResult = storage.insertNewObject(ofType: ProductSearchResults.self)
-        searchResult.keyword = keyword
-        searchResult.filterKey = filterKey
+        storageManager.performAndSave({ storage in
+            let searchResult = storage.insertNewObject(ofType: ProductSearchResults.self)
+            searchResult.keyword = keyword
+            searchResult.filterKey = filterKey
 
-        if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
-            searchResult.addToProducts(storedProduct)
-        }
+            if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
+                searchResult.addToProducts(storedProduct)
+            }
+        }, completion: {}, on: .main)
     }
 
     func insert(_ readOnlyProductBundleItem: Yosemite.ProductBundleItem, for product: StorageProduct) {
-        let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
-        bundleItem.update(with: readOnlyProductBundleItem)
-        bundleItem.product = product
+        storageManager.performAndSave({ storage in
+            let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            bundleItem.update(with: readOnlyProductBundleItem)
+            bundleItem.product = product
+        }, completion: {}, on: .main)
     }
 
     func createAndInsertBundleProduct(bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {

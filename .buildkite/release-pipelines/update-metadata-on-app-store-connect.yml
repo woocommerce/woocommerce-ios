@@ -23,8 +23,9 @@ steps:
       bundle exec fastlane run configure_apply
 
       echo '--- :shipit: Update Release Notes and Other App Store Metadata'
-      bundle exec fastlane update_metadata_on_app_store_connect skip_confirm:true
+      bundle exec fastlane update_metadata_on_app_store_connect skip_confirm:true with_screenshots:"${WITH_SCREENSHOTS:-false}"
     retry:
       manual:
-        # If those jobs fail, one should always prefer re-triggering a new build from ReleaseV2 rather than retrying the individual job from Buildkite
+        # If those jobs fail, one should always prefer re-triggering a new build from Releases V2 rather than retrying the individual job from Buildkite
+        reason: If release jobs fail, you should always re-trigger the task from Releases V2 rather than retrying the individual job from Buildkite
         allowed: false

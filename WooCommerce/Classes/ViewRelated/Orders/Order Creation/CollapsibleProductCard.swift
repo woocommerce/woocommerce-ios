@@ -1,5 +1,6 @@
 import Yosemite
 import SwiftUI
+import struct WooFoundation.ProductImageThumbnail
 
 /// Displays a single collapsible product row or grouped parent and child product rows
 struct CollapsibleProductCard: View {
@@ -343,7 +344,7 @@ private extension CollapsibleProductRowCard {
                     onAddDiscount(viewModel.id)
                 }
                 .buttonStyle(PlusButtonStyle())
-                .disabled(shouldDisallowDiscounts)
+                .disabled(shouldDisallowDiscounts || isLoading)
             } else {
                 HStack {
                     Button(action: {
@@ -357,6 +358,7 @@ private extension CollapsibleProductRowCard {
                                 .frame(width: Layout.iconSize, height: Layout.iconSize)
                         }
                     })
+                    .disabled(isLoading)
                     Spacer()
                     if let discountLabel = viewModel.discountLabel {
                         Text(minusSign + discountLabel)

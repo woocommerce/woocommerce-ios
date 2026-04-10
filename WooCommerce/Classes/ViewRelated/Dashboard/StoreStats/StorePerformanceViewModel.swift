@@ -1,4 +1,5 @@
 import Combine
+import UIKit
 import WidgetKit
 import WooFoundation
 import Yosemite
@@ -286,7 +287,9 @@ private extension StorePerformanceViewModel {
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] error in
                 guard let self else { return }
-                waitingTracker?.end()
+                if let event = waitingTracker?.end() {
+                    analytics.track(event: event)
+                }
                 analytics.track(event: .Dashboard.dashboardMainStatsLoaded(timeRange: timeRange))
                 if let error {
                     analytics.track(event: .DynamicDashboard.cardLoadingFailed(type: .performance, error: error))
@@ -487,7 +490,7 @@ private extension StorePerformanceViewModel {
     ///
     func trackDashboardStatsSyncComplete(withError error: Error? = nil) {
         guard error == nil else { // Stop the tracker if there is an error.
-            ServiceLocator.startupWaitingTimeTracker.end()
+            ServiceLocator.startupWaitingTimeTracker.endWithoutTracking()
             return
         }
         ServiceLocator.startupWaitingTimeTracker.end(action: .syncDashboardStats)

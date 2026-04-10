@@ -2,6 +2,7 @@ import Combine
 import Experiments
 import XCTest
 import Yosemite
+import enum NetworkingCore.NetworkError
 @testable import WooCommerce
 
 
@@ -57,14 +58,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         userNotificationCenter = MockUserNotificationsCenterAdapter()
         backgroundSynchronizerFactory = MockPushNotificationBackgroundSynchronizerFactory()
 
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: self.storesManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
-
-            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
-        }()
+        manager = makeManager()
     }
 
     @MainActor
@@ -130,22 +124,26 @@ final class PushNotificationsManagerTests: XCTestCase {
     }
 
 
-    /// Verifies that `unregisterForRemoteNotifications` does not dispatch any action, whenever the DeviceID is unknown.
+    /// Verifies that `unregisterForRemoteNotifications` does not dispatch any NotificationAction, whenever the DeviceID is unknown.
     ///
     func testUnregisterForRemoteNotificationsDoesNothingWhenThereIsNoDeviceIdStored() {
-        XCTAssert(storesManager.receivedActions.isEmpty)
-        manager.unregisterForRemoteNotifications()
-        XCTAssert(storesManager.receivedActions.isEmpty)
+        let notificationActionsBefore = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssert(notificationActionsBefore.isEmpty)
+        manager.unregisterForRemoteNotifications {}
+        let notificationActionsAfter = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssert(notificationActionsAfter.isEmpty)
     }
 
     /// Verifies that `unregisterForRemoteNotifications` does dispatch `.unregisterDevice` Action, whenever the
     /// deviceID is known.
     ///
     func testUnregisterForRemoteNotificationsEffectivelyDispatchesUnregisterDeviceAction() {
-        defaults.set(Sample.deviceID, forKey: .deviceID)
-        manager.unregisterForRemoteNotifications()
+        defaults.set(Sample.deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        manager = makeManager()
+        manager.unregisterForRemoteNotifications {}
 
-        guard case let .unregisterDevice(deviceID, _) = storesManager.receivedActions.first as! NotificationAction else {
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        guard case let .unregisterDevice(deviceID, _) = notificationActions.first else {
             XCTFail()
             return
         }
@@ -158,65 +156,64 @@ final class PushNotificationsManagerTests: XCTestCase {
     /// Action is successful.
     ///
     func testUnregisterForRemoteNotificationsEffectivelyNukesDeviceIdentifierAndTokenOnSuccess() {
-        defaults.set(Sample.deviceID, forKey: .deviceID)
-        defaults.set(Sample.deviceToken, forKey: .deviceToken)
+        defaults.set(Sample.deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        defaults.set(Sample.deviceToken, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
+        manager = makeManager()
 
-        manager.unregisterForRemoteNotifications()
+        manager.unregisterForRemoteNotifications {}
 
-        guard case let .unregisterDevice(_, onCompletion) = storesManager.receivedActions.first as! NotificationAction else {
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        guard case let .unregisterDevice(_, onCompletion) = notificationActions.first else {
             XCTFail()
             return
         }
 
         onCompletion(nil)
 
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceID))
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
-    }
-
-    /// Verifies that `registerDevice` effectively dispatches a `registerDevice` Action.
-    ///
-    func testRegisterForRemoteNotificationsDispatchesRegisterDeviceAction() {
-        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
-            XCTFail()
-            return
-        }
-
-        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
-
-        guard case let .registerDevice(_, _, _, storeID, _) = storesManager.receivedActions.first as! NotificationAction else {
-            XCTFail()
-            return
-        }
-
-        XCTAssertEqual(storeID, Sample.defaultStoreID)
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID))
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
     }
 
 
     /// Verifies that `registerDeviceToken` effectively stores the Device Token.
     ///
-    func testRegisterForRemoteNotificationsStoresDeviceTokenInUserDefaults() {
+    func testRegisterForRemoteNotificationsStoresDeviceTokenInUserDefaults() async {
+        // Given
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = makeManager()
+
+        // Wait for eligibility check to complete
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
         guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
             XCTFail()
             return
         }
 
-        XCTAssertFalse(defaults.containsObject(forKey: .deviceToken))
-        manager.registerDeviceToken(with: tokenAsData, defaultStoreID: Sample.defaultStoreID)
-        XCTAssertTrue(defaults.containsObject(forKey: .deviceToken))
+        // When
+        XCTAssertNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
     }
 
     /// Verifies that `registrationDidFail` enqueues a `unregisterDevice` NotificationAction.
     ///
     func testRegistrationDidFailDispatchesUnregisterDeviceAction() {
-        defaults.set(Sample.deviceID, forKey: .deviceID)
+        defaults.set(Sample.deviceID, forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        manager = makeManager()
 
         manager.registrationDidFail(with: SampleError.first)
 
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        let action = storesManager.receivedActions.first as! NotificationAction
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssertEqual(notificationActions.count, 1)
 
-        switch action {
+        switch notificationActions.first {
         case .unregisterDevice:
             break
         default:
@@ -352,6 +349,29 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(application.presentInAppMessages.first?.title, Sample.defaultTitle)
         XCTAssertNil(application.presentInAppMessages.first?.subtitle)
         XCTAssertNil(application.presentInAppMessages.first?.message)
+    }
+
+    func test_handleNotification_does_not_display_inApp_notice_if_no_noteID_in_payload_and_site_registered_with_Woo() async throws {
+        // Given
+        let siteID: Int64 = 132
+        let payload = notificationPayload(siteID: siteID, title: Sample.defaultTitle, message: nil)
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
+        }()
+
+        // When
+        application.applicationState = .active
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertNil(application.presentInAppMessages.first)
     }
 
     // MARK: - Foreground Notification Observable
@@ -655,23 +675,239 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertTrue(application.presentInAppMessages.isEmpty)
     }
+
+    func test_registerDeviceToken_when_self_driven_gate_enabled_registers_self_driven_token_and_disables_WPCom_notifications() async {
+        // Given
+        defaults.set("456", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
+        mockSelfDrivenRegistrationActions(token: 123)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                            featureFlagService: featureFlagService)
+        }()
+
+        // Wait for eligibility check to complete
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            XCTFail("Invalid sample token")
+            return
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        // It dispatches the self-driven registration action
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssertTrue(notificationActions.contains(where: {
+            if case .registerDeviceForSelfDrivenPushNotifications = $0 { return true }
+            return false
+        }))
+
+        // It does not clear WPcom token
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken))
+
+        // It persists Woo token and registered site ID
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNotificationToken))
+        XCTAssertNotNil(defaults.value(forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications))
+
+        // It dispatches the WPCom PN setting update to disable mobile PNs from WPCom for the current siteID and deviceID
+        let accountActions = storesManager.receivedActions.compactMap { $0 as? AccountAction }
+        XCTAssertTrue(accountActions.contains(where: {
+            if case let .updateNotificationSettings(settings, _) = $0,
+               let blog = settings.blogs.first(where: { $0.blogID == 99 }),
+               let device = blog.devices.first(where: { $0.deviceID == 456 }),
+               device.newComment == false,
+               device.storeOrder == false {
+                return true
+            }
+            return false
+        }))
+    }
+
+    func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {
+        // Given
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                           featureFlagService: featureFlagService)
+        }()
+
+        // Wait for eligibility check to complete
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            XCTFail("Invalid sample token")
+            return
+        }
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Failure", code: 404)))
+            default:
+                break
+            }
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        // It dispatches the WPCom device registration request
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssertTrue(notificationActions.contains(where: {
+            if case .registerDevice = $0 { return true }
+            return false
+        }))
+    }
+
+    func test_registerDeviceToken_when_self_driven_registration_fails_with_404_unmarks_registered_site() async {
+        // Given
+        let siteID: Int64 = 99
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                           featureFlagService: featureFlagService)
+        }()
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.failure(NetworkError.notFound()))
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked after 404 error")
+    }
+
+    func test_registerDeviceToken_when_self_driven_registration_fails_with_non_404_error_keeps_registered_site() async {
+        // Given
+        let siteID: Int64 = 99
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = {
+            let configuration = PushNotificationsConfiguration(application: self.application,
+                                                               defaults: self.defaults,
+                                                               storesManager: self.storesManager,
+                                                               userNotificationsCenter: self.userNotificationCenter)
+            return PushNotificationsManager(configuration: configuration,
+                                           backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                           featureFlagService: featureFlagService)
+        }()
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertTrue(storedSiteIDs.contains("\(siteID)"), "Site ID should remain registered after non-404 error")
+    }
 }
 
 
 // MARK: - Private Methods
 //
 private extension PushNotificationsManagerTests {
+    func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) -> PushNotificationsManager {
+        let configuration = PushNotificationsConfiguration(application: self.application,
+                                                           defaults: self.defaults,
+                                                           storesManager: self.storesManager,
+                                                           userNotificationsCenter: self.userNotificationCenter)
+
+        return PushNotificationsManager(configuration: configuration,
+                                        backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                        featureFlagService: featureFlagService)
+    }
+
 
     /// Returns a Sample Notification Payload
     ///
     func notificationPayload(badgeCount: Int = 0,
-                             noteID: Int64 = 1234,
+                             noteID: Int64? = 1234,
                              type: Note.Kind = .comment,
                              siteID: Int64 = 134,
                              title: String = Sample.defaultTitle,
                              subtitle: String? = nil,
                              message: String? = nil) -> [String: Any] {
-        [
+        var payload: [String: Any] = [
             "aps": [
                 "badge": badgeCount,
                 "alert": [
@@ -680,16 +916,49 @@ private extension PushNotificationsManagerTests {
                     "body": message
                 ]
             ] as [String: Any],
-            "note_id": noteID,
             "type": type.rawValue,
             "blog": siteID
         ]
+        if let noteID {
+            payload["note_id"] = noteID
+        }
+        return payload
     }
 
     func mockSynchronizeNotificationsAction(error: Error? = nil) {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case .synchronizeNotifications(let completion) = action {
                 completion(error)
+            }
+        }
+    }
+
+    func mockSelfDrivenRegistrationActions(token: Int64 = 42, error: Error? = nil) {
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, let completion):
+                if let error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(token))
+                }
+
+            case .unregisterDevice(let deviceID, let onCompletion):
+                XCTAssertEqual(deviceID, "wpcom-device-id")
+                onCompletion(nil)
+
+            default:
+                break
+            }
+        }
+    }
+
+    func mockRemoteFeatureFlagAction(isEnabled: Bool, onCompletion: (() -> Void)? = nil) {
+        storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
+            switch action {
+            case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
+                completion(isEnabled)
+                onCompletion?()
             }
         }
     }
@@ -707,10 +976,6 @@ private struct Sample {
     /// Sample DeviceToken
     ///
     static let deviceToken = "4fa963db2cfc824b0d67740ed2b1c0b472cce8eafcb82184905361eb88be55b9"
-
-    /// Sample StoreID
-    ///
-    static let defaultStoreID: Int64 = 9999
 
     /// UserDefaults Suite Name
     ///

@@ -2,15 +2,11 @@ import Foundation
 
 #if canImport(Networking)
 import Networking
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
+#elseif canImport(NetworkingCore)
+import NetworkingCore
 #endif
 
-#if canImport(WooFoundation)
-import class WooFoundation.CurrencySettings
-#elseif canImport(WooFoundationWatchOS)
-import class WooFoundationWatchOS.CurrencySettings
-#endif
+import class WooFoundationCore.CurrencySettings
 
 
 

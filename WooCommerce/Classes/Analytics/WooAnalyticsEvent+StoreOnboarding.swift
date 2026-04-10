@@ -10,6 +10,11 @@ extension WooAnalyticsEvent {
             static let hide = "hide"
         }
 
+        enum Source: String {
+            case onboardingList = "onboarding_list"
+            case settings
+        }
+
         static func storeOnboardingShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .storeOnboardingShown, properties: [:])
         }
@@ -37,13 +42,6 @@ extension WooAnalyticsEvent {
     }
 }
 
-extension WooAnalyticsEvent.StoreOnboarding {
-    enum Source: String {
-        case onboardingList = "onboarding_list"
-        case settings
-    }
-}
-
 private extension StoreOnboardingTask.TaskType {
     var analyticsValue: String {
         switch self {
@@ -53,8 +51,6 @@ private extension StoreOnboardingTask.TaskType {
             return "launch_site"
         case .addFirstProduct:
             return "products"
-        case .customizeDomains:
-            return "add_domain"
         case .payments:
             return "payments"
         case .woocommercePayments:

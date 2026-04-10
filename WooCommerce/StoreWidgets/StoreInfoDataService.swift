@@ -1,12 +1,12 @@
+import Foundation
+
 #if canImport(Networking)
 import Networking
-#elseif canImport(NetworkingWatchOS)
-import NetworkingWatchOS
+#elseif canImport(NetworkingCore)
+import NetworkingCore
 #endif
 
-#if canImport(WooFoundationWatchOS)
-import WooFoundationWatchOS
-#endif
+import WooFoundationCore
 
 /// Orchestrator class that fetches today store stats data.
 ///
@@ -38,7 +38,7 @@ final class StoreInfoDataService {
     private let isAuthenticatedWithoutWPCom: Bool
 
     init(credentials: Credentials) {
-        network = AlamofireNetwork(credentials: credentials)
+        network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         orderStatsRemoteV4 = OrderStatsRemoteV4(network: network)
         siteStatsRemote = SiteStatsRemote(network: network)
         if case .wpcom = credentials {
@@ -67,7 +67,7 @@ final class StoreInfoDataService {
 
             // Assemble stats data
             let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
-            return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+            return Stats(revenue: revenueAndOrders.totals.netRevenue,
                          totalOrders: revenueAndOrders.totals.totalOrders,
                          totalVisitors: siteStats.visitors,
                          conversion: min(conversion, 1))
@@ -85,7 +85,7 @@ final class StoreInfoDataService {
     ///
     private func todayStatsWithoutVisitors(for storeID: Int64) async throws -> Stats {
         let revenueAndOrders = try await fetchTodaysRevenueAndOrders(for: storeID)
-        return Stats(revenue: revenueAndOrders.totals.grossRevenue,
+        return Stats(revenue: revenueAndOrders.totals.netRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: nil,
                      conversion: nil)

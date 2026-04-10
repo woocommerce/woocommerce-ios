@@ -1,10 +1,12 @@
 import UIKit
+import Networking
 
 extension WooAnalyticsEvent {
     enum Products {
         /// Event property keys.
         private enum Key {
             static let horizontalSizeClass = "horizontal_size_class"
+            static let productType = "product_type"
         }
 
         static func productListSelected(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
@@ -17,9 +19,13 @@ extension WooAnalyticsEvent {
                               properties: [Key.horizontalSizeClass: horizontalSizeClass.nameForAnalytics])
         }
 
-        static func productListProductTapped(horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
+        static func productListProductTapped(productType: ProductType,
+                                             horizontalSizeClass: UIUserInterfaceSizeClass) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productListProductTapped,
-                              properties: [Key.horizontalSizeClass: horizontalSizeClass.nameForAnalytics])
+                              properties: [
+                                Key.productType: productType.rawValue,
+                                Key.horizontalSizeClass: horizontalSizeClass.nameForAnalytics
+                              ])
         }
     }
 }

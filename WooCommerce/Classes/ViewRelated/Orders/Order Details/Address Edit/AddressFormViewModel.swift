@@ -1,4 +1,5 @@
 import Combine
+import Foundation
 import Yosemite
 import Experiments
 import class WordPressShared.EmailFormatValidator
@@ -181,6 +182,10 @@ open class AddressFormViewModel: ObservableObject {
         // Sort states from the selected country
         let states = fields.selectedCountry?.states.sorted { $0.name < $1.name } ?? []
         return StateSelectorViewModel(states: states, selected: selectedStateBinding)
+    }
+
+    func findCountry(by code: String) -> Country? {
+        allCountries.first { $0.code == code }
     }
 
     /// Creates a view model to be used when selecting a country for secondary fields

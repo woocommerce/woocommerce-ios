@@ -99,6 +99,12 @@ public extension PersistedProductVariation {
         return baseQuery(siteID: siteID)
     }
 
+    /// Returns a request for POS-supported variations matching specific IDs
+    static func posVariationsByIDs(_ variationIDs: Set<Int64>, siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
+        baseQuery(siteID: siteID)
+            .filter(variationIDs.contains(Columns.id))
+    }
+
     /// Base query for POS-supported variations (non-downloadable) for a given site
     private static func baseQuery(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation

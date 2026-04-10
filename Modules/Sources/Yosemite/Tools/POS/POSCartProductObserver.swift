@@ -67,8 +67,7 @@ public final class POSCartProductObserver: POSCartProductObserving {
                     }
 
                     let records = try PersistedProduct
-                        .filter(PersistedProduct.Columns.siteID == siteID)
-                        .filter(productIDs.contains(PersistedProduct.Columns.id))
+                        .posProductsByIDs(productIDs, siteID: siteID)
                         .including(all: PersistedProduct.images)
                         .including(all: PersistedProduct.attributes)
                         .asRequest(of: ProductWithRelations.self)
@@ -90,8 +89,7 @@ public final class POSCartProductObserver: POSCartProductObserving {
                     }
 
                     let records = try PersistedProductVariation
-                        .filter(PersistedProductVariation.Columns.siteID == siteID)
-                        .filter(variationIDs.contains(PersistedProductVariation.Columns.id))
+                        .posVariationsByIDs(variationIDs, siteID: siteID)
                         .including(all: PersistedProductVariation.attributes)
                         .including(optional: PersistedProductVariation.image)
                         .asRequest(of: VariationWithRelations.self)

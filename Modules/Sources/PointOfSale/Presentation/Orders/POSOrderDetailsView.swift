@@ -604,7 +604,7 @@ private extension POSOrderDetailsView {
                 pendingOverrideAction = nil
             }
         } catch {
-            managerOverrideState = .error(message: error.overrideErrorMessage ?? Localization.invalidPIN)
+            managerOverrideState = .error(message: error.posOverrideErrorMessage)
         }
     }
 }
@@ -636,13 +636,6 @@ private extension POSOrderDetailsView {
         refundModalState = .review(reviewData)
     }
 }
-
-private extension Error {
-    var overrideErrorMessage: String? {
-        (self as? LocalizedError)?.errorDescription
-    }
-}
-
 
 // MARK: - Constants
 
@@ -791,12 +784,6 @@ private enum Localization {
         )
         return String(format: format, orderNumber)
     }
-
-    static let invalidPIN = NSLocalizedString(
-        "pos.orderDetailsView.managerOverride.invalidPIN",
-        value: "Invalid PIN",
-        comment: "Error message shown when an incorrect manager PIN is entered during override approval"
-    )
 
     // MARK: - Refund Error Messages
 

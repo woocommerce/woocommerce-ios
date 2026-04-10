@@ -630,14 +630,8 @@ private extension ItemListView {
                 showCouponCreationModal = true
             }
         } catch {
-            couponManagerOverrideState = .error(message: error.overrideErrorMessage ?? Localization.invalidPIN)
+            couponManagerOverrideState = .error(message: error.posOverrideErrorMessage)
         }
-    }
-}
-
-private extension Error {
-    var overrideErrorMessage: String? {
-        (self as? LocalizedError)?.errorDescription
     }
 }
 
@@ -694,12 +688,6 @@ private extension ItemListView {
             "pos.itemlistview.managerOverride.coupon.description",
             value: "Create a coupon",
             comment: "Description shown in the manager override modal when coupon creation requires approval"
-        )
-
-        static let invalidPIN = NSLocalizedString(
-            "pos.itemlistview.managerOverride.invalidPIN",
-            value: "Invalid PIN",
-            comment: "Error message shown when an incorrect manager PIN is entered during coupon creation override"
         )
     }
 }

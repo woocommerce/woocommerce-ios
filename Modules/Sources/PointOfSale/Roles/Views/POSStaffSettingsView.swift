@@ -411,7 +411,7 @@ private extension POSStaffSettingsRemoteView {
                 showManageStaff = true
             }
         } catch {
-            managerOverrideState = .error(message: (error as? LocalizedError)?.errorDescription ?? Localization.invalidPIN)
+            managerOverrideState = .error(message: error.posOverrideErrorMessage)
         }
     }
 }
@@ -577,12 +577,6 @@ private enum Localization {
         "posStaffSettingsView.manageStaffOverrideDescription",
         value: "Open WordPress admin staff management",
         comment: "Description of the action shown in the manager override modal when opening wp-admin."
-    )
-
-    static let invalidPIN = NSLocalizedString(
-        "posStaffSettingsView.invalidPIN",
-        value: "Invalid PIN",
-        comment: "Error message shown when an incorrect manager PIN is entered for override."
     )
 
     static let remoteFooter = NSLocalizedString(

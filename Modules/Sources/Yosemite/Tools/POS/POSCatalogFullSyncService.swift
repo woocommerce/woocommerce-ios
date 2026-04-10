@@ -6,6 +6,7 @@ import Storage
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
 import struct Networking.POSCatalogResponse
+import enum Networking.POSCatalogStatus
 
 public protocol POSCatalogFullSyncServiceProtocol {
     /// Starts a full catalog sync process

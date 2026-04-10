@@ -1,4 +1,6 @@
-#!/usr/bin/env bash -euo pipefail
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 if [[ $ACTION == 'indexbuild' ]]; then
   echo "ℹ️: Skipping code generation in 'indexbuild' build. See https://github.com/mac-cain13/R.swift/issues/719#issuecomment-937733804 for more info."
@@ -19,7 +21,7 @@ SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.jso
 
 ## Validate Secrets!
 ##
-if [ ! -f $SECRETS_PATH ]; then
+if [ ! -f "$SECRETS_PATH" ]; then
 
     echo "warning: Could not find secrets at $SECRETS_PATH. This is likely due to the secrets folder being missing. Falling back to templated secrets. If you are an internal contributor, run \`bundle exec fastlane run configure_apply\` to update your secrets"
 
@@ -27,20 +29,20 @@ if [ ! -f $SECRETS_PATH ]; then
 
     ## Generate the Derived Folders. If needed
     ##
-    mkdir -p ${DERIVED_PATH}
+    mkdir -p "${DERIVED_PATH}"
     mkdir -p "${WATCH_DERIVED_PATH}"
 
     ## Create credentials files from the template (if needed)
     ## then copy them into place for the build.
     ##
-    if [ ! -f $CREDS_OUTPUT_PATH ]; then
+    if [ ! -f "$CREDS_OUTPUT_PATH" ]; then
         echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH}"
-        cp ${CREDS_TEMPLATE_PATH} ${CREDS_OUTPUT_PATH}
+        cp "${CREDS_TEMPLATE_PATH}" "${CREDS_OUTPUT_PATH}"
     fi
 
     if [ ! -f "$WATCH_CREDS_OUTPUT_PATH" ]; then
         echo ">> Creating Watch Credentials File from Template: ${CREDS_TEMPLATE_PATH}"
-        cp ${CREDS_TEMPLATE_PATH} "${WATCH_CREDS_OUTPUT_PATH}"
+        cp "${CREDS_TEMPLATE_PATH}" "${WATCH_CREDS_OUTPUT_PATH}"
     fi
 
 else
@@ -49,7 +51,7 @@ else
 
     ## Generate the Derived Folders. If needed
     ##
-    mkdir -p ${DERIVED_PATH}
+    mkdir -p "${DERIVED_PATH}"
     mkdir -p "${WATCH_DERIVED_PATH}"
 
     if which rbenv; then
@@ -65,9 +67,9 @@ else
     ## Generate ApiCredentials.swift for both targets
     ##
     echo ">> Generating Credentials ${CREDS_OUTPUT_PATH}"
-    ruby ${SCRIPT_PATH} -i ${CREDS_INPUT_PATH} -s ${SECRETS_PATH} > ${CREDS_OUTPUT_PATH}
+    ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${CREDS_OUTPUT_PATH}"
 
     echo ">> Generating Watch Credentials ${WATCH_CREDS_OUTPUT_PATH}"
-    cp ${CREDS_OUTPUT_PATH} "${WATCH_CREDS_OUTPUT_PATH}"
+    cp "${CREDS_OUTPUT_PATH}" "${WATCH_CREDS_OUTPUT_PATH}"
 
 fi

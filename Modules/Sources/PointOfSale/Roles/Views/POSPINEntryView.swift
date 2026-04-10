@@ -61,6 +61,8 @@ struct POSPINEntryView: View {
                 .font(.posHeadingBold)
                 .foregroundColor(.posOnSurface)
                 .multilineTextAlignment(.center)
+                .minimumScaleFactor(0.8)
+                .lineLimit(2)
 
             if let subtitle {
                 Text(subtitle)

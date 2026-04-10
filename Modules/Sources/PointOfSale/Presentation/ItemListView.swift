@@ -471,7 +471,7 @@ private extension ItemListView {
         static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
-            comment: "Title at the top of the Point of Sale product selector screen."
+            comment: "Title at the top of the point of sale product selector screen."
         )
 
         static let couponsTitle = NSLocalizedString(

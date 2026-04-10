@@ -214,6 +214,23 @@ public extension StorageType {
         return firstObject(ofType: Note.self, matching: predicate)
     }
 
+    // MARK: - Order Fulfillment
+
+    /// Retrieves a specific stored OrderFulfillment entity.
+    ///
+    func loadOrderFulfillment(siteID: Int64, orderID: Int64, fulfillmentID: Int64) -> OrderFulfillment? {
+        let predicate = \OrderFulfillment.siteID == siteID && \OrderFulfillment.orderID == orderID && \OrderFulfillment.fulfillmentID == fulfillmentID
+        return firstObject(ofType: OrderFulfillment.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored OrderFulfillment entities for the provided siteID and orderID.
+    ///
+    func loadOrderFulfillmentList(siteID: Int64, orderID: Int64) -> [OrderFulfillment]? {
+        let predicate = \OrderFulfillment.siteID == siteID && \OrderFulfillment.orderID == orderID
+        let descriptor = NSSortDescriptor(keyPath: \OrderFulfillment.fulfillmentID, ascending: true)
+        return allObjects(ofType: OrderFulfillment.self, matching: predicate, sortedBy: [descriptor])
+    }
+
     // MARK: - Shipment Tracking
 
     /// Retrieves a specific stored ShipmentTracking entity.

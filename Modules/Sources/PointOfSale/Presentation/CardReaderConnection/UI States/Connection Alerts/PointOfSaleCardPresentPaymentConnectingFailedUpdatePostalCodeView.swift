@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeAlertViewModel
     let animation: POSCardPresentPaymentAlertAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -15,6 +16,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     Text(viewModel.errorDetails)
@@ -38,6 +40,9 @@ struct PointOfSaleCardPresentPaymentConnectingFailedUpdatePostalCodeView: View {
                              accessibilityLabel: viewModel.cancelButtonViewModel.title)
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

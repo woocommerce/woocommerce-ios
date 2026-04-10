@@ -811,7 +811,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     }
 
     func test_checkDeviceSupport_action_passes_operating_system_override_version_to_service() {
-        let expectedVersion = OperatingSystemVersion(majorVersion: 16, minorVersion: 4, patchVersion: 0)
+        let expectedVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: sampleSiteID,
             cardReaderType: .tapToPay,

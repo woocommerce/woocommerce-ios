@@ -6,6 +6,7 @@ public struct PersistedProductVariation: Codable {
     public let id: Int64
     public let siteID: Int64
     public let productID: Int64
+    public let typeKey: String
     public let sku: String?
     public let globalUniqueID: String?
     public let price: String
@@ -18,6 +19,7 @@ public struct PersistedProductVariation: Codable {
     public init(id: Int64,
                 siteID: Int64,
                 productID: Int64,
+                typeKey: String = "variation",
                 sku: String?,
                 globalUniqueID: String?,
                 price: String,
@@ -29,6 +31,7 @@ public struct PersistedProductVariation: Codable {
         self.id = id
         self.siteID = siteID
         self.productID = productID
+        self.typeKey = typeKey
         self.sku = sku
         self.globalUniqueID = globalUniqueID
         self.price = price
@@ -50,6 +53,7 @@ extension PersistedProductVariation: FetchableRecord, PersistableRecord {
         public static let id = Column(CodingKeys.id)
         public static let siteID = Column(CodingKeys.siteID)
         public static let productID = Column(CodingKeys.productID)
+        public static let typeKey = Column(CodingKeys.typeKey)
         public static let sku = Column(CodingKeys.sku)
         public static let globalUniqueID = Column(CodingKeys.globalUniqueID)
         public static let price = Column(CodingKeys.price)
@@ -109,6 +113,7 @@ public extension PersistedProductVariation {
     private static func baseQuery(siteID: Int64) -> QueryInterfaceRequest<PersistedProductVariation> {
         return PersistedProductVariation
             .filter(Columns.siteID == siteID)
+            .filter(Columns.typeKey == "variation")
             .filter(Columns.downloadable == false)
     }
 
@@ -129,6 +134,7 @@ extension PersistedProductVariation {
         case id
         case siteID
         case productID
+        case typeKey
         case sku
         case globalUniqueID
         case price

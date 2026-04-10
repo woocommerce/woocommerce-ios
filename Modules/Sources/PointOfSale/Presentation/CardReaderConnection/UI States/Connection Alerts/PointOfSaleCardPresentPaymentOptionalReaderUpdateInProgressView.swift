@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
     private let viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel
     private let animation: POSCardPresentPaymentAlertAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
 
     init(viewModel: PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressAlertViewModel,
          animation: POSCardPresentPaymentAlertAnimation) {
@@ -26,6 +27,7 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
                         .font(POSFontStyle.posHeadingBold)
                         .fixedSize(horizontal: false, vertical: true)
                         .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
                         .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                     VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {
@@ -54,6 +56,9 @@ struct PointOfSaleCardPresentPaymentOptionalReaderUpdateInProgressView: View {
         }
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

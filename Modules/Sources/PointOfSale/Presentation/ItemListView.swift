@@ -6,7 +6,6 @@ import struct WooFoundationCore.WooAnalyticsEvent
 struct ItemListView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
@@ -83,14 +82,15 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            TabView(selection: $selectedItemListType) {
+            ZStack {
                 itemListTabContent(.products(search: false))
+                    .opacity(selectedItemListType.isProducts ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isProducts)
                 itemListTabContent(.coupons(search: false))
+                    .opacity(selectedItemListType.isCoupons ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.none, value: selectedItemListType)
-            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
-            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
+            .ignoresSafeArea(.container)
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
@@ -125,6 +125,7 @@ struct ItemListView: View {
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
             itemListContent(itemListType)
+                .ignoresSafeArea(.keyboard)
                 .accessibilityElement(children: isSearching ? .ignore : .contain)
 
             if isSearching {
@@ -137,12 +138,15 @@ struct ItemListView: View {
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.posSurface)
                 .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }
         }
-        .tag(itemListType)
-        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+        // Both tabs exist in the ZStack simultaneously — prevent taps reaching the hidden tab.
+        // Compare by tab kind only — selectedItemListType includes search state that itemListType doesn't.
+        .allowsHitTesting(selectedItemListType.itemType == itemListType.itemType)
     }
 
     @ViewBuilder
@@ -163,6 +167,13 @@ struct ItemListView: View {
     @ViewBuilder
     private func listView(itemListType: ItemListType) -> some View {
         VStack(spacing: 0) {
+            if posModel.showSunsetWarning {
+                sunsetWarningBanner
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.medium)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
             // Stale sync warning banner
             if posModel.showStaleSyncWarning {
                 staleSyncWarningBanner
@@ -199,9 +210,30 @@ struct ItemListView: View {
             }
         }
         .task {
-            // Check stale sync status when view appears
             await posModel.checkStaleSyncStatus()
+            await posModel.checkSunsetWarningStatus()
         }
+    }
+
+    @ViewBuilder
+    private var sunsetWarningBanner: some View {
+        POSNoticeView(
+            title: Localization.sunsetWarningTitle,
+            icon: Image(systemName: "info.circle"),
+            onDismiss: {
+                // TODO: WOOMOB-2057
+                //analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
+                withAnimation {
+                    posModel.dismissSunsetWarning()
+                }
+            }, content: {
+                Text(Localization.sunsetWarningDescription)
+                    .font(POSFontStyle.posBodyMediumRegular())
+            })
+            .task {
+                // TODO: WOOMOB-2057
+                //analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
+            }
     }
 
     @ViewBuilder
@@ -443,13 +475,25 @@ private extension ItemListView {
         static let productsTitle = NSLocalizedString(
             "pos.itemlistview.title",
             value: "Products",
-            comment: "Title at the top of the Point of Sale product selector screen."
+            comment: "Title at the top of the point of sale product selector screen."
         )
 
         static let couponsTitle = NSLocalizedString(
             "pos.itemlistview.couponsTitle",
             value: "Coupons",
             comment: "Title of the button at the top of Point of Sale to switch to Coupons list."
+        )
+
+        static let sunsetWarningTitle = NSLocalizedString(
+            "pos.itemlistview.sunsetWarning.title",
+            value: "Update WooCommerce Soon",
+            comment: "Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
+        )
+
+        static let sunsetWarningDescription = NSLocalizedString(
+            "pos.itemlistview.sunsetWarning.description",
+            value: "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
+            comment: "Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
         )
 
         static let staleSyncWarningTitle = NSLocalizedString(

@@ -70,6 +70,17 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageShippingMethod>(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
+    /// Order Fulfillment ResultsController.
+    ///
+    private lazy var fulfillmentResultsController: ResultsController<StorageOrderFulfillment> = {
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    self.order.siteID,
+                                    self.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrderFulfillment.fulfillmentID, ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Shipments Results Controller.
     ///
     private lazy var shipmentResultsController: ResultsController<StorageWooShippingShipment> = {
@@ -85,6 +96,12 @@ final class OrderDetailsResultsControllers {
     ///
     var orderTracking: [ShipmentTracking] {
         return trackingResultsController.fetchedObjects
+    }
+
+    /// Order fulfillments list
+    ///
+    var orderFulfillments: [OrderFulfillment] {
+        return fulfillmentResultsController.fetchedObjects
     }
 
     /// Order statuses list
@@ -170,6 +187,7 @@ final class OrderDetailsResultsControllers {
         configureSitePluginsResultsController(onReload: onReload)
         configureShippingMethodsResultsController(onReload: onReload)
         configureShipmentResultsController(onReload: onReload)
+        configureFulfillmentResultsController(onReload: onReload)
     }
 
     func update(order: Order) {
@@ -194,6 +212,26 @@ private extension OrderDetailsResultsControllers {
         let predicate = NSPredicate(format: "siteID == %lld AND productVariationID in %@", siteID, variationIDs)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+    }
+
+    func configureFulfillmentResultsController(onReload: @escaping () -> Void) {
+        fulfillmentResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        fulfillmentResultsController.onDidResetContent = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.refetchAllResultsControllers()
+            onReload()
+        }
+
+        do {
+            try fulfillmentResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Unable to fetch order fulfillments: \(error)")
+        }
     }
 
     func configureShipmentResultsController(onReload: @escaping () -> Void) {
@@ -372,6 +410,7 @@ private extension OrderDetailsResultsControllers {
         try? addOnGroupResultsController.performFetch()
         try? sitePluginsResultsController.performFetch()
         try? shippingMethodsResultsController.performFetch()
+        try? fulfillmentResultsController.performFetch()
     }
 
     func createProductResultsController() -> GenericResultsController<StorageProduct, OrderDetailsProduct> {

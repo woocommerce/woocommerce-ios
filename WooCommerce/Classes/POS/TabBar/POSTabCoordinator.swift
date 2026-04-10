@@ -216,7 +216,6 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
-            // Check if sunset warning should be shown (WC < 10.5, throttled to once every 14 days)
             let sunsetWarningChecker = POSSunsetWarningChecker(
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
@@ -225,7 +224,6 @@ private extension POSTabCoordinator {
                     storageManager: storageManager
                 )
             )
-            let needsSunsetWarning = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
 
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
@@ -322,10 +320,7 @@ private extension POSTabCoordinator {
                     grdbManager: grdbManager,
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
-                    needsSunsetWarning: needsSunsetWarning,
-                    onSunsetWarningDismissed: {
-                        sunsetWarningChecker.recordDismissal(siteID: siteID)
-                    },
+                    sunsetWarningChecker: sunsetWarningChecker,
                     services: serviceAdaptor,
                     itemProvider: itemProvider
                 )
@@ -337,7 +332,6 @@ private extension POSTabCoordinator {
         }
     }
 }
-
 
 private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {

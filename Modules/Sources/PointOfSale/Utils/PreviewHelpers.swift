@@ -240,7 +240,7 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        needsSunsetWarning: Bool = false
+        sunsetWarningChecker: POSSunsetWarningChecking? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -260,7 +260,7 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            needsSunsetWarning: needsSunsetWarning
+            sunsetWarningChecker: sunsetWarningChecker
         )
     }
 

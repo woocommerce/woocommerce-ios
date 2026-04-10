@@ -2,14 +2,8 @@ import Foundation
 import Yosemite
 import Storage
 import Experiments
+import PointOfSale
 import class WooFoundation.VersionHelpers
-
-/// Determines whether the POS sunset warning banner should be shown.
-///
-protocol POSSunsetWarningChecking {
-    func shouldShowSunsetWarning(siteID: Int64) async -> Bool
-    func recordDismissal(siteID: Int64)
-}
 
 struct POSSunsetWarningChecker: POSSunsetWarningChecking {
     private let featureFlagService: FeatureFlagService

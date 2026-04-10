@@ -206,8 +206,8 @@ struct ItemListView: View {
             }
         }
         .task {
-            // Check stale sync status when view appears
             await posModel.checkStaleSyncStatus()
+            await posModel.checkSunsetWarningStatus()
         }
     }
 

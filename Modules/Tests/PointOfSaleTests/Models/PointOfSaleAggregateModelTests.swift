@@ -1046,46 +1046,51 @@ struct PointOfSaleAggregateModelTests {
     }
 
     @MainActor struct SunsetWarningTests {
-        @Test func showSunsetWarning_when_needsSunsetWarning_is_false_then_returns_false() {
+        @Test func showSunsetWarning_defaults_to_false() {
             // Given
-            let sut = makePointOfSaleAggregateModel(needsSunsetWarning: false)
+            let sut = makePointOfSaleAggregateModel()
 
             // Then
             #expect(sut.showSunsetWarning == false)
         }
 
-        @Test func showSunsetWarning_when_needsSunsetWarning_is_true_then_returns_true() {
+        @Test func checkSunsetWarningStatus_when_checker_returns_true_then_showSunsetWarning_is_true() async {
             // Given
-            let sut = makePointOfSaleAggregateModel(needsSunsetWarning: true)
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+
+            // When
+            await sut.checkSunsetWarningStatus()
 
             // Then
             #expect(sut.showSunsetWarning == true)
         }
 
-        @Test func showSunsetWarning_when_dismissed_then_returns_false() {
+        @Test func checkSunsetWarningStatus_when_checker_returns_false_then_showSunsetWarning_is_false() async {
             // Given
-            let sut = makePointOfSaleAggregateModel(needsSunsetWarning: true)
+            let checker = MockPOSSunsetWarningChecker(shouldShow: false)
+            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+
+            // When
+            await sut.checkSunsetWarningStatus()
+
+            // Then
+            #expect(sut.showSunsetWarning == false)
+        }
+
+        @Test func dismissSunsetWarning_sets_showSunsetWarning_to_false_and_records_dismissal() async {
+            // Given
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+            await sut.checkSunsetWarningStatus()
+            #expect(sut.showSunsetWarning == true)
 
             // When
             sut.dismissSunsetWarning()
 
             // Then
             #expect(sut.showSunsetWarning == false)
-        }
-
-        @Test func dismissSunsetWarning_calls_onSunsetWarningDismissed_closure() {
-            // Given
-            var dismissCalled = false
-            let sut = makePointOfSaleAggregateModel(
-                needsSunsetWarning: true,
-                onSunsetWarningDismissed: { dismissCalled = true }
-            )
-
-            // When
-            sut.dismissSunsetWarning()
-
-            // Then
-            #expect(dismissCalled == true)
+            #expect(checker.recordDismissalCalled == true)
         }
     }
 }
@@ -1137,8 +1142,7 @@ private func makePointOfSaleAggregateModel(
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
-    needsSunsetWarning: Bool = false,
-    onSunsetWarningDismissed: (() -> Void)? = nil
+    sunsetWarningChecker: POSSunsetWarningChecking? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
         entryPointController: entryPointController,
@@ -1159,7 +1163,6 @@ private func makePointOfSaleAggregateModel(
         paymentState: paymentState,
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
-        needsSunsetWarning: needsSunsetWarning,
-        onSunsetWarningDismissed: onSunsetWarningDismissed
+        sunsetWarningChecker: sunsetWarningChecker
     )
 }

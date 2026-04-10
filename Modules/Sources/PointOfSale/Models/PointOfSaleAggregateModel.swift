@@ -74,11 +74,8 @@ protocol PointOfSaleAggregateModelProtocol {
     /// Indicates whether the local catalog feature is enabled for this store
     let isLocalCatalogEligible: Bool
 
-    /// Indicates whether the store needs a POS sunset warning (WC < 10.5)
-    let needsSunsetWarning: Bool
-
-    /// Closure called when the sunset warning is dismissed, to persist the dismissal date
-    private let onSunsetWarningDismissed: (() -> Void)?
+    /// Checker for whether the store needs a POS sunset warning (WC < 10.5)
+    private let sunsetWarningChecker: POSSunsetWarningChecking?
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -107,11 +104,7 @@ protocol PointOfSaleAggregateModelProtocol {
         return isSyncStale && !isStaleSyncWarningDismissed
     }
 
-    var isSunsetWarningDismissed: Bool = false
-
-    var showSunsetWarning: Bool {
-        needsSunsetWarning && !isSunsetWarningDismissed
-    }
+    var showSunsetWarning: Bool = false
 
     @MainActor
     init(entryPointController: POSEntryPointController,
@@ -133,8 +126,7 @@ protocol PointOfSaleAggregateModelProtocol {
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          isLocalCatalogEligible: Bool = false,
-         needsSunsetWarning: Bool = false,
-         onSunsetWarningDismissed: (() -> Void)? = nil) {
+         sunsetWarningChecker: POSSunsetWarningChecking? = nil) {
         self.entryPointController = entryPointController
         self.purchasableItemsController = itemsController
         self.purchasableItemsSearchController = purchasableItemsSearchController
@@ -152,8 +144,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.needsSunsetWarning = needsSunsetWarning
-        self.onSunsetWarningDismissed = onSunsetWarningDismissed
+        self.sunsetWarningChecker = sunsetWarningChecker
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.
@@ -562,8 +553,13 @@ extension PointOfSaleAggregateModel {
 
 extension PointOfSaleAggregateModel {
     func dismissSunsetWarning() {
-        isSunsetWarningDismissed = true
-        onSunsetWarningDismissed?()
+        showSunsetWarning = false
+        sunsetWarningChecker?.recordDismissal(siteID: siteID)
+    }
+
+    func checkSunsetWarningStatus() async {
+        guard let sunsetWarningChecker else { return }
+        showSunsetWarning = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
     }
 }
 

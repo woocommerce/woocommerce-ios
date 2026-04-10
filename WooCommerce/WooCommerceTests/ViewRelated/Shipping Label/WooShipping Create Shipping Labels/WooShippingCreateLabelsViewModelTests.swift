@@ -712,6 +712,234 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message, expectedMessage)
     }
 
+    @MainActor
+    func test_purchaseLabel_when_missing_fedex_tos_error_then_shows_fedex_terms() async {
+        // Given
+        let shippingAddress = Address(firstName: "Jane",
+                                      lastName: "Doe",
+                                      company: nil,
+                                      address1: "123 Main Street",
+                                      address2: nil,
+                                      city: "San Francisco",
+                                      state: "CA",
+                                      postcode: "94107",
+                                      country: "US",
+                                      phone: "234-567-8901",
+                                      email: "test@example.com")
+        let originAddress = WooShippingOriginAddress.fake().copy(
+            id: "default",
+            company: "HEADQUARTERS",
+            address1: "15 ALGONKIN ST",
+            address2: "STE 100",
+            city: "TICONDEROGA",
+            state: "NY",
+            postcode: "12883-1487",
+            country: "US",
+            phone: "223-456-7890",
+            defaultAddress: true
+        )
+        insert(originAddress: originAddress)
+
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(phone: "234-567-8901", country: "US", state: "CA")
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingAddress: shippingAddress)
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(
+            paymentMethodID: 11743265,
+            name: "Example User",
+            cardType: .visa,
+            cardDigits: "4242"
+        )
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(
+            paymentMethods: [paymentMethod],
+            selectedPaymentMethodID: paymentMethod.paymentMethodID
+        )
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
+                completion(.failure(DotcomError.unknown(code: "missing_fedex_terms_of_service_acceptance",
+                                                        message: "FedEx Terms of Service have not been accepted.",
+                                                        data: nil)))
+            case .loadPackages, .loadConfig:
+                break
+            default:
+                break
+            }
+        }
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        await until {
+            viewModel.state == .ready
+        }
+        await until {
+            viewModel.currentShipmentDetailsViewModel.shippingService != nil
+        }
+        viewModel.didUpdateAccountSettings(accountSettings)
+
+        let package = WooShippingPackageData(id: "small_flat_box",
+                                             name: "Small Flat Rate Box",
+                                             length: "21.91",
+                                             width: "13.65",
+                                             height: "4.13",
+                                             weight: ".25",
+                                             source: .predefined(sourceTitle: "fedex", sourceID: "fedex"),
+                                             packageType: "box")
+        let selectedRate = WooShippingSelectedRate(
+            rate: ShippingLabelCarrierRate(title: "FedEx Ground",
+                                           insurance: "100",
+                                           retailRate: 25.00,
+                                           rate: 25.00,
+                                           rateID: "rate_fedex_ground",
+                                           serviceID: "",
+                                           carrierID: "fedex",
+                                           shipmentID: "",
+                                           hasTracking: true,
+                                           isSelected: false,
+                                           isPickupFree: false,
+                                           deliveryDays: 5,
+                                           deliveryDateGuaranteed: false),
+            signatureRate: nil,
+            adultSignatureRate: nil,
+            carbonNeutralRate: nil,
+            saturdayDeliveryRate: nil,
+            additionalHandlingRate: nil
+        )
+        viewModel.currentShipmentDetailsViewModel.selectPackage(package)
+        viewModel.currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
+
+        XCTAssertFalse(viewModel.shouldShowFedExTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowFedExTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_ups_tos_error_then_shows_ups_terms() async {
+        // Given
+        let shippingAddress = Address(firstName: "Jane",
+                                      lastName: "Doe",
+                                      company: nil,
+                                      address1: "123 Main Street",
+                                      address2: nil,
+                                      city: "San Francisco",
+                                      state: "CA",
+                                      postcode: "94107",
+                                      country: "US",
+                                      phone: "234-567-8901",
+                                      email: "test@example.com")
+        let originAddress = WooShippingOriginAddress.fake().copy(
+            id: "default",
+            company: "HEADQUARTERS",
+            address1: "15 ALGONKIN ST",
+            address2: "STE 100",
+            city: "TICONDEROGA",
+            state: "NY",
+            postcode: "12883-1487",
+            country: "US",
+            phone: "223-456-7890",
+            defaultAddress: true
+        )
+        insert(originAddress: originAddress)
+
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(phone: "234-567-8901", country: "US", state: "CA")
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingAddress: shippingAddress)
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(
+            paymentMethodID: 11743265,
+            name: "Example User",
+            cardType: .visa,
+            cardDigits: "4242"
+        )
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(
+            paymentMethods: [paymentMethod],
+            selectedPaymentMethodID: paymentMethod.paymentMethodID
+        )
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
+                completion(.failure(DotcomError.unknown(code: "missing_upsdap_terms_of_service_acceptance",
+                                                        message: "UPS Terms of Service have not been accepted.",
+                                                        data: nil)))
+            case .loadPackages, .loadConfig:
+                break
+            default:
+                break
+            }
+        }
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: order,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+        await until {
+            viewModel.state == .ready
+        }
+        await until {
+            viewModel.currentShipmentDetailsViewModel.shippingService != nil
+        }
+        viewModel.didUpdateAccountSettings(accountSettings)
+
+        let package = WooShippingPackageData(id: "small_flat_box",
+                                             name: "Small Flat Rate Box",
+                                             length: "21.91",
+                                             width: "13.65",
+                                             height: "4.13",
+                                             weight: ".25",
+                                             source: .predefined(sourceTitle: "usps", sourceID: "usps"),
+                                             packageType: "box")
+        let selectedRate = WooShippingSelectedRate(
+            rate: ShippingLabelCarrierRate(title: "UPS Ground",
+                                           insurance: "100",
+                                           retailRate: 30.00,
+                                           rate: 30.00,
+                                           rateID: "rate_ups_ground",
+                                           serviceID: "",
+                                           carrierID: "upsdap",
+                                           shipmentID: "",
+                                           hasTracking: true,
+                                           isSelected: false,
+                                           isPickupFree: false,
+                                           deliveryDays: 3,
+                                           deliveryDateGuaranteed: false),
+            signatureRate: nil,
+            adultSignatureRate: nil,
+            carbonNeutralRate: nil,
+            saturdayDeliveryRate: nil,
+            additionalHandlingRate: nil
+        )
+        viewModel.currentShipmentDetailsViewModel.selectPackage(package)
+        viewModel.currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
+
+        XCTAssertFalse(viewModel.shouldShowUPSTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowUPSTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
     func test_originAddressLines_is_correct_for_both_purchased_label_and_unfulfilled_shipment() {
         // Given
         let labelOriginAddress = ShippingLabelAddress.fake().copy(address1: "1 E 35th ST")

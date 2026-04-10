@@ -45,5 +45,4 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
             throw sendReceiptErrorToThrow
         }
     }
-
 }

@@ -4,14 +4,16 @@ import SwiftUI
 /// and a "Forgot PIN?" link.
 struct POSLockScreenView: View {
     let onPINEntered: (String) -> Void
+    let onForgotPIN: () -> Void
 
     @Binding var pinState: POSPINEntryState
-    @State private var showForgotPINInfo: Bool = false
 
     init(pinState: Binding<POSPINEntryState>,
-         onPINEntered: @escaping (String) -> Void) {
+         onPINEntered: @escaping (String) -> Void,
+         onForgotPIN: @escaping () -> Void) {
         self._pinState = pinState
         self.onPINEntered = onPINEntered
+        self.onForgotPIN = onForgotPIN
     }
 
     var body: some View {
@@ -35,11 +37,6 @@ struct POSLockScreenView: View {
                 forgotPINLink
             }
             .padding(POSPadding.xLarge)
-            .alert(Localization.forgotPINTitle, isPresented: $showForgotPINInfo) {
-                Button(Localization.forgotPINDismiss, role: .cancel) { }
-            } message: {
-                Text(Localization.forgotPINBody)
-            }
         }
     }
 
@@ -47,7 +44,7 @@ struct POSLockScreenView: View {
 
     private var forgotPINLink: some View {
         Button {
-            showForgotPINInfo = true
+            onForgotPIN()
         } label: {
             Text(Localization.forgotPINLink)
                 .font(.posBodyLargeRegular(underline: true))
@@ -71,21 +68,6 @@ private extension POSLockScreenView {
             value: "Forgot PIN?",
             comment: "Link at the bottom of the POS lock screen to show information about resetting a PIN"
         )
-        static let forgotPINTitle = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.title",
-            value: "Forgot your PIN?",
-            comment: "Title of the alert shown when tapping Forgot PIN on the POS lock screen"
-        )
-        static let forgotPINBody = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.body",
-            value: "Ask the store owner to reset your PIN in the WordPress admin under WooCommerce > Settings > POS Staff.",
-            comment: "Body text of the alert explaining how to reset a POS PIN"
-        )
-        static let forgotPINDismiss = NSLocalizedString(
-            "pos.lockScreen.forgotPIN.dismiss",
-            value: "OK",
-            comment: "Button to dismiss the Forgot PIN alert on the POS lock screen"
-        )
     }
 }
 
@@ -99,7 +81,8 @@ private extension POSLockScreenView {
         pinState: $pinState,
         onPINEntered: { _ in
             pinState = .error(message: "Invalid PIN")
-        }
+        },
+        onForgotPIN: {}
     )
 }
 #endif

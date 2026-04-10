@@ -90,6 +90,11 @@ struct BookingDetailsView: View {
         } message: {
             Text(viewModel.cancellationAlertMessage)
         }
+        .sheet(isPresented: $viewModel.showingRescheduleSheet) {
+            if let input = viewModel.rescheduleInput {
+                RescheduleBookingView(viewModel: RescheduleBookingViewModel(input: input))
+            }
+        }
         .notice($notice)
         .notice($viewModel.notice)
     }
@@ -168,6 +173,15 @@ private extension BookingDetailsView {
                 Divider()
                     .padding(.trailing, -Layout.contentSidePadding)
             }
+
+            Button {
+                viewModel.rescheduleBooking()
+            } label: {
+                Text(Localization.rescheduleBooking)
+            }
+            .buttonStyle(SecondaryButtonStyle())
+            .padding(.top, Layout.contentVerticalPadding)
+            .renderedIf(viewModel.shouldShowRescheduleButton)
 
             Button {
                 updateAttendance()
@@ -267,6 +281,12 @@ extension BookingDetailsView {
             "BookingDetailsView.options.cancelBooking",
             value: "Cancel booking",
             comment: "Action sheet option to cancel a booking."
+        )
+
+        static let rescheduleBooking = NSLocalizedString(
+            "BookingDetailsView.rescheduleBookingButton.title",
+            value: "Reschedule booking",
+            comment: "'Reschedule' button title in appointment details section in booking details view."
         )
 
         static let cancelBooking = NSLocalizedString(

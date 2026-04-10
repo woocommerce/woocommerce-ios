@@ -66,6 +66,7 @@ extension WooAnalyticsEvent {
             static let syncDurationMs = "sync_duration_ms"
             static let generationDurationMs = "generation_duration_ms"
             static let pollAttempts = "poll_attempts"
+            static let lastGenerationState = "last_generation_state"
             static let errorType = "error_type"
             static let reason = "reason"
         }
@@ -153,16 +154,23 @@ extension WooAnalyticsEvent {
             syncType: String,
             syncStrategy: String,
             error: Error,
-            errorClassifier: (Error) -> String
+            errorClassifier: (Error) -> String,
+            pollAttempts: Int? = nil,
+            lastGenerationState: String? = nil
         ) -> WooAnalyticsEvent {
             let errorType = errorClassifier(error)
-            return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
-                                     properties: [
-                                        Key.syncType: syncType,
-                                        Key.syncStrategy: syncStrategy,
-                                        Key.errorType: errorType
-                                     ],
-                                     error: error)
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.syncType: syncType,
+                Key.syncStrategy: syncStrategy,
+                Key.errorType: errorType
+            ]
+            if let pollAttempts {
+                properties[Key.pollAttempts] = "\(pollAttempts)"
+            }
+            if let lastGenerationState {
+                properties[Key.lastGenerationState] = lastGenerationState
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed, properties: properties, error: error)
         }
 
         public static func syncSkipped(reason: String, syncType: String, syncStrategy: String) -> WooAnalyticsEvent {

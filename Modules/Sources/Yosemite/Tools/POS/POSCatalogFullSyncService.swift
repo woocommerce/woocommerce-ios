@@ -301,11 +301,13 @@ private extension POSCatalogFullSyncService {
                                   maxAttempts: Int) async throws -> CatalogPollingResult {
         var attempts = 0
         var currentDelay = PollingConfig.initialDelay
+        var lastStatus: POSCatalogStatus = .scheduled
 
         while attempts < maxAttempts {
             let response = try await syncRemote.requestCatalogGeneration(for: siteID,
                                                                          forceGeneration: false,
                                                                          allowCellular: allowCellular)
+            lastStatus = response.status
 
             switch response.status {
             case .completed:
@@ -327,11 +329,11 @@ private extension POSCatalogFullSyncService {
                 // Calculate next delay with exponential backoff, capped at max interval
                 currentDelay = min(currentDelay * PollingConfig.multiplier, PollingConfig.maxInterval)
             case .failed:
-                throw POSCatalogSyncError.generationFailed
+                throw POSCatalogSyncError.generationFailed(pollAttempts: attempts + 1)
             }
         }
 
         DDLogWarn("🟣 Catalog polling timed out after \(attempts) attempts")
-        throw POSCatalogSyncError.timeout
+        throw POSCatalogSyncError.timeout(pollAttempts: attempts, lastGenerationState: lastStatus.rawValue)
     }
 }

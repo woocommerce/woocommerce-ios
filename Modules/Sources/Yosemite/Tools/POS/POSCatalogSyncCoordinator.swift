@@ -96,8 +96,8 @@ public enum POSCatalogSyncError: Error, Equatable {
     case syncAlreadyInProgress(siteID: Int64)
     case negativeMaxAge
     case invalidData
-    case timeout
-    case generationFailed
+    case timeout(pollAttempts: Int, lastGenerationState: String)
+    case generationFailed(pollAttempts: Int)
     case requestCancelled
     case shouldNotSync
 }
@@ -246,12 +246,15 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             } else {
                 await emitSyncState(.syncFailed(siteID: siteID, error: error))
             }
-            // Track sync failed analytics
+            // Track sync failed analytics, extracting polling metadata from enriched errors
+            let (pollAttempts, lastGenerationState) = Self.extractPollingMetadata(from: error)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.full.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: error,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify
+                errorClassifier: POSCatalogSyncErrorClassifier.classify,
+                pollAttempts: pollAttempts,
+                lastGenerationState: lastGenerationState
             ))
             throw error
         }
@@ -420,11 +423,14 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete incremental sync for site \(siteID): \(error)")
             // Track sync failed analytics
+            let (pollAttempts, lastGenerationState) = Self.extractPollingMetadata(from: error)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: error,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify
+                errorClassifier: POSCatalogSyncErrorClassifier.classify,
+                pollAttempts: pollAttempts,
+                lastGenerationState: lastGenerationState
             ))
             throw error
         }
@@ -587,6 +593,21 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     private nonisolated func trackAnalytics(_ event: WooAnalyticsEvent) {
         analytics?.track(event.statName.rawValue, properties: event.properties, error: event.error)
+    }
+
+    /// Extracts polling metadata from enriched `POSCatalogSyncError` cases for analytics.
+    private static func extractPollingMetadata(from error: Error) -> (pollAttempts: Int?, lastGenerationState: String?) {
+        guard let syncError = error as? POSCatalogSyncError else {
+            return (nil, nil)
+        }
+        switch syncError {
+        case .timeout(let pollAttempts, let lastGenerationState):
+            return (pollAttempts, lastGenerationState)
+        case .generationFailed(let pollAttempts):
+            return (pollAttempts, "failed")
+        default:
+            return (nil, nil)
+        }
     }
 
     private nonisolated func getConnectionType() -> String {

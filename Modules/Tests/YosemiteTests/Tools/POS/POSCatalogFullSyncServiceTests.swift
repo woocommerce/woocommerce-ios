@@ -357,8 +357,8 @@ struct POSCatalogFullSyncServiceTests {
             usesCatalogAPI: true
         )
 
-        // When/Then - Should throw generationFailed
-        await #expect(throws: POSCatalogSyncError.generationFailed) {
+        // When/Then - Should throw generationFailed with poll attempts
+        await #expect(throws: POSCatalogSyncError.generationFailed(pollAttempts: 2)) {
             _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
         }
 

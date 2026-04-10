@@ -103,4 +103,12 @@ enum RoleEligibilityError: Error {
 
     /// An unknown error caused from other sources.
     case unknown(error: Error)
+
+    /// Returns the underlying error for the `.unknown` case, or `nil` for other cases.
+    var underlyingError: Error? {
+        if case .unknown(let error) = self {
+            return error
+        }
+        return nil
+    }
 }

@@ -1,5 +1,6 @@
 import SwiftUI
 import SafariServices
+import enum NetworkingCore.DotcomError
 
 /// Hosting controller wrapper for `StorePickerError`
 ///
@@ -7,8 +8,9 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 
     /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
     ///
-    static func createWithActions(presenting: UIViewController) -> StorePickerErrorHostingController {
-        let viewController = StorePickerErrorHostingController()
+    static func createWithActions(presenting: UIViewController,
+                                  errorType: StorePickerErrorType = .generic) -> StorePickerErrorHostingController {
+        let viewController = StorePickerErrorHostingController(errorType: errorType)
         viewController.setActions(troubleshootingAction: {
             WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: viewController)
         },
@@ -24,8 +26,8 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         return viewController
     }
 
-    init() {
-        super.init(rootView: StorePickerError())
+    init(errorType: StorePickerErrorType = .generic) {
+        super.init(rootView: StorePickerError(errorType: errorType))
     }
 
     override func viewDidLoad() {
@@ -48,9 +50,55 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     }
 }
 
+/// Categorizes the error shown in the store picker error screen.
+/// Extracted as a standalone type for testability.
+///
+enum StorePickerErrorType: Equatable {
+    /// The remote site returned a server error (HTTP 500) when verifying user permissions.
+    case serverError
+    /// Any other error (network issues, unknown errors, etc.)
+    case generic
+
+    /// Creates an error type from the underlying error returned by the role eligibility check.
+    ///
+    static func from(_ error: Error) -> StorePickerErrorType {
+        if let dotcomError = error as? DotcomError,
+           case .requestFailed = dotcomError {
+            return .serverError
+        }
+        return .generic
+    }
+
+    var bodyText: String {
+        switch self {
+        case .serverError:
+            return Localization.serverErrorBody
+        case .generic:
+            return Localization.genericBody
+        }
+    }
+
+    private enum Localization {
+        static let serverErrorBody = NSLocalizedString(
+            "storePickerError.serverErrorBody",
+            value: "There was a problem verifying your permissions. " +
+                "This is usually caused by a server or hosting configuration issue on your site. " +
+                "Please contact your hosting provider for assistance, or reach out to us.",
+            comment: "Body text for the store picker error screen when the site returns a server error (HTTP 500)")
+        static let genericBody = NSLocalizedString(
+            "storePickerError.genericBody",
+            value: "Please try again or reach out to us and we'll be happy to assist you!",
+            comment: "Body text for the default store picker error screen")
+    }
+}
+
 /// Generic Store Picker error view that allows the user to contact support.
 ///
 struct StorePickerError: View {
+
+    /// The type of error to display.
+    ///
+    let errorType: StorePickerErrorType
 
     /// Closure invoked when the "Troubleshooting" button is pressed
     ///
@@ -64,6 +112,10 @@ struct StorePickerError: View {
     ///
     var dismissAction: () -> Void = {}
 
+    init(errorType: StorePickerErrorType = .generic) {
+        self.errorType = errorType
+    }
+
     var body: some View {
         // Adds an outer transparent padding and constraints the view max width
         Group {
@@ -76,7 +128,7 @@ struct StorePickerError: View {
                 Image(uiImage: .errorImage)
 
                 // Body text
-                Text(Localization.body)
+                Text(errorType.bodyText)
                     .multilineTextAlignment(.center)
                     .bodyStyle()
 
@@ -114,8 +166,6 @@ struct StorePickerError: View {
 private extension StorePickerError {
     enum Localization {
         static let title = NSLocalizedString("We couldn't load your site", comment: "Title for the default store picker error screen")
-        static let body = NSLocalizedString("Please try again or reach out to us and we'll be happy to assist you!",
-                                            comment: "Body text for the default store picker error screen")
         static let troubleshoot = NSLocalizedString("Read our Troubleshooting Tips",
                                                     comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
         static let contact = NSLocalizedString("Contact Support",
@@ -139,18 +189,19 @@ private extension StorePickerError {
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
         VStack {
-            StorePickerError()
+            StorePickerError(errorType: .generic)
         }
         .padding()
         .background(Color.gray)
         .previewLayout(.sizeThatFits)
+        .previewDisplayName("Generic Error")
 
         VStack {
-            StorePickerError()
+            StorePickerError(errorType: .serverError)
         }
         .padding()
         .background(Color.gray)
-        .environment(\.colorScheme, .dark)
         .previewLayout(.sizeThatFits)
+        .previewDisplayName("Server Error")
     }
 }

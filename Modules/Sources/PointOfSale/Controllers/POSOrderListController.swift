@@ -44,13 +44,21 @@ protocol POSOrderListControllerProtocol {
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
     func preparePOSRefundReviewData() -> POSRefundReviewData?
-    func processRefund(reason: String?) async throws
+    @MainActor
+    func processRefund(reason: String?, approvalToken: String?) async throws
     func loadOrderRefunds() async
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
     func clearSearchOrders()
+}
+
+extension POSOrderListControllerProtocol {
+    @MainActor
+    func processRefund(reason: String?) async throws {
+        try await processRefund(reason: reason, approvalToken: nil)
+    }
 }
 
 enum POSOrderListSelectedOrderRefundsState {
@@ -419,6 +427,11 @@ enum RefundActionAvailability {
 
     @MainActor
     func processRefund(reason: String?) async throws {
+        try await processRefund(reason: reason, approvalToken: nil)
+    }
+
+    @MainActor
+    func processRefund(reason: String?, approvalToken: String?) async throws {
         guard let order = selectedOrder else {
             assertionFailure("processRefund called without selected order")
             return
@@ -449,7 +462,8 @@ enum RefundActionAvailability {
             orderID: order.id,
             items: refundableItems,
             reason: reason,
-            isAutomaticRefund: refundsResult.supportsAutomaticRefund
+            isAutomaticRefund: refundsResult.supportsAutomaticRefund,
+            approvalToken: approvalToken
         )
 
         clearRefundSelection()

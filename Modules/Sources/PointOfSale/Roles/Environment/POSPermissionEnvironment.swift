@@ -18,6 +18,7 @@ final class EmptyPOSPermissionProvider: POSPermissionProviding {
     var autoLockTimeoutSeconds: Int { 0 }
     func checkPermission(_ capability: String) -> POSPermissionResult { .allowed }
     func hasCapability(_ capability: String) -> Bool { true }
+    func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? { nil }
     func signIn(_ posOperator: POSOperator) {}
     func lock() {}
     func resetInactivityTimer() {}

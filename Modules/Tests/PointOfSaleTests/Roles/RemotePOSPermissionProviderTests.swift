@@ -2,6 +2,11 @@ import Testing
 @testable import PointOfSale
 
 struct RemotePOSPermissionProviderTests {
+    @Test func test_autoLockTimeoutSeconds_when_no_session_then_uses_default_timeout() {
+        let sut = makeSUT()
+
+        #expect(sut.autoLockTimeoutSeconds == Int(RemotePOSPermissionProvider.defaultAutoLockTimeout))
+    }
 
     // MARK: - authenticateRemotePIN
 
@@ -95,6 +100,15 @@ struct RemotePOSPermissionProviderTests {
         #expect(credential?.uuid == "uuid-456")
         #expect(credential?.sessionExpires == "2026-04-10T00:00:00Z")
         #expect(credential?.idleTimeoutSeconds == 300)
+    }
+
+    @Test func test_authenticateRemotePIN_updates_autoLockTimeoutSeconds_from_backend_response() async throws {
+        let response = makePINAuthResponse(idleTimeoutSeconds: 1800)
+        let sut = makeSUT(pinAuthResponse: response)
+
+        _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
+
+        #expect(sut.autoLockTimeoutSeconds == 1800)
     }
 
     @Test func test_authenticateRemotePIN_when_locked_and_valid_pin_then_unlocks() async throws {
@@ -301,6 +315,20 @@ struct RemotePOSPermissionProviderTests {
         await #expect(throws: TestError.approvalFailed) {
             try await sut.requestApproval(managerPIN: "1234", action: "woocommerce_refund_orders")
         }
+    }
+
+    @Test func test_requestManagerApproval_returns_token_from_provider_approval_service() async throws {
+        let approvalService = MockApprovalService()
+        approvalService.tokenToReturn = "approval-token-xyz"
+        let sut = makeSUT(approvalService: approvalService)
+
+        let token = try await sut.requestManagerApproval(
+            managerPIN: "1234",
+            for: "woocommerce_refund_orders",
+            orderID: 99
+        )
+
+        #expect(token == "approval-token-xyz")
     }
 
     // MARK: - Helpers

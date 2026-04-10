@@ -1,4 +1,5 @@
 import Testing
+import enum Networking.POSAuthError
 @testable import PointOfSale
 
 struct LocalPOSPermissionProviderTests {
@@ -251,6 +252,36 @@ struct LocalPOSPermissionProviderTests {
 
         // When / Then
         #expect(sut.verifyAccountHolderPIN("9999") == false)
+    }
+
+    // MARK: - requestManagerApproval
+
+    @Test func test_requestManagerApproval_when_manager_pin_is_valid_then_returns_nil_token() async throws {
+        let pinService = makePINService()
+        pinService.setPIN("1234", for: .manager)
+        let sut = makeSUT(pinService: pinService)
+
+        let token = try await sut.requestManagerApproval(
+            managerPIN: "1234",
+            for: "woocommerce_refund_orders",
+            orderID: 42
+        )
+
+        #expect(token == nil)
+    }
+
+    @Test func test_requestManagerApproval_when_manager_pin_is_invalid_then_throws_invalid_pin() async {
+        let pinService = makePINService()
+        pinService.setPIN("1234", for: .manager)
+        let sut = makeSUT(pinService: pinService)
+
+        await #expect(throws: POSAuthError.invalidPIN) {
+            try await sut.requestManagerApproval(
+                managerPIN: "9999",
+                for: "woocommerce_refund_orders",
+                orderID: 42
+            )
+        }
     }
 
     // MARK: - hasAnyPINs

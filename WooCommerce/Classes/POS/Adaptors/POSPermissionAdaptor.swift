@@ -40,7 +40,9 @@ struct POSPermissionAdaptor {
                                 continuation.resume(throwing: error)
                             }
                         }
-                        stores.dispatch(action)
+                        Task { @MainActor in
+                            stores.dispatch(action)
+                        }
                     }
                 },
                 appAccountUserID: userID
@@ -63,6 +65,7 @@ private final class EmptyPOSPermissionAdaptor: POSPermissionProviding {
     var autoLockTimeoutSeconds: Int { 0 }
     func checkPermission(_ capability: String) -> PointOfSale.POSPermissionResult { .allowed }
     func hasCapability(_ capability: String) -> Bool { true }
+    func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? { nil }
     func signIn(_ posOperator: PointOfSale.POSOperator) {}
     func lock() {}
     func resetInactivityTimer() {}

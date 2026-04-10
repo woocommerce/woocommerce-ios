@@ -21,7 +21,7 @@ struct POSPINEntryView: View {
 
     @Binding var state: POSPINEntryState
 
-    @State private var enteredPIN: String = ""
+    @State private var helper: POSPINEntryViewHelper
     @State private var shakeOffset: CGFloat = 0
 
     init(title: String,
@@ -36,6 +36,7 @@ struct POSPINEntryView: View {
         self._state = state
         self.onPINEntered = onPINEntered
         self.onCancel = onCancel
+        self._helper = State(initialValue: POSPINEntryViewHelper(maxDigits: maxDigits))
     }
 
     var body: some View {
@@ -79,7 +80,7 @@ struct POSPINEntryView: View {
         VStack(spacing: POSSpacing.medium) {
             HStack(spacing: POSSpacing.medium) {
                 ForEach(0..<maxDigits, id: \.self) { index in
-                    pinDot(filled: index < enteredPIN.count)
+                    pinDot(filled: helper.isDotFilled(at: index))
                 }
             }
             .offset(x: shakeOffset)
@@ -96,28 +97,15 @@ struct POSPINEntryView: View {
     }
 
     private var displayMessage: String? {
-        switch state {
-        case .idle:
-            return nil
-        case .error(let message), .lockout(let message):
-            return message
-        }
+        helper.displayMessage(for: state)
     }
 
     private var messageColor: Color {
-        switch state {
-        case .lockout:
-            return .posOnSurfaceVariantLowest
-        case .error, .idle:
-            return .posError
-        }
+        helper.messageColor(for: state)
     }
 
     private var isInputDisabled: Bool {
-        if case .lockout = state {
-            return true
-        }
-        return false
+        helper.isInputDisabled(for: state)
     }
 
     private func pinDot(filled: Bool) -> some View {
@@ -159,7 +147,7 @@ struct POSPINEntryView: View {
                     .foregroundColor(.posOnSurface)
                     .frame(width: Constants.buttonSize, height: Constants.buttonSize)
             }
-            .disabled(isInputDisabled || enteredPIN.isEmpty)
+            .disabled(isInputDisabled || helper.enteredPIN.isEmpty)
             .accessibilityLabel(Localization.deleteAccessibilityLabel)
         } else {
             Button {
@@ -190,38 +178,26 @@ struct POSPINEntryView: View {
     // MARK: - Input Handling
 
     private func handleDigit(_ digit: String) {
-        guard enteredPIN.count < maxDigits else { return }
-
-        if state != .idle {
+        let update = helper.handleDigit(digit, state: state)
+        if update.shouldResetState {
             state = .idle
         }
-        enteredPIN += digit
-
-        if enteredPIN.count == maxDigits {
-            let pin = enteredPIN
+        if let pin = update.submittedPIN {
             onPINEntered(pin)
         }
     }
 
     private func handleDelete() {
-        guard enteredPIN.isNotEmpty else { return }
-        if state != .idle {
+        if helper.handleDelete(state: state) {
             state = .idle
         }
-        enteredPIN.removeLast()
     }
 
     // MARK: - State Change Handling
 
     private func handleStateChange(_ newState: POSPINEntryState) {
-        switch newState {
-        case .idle:
-            enteredPIN = ""
-        case .error:
-            enteredPIN = ""
+        if helper.applyStateChange(newState) {
             triggerShake()
-        case .lockout:
-            enteredPIN = ""
         }
     }
 

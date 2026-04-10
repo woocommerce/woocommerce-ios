@@ -97,10 +97,10 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Auto-Lock
 
-    public static let autoLockTimeout: TimeInterval = 300
+    public static let defaultAutoLockTimeout: TimeInterval = 300
 
     public var autoLockTimeoutSeconds: Int {
-        Int(Self.autoLockTimeout)
+        sessionCredential?.idleTimeoutSeconds ?? Int(Self.defaultAutoLockTimeout)
     }
 
     // MARK: - POSPermissionProviding
@@ -157,6 +157,10 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         currentOperator?.hasCapability(capability) ?? false
     }
 
+    public func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? {
+        try await requestApproval(managerPIN: managerPIN, action: capability, orderID: orderID)
+    }
+
     public func signIn(_ posOperator: POSOperator) {
         currentOperator = posOperator
         isLocked = false
@@ -181,7 +185,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     private func startAutoLockTimer() {
         autoLockTimer?.invalidate()
-        autoLockTimer = Timer.scheduledTimer(withTimeInterval: Self.autoLockTimeout, repeats: false) { [weak self] _ in
+        autoLockTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(autoLockTimeoutSeconds), repeats: false) { [weak self] _ in
             self?.lock()
         }
     }

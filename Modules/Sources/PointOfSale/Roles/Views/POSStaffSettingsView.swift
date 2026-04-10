@@ -295,7 +295,9 @@ private struct POSStaffSettingsRemoteView: View {
                 capability: POSCapability.posManageSettings.rawValue,
                 overrideState: $managerOverrideState,
                 onPINEntered: { pin in
-                    handleManagerOverridePIN(pin)
+                    Task { @MainActor in
+                        await handleManagerOverridePIN(pin)
+                    }
                 },
                 onCancelled: {
                     showManagerOverride = false
@@ -396,19 +398,20 @@ private extension POSStaffSettingsRemoteView {
         }
     }
 
-    func handleManagerOverridePIN(_ pin: String) {
-        guard let localProvider = permissions as? LocalPOSPermissionProvider else {
-            managerOverrideState = .error(message: Localization.invalidPIN)
-            return
-        }
-        if localProvider.verifyManagerPIN(pin) {
+    func handleManagerOverridePIN(_ pin: String) async {
+        do {
+            _ = try await permissions.requestManagerApproval(
+                managerPIN: pin,
+                for: .posManageSettings,
+                orderID: nil
+            )
             managerOverrideState = .approved
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 showManagerOverride = false
                 showManageStaff = true
             }
-        } else {
-            managerOverrideState = .error(message: Localization.invalidPIN)
+        } catch {
+            managerOverrideState = .error(message: (error as? LocalizedError)?.errorDescription ?? Localization.invalidPIN)
         }
     }
 }

@@ -6,6 +6,11 @@ final class MockPOSPermissionProvider: POSPermissionProviding {
     var autoLockTimeoutSeconds: Int = 300
     var capabilityOverrides: [String: POSPermissionResult] = [:]
     var resetInactivityTimerCallCount: Int = 0
+    var requestedManagerPIN: String?
+    var requestedCapability: String?
+    var requestedOrderID: Int64?
+    var approvalTokenToReturn: String?
+    var approvalErrorToThrow: Error?
 
     func checkPermission(_ capability: String) -> POSPermissionResult {
         if let override = capabilityOverrides[capability] {
@@ -19,6 +24,18 @@ final class MockPOSPermissionProvider: POSPermissionProviding {
 
     func hasCapability(_ capability: String) -> Bool {
         checkPermission(capability) == .allowed
+    }
+
+    func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? {
+        requestedManagerPIN = managerPIN
+        requestedCapability = capability
+        requestedOrderID = orderID
+
+        if let approvalErrorToThrow {
+            throw approvalErrorToThrow
+        }
+
+        return approvalTokenToReturn
     }
 
     func signIn(_ posOperator: POSOperator) {

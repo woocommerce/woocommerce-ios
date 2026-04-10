@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import enum Networking.POSAuthError
 
 /// Local POS permission provider that uses on-device PINs with hardcoded capability sets.
 /// Authenticates operators via PIN verification against the local Keychain.
@@ -78,6 +79,13 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     public func hasCapability(_ capability: String) -> Bool {
         currentOperator?.hasCapability(capability) ?? false
+    }
+
+    public func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? {
+        guard verifyManagerPIN(managerPIN) else {
+            throw POSAuthError.invalidPIN
+        }
+        return nil
     }
 
     public func signIn(_ posOperator: POSOperator) {

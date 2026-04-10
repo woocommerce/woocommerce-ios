@@ -8,6 +8,7 @@ public protocol POSPermissionProviding: AnyObject {
     var isLocked: Bool { get }
     func checkPermission(_ capability: String) -> POSPermissionResult
     func hasCapability(_ capability: String) -> Bool
+    func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String?
     func signIn(_ posOperator: POSOperator)
     func lock()
     func resetInactivityTimer()
@@ -27,5 +28,10 @@ extension POSPermissionProviding {
     /// Usage: `permissions.hasCapability(.applyDiscounts)`
     func hasCapability(_ capability: POSCapability) -> Bool {
         hasCapability(capability.rawValue)
+    }
+
+    /// Requests manager approval using the typed capability enum.
+    func requestManagerApproval(managerPIN: String, for capability: POSCapability, orderID: Int64? = nil) async throws -> String? {
+        try await requestManagerApproval(managerPIN: managerPIN, for: capability.rawValue, orderID: orderID)
     }
 }

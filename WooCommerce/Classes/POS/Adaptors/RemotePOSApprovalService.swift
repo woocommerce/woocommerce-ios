@@ -28,7 +28,10 @@ final class RemotePOSApprovalService: POSApprovalServiceProtocol {
                     continuation.resume(throwing: error)
                 }
             }
-            stores.dispatch(posAuthAction)
+
+            Task { @MainActor in
+                stores.dispatch(posAuthAction)
+            }
         }
     }
 }

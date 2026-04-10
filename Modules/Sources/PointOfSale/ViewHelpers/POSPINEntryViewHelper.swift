@@ -34,7 +34,7 @@ struct POSPINEntryViewHelper {
 
     func displayMessage(for state: POSPINEntryState) -> String? {
         switch state {
-        case .idle:
+        case .idle, .loading:
             return nil
         case .error(let message), .lockout(let message):
             return message
@@ -49,16 +49,18 @@ struct POSPINEntryViewHelper {
         switch state {
         case .lockout:
             return .muted
-        case .error, .idle:
+        case .error, .idle, .loading:
             return .error
         }
     }
 
     func isInputDisabled(for state: POSPINEntryState) -> Bool {
-        if case .lockout = state {
+        switch state {
+        case .lockout, .loading:
             return true
+        case .idle, .error:
+            return false
         }
-        return false
     }
 
     mutating func handleDigit(_ digit: String, state: POSPINEntryState) -> InputUpdate {
@@ -87,6 +89,10 @@ struct POSPINEntryViewHelper {
     }
 
     mutating func applyStateChange(_ newState: POSPINEntryState) -> Bool {
+        if case .loading = newState {
+            return false
+        }
+
         enteredPIN = ""
 
         if case .error = newState {

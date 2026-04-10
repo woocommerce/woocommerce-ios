@@ -401,7 +401,7 @@ private extension POSStaffSettingsRemoteView {
                 orderID: nil
             )
             managerOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showManagerOverride = false
                 showManageStaff = true
             }

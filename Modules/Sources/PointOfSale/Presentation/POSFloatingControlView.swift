@@ -169,7 +169,7 @@ private extension POSFloatingControlView {
                 orderID: nil
             )
             settingsOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 showSettingsOverride = false
                 showSettings = true
             }

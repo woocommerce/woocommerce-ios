@@ -8,6 +8,8 @@ enum POSPINEntryState: Equatable {
     case error(message: String)
     /// Disables the numpad and shows a lockout countdown message.
     case lockout(message: String)
+    /// Disables the numpad and shows a pulse animation on the PIN dots during remote verification.
+    case loading
 }
 
 /// Reusable PIN numpad component for lock screen, manager override, and exit POS.
@@ -76,6 +78,10 @@ struct POSPINEntryView: View {
 
     // MARK: - PIN Dots
 
+    private var isLoading: Bool {
+        state == .loading
+    }
+
     private var pinDotsRow: some View {
         VStack(spacing: POSSpacing.medium) {
             HStack(spacing: POSSpacing.medium) {
@@ -83,6 +89,8 @@ struct POSPINEntryView: View {
                     pinDot(filled: helper.isDotFilled(at: index))
                 }
             }
+            .opacity(isLoading ? 0.6 : 1.0)
+            .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: isLoading)
             .offset(x: shakeOffset)
 
             if let displayMessage {

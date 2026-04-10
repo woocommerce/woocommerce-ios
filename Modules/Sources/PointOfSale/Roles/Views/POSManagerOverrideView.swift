@@ -21,6 +21,7 @@ struct POSManagerOverrideView: View {
     @Binding var overrideState: POSManagerOverrideState
 
     @State private var pinState: POSPINEntryState = .idle
+    @State private var showApprovedIcon: Bool = false
 
     init(actionDescription: String,
          capability: String,
@@ -95,17 +96,18 @@ struct POSManagerOverrideView: View {
     }
 
     private var approvedContent: some View {
-        HStack(spacing: POSSpacing.small) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: Constants.successIconSize, weight: .regular))
-                .foregroundColor(.posSuccess)
-            Text(Localization.approved)
-                .font(.posBodyLargeBold)
-                .foregroundColor(.posOnSurface)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, POSPadding.xxLarge)
-        .transition(.opacity)
+        Image(systemName: showApprovedIcon ? "checkmark.circle.fill" : "lock.shield")
+            .font(.system(size: Constants.iconSize, weight: .regular))
+            .foregroundColor(showApprovedIcon ? .posSuccess : .posOnSurfaceVariantLowest)
+            .contentTransition(.symbolEffect(.replace))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, POSPadding.xxLarge)
+            .onAppear {
+                withAnimation {
+                    showApprovedIcon = true
+                }
+            }
+            .accessibilityLabel(Localization.approved)
     }
 
     // MARK: - State Handling
@@ -127,7 +129,6 @@ struct POSManagerOverrideView: View {
 private extension POSManagerOverrideView {
     enum Constants {
         static let iconSize: CGFloat = 48
-        static let successIconSize: CGFloat = 24
     }
 }
 

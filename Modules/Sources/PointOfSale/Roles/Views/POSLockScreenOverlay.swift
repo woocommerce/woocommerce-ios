@@ -5,7 +5,6 @@ import SwiftUI
 /// and handling PIN authentication for the lock screen.
 struct POSLockScreenOverlay: View {
     let permissionProvider: POSPermissionProviding
-    let onLogout: () -> Void
 
     @State private var pinState: POSPINEntryState = .idle
 
@@ -16,8 +15,7 @@ struct POSLockScreenOverlay: View {
                 pinState: $pinState,
                 onPINEntered: { pin in
                     handlePINEntered(pin)
-                },
-                onLogout: onLogout
+                }
             )
             .transition(.opacity)
             .animation(.easeInOut, value: permissionProvider.isLocked)

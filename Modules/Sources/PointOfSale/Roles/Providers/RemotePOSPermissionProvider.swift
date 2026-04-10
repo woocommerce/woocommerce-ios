@@ -105,6 +105,10 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     private(set) var sessionCredential: POSSessionCredential?
     private var cachedCapabilities: Set<String> = []
 
+    // MARK: - Private
+
+    private static let isLockedKey = "com.woocommerce.pos.isLocked"
+
     // MARK: - Dependencies
 
     private let approvalService: POSApprovalServiceProtocol
@@ -124,6 +128,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         self.approvalService = approvalService
         self.authenticatePINRemote = authenticatePINRemote
         self.appAccountUserID = appAccountUserID
+        self.isLocked = UserDefaults.standard.bool(forKey: Self.isLockedKey)
     }
 
     // MARK: - POSPermissionProviding
@@ -145,11 +150,13 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     public func signIn(_ posOperator: POSOperator) {
         currentOperator = posOperator
         isLocked = false
+        UserDefaults.standard.set(false, forKey: Self.isLockedKey)
     }
 
     public func lock() {
         currentOperator = nil
         isLocked = true
+        UserDefaults.standard.set(true, forKey: Self.isLockedKey)
     }
 
     // MARK: - Remote Authentication

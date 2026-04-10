@@ -37,6 +37,8 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Private
 
+    private static let isLockedKey = "com.woocommerce.pos.isLocked"
+
     private let pinService: POSPINService
     private let appAccountUserID: Int64
     private let appAccountDisplayName: String
@@ -49,6 +51,7 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
         self.pinService = pinService
         self.appAccountUserID = appAccountUserID
         self.appAccountDisplayName = appAccountDisplayName
+        self.isLocked = UserDefaults.standard.bool(forKey: Self.isLockedKey)
     }
 
     // MARK: - POSPermissionProviding
@@ -70,11 +73,13 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
     public func signIn(_ posOperator: POSOperator) {
         currentOperator = posOperator
         isLocked = false
+        UserDefaults.standard.set(false, forKey: Self.isLockedKey)
     }
 
     public func lock() {
         currentOperator = nil
         isLocked = true
+        UserDefaults.standard.set(true, forKey: Self.isLockedKey)
     }
 
     // MARK: - PIN Authentication

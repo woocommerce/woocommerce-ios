@@ -71,16 +71,18 @@ struct POSFloatingControlView: View {
 
 private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
-        Button {
-            analytics.track(.pointOfSaleExitMenuItemTapped)
-            showExitPOSModal = true
-        } label: {
-            Label(
-                title: { Text(Localization.exitPointOfSale) },
-                icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
-            )
+        if !permissions.isLocked {
+            Button {
+                analytics.track(.pointOfSaleExitMenuItemTapped)
+                showExitPOSModal = true
+            } label: {
+                Label(
+                    title: { Text(Localization.exitPointOfSale) },
+                    icon: { Image(systemName: "rectangle.portrait.and.arrow.forward") }
+                )
+            }
+            .accessibilityIdentifier("pos-exit-menu-item")
         }
-        .accessibilityIdentifier("pos-exit-menu-item")
         if horizontalSizeClass == .regular || featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype) {
             Button {
                 analytics.track(.pointOfSaleSettingsMenuItemTapped)

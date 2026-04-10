@@ -251,3 +251,30 @@ public enum BookingAttendanceStatus: String, CaseIterable, Codable {
     case unattended
     case unknown
 }
+
+// MARK: - Booking Duration Unit
+
+public extension Booking {
+    /// Represents the unit of a booking's duration.
+    /// Valid values defined in `woocommerce-bookings/includes/data-objects/class-wc-product-booking.php`.
+    enum DurationUnit: String {
+        case minute
+        case hour
+        case day
+        case month
+
+        /// The `Calendar.Component` corresponding to this duration unit.
+        public var calendarComponent: Calendar.Component {
+            switch self {
+            case .minute:
+                return .minute
+            case .hour:
+                return .hour
+            case .day:
+                return .day
+            case .month:
+                return .month
+            }
+        }
+    }
+}

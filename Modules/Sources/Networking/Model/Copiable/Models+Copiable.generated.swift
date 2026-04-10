@@ -1315,6 +1315,7 @@ extension Networking.OrderFulfillment {
         dateFulfilled: NullableCopiableProp<Date> = .copy,
         trackingNumber: NullableCopiableProp<String> = .copy,
         shipmentProvider: NullableCopiableProp<String> = .copy,
+        providerName: NullableCopiableProp<String> = .copy,
         trackingURL: NullableCopiableProp<String> = .copy
     ) -> Networking.OrderFulfillment {
         let siteID = siteID ?? self.siteID
@@ -1326,6 +1327,7 @@ extension Networking.OrderFulfillment {
         let dateFulfilled = dateFulfilled ?? self.dateFulfilled
         let trackingNumber = trackingNumber ?? self.trackingNumber
         let shipmentProvider = shipmentProvider ?? self.shipmentProvider
+        let providerName = providerName ?? self.providerName
         let trackingURL = trackingURL ?? self.trackingURL
 
         return Networking.OrderFulfillment(
@@ -1338,6 +1340,7 @@ extension Networking.OrderFulfillment {
             dateFulfilled: dateFulfilled,
             trackingNumber: trackingNumber,
             shipmentProvider: shipmentProvider,
+            providerName: providerName,
             trackingURL: trackingURL
         )
     }
@@ -1416,6 +1419,7 @@ extension Networking.POSProductVariation {
         fullDescription: NullableCopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
         globalUniqueID: NullableCopiableProp<String> = .copy,
+        typeKey: CopiableProp<String> = .copy,
         price: CopiableProp<String> = .copy,
         downloadable: CopiableProp<Bool> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
@@ -1430,6 +1434,7 @@ extension Networking.POSProductVariation {
         let fullDescription = fullDescription ?? self.fullDescription
         let sku = sku ?? self.sku
         let globalUniqueID = globalUniqueID ?? self.globalUniqueID
+        let typeKey = typeKey ?? self.typeKey
         let price = price ?? self.price
         let downloadable = downloadable ?? self.downloadable
         let manageStock = manageStock ?? self.manageStock
@@ -1445,6 +1450,7 @@ extension Networking.POSProductVariation {
             fullDescription: fullDescription,
             sku: sku,
             globalUniqueID: globalUniqueID,
+            typeKey: typeKey,
             price: price,
             downloadable: downloadable,
             manageStock: manageStock,

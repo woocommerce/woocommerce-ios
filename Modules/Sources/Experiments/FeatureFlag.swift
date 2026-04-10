@@ -230,6 +230,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case wooShippingFedEx
 
+    /// Enables the reschedule booking entry point in booking details
+    ///
+    case ciabBookingReschedule
+
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///
     case loggedOutFFPanel

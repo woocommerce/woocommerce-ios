@@ -98,6 +98,11 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var syncPOSCatalogOverCellular: Bool
 
+    /// The last time the sunset warning banner was dismissed for this store.
+    /// Used to throttle the banner to once every 14 days.
+    ///
+    public var lastSunsetWarningDismissedDate: Date?
+
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -120,7 +125,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 isPOSTabVisible: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
-                syncPOSCatalogOverCellular: Bool = true) {
+                syncPOSCatalogOverCellular: Bool = true,
+                lastSunsetWarningDismissedDate: Date? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -144,6 +150,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
+        self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -167,7 +174,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              searchTermsByKey: searchTermsByKey,
                              isPOSTabVisible: isPOSTabVisible,
                              lastPOSOpenedDate: lastPOSOpenedDate,
-                             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate)
+                             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
+                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate)
     }
 }
 
@@ -205,6 +213,7 @@ extension GeneralStoreSettings {
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
+        self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

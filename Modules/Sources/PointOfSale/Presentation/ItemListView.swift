@@ -145,7 +145,8 @@ struct ItemListView: View {
             }
         }
         // Both tabs exist in the ZStack simultaneously — prevent taps reaching the hidden tab.
-        .allowsHitTesting(selectedItemListType == itemListType)
+        // Compare by tab kind only — selectedItemListType includes search state that itemListType doesn't.
+        .allowsHitTesting(selectedItemListType.itemType == itemListType.itemType)
     }
 
     @ViewBuilder

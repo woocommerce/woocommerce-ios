@@ -73,7 +73,7 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
         return try result.get()
     }
 
-    func fetchResources(for siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> [BookingResource] {
+    func fetchResources(for siteID: Int64, pageNumber: Int, pageSize: Int, include: [Int64]?) async throws -> [BookingResource] {
         guard let result = fetchResourcesResult else {
             throw NetworkError.timeout()
         }

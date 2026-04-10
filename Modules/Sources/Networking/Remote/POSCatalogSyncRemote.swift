@@ -13,7 +13,7 @@ public protocol POSCatalogSyncRemoteProtocol {
     /// - Returns: Paginated list of POS products.
     // TODO - remove the periphery ignore comment when the incremental sync is integrated with POS.
     // periphery:ignore
-    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String?) async throws -> PagedItems<POSProduct>
+    func loadProducts(modifiedAfter: Date, siteID: Int64, pageNumber: Int, includeStatus: String?, posProductsOnly: Bool) async throws -> PagedItems<POSProduct>
 
     /// Loads POS product variations modified after the specified date for incremental sync.
     ///
@@ -118,7 +118,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     public func loadProducts(modifiedAfter: Date,
                              siteID: Int64,
                              pageNumber: Int,
-                             includeStatus: String? = nil)
+                             includeStatus: String? = nil,
+                             posProductsOnly: Bool = true)
     async throws -> PagedItems<POSProduct> {
         let path = Path.products
         var parameters: [String: String] = [
@@ -126,7 +127,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(Constants.defaultPageSize),
             ParameterKey.fields: POSProduct.requestFields.joined(separator: ","),
-            ParameterKey.posProductsOnly: String(true)
+            ParameterKey.posProductsOnly: String(posProductsOnly)
         ]
 
         if let includeStatus = includeStatus {
@@ -276,6 +277,8 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
                 products.append(product)
             case .variation(let variation):
                 variations.append(variation)
+            case .unsupported:
+                continue
             }
         }
 
@@ -460,7 +463,7 @@ public struct POSCatalogRequestResponse: Decodable {
     /// Timestamp when the job completed.
     public let completedAt: String?
     /// Progress percentage (0-100)
-    public let progress: Int?
+    public let progress: Double?
     /// Number of items processed so far
     public let processed: Int?
     /// Total number of items to process
@@ -480,7 +483,7 @@ public struct POSCatalogRequestResponse: Decodable {
                 downloadURL: String? = nil,
                 scheduledAt: String? = nil,
                 completedAt: String? = nil,
-                progress: Int? = nil,
+                progress: Double? = nil,
                 processed: Int? = nil,
                 total: Int? = nil) {
         self.status = status
@@ -506,6 +509,8 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
+    /// Items with malformed data that fail to decode are skipped during parsing
+    case unsupported
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -516,11 +521,18 @@ public enum POSCatalogItem: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(String.self, forKey: .type)
 
-        switch type {
-        case "variation":
-            self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
-        default:
-            self = .product(try container.decode(POSProduct.self, forKey: .data))
+        if type.contains("variation") {
+            do {
+                self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
+        } else {
+            do {
+                self = .product(try container.decode(POSProduct.self, forKey: .data))
+            } catch {
+                self = .unsupported
+            }
         }
     }
 }
@@ -537,30 +549,4 @@ public struct POSCatalogResponse {
 public enum POSCatalogSyncConstants {
     /// Background download session identifier prefix for POS catalog downloads
     public static let backgroundDownloadSessionPrefix = "com.woocommerce.pos.catalog.download"
-}
-
-private extension POSProduct {
-    var toVariation: POSProductVariation {
-        let variationAttributes = attributes.compactMap { attribute in
-            try? attribute.toProductVariationAttribute()
-        }
-
-        let firstImage = images.first
-
-        return .init(
-            siteID: siteID,
-            productID: parentID,
-            productVariationID: productID,
-            attributes: variationAttributes,
-            image: firstImage,
-            fullDescription: fullDescription,
-            sku: sku,
-            globalUniqueID: globalUniqueID,
-            price: price,
-            downloadable: downloadable,
-            manageStock: manageStock,
-            stockQuantity: stockQuantity,
-            stockStatusKey: stockStatusKey
-        )
-    }
 }

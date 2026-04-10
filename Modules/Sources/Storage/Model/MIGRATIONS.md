@@ -2,6 +2,14 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 136 (Release 24.6.0.0)
+- @rafaelkayumov 2026-04-06
+  - Added `OrderFulfillment` entity with attributes: `siteID`, `orderID`, `fulfillmentID`, `statusKey`, `isFulfilled`, `dateUpdated`, `dateFulfilled`, `trackingNumber`, `shipmentProvider`, `trackingURL`.
+- @itsmeichigo 2026-04-07
+  - Added `bookingDuration` attribute to `Product` entity.
+  - Added `bookingDurationUnit` attribute to `Product` entity.
+  - Added `bookingResourceIDs` attribute to `Product` entity.
+
 ## Model 135 (Release 24.5.0.0)
 - @rafaelkayumov 2026-03-31
   - Added `fulfillmentStatusKey` attribute to `Order` entity.

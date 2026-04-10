@@ -111,12 +111,12 @@ struct BookingsRemoteTests {
         #expect(unwrappedResource.resourceID == 22)
         #expect(unwrappedResource.name == "Joel (Sample resource)")
         #expect(unwrappedResource.quantity == 1)
-        #expect(unwrappedResource.role == "")
-        #expect(unwrappedResource.email == "")
-        #expect(unwrappedResource.phoneNumber == "")
+        #expect(unwrappedResource.role.isEmpty)
+        #expect(unwrappedResource.email?.isEmpty == true)
+        #expect(unwrappedResource.phoneNumber?.isEmpty == true)
         #expect(unwrappedResource.imageID == 0)
-        #expect(unwrappedResource.imageURL == "")
-        #expect(unwrappedResource.description == "")
+        #expect(unwrappedResource.imageURL?.isEmpty == true)
+        #expect(unwrappedResource.description?.isEmpty == true)
         #expect(unwrappedResource.siteID == sampleSiteID)
     }
 
@@ -261,6 +261,32 @@ struct BookingsRemoteTests {
 
         #expect((parameters["page"] as? String) == "3")
         #expect((parameters["per_page"] as? String) == "100")
+    }
+
+    @Test func test_fetchResources_sends_include_parameter_when_provided() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "resources/team-members", filename: "booking-resource-list")
+
+        // When
+        _ = try await remote.fetchResources(for: sampleSiteID, pageNumber: 1, pageSize: 25, include: [10, 20, 30])
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        #expect((request.parameters["include"] as? String) == "10,20,30")
+    }
+
+    @Test func test_fetchResources_does_not_send_include_parameter_when_nil() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "resources/team-members", filename: "booking-resource-list")
+
+        // When
+        _ = try await remote.fetchResources(for: sampleSiteID, pageNumber: 1, pageSize: 25)
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        #expect(request.parameters["include"] == nil)
     }
 
     @Test func test_updateBookingNote_sends_correct_parameters_for_booking_note() async throws {

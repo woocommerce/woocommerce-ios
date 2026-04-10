@@ -1086,24 +1086,9 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
     case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
-    // MARK: - Bookings
-    case mainTabBookingsSelect = "main_tab_bookings_select"
-    case mainTabBookingsReselect = "main_tab_bookings_reselect"
-    case bookingDetailCancelBooking = "booking_detail_cancel_booking"
-    case bookingDetailAttendanceStatusUpdate = "booking_detail_attendance_status_update"
-    case bookingDetailAddNoteTap = "booking_detail_add_note_tap"
-    case bookingDetailViewLinkedOrderTap = "booking_detail_view_linked_order_tap"
-    case bookingDetailRefundTap = "booking_detail_refund_tap"
-    case bookingListTabSelect = "booking_list_tab_select"
-    case bookingListView = "booking_list_view"
+    // MARK: - Bookings (error events only — other booking events use EventHorizon codegen)
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
     case bookingListFailedToUpdateBookingDetails = "booking_list_failed_to_update_booking_details"
-    case bookingListBookingTap = "booking_list_booking_tap"
-    case bookingListFiltersTap = "booking_list_filters_tap"
-    case bookingListApplyFilters = "booking_list_apply_filters"
-    case bookingListSearchTap = "booking_list_search_tap"
-    case bookingListSortByTap = "booking_list_sort_by_tap"
-    case bookingListSortByOptionTap = "booking_list_sort_by_option_tap"
 
     // MARK: Hub Menu
     //
@@ -1260,6 +1245,7 @@ public enum WooAnalyticsStat: String {
     case connectivityToolRequestResponse = "connectivity_tool_request_response"
     case connectivityToolReadMoreTapped = "connectivity_tool_read_more_tapped"
     case connectivityToolContactSupportTapped = "connectivity_tool_contact_support_tapped"
+    case preLoginConnectivityToolRequestResponse = "pre_login_connectivity_tool_request_response"
 
     // MARK: Watch App
     case watchAppOpened = "watch_app_opened"

@@ -99,12 +99,12 @@ struct POSManagerOverrideView: View {
     }
 
     private var approvedContent: some View {
-        VStack(spacing: POSSpacing.large) {
+        HStack(spacing: POSSpacing.small) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: Constants.successIconSize, weight: .regular))
                 .foregroundColor(.posSuccess)
             Text(Localization.approved)
-                .font(.posHeadingBold)
+                .font(.posBodyLargeBold)
                 .foregroundColor(.posOnSurface)
         }
         .frame(maxWidth: .infinity)
@@ -132,7 +132,7 @@ private extension POSManagerOverrideView {
     enum Constants {
         static let modalWidth: CGFloat = 500
         static let iconSize: CGFloat = 48
-        static let successIconSize: CGFloat = 64
+        static let successIconSize: CGFloat = 24
     }
 }
 

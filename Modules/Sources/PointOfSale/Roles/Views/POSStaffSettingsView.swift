@@ -380,22 +380,13 @@ private extension POSStaffSettingsRemoteView {
     }
 
     var manageStaffCard: some View {
-        POSInformationCard {
-            Button {
-                handleManageStaffTapped()
-            } label: {
-                HStack(spacing: POSSpacing.small) {
-                    Image(systemName: "link")
-                        .font(.posBodyMediumBold)
-                        .foregroundStyle(Color.posPrimary)
-                    Text(Localization.manageStaffButton)
-                        .font(.posBodyMediumBold)
-                        .foregroundStyle(Color.posPrimary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .buttonStyle(.plain)
+        Button {
+            handleManageStaffTapped()
+        } label: {
+            Text(Localization.manageStaffButton)
         }
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .frame(maxWidth: .infinity)
     }
 
     var footerText: some View {
@@ -584,9 +575,9 @@ private enum Localization {
     )
 
     static let manageStaffButton = NSLocalizedString(
-        "posStaffSettingsView.manageStaffButton",
-        value: "Manage staff in WordPress admin",
-        comment: "Button to open the WordPress admin staff management page."
+        "posStaffSettingsView.manageStaffWebButton",
+        value: "Manage staff on the web",
+        comment: "Button to open the WordPress admin staff management page in a web view."
     )
 
     static let manageStaffWebTitle = NSLocalizedString(

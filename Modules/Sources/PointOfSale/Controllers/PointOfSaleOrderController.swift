@@ -131,7 +131,6 @@ protocol PointOfSaleOrderControllerProtocol {
             throw error
         }
     }
-
 }
 
 private extension PointOfSaleOrderController {

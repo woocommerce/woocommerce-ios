@@ -177,7 +177,6 @@ extension PointOfSaleAggregateModel {
     func addToCart(_ item: POSItem) {
         trackCustomerInteractionStarted()
         cart.add(item)
-
     }
 
     func remove(cartItem: CartItem) {
@@ -187,12 +186,10 @@ extension PointOfSaleAggregateModel {
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }
         }
-
     }
 
     func cancelLoadingItem(id: UUID) {
         cart.removeItem(id: id)
-
     }
 
     func removeAllItemsFromCart(types: [CartItemType] =  CartItemType.allCases) {
@@ -204,7 +201,6 @@ extension PointOfSaleAggregateModel {
                 cart.coupons.removeAll()
             }
         }
-
     }
 
     @MainActor

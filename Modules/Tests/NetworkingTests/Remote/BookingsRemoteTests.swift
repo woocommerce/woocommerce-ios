@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Networking
 @testable import NetworkingCore
@@ -293,14 +294,16 @@ struct BookingsRemoteTests {
         // Given
         let remote = BookingsRemote(network: network)
         let bookingID: Int64 = 206
+        let startDate = Date(timeIntervalSince1970: 1776078000)
+        let endDate = Date(timeIntervalSince1970: 1776081600)
         network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
 
         // When
         _ = try await remote.rescheduleBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            startDate: "2026-04-10T09:00:00",
-            endDate: "2026-04-10T10:00:00",
+            startDate: startDate,
+            endDate: endDate,
             resourceID: 42
         )
 
@@ -308,8 +311,8 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["start"] as? String) == "2026-04-10T09:00:00")
-        #expect((parameters["end"] as? String) == "2026-04-10T10:00:00")
+        #expect((parameters["start"] as? Int64) == 1776078000)
+        #expect((parameters["end"] as? Int64) == 1776081600)
         #expect((parameters["resource_id"] as? String) == "42")
     }
 
@@ -317,14 +320,16 @@ struct BookingsRemoteTests {
         // Given
         let remote = BookingsRemote(network: network)
         let bookingID: Int64 = 206
+        let startDate = Date(timeIntervalSince1970: 1776078000)
+        let endDate = Date(timeIntervalSince1970: 1776081600)
         network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
 
         // When
         _ = try await remote.rescheduleBooking(
             from: sampleSiteID,
             bookingID: bookingID,
-            startDate: "2026-04-10T09:00:00",
-            endDate: "2026-04-10T10:00:00",
+            startDate: startDate,
+            endDate: endDate,
             resourceID: nil
         )
 
@@ -332,8 +337,8 @@ struct BookingsRemoteTests {
         let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
         let parameters = request.parameters
 
-        #expect((parameters["start"] as? String) == "2026-04-10T09:00:00")
-        #expect((parameters["end"] as? String) == "2026-04-10T10:00:00")
+        #expect((parameters["start"] as? Int64) == 1776078000)
+        #expect((parameters["end"] as? Int64) == 1776081600)
         #expect(parameters["resource_id"] == nil)
     }
 }

@@ -479,8 +479,8 @@ private extension BookingStore {
     func rescheduleBooking(
         siteID: Int64,
         bookingID: Int64,
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         resourceID: Int64?,
         onCompletion: @escaping (Error?) -> Void
     ) {

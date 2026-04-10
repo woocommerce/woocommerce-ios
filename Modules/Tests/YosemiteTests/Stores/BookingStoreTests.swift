@@ -986,8 +986,8 @@ struct BookingStoreTests {
                 BookingAction.rescheduleBooking(
                     siteID: sampleSiteID,
                     bookingID: 1,
-                    startDate: "2026-04-10T09:00:00",
-                    endDate: "2026-04-10T10:00:00",
+                    startDate: Date(timeIntervalSince1970: 1776078000),
+                    endDate: Date(timeIntervalSince1970: 1776081600),
                     resourceID: 42,
                     onCompletion: { error in
                         continuation.resume(returning: error)
@@ -1025,8 +1025,8 @@ struct BookingStoreTests {
                 BookingAction.rescheduleBooking(
                     siteID: sampleSiteID,
                     bookingID: 1,
-                    startDate: "2026-04-10T09:00:00",
-                    endDate: "2026-04-10T10:00:00",
+                    startDate: Date(timeIntervalSince1970: 1776078000),
+                    endDate: Date(timeIntervalSince1970: 1776081600),
                     resourceID: nil,
                     onCompletion: { error in
                         continuation.resume(returning: error)
@@ -1062,8 +1062,8 @@ struct BookingStoreTests {
                 BookingAction.rescheduleBooking(
                     siteID: sampleSiteID,
                     bookingID: 1,
-                    startDate: "2026-04-10T09:00:00",
-                    endDate: "2026-04-10T10:00:00",
+                    startDate: Date(timeIntervalSince1970: 1776078000),
+                    endDate: Date(timeIntervalSince1970: 1776081600),
                     resourceID: nil,
                     onCompletion: { error in
                         continuation.resume(returning: error)

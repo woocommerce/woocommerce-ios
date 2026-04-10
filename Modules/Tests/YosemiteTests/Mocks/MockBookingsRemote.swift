@@ -94,8 +94,8 @@ final class MockBookingsRemote: BookingsRemoteProtocol {
 
     func rescheduleBooking(from siteID: Int64,
                            bookingID: Int64,
-                           startDate: String,
-                           endDate: String,
+                           startDate: Date,
+                           endDate: Date,
                            resourceID: Int64?) async throws -> Booking? {
         guard let result = rescheduleBookingResult else {
             throw NetworkError.timeout()

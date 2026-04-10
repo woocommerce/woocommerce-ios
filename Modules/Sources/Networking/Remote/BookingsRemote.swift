@@ -36,8 +36,8 @@ public protocol BookingsRemoteProtocol {
 
     func rescheduleBooking(from siteID: Int64,
                            bookingID: Int64,
-                           startDate: String,
-                           endDate: String,
+                           startDate: Date,
+                           endDate: Date,
                            resourceID: Int64?) async throws -> Booking?
 }
 
@@ -296,21 +296,21 @@ public final class BookingsRemote: Remote, BookingsRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll update the booking.
     ///     - bookingID: The ID of the booking to reschedule.
-    ///     - startDate: New booking start datetime (ISO 8601 format).
-    ///     - endDate: New booking end datetime (ISO 8601 format).
+    ///     - startDate: New booking start date.
+    ///     - endDate: New booking end date.
     ///     - resourceID: Optional new resource/team member ID.
     ///
     public func rescheduleBooking(
         from siteID: Int64,
         bookingID: Int64,
-        startDate: String,
-        endDate: String,
+        startDate: Date,
+        endDate: Date,
         resourceID: Int64?
     ) async throws -> Booking? {
         let path = "\(Path.bookings)/\(bookingID)"
-        var parameters: [String: String] = [
-            ParameterKey.start: startDate,
-            ParameterKey.end: endDate
+        var parameters: [String: Any] = [
+            ParameterKey.start: Int64(startDate.timeIntervalSince1970),
+            ParameterKey.end: Int64(endDate.timeIntervalSince1970)
         ]
 
         if let resourceID {

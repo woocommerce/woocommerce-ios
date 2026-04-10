@@ -108,6 +108,14 @@ public enum POSCatalogSyncType: String {
     case incremental
 }
 
+/// Strategy used for catalog sync, for analytics tracking
+public enum POSCatalogSyncStrategy: String {
+    /// Paginated API sync
+    case localCatalog = "local_catalog"
+    /// File-based catalog API sync
+    case localCatalogFile = "local_catalog_file"
+}
+
 public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let fullSyncService: POSCatalogFullSyncServiceProtocol
     private let incrementalSyncService: POSCatalogIncrementalSyncServiceProtocol
@@ -116,6 +124,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
+    private let syncStrategy: POSCatalogSyncStrategy
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
@@ -138,7 +147,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
-                connectivityObserver: ConnectivityObserver? = nil) {
+                connectivityObserver: ConnectivityObserver? = nil,
+                usesCatalogAPI: Bool = false) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -146,6 +156,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
+        self.syncStrategy = usesCatalogAPI ? .localCatalogFile : .localCatalog
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
@@ -156,7 +167,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         guard try await shouldPerformFullSync(for: siteID, maxAge: maxAge) else {
             let reason = await getSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
-                                                                      syncType: POSCatalogSyncType.full.rawValue))
+                                                                      syncType: POSCatalogSyncType.full.rawValue,
+                                                                      syncStrategy: syncStrategy.rawValue))
             throw POSCatalogSyncError.shouldNotSync
         }
 
@@ -171,7 +183,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Track sync started analytics
         let connectionType = getConnectionType()
-        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue, connectionType: connectionType))
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue,
+                                                                  syncStrategy: syncStrategy.rawValue,
+                                                                  connectionType: connectionType))
 
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
@@ -202,6 +216,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
                 syncType: POSCatalogSyncType.full.rawValue,
+                syncStrategy: syncStrategy.rawValue,
                 productsSynced: syncedCatalog.products.count,
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
@@ -217,6 +232,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.full.rawValue,
+                syncStrategy: syncStrategy.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -231,6 +247,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.full.rawValue,
+                syncStrategy: syncStrategy.rawValue,
                 error: error,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -324,7 +341,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         guard try await shouldPerformIncrementalSync(for: siteID, maxAge: maxAge) else {
             let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
-                                                                      syncType: POSCatalogSyncType.incremental.rawValue))
+                                                                      syncType: POSCatalogSyncType.incremental.rawValue,
+                                                                      syncStrategy: syncStrategy.rawValue))
             return
         }
 
@@ -352,7 +370,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
         // Track sync started analytics
         let connectionType = getConnectionType()
-        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue, connectionType: connectionType))
+        trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue,
+                                                                  syncStrategy: syncStrategy.rawValue,
+                                                                  connectionType: connectionType))
 
         let syncStartTime = Date()
 
@@ -379,6 +399,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let (totalProducts, totalVariations) = await getStorageCounts(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncCompleted(
                 syncType: POSCatalogSyncType.incremental.rawValue,
+                syncStrategy: syncStrategy.rawValue,
                 productsSynced: syncedCatalog.products.count + syncedCatalog.productsToRemove.count,
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
@@ -389,6 +410,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.incremental.rawValue,
+                syncStrategy: syncStrategy.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
@@ -398,6 +420,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             // Track sync failed analytics
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.incremental.rawValue,
+                syncStrategy: syncStrategy.rawValue,
                 error: error,
                 errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))

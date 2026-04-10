@@ -57,6 +57,7 @@ extension WooAnalyticsEvent {
         private enum Key {
             static let hoursSinceLastSync = "hours_since_last_sync"
             static let syncType = "sync_type"
+            static let syncStrategy = "sync_strategy"
             static let connectionType = "connection_type"
             static let productsSynced = "products_synced"
             static let variationsSynced = "variations_synced"
@@ -108,16 +109,18 @@ extension WooAnalyticsEvent {
 
         // MARK: - Core Sync Events
 
-        public static func syncStarted(syncType: String, connectionType: String) -> WooAnalyticsEvent {
+        public static func syncStarted(syncType: String, syncStrategy: String, connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncStarted,
                               properties: [
                                 Key.syncType: syncType,
+                                Key.syncStrategy: syncStrategy,
                                 Key.connectionType: connectionType
                               ])
         }
 
         public static func syncCompleted(
             syncType: String,
+            syncStrategy: String,
             productsSynced: Int,
             variationsSynced: Int,
             totalProducts: Int,
@@ -127,6 +130,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncCompleted,
                               properties: [
                                 Key.syncType: syncType,
+                                Key.syncStrategy: syncStrategy,
                                 Key.productsSynced: "\(productsSynced)",
                                 Key.variationsSynced: "\(variationsSynced)",
                                 Key.totalProducts: "\(totalProducts)",
@@ -137,6 +141,7 @@ extension WooAnalyticsEvent {
 
         public static func syncFailed(
             syncType: String,
+            syncStrategy: String,
             error: Error,
             errorClassifier: (Error) -> String
         ) -> WooAnalyticsEvent {
@@ -144,15 +149,17 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncFailed,
                                      properties: [
                                         Key.syncType: syncType,
+                                        Key.syncStrategy: syncStrategy,
                                         Key.errorType: errorType
                                      ],
                                      error: error)
         }
 
-        public static func syncSkipped(reason: String, syncType: String) -> WooAnalyticsEvent {
+        public static func syncSkipped(reason: String, syncType: String, syncStrategy: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
                               properties: [Key.reason: reason,
-                                           Key.syncType: syncType])
+                                           Key.syncType: syncType,
+                                           Key.syncStrategy: syncStrategy])
         }
     }
 }

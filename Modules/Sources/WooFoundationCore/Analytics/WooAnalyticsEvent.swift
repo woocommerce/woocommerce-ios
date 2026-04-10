@@ -64,6 +64,8 @@ extension WooAnalyticsEvent {
             static let totalProducts = "total_products"
             static let totalVariations = "total_variations"
             static let syncDurationMs = "sync_duration_ms"
+            static let generationDurationMs = "generation_duration_ms"
+            static let pollAttempts = "poll_attempts"
             static let errorType = "error_type"
             static let reason = "reason"
         }
@@ -125,18 +127,26 @@ extension WooAnalyticsEvent {
             variationsSynced: Int,
             totalProducts: Int,
             totalVariations: Int,
-            syncDurationMs: Int
+            syncDurationMs: Int,
+            generationDurationMs: Int? = nil,
+            pollAttempts: Int? = nil
         ) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncCompleted,
-                              properties: [
-                                Key.syncType: syncType,
-                                Key.syncStrategy: syncStrategy,
-                                Key.productsSynced: "\(productsSynced)",
-                                Key.variationsSynced: "\(variationsSynced)",
-                                Key.totalProducts: "\(totalProducts)",
-                                Key.totalVariations: "\(totalVariations)",
-                                Key.syncDurationMs: "\(syncDurationMs)"
-                              ])
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.syncType: syncType,
+                Key.syncStrategy: syncStrategy,
+                Key.productsSynced: "\(productsSynced)",
+                Key.variationsSynced: "\(variationsSynced)",
+                Key.totalProducts: "\(totalProducts)",
+                Key.totalVariations: "\(totalVariations)",
+                Key.syncDurationMs: "\(syncDurationMs)"
+            ]
+            if let generationDurationMs {
+                properties[Key.generationDurationMs] = "\(generationDurationMs)"
+            }
+            if let pollAttempts {
+                properties[Key.pollAttempts] = "\(pollAttempts)"
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncCompleted, properties: properties)
         }
 
         public static func syncFailed(

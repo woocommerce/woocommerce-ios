@@ -25,6 +25,19 @@ public protocol POSCatalogFullSyncServiceProtocol {
     func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64) async throws -> POSCatalog
 }
 
+/// Metadata from file-based catalog sync, used for analytics tracking.
+public struct POSCatalogSyncMetadata {
+    /// Number of polling attempts before completion
+    public let pollAttempts: Int
+    /// Server-side generation duration in milliseconds (completedAt - scheduledAt)
+    public let generationDurationMs: Int?
+
+    public init(pollAttempts: Int, generationDurationMs: Int?) {
+        self.pollAttempts = pollAttempts
+        self.generationDurationMs = generationDurationMs
+    }
+}
+
 /// POS catalog from full sync.
 public struct POSCatalog {
     public let products: [POSProduct]
@@ -37,14 +50,19 @@ public struct POSCatalog {
     /// Variations are not tracked separately, they cascade delete in GRDB when their parent product is removed.
     public let productsToRemove: [Int64]
 
+    /// Metadata from file-based sync polling, nil for paginated syncs.
+    public let syncMetadata: POSCatalogSyncMetadata?
+
     public init(products: [POSProduct],
                 variations: [POSProductVariation],
                 syncDate: Date,
-                productsToRemove: [Int64] = []) {
+                productsToRemove: [Int64] = [],
+                syncMetadata: POSCatalogSyncMetadata? = nil) {
         self.products = products
         self.variations = variations
         self.syncDate = syncDate
         self.productsToRemove = productsToRemove
+        self.syncMetadata = syncMetadata
     }
 }
 
@@ -188,45 +206,79 @@ private extension POSCatalogFullSyncService {
                                    allowCellular: Bool,
                                    maxAttempts: Int) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
-        let catalog = try await downloadCatalog(for: siteID,
-                                                syncRemote: syncRemote,
-                                                regenerateCatalog: regenerateCatalog,
-                                                allowCellular: allowCellular,
-                                                maxAttempts: maxAttempts)
+        let (catalog, pollingResult) = try await downloadCatalog(for: siteID,
+                                                                  syncRemote: syncRemote,
+                                                                  regenerateCatalog: regenerateCatalog,
+                                                                  allowCellular: allowCellular,
+                                                                  maxAttempts: maxAttempts)
         let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
         DDLogInfo("🟣 Catalog download completed - Time: \(String(format: "%.2f", downloadTime))s")
 
-        return .init(products: catalog.products, variations: catalog.variations, syncDate: .init())
+        let generationDurationMs = Self.computeGenerationDuration(scheduledAt: pollingResult.scheduledAt,
+                                                                   completedAt: pollingResult.completedAt)
+        let metadata = POSCatalogSyncMetadata(pollAttempts: pollingResult.pollAttempts,
+                                              generationDurationMs: generationDurationMs)
+
+        return .init(products: catalog.products, variations: catalog.variations, syncDate: .init(), syncMetadata: metadata)
+    }
+
+    /// Computes server-side generation duration in milliseconds from ISO8601 timestamp strings.
+    private static func computeGenerationDuration(scheduledAt: String?, completedAt: String?) -> Int? {
+        guard let scheduledAt, let completedAt,
+              let scheduled = parseISO8601(scheduledAt),
+              let completed = parseISO8601(completedAt) else {
+            return nil
+        }
+        return Int(completed.timeIntervalSince(scheduled) * 1000)
+    }
+
+    private static func parseISO8601(_ string: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        if let date = formatter.date(from: string) {
+            return date
+        }
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.date(from: string)
     }
 }
 
 private extension POSCatalogFullSyncService {
+    /// Result from polling for catalog generation completion.
+    struct CatalogPollingResult {
+        let downloadURL: String
+        let pollAttempts: Int
+        let scheduledAt: String?
+        let completedAt: String?
+    }
+
     func downloadCatalog(for siteID: Int64,
                          syncRemote: POSCatalogSyncRemoteProtocol,
                          regenerateCatalog: Bool,
                          allowCellular: Bool,
-                         maxAttempts: Int) async throws -> POSCatalogResponse {
+                         maxAttempts: Int) async throws -> (POSCatalogResponse, CatalogPollingResult) {
         DDLogInfo("🟣 Starting catalog request...")
 
         // 1. Requests catalog until download URL is available.
         let response = try await syncRemote.requestCatalogGeneration(for: siteID, forceGeneration: regenerateCatalog, allowCellular: allowCellular)
-        let downloadURL: String?
+        let pollingResult: CatalogPollingResult
         if let url = response.downloadURL {
-            downloadURL = url
+            pollingResult = CatalogPollingResult(downloadURL: url,
+                                                pollAttempts: 0,
+                                                scheduledAt: response.scheduledAt,
+                                                completedAt: response.completedAt)
         } else {
             // 2. Polls for completion until download URL is available.
-            downloadURL = try await pollForCatalogCompletion(siteID: siteID,
-                                                             syncRemote: syncRemote,
-                                                             allowCellular: allowCellular,
-                                                             maxAttempts: maxAttempts)
+            pollingResult = try await pollForCatalogCompletion(siteID: siteID,
+                                                               syncRemote: syncRemote,
+                                                               allowCellular: allowCellular,
+                                                               maxAttempts: maxAttempts)
         }
 
         // 3. Downloads catalog using the provided URL.
-        guard let downloadURL else {
-            throw POSCatalogSyncError.invalidData
-        }
-        DDLogInfo("🟣 Catalog ready for download: \(downloadURL)")
-        return try await syncRemote.downloadCatalog(for: siteID, downloadURL: downloadURL, allowCellular: allowCellular)
+        DDLogInfo("🟣 Catalog ready for download: \(pollingResult.downloadURL)")
+        let catalog = try await syncRemote.downloadCatalog(for: siteID, downloadURL: pollingResult.downloadURL, allowCellular: allowCellular)
+        return (catalog, pollingResult)
     }
 
     /// Polls for catalog generation completion using exponential backoff.
@@ -246,7 +298,7 @@ private extension POSCatalogFullSyncService {
     func pollForCatalogCompletion(siteID: Int64,
                                   syncRemote: POSCatalogSyncRemoteProtocol,
                                   allowCellular: Bool,
-                                  maxAttempts: Int) async throws -> String {
+                                  maxAttempts: Int) async throws -> CatalogPollingResult {
         var attempts = 0
         var currentDelay = PollingConfig.initialDelay
 
@@ -261,7 +313,10 @@ private extension POSCatalogFullSyncService {
                     throw POSCatalogSyncError.invalidData
                 }
                 DDLogInfo("🟣 Catalog generation completed after \(attempts + 1) poll(s)")
-                return downloadURL
+                return CatalogPollingResult(downloadURL: downloadURL,
+                                            pollAttempts: attempts + 1,
+                                            scheduledAt: response.scheduledAt,
+                                            completedAt: response.completedAt)
             case .scheduled, .inProgress:
                 DDLogInfo("🟣 Catalog request \(response.status)... (attempt \(attempts + 1), " +
                           "progress: \(response.progress ?? -1), processed: \(response.processed ?? -1)/\(response.total ?? -1))")

@@ -221,7 +221,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
-                syncDurationMs: syncDurationMs
+                syncDurationMs: syncDurationMs,
+                generationDurationMs: syncedCatalog.syncMetadata?.generationDurationMs,
+                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {

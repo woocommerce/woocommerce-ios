@@ -101,13 +101,17 @@ public final class RefundsRemote: Remote {
     public func createRefund(for siteID: Int64,
                              by orderID: Int64,
                              refund: Refund,
+                             approvalToken: String? = nil,
                              completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
         do {
             let encodedJson = try mapper.map(refund: refund)
-            let parameters: [String: Any]? = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any]
+            var parameters = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any] ?? [:]
+            if let approvalToken {
+                parameters[ParameterKey.posApproval] = approvalToken
+            }
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
@@ -142,6 +146,7 @@ public extension RefundsRemote {
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
         static let include: String    = "include"
+        static let posApproval: String = "_pos_approval"
     }
 }
 
@@ -158,9 +163,9 @@ extension RefundsRemote: POSRefundsRemoteProtocol {
         }
     }
 
-    public func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund) async throws -> Refund {
+    public func createRefund(for siteID: Int64, by orderID: Int64, refund: Refund, approvalToken: String? = nil) async throws -> Refund {
         return try await withCheckedThrowingContinuation { continuation in
-            createRefund(for: siteID, by: orderID, refund: refund) { createdRefund, error in
+            createRefund(for: siteID, by: orderID, refund: refund, approvalToken: approvalToken) { createdRefund, error in
                 if let error {
                     continuation.resume(throwing: error)
                 } else if let createdRefund {

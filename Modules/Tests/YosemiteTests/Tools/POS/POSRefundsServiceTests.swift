@@ -452,6 +452,24 @@ struct POSRefundsServiceTests {
         #expect(remote.spyCreateRefundOrderID == orderID)
     }
 
+    @Test func createRefund_then_passes_approval_token_to_remote() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+
+        // When
+        try await sut.createRefund(
+            orderID: 456,
+            items: [],
+            reason: nil,
+            isAutomaticRefund: true,
+            approvalToken: "approval-token-123"
+        )
+
+        // Then
+        #expect(remote.spyCreateRefundApprovalToken == "approval-token-123")
+    }
+
     @Test func createRefund_then_builds_refund_with_correct_amount_from_calculator() async throws {
         // Given
         let remote = MockPOSRefundsRemote()

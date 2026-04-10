@@ -60,7 +60,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         case .PR:
             self.init(
@@ -75,7 +75,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         case .CA:
             self.init(
@@ -88,7 +88,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: 25000,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         case .GB:
             self.init(
@@ -104,9 +104,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: 10000,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 18,
-                                                                minorVersion: 0,
-                                                                patchVersion: 1)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         default:
             self.init(
@@ -119,7 +117,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 18, minorVersion: 0, patchVersion: 1)
+                minimumOperatingSystemVersionForTapToPay: Constants.sharedMinimumIosVersion
             )
         }
     }
@@ -139,6 +137,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 private enum Constants {
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
+    static let sharedMinimumIosVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
 }
 
 /// The `@retroactive` attribute is used to apply `Equatable` conformance to `OperatingSystemVersion` from the Foundation module.

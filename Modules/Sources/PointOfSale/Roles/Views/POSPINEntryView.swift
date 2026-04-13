@@ -93,13 +93,16 @@ struct POSPINEntryView: View {
             .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: isLoading)
             .offset(x: shakeOffset)
 
-            if let displayMessage {
-                Text(displayMessage)
-                    .font(.posBodyMediumRegular())
-                    .foregroundColor(messageColor)
-                    .multilineTextAlignment(.center)
-                    .transition(.opacity)
+            Group {
+                if let displayMessage {
+                    Text(displayMessage)
+                        .font(.posBodyMediumRegular())
+                        .foregroundColor(messageColor)
+                        .multilineTextAlignment(.center)
+                        .transition(.opacity)
+                }
             }
+            .frame(height: Constants.errorMessageHeight)
         }
         .animation(.default, value: displayMessage)
     }
@@ -239,6 +242,7 @@ private extension POSPINEntryView {
         static let buttonSize: CGFloat = 72
         static let dotSize: CGFloat = 16
         static let dotBorderWidth: CGFloat = 2
+        static let errorMessageHeight: CGFloat = 20
         static let shakeDistance: CGFloat = 10
         static let shakeStepDuration: TimeInterval = 0.08
         static let emptyKey = ""

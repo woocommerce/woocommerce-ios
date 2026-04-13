@@ -209,16 +209,25 @@ private extension POSStaffSettingsLocalView {
     }
 
     var pinEntryModal: some View {
-        VStack(spacing: POSSpacing.xxLarge) {
+        VStack(spacing: POSSpacing.xLarge) {
+            HStack {
+                Spacer()
+                Button {
+                    dismissPINEntry()
+                } label: {
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurfaceVariantLowest)
+                .accessibilityLabel(Localization.closeAccessibilityLabel)
+            }
+
             POSPINEntryView(
                 title: pinEntryTitle,
                 subtitle: Localization.pinEntrySubtitle,
                 state: $pinEntryState,
                 onPINEntered: { pin in
                     handlePINEntered(pin)
-                },
-                onCancel: {
-                    dismissPINEntry()
                 }
             )
         }
@@ -463,6 +472,12 @@ private enum Localization {
         "posStaffSettingsView.staffTitle",
         value: "Staff",
         comment: "Navigation title for the staff settings detail view in POS settings."
+    )
+
+    static let closeAccessibilityLabel = NSLocalizedString(
+        "posStaffSettingsView.close.accessibilityLabel",
+        value: "Close",
+        comment: "Accessibility label for the close button on the POS staff settings PIN entry modal"
     )
 
     // MARK: Local Mode

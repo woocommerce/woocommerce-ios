@@ -107,12 +107,15 @@ struct POSPINEntryViewHelperTests {
         #expect(shouldResetState == false)
     }
 
-    @Test func test_applyStateChange_when_idle_then_clears_entered_pin_without_shake() {
+    @Test func test_applyStateChange_when_idle_then_preserves_entered_pin_without_shake() {
+        // Given
         var sut = makeSUT(enteredPIN: "123")
 
+        // When
         let shouldShake = sut.applyStateChange(.idle)
 
-        #expect(sut.enteredPIN.isEmpty)
+        // Then - idle should NOT clear PIN to allow continued input after error reset
+        #expect(sut.enteredPIN == "123")
         #expect(shouldShake == false)
     }
 

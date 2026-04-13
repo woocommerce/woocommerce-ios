@@ -73,6 +73,7 @@ struct POSLockScreenOverlay: View {
     }
 
     private func handlePINEntered(_ pin: String) {
+        pinState = .loading
         Task { @MainActor in
             let success = await model.authenticatePIN(pin)
             if !success {

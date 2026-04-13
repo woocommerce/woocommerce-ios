@@ -89,16 +89,17 @@ struct POSPINEntryViewHelper {
     }
 
     mutating func applyStateChange(_ newState: POSPINEntryState) -> Bool {
-        if case .loading = newState {
+        switch newState {
+        case .loading:
+            return false
+        case .error:
+            enteredPIN = ""
+            return true
+        case .lockout:
+            enteredPIN = ""
+            return false
+        case .idle:
             return false
         }
-
-        enteredPIN = ""
-
-        if case .error = newState {
-            return true
-        }
-
-        return false
     }
 }

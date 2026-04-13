@@ -26,7 +26,9 @@ public final class POSAuthRemote: Remote {
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         do {
-            return try await enqueue(request)
+            return try await enqueue(request, mapper: POSPINAuthResultMapper())
+        } catch let posError as POSAuthError {
+            throw posError
         } catch {
             throw POSAuthError.from(error)
         }
@@ -61,7 +63,9 @@ public final class POSAuthRemote: Remote {
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         do {
-            return try await enqueue(request)
+            return try await enqueue(request, mapper: POSApprovalResultMapper())
+        } catch let posError as POSAuthError {
+            throw posError
         } catch {
             throw POSAuthError.from(error)
         }
@@ -81,8 +85,9 @@ public final class POSAuthRemote: Remote {
                                      path: path,
                                      availableAsRESTRequest: true)
         do {
-            let response: POSStaffStatusResponse = try await enqueue(request)
-            return response.users
+            return try await enqueue(request, mapper: POSStaffStatusMapper())
+        } catch let posError as POSAuthError {
+            throw posError
         } catch {
             throw POSAuthError.from(error)
         }

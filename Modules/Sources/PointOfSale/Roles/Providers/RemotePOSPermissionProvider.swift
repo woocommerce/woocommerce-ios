@@ -226,6 +226,24 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
             idleTimeoutSeconds: response.idleTimeoutSeconds
         )
 
+        // TODO: Credential switching for remote POS sessions
+        // After PIN auth, the backend returns an Application Password for the cashier.
+        // Currently, all subsequent API calls still use the admin's credentials because
+        // the app's networking layer (SessionManager.defaultCredentials) is not updated.
+        // The backend's current_user_can() sees the admin, not the cashier.
+        //
+        // To fix this, the app target needs to:
+        // 1. Store the original admin credentials before switching.
+        // 2. Create a Credentials.applicationPassword with the cashier's username
+        //    (from response.displayName or a login field) and the Application Password.
+        // 3. Update the networking layer to use the cashier credential for POS requests.
+        //    Options: swap SessionManager.defaultCredentials, use a per-request credential
+        //    override, or create a separate Network instance for POS.
+        // 4. On lock() or POS exit, revert to the admin's original credentials.
+        //
+        // This should be coordinated in the app target (POSPermissionAdaptor or
+        // POSTabCoordinator) since credential management is outside the POS module.
+
         signIn(posOperator)
         return posOperator
     }

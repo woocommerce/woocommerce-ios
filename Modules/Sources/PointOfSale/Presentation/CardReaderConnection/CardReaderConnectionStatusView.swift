@@ -67,17 +67,9 @@ struct CardReaderConnectionStatusView: View {
                         Text(Localization.cancelReconnection)
                     }
                 } label: {
-                    HStack(spacing: Constants.buttonImageAndTextSpacing) {
-                        ProgressView()
-                            .progressViewStyle(POSProgressViewStyle(
-                                size: Constants.progressIndicatorDimension * scale,
-                                lineWidth: Constants.progressIndicatorLineWidth * scale
-                            ))
-                        Text(isCancellingReconnection ? Localization.cancellingReconnection : Localization.readerReconnecting)
-                            .foregroundColor(connectedFontColor)
-                    }
-                    .padding(.horizontal, Constants.horizontalPadding)
-                    .frame(maxHeight: .infinity)
+                    progressIndicatingCardReaderStatus(
+                        title: isCancellingReconnection ? Localization.cancellingReconnection : Localization.readerReconnecting
+                    )
                 }
                 .disabled(isCancellingReconnection)
                 .accessibilityIdentifier("pos-reader-reconnecting")

@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import Yosemite
-import enum Networking.SitePluginStatusEnum
 import UserNotifications
 
 // MARK: - Notifications Check
@@ -14,21 +13,13 @@ extension ConnectivityToolViewModel {
     func testNotifications() async -> ConnectivityToolCard.ConnectivityState {
         // Sub-check 1: Jetpack plugin is active.
         let jetpackResult = await checkJetpackPluginActiveIfNeeded()
-        if case .failure(let error) = jetpackResult {
-            DDLogError("Connectivity Tool: ❌ Jetpack plugin check failed\n\(error)")
-            switch error {
-            case .pluginNotActive:
-                let setupJetpackAction = makeNotificationAction(.setupJetpack) { [weak self] in
-                    self?.shouldStartJetpackSetup = true
-                }
-                return .error(Localization.ErrorMessage.jetpackPluginNotActive,
-                              [setupJetpackAction, retryAction(for: .notifications)])
-            case .requestFailed(let underlyingError):
-                let technicalDetails = String(describing: underlyingError)
-                let viewDetailsAction = makeNotificationAction(.viewDetails, technicalDetails: technicalDetails)
-                return .error(Localization.ErrorMessage.notificationConfigCheckFailed,
-                              [viewDetailsAction, retryAction(for: .notifications)])
+        if case .failure = jetpackResult {
+            DDLogError("Connectivity Tool: ❌ Jetpack plugin not found in active plugins")
+            let setupJetpackAction = makeNotificationAction(.setupJetpack) { [weak self] in
+                self?.shouldStartJetpackSetup = true
             }
+            return .error(Localization.ErrorMessage.jetpackPluginNotActive,
+                          [setupJetpackAction, retryAction(for: .notifications)])
         }
 
         // Sub-check 2: iOS notification permission is authorized.
@@ -70,7 +61,9 @@ extension ConnectivityToolViewModel {
         }
     }
 
-    /// Authenticates and retrieves the Jetpack plugin details to verify it's active.
+    /// Checks whether Jetpack is active using the active plugins from the system status report
+    /// (cached during the site connectivity test). This avoids calling `/wp/v2/plugins`,
+    /// which requires administrator-level permissions and fails for shop manager users.
     ///
     @MainActor
     func checkJetpackPluginActiveIfNeeded() async -> Result<Void, JetpackCheckError> {
@@ -80,25 +73,13 @@ extension ConnectivityToolViewModel {
             return .success(())
         }
 
-        /// Authenticate the JetpackConnectionStore with current network.
-        if let siteURL {
-            stores.dispatch(JetpackConnectionAction.authenticate(siteURL: siteURL, network: network))
-        }
+        let jetpackSlug = "jetpack/"
+        let isJetpackActive = activeSystemPlugins.contains { $0.plugin.hasPrefix(jetpackSlug) }
 
-        return await withCheckedContinuation { continuation in
-            let action = JetpackConnectionAction.retrieveJetpackPluginDetails(siteID: siteID) { result in
-                switch result {
-                case .success(let plugin):
-                    if plugin.status == .active || plugin.status == .networkActive {
-                        continuation.resume(returning: .success(()))
-                    } else {
-                        continuation.resume(returning: .failure(.pluginNotActive(status: plugin.status)))
-                    }
-                case .failure(let error):
-                    continuation.resume(returning: .failure(.requestFailed(error)))
-                }
-            }
-            stores.dispatch(action)
+        if isJetpackActive {
+            return .success(())
+        } else {
+            return .failure(.pluginNotActive)
         }
     }
 
@@ -271,8 +252,7 @@ extension ConnectivityToolViewModel {
     /// Error types for the Jetpack plugin check.
     ///
     enum JetpackCheckError: Error {
-        case pluginNotActive(status: SitePluginStatusEnum)
-        case requestFailed(Error)
+        case pluginNotActive
     }
 
     /// Error types for the notification permission check.
@@ -308,9 +288,8 @@ private extension ConnectivityToolViewModel {
                 comment: "Message when iOS notification permission is denied in the connectivity tool"
             )
             static let deviceNotRegistered = NSLocalizedString(
-                "connectivityToolViewModel.errorMessage.deviceNotRegistered",
-                value: "Your device doesn't appear to be registered for push notifications.\n\n" +
-                "Try logging out and back in to re-register.",
+                "connectivityToolViewModel.errorMessage.deviceNotRegisteredForPN",
+                value: "Your device doesn't appear to be registered for push notifications.",
                 comment: "Message when the device is not registered for push notifications in the connectivity tool"
             )
             static let orderNotificationsDisabled = NSLocalizedString(

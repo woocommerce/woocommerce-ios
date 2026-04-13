@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 import Yosemite
-import enum Networking.SitePluginStatusEnum
 @testable import WooCommerce
 
 @MainActor
@@ -222,41 +221,20 @@ struct ConnectivityToolViewModelTests {
     }
 
     @Test func test_testNotifications_when_jetpack_not_active_then_returns_error_with_setup_jetpack_action() async {
-        // Given — self-hosted site (isWordPressComStore: false)
+        // Given — self-hosted site (isWordPressComStore: false) with no Jetpack in active plugins
         let site = Site.fake().copy(isWordPressComStore: false)
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .authorized
 
-        let inactivePlugin = SitePlugin(siteID: site.siteID,
-                                        plugin: "jetpack/jetpack",
-                                        status: .inactive,
-                                        name: "Jetpack",
-                                        pluginUri: "",
-                                        author: "",
-                                        authorUri: "",
-                                        descriptionRaw: "",
-                                        descriptionRendered: "",
-                                        version: "1.0",
-                                        networkOnly: false,
-                                        requiresWPVersion: "",
-                                        requiresPHPVersion: "",
-                                        textDomain: "")
-
-        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
-            switch action {
-            case let .retrieveJetpackPluginDetails(_, completion):
-                completion(.success(inactivePlugin))
-            default:
-                break
-            }
-        }
-
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
                                             pushNotesManager: mockPushNotesManager)
+
+        // Simulate system status report with no Jetpack plugin in active plugins.
+        sut.activeSystemPlugins = []
 
         // When
         let result = await sut.testNotifications()

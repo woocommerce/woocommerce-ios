@@ -55,6 +55,7 @@ public struct PointOfSaleEntryPointView: View {
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
     private let permissionProvider: POSPermissionProviding
+    private let staffSettingsMode: POSStaffSettingsMode?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -84,7 +85,8 @@ public struct PointOfSaleEntryPointView: View {
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          services: POSDependencyProviding,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         staffSettingsMode: POSStaffSettingsMode? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -171,6 +173,7 @@ public struct PointOfSaleEntryPointView: View {
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
         self.permissionProvider = services.permissions
+        self.staffSettingsMode = staffSettingsMode
     }
 
     public var body: some View {
@@ -226,6 +229,7 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.posExternalNavigation, services.externalNavigation)
         .environment(\.posExternalViews, services.externalViews)
         .environment(\.posPermissions, permissionProvider)
+        .environment(\.posStaffSettingsMode, staffSettingsMode)
         .environmentObject(posModalManager)
         .environmentObject(posSheetManager)
         .environmentObject(posCoverManager)

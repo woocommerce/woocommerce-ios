@@ -2,16 +2,23 @@ import SwiftUI
 
 // MARK: - Mode & Data Types
 
-enum POSStaffSettingsMode {
+public enum POSStaffSettingsMode {
     case local(pinService: POSPINService)
-    case remote(staffMembers: [StaffMemberInfo], manageURL: URL)
+    case remote(loadStaff: () async throws -> [StaffMemberInfo], manageURL: URL)
 }
 
-struct StaffMemberInfo: Identifiable {
-    let id: Int64
-    let displayName: String
-    let role: String
-    let hasPIN: Bool
+public struct StaffMemberInfo: Identifiable, Sendable {
+    public let id: Int64
+    public let displayName: String
+    public let role: String
+    public let hasPIN: Bool
+
+    public init(id: Int64, displayName: String, role: String, hasPIN: Bool) {
+        self.id = id
+        self.displayName = displayName
+        self.role = role
+        self.hasPIN = hasPIN
+    }
 }
 
 // MARK: - View
@@ -23,8 +30,8 @@ struct POSStaffSettingsView: View {
         switch mode {
         case .local(let pinService):
             POSStaffSettingsLocalView(pinService: pinService)
-        case .remote(let staffMembers, let manageURL):
-            POSStaffSettingsRemoteView(staffMembers: staffMembers, manageURL: manageURL)
+        case .remote(let loadStaff, let manageURL):
+            POSStaffSettingsRemoteView(loadStaff: loadStaff, manageURL: manageURL)
         }
     }
 }
@@ -298,9 +305,12 @@ private struct POSStaffSettingsRemoteView: View {
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.posPermissions) private var permissions
 
-    let staffMembers: [StaffMemberInfo]
+    let loadStaff: () async throws -> [StaffMemberInfo]
     let manageURL: URL
 
+    @State private var staffMembers: [StaffMemberInfo] = []
+    @State private var isLoading: Bool = false
+    @State private var loadError: Error?
     @State private var showManageStaff: Bool = false
     @State private var showManagerOverride: Bool = false
     @State private var managerOverrideState: POSManagerOverrideState = .awaitingPIN
@@ -313,7 +323,13 @@ private struct POSStaffSettingsRemoteView: View {
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
-                    staffListCard
+                    if isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, POSPadding.xLarge)
+                    } else if staffMembers.isEmpty == false {
+                        staffListCard
+                    }
                     manageStaffCard
                     footerText
                 }
@@ -321,12 +337,18 @@ private struct POSStaffSettingsRemoteView: View {
             }
         }
         .background(Color.posSurface)
+        .task {
+            await fetchStaff()
+        }
         .posFullScreenCover(isPresented: $showManageStaff) {
             externalViews.createAuthenticatedWebView(
                 url: manageURL,
                 title: Localization.manageStaffWebTitle,
                 completion: {
                     showManageStaff = false
+                    Task {
+                        await fetchStaff()
+                    }
                 }
             )
         }
@@ -428,6 +450,17 @@ private extension POSStaffSettingsRemoteView {
 // MARK: - Remote Mode Logic
 
 private extension POSStaffSettingsRemoteView {
+    func fetchStaff() async {
+        isLoading = true
+        loadError = nil
+        do {
+            staffMembers = try await loadStaff()
+        } catch {
+            loadError = error
+        }
+        isLoading = false
+    }
+
     func handleManageStaffTapped() {
         let result = permissions.checkPermission(.posManageSettings)
         switch result {
@@ -675,7 +708,7 @@ private enum Localization {
     ]
     return POSStaffSettingsView(
         mode: .remote(
-            staffMembers: members,
+            loadStaff: { members },
             manageURL: URL(string: "https://example.com/wp-admin/admin.php?page=wc-settings&tab=point-of-sale&section=staff")!
         )
     )

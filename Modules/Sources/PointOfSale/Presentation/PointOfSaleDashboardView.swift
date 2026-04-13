@@ -7,7 +7,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
 
@@ -31,16 +30,7 @@ struct PointOfSaleDashboardView: View {
         posModel.viewStateCoordinatorForView
     }
 
-    private var currentStaffSettingsMode: POSStaffSettingsMode {
-        if featureFlags.isFeatureFlagEnabled(.pointOfSaleRemoteRoles) {
-            return .remote(
-                staffMembers: [],
-                manageURL: URL(string: "https://example.com/wp-admin")!
-            )
-        } else {
-            return .local(pinService: POSPINService())
-        }
-    }
+    @Environment(\.posStaffSettingsMode) private var staffSettingsMode
 
     private var itemsViewState: ItemsViewState {
         switch viewStateCoordinator.selectedItemListType {
@@ -172,7 +162,7 @@ struct PointOfSaleDashboardView: View {
         }
         .posFullScreenCover(isPresented: $showSettings) {
             POSSettingsView(settingsController: posModel.settingsController,
-                            staffSettingsMode: currentStaffSettingsMode)
+                            staffSettingsMode: staffSettingsMode ?? .local(pinService: POSPINService()))
         }
         .posFullScreenCover(isPresented: $phoneShowOrders) {
             POSOrdersView(isPresented: $phoneShowOrders)

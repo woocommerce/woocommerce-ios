@@ -14,6 +14,9 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         }
     }
 
+    private(set) var readerReconnectionInProgress: Bool = false
+    private(set) var skipAutoSearchAfterReconnectionEnds: Bool = false
+
     private(set) var knownReaderProvider: CardReaderSettingsKnownReaderProvider?
     private(set) var siteID: Int64
 
@@ -47,6 +50,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
 
         beginKnownReaderObservation()
         beginConnectedReaderObservation()
+        beginReconnectionObservation()
         updateLearnMoreUrl(stores: stores)
     }
 
@@ -56,6 +60,14 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
 
     func hasKnownReader() -> Bool {
         knownReaderID != nil
+    }
+
+    func shouldSkipAutoSearch() -> Bool {
+        skipAutoSearchAfterReconnectionEnds
+    }
+
+    func clearSkipAutoSearch() {
+        skipAutoSearchAfterReconnectionEnds = false
     }
 
     /// Monitor for a known reader
@@ -89,11 +101,44 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         ServiceLocator.stores.dispatch(connectedAction)
     }
 
+    /// Set up to observe reader reconnection state
+    ///
+    private func beginReconnectionObservation() {
+        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionEvents in
+            reconnectionEvents
+                .sink { [weak self] state in
+                    guard let self = self else { return }
+
+                    switch state {
+                    case .reconnecting:
+                        self.readerReconnectionInProgress = true
+                        self.skipAutoSearchAfterReconnectionEnds = false
+                    case .succeeded:
+                        self.readerReconnectionInProgress = false
+                        self.skipAutoSearchAfterReconnectionEnds = false
+                    case .failed, .idle:
+                        if self.readerReconnectionInProgress {
+                            self.skipAutoSearchAfterReconnectionEnds = true
+                        }
+                        self.readerReconnectionInProgress = false
+                    }
+                    self.reevaluateShouldShow()
+                }
+                .store(in: &self.subscriptions)
+        }
+        ServiceLocator.stores.dispatch(reconnectionAction)
+    }
+
     /// Updates whether the view this viewModel is associated with should be shown or not
     /// Notifies the viewModel owner if a change occurs via didChangeShouldShow
     ///
     private func reevaluateShouldShow() {
-        let newShouldShow: CardReaderSettingsTriState = noConnectedReader
+        let newShouldShow: CardReaderSettingsTriState
+        if readerReconnectionInProgress {
+            newShouldShow = .isFalse
+        } else {
+            newShouldShow = noConnectedReader
+        }
 
         let didChange = newShouldShow != shouldShow
 

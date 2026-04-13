@@ -740,6 +740,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
+            cardPresentPaymentService.connectedReader = .init(name: "Test Reader", batteryLevel: 0.5)
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
@@ -757,6 +758,42 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cardPresentPaymentService.collectPaymentWasCalled)
+        }
+
+        @Test func cancelThenCollectPayment_cancels_reconnection_first_when_reconnecting() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .reconnecting(reader)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == true)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+        }
+
+        @Test func cancelThenCollectPayment_does_not_cancel_reconnection_when_not_reconnecting() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .connected(reader)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == false)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
         }
 
         // MARK: Onboarding
@@ -971,6 +1008,27 @@ struct PointOfSaleAggregateModelTests {
             #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
         }
 
+        @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: analytics)
+
+            // When
+            await withCheckedContinuation { continuation in
+                cardPresentPaymentService.onCancelReconnectionCalled = {
+                    continuation.resume()
+                }
+                sut.cancelReconnection()
+            }
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == true)
+        }
+
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {
             // Given
             let analyticsTracker = MockPOSCollectOrderPaymentAnalyticsTracker()
@@ -1044,6 +1102,55 @@ struct PointOfSaleAggregateModelTests {
             }
         }
     }
+
+    @MainActor struct SunsetWarningTests {
+        @Test func showSunsetWarning_defaults_to_false() {
+            // Given
+            let sut = makePointOfSaleAggregateModel()
+
+            // Then
+            #expect(sut.showSunsetWarning == false)
+        }
+
+        @Test func checkSunsetWarningStatus_when_checker_returns_true_then_showSunsetWarning_is_true() async {
+            // Given
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+
+            // When
+            await sut.checkSunsetWarningStatus()
+
+            // Then
+            #expect(sut.showSunsetWarning == true)
+        }
+
+        @Test func checkSunsetWarningStatus_when_checker_returns_false_then_showSunsetWarning_is_false() async {
+            // Given
+            let checker = MockPOSSunsetWarningChecker(shouldShow: false)
+            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+
+            // When
+            await sut.checkSunsetWarningStatus()
+
+            // Then
+            #expect(sut.showSunsetWarning == false)
+        }
+
+        @Test func dismissSunsetWarning_sets_showSunsetWarning_to_false_and_records_dismissal() async {
+            // Given
+            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
+            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+            await sut.checkSunsetWarningStatus()
+            #expect(sut.showSunsetWarning == true)
+
+            // When
+            sut.dismissSunsetWarning()
+
+            // Then
+            #expect(sut.showSunsetWarning == false)
+            #expect(checker.recordDismissalCalled == true)
+        }
+    }
 }
 
 private func makePurchasableItem(name: String = "") -> POSItem {
@@ -1092,7 +1199,8 @@ private func makePointOfSaleAggregateModel(
     soundPlayer: PointOfSaleSoundPlayerProtocol = MockPointOfSaleSoundPlayer(),
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
-    catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil
+    catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+    sunsetWarningChecker: POSSunsetWarningChecking? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
         entryPointController: entryPointController,
@@ -1112,6 +1220,7 @@ private func makePointOfSaleAggregateModel(
         soundPlayer: soundPlayer,
         paymentState: paymentState,
         siteID: siteID,
-        catalogSyncCoordinator: catalogSyncCoordinator
+        catalogSyncCoordinator: catalogSyncCoordinator,
+        sunsetWarningChecker: sunsetWarningChecker
     )
 }

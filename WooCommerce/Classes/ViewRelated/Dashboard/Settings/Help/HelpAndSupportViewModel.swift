@@ -5,16 +5,19 @@ struct HelpAndSupportViewModel {
     private let isAuthenticated: Bool
     private let isZendeskEnabled: Bool
     private let isMacCatalyst: Bool
+    private let hasLoginSiteURL: Bool
     private let developerFFPanelEnabled: Bool
 
     init(isAuthenticated: Bool,
          isZendeskEnabled: Bool,
          isMacCatalyst: Bool,
+         hasLoginSiteURL: Bool = false,
          developerFFPanelEnabled: Bool = false) {
         self.isAuthenticated = isAuthenticated
         self.isZendeskEnabled = isZendeskEnabled
         self.isMacCatalyst = isMacCatalyst
         self.developerFFPanelEnabled = developerFFPanelEnabled
+        self.hasLoginSiteURL = hasLoginSiteURL
     }
 
     func getRows() -> [HelpAndSupportRow] {
@@ -29,6 +32,9 @@ struct HelpAndSupportViewModel {
         var rows: [HelpAndSupportRow] = [.helpCenter, .contactSupport, .contactEmail, .applicationLog]
         if isAuthenticated {
             rows.append(.systemStatusReport)
+        }
+        if !isAuthenticated && hasLoginSiteURL {
+            rows.append(.siteCompatibility)
         }
         return rows
     }

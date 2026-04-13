@@ -5,6 +5,7 @@ struct TotalsView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(POSPaymentModel.self) private var paymentModel
     private let viewHelper = POSPaymentViewHelper()
+    private let totalsViewHelper = TotalsViewHelper()
 
     /// Used together with .matchedGeometryEffect to synchronize the animations of shimmeringLineView and text fields.
     /// This makes SwiftUI treat these views as a single entity in the context of animation.
@@ -45,7 +46,8 @@ struct TotalsView: View {
                             orderState: posModel.orderState,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
-                            connectCardReaderAction: paymentModel.connectCardReader
+                            connectCardReaderAction: paymentModel.connectCardReader,
+                            cancelReconnectionAction: posModel.cancelReconnection
                         )
                     }
 
@@ -72,8 +74,8 @@ struct TotalsView: View {
                         startCashPaymentAction: { paymentModel.startCashPayment() }
                     )
                 }
-                .animation(.default, value: isShowingPaymentView)
                 .scrollVerticallyIfNeeded()
+                .animation(.default, value: isShowingPaymentView)
             case .error(.other(let message), let handler):
                 PointOfSaleOrderSyncErrorMessageView(message: message, retryHandler: handler)
                     .transition(.opacity)
@@ -87,7 +89,6 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
-        .animation(.default, value: displayPaymentState.card)
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
@@ -95,7 +96,6 @@ struct TotalsView: View {
         .onChange(of: shouldShowTotalsFields) {
             hideTotalsFieldsWithDelay(shouldShowTotalsFields)
         }
-        .geometryGroup()
     }
 
     private var backgroundColor: Color {
@@ -141,7 +141,23 @@ private extension TotalsView {
     }
 
     private var isShowingPaymentView: Bool {
-        posModel.orderState.isLoaded
+        guard posModel.orderState.isLoaded else {
+            return false
+        }
+
+        switch paymentModel.cardReaderConnectionStatus {
+        case .disconnected:
+            return true
+        case .connected, .disconnecting, .cancellingConnection, .reconnecting:
+            switch displayPaymentState.activePaymentMethod {
+            case .cash:
+                return true
+            case .card:
+                return paymentModel.cardPresentPaymentInlineMessage != nil ||
+                       totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                                      paymentState: displayPaymentState)
+            }
+        }
     }
 
     private var cardReaderViewLayout: PaymentViewLayout {
@@ -173,8 +189,12 @@ private extension TotalsView {
                     .validatingOrder,
                     .preparingReader,
                     .processingPayment:
-                if POSPaymentViewHelper().shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
-                                                                        paymentState: displayPaymentState) {
+                if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                                paymentState: displayPaymentState) {
+                    return .primary
+                }
+                if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
+                                                          paymentState: displayPaymentState) {
                     return .primary
                 }
             }
@@ -417,11 +437,14 @@ private struct PaymentViewContent: View {
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
+    let cancelReconnectionAction: () -> Void
+    @Namespace private var paymentMessageNamespace
 
     private let viewHelper = POSPaymentViewHelper()
 
     var body: some View {
         paymentView
+            .animation(.default, value: paymentState.card)
             .font(.title)
             .if(viewHelper.shouldApplyPadding(paymentState: paymentState)) {
                 $0.paymentViewPadding(layout: cardReaderViewLayout)
@@ -431,7 +454,6 @@ private struct PaymentViewContent: View {
             .background(backgroundColor.ignoresSafeArea(.all))
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             .minimumScaleFactor(isShowingTotalsFields ? 0.5 : 1)
-            .geometryGroup()
     }
 
     @ViewBuilder private var paymentView: some View {
@@ -439,13 +461,15 @@ private struct PaymentViewContent: View {
             PointOfSaleCardPresentPaymentInLineMessage(
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                     paymentMethod: .cash)))
+                                     paymentMethod: .cash)),
+                animation: .init(namespace: paymentMessageNamespace))
         } else {
             POSCardPaymentContentView(
                 cardReaderConnectionStatus: cardReaderConnectionStatus,
                 paymentState: paymentState,
                 cardPresentPaymentInlineMessage: cardPresentPaymentInlineMessage,
-                connectCardReaderAction: connectCardReaderAction)
+                connectCardReaderAction: connectCardReaderAction,
+                cancelReconnectionAction: cancelReconnectionAction)
         }
     }
 }

@@ -61,8 +61,8 @@ public class BookingStore: Store {
                            onCompletion: onCompletion)
         case let .fetchResource(siteID, resourceID, onCompletion):
             fetchResource(siteID: siteID, resourceID: resourceID, onCompletion: onCompletion)
-        case let .synchronizeResources(siteID, pageNumber, pageSize, onCompletion):
-            synchronizeResources(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .synchronizeResources(siteID, pageNumber, pageSize, include, onCompletion):
+            synchronizeResources(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, include: include, onCompletion: onCompletion)
         case .updateBookingAttendanceStatus(let siteID, let bookingID, let status, let onCompletion):
             performUpdateBookingAttendanceStatus(
                 siteID: siteID,
@@ -87,6 +87,15 @@ public class BookingStore: Store {
                 siteID: siteID,
                 bookingID: bookingID,
                 note: note,
+                onCompletion: onCompletion
+            )
+        case .rescheduleBooking(let siteID, let bookingID, let startDate, let endDate, let resourceID, let onCompletion):
+            rescheduleBooking(
+                siteID: siteID,
+                bookingID: bookingID,
+                startDate: startDate,
+                endDate: endDate,
+                resourceID: resourceID,
                 onCompletion: onCompletion
             )
         case .fetchBookingLocationResponse(let siteID, let bookingID, let productID, let onCompletion):
@@ -277,13 +286,15 @@ private extension BookingStore {
     func synchronizeResources(siteID: Int64,
                               pageNumber: Int,
                               pageSize: Int,
+                              include: [Int64]?,
                               onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         Task { @MainActor in
             do {
                 let resources = try await remote.fetchResources(
                     for: siteID,
                     pageNumber: pageNumber,
-                    pageSize: pageSize
+                    pageSize: pageSize,
+                    include: include
                 )
 
                 await upsertBookingResourcesInBackground(siteID: siteID,
@@ -462,6 +473,40 @@ private extension BookingStore {
                 }
             } catch {
                 onCompletion(error)
+            }
+        }
+    }
+
+    /// Reschedules a booking by updating its start date, end date, and optionally its resource.
+    func rescheduleBooking(
+        siteID: Int64,
+        bookingID: Int64,
+        startDate: Date,
+        endDate: Date,
+        resourceID: Int64?,
+        onCompletion: @escaping (Error?) -> Void
+    ) {
+        Task { @MainActor in
+            do {
+                if let remoteBooking = try await self.remote.rescheduleBooking(
+                    from: siteID,
+                    bookingID: bookingID,
+                    startDate: startDate,
+                    endDate: endDate,
+                    resourceID: resourceID
+                ) {
+                    await self.upsertStoredBookingsInBackground(
+                        readOnlyBookings: [remoteBooking],
+                        readOnlyOrders: [],
+                        siteID: siteID
+                    )
+
+                    onCompletion(nil)
+                } else {
+                    return onCompletion(UpdateBookingStatusError.missingRemoteBooking)
+                }
+            } catch {
+                return onCompletion(error)
             }
         }
     }

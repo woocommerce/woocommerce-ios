@@ -112,7 +112,7 @@ extension POSPaymentModel {
                     switch status {
                     case .connected:
                         return true
-                    case .disconnected, .disconnecting, .cancellingConnection:
+                    case .disconnected, .disconnecting, .cancellingConnection, .reconnecting:
                         return false
                     }
                 }
@@ -172,7 +172,15 @@ extension POSPaymentModel {
     }
 
     func cancelThenCollectPayment() async {
+        if case .reconnecting = cardReaderConnectionStatus {
+            await cardPresentPaymentService.cancelReconnection()
+        }
+
         try? await cardPresentPaymentService.cancelPayment()
+
+        guard case .connected = cardReaderConnectionStatus else {
+            return
+        }
         await collectCardPayment()
     }
 
@@ -182,6 +190,12 @@ extension POSPaymentModel {
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
             _ = try? await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+        }
+    }
+
+    func cancelReconnection() {
+        Task { @MainActor [weak self] in
+            await self?.cardPresentPaymentService.cancelReconnection()
         }
     }
 

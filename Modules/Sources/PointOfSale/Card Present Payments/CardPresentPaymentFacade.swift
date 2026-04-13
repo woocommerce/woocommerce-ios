@@ -55,4 +55,9 @@ public protocol CardPresentPaymentFacade {
 
     /// Cancels any in-progress payment, returning when complete
     func cancelPayment() async throws
+
+    /// Cancels an in-progress auto-reconnection attempt.
+    /// Use this when the user wants to manually connect a different reader
+    /// or cancel the automatic reconnection process.
+    func cancelReconnection() async
 }

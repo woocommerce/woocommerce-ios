@@ -5,6 +5,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
     private let readerIDs: [String]
     private let connect: (String) -> Void
     private let cancelSearch: () -> Void
+    @AccessibilityFocusState private var isTitleFocused: Bool
 
     init(viewModel: PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel) {
         self.readerIDs = viewModel.readerIDs
@@ -18,6 +19,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
                 .font(.posHeadingBold)
                 .padding(Layout.headerPadding)
                 .accessibilityAddTraits(.isHeader)
+                .accessibilityFocused($isTitleFocused)
 
             scanningText()
 
@@ -38,6 +40,9 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersView: View {
         }
         .padding(Layout.padding)
         .accessibilityElement(children: .contain)
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

@@ -59,4 +59,89 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - Skip Auto Search Tests
+
+    func test_shouldSkipAutoSearch_returns_true_when_reconnection_is_cancelled() {
+        let mockKnownReaderProvider = MockKnownReaderProvider()
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsSearchingViewModel(
+            didChangeShouldShow: nil,
+            knownReaderProvider: mockKnownReaderProvider,
+            configuration: TestConstants.mockConfiguration,
+            cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                        siteID: 0,
+                                                        connectionType: .userInitiated,
+                                                        stores: mockStoresManager))
+
+        // Simulate reconnection starting then becoming idle (cancelled)
+        mockStoresManager.simulateReconnecting(reader: MockCardReader.bbposChipper2XBT())
+        mockStoresManager.simulateReconnectionIdle()
+
+        XCTAssertTrue(viewModel.shouldSkipAutoSearch())
+    }
+
+    func test_shouldSkipAutoSearch_returns_false_when_reconnection_succeeds() {
+        let mockKnownReaderProvider = MockKnownReaderProvider()
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsSearchingViewModel(
+            didChangeShouldShow: nil,
+            knownReaderProvider: mockKnownReaderProvider,
+            configuration: TestConstants.mockConfiguration,
+            cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                        siteID: 0,
+                                                        connectionType: .userInitiated,
+                                                        stores: mockStoresManager))
+
+        // Simulate reconnection starting then succeeding
+        let reader = MockCardReader.bbposChipper2XBT()
+        mockStoresManager.simulateReconnecting(reader: reader)
+        mockStoresManager.simulateReconnectionSucceeded(reader: reader)
+
+        XCTAssertFalse(viewModel.shouldSkipAutoSearch())
+    }
+
+    func test_shouldSkipAutoSearch_returns_false_after_clearSkipAutoSearch_is_called() {
+        let mockKnownReaderProvider = MockKnownReaderProvider()
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance
+        )
+        ServiceLocator.setStores(mockStoresManager)
+
+        let viewModel = CardReaderSettingsSearchingViewModel(
+            didChangeShouldShow: nil,
+            knownReaderProvider: mockKnownReaderProvider,
+            configuration: TestConstants.mockConfiguration,
+            cardReaderConnectionAnalyticsTracker: .init(configuration: TestConstants.mockConfiguration,
+                                                        siteID: 0,
+                                                        connectionType: .userInitiated,
+                                                        stores: mockStoresManager))
+
+        // Simulate reconnection cancelled (sets skip flag)
+        mockStoresManager.simulateReconnecting(reader: MockCardReader.bbposChipper2XBT())
+        mockStoresManager.simulateReconnectionIdle()
+        XCTAssertTrue(viewModel.shouldSkipAutoSearch())
+
+        // Clear the skip flag (simulates user tapping Connect button)
+        viewModel.clearSkipAutoSearch()
+
+        XCTAssertFalse(viewModel.shouldSkipAutoSearch())
+    }
 }

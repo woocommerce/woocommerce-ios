@@ -4,6 +4,7 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentIntentCreationErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @State private var width: CGFloat = 0
 
     var body: some View {
@@ -19,6 +20,7 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.message)
@@ -49,6 +51,9 @@ struct PointOfSaleCardPresentPaymentIntentCreationErrorMessageView: View {
         .measureWidth({ containerWidth in
             width = containerWidth
         })
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

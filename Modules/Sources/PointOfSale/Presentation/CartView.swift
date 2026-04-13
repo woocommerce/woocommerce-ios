@@ -22,32 +22,20 @@ struct CartView: View {
         abs(offSetPosition) < maxOffset
     }
 
+    @State private var headerSize: CGSize = .zero
     @State private var showBarcodeScanningModal: Bool = false
 
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
-                POSPageHeaderView(title: Localization.cartTitle,
-                                  backButtonConfiguration: backButtonConfiguration,
-                                  trailingContent: {
-                    HStack(spacing: Constants.cartHeaderElementSpacing) {
-                        if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: posModel.cart.purchasableItems.count) {
-                            Text(itemsInCartLabel)
-                                .font(Constants.itemsFont)
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.5)
-                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                                .foregroundColor(Color.posOnSurfaceVariantLowest)
-                        }
-
-                        CartClearMenuButton(removeAllItemsFromCart: {
-                            posModel.removeAllItemsFromCart()
-                        })
-                        .renderedIf(shouldShowClearCartButton)
-                    }
-                })
-                .if(shouldApplyHeaderBottomShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .bottom) })
+                CartHeaderView(
+                    shouldApplyHeaderBottomShadow: shouldApplyHeaderBottomShadow,
+                    shouldShowClearCartButton: shouldShowClearCartButton,
+                    itemCount: posModel.cart.purchasableItems.count,
+                    backgroundColor: backgroundColor
+                )
                 .zIndex(1)
+                .trackSize(size: $headerSize)
 
                 if posModel.cart.isNotEmpty {
                     CartScrollViewContent(
@@ -68,6 +56,7 @@ struct CartView: View {
                         .zIndex(1)
                 }
             }
+            .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
@@ -82,6 +71,66 @@ struct CartView: View {
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-cart-view")
         }
+    }
+}
+
+private struct CartHeaderView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
+    private let viewHelper = CartViewHelper()
+
+    let shouldApplyHeaderBottomShadow: Bool
+    let shouldShowClearCartButton: Bool
+    let itemCount: Int
+    let backgroundColor: Color
+
+    private var shouldPreventCartEditing: Bool {
+        viewHelper.shouldPreventCartEditing(
+            orderState: posModel.orderState,
+            paymentState: posModel.paymentState)
+    }
+
+    private var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
+        switch posModel.orderStage {
+        case .building:
+            return nil
+        case .finalizing:
+            let state: POSPageHeaderBackButtonConfiguration.State = shouldPreventCartEditing ? .shimmering : .enabled
+            return .init(state: state, action: {
+                analytics.track(.pointOfSaleBackToCartTapped)
+                posModel.addMoreToCart()
+            })
+        }
+    }
+
+    var body: some View {
+        POSPageHeaderView(title: Localization.cartTitle,
+                          backButtonConfiguration: backButtonConfiguration,
+                          trailingContent: {
+            HStack(spacing: Constants.cartHeaderElementSpacing) {
+                if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: itemCount) {
+                    Text(itemsInCartLabel)
+                        .font(Constants.itemsFont)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                        .foregroundColor(Color.posOnSurfaceVariantLowest)
+                }
+
+                CartClearMenuButton(removeAllItemsFromCart: {
+                    posModel.removeAllItemsFromCart()
+                })
+                .renderedIf(shouldShowClearCartButton)
+            }
+        })
+        .if(shouldApplyHeaderBottomShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .bottom) })
+    }
+
+    private enum Localization {
+        static let cartTitle = NSLocalizedString(
+            "pos.cartView.cartTitle",
+            value: "Cart",
+            comment: "Title at the header for the Cart view.")
     }
 }
 
@@ -110,14 +159,17 @@ private struct ScrollViewHeightPreferenceKey: PreferenceKey {
 }
 
 private extension CartView {
-    var backgroundColor: Color {
-        .posSurfaceBright
+    /// iOS 26 NavigationStack introduces container insets that shift the checkout button up.
+    static var containerRegionToIgnore: SafeAreaRegions {
+        if #available(iOS 26, *) {
+            return .container
+        } else {
+            return []
+        }
     }
 
-    var shouldPreventCartEditing: Bool {
-        viewHelper.shouldPreventCartEditing(
-            orderState: posModel.orderState,
-            paymentState: posModel.paymentState)
+    var backgroundColor: Color {
+        .posSurfaceBright
     }
 
     var shouldShowClearCartButton: Bool {
@@ -134,10 +186,6 @@ private extension CartView {
             value: "Scan barcode",
             comment: "The title of the menu button to start a barcode scanner setup flow."
         )
-        static let cartTitle = NSLocalizedString(
-            "pos.cartView.cartTitle",
-            value: "Cart",
-            comment: "Title at the header for the Cart view.")
         static let addItemsToCartOrScanHint = NSLocalizedString(
             "pos.cartView.addItemsToCartOrScanHint",
             value: "Tap on a product to \n add it to the cart, or ",
@@ -179,22 +227,9 @@ private extension CartView {
         .accessibilityIdentifier("pos-checkout-button")
     }
 
-    var backButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
-        switch posModel.orderStage {
-        case .building:
-            return nil
-        case .finalizing:
-            let state: POSPageHeaderBackButtonConfiguration.State = shouldPreventCartEditing ? .shimmering : .enabled
-            return .init(state: state, action: {
-                analytics.track(.pointOfSaleBackToCartTapped)
-                posModel.addMoreToCart()
-            })
-        }
-    }
-
     var cartEmptyView: some View {
         VStack {
-            Spacer()
+            Spacer(minLength: headerSize.height + Constants.shoppingBagImageSize + Constants.emptyViewImageTextSpacing)
             // By designs, the text should be vertically centred with the image 40px above it.
             // SwiftUI doesn't allow us to absolutely pin a view to the centre then position other views relative to it
             // Instead, we can centre the text, and then put the image in an offset overlay. Offsetting from the top

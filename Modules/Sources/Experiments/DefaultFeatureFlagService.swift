@@ -109,6 +109,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .wooShippingFedEx:
             return false
+        case .ciabBookingReschedule:
+            return !buildConfig.isProduction
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
         default:

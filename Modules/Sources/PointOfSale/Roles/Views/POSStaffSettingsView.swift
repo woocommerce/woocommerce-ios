@@ -40,6 +40,7 @@ struct POSStaffSettingsView: View {
 
 private struct POSStaffSettingsLocalView: View {
     let pinService: POSPINService
+    @State private var pinManager: POSStaffPINManager
 
     @AppStorage("com.woocommerce.pos.pinAccessEnabled") private var pinAccessEnabled: Bool = false
 
@@ -47,8 +48,10 @@ private struct POSStaffSettingsLocalView: View {
     @State private var pinEntryRole: PINRole = .manager
     @State private var pinEntryState: POSPINEntryState = .idle
 
-    @State private var ownerPINSet: Bool = false
-    @State private var cashierPINSet: Bool = false
+    init(pinService: POSPINService) {
+        self.pinService = pinService
+        self._pinManager = State(initialValue: POSStaffPINManager(pinService: pinService))
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -73,7 +76,7 @@ private struct POSStaffSettingsLocalView: View {
         }
         .background(Color.posSurface)
         .onAppear {
-            refreshPINStatus()
+            pinManager.refresh()
         }
         .posModal(isPresented: $showPINEntry) {
             pinEntryModal
@@ -104,7 +107,7 @@ private extension POSStaffSettingsLocalView {
             VStack(spacing: POSSpacing.small) {
                 ownerPINRow
 
-                if ownerPINSet {
+                if pinManager.adminPINSet {
                     Divider()
                         .padding(.vertical, POSPadding.small)
                     cashierPINRow
@@ -117,7 +120,7 @@ private extension POSStaffSettingsLocalView {
         pinRow(
             label: Localization.adminPINLabel,
             description: Localization.adminPINDescription,
-            isPINSet: ownerPINSet,
+            isPINSet: pinManager.adminPINSet,
             role: .manager
         )
     }
@@ -126,7 +129,7 @@ private extension POSStaffSettingsLocalView {
         pinRow(
             label: Localization.cashierPINLabel,
             description: Localization.cashierPINDescription,
-            isPINSet: cashierPINSet,
+            isPINSet: pinManager.cashierPINSet,
             role: .cashier
         )
     }
@@ -249,9 +252,9 @@ private extension POSStaffSettingsLocalView {
     var pinEntryTitle: String {
         switch pinEntryRole {
         case .manager:
-            return ownerPINSet ? Localization.changeAdminPINTitle : Localization.setAdminPINTitle
+            return pinManager.adminPINSet ? Localization.changeAdminPINTitle : Localization.setAdminPINTitle
         case .cashier:
-            return cashierPINSet ? Localization.changeCashierPINTitle : Localization.setCashierPINTitle
+            return pinManager.cashierPINSet ? Localization.changeCashierPINTitle : Localization.setCashierPINTitle
         }
     }
 
@@ -259,14 +262,8 @@ private extension POSStaffSettingsLocalView {
         if enabled {
             presentPINEntry(for: .manager)
         } else {
-            clearAllPINsAndUnlock()
+            pinManager.clearAllPINs()
         }
-    }
-
-    func clearAllPINsAndUnlock() {
-        pinService.deletePIN(for: .manager)
-        pinService.deletePIN(for: .cashier)
-        refreshPINStatus()
     }
 
     func presentPINEntry(for role: PINRole) {
@@ -277,25 +274,18 @@ private extension POSStaffSettingsLocalView {
 
     func dismissPINEntry() {
         showPINEntry = false
-        if !ownerPINSet && pinAccessEnabled {
+        if !pinManager.adminPINSet && pinAccessEnabled {
             pinAccessEnabled = false
         }
     }
 
     func handlePINEntered(_ pin: String) {
-        guard pinService.isValidFormat(pin) else {
+        let success = pinManager.setPIN(pin, for: pinEntryRole)
+        if !success {
             pinEntryState = .error(message: Localization.invalidPINError)
             return
         }
-
-        pinService.setPIN(pin, for: pinEntryRole)
-        refreshPINStatus()
         dismissPINEntry()
-    }
-
-    func refreshPINStatus() {
-        ownerPINSet = pinService.hasPIN(for: .manager)
-        cashierPINSet = pinService.hasPIN(for: .cashier)
     }
 }
 

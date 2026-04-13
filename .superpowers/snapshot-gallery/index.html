@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POS Roles & Permissions - UI Snapshot Gallery</title>
+<style>
+  :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #e6edf3; --muted: #8b949e; --accent: #58a6ff; --green: #3fb950; --yellow: #d29922; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 24px; }
+  h1 { font-size: 28px; margin-bottom: 8px; }
+  .subtitle { color: var(--muted); font-size: 14px; margin-bottom: 32px; }
+  .section { margin-bottom: 48px; }
+  .section h2 { font-size: 20px; margin-bottom: 8px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+  .section-desc { color: var(--muted); font-size: 13px; margin-bottom: 16px; line-height: 1.5; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .card img { width: 100%; display: block; cursor: zoom-in; }
+  .card img:hover { opacity: 0.9; }
+  .card-meta { padding: 12px 16px; }
+  .card-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .card-desc { color: var(--muted); font-size: 12px; line-height: 1.4; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
+  .badge-light { background: rgba(255,255,255,0.1); color: #fff; }
+  .badge-dark { background: rgba(255,255,255,0.05); color: #8b949e; }
+  .badge-a11y { background: rgba(210,153,34,0.2); color: var(--yellow); }
+  .badge-flow { background: rgba(63,185,80,0.15); color: var(--green); }
+  .flow-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 24px; }
+  .flow-section h3 { font-size: 16px; margin-bottom: 12px; }
+  .flow-steps { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .flow-step { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+  .flow-arrow { color: var(--muted); font-size: 18px; }
+  .legend { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+  dialog { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 0; max-width: 90vw; max-height: 90vh; }
+  dialog img { max-width: 100%; max-height: 85vh; }
+  dialog::backdrop { background: rgba(0,0,0,0.8); }
+  .close-btn { position: absolute; top: 8px; right: 12px; background: none; border: none; color: var(--text); font-size: 24px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>POS Roles & Permissions - UI Snapshot Gallery</h1>
+<p class="subtitle">22 snapshots across 4 views, captured on iPad Pro 11-inch landscape. Light/dark mode, error states, accessibility sizes.</p>
+
+<div class="legend">
+  <span class="legend-item"><span class="badge badge-light">Light</span> Light mode</span>
+  <span class="legend-item"><span class="badge badge-dark">Dark</span> Dark mode</span>
+  <span class="legend-item"><span class="badge badge-a11y">A11y</span> Accessibility XXL</span>
+  <span class="legend-item"><span class="badge badge-flow">Flow</span> User interaction flow</span>
+</div>
+
+<!-- FLOW: Local Roles -->
+<div class="flow-section">
+  <h3><span class="badge badge-flow">Local Flow</span> Local Roles (on-device PINs)</h3>
+  <p class="card-desc" style="margin-bottom: 12px;">Owner enables roles in Settings > Staff, sets Manager + Cashier PINs. Then locks POS. Staff enter PINs to operate.</p>
+  <div class="flow-steps">
+    <div class="flow-step">1. Owner opens POS Settings > Staff</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">2. Sets Manager PIN + Cashier PIN</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">3. Taps "Lock POS" in menu</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">4. Lock screen appears</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">5. Staff enters PIN</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">6. POS opens with role permissions</div>
+  </div>
+</div>
+
+<!-- FLOW: Remote Roles -->
+<div class="flow-section">
+  <h3><span class="badge badge-flow">Remote Flow</span> Remote Roles (server-backed)</h3>
+  <p class="card-desc" style="margin-bottom: 12px;">Admin creates POS staff in wp-admin with PINs. iOS app authenticates via REST API, gets Application Password + capabilities.</p>
+  <div class="flow-steps">
+    <div class="flow-step">1. Admin creates staff in wp-admin</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">2. Sets PINs via Staff UI</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">3. Staff enters PIN on iPad</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">4. POST /wc/v3/pos/auth/pin</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">5. Gets App Password + capabilities</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">6. All API calls use operator credential</div>
+  </div>
+</div>
+
+<!-- FLOW: Manager Override -->
+<div class="flow-section">
+  <h3><span class="badge badge-flow">Override Flow</span> Manager Override (both local & remote)</h3>
+  <p class="card-desc" style="margin-bottom: 12px;">Cashier triggers restricted action (refund). Manager enters PIN to approve. Action proceeds. Same UI for both providers.</p>
+  <div class="flow-steps">
+    <div class="flow-step">1. Cashier taps Refund</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">2. Override modal appears</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">3. Manager enters PIN</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">4. "Approved" checkmark</div>
+    <span class="flow-arrow">&rarr;</span>
+    <div class="flow-step">5. Refund proceeds</div>
+  </div>
+</div>
+
+<!-- PIN Entry -->
+<div class="section">
+  <h2>PIN Entry Numpad</h2>
+  <p class="section-desc">Reusable component used by lock screen, manager override, and exit POS. Big 72pt buttons per POS "big and obvious" principle. Auto-submits when 4 digits entered.</p>
+  <div class="grid">
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_idle_light.1.png" alt="PIN Entry idle light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> Idle State</div>
+        <div class="card-desc">Default state. Empty PIN dots, large numpad buttons, cancel option at bottom.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_idle_dark.1.png" alt="PIN Entry idle dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Idle State</div>
+        <div class="card-desc">Dark mode. Button backgrounds visible with posSurfaceContainerLow color.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_error_light.1.png" alt="PIN Entry error light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> Error State</div>
+        <div class="card-desc">Invalid PIN entered. Red error message below dots. Dots shake animation (not visible in static snapshot).</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_error_dark.1.png" alt="PIN Entry error dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Error State</div>
+        <div class="card-desc">"Invalid PIN. Please try again." in posError color. PIN dots reset to empty.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_lockout_light.1.png" alt="PIN Entry lockout light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> Lockout State</div>
+        <div class="card-desc">After 5 failed attempts. "Too many attempts. Try again in 30 seconds." Numpad disabled.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_lockout_dark.1.png" alt="PIN Entry lockout dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Lockout State</div>
+        <div class="card-desc">Rate limiting enforced. Matches backend: 5 failures = 30s lockout.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_pinEntry_accessibilityXL_dark.1.png" alt="PIN Entry accessibility XL dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-a11y">A11y XXL</span> Dynamic Type</div>
+        <div class="card-desc">Extra-large dynamic type. Buttons and text scale appropriately.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lock Screen -->
+<div class="section">
+  <h2>Lock Screen</h2>
+  <p class="section-desc">Full-screen lock. Shows store name with avatar initials. "Log in with a different account" link at bottom (Shopify pattern). Wraps the PIN entry component.</p>
+  <div class="grid">
+    <div class="card" onclick="showFull(this)">
+      <img src="test_lockScreen_light.1.png" alt="Lock screen light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> Normal</div>
+        <div class="card-desc">Avatar circle with initials "AS" for Alice's Coffee Shop. "Signed in as" subtitle. Logout link at bottom.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_lockScreen_dark.1.png" alt="Lock screen dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Normal</div>
+        <div class="card-desc">posSurfaceDim background. Purple avatar. Clean, focused layout.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_lockScreen_error_dark.1.png" alt="Lock screen error dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Error</div>
+        <div class="card-desc">Wrong PIN entered. Red error message visible below dots.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_lockScreen_noName_light.1.png" alt="Lock screen no name light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> No Store Name</div>
+        <div class="card-desc">When store name is unavailable. Avatar shows "?" initials.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_lockScreen_accessibilityXL_dark.1.png" alt="Lock screen accessibility XL dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-a11y">A11y XXL</span> Dynamic Type</div>
+        <div class="card-desc">Large text scaling. Layout remains usable.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Manager Override -->
+<div class="section">
+  <h2>Manager Override Modal</h2>
+  <p class="section-desc">Inline overlay for restricted actions. Shows lock shield icon, action description, PIN numpad. Same UI for both local (PIN verified on device) and remote (POST /approve gets token).</p>
+  <div class="grid">
+    <div class="card" onclick="showFull(this)">
+      <img src="test_managerOverride_awaitingPIN_light.1.png" alt="Override awaiting PIN light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> Awaiting PIN</div>
+        <div class="card-desc">Modal with lock shield, "Manager approval required", action description. Manager enters their PIN.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_managerOverride_awaitingPIN_dark.1.png" alt="Override awaiting PIN dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Awaiting PIN</div>
+        <div class="card-desc">"Process refund for Order #1234" as the action description. Title no longer truncated (fixed in iteration 2).</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_managerOverride_approved_dark.1.png" alt="Override approved dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Approved</div>
+        <div class="card-desc">Success state. Green checkmark with "Approved" text. Auto-dismisses after brief delay.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_managerOverride_error_dark.1.png" alt="Override error dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> Error</div>
+        <div class="card-desc">Invalid manager PIN. Error shown in PIN entry. Manager can retry.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_managerOverride_accessibilityXL_dark.1.png" alt="Override accessibility XL dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-a11y">A11y XXL</span> Dynamic Type</div>
+        <div class="card-desc">Large text. Modal adapts to content size.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Settings -->
+<div class="section">
+  <h2>Staff Settings (POS Settings > Staff)</h2>
+  <p class="section-desc">PIN management view in POS Settings sidebar. Local mode: set Manager + Cashier PINs. Remote mode: shows WP staff list from GET /pin/status endpoint.</p>
+  <div class="grid">
+    <div class="card" onclick="showFull(this)">
+      <img src="test_staffSettings_noPINs_light.1.png" alt="Staff settings no PINs light">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-light">Light</span> No PINs Set</div>
+        <div class="card-desc">Initial state. "Set PIN" buttons for Manager and Cashier roles with descriptions.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_staffSettings_noPINs_dark.1.png" alt="Staff settings no PINs dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> No PINs Set</div>
+        <div class="card-desc">Manager: "Used to access all POS features and approve restricted actions". Cashier: "Used for basic sales and payments."</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_staffSettings_pinsSet_dark.1.png" alt="Staff settings PINs set dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-dark">Dark</span> PINs Configured</div>
+        <div class="card-desc">Buttons change from "Set PIN" to "Change". PINs are set and roles are active.</div>
+      </div>
+    </div>
+    <div class="card" onclick="showFull(this)">
+      <img src="test_staffSettings_accessibilityXL_dark.1.png" alt="Staff settings accessibility XL dark">
+      <div class="card-meta">
+        <div class="card-title"><span class="badge badge-a11y">A11y XXL</span> Dynamic Type</div>
+        <div class="card-desc">Large text scaling. Cards expand to fit content.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog id="fullDialog">
+  <button class="close-btn" onclick="document.getElementById('fullDialog').close()">&times;</button>
+  <img id="fullImg" src="" alt="Full size">
+</dialog>
+
+<script>
+function showFull(card) {
+  const img = card.querySelector('img');
+  document.getElementById('fullImg').src = img.src;
+  document.getElementById('fullDialog').showModal();
+}
+document.getElementById('fullDialog').addEventListener('click', function(e) {
+  if (e.target === this) this.close();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+<h2>Settings Override: Docs vs. Your Preference</h2>
+<p class="subtitle">The investigation doc and your direction disagree. Let's resolve it.</p>
+
+<style>
+  .vs { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; margin: 24px 0; align-items: start; }
+  .vs-box { padding: 20px; border-radius: 12px; font-size: 13px; }
+  .vs-divider { display: flex; align-items: center; color: #555; font-size: 24px; font-weight: bold; }
+  .flow { padding: 16px; background: #12121f; border-radius: 8px; margin: 12px 0; font-size: 13px; color: #ccc; font-family: monospace; line-height: 1.8; }
+  .note { font-size: 13px; color: #888; margin-top: 16px; padding: 16px; background: #1a1a2e; border-radius: 8px; }
+</style>
+
+<div class="vs">
+  <div class="vs-box" style="background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3);">
+    <h4 style="color: #f87171; margin: 0 0 8px 0;">Investigation Doc Says</h4>
+    <p style="color: #ccc; margin: 0;">"Hide, don't disable." Settings and Staff Management are marked <strong>No</strong> for Cashier (not Override). They should be invisible - not in the UI at all. Cesar's spike confirms: "settings and analytics hidden for cashiers via capability-based UI restrictions."</p>
+  </div>
+  <div class="vs-divider">vs</div>
+  <div class="vs-box" style="background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3);">
+    <h4 style="color: #4ade80; margin: 0 0 8px 0;">You Said</h4>
+    <p style="color: #ccc; margin: 0;">"There are no unsupported flows, everything that is unsupported by the role could be done by manager override." This implies settings and staff management should also be overrideable.</p>
+  </div>
+</div>
+
+<h3>Proposed Resolution: Quick User Switch</h3>
+<p style="color: #ccc; font-size: 14px;">Settings and Staff are overrideable, but via a <strong>user switch</strong>, not temporary access. This satisfies both your preference (nothing is a dead end) and the PM's security concern (cashier never gets elevated access).</p>
+
+<div class="flow">
+  <strong style="color: #fbbf24;">Transactional override (refunds, coupons):</strong><br>
+  Cashier taps "Refund"<br>
+  &rarr; Modal: "Manager approval required"<br>
+  &rarr; Manager enters PIN on same modal<br>
+  &rarr; Action executes, cashier stays in their session<br>
+  &rarr; Single-use. Cashier continues normally.<br>
+  <br>
+  <em style="color: #888;">Manager walks over, punches code, walks away. 5 seconds.</em>
+</div>
+
+<div class="flow">
+  <strong style="color: #818cf8;">Screen-level override (settings, staff):</strong><br>
+  Cashier taps "Settings" in floating menu<br>
+  &rarr; Modal: "Manager access required"<br>
+  &rarr; Manager enters PIN on same modal<br>
+  &rarr; <strong style="color: #818cf8;">Session switches to that Manager</strong><br>
+  &rarr; Manager is now the active POS user<br>
+  &rarr; Settings screen opens for the Manager<br>
+  &rarr; Manager finishes, taps "Lock" (or auto-lock on nav away)<br>
+  &rarr; Lock screen appears, next person enters their PIN<br>
+  <br>
+  <em style="color: #888;">The cashier doesn't get settings access. The manager takes over, does the thing, and the device returns to the lock screen. No "temporary elevation" ambiguity.</em>
+</div>
+
+<div class="flow">
+  <strong style="color: #f87171;">Exit POS (app boundary):</strong><br>
+  Anyone taps "Exit POS"<br>
+  &rarr; Modal: "Only the account owner can exit POS"<br>
+  &rarr; <strong style="color: #818cf8;">Only the app account holder's PIN works</strong><br>
+  &rarr; App exits POS, returns to WooCommerce tabs
+</div>
+
+<h3 style="margin-top: 32px;">Three Override Tiers - Summary</h3>
+<table style="width:100%; border-collapse: collapse; font-size: 14px; margin: 16px 0;">
+  <thead>
+    <tr>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">Tier</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">Actions</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">What happens</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">Who can authorize</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px; color: #fbbf24; font-weight: 600;">Transactional</td>
+      <td style="padding: 10px; color: #ccc;">Refunds, create coupons</td>
+      <td style="padding: 10px; color: #ccc;">Manager PIN in modal, action executes, cashier continues</td>
+      <td style="padding: 10px; color: #ccc;">Any Manager</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px; color: #818cf8; font-weight: 600;">Session Switch</td>
+      <td style="padding: 10px; color: #ccc;">Settings, Staff mgmt</td>
+      <td style="padding: 10px; color: #ccc;">Manager PIN switches active user, manager uses the screen, then locks</td>
+      <td style="padding: 10px; color: #ccc;">Any Manager</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; color: #f87171; font-weight: 600;">App Boundary</td>
+      <td style="padding: 10px; color: #ccc;">Exit POS</td>
+      <td style="padding: 10px; color: #ccc;">Account holder's PIN required, exits POS to full app</td>
+      <td style="padding: 10px; color: #ccc;">App account holder only</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>This model means nothing is a dead end.</strong> A cashier can always initiate any action. The system decides whether it proceeds immediately (allowed), needs a manager PIN (transactional), needs a session switch (administrative), or needs the account holder (exit POS). No confusion about what's possible - just different authorization levels.
+</div>

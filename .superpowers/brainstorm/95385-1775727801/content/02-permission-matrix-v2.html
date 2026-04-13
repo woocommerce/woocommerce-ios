@@ -1,0 +1,138 @@
+<h2>POS Permission Matrix - V2</h2>
+<p class="subtitle">Updated: Manager now has access to settings and staff management</p>
+
+<style>
+  .matrix { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 15px; }
+  .matrix th, .matrix td { padding: 12px 16px; text-align: center; border-bottom: 1px solid #333; }
+  .matrix th { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; }
+  .matrix td:first-child { text-align: left; font-weight: 500; }
+  .yes { color: #4ade80; font-weight: 600; }
+  .no { color: #f87171; font-weight: 600; }
+  .override { color: #fbbf24; font-weight: 600; font-size: 13px; }
+  .changed { background: rgba(74, 222, 128, 0.08); }
+  .category { background: #1a1a2e; color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .category td { padding: 8px 16px; border-bottom: 1px solid #222; }
+  .note { font-size: 13px; color: #888; margin-top: 20px; padding: 16px; background: #1a1a2e; border-radius: 8px; }
+  .legend { display: flex; gap: 24px; margin: 16px 0; font-size: 14px; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.g { background: #4ade80; }
+  .dot.r { background: #f87171; }
+  .dot.y { background: #fbbf24; }
+  .change-badge { font-size: 10px; color: #4ade80; border: 1px solid #4ade80; border-radius: 4px; padding: 1px 6px; margin-left: 8px; vertical-align: middle; }
+</style>
+
+<div class="legend">
+  <span><span class="dot g"></span> Allowed</span>
+  <span><span class="dot y"></span> Manager Override</span>
+  <span><span class="dot r"></span> Hidden</span>
+</div>
+
+<table class="matrix">
+  <thead>
+    <tr>
+      <th style="text-align:left">Permission</th>
+      <th>Owner</th>
+      <th>Manager</th>
+      <th>Cashier</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="category"><td colspan="4">Sales & Checkout</td></tr>
+    <tr>
+      <td>Add items to cart & checkout</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+    </tr>
+    <tr>
+      <td>Accept card & cash payments</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+    </tr>
+    <tr>
+      <td>Send receipt to customer</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+    </tr>
+
+    <tr class="category"><td colspan="4">Discounts & Coupons</td></tr>
+    <tr>
+      <td>Apply existing coupons</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="override">Override</td>
+    </tr>
+    <tr>
+      <td>Create new coupons</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="no">&#10007;</td>
+    </tr>
+
+    <tr class="category"><td colspan="4">Refunds</td></tr>
+    <tr>
+      <td>Process refunds</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="no">&#10007;</td>
+    </tr>
+
+    <tr class="category"><td colspan="4">Order History</td></tr>
+    <tr>
+      <td>View order list</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+    </tr>
+
+    <tr class="category"><td colspan="4">Settings & Administration</td></tr>
+    <tr class="changed">
+      <td>Access POS settings <span class="change-badge">CHANGED</span></td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="no">&#10007;</td>
+    </tr>
+    <tr class="changed">
+      <td>Manage staff & roles <span class="change-badge">CHANGED</span></td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="no">&#10007;</td>
+    </tr>
+    <tr>
+      <td>Connect/manage card reader</td>
+      <td class="yes">&#10003;</td>
+      <td class="yes">&#10003;</td>
+      <td class="no">&#10007;</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Why manager gets settings + staff:</strong> The owner isn't always at the store. The manager runs the floor - they need to onboard a new cashier, adjust a receipt setting, or reconnect hardware without calling the owner. This matches Shopify and Lightspeed patterns.
+</div>
+
+<h3 style="margin-top: 32px;">Role Summary</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 12px;">
+  <div style="padding: 20px; background: #1a1a2e; border-radius: 12px; border: 1px solid #333;">
+    <div style="font-size: 24px; margin-bottom: 4px;">&#128081;</div>
+    <h3 style="margin: 0 0 8px 0; color: #4ade80;">Owner</h3>
+    <p style="color: #aaa; font-size: 13px; margin: 0;">Everything. Auto-assigned to the logged-in WP user. Cannot be deleted.</p>
+  </div>
+  <div style="padding: 20px; background: #1a1a2e; border-radius: 12px; border: 1px solid #333;">
+    <div style="font-size: 24px; margin-bottom: 4px;">&#128188;</div>
+    <h3 style="margin: 0 0 8px 0; color: #818cf8;">Manager</h3>
+    <p style="color: #aaa; font-size: 13px; margin: 0;">Full operational access. Can approve overrides, manage staff, change settings. Runs the store.</p>
+  </div>
+  <div style="padding: 20px; background: #1a1a2e; border-radius: 12px; border: 1px solid #333;">
+    <div style="font-size: 24px; margin-bottom: 4px;">&#128179;</div>
+    <h3 style="margin: 0 0 8px 0; color: #fbbf24;">Cashier</h3>
+    <p style="color: #aaa; font-size: 13px; margin: 0;">Sales & payments only. Coupons need manager override. No refunds, no settings, no staff management.</p>
+  </div>
+</div>
+
+<div class="note" style="margin-top: 24px;">
+  <strong>Key difference: Owner vs Manager.</strong> Both can do everything operationally. The distinction matters for future phases: only Owners could potentially delete Managers, manage billing, or access financial reports. For V1 they're functionally identical except the Owner is the auto-created WP session user and can't be removed.
+</div>

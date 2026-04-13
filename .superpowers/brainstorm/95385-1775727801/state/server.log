@@ -1,0 +1,10 @@
+{"type":"server-started","port":61612,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:61612","screen_dir":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content","state_dir":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/state"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/01-permission-matrix.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/02-permission-matrix-v2.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/03-permission-matrix-v3.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/04-waiting.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/05-synthesized-design.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/06-containment-model.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/07-identity-model.html"}
+{"type":"screen-added","file":"/Users/povilasstaskus/Projects/woocommerce-ios/.superpowers/brainstorm/95385-1775727801/content/08-settings-override-resolution.html"}
+{"type":"server-stopped","reason":"owner process exited"}

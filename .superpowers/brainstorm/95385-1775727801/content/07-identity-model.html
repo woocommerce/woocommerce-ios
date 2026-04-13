@@ -1,0 +1,155 @@
+<h2>The Identity Problem</h2>
+<p class="subtitle">How POS staff identities relate to WordPress accounts and the app session</p>
+
+<style>
+  .scenario { padding: 20px; background: #12121f; border-radius: 8px; margin: 12px 0; font-size: 13px; color: #ccc; line-height: 1.8; }
+  .scenario strong { color: #fff; }
+  .problem { padding: 16px; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; margin: 12px 0; }
+  .problem h4 { color: #f87171; margin: 0 0 8px 0; }
+  .solution { padding: 16px; background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.3); border-radius: 8px; margin: 12px 0; }
+  .solution h4 { color: #4ade80; margin: 0 0 8px 0; }
+  .layer { display: flex; align-items: stretch; gap: 16px; margin: 24px 0; flex-wrap: wrap; }
+  .layer-box { flex: 1; min-width: 200px; padding: 20px; border-radius: 12px; }
+  .layer-box h4 { margin: 0 0 8px 0; }
+  .layer-box ul { margin: 0; padding-left: 16px; font-size: 13px; color: #aaa; }
+  .layer-box li { margin: 4px 0; }
+  .note { font-size: 13px; color: #888; margin-top: 20px; padding: 16px; background: #1a1a2e; border-radius: 8px; }
+  .q { padding: 16px; background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); border-radius: 8px; margin: 16px 0; }
+  .q h4 { color: #fbbf24; margin: 0 0 8px 0; }
+</style>
+
+<h3>The Two Identity Layers</h3>
+<div class="layer">
+  <div class="layer-box" style="background: rgba(129,140,248,0.08); border: 1px solid rgba(129,140,248,0.3);">
+    <h4 style="color: #818cf8;">App Session (WP Auth)</h4>
+    <p style="color: #ccc; font-size: 13px;">The person who logged into the WooCommerce app with full WP credentials.</p>
+    <ul>
+      <li>WP role: <code>administrator</code> or <code>shop_manager</code></li>
+      <li>Their OAuth token is used for ALL API calls</li>
+      <li>They see the full WooCommerce app</li>
+      <li>They "own" the device session</li>
+      <li><strong>There is exactly ONE of these per device</strong></li>
+    </ul>
+  </div>
+  <div class="layer-box" style="background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3);">
+    <h4 style="color: #fbbf24;">POS Staff (PIN Auth)</h4>
+    <p style="color: #ccc; font-size: 13px;">People who operate the POS via PIN entry. They exist only within POS.</p>
+    <ul>
+      <li>POS role: <code>Manager</code> or <code>Cashier</code></li>
+      <li>May or may not have a WP account</li>
+      <li>Access POS only - never the full app</li>
+      <li>API calls use the app session's token + operator header</li>
+      <li><strong>There can be MANY of these per device</strong></li>
+    </ul>
+  </div>
+</div>
+
+<div class="problem">
+  <h4>Problem 1: Where does the app account holder fit in POS?</h4>
+  <p style="color: #ccc; font-size: 13px; margin: 0;">The person who logged into the app (say, the store owner "Alice") is also a POS user. She needs a PIN too, so she can participate in PIN-based switching. But she's special - she's the only one who can exit POS.</p>
+</div>
+
+<div class="problem">
+  <h4>Problem 2: WP role mapping confusion</h4>
+  <p style="color: #ccc; font-size: 13px; margin: 0 0 8px 0;">The WordPress role hierarchy doesn't map cleanly to POS roles:</p>
+  <table style="width:100%; font-size: 13px; color: #ccc; border-collapse: collapse;">
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 6px 0;"><code>administrator</code></td>
+      <td>Can log into app. Is this always "Owner"?</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 6px 0;"><code>shop_manager</code></td>
+      <td>Can log into app. Also "Owner"? Or POS Manager?</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 6px 0;"><code>pos_manager</code> (new)</td>
+      <td>Can't log into app. PIN-only. POS Manager.</td>
+    </tr>
+    <tr>
+      <td style="padding: 6px 0;"><code>pos_cashier</code> (new)</td>
+      <td>Can't log into app. PIN-only. POS Cashier.</td>
+    </tr>
+  </table>
+</div>
+
+<div class="problem">
+  <h4>Problem 3: The multi-manager exit scenario</h4>
+  <div class="scenario">
+    <strong>Alice</strong> (store owner, administrator) logs into app, opens POS<br>
+    Alice creates POS staff: <strong>Bob</strong> (Manager, PIN: 1234), <strong>Carol</strong> (Cashier, PIN: 5678)<br>
+    Alice sets her own POS PIN: 9999<br>
+    <br>
+    Carol is working. She enters PIN 5678.<br>
+    Bob walks over. He enters PIN 1234 (user switch to Bob).<br>
+    Bob taps "Exit POS".<br>
+    <br>
+    <span style="color: #f87171;">&#9888; If Bob can exit, he sees the full WooCommerce app authenticated as Alice's account.</span><br>
+    <span style="color: #f87171;">&#9888; Bob shouldn't see Alice's analytics, customer data, store settings.</span>
+  </div>
+</div>
+
+<h3 style="margin-top: 32px;">Proposed Resolution</h3>
+
+<div class="solution">
+  <h4>The Key Insight: "How you entered" determines what you can do</h4>
+  <p style="color: #ccc; font-size: 13px; margin: 0;">The distinction isn't about WP roles. It's about <strong>how you authenticated</strong>:</p>
+  <ul style="color: #ccc; font-size: 13px; padding-left: 16px;">
+    <li><strong>App-authenticated</strong> (full WP credentials) = can exit POS, sees full app</li>
+    <li><strong>PIN-authenticated</strong> (entered via POS PIN) = locked inside POS, regardless of POS role</li>
+  </ul>
+</div>
+
+<div class="scenario">
+  <strong>Resolution of the multi-manager scenario:</strong><br><br>
+  Bob (POS Manager) taps "Exit POS"<br>
+  &rarr; Modal: "Exiting POS requires the account owner"<br>
+  &rarr; <strong>Only Alice's PIN (9999) works here</strong> - not Bob's, not anyone else's<br>
+  &rarr; Alice enters 9999, POS exits<br>
+  <br>
+  <em style="color: #4ade80;">Bob can do everything else a Manager can (approve refunds, access settings). He just can't leave POS.</em>
+</div>
+
+<h3 style="margin-top: 32px;">Complete Identity Model</h3>
+<table style="width:100%; border-collapse: collapse; font-size: 14px; margin: 16px 0;">
+  <thead>
+    <tr>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">Identity</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">How they enter</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">POS role</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">Can exit POS?</th>
+      <th style="text-align:left; padding: 10px; border-bottom: 1px solid #555; color: #888;">Can override?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid #333; background: rgba(129,140,248,0.04);">
+      <td style="padding: 10px; color: #818cf8; font-weight: 600;">App Account Holder</td>
+      <td style="padding: 10px; color: #ccc;">WP login + own PIN</td>
+      <td style="padding: 10px; color: #ccc;">Manager (always)</td>
+      <td style="padding: 10px; color: #4ade80;">Yes (their PIN only)</td>
+      <td style="padding: 10px; color: #4ade80;">Yes</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #333;">
+      <td style="padding: 10px; color: #fbbf24; font-weight: 600;">POS Manager (staff)</td>
+      <td style="padding: 10px; color: #ccc;">PIN only</td>
+      <td style="padding: 10px; color: #ccc;">Manager</td>
+      <td style="padding: 10px; color: #f87171;">No</td>
+      <td style="padding: 10px; color: #4ade80;">Yes</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; color: #4ade80; font-weight: 600;">POS Cashier (staff)</td>
+      <td style="padding: 10px; color: #ccc;">PIN only</td>
+      <td style="padding: 10px; color: #ccc;">Cashier</td>
+      <td style="padding: 10px; color: #f87171;">No</td>
+      <td style="padding: 10px; color: #f87171;">No</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>PIN for the account holder:</strong> When roles are enabled, the app prompts the account holder to set a POS PIN. This PIN serves dual purpose: (1) fast POS switching like any other staff, (2) authorizing Exit POS. The app account holder is flagged internally as <code>isAppAccountHolder: true</code> - this flag controls Exit POS authority, not the POS role.
+</div>
+
+<div class="q">
+  <h4>Remaining question: WP-admin PIN setup</h4>
+  <p style="color: #ccc; font-size: 13px; margin: 0;">You mentioned PINs should be settable in wp-admin too (not just in the iOS app). For the remote implementation, this would mean a PIN management UI in WooCommerce admin. For V1 local implementation, PINs are set only in the iOS app. The remote implementation would add wp-admin PIN management later. Does this phasing work?</p>
+</div>

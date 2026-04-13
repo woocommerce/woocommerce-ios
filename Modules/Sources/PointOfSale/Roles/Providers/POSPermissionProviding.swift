@@ -34,7 +34,11 @@ extension POSPermissionProviding {
     }
 
     /// Requests manager approval using the typed capability enum.
-    func requestManagerApproval(managerPIN: String, for capability: POSCapability, orderID: Int64? = nil) async throws -> String? {
-        try await requestManagerApproval(managerPIN: managerPIN, for: capability.rawValue, orderID: orderID)
+    func requestManagerApproval(managerPIN: String,
+                                for capability: POSCapability,
+                                orderID: Int64? = nil) async throws -> String? {
+        try await requestManagerApproval(managerPIN: managerPIN,
+                                         for: capability.rawValue,
+                                         orderID: orderID)
     }
 }

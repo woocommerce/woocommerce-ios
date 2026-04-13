@@ -1,0 +1,175 @@
+<h2>POS Containment & Override Authority</h2>
+<p class="subtitle">Two distinct levels of authority within POS</p>
+
+<style>
+  .level { padding: 24px; border-radius: 12px; margin: 16px 0; }
+  .level h3 { margin: 0 0 8px 0; }
+  .level-app { background: rgba(129, 140, 248, 0.08); border: 1px solid rgba(129, 140, 248, 0.3); }
+  .level-pos { background: rgba(251, 191, 36, 0.08); border: 1px solid rgba(251, 191, 36, 0.3); }
+  .flow { padding: 16px; background: #12121f; border-radius: 8px; margin: 12px 0; font-size: 13px; color: #ccc; font-family: monospace; line-height: 1.8; }
+  .who { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+  .who-app { background: rgba(129, 140, 248, 0.2); color: #818cf8; }
+  .who-mgr { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+  .who-all { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+  .matrix { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  .matrix th, .matrix td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #333; }
+  .matrix th { font-size: 12px; text-transform: uppercase; color: #888; }
+  .note { font-size: 13px; color: #888; margin-top: 20px; padding: 16px; background: #1a1a2e; border-radius: 8px; }
+  .diagram { display: flex; align-items: center; gap: 0; margin: 24px 0; flex-wrap: wrap; justify-content: center; }
+  .box { padding: 16px 20px; border-radius: 8px; text-align: center; font-size: 13px; }
+  .arrow { color: #555; font-size: 20px; padding: 0 8px; }
+</style>
+
+<div class="diagram">
+  <div class="box" style="background: #1a1a2e; border: 2px solid #818cf8; min-width: 160px;">
+    <div style="font-size: 11px; color: #818cf8; text-transform: uppercase; letter-spacing: 1px;">App Level</div>
+    <div style="color: #fff; font-weight: 600; margin-top: 4px;">WooCommerce App</div>
+    <div style="color: #888; font-size: 12px; margin-top: 2px;">Orders, Products, Analytics...</div>
+  </div>
+  <div class="arrow">&larr; <span class="who who-app">App Account Only</span> &rarr;</div>
+  <div class="box" style="background: #1a1a2e; border: 2px solid #fbbf24; min-width: 200px;">
+    <div style="font-size: 11px; color: #fbbf24; text-transform: uppercase; letter-spacing: 1px;">POS Level</div>
+    <div style="color: #fff; font-weight: 600; margin-top: 4px;">Point of Sale</div>
+    <div style="color: #888; font-size: 12px; margin-top: 2px;">Sales, Payments, Orders...</div>
+  </div>
+</div>
+
+<div class="level level-app">
+  <h3 style="color: #818cf8;">Level 1: App Account Holder <span class="who who-app">Exit POS</span></h3>
+  <p style="color: #ccc; font-size: 14px; margin: 0 0 12px 0;">Only the person who authenticated with WP credentials can cross this boundary. POS managers added as staff cannot - they've never logged into the app.</p>
+  <div class="flow">
+    Cashier taps "Exit POS"<br>
+    &rarr; Modal: "Only the account owner can exit POS"<br>
+    &rarr; Account owner enters their PIN (or app password?)<br>
+    &rarr; App exits POS, returns to WooCommerce tabs<br>
+    <br>
+    A POS Manager taps "Exit POS"<br>
+    &rarr; Same modal - even managers can't exit<br>
+    &rarr; Only the original WP-authenticated user can
+  </div>
+</div>
+
+<div class="level level-pos">
+  <h3 style="color: #fbbf24;">Level 2: POS Manager Override <span class="who who-mgr">Transactional</span></h3>
+  <p style="color: #ccc; font-size: 14px; margin: 0 0 12px 0;">Any Manager (including added staff managers) can authorize restricted POS actions via PIN.</p>
+  <div class="flow">
+    Cashier taps "Refund" on an order<br>
+    &rarr; Modal: "Manager approval required"<br>
+    &rarr; Any manager enters their PIN<br>
+    &rarr; Refund proceeds, cashier continues
+  </div>
+</div>
+
+<h3 style="margin-top: 32px;">Updated Permission Matrix</h3>
+<table class="matrix">
+  <thead>
+    <tr>
+      <th>Action</th>
+      <th>Cashier</th>
+      <th>POS Manager</th>
+      <th>App Account</th>
+      <th>Authority Level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Process sales & payments</td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #888;">-</td>
+    </tr>
+    <tr>
+      <td>Apply existing coupons</td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #888;">-</td>
+    </tr>
+    <tr>
+      <td>View order history</td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #888;">-</td>
+    </tr>
+    <tr>
+      <td>Send receipts</td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #888;">-</td>
+    </tr>
+    <tr>
+      <td>Connect card reader</td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #888;">-</td>
+    </tr>
+    <tr style="background: rgba(251,191,36,0.04);">
+      <td>Process refund</td>
+      <td><span class="who who-mgr">Manager PIN</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #fbbf24;">POS Manager</td>
+    </tr>
+    <tr style="background: rgba(251,191,36,0.04);">
+      <td>Create new coupon</td>
+      <td><span class="who who-mgr">Manager PIN</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #fbbf24;">POS Manager</td>
+    </tr>
+    <tr style="background: rgba(251,191,36,0.04);">
+      <td>Access POS Settings</td>
+      <td><span class="who who-mgr">Manager PIN</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #fbbf24;">POS Manager</td>
+    </tr>
+    <tr style="background: rgba(251,191,36,0.04);">
+      <td>Manage Staff</td>
+      <td><span class="who who-mgr">Manager PIN</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #fbbf24;">POS Manager</td>
+    </tr>
+    <tr style="background: rgba(129,140,248,0.04);">
+      <td>Exit POS</td>
+      <td><span class="who who-app">Account Only</span></td>
+      <td><span class="who who-app">Account Only</span></td>
+      <td><span class="who who-all">Allowed</span></td>
+      <td style="color: #818cf8;">App Account</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <strong>Key insight:</strong> "Exit POS" is the ONLY action that requires app account authentication. Everything else within POS is either allowed or manager-overrideable. This creates a clean security boundary: POS is a contained world. The app behind it is a separate world.
+</div>
+
+<h3 style="margin-top: 32px;">Open question: Settings override UX</h3>
+<div class="options">
+  <div class="option" data-choice="switch" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Manager switch (lock screen)</h3>
+      <p>Cashier taps Settings, sees "Ask your manager." Manager goes to lock screen, enters their PIN, accesses settings as themselves. When done, locks device, cashier re-enters their PIN. Clean session boundary.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="inline" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Inline PIN override (same as refunds)</h3>
+      <p>Cashier taps Settings, manager enters PIN in modal, cashier gets temporary access until they leave settings. Simpler flow but the "temporary" boundary is fuzzy. Same concern PM raised about security.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid: PIN override switches active user</h3>
+      <p>Cashier taps Settings, manager enters PIN in modal, device SWITCHES to manager session (not temporary access for cashier). Manager does what they need, then taps "Lock" to return to cashier flow. Override = session switch.</p>
+    </div>
+  </div>
+</div>

@@ -256,11 +256,15 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     ///   - action: The capability being approved (e.g. "woocommerce_refund_orders").
     ///   - orderID: The order ID for context, if applicable.
     /// - Returns: An approval token string.
-    public func requestApproval(managerPIN: String, action: String, orderID: Int64? = nil) async throws -> String {
+    public func requestApproval(managerPIN: String,
+                                action: String,
+                                orderID: Int64? = nil) async throws -> String {
         var context: [String: Int64] = [:]
         if let orderID {
             context["order_id"] = orderID
         }
-        return try await approvalService.requestApproval(pin: managerPIN, action: action, context: context)
+        return try await approvalService.requestApproval(pin: managerPIN,
+                                                          action: action,
+                                                          context: context)
     }
 }

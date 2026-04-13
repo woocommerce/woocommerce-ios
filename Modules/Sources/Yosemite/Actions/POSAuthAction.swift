@@ -18,7 +18,6 @@ public enum POSAuthAction: Action {
                          pin: String,
                          action: String,
                          context: [String: Int64],
-                         idempotencyKey: String? = nil,
                          onCompletion: (Result<POSApprovalResult, Error>) -> Void)
 
     /// Fetches staff status including PIN setup state for all POS users.

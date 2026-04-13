@@ -14,14 +14,12 @@ final class RemotePOSApprovalService: POSApprovalServiceProtocol {
     }
 
     func requestApproval(pin: String, action: String, context: [String: Int64]) async throws -> String {
-        let idempotencyKey = UUID().uuidString
         return try await withCheckedThrowingContinuation { continuation in
             let posAuthAction = POSAuthAction.requestApproval(
                 siteID: siteID,
                 pin: pin,
                 action: action,
-                context: context,
-                idempotencyKey: idempotencyKey
+                context: context
             ) { result in
                 switch result {
                 case .success(let response):

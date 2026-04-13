@@ -309,6 +309,7 @@ struct POSPaymentLoadingView: View {
     let title: String
     let message: String
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -328,11 +329,18 @@ struct POSPaymentLoadingView: View {
                 Text(message)
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
+                    .accessibilityFocused($isMessageFocused)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
             .transaction { $0.animation = nil }
         }
         .multilineTextAlignment(.center)
+        .onAppear {
+            isMessageFocused = true
+        }
+        .onChange(of: message) {
+            isMessageFocused = true
+        }
     }
 
     enum Localization {

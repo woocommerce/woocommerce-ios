@@ -352,6 +352,7 @@
         <attribute name="fulfillmentID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="isFulfilled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="providerName" optional="YES" attributeType="String"/>
         <attribute name="shipmentProvider" optional="YES" attributeType="String"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="statusKey" optional="YES" attributeType="String"/>

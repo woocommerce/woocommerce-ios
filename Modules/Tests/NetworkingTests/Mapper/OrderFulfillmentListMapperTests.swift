@@ -35,6 +35,7 @@ struct OrderFulfillmentListMapperTests {
         #expect(first.dateFulfilled == expectedDateFulfilled)
         #expect(first.trackingNumber == "1Z999AA10123456784")
         #expect(first.shipmentProvider == "ups")
+        #expect(first.providerName?.isEmpty != false)
         #expect(first.trackingURL == "https://www.ups.com/track?tracknum=1Z999AA10123456784")
 
         let second = try #require(fulfillments.last)
@@ -45,6 +46,7 @@ struct OrderFulfillmentListMapperTests {
         #expect(second.dateFulfilled == nil)
         #expect(second.trackingNumber == nil)
         #expect(second.shipmentProvider == nil)
+        #expect(second.providerName == nil)
         #expect(second.trackingURL == nil)
     }
 
@@ -62,6 +64,19 @@ struct OrderFulfillmentListMapperTests {
         #expect(first.status == "fulfilled")
         #expect(first.trackingNumber == "1Z999AA10123456784")
         #expect(first.shipmentProvider == "ups")
+    }
+
+    @Test func test_fulfillment_fields_are_properly_parsed_for_custom_provider() throws {
+        // Given
+        let fulfillments = try mapFulfillments(from: "order_fulfillment_list_custom_provider")
+
+        // Then
+        #expect(fulfillments.count == 1)
+
+        let first = try #require(fulfillments.first)
+        #expect(first.shipmentProvider == "other")
+        #expect(first.providerName == "Test custom provider name")
+        #expect(first.trackingNumber == "CUSTOM-12345")
     }
 
     @Test func test_fulfillment_fields_are_properly_parsed_for_empty_response() throws {

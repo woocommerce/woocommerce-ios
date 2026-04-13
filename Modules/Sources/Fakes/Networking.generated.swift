@@ -775,6 +775,7 @@ extension Networking.OrderFulfillment {
             dateFulfilled: .fake(),
             trackingNumber: .fake(),
             shipmentProvider: .fake(),
+            providerName: .fake(),
             trackingURL: .fake()
         )
     }
@@ -818,6 +819,7 @@ extension Networking.POSProductVariation {
             fullDescription: .fake(),
             sku: .fake(),
             globalUniqueID: .fake(),
+            typeKey: .fake(),
             price: .fake(),
             downloadable: .fake(),
             manageStock: .fake(),

@@ -4,6 +4,7 @@ import enum Yosemite.CardReaderServiceError
 struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentNonRetryableErrorMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @State private var width: CGFloat = 0
 
     var body: some View {
@@ -21,6 +22,7 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
                     .foregroundStyle(Color.posOnSurface)
                     .font(.posHeadingBold)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(alignment: .center, spacing: PointOfSaleCardPresentPaymentLayout.textSpacing) {
@@ -48,6 +50,9 @@ struct PointOfSaleCardPresentPaymentNonRetryableErrorMessageView: View {
         .measureWidth({ containerWidth in
             width = containerWidth
         })
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

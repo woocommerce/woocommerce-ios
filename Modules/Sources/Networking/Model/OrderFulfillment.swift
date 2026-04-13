@@ -44,6 +44,11 @@ public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, Generat
     ///
     public let shipmentProvider: String?
 
+    /// Custom provider name (from `_provider_name` meta).
+    /// When the user selects "other" as the shipping provider, they can specify a custom provider name.
+    ///
+    public let providerName: String?
+
     /// External tracking URL (from `_tracking_url` meta).
     ///
     public let trackingURL: String?
@@ -59,6 +64,7 @@ public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, Generat
                 dateFulfilled: Date?,
                 trackingNumber: String?,
                 shipmentProvider: String?,
+                providerName: String?,
                 trackingURL: String?) {
         self.siteID = siteID
         self.orderID = orderID
@@ -69,6 +75,7 @@ public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, Generat
         self.dateFulfilled = dateFulfilled
         self.trackingNumber = trackingNumber
         self.shipmentProvider = shipmentProvider
+        self.providerName = providerName
         self.trackingURL = trackingURL
     }
 
@@ -95,6 +102,7 @@ public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, Generat
 
         let trackingNumber = metaData.first(where: { $0.key == MetaKeys.trackingNumber })?.value.stringValue
         let shipmentProvider = metaData.first(where: { $0.key == MetaKeys.shipmentProvider })?.value.stringValue
+        let providerName = metaData.first(where: { $0.key == MetaKeys.providerName })?.value.stringValue
         let trackingURL = metaData.first(where: { $0.key == MetaKeys.trackingURL })?.value.stringValue
         let dateFulfilledString = metaData.first(where: { $0.key == MetaKeys.dateFulfilled })?.value.stringValue
         let dateFulfilled = dateFulfilledString.flatMap { DateFormatter.Stats.dateTimeFormatter.date(from: $0) }
@@ -108,6 +116,7 @@ public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, Generat
                   dateFulfilled: dateFulfilled,
                   trackingNumber: trackingNumber,
                   shipmentProvider: shipmentProvider,
+                  providerName: providerName,
                   trackingURL: trackingURL)
     }
 }
@@ -129,6 +138,7 @@ private extension OrderFulfillment {
         static let dateFulfilled = "_date_fulfilled"
         static let trackingNumber = "_tracking_number"
         static let shipmentProvider = "_shipment_provider"
+        static let providerName = "_provider_name"
         static let trackingURL = "_tracking_url"
     }
 }

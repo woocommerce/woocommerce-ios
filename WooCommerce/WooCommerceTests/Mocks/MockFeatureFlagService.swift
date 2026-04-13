@@ -23,6 +23,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var isCIABBookingsEnabled: Bool
+    var isCIABBookingRescheduleEnabled: Bool
     var selfDrivenPushTokenWPCom: Bool
     var selfDrivenPushTokenAppPasswords: Bool
 
@@ -45,6 +46,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
          isCIABBookingsEnabled: Bool = false,
+         isCIABBookingRescheduleEnabled: Bool = false,
          selfDrivenPushTokenWPCom: Bool = false,
          selfDrivenPushTokenAppPasswords: Bool = false) {
         self.isInboxOn = isInboxOn
@@ -66,6 +68,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.isCIABBookingsEnabled = isCIABBookingsEnabled
+        self.isCIABBookingRescheduleEnabled = isCIABBookingRescheduleEnabled
         self.selfDrivenPushTokenWPCom = selfDrivenPushTokenWPCom
         self.selfDrivenPushTokenAppPasswords = selfDrivenPushTokenAppPasswords
     }
@@ -116,6 +119,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return isCIABBookingsEnabled
+        case .ciabBookingReschedule:
+            return isCIABBookingRescheduleEnabled
         case .selfDrivenPushTokenWPCom:
             return selfDrivenPushTokenWPCom
         case .selfDrivenPushTokenAppPasswords:

@@ -18,6 +18,7 @@ extension Storage.OrderFulfillment: ReadOnlyConvertible {
         dateFulfilled = orderFulfillment.dateFulfilled
         trackingNumber = orderFulfillment.trackingNumber
         shipmentProvider = orderFulfillment.shipmentProvider
+        providerName = orderFulfillment.providerName
         trackingURL = orderFulfillment.trackingURL
     }
 
@@ -33,6 +34,7 @@ extension Storage.OrderFulfillment: ReadOnlyConvertible {
                                 dateFulfilled: dateFulfilled,
                                 trackingNumber: trackingNumber,
                                 shipmentProvider: shipmentProvider,
+                                providerName: providerName,
                                 trackingURL: trackingURL)
     }
 }

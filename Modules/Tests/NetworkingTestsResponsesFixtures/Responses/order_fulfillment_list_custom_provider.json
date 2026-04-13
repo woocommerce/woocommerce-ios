@@ -1,0 +1,18 @@
+[
+  {
+    "id": 42,
+    "entity_type": "WC_Order",
+    "entity_id": "123",
+    "status": "fulfilled",
+    "is_fulfilled": true,
+    "date_updated": "2026-03-18 21:00:00",
+    "date_deleted": null,
+    "meta_data": [
+      { "id": 1, "key": "_date_fulfilled", "value": "2026-03-18 14:30:00" },
+      { "id": 2, "key": "_tracking_number", "value": "CUSTOM-12345" },
+      { "id": 3, "key": "_shipment_provider", "value": "other" },
+      { "id": 4, "key": "_provider_name", "value": "Test custom provider name" },
+      { "id": 5, "key": "_tracking_url", "value": "https://example.com/track/CUSTOM-12345" }
+    ]
+  }
+]

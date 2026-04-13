@@ -226,7 +226,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.isComplete}).isEmpty)
+        XCTAssertFalse(sut.tasksForDisplay.contains(where: { $0.task.isComplete }))
     }
 
     // MARK: - shouldShowViewAllButton

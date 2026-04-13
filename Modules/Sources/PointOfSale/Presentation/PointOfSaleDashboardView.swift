@@ -7,6 +7,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.keyboardObserver) private var keyboardObserver
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -158,7 +159,7 @@ struct PointOfSaleDashboardView: View {
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
         }
-        .ignoresSafeArea(.keyboard)
+        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .onAppear {
             trackTimeForInitialLoadingState()
             loadItemsWhenEligible()
@@ -332,6 +333,18 @@ private extension PointOfSaleDashboardView {
             value: "Cancel",
             comment: "Button to dismiss the support form from the POS dashboard."
         )
+    }
+}
+
+private extension PointOfSaleDashboardView {
+    /// Ignore keyboard safe area only for the full-size on-screen keyboard, so floating
+    /// controls sit above the external keyboard's helper bar (pre-iOS 26 only; iOS 26 has no helper bar).
+    var dashboardIgnoredSafeAreaRegions: SafeAreaRegions {
+        if keyboardObserver.isFullSizeKeyboardVisible {
+            return SafeAreaRegions.posContainerRegionToIgnore.union(.keyboard)
+        } else {
+            return .posContainerRegionToIgnore
+        }
     }
 }
 

@@ -130,23 +130,19 @@ struct StorePickerError: View {
         Group {
             VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
 
-                // Title with optional close button
+                // Title with close button
                 HStack {
-                    if technicalDetails != nil {
-                        Button(action: dismissAction) {
-                            Image(uiImage: .closeButton)
-                                .secondaryBodyStyle()
-                        }
+                    Button(action: dismissAction) {
+                        Image(uiImage: .closeButton)
+                            .secondaryBodyStyle()
                     }
                     Spacer()
                     Text(Localization.title)
                         .headlineStyle()
                     Spacer()
-                    if technicalDetails != nil {
-                        // Invisible spacer to balance the close button
-                        Image(uiImage: .closeButton)
-                            .hidden()
-                    }
+                    // Invisible spacer to balance the close button
+                    Image(uiImage: .closeButton)
+                        .hidden()
                 }
 
                 // Main image

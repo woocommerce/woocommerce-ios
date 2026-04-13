@@ -3078,7 +3078,7 @@ extension WooAnalyticsEvent {
                                 Keys.path.rawValue: path,
                                 Keys.entityName.rawValue: entityName,
                                 Keys.debugDecodingPath.rawValue: (error as? DecodingError)?.debugPath,
-                                Keys.debugDecodingDescription.rawValue: (error as? DecodingError)?.debugDescription
+                                Keys.debugDecodingDescription.rawValue: (error as? DecodingError)?.contextDebugDescription
                               ].compactMapValues { $0 },
                               error: error)
         }

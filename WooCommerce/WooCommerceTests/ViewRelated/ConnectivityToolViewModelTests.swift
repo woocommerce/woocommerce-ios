@@ -187,9 +187,9 @@ struct ConnectivityToolViewModelTests {
 
     // MARK: - testNotifications
 
-    @Test func test_testNotifications_when_wpcom_site_authorized_and_config_ok_then_returns_success() async {
+    @Test func test_testNotifications_when_jetpack_active_authorized_and_config_ok_then_returns_success() async {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake()
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
@@ -210,9 +210,16 @@ struct ConnectivityToolViewModelTests {
             }
         }
 
+        let mockNetwork = MockNetwork()
+        mockNetwork.simulateResponse(requestUrlSuffix: "system_status",
+                                     filename: "system-status-with-jetpack-active")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            pushNotesManager: mockPushNotesManager)
+                                            pushNotesManager: mockPushNotesManager,
+                                            network: mockNetwork)
+
+        // Populate activeSystemPlugins with Jetpack by running the site connectivity test.
+        _ = await sut.testSiteConnectivity()
 
         // When
         let result = await sut.testNotifications()
@@ -222,8 +229,8 @@ struct ConnectivityToolViewModelTests {
     }
 
     @Test func test_testNotifications_when_jetpack_not_active_then_returns_error_with_setup_jetpack_action() async {
-        // Given — self-hosted site (isWordPressComStore: false) with no Jetpack in active plugins
-        let site = Site.fake().copy(isWordPressComStore: false)
+        // Given — active plugins do not include Jetpack
+        let site = Site.fake()
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
@@ -255,17 +262,24 @@ struct ConnectivityToolViewModelTests {
     }
 
     @Test func test_testNotifications_when_permission_denied_then_returns_error_with_open_settings() async {
-        // Given — WPCom site to skip Jetpack check
-        let site = Site.fake().copy(isWordPressComStore: true)
+        // Given
+        let site = Site.fake()
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .denied
 
+        let mockNetwork = MockNetwork()
+        mockNetwork.simulateResponse(requestUrlSuffix: "system_status",
+                                     filename: "system-status-with-jetpack-active")
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            pushNotesManager: mockPushNotesManager)
+                                            pushNotesManager: mockPushNotesManager,
+                                            network: mockNetwork)
+
+        // Populate activeSystemPlugins with Jetpack by running the site connectivity test.
+        _ = await sut.testSiteConnectivity()
 
         // When
         let result = await sut.testNotifications()
@@ -280,16 +294,23 @@ struct ConnectivityToolViewModelTests {
 
     @Test func test_testNotifications_when_no_device_id_then_returns_device_not_registered_error() async {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake()
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .authorized
 
+        let mockNetwork = MockNetwork()
+        mockNetwork.simulateResponse(requestUrlSuffix: "system_status",
+                                     filename: "system-status-with-jetpack-active")
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: nil)
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            pushNotesManager: mockPushNotesManager)
+                                            pushNotesManager: mockPushNotesManager,
+                                            network: mockNetwork)
+
+        // Populate activeSystemPlugins with Jetpack by running the site connectivity test.
+        _ = await sut.testSiteConnectivity()
 
         // When
         let result = await sut.testNotifications()
@@ -304,7 +325,7 @@ struct ConnectivityToolViewModelTests {
 
     @Test func test_testNotifications_when_order_notifications_disabled_then_returns_error_with_enable_action() async {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake()
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
@@ -325,9 +346,16 @@ struct ConnectivityToolViewModelTests {
             }
         }
 
+        let mockNetwork = MockNetwork()
+        mockNetwork.simulateResponse(requestUrlSuffix: "system_status",
+                                     filename: "system-status-with-jetpack-active")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            pushNotesManager: mockPushNotesManager)
+                                            pushNotesManager: mockPushNotesManager,
+                                            network: mockNetwork)
+
+        // Populate activeSystemPlugins with Jetpack by running the site connectivity test.
+        _ = await sut.testSiteConnectivity()
 
         // When
         let result = await sut.testNotifications()
@@ -342,7 +370,7 @@ struct ConnectivityToolViewModelTests {
 
     @Test func test_testNotifications_when_config_request_fails_then_returns_error_with_technical_details() async {
         // Given
-        let site = Site.fake().copy(isWordPressComStore: true)
+        let site = Site.fake()
         let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
         let stores = MockStoresManager(sessionManager: session)
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
@@ -358,10 +386,17 @@ struct ConnectivityToolViewModelTests {
             }
         }
 
+        let mockNetwork = MockNetwork()
+        mockNetwork.simulateResponse(requestUrlSuffix: "system_status",
+                                     filename: "system-status-with-jetpack-active")
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "789")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            pushNotesManager: mockPushNotesManager)
+                                            pushNotesManager: mockPushNotesManager,
+                                            network: mockNetwork)
+
+        // Populate activeSystemPlugins with Jetpack by running the site connectivity test.
+        _ = await sut.testSiteConnectivity()
 
         // When
         let result = await sut.testNotifications()

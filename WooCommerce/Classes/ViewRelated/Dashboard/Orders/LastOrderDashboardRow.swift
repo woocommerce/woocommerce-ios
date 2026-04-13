@@ -39,6 +39,16 @@ struct LastOrderDashboardRow: View {
                                 .padding(.vertical, Layout.Status.vPadding)
                                 .background(viewModel.statusBackgroundColor)
                                 .cornerRadius(Layout.Status.cornerRadius)
+                                if let fulfillmentText = viewModel.fulfillmentBadgeText,
+                                   viewModel.isFulfillmentStatusRequired {
+                                    Text(fulfillmentText)
+                                        .foregroundStyle(.black)
+                                        .footnoteStyle()
+                                        .padding(.horizontal, Layout.Status.hPadding)
+                                        .padding(.vertical, Layout.Status.vPadding)
+                                        .background(viewModel.fulfillmentBadgeBackgroundColor)
+                                        .cornerRadius(Layout.Status.cornerRadius)
+                                }
                             if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
                                viewModel.isPOSOrder {
                                 Text(viewModel.salesChannelText)
@@ -96,6 +106,11 @@ struct LastOrderDashboardRowViewModel {
         order.salesChannel == .pointOfSale
     }
 
+    var isFulfillmentStatusRequired: Bool {
+        /// isCIAB gating is pending a planned refactoring
+        isCIAB && order.fulfillmentStatus != .unknown
+    }
+
     var salesChannelText: String {
         order.salesChannel?.description ?? ""
     }
@@ -135,6 +150,16 @@ struct LastOrderDashboardRowViewModel {
     var statusBackgroundColor: Color {
         let displayStatus = isCIAB ? CIABOrderStatusMapper.displayStatus(for: order.status) : order.status
         return Color(uiColor: displayStatus.backgroundColor)
+    }
+
+    /// Returns the fulfillment badge text for CIAB orders, or `nil` if the badge should not be shown.
+    var fulfillmentBadgeText: String? {
+        order.fulfillmentStatus.badgeText()
+    }
+
+    /// Background color for the fulfillment badge.
+    var fulfillmentBadgeBackgroundColor: Color {
+        order.fulfillmentStatus.badgeBackgroundSwiftUIColor
     }
 }
 

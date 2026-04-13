@@ -32,7 +32,14 @@ extension ConnectivityToolViewModel {
             return .error(Localization.ErrorMessage.notificationsNotAuthorized, [openSettingsAction, retryAction(for: .notifications)])
         }
 
-        // Sub-check 3: Notification config — device registered and order notifications enabled.
+        // Sub-check 3: Notification config — only needed when the device is not registered
+        // for self-driven push notifications, which bypass WPCom notification settings.
+        let isRegisteredForSelfDrivenPN = pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
+        if isRegisteredForSelfDrivenPN {
+            DDLogInfo("Connectivity Tool: ✅ Site registered for self-driven push notifications, skipping WPCom config check")
+            return .success
+        }
+
         let configResult = await checkNotificationConfig()
         switch configResult {
         case .success:

@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 import enum NetworkingCore.DotcomError
 @testable import WooCommerce

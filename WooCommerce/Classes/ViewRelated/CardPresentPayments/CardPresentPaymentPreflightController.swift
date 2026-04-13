@@ -117,14 +117,14 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
     @MainActor
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
-        let connectionAttemptID = beginConnectionAttempt()
+        let connectionAttemptID = invalidateConnectionAttempt()
         self.discoveryMethod = discoveryMethod
         observeConnectedReaders()
         await checkForConnectedReader(connectionAttemptID: connectionAttemptID)
     }
 
     func cancelConnectionAttempt() {
-        _ = beginConnectionAttempt()
+        invalidateConnectionAttempt()
     }
 
     @MainActor
@@ -215,7 +215,8 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
-    private func beginConnectionAttempt() -> Int {
+    @discardableResult
+    private func invalidateConnectionAttempt() -> Int {
         connectionAttemptID.withLock { id in
             id += 1
             return id

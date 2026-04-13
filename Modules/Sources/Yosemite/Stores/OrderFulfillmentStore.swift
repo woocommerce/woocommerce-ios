@@ -70,6 +70,10 @@ extension OrderFulfillmentStore {
                                              readOnlyFulfillments: [Networking.OrderFulfillment],
                                              onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
+            guard let storageOrder = storage.loadOrder(siteID: siteID, orderID: orderID) else {
+                return
+            }
+
             let storageFulfillments = storage.loadOrderFulfillmentList(
                 siteID: siteID,
                 orderID: orderID
@@ -85,6 +89,7 @@ extension OrderFulfillmentStore {
                     ofType: Storage.OrderFulfillment.self
                 )
                 storageFulfillment.update(with: readOnlyFulfillment)
+                storageFulfillment.order = storageOrder
             }
 
             // Remove stale entries not present in the remote response

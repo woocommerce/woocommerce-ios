@@ -19,5 +19,6 @@ extension OrderFulfillment {
     @NSManaged public var providerName: String?
     @NSManaged public var shipmentProvider: String?
     @NSManaged public var trackingURL: String?
+    @NSManaged public var order: Order?
 
 }

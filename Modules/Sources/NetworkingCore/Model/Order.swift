@@ -74,6 +74,10 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
     ///
     public let shippingLabels: [ShippingLabel]
 
+    /// Fulfillments associated with the order (fetched from a separate endpoint, populated via CoreData relationship).
+    ///
+    public let fulfillments: [OrderFulfillment]
+
     /// Set to orders created via specific sources (e.g. checkout, store-api, Point of Sale, ...)
     ///
     public let createdVia: String?
@@ -126,6 +130,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                 appliedGiftCards: [OrderGiftCard],
                 attributionInfo: OrderAttributionInfo?,
                 shippingLabels: [ShippingLabel],
+                fulfillments: [OrderFulfillment] = [],
                 createdVia: String?) {
 
         self.siteID = siteID
@@ -175,6 +180,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
         self.appliedGiftCards = appliedGiftCards
         self.attributionInfo = attributionInfo
         self.shippingLabels = shippingLabels
+        self.fulfillments = fulfillments
         self.createdVia = createdVia
     }
 
@@ -378,6 +384,7 @@ public struct Order: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable {
                   appliedGiftCards: [],
                   attributionInfo: nil,
                   shippingLabels: [],
+                  fulfillments: [],
                   createdVia: nil)
     }
 }
@@ -472,7 +479,8 @@ extension Order: Equatable {
             lhs.customerNote == rhs.customerNote &&
             lhs.attributionInfo == rhs.attributionInfo &&
             lhs.shippingLabels == rhs.shippingLabels &&
-            lhs.fulfillmentStatus == rhs.fulfillmentStatus
+            lhs.fulfillmentStatus == rhs.fulfillmentStatus &&
+            lhs.fulfillments == rhs.fulfillments
     }
 }
 

@@ -308,9 +308,11 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     private func reevaluateShouldShow() {
         var newShouldShow: CardReaderSettingsTriState = .isUnknown
 
+        let hasNoActiveOrReconnectingReaders = connectedReaders.isEmpty && !readerReconnectionInProgress && !readerReconnectionCancellationInProgress
+
         if !didGetConnectedReaders {
             newShouldShow = .isUnknown
-        } else if connectedReaders.isEmpty && !readerReconnectionInProgress && !readerReconnectionCancellationInProgress {
+        } else if hasNoActiveOrReconnectingReaders {
             newShouldShow = .isFalse
         } else if connectedReaders.includesTapToPayReader() {
             /// This screen only supports management of Bluetooth readers, and will have started disconnection

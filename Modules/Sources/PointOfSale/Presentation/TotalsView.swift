@@ -142,21 +142,13 @@ private extension TotalsView {
 
     private var isShowingPaymentView: Bool {
         guard posModel.orderState.isLoaded else {
-            // When the order's being created or synced, we only show the shimmering totals.
-            // Before the order exists, we don't want to show the card payment status, as it will
-            // show for a second initially, then disappear the moment we start syncing the order.
             return false
         }
 
         switch paymentModel.cardReaderConnectionStatus {
-        case .connected, .disconnecting, .cancellingConnection:
-            switch displayPaymentState.activePaymentMethod {
-            case .cash:
-                return true
-            case .card:
-                return paymentModel.cardPresentPaymentInlineMessage != nil
-            }
-        case .reconnecting:
+        case .disconnected:
+            return true
+        case .connected, .disconnecting, .cancellingConnection, .reconnecting:
             switch displayPaymentState.activePaymentMethod {
             case .cash:
                 return true
@@ -165,8 +157,6 @@ private extension TotalsView {
                        totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: paymentModel.cardReaderConnectionStatus,
                                                                       paymentState: displayPaymentState)
             }
-        case .disconnected:
-            return true
         }
     }
 

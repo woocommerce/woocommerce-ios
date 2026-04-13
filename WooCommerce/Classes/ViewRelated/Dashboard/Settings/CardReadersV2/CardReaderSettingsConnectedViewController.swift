@@ -209,10 +209,11 @@ private extension CardReaderSettingsConnectedViewController {
 
     private func configureDisconnectButton(cell: ButtonTableViewCell) {
         let state = DisconnectButtonState(viewModel: viewModel)
-        cell.configure(style: state.style, title: state.title) { [weak self, state] in
-            state.action(self?.viewModel)
+        let action = state.action(viewModel)
+        cell.configure(style: state.style, title: state.title) {
+            action?()
         }
-        cell.enableButton(state.isEnabled)
+        cell.enableButton(action != nil)
         cell.showActivityIndicator(state.showActivityIndicator)
         cell.selectionStyle = .none
         cell.backgroundColor = .clear
@@ -393,15 +394,6 @@ private enum DisconnectButtonState {
         }
     }
 
-    var isEnabled: Bool {
-        switch self {
-        case .reconnecting, .idle:
-            return true
-        case .cancellingReconnection, .disconnecting, .updating:
-            return false
-        }
-    }
-
     var showActivityIndicator: Bool {
         switch self {
         case .cancellingReconnection, .disconnecting:
@@ -411,14 +403,15 @@ private enum DisconnectButtonState {
         }
     }
 
-    func action(_ viewModel: BluetoothCardReaderSettingsConnectedViewModel?) {
+    /// Returns the action for this state, or `nil` if the button should be disabled.
+    func action(_ viewModel: BluetoothCardReaderSettingsConnectedViewModel) -> (() -> Void)? {
         switch self {
         case .reconnecting:
-            viewModel?.cancelReconnection()
-        case .cancellingReconnection, .disconnecting, .updating:
-            break
+            return { viewModel.cancelReconnection() }
         case .idle:
-            viewModel?.disconnectReader()
+            return { viewModel.disconnectReader() }
+        case .cancellingReconnection, .disconnecting, .updating:
+            return nil
         }
     }
 }

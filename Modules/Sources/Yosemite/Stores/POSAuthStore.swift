@@ -29,8 +29,8 @@ public class POSAuthStore: Store {
         switch action {
         case let .authenticatePIN(siteID, pin, registerID, onCompletion):
             authenticatePIN(siteID: siteID, pin: pin, registerID: registerID, onCompletion: onCompletion)
-        case let .requestApproval(siteID, pin, action, context, onCompletion):
-            requestApproval(siteID: siteID, pin: pin, action: action, context: context, onCompletion: onCompletion)
+        case let .requestApproval(siteID, pin, action, context, idempotencyKey, onCompletion):
+            requestApproval(siteID: siteID, pin: pin, action: action, context: context, idempotencyKey: idempotencyKey, onCompletion: onCompletion)
         case let .fetchStaffStatus(siteID, onCompletion):
             fetchStaffStatus(siteID: siteID, onCompletion: onCompletion)
         case let .managePIN(siteID, userID, pin, action, onCompletion):
@@ -61,10 +61,15 @@ private extension POSAuthStore {
                          pin: String,
                          action: String,
                          context: [String: Int64],
+                         idempotencyKey: String?,
                          onCompletion: @escaping (Result<POSApprovalResult, Error>) -> Void) {
         Task { @MainActor in
             do {
-                let result = try await remote.requestApproval(siteID: siteID, pin: pin, action: action, context: context)
+                let result = try await remote.requestApproval(siteID: siteID,
+                                                              pin: pin,
+                                                              action: action,
+                                                              context: context,
+                                                              idempotencyKey: idempotencyKey)
                 onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))

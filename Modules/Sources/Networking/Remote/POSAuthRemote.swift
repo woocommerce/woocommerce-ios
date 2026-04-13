@@ -45,7 +45,8 @@ public final class POSAuthRemote: Remote {
     public func requestApproval(siteID: Int64,
                                 pin: String,
                                 action: String,
-                                context: [String: Int64]) async throws -> POSApprovalResult {
+                                context: [String: Int64],
+                                idempotencyKey: String? = nil) async throws -> POSApprovalResult {
         let path = Constants.authApprovePath
         var parameters: [String: Any] = [
             ParameterKeys.pin: pin,
@@ -53,6 +54,9 @@ public final class POSAuthRemote: Remote {
         ]
         if !context.isEmpty {
             parameters[ParameterKeys.context] = context
+        }
+        if let idempotencyKey {
+            parameters[ParameterKeys.idempotencyKey] = idempotencyKey
         }
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .post,
@@ -131,6 +135,7 @@ private extension POSAuthRemote {
         static let registerID = "register_id"
         static let action = "action"
         static let context = "context"
+        static let idempotencyKey = "idempotency_key"
         static let userID = "user_id"
     }
 

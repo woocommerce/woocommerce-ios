@@ -193,7 +193,8 @@ struct StorePickerError_Preview: PreviewProvider {
 
         VStack {
             StorePickerError(errorType: .serverError,
-                             technicalDetails: "Status: 500\nError: http_request_failed\ncURL error 28: Operation timed out after 3001 milliseconds with 0 bytes received")
+                             technicalDetails: "Status: 500\nError: http_request_failed\n"
+                                + "cURL error 28: Operation timed out after 3001 milliseconds")
         }
         .padding()
         .background(Color.gray)

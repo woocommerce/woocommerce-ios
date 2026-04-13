@@ -49,15 +49,15 @@ struct POSPermissionAdaptor {
                 },
                 appAccountUserID: userID
             )
-            provider.onAuthenticated = { [weak stores] response in
-                stores?.overridePOSCredentials(
+            provider.onAuthenticated = { response in
+                stores.overridePOSCredentials(
                     username: response.userLogin,
                     applicationPassword: response.applicationPassword,
                     siteAddress: siteURL
                 )
             }
-            provider.onLock = { [weak stores] in
-                stores?.revertPOSCredentialOverride()
+            provider.onLock = {
+                stores.revertPOSCredentialOverride()
             }
             return provider
         } else if featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalRoles) {

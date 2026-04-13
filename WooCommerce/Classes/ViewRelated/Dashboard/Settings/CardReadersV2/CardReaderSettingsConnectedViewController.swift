@@ -467,7 +467,7 @@ private extension CardReaderSettingsConnectedViewController {
 
         static let cancelReconnectionButtonTitle = NSLocalizedString(
             "cardReaderSettingsConnectedViewController.cancelReconnectionButtonTitle.v2",
-            value: "Cancel reconnection",
+            value: "Cancel Reconnection",
             comment: "Settings > Manage Card Reader > Connected Reader > A button to cancel the reconnection attempt"
         )
 

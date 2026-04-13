@@ -740,6 +740,7 @@ struct PointOfSaleAggregateModelTests {
         @Test func cancelThenCollectPayment_still_collects_payment_when_cancellation_fails() async throws {
             // Given
             let itemsController = MockPointOfSaleItemsController()
+            cardPresentPaymentService.connectedReader = .init(name: "Test Reader", batteryLevel: 0.5)
             let sut = makePointOfSaleAggregateModel(
                 itemsController: itemsController,
                 cardPresentPaymentService: cardPresentPaymentService,
@@ -757,6 +758,42 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cardPresentPaymentService.collectPaymentWasCalled)
+        }
+
+        @Test func cancelThenCollectPayment_cancels_reconnection_first_when_reconnecting() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .reconnecting(reader)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == true)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
+        }
+
+        @Test func cancelThenCollectPayment_does_not_cancel_reconnection_when_not_reconnecting() async throws {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let reader = CardPresentPaymentCardReader(name: "Test Reader", batteryLevel: 0.5)
+            cardPresentPaymentService.connectionStatus = .connected(reader)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+
+            // When
+            await sut.cancelThenCollectPayment()
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == false)
+            #expect(cardPresentPaymentService.cancelPaymentCalled == true)
         }
 
         // MARK: Onboarding
@@ -969,6 +1006,27 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
+        }
+
+        @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
+            // Given
+            let itemsController = MockPointOfSaleItemsController()
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                analytics: analytics)
+
+            // When
+            await withCheckedContinuation { continuation in
+                cardPresentPaymentService.onCancelReconnectionCalled = {
+                    continuation.resume()
+                }
+                sut.cancelReconnection()
+            }
+
+            // Then
+            #expect(cardPresentPaymentService.cancelReconnectionCalled == true)
         }
 
         @Test func checkout_when_invoked_then_tracks_trackCheckoutTapped() async throws {

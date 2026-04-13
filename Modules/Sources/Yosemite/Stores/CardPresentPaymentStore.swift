@@ -139,6 +139,10 @@ public final class CardPresentPaymentStore: Store {
             publishCardReaderConnections(onCompletion: completion)
         case .fetchWCPayCharge(let siteID, let chargeID, let completion):
             fetchCharge(siteID: siteID, chargeID: chargeID, completion: completion)
+        case .observeCardReaderReconnectionState(let completion):
+            observeCardReaderReconnectionState(onCompletion: completion)
+        case .cancelReconnection(let completion):
+            cancelReconnection(onCompletion: completion)
         }
     }
 }
@@ -429,6 +433,28 @@ private extension CardPresentPaymentStore {
             .eraseToAnyPublisher()
 
         onCompletion(publisher)
+    }
+
+    func observeCardReaderReconnectionState(onCompletion: (AnyPublisher<CardReaderReconnectionState, Never>) -> Void) {
+        onCompletion(cardReaderService.reconnectionEvents)
+    }
+
+    func cancelReconnection(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        cardReaderService.cancelReconnection()
+            .sink(
+                receiveCompletion: { result in
+                    switch result {
+                    case .failure(let error):
+                        onCompletion(.failure(error))
+                    case .finished:
+                        break
+                    }
+                },
+                receiveValue: {
+                    onCompletion(.success(()))
+                }
+            )
+            .store(in: &cancellables)
     }
 }
 

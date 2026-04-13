@@ -61,7 +61,7 @@ protocol POSSettingsControllerProtocol {
                 guard let self else { return }
                 let cardReader: CardPresentPaymentCardReader?
                 switch connectionStatus {
-                case .connected(let reader):
+                case .connected(let reader), .reconnecting(let reader):
                     cardReader = reader
                 default:
                     cardReader = nil

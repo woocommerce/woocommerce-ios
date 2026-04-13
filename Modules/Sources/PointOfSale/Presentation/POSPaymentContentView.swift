@@ -105,6 +105,7 @@ struct POSPaymentContentView: View {
                 paymentState: displayPaymentState,
                 cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                 connectCardReaderAction: paymentModel.connectCardReader,
+                cancelReconnectionAction: paymentModel.cancelReconnection,
                 showLoadingWhenIdle: !paymentModel.isZeroTotal)
         }
     }
@@ -236,9 +237,11 @@ struct POSCardPaymentContentView: View {
     let paymentState: PointOfSalePaymentState
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
+    let cancelReconnectionAction: () -> Void
     var showLoadingWhenIdle: Bool = false
 
     private let viewHelper = POSPaymentViewHelper()
+    private let totalsViewHelper = TotalsViewHelper()
     @Namespace private var paymentMessageNamespace
     private var paymentMessageAnimation: POSCardPresentPaymentInLineMessageAnimation {
         .init(namespace: paymentMessageNamespace)
@@ -246,7 +249,12 @@ struct POSCardPaymentContentView: View {
 
     @ViewBuilder
     var body: some View {
-        if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
+        if totalsViewHelper.shouldShowReconnectingMessage(readerConnectionStatus: cardReaderConnectionStatus,
+                                                          paymentState: paymentState) {
+            PointOfSaleCardPresentPaymentReconnectingMessageView {
+                cancelReconnectionAction()
+            }
+        } else if viewHelper.shouldShowDisconnectedMessage(readerConnectionStatus: cardReaderConnectionStatus,
                                                     paymentState: paymentState) {
             PointOfSaleCardPresentPaymentReaderDisconnectedMessageView(animation: paymentMessageAnimation) {
                 connectCardReaderAction()

@@ -383,6 +383,11 @@ extension PointOfSaleAggregateModel {
     }
 
     @MainActor
+    func cancelReconnection() {
+        paymentModel.cancelReconnection()
+    }
+
+    @MainActor
     func disconnectCardReader() {
         paymentModel.disconnectCardReader()
     }

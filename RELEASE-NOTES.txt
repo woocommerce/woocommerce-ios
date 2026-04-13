@@ -2,6 +2,7 @@
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 24.6
 -----
+- [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]
 - [*] POS: visual fixes in iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/16898]
 - [*] Add troubleshooting tool for login [https://github.com/woocommerce/woocommerce-ios/pull/16890]
 - [*] Update Tap to Pay requirement to iOS 18.0.1 [https://github.com/woocommerce/woocommerce-ios/pull/16914]

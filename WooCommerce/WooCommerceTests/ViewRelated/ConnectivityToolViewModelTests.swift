@@ -1,6 +1,7 @@
 import Testing
 import Foundation
 import Yosemite
+@testable import Networking
 @testable import WooCommerce
 
 @MainActor
@@ -228,13 +229,19 @@ struct ConnectivityToolViewModelTests {
         let mockNotificationCenter = MockUserNotificationsCenterAdapter()
         mockNotificationCenter.authorizationStatus = .authorized
 
+        // Mock system status response with active plugins that don't include Jetpack.
+        let mockNetwork = MockNetwork()
+        mockNetwork.simulateResponse(requestUrlSuffix: "system_status",
+                                     filename: "system-status-wc-plugin-and-pos-feature-enabled")
+
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123")
         let sut = ConnectivityToolViewModel(session: session, stores: stores,
                                             userNotificationCenter: mockNotificationCenter,
-                                            pushNotesManager: mockPushNotesManager)
+                                            pushNotesManager: mockPushNotesManager,
+                                            network: mockNetwork)
 
-        // Simulate system status report with no Jetpack plugin in active plugins.
-        sut.activeSystemPlugins = []
+        // Populate activeSystemPlugins by running the site connectivity test.
+        _ = await sut.testSiteConnectivity()
 
         // When
         let result = await sut.testNotifications()

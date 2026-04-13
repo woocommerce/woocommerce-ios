@@ -4,6 +4,7 @@ import UIKit
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.AlamofireNetwork
+import protocol NetworkingCore.Network
 import class Networking.AnnouncementsRemote
 import class Networking.SystemStatusRemote
 import class Networking.OrdersRemote
@@ -68,21 +69,28 @@ final class ConnectivityToolViewModel {
 
     /// Active plugins from the system status report, cached after the site connectivity test.
     /// Used by the notification check to verify Jetpack is active without calling `/wp/v2/plugins`.
-    /// Internal for testability via `@testable import`.
     ///
-    var activeSystemPlugins: [SystemPlugin] = []
+    private var activeSystemPlugins: [SystemPlugin] = []
+
+    /// Whether Jetpack is among the active plugins from the system status report.
+    /// Populated after the site connectivity test. Internal for testability.
+    ///
+    var isJetpackPluginActive: Bool {
+        activeSystemPlugins.contains { $0.plugin.hasPrefix(Constants.jetpackPluginSlug) }
+    }
 
     private var latestTestResult: [ConnectivityTestResult] = []
 
-    let network: AlamofireNetwork
+    private let network: Network
 
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         network: Network? = nil) {
 
-        let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
+        let network = network ?? AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
         self.network = network
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
@@ -668,6 +676,10 @@ private extension ConnectivityToolViewModel {
 }
 
 private extension ConnectivityToolViewModel {
+    enum Constants {
+        static let jetpackPluginSlug = "jetpack/"
+    }
+
     enum SystemImages: String {
         case retry = "arrow.clockwise"
         case readMore = "arrow.up.forward.app"

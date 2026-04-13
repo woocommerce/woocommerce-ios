@@ -12,7 +12,7 @@ extension ConnectivityToolViewModel {
     @MainActor
     func testNotifications() async -> ConnectivityToolCard.ConnectivityState {
         // Sub-check 1: Jetpack plugin is active.
-        let jetpackResult = await checkJetpackPluginActiveIfNeeded()
+        let jetpackResult = checkJetpackPluginActiveIfNeeded()
         if case .failure = jetpackResult {
             DDLogError("Connectivity Tool: ❌ Jetpack plugin not found in active plugins")
             let setupJetpackAction = makeNotificationAction(.setupJetpack) { [weak self] in
@@ -68,22 +68,10 @@ extension ConnectivityToolViewModel {
         }
     }
 
-    /// Checks whether Jetpack is active using the active plugins from the system status report
-    /// (cached during the site connectivity test). This avoids calling `/wp/v2/plugins`,
-    /// which requires administrator-level permissions and fails for shop manager users.
+    /// Checks whether Jetpack is active using the cached system status report plugins.
     ///
-    @MainActor
-    func checkJetpackPluginActiveIfNeeded() async -> Result<Void, JetpackCheckError> {
-        /// WPCom and CIAB sites have Jetpack by default so skip this check
-        guard stores.sessionManager.defaultSite?.isWordPressComStore == false,
-              stores.sessionManager.defaultSite?.isCIAB == false else {
-            return .success(())
-        }
-
-        let jetpackSlug = "jetpack/"
-        let isJetpackActive = activeSystemPlugins.contains { $0.plugin.hasPrefix(jetpackSlug) }
-
-        if isJetpackActive {
+    func checkJetpackPluginActiveIfNeeded() -> Result<Void, JetpackCheckError> {
+        if isJetpackPluginActive {
             return .success(())
         } else {
             return .failure(.pluginNotActive)

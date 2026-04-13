@@ -1,24 +1,26 @@
 import Foundation
 
-/// Maps a PIN auth response, handling both success and WC REST error formats.
-/// Required because Jetpack tunnel doesn't relay proper HTTP status codes,
-/// so error responses (422, 403) arrive as HTTP 200 with error JSON body.
+/// Maps a PIN auth response, handling both:
+/// - Jetpack tunnel `{"data": {...}}` envelope
+/// - Direct REST `{...}` response
+/// - WC REST error `{"code": "...", "message": "...", "data": {"status": N}}`
 struct POSPINAuthResultMapper: Mapper {
     typealias Output = POSPINAuthResult
 
     func map(response: Data) throws -> POSPINAuthResult {
-        // First try to decode as a WC REST error
         if let wcError = try? JSONDecoder().decode(WCRESTError.self, from: response),
            wcError.code != nil {
             throw mapWCError(wcError)
         }
 
-        // Then decode as the success model
+        if hasDataEnvelope(in: response) {
+            return try JSONDecoder().decode(POSPINAuthResultEnvelope.self, from: response).data
+        }
         return try JSONDecoder().decode(POSPINAuthResult.self, from: response)
     }
 }
 
-/// Maps an approval response with the same error-first pattern.
+/// Maps an approval response with the same envelope/error handling.
 struct POSApprovalResultMapper: Mapper {
     typealias Output = POSApprovalResult
 
@@ -26,6 +28,9 @@ struct POSApprovalResultMapper: Mapper {
         if let wcError = try? JSONDecoder().decode(WCRESTError.self, from: response),
            wcError.code != nil {
             throw mapWCError(wcError)
+        }
+        if hasDataEnvelope(in: response) {
+            return try JSONDecoder().decode(POSApprovalResultEnvelope.self, from: response).data
         }
         return try JSONDecoder().decode(POSApprovalResult.self, from: response)
     }
@@ -40,12 +45,29 @@ struct POSStaffStatusMapper: Mapper {
            wcError.code != nil {
             throw mapWCError(wcError)
         }
-        let container = try JSONDecoder().decode(POSStaffStatusResponse.self, from: response)
-        return container.users
+        if hasDataEnvelope(in: response) {
+            return try JSONDecoder().decode(POSStaffStatusResponseEnvelope.self, from: response).data.users
+        }
+        return try JSONDecoder().decode(POSStaffStatusResponse.self, from: response).users
     }
 }
 
-/// Minimal WC REST error structure for pre-decode error checking.
+// MARK: - Envelope wrappers for Jetpack tunnel responses
+
+private struct POSPINAuthResultEnvelope: Decodable {
+    let data: POSPINAuthResult
+}
+
+private struct POSApprovalResultEnvelope: Decodable {
+    let data: POSApprovalResult
+}
+
+private struct POSStaffStatusResponseEnvelope: Decodable {
+    let data: POSStaffStatusResponse
+}
+
+// MARK: - WC REST Error
+
 private struct WCRESTError: Decodable {
     let code: String?
     let message: String?
@@ -62,8 +84,6 @@ private struct WCRESTErrorData: Decodable {
     }
 }
 
-/// Maps a WC REST error response to a typed POSAuthError.
-/// Defined at file scope so all mappers can use it.
 private func mapWCError(_ wcError: WCRESTError) -> POSAuthError {
     let code = wcError.code ?? "unknown"
     let message = wcError.message ?? "Unknown error"

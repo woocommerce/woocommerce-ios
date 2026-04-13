@@ -613,9 +613,10 @@ private extension StorePickerViewController {
     /// Displays an error view as a modal with options to see troubleshooting tips and to contact support.
     /// Shows a specific message for server errors (HTTP 500) to help users identify hosting configuration issues.
     ///
-    func displayUnknownErrorModal(error: Error) {
-        let errorType = StorePickerErrorType.from(error)
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, errorType: errorType)
+    func displayUnknownErrorModal(error: Error? = nil) {
+        let errorType = error.map(StorePickerErrorType.from) ?? .generic
+        let technicalDetails = error.map { String(describing: $0) }
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, errorType: errorType, technicalDetails: technicalDetails)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         present(viewController, animated: true)

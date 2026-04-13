@@ -14,7 +14,8 @@ struct POSPermissionAdaptor {
         let featureFlagService = ServiceLocator.featureFlagService
 
         if featureFlagService.isFeatureFlagEnabled(.pointOfSaleRemoteRoles) {
-            return RemotePOSPermissionProvider(
+            let siteURL = stores.sessionManager.defaultSite?.url ?? ""
+            let provider = RemotePOSPermissionProvider(
                 approvalService: RemotePOSApprovalService(siteID: siteID, stores: stores),
                 authenticatePINRemote: { pin, registerID in
                     try await withCheckedThrowingContinuation { continuation in
@@ -27,6 +28,7 @@ struct POSPermissionAdaptor {
                             case .success(let networkResult):
                                 let response = POSPINAuthResponse(
                                     userID: networkResult.userID,
+                                    userLogin: networkResult.userLogin,
                                     displayName: networkResult.displayName,
                                     role: networkResult.role,
                                     capabilities: networkResult.capabilities,
@@ -47,6 +49,17 @@ struct POSPermissionAdaptor {
                 },
                 appAccountUserID: userID
             )
+            provider.onAuthenticated = { [weak stores] response in
+                stores?.overridePOSCredentials(
+                    username: response.userLogin,
+                    applicationPassword: response.applicationPassword,
+                    siteAddress: siteURL
+                )
+            }
+            provider.onLock = { [weak stores] in
+                stores?.revertPOSCredentialOverride()
+            }
+            return provider
         } else if featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalRoles) {
             return LocalPOSPermissionProvider(
                 pinService: POSPINService(),

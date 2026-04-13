@@ -259,6 +259,14 @@ class AuthenticatedState: StoresManagerState {
     func onAction(_ action: Action) {
         dispatcher.dispatch(action)
     }
+
+    func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
+        network.overridePOSCredentials(username: username, applicationPassword: applicationPassword, siteAddress: siteAddress)
+    }
+
+    func revertPOSCredentialOverride() {
+        network.revertPOSCredentialOverride()
+    }
 }
 
 

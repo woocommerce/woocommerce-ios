@@ -262,6 +262,48 @@ struct RemotePOSPermissionProviderTests {
         #expect(sut.isLocked == true)
     }
 
+    @Test func test_lock_clears_session_credential() async throws {
+        // Given
+        let response = makePINAuthResponse()
+        let sut = makeSUT(pinAuthResponse: response)
+        _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
+        #expect(sut.sessionCredential != nil)
+
+        // When
+        sut.lock()
+
+        // Then
+        #expect(sut.sessionCredential == nil)
+    }
+
+    @Test func test_lock_calls_onLock_callback() {
+        // Given
+        let sut = makeSUT()
+        sut.signIn(makeOperator())
+        var onLockCalled = false
+        sut.onLock = { onLockCalled = true }
+
+        // When
+        sut.lock()
+
+        // Then
+        #expect(onLockCalled == true)
+    }
+
+    @Test func test_authenticateRemotePIN_calls_onAuthenticated_with_response() async throws {
+        // Given
+        let response = makePINAuthResponse(userLogin: "cashier_jane")
+        let sut = makeSUT(pinAuthResponse: response)
+        var capturedResponse: POSPINAuthResponse?
+        sut.onAuthenticated = { capturedResponse = $0 }
+
+        // When
+        _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
+
+        // Then
+        #expect(capturedResponse?.userLogin == "cashier_jane")
+    }
+
     // MARK: - requestApproval
 
     @Test func test_requestApproval_returns_token_from_service() async throws {
@@ -367,6 +409,7 @@ struct RemotePOSPermissionProviderTests {
 
     private func makePINAuthResponse(
         userID: Int64 = 100,
+        userLogin: String = "test_cashier",
         displayName: String = "Test Cashier",
         role: String = "pos_cashier",
         capabilities: [String: Bool] = ["woocommerce_pos_access": true],
@@ -377,6 +420,7 @@ struct RemotePOSPermissionProviderTests {
     ) -> POSPINAuthResponse {
         POSPINAuthResponse(
             userID: userID,
+            userLogin: userLogin,
             displayName: displayName,
             role: role,
             capabilities: capabilities,

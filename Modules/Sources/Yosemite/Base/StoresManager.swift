@@ -102,4 +102,13 @@ public protocol StoresManager {
     /// on web view using the current credentials.
     ///
     func shouldAuthenticateAdminPage(for site: Site) -> Bool
+
+    /// Temporarily overrides the network layer credentials with a POS operator's Application Password.
+    /// All subsequent network requests will authenticate as the POS operator.
+    ///
+    func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String)
+
+    /// Reverts the POS credential override, restoring the original admin credentials.
+    ///
+    func revertPOSCredentialOverride()
 }

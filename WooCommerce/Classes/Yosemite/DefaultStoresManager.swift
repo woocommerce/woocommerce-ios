@@ -390,6 +390,16 @@ class DefaultStoresManager: StoresManager {
         }
         return true
     }
+
+    func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
+        guard let state = state as? AuthenticatedState else { return }
+        state.overridePOSCredentials(username: username, applicationPassword: applicationPassword, siteAddress: siteAddress)
+    }
+
+    func revertPOSCredentialOverride() {
+        guard let state = state as? AuthenticatedState else { return }
+        state.revertPOSCredentialOverride()
+    }
 }
 
 

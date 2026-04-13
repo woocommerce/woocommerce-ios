@@ -4,6 +4,7 @@ import Foundation
 /// Networking-layer model for PIN authentication results.
 public struct POSPINAuthResult: Decodable {
     public let userID: Int64
+    public let userLogin: String
     public let displayName: String
     public let role: String
     public let capabilities: [String: Bool]
@@ -14,6 +15,7 @@ public struct POSPINAuthResult: Decodable {
 
     private enum CodingKeys: String, CodingKey {
         case userID = "user_id"
+        case userLogin = "user_login"
         case displayName = "display_name"
         case role
         case capabilities
@@ -24,6 +26,7 @@ public struct POSPINAuthResult: Decodable {
     }
 
     public init(userID: Int64,
+                userLogin: String,
                 displayName: String,
                 role: String,
                 capabilities: [String: Bool],
@@ -32,6 +35,7 @@ public struct POSPINAuthResult: Decodable {
                 sessionExpires: String,
                 idleTimeoutSeconds: Int) {
         self.userID = userID
+        self.userLogin = userLogin
         self.displayName = displayName
         self.role = role
         self.capabilities = capabilities

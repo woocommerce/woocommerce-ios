@@ -4,6 +4,7 @@ import Observation
 /// Response from POST /wc/v3/pos/auth/pin
 public struct POSPINAuthResponse: Decodable, Equatable, Sendable {
     public let userID: Int64
+    public let userLogin: String
     public let displayName: String
     public let role: String
     public let capabilities: [String: Bool]
@@ -14,6 +15,7 @@ public struct POSPINAuthResponse: Decodable, Equatable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case userID = "user_id"
+        case userLogin = "user_login"
         case displayName = "display_name"
         case role
         case capabilities
@@ -24,6 +26,7 @@ public struct POSPINAuthResponse: Decodable, Equatable, Sendable {
     }
 
     public init(userID: Int64,
+                userLogin: String,
                 displayName: String,
                 role: String,
                 capabilities: [String: Bool],
@@ -32,6 +35,7 @@ public struct POSPINAuthResponse: Decodable, Equatable, Sendable {
                 sessionExpires: String,
                 idleTimeoutSeconds: Int) {
         self.userID = userID
+        self.userLogin = userLogin
         self.displayName = displayName
         self.role = role
         self.capabilities = capabilities
@@ -119,6 +123,15 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     private static let isLockedKey = "com.woocommerce.pos.isLocked"
     private var autoLockTimer: Timer?
 
+    // MARK: - Callbacks
+
+    /// Called when the POS session locks, allowing the app target to revert credential overrides.
+    public var onLock: (() -> Void)?
+
+    /// Called after successful PIN authentication, providing the operator's credentials
+    /// for the app target to override the network layer.
+    public var onAuthenticated: ((POSPINAuthResponse) -> Void)?
+
     // MARK: - Dependencies
 
     private let approvalService: POSApprovalServiceProtocol
@@ -173,8 +186,10 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         autoLockTimer?.invalidate()
         autoLockTimer = nil
         currentOperator = nil
+        sessionCredential = nil
         isLocked = true
         UserDefaults.standard.set(true, forKey: Self.isLockedKey)
+        onLock?()
     }
 
     public func resetInactivityTimer() {
@@ -226,23 +241,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
             idleTimeoutSeconds: response.idleTimeoutSeconds
         )
 
-        // TODO: Credential switching for remote POS sessions
-        // After PIN auth, the backend returns an Application Password for the cashier.
-        // Currently, all subsequent API calls still use the admin's credentials because
-        // the app's networking layer (SessionManager.defaultCredentials) is not updated.
-        // The backend's current_user_can() sees the admin, not the cashier.
-        //
-        // To fix this, the app target needs to:
-        // 1. Store the original admin credentials before switching.
-        // 2. Create a Credentials.applicationPassword with the cashier's username
-        //    (from response.displayName or a login field) and the Application Password.
-        // 3. Update the networking layer to use the cashier credential for POS requests.
-        //    Options: swap SessionManager.defaultCredentials, use a per-request credential
-        //    override, or create a separate Network instance for POS.
-        // 4. On lock() or POS exit, revert to the admin's original credentials.
-        //
-        // This should be coordinated in the app target (POSPermissionAdaptor or
-        // POSTabCoordinator) since credential management is outside the POS module.
+        onAuthenticated?(response)
 
         signIn(posOperator)
         return posOperator

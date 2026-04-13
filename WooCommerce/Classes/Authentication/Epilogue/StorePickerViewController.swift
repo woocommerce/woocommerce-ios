@@ -615,7 +615,7 @@ private extension StorePickerViewController {
     ///
     func displayUnknownErrorModal(error: Error? = nil) {
         let errorType = error.map(StorePickerErrorType.from) ?? .generic
-        let technicalDetails = error.map { String(describing: $0) }
+        let technicalDetails = error.flatMap { StorePickerErrorType.technicalDetails(from: $0) }
         let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, errorType: errorType, technicalDetails: technicalDetails)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self

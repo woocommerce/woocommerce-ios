@@ -768,15 +768,12 @@ private extension DefaultStoresManager {
             restoreJetpackSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
+        // Essential requests — needed for dashboard rendering.
+        // Fire these first, then defer non-essential requests to avoid rate limiting.
         synchronizeSettings(with: siteID) {
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
-        synchronizePaymentGateways(siteID: siteID)
-        synchronizeAddOnsGroups(siteID: siteID)
-        synchronizeSitePlugins(siteID: siteID)
         loadStoreUUID(siteID: siteID)
-
-        sendTelemetryIfNeeded(siteID: siteID)
 
         Task { @MainActor in
             // Order statuses and system plugins syncing are required outside of snapshot tracking.
@@ -784,6 +781,13 @@ private extension DefaultStoresManager {
             async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
 
             trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
+
+            // Non-essential requests — deferred until essential requests have completed
+            // to spread the request burst and avoid 429 rate limiting.
+            synchronizePaymentGateways(siteID: siteID)
+            synchronizeAddOnsGroups(siteID: siteID)
+            synchronizeSitePlugins(siteID: siteID)
+            sendTelemetryIfNeeded(siteID: siteID)
         }
     }
 

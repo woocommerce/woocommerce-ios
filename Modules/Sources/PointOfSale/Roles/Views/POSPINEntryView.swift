@@ -82,16 +82,30 @@ struct POSPINEntryView: View {
         state == .loading
     }
 
+    @State private var wavePhase: Bool = false
+
     private var pinDotsRow: some View {
         VStack(spacing: POSSpacing.medium) {
             HStack(spacing: POSSpacing.medium) {
                 ForEach(0..<maxDigits, id: \.self) { index in
                     pinDot(filled: helper.isDotFilled(at: index))
+                        .offset(y: isLoading ? waveOffset(for: index) : 0)
+                        .animation(
+                            isLoading
+                                ? .easeInOut(duration: 0.5)
+                                    .repeatForever(autoreverses: true)
+                                    .delay(Double(index) * 0.1)
+                                : .default,
+                            value: wavePhase
+                        )
                 }
             }
-            .opacity(isLoading ? 0.6 : 1.0)
-            .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: isLoading)
             .offset(x: shakeOffset)
+            .onChange(of: isLoading) { _, loading in
+                if loading {
+                    wavePhase.toggle()
+                }
+            }
 
             Group {
                 if let displayMessage {
@@ -105,6 +119,10 @@ struct POSPINEntryView: View {
             .frame(height: Constants.errorMessageHeight)
         }
         .animation(.default, value: displayMessage)
+    }
+
+    private func waveOffset(for index: Int) -> CGFloat {
+        wavePhase ? -Constants.waveHeight : Constants.waveHeight
     }
 
     private var displayMessage: String? {
@@ -142,6 +160,8 @@ struct POSPINEntryView: View {
                 }
             }
         }
+        .opacity(isInputDisabled ? Constants.disabledOpacity : 1.0)
+        .animation(.default, value: isInputDisabled)
     }
 
     @ViewBuilder
@@ -245,6 +265,8 @@ private extension POSPINEntryView {
         static let errorMessageHeight: CGFloat = 20
         static let shakeDistance: CGFloat = 10
         static let shakeStepDuration: TimeInterval = 0.08
+        static let waveHeight: CGFloat = 6
+        static let disabledOpacity: Double = 0.4
         static let emptyKey = ""
         static let deleteKey = "DEL"
         static let numpadRows: [[String]] = [

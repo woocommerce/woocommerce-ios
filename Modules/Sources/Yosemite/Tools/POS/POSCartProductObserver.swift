@@ -153,8 +153,12 @@ public final class POSCartProductObserver: POSCartProductObserving {
 
                 return items
             }
-            .catch { error -> Just<[POSItem]> in
+            .catch { [weak self] error -> Just<[POSItem]> in
                 DDLogError("⛔️ POSCartProductObserver: GRDB observation error: \(error)")
+                // Clear cached IDs so the next rebuildCartProductObservation() call
+                // re-establishes the subscription instead of hitting the no-op guard.
+                self?.currentProductIDs = []
+                self?.currentVariationIDs = []
                 return Just([])
             }
             .sink { [weak self] items in

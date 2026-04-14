@@ -29,10 +29,7 @@ class AuthenticatedState: StoresManagerState {
     ///
     private let trackEventRequestNotificationHandler: TrackEventRequestNotificationHandler
 
-    /// The shared network instance. Exposed as `sharedNetwork` for POS services that need
-    /// the same instance that receives credential overrides.
-    private(set) var network: AlamofireNetwork
-    var sharedNetwork: Network { network }
+    private let network: AlamofireNetwork
 
     private var cancellables: Set<AnyCancellable> = []
 

@@ -31,17 +31,6 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            network: Network,
-                            storage: StorageManagerType) {
-        self.init(siteID: siteID,
-                  currencySettings: currencySettings,
-                  settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),
-                  storage: storage)
-    }
-
-    @available(*, deprecated, message: "Use init(siteID:currencySettings:network:storage:) to share the network instance with credential overrides")
-    public convenience init(siteID: Int64,
-                            currencySettings: CurrencySettings,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,

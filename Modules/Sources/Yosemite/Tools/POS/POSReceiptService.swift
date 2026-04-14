@@ -10,12 +10,6 @@ public final class POSReceiptService: POSReceiptServiceProtocol {
     private let siteID: Int64
     private let receiptsRemote: POSReceiptsRemoteProtocol
 
-    public convenience init(siteID: Int64, network: Network) {
-        self.init(siteID: siteID,
-                  receiptsRemote: ReceiptRemote(network: network))
-    }
-
-    @available(*, deprecated, message: "Use init(siteID:network:) to share the network instance with credential overrides")
     public convenience init?(siteID: Int64,
                              credentials: Credentials?,
                              selectedSite: AnyPublisher<JetpackSite?, Never>,

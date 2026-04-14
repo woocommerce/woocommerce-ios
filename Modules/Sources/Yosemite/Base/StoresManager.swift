@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import enum NetworkingCore.RequestAuthenticationMode
-import protocol Networking.Network
 
 /// Abstracts the Stores coordination
 ///
@@ -103,11 +102,6 @@ public protocol StoresManager {
     /// on web view using the current credentials.
     ///
     func shouldAuthenticateAdminPage(for site: Site) -> Bool
-
-    /// The shared network instance used for authenticated API requests.
-    /// POS services should use this instead of creating their own network instances,
-    /// so that credential overrides (via `overridePOSCredentials`) apply to all requests.
-    var posSharedNetwork: Network? { get }
 
     /// Temporarily overrides the network layer credentials with a POS operator's Application Password.
     /// All subsequent network requests will authenticate as the POS operator.

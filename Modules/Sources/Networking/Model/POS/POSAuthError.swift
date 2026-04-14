@@ -16,6 +16,9 @@ public enum POSAuthError: Error, Equatable {
     /// The approver does not have permission for this action.
     case approvalForbidden
 
+    /// The requested approval action is not supported by the backend.
+    case invalidAction
+
     /// The session has expired and a new PIN entry is required.
     case sessionExpired
 
@@ -46,6 +49,12 @@ extension POSAuthError: LocalizedError {
                 "posAuthError.approvalForbidden",
                 value: "The approver does not have permission for this action.",
                 comment: "Error shown when a POS manager lacks the required capability for approval"
+            )
+        case .invalidAction:
+            return NSLocalizedString(
+                "posAuthError.invalidAction",
+                value: "This action is not supported for approval.",
+                comment: "Error shown when the requested POS approval action is not recognized by the backend"
             )
         case .sessionExpired:
             return NSLocalizedString(
@@ -85,6 +94,8 @@ public extension POSAuthError {
             return .rateLimited(retryAfter: retryAfter)
         case ErrorCodes.approvalForbidden:
             return .approvalForbidden
+        case ErrorCodes.invalidAction:
+            return .invalidAction
         case ErrorCodes.sessionExpired:
             return .sessionExpired
         default:
@@ -118,7 +129,8 @@ private extension POSAuthError {
     enum ErrorCodes {
         static let invalidPIN = "woocommerce_pos_invalid_pin"
         static let rateLimited = "woocommerce_pos_rate_limited"
-        static let approvalForbidden = "woocommerce_pos_forbidden"
+        static let approvalForbidden = "woocommerce_pos_approval_forbidden"
+        static let invalidAction = "woocommerce_pos_invalid_action"
         static let sessionExpired = "woocommerce_pos_session_expired"
     }
 

@@ -8,12 +8,18 @@ struct POSPINAuthResultMapper: Mapper {
     typealias Output = POSPINAuthResult
 
     func map(response: Data) throws -> POSPINAuthResult {
+        // Check for WC REST error at root level (direct REST)
         if let wcError = try? JSONDecoder().decode(WCRESTError.self, from: response),
            wcError.code != nil {
             throw mapWCError(wcError)
         }
 
         if hasDataEnvelope(in: response) {
+            // Check for WC REST error inside the data envelope (Jetpack tunnel)
+            if let envelope = try? JSONDecoder().decode(WCRESTErrorEnvelope.self, from: response),
+               envelope.data.code != nil {
+                throw mapWCError(envelope.data)
+            }
             return try JSONDecoder().decode(POSPINAuthResultEnvelope.self, from: response).data
         }
         return try JSONDecoder().decode(POSPINAuthResult.self, from: response)
@@ -25,11 +31,17 @@ struct POSApprovalResultMapper: Mapper {
     typealias Output = POSApprovalResult
 
     func map(response: Data) throws -> POSApprovalResult {
+        // Check for WC REST error at root level (direct REST)
         if let wcError = try? JSONDecoder().decode(WCRESTError.self, from: response),
            wcError.code != nil {
             throw mapWCError(wcError)
         }
         if hasDataEnvelope(in: response) {
+            // Check for WC REST error inside the data envelope (Jetpack tunnel)
+            if let envelope = try? JSONDecoder().decode(WCRESTErrorEnvelope.self, from: response),
+               envelope.data.code != nil {
+                throw mapWCError(envelope.data)
+            }
             return try JSONDecoder().decode(POSApprovalResultEnvelope.self, from: response).data
         }
         return try JSONDecoder().decode(POSApprovalResult.self, from: response)
@@ -41,11 +53,17 @@ struct POSStaffStatusMapper: Mapper {
     typealias Output = [POSStaffUser]
 
     func map(response: Data) throws -> [POSStaffUser] {
+        // Check for WC REST error at root level (direct REST)
         if let wcError = try? JSONDecoder().decode(WCRESTError.self, from: response),
            wcError.code != nil {
             throw mapWCError(wcError)
         }
         if hasDataEnvelope(in: response) {
+            // Check for WC REST error inside the data envelope (Jetpack tunnel)
+            if let envelope = try? JSONDecoder().decode(WCRESTErrorEnvelope.self, from: response),
+               envelope.data.code != nil {
+                throw mapWCError(envelope.data)
+            }
             return try JSONDecoder().decode(POSStaffStatusResponseEnvelope.self, from: response).data.users
         }
         return try JSONDecoder().decode(POSStaffStatusResponse.self, from: response).users
@@ -67,6 +85,11 @@ private struct POSStaffStatusResponseEnvelope: Decodable {
 }
 
 // MARK: - WC REST Error
+
+/// Envelope for WC REST errors inside Jetpack tunnel `{"data": {...}}` responses.
+private struct WCRESTErrorEnvelope: Decodable {
+    let data: WCRESTError
+}
 
 private struct WCRESTError: Decodable {
     let code: String?
@@ -96,6 +119,8 @@ private func mapWCError(_ wcError: WCRESTError) -> POSAuthError {
         return .rateLimited(retryAfter: retryAfter)
     case "woocommerce_pos_approval_forbidden":
         return .approvalForbidden
+    case "woocommerce_pos_invalid_action":
+        return .invalidAction
     case "woocommerce_pos_session_expired":
         return .sessionExpired
     default:

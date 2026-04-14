@@ -9,16 +9,19 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Capability Sets
 
-    public static let managerCapabilities: Set<String> = [
+    /// Capabilities for the local "Admin" role (the app account holder).
+    /// Includes `posManageStaff` which gates admin-only actions
+    /// like managing staff and exiting POS.
+    public static let adminCapabilities: Set<String> = [
         "woocommerce_pos_access",
         "woocommerce_pos_manage_settings",
+        "woocommerce_pos_manage_staff",
         "woocommerce_void_orders",
         "woocommerce_refund_orders",
         "woocommerce_apply_discounts",
         "woocommerce_override_prices",
         "woocommerce_view_sales_reports",
         "woocommerce_view_personal_sales",
-        "woocommerce_approve_overrides",
         "woocommerce_view_customer_data",
         "woocommerce_edit_customer_data",
         "woocommerce_adjust_stock",
@@ -137,8 +140,8 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
             op = POSOperator(
                 userID: appAccountUserID,
                 displayName: appAccountDisplayName,
-                role: "pos_manager",
-                capabilities: Self.managerCapabilities,
+                role: "administrator",
+                capabilities: Self.adminCapabilities,
                 isAppAccountHolder: true
             )
         case .cashier:

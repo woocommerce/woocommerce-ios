@@ -177,16 +177,12 @@ private extension POSFloatingControlView {
             showExitPOSModal = true
             return
         }
-        if permissions.currentOperator?.isAppAccountHolder == true || !permissions.isLocked {
-            showExitPOSModal = true
-        } else {
-            overrideHandler.requestPermission(
-                for: .posManageSettings,
-                actionDescription: Localization.exitOverrideDescription,
-                permissions: permissions,
-                onApproved: { _ in dismiss() }
-            )
-        }
+        overrideHandler.requestPermission(
+            for: .posManageStaff,
+            actionDescription: Localization.exitOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in showExitPOSModal = true }
+        )
     }
 
     func requestPermissionForSettings() {

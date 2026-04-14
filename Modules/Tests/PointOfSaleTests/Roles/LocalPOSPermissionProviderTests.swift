@@ -144,7 +144,7 @@ struct LocalPOSPermissionProviderTests {
         #expect(op?.isAppAccountHolder == true)
         #expect(op?.userID == 42)
         #expect(op?.displayName == "Store Owner")
-        #expect(op?.capabilities == LocalPOSPermissionProvider.managerCapabilities)
+        #expect(op?.capabilities == LocalPOSPermissionProvider.adminCapabilities)
         #expect(sut.currentOperator == op)
         #expect(sut.isLocked == false)
     }
@@ -316,25 +316,25 @@ struct LocalPOSPermissionProviderTests {
 
     // MARK: - Capability Sets
 
-    @Test func test_managerCapabilities_contains_expected_capabilities() {
+    @Test func test_adminCapabilities_contains_expected_capabilities() {
         // Then
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_pos_access"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_pos_manage_settings"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_void_orders"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_refund_orders"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_apply_discounts"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_override_prices"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_view_sales_reports"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_approve_overrides"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_edit_customer_data"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_adjust_stock"))
-        #expect(LocalPOSPermissionProvider.managerCapabilities.contains("woocommerce_view_audit_logs"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_access"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_manage_settings"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_manage_staff"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_void_orders"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_refund_orders"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_apply_discounts"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_override_prices"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_view_sales_reports"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_edit_customer_data"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_adjust_stock"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_view_audit_logs"))
     }
 
-    @Test func test_cashierCapabilities_is_subset_of_managerCapabilities() {
+    @Test func test_cashierCapabilities_is_subset_of_adminCapabilities() {
         // Then
         #expect(LocalPOSPermissionProvider.cashierCapabilities
-            .isSubset(of: LocalPOSPermissionProvider.managerCapabilities))
+            .isSubset(of: LocalPOSPermissionProvider.adminCapabilities))
     }
 
     @Test func test_cashierCapabilities_does_not_include_refund_orders() {
@@ -362,7 +362,7 @@ struct LocalPOSPermissionProviderTests {
             userID: 42,
             displayName: "Store Owner",
             role: "pos_manager",
-            capabilities: LocalPOSPermissionProvider.managerCapabilities,
+            capabilities: LocalPOSPermissionProvider.adminCapabilities,
             isAppAccountHolder: true
         )
     }

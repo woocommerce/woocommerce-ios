@@ -233,7 +233,7 @@ struct POSManagerOverrideHandlerTests {
             userID: 42,
             displayName: "Store Owner",
             role: "pos_manager",
-            capabilities: LocalPOSPermissionProvider.managerCapabilities,
+            capabilities: LocalPOSPermissionProvider.adminCapabilities,
             isAppAccountHolder: true
         )
     }

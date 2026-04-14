@@ -5,7 +5,10 @@ import Foundation
 public enum POSCapability: String, CaseIterable, Sendable {
     // MARK: - Access
     case posAccess = "woocommerce_pos_access"
+    /// View and access POS settings. Managers and admins have this.
     case posManageSettings = "woocommerce_pos_manage_settings"
+    /// Manage POS staff and exit POS. Admins only.
+    case posManageStaff = "woocommerce_pos_manage_staff"
 
     // MARK: - Order Actions
     case voidOrders = "woocommerce_void_orders"

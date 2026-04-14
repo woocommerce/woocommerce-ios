@@ -103,8 +103,7 @@ struct ItemListView: View {
 
     @Environment(\.posPermissions) private var permissions
     @State private var showCouponCreationModal: Bool = false
-    @State private var showCouponManagerOverride: Bool = false
-    @State private var couponManagerOverrideState: POSManagerOverrideState = .awaitingPIN
+    @State private var couponOverrideHandler = POSManagerOverrideHandler()
 
     /// Drives the navigation push to `AddCustomAmountView` from the entry row in the products list.
     ///
@@ -160,18 +159,21 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
-        .posModal(isPresented: $showCouponManagerOverride) {
+        .posModal(isPresented: $couponOverrideHandler.isShowingOverride) {
             POSManagerOverrideView(
-                actionDescription: Localization.couponOverrideDescription,
-                capability: POSCapability.applyDiscounts.rawValue,
-                overrideState: $couponManagerOverrideState,
+                actionDescription: couponOverrideHandler.actionDescription,
+                capability: couponOverrideHandler.activeCapability ?? "",
+                overrideState: Binding(
+                    get: { couponOverrideHandler.overrideState },
+                    set: { _ in }
+                ),
                 onPINEntered: { pin in
                     Task { @MainActor in
-                        await handleCouponOverridePIN(pin)
+                        await couponOverrideHandler.handlePINEntered(pin, permissions: permissions)
                     }
                 },
                 onCancelled: {
-                    showCouponManagerOverride = false
+                    couponOverrideHandler.cancel()
                 }
             )
         }
@@ -607,31 +609,12 @@ private extension ItemListView {
 
 private extension ItemListView {
     func requestPermissionForCouponCreation() {
-        switch permissions.checkPermission(.applyDiscounts) {
-        case .allowed:
-            showCouponCreationModal = true
-        case .requiresOverride:
-            couponManagerOverrideState = .awaitingPIN
-            showCouponManagerOverride = true
-        }
-    }
-
-    @MainActor
-    func handleCouponOverridePIN(_ pin: String) async {
-        do {
-            _ = try await permissions.requestManagerApproval(
-                managerPIN: pin,
-                for: .applyDiscounts,
-                orderID: nil
-            )
-            couponManagerOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showCouponManagerOverride = false
-                showCouponCreationModal = true
-            }
-        } catch {
-            couponManagerOverrideState = .error(message: error.posOverrideErrorMessage)
-        }
+        couponOverrideHandler.requestPermission(
+            for: .applyDiscounts,
+            actionDescription: Localization.couponOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in showCouponCreationModal = true }
+        )
     }
 }
 

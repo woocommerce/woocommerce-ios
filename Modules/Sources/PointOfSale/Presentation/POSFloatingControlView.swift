@@ -14,10 +14,7 @@ struct POSFloatingControlView: View {
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
-    @State private var showSettingsOverride: Bool = false
-    @State private var settingsOverrideState: POSManagerOverrideState = .awaitingPIN
-    @State private var showExitOverride: Bool = false
-    @State private var exitOverrideState: POSManagerOverrideState = .awaitingPIN
+    @State private var overrideHandler = POSManagerOverrideHandler()
     @Environment(\.posPermissions) private var permissions
     @Environment(\.dismiss) private var dismiss
 
@@ -67,33 +64,21 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
-        .posModal(isPresented: $showSettingsOverride) {
+        .posModal(isPresented: $overrideHandler.isShowingOverride) {
             POSManagerOverrideView(
-                actionDescription: Localization.settingsOverrideDescription,
-                capability: POSCapability.posManageSettings.rawValue,
-                overrideState: $settingsOverrideState,
+                actionDescription: overrideHandler.actionDescription,
+                capability: overrideHandler.activeCapability ?? "",
+                overrideState: Binding(
+                    get: { overrideHandler.overrideState },
+                    set: { _ in }
+                ),
                 onPINEntered: { pin in
                     Task { @MainActor in
-                        await handleSettingsOverridePIN(pin)
+                        await overrideHandler.handlePINEntered(pin, permissions: permissions)
                     }
                 },
                 onCancelled: {
-                    showSettingsOverride = false
-                }
-            )
-        }
-        .posModal(isPresented: $showExitOverride) {
-            POSManagerOverrideView(
-                actionDescription: Localization.exitOverrideDescription,
-                capability: POSCapability.posManageSettings.rawValue,
-                overrideState: $exitOverrideState,
-                onPINEntered: { pin in
-                    Task { @MainActor in
-                        await handleExitOverridePIN(pin)
-                    }
-                },
-                onCancelled: {
-                    showExitOverride = false
+                    overrideHandler.cancel()
                 }
             )
         }
@@ -195,26 +180,12 @@ private extension POSFloatingControlView {
         if permissions.currentOperator?.isAppAccountHolder == true || !permissions.isLocked {
             showExitPOSModal = true
         } else {
-            exitOverrideState = .awaitingPIN
-            showExitOverride = true
-        }
-    }
-
-    @MainActor
-    func handleExitOverridePIN(_ pin: String) async {
-        do {
-            _ = try await permissions.requestManagerApproval(
-                managerPIN: pin,
+            overrideHandler.requestPermission(
                 for: .posManageSettings,
-                orderID: nil
+                actionDescription: Localization.exitOverrideDescription,
+                permissions: permissions,
+                onApproved: { _ in dismiss() }
             )
-            exitOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showExitOverride = false
-                dismiss()
-            }
-        } catch {
-            exitOverrideState = .error(message: error.posOverrideErrorMessage)
         }
     }
 
@@ -223,31 +194,12 @@ private extension POSFloatingControlView {
             showSettings = true
             return
         }
-        switch permissions.checkPermission(.posManageSettings) {
-        case .allowed:
-            showSettings = true
-        case .requiresOverride:
-            settingsOverrideState = .awaitingPIN
-            showSettingsOverride = true
-        }
-    }
-
-    @MainActor
-    func handleSettingsOverridePIN(_ pin: String) async {
-        do {
-            _ = try await permissions.requestManagerApproval(
-                managerPIN: pin,
-                for: .posManageSettings,
-                orderID: nil
-            )
-            settingsOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showSettingsOverride = false
-                showSettings = true
-            }
-        } catch {
-            settingsOverrideState = .error(message: error.posOverrideErrorMessage)
-        }
+        overrideHandler.requestPermission(
+            for: .posManageSettings,
+            actionDescription: Localization.settingsOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in showSettings = true }
+        )
     }
 }
 

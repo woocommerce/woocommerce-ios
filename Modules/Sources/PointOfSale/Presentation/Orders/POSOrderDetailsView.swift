@@ -25,9 +25,7 @@ struct POSOrderDetailsView: View {
     @State private var isShowingEmailReceiptView = false
     @State private var refundModalState: RefundModalState?
     @State private var selectedRefundForDetail: POSOrderRefund?
-    @State private var showManagerOverride: Bool = false
-    @State private var managerOverrideState: POSManagerOverrideState = .awaitingPIN
-    @State private var pendingOverrideAction: (() -> Void)?
+    @State private var overrideHandler = POSManagerOverrideHandler()
     @State private var approvedRefundToken: String?
 
     private var shouldShowBackButton: Bool {
@@ -150,21 +148,21 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
-        .posModal(isPresented: $showManagerOverride, onDismiss: {
-            pendingOverrideAction = nil
-        }) {
+        .posModal(isPresented: $overrideHandler.isShowingOverride) {
             POSManagerOverrideView(
-                actionDescription: Localization.refundOverrideDescription(order.number),
-                capability: "woocommerce_refund_orders",
-                overrideState: $managerOverrideState,
+                actionDescription: overrideHandler.actionDescription,
+                capability: overrideHandler.activeCapability ?? "",
+                overrideState: Binding(
+                    get: { overrideHandler.overrideState },
+                    set: { _ in }
+                ),
                 onPINEntered: { pin in
                     Task { @MainActor in
-                        await handleManagerOverridePIN(pin)
+                        await overrideHandler.handlePINEntered(pin, permissions: permissions)
                     }
                 },
                 onCancelled: {
-                    showManagerOverride = false
-                    pendingOverrideAction = nil
+                    overrideHandler.cancel()
                 }
             )
         }
@@ -577,35 +575,16 @@ private extension POSOrderDetailsView {
 
 private extension POSOrderDetailsView {
     func requestPermissionForRefund() {
-        switch permissions.checkPermission("woocommerce_refund_orders") {
-        case .allowed:
-            approvedRefundToken = nil
-            initiateRefundFlow()
-        case .requiresOverride:
-            pendingOverrideAction = { [self] in
+        overrideHandler.requestPermission(
+            for: .refundOrders,
+            actionDescription: Localization.refundOverrideDescription(order.number),
+            permissions: permissions,
+            orderID: order.id,
+            onApproved: { token in
+                approvedRefundToken = token
                 initiateRefundFlow()
             }
-            managerOverrideState = .awaitingPIN
-            showManagerOverride = true
-        }
-    }
-
-    func handleManagerOverridePIN(_ pin: String) async {
-        do {
-            approvedRefundToken = try await permissions.requestManagerApproval(
-                managerPIN: pin,
-                for: .refundOrders,
-                orderID: order.id
-            )
-            managerOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showManagerOverride = false
-                pendingOverrideAction?()
-                pendingOverrideAction = nil
-            }
-        } catch {
-            managerOverrideState = .error(message: error.posOverrideErrorMessage)
-        }
+        )
     }
 }
 

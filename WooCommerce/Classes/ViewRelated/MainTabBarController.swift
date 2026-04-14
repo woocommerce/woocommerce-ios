@@ -851,6 +851,12 @@ private extension MainTabBarController {
 
             // Update POS eligibility - coordinator will check actual eligibility if tab is visible
             posTabCoordinator?.updatePOSEligibility(isPOSTabVisible: isPOSTabVisible)
+
+            // Auto-reopen POS if it was locked when the app was terminated.
+            // This prevents killing the app from bypassing the lock screen.
+            if isPOSTabVisible, Self.wasPOSLockedWhenTerminated {
+                posTabCoordinator?.onTabSelected()
+            }
         }
     }
 
@@ -985,14 +991,6 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
-
-        // Auto-reopen POS if it was locked when the app was terminated.
-        // This prevents killing the app from bypassing the lock screen.
-        if isPOSTabVisible, Self.wasPOSLockedWhenTerminated {
-            DispatchQueue.main.async { [weak self] in
-                self?.posTabCoordinator?.onTabSelected()
-            }
-        }
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)

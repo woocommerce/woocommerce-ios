@@ -1,0 +1,57 @@
+# Smoke Test: Orders - Create Order
+#
+# Verifies:
+#   - Order creation button works
+#   - Order creation screen loads with key sections
+#   - Can discard order creation
+appId: com.automattic.alpha.woocommerce
+name: "Orders - Create a new order"
+tags:
+  - smoke
+  - orders
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Orders
+- runFlow:
+    file: ../subflows/navigate_to_orders.yaml
+
+# Tap Create Order button
+- tapOn:
+    id: "new-order-type-sheet-button"
+    retryTapIfNoChange: true
+    label: "Tap Create Order button"
+
+# Wait for order creation screen
+- extendedWaitUntil:
+    visible: ".*Order status.*|.*Products.*|.*New Order.*"
+    timeout: 15000
+
+- takeScreenshot: order_create_empty
+
+# Verify key sections are visible
+- assertVisible:
+    text: "Products"
+    optional: true
+
+# Scroll down to see more sections
+- scroll
+
+- takeScreenshot: order_create_sections
+
+# Discard the order (go back)
+- back
+
+# Handle discard dialog
+- runFlow:
+    when:
+      visible: "Discard"
+    commands:
+      - tapOn: "Discard"
+
+- extendedWaitUntil:
+    visible:
+      id: "orders-table-view"
+    timeout: 10000

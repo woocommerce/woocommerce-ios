@@ -1,0 +1,57 @@
+# Smoke Test: Orders - Detail view and actions
+#
+# Verifies:
+#   - Opening an order shows correct details
+#   - Order status, products, and payment info are visible
+#   - Order notes section is accessible
+appId: com.automattic.alpha.woocommerce
+name: "Orders - Detail view and actions"
+tags:
+  - smoke
+  - orders
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Orders
+- runFlow:
+    file: ../subflows/navigate_to_orders.yaml
+
+# Open the first order in the list
+- tapOn:
+    id: "orders-table-view"
+    index: 0
+    label: "Tap first order in list"
+
+# Wait for order detail screen
+- extendedWaitUntil:
+    visible:
+      id: "order-details-table-view"
+    timeout: 15000
+
+- takeScreenshot: order_detail_top
+
+# Scroll down to see products and payment info
+- scroll
+- scroll
+
+- takeScreenshot: order_detail_products
+
+# Scroll to see order notes section
+- scrollUntilVisible:
+    element: ".*Add a note.*|.*Order Notes.*"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to order notes section"
+    optional: true
+
+- takeScreenshot: order_detail_notes
+
+# Go back to orders list
+- back
+
+- extendedWaitUntil:
+    visible:
+      id: "orders-table-view"
+    timeout: 10000

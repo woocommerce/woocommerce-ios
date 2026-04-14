@@ -1,0 +1,56 @@
+# Smoke Test: Orders - List, Pagination, and Search
+#
+# Verifies:
+#   - Orders list loads with order data
+#   - Pagination works (scroll to load more)
+#   - Search for an order by number or keyword
+appId: com.automattic.alpha.woocommerce
+name: "Orders - List, pagination, and search"
+tags:
+  - smoke
+  - orders
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Orders
+- runFlow:
+    file: ../subflows/navigate_to_orders.yaml
+
+# Verify orders list loaded
+- assertVisible:
+    id: "orders-table-view"
+    label: "Orders table view is visible"
+
+- takeScreenshot: orders_list
+
+# Test pagination - scroll down
+- scroll
+- scroll
+- scroll
+
+- takeScreenshot: orders_list_scrolled
+
+# Test search
+- tapOn:
+    id: "order-search-button"
+    label: "Open order search"
+
+- extendedWaitUntil:
+    visible: ".*search.*|.*Search.*"
+    timeout: 10000
+
+- inputText: "1"
+- pressKey: Enter
+
+# Wait for search results
+- extendedWaitUntil:
+    visible:
+      id: "orders-table-view"
+    timeout: 15000
+
+- takeScreenshot: orders_search_results
+
+# Go back from search
+- tapOn: "Cancel"

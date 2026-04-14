@@ -1,0 +1,59 @@
+# Smoke Test: Dashboard / Stats
+#
+# Verifies:
+#   - Dashboard loads with stats cards
+#   - Revenue stats are visible
+#   - Date range switching works
+#   - Stats chart renders
+appId: com.automattic.alpha.woocommerce
+name: "Dashboard - Stats and analytics"
+tags:
+  - smoke
+  - dashboard
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Dashboard
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+
+# Verify revenue stats are visible
+- assertVisible:
+    id: "revenue-value"
+    label: "Revenue value is visible"
+
+- takeScreenshot: dashboard_stats_overview
+
+# Test date range switching
+- tapOn:
+    id: "performance-time-range-menu"
+    optional: true
+    label: "Tap date range menu"
+
+- runFlow:
+    when:
+      visible: "This Week"
+    commands:
+      - tapOn: "This Week"
+      - extendedWaitUntil:
+          visible:
+            id: "revenue-value"
+          timeout: 10000
+
+- takeScreenshot: dashboard_stats_week
+
+# Verify chart is rendered
+- scrollUntilVisible:
+    element:
+      id: "store-stats-chart"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to stats chart"
+
+- assertVisible:
+    id: "store-stats-chart"
+    label: "Stats chart is visible"
+
+- takeScreenshot: dashboard_stats_chart

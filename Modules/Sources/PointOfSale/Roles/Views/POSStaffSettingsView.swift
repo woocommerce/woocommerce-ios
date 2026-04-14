@@ -410,9 +410,9 @@ private extension POSStaffSettingsRemoteView {
             }
             .buttonStyle(POSOutlinedButtonStyle(size: .normal))
             .frame(maxWidth: .infinity)
-            .disabled(!isAppAccountHolder)
+            .disabled(!canManageStaff)
 
-            if !isAppAccountHolder {
+            if !canManageStaff {
                 Text(Localization.manageStaffAdminOnly)
                     .font(.posBodySmallRegular())
                     .foregroundStyle(.secondary)
@@ -421,8 +421,8 @@ private extension POSStaffSettingsRemoteView {
         }
     }
 
-    private var isAppAccountHolder: Bool {
-        permissions.currentOperator?.isAppAccountHolder == true
+    private var canManageStaff: Bool {
+        permissions.hasCapability(.posManageSettings)
     }
 
     var footerText: some View {
@@ -449,7 +449,7 @@ private extension POSStaffSettingsRemoteView {
     }
 
     func handleManageStaffTapped() {
-        guard isAppAccountHolder else { return }
+        guard canManageStaff else { return }
         showManageStaff = true
     }
 

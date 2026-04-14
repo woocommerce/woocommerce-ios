@@ -140,7 +140,7 @@ struct LocalPOSPermissionProviderTests {
 
         // Then
         #expect(op != nil)
-        #expect(op?.role == "pos_manager")
+        #expect(op?.role == "administrator")
         #expect(op?.isAppAccountHolder == true)
         #expect(op?.userID == 42)
         #expect(op?.displayName == "Store Owner")

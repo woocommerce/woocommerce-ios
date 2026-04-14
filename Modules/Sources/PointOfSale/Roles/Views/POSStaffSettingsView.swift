@@ -347,13 +347,12 @@ private struct POSStaffSettingsRemoteView: View {
 
 private extension POSStaffSettingsRemoteView {
     var staffListCard: some View {
-        let sorted = sortedStaffMembers
         POSInformationCard {
             VStack(spacing: POSSpacing.none) {
-                ForEach(Array(sorted.enumerated()), id: \.element.id) { index, member in
+                ForEach(Array(sortedStaffMembers.enumerated()), id: \.element.id) { index, member in
                     staffRow(member: member, isCurrentOperator: member.id == currentOperatorID)
 
-                    if index < sorted.count - 1 {
+                    if index < sortedStaffMembers.count - 1 {
                         Divider()
                             .padding(.vertical, POSPadding.small)
                     }

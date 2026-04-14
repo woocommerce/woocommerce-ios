@@ -307,48 +307,44 @@ struct RemotePOSPermissionProviderTests {
 
     // MARK: - requestApproval
 
-    @Test func test_requestApproval_returns_token_from_service() async throws {
+    @Test func test_requestManagerApproval_when_backend_approvable_then_uses_approval_service() async throws {
         // Given
         let approvalService = MockApprovalService()
         approvalService.tokenToReturn = "approval-token-xyz"
         let sut = makeSUT(approvalService: approvalService)
 
-        // When
-        let token = try await sut.requestApproval(managerPIN: "1234", action: "woocommerce_refund_orders", orderID: 99)
+        // When - refundOrders has supportsBackendApproval = true
+        let token = try await sut.requestManagerApproval(
+            managerPIN: "1234",
+            for: "woocommerce_refund_orders",
+            orderID: 99
+        )
 
         // Then
         #expect(token == "approval-token-xyz")
+        #expect(approvalService.spyCapturedPIN == "1234")
+        #expect(approvalService.spyCapturedAction == "woocommerce_refund_orders")
+        #expect(approvalService.spyCapturedContext == ["order_id": 99])
     }
 
-    @Test func test_requestApproval_passes_correct_parameters_to_service() async throws {
+    @Test func test_requestManagerApproval_when_backend_approvable_without_orderID_then_passes_empty_context() async throws {
         // Given
         let approvalService = MockApprovalService()
         approvalService.tokenToReturn = "token"
         let sut = makeSUT(approvalService: approvalService)
 
         // When
-        _ = try await sut.requestApproval(managerPIN: "5678", action: "woocommerce_void_orders", orderID: 42)
-
-        // Then
-        #expect(approvalService.spyCapturedPIN == "5678")
-        #expect(approvalService.spyCapturedAction == "woocommerce_void_orders")
-        #expect(approvalService.spyCapturedContext == ["order_id": 42])
-    }
-
-    @Test func test_requestApproval_without_orderID_passes_empty_context() async throws {
-        // Given
-        let approvalService = MockApprovalService()
-        approvalService.tokenToReturn = "token"
-        let sut = makeSUT(approvalService: approvalService)
-
-        // When
-        _ = try await sut.requestApproval(managerPIN: "1234", action: "woocommerce_refund_orders")
+        _ = try await sut.requestManagerApproval(
+            managerPIN: "1234",
+            for: "woocommerce_refund_orders",
+            orderID: nil
+        )
 
         // Then
         #expect(approvalService.spyCapturedContext == [:])
     }
 
-    @Test func test_requestApproval_when_service_throws_then_propagates_error() async {
+    @Test func test_requestManagerApproval_when_backend_approvable_and_service_throws_then_propagates_error() async {
         // Given
         let approvalService = MockApprovalService()
         approvalService.errorToThrow = TestError.approvalFailed
@@ -356,22 +352,47 @@ struct RemotePOSPermissionProviderTests {
 
         // When / Then
         await #expect(throws: TestError.approvalFailed) {
-            try await sut.requestApproval(managerPIN: "1234", action: "woocommerce_refund_orders")
+            try await sut.requestManagerApproval(
+                managerPIN: "1234",
+                for: "woocommerce_refund_orders",
+                orderID: nil
+            )
         }
     }
 
-    @Test func test_requestManagerApproval_returns_token_from_provider_approval_service() async throws {
-        let approvalService = MockApprovalService()
-        approvalService.tokenToReturn = "approval-token-xyz"
-        let sut = makeSUT(approvalService: approvalService)
+    @Test func test_requestManagerApproval_when_not_backend_approvable_then_uses_verify_endpoint() async throws {
+        // Given - posReadSettings has supportsBackendApproval = false
+        let verifyResponse = makeVerifyResponse(capabilities: [
+            "woocommerce_pos_read_settings": true
+        ])
+        let sut = makeSUT(verifyResponse: verifyResponse)
 
+        // When
         let token = try await sut.requestManagerApproval(
             managerPIN: "1234",
-            for: "woocommerce_refund_orders",
-            orderID: 99
+            for: "woocommerce_pos_read_settings",
+            orderID: nil
         )
 
-        #expect(token == "approval-token-xyz")
+        // Then - no approval token for verify-only path
+        #expect(token == nil)
+    }
+
+    @Test func test_requestManagerApproval_when_not_backend_approvable_and_lacks_capability_then_throws() async {
+        // Given - verify returns capabilities that don't include the required one
+        let verifyResponse = makeVerifyResponse(capabilities: [
+            "woocommerce_pos_access": true
+        ])
+        let sut = makeSUT(verifyResponse: verifyResponse)
+
+        // When / Then
+        await #expect(throws: Error.self) {
+            try await sut.requestManagerApproval(
+                managerPIN: "1234",
+                for: "woocommerce_pos_write_settings",
+                orderID: nil
+            )
+        }
     }
 
     // MARK: - Helpers

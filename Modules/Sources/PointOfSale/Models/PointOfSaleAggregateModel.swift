@@ -15,6 +15,7 @@ import enum Yosemite.POSItemType
 import protocol Yosemite.PointOfSaleBarcodeScanServiceProtocol
 import enum Yosemite.PointOfSaleBarcodeScanError
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSCartProductObserving
 import class Yosemite.POSCatalogSyncCoordinator
 import enum Yosemite.CardReaderSoftwareUpdateState
 import struct Yosemite.POSSimpleProduct
@@ -48,7 +49,9 @@ protocol PointOfSaleAggregateModelProtocol {
 
     @MainActor var isCardReaderUpdateAvailable: Bool { paymentModel.isCardReaderUpdateAvailable }
 
-    private(set) var cart: Cart = .init()
+    private(set) var cart: Cart = .init() {
+        didSet { rebuildCartProductObservation() }
+    }
 
     var orderState: PointOfSaleOrderState { orderController.orderState.externalState }
 
@@ -70,6 +73,7 @@ protocol PointOfSaleAggregateModelProtocol {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
 
     private let soundPlayer: PointOfSaleSoundPlayerProtocol
+    private let cartProductObserver: POSCartProductObserving?
 
     /// Indicates whether the local catalog feature is enabled for this store
     let isLocalCatalogEligible: Bool
@@ -125,6 +129,7 @@ protocol PointOfSaleAggregateModelProtocol {
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
+         cartProductObserver: POSCartProductObserving? = nil,
          isLocalCatalogEligible: Bool = false,
          sunsetWarningChecker: POSSunsetWarningChecking? = nil) {
         self.entryPointController = entryPointController
@@ -143,6 +148,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.soundPlayer = soundPlayer
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
+        self.cartProductObserver = cartProductObserver
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.sunsetWarningChecker = sunsetWarningChecker
 
@@ -168,6 +174,7 @@ protocol PointOfSaleAggregateModelProtocol {
 
         setupReaderReconnectionObservation()
         setupPaymentSuccessObservation()
+        subscribeToCartProductUpdates()
         performInitialSyncIfNeeded()
     }
 }
@@ -465,7 +472,22 @@ extension PointOfSaleAggregateModel {
         })
         trackOrderSyncState(syncOrderResult)
         await removeMissingProductsFromCatalogAfterSync()
+        triggerIncrementalSyncIfPriceChanged()
         await paymentModel.startPayment()
+    }
+
+    /// Triggers an incremental catalog sync if the order response indicates product prices have changed.
+    /// The sync updates GRDB, which the cart product observer picks up to update cart item prices reactively.
+    private func triggerIncrementalSyncIfPriceChanged() {
+        guard case .loaded(_, let order) = orderController.orderState else { return }
+        guard POSOrderPriceChangeDetector().detectsPriceChange(cart: cart, order: order) else { return }
+        guard let catalogSyncCoordinator else { return }
+
+        DDLogInfo("💰 Price change detected from order response — triggering incremental catalog sync")
+        let siteID = siteID
+        Task {
+            try? await catalogSyncCoordinator.performIncrementalSync(for: siteID)
+        }
     }
 
     /// Removes unavailable products from the local catalog after detecting them during order sync
@@ -474,6 +496,76 @@ extension PointOfSaleAggregateModel {
         // If we identified specific missing products, remove them from the catalog immediately
         if case .error(.missingProducts(let missingProducts), _) = orderController.orderState.externalState {
             await removeIdentifiedMissingProductsFromCatalog(missingProducts)
+        }
+    }
+}
+
+// MARK: - Cart product observation
+private extension PointOfSaleAggregateModel {
+    func subscribeToCartProductUpdates() {
+        cartProductObserver?.items
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] updatedItems in
+                self?.applyProductUpdatesToCart(updatedItems)
+            }
+            .store(in: &cancellables)
+    }
+
+    func rebuildCartProductObservation() {
+        guard let cartProductObserver else { return }
+
+        var productIDs = Set<Int64>()
+        var variationIDs = Set<Int64>()
+
+        for item in cart.purchasableItems {
+            guard case .loaded(let orderableItem) = item.state else { continue }
+            switch orderableItem.id.underlyingType {
+            case .product:
+                productIDs.insert(orderableItem.id.itemID)
+            case .variation:
+                variationIDs.insert(orderableItem.id.itemID)
+            default:
+                break
+            }
+        }
+
+        cartProductObserver.observe(productIDs: productIDs, variationIDs: variationIDs)
+    }
+
+    func applyProductUpdatesToCart(_ observedItems: [POSItem]) {
+        let observedOrderables: [POSOrderableItem] = observedItems.compactMap { item in
+            switch item {
+            case .simpleProduct(let product): return product
+            case .variation(let variation): return variation
+            default: return nil
+            }
+        }
+
+        guard !observedOrderables.isEmpty else { return }
+
+        var updatedItems = cart.purchasableItems
+        var changed = false
+
+        for (index, cartItem) in updatedItems.enumerated() {
+            guard case .loaded(let currentOrderable) = cartItem.state,
+                  let observed = observedOrderables.first(where: { $0.id == currentOrderable.id }),
+                  currentOrderable.formattedPrice != observed.formattedPrice else {
+                continue
+            }
+
+            updatedItems[index] = Cart.PurchasableItem(
+                id: cartItem.id,
+                item: observed,
+                title: cartItem.title,
+                subtitle: cartItem.subtitle,
+                quantity: cartItem.quantity
+            )
+            changed = true
+        }
+
+        if changed {
+            cart.purchasableItems = updatedItems
+            DDLogInfo("💰 Cart item prices updated from catalog observation")
         }
     }
 }
@@ -490,6 +582,9 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         paymentModel.tearDown()
         cancellables.forEach { $0.cancel() }
+
+        // Stop the GRDB observation so stale cart IDs are not watched after dismissal.
+        cartProductObserver?.observe(productIDs: [], variationIDs: [])
     }
 }
 

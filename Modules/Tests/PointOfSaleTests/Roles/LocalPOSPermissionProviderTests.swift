@@ -13,7 +13,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_view_settings")
+        let result = sut.checkPermission("view_pos_settings")
 
         // Then
         #expect(result == .allowed)
@@ -26,7 +26,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_refund_orders")
+        let result = sut.checkPermission("refund_shop_orders")
 
         // Then
         #expect(result == .allowed)
@@ -39,7 +39,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_refund_orders")
+        let result = sut.checkPermission("refund_shop_orders")
 
         // Then
         #expect(result == .requiresOverride)
@@ -52,7 +52,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_view_settings")
+        let result = sut.checkPermission("view_pos_settings")
 
         // Then
         #expect(result == .requiresOverride)
@@ -63,7 +63,7 @@ struct LocalPOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_view_settings")
+        let result = sut.checkPermission("view_pos_settings")
 
         // Then
         #expect(result == .requiresOverride)
@@ -77,7 +77,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(makeManagerOperator())
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_view_settings") == true)
+        #expect(sut.hasCapability("view_pos_settings") == true)
     }
 
     @Test func test_hasCapability_when_operator_lacks_it_then_returns_false() {
@@ -86,7 +86,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(makeCashierOperator())
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_refund_orders") == false)
+        #expect(sut.hasCapability("refund_shop_orders") == false)
     }
 
     @Test func test_hasCapability_when_no_operator_then_returns_false() {
@@ -94,7 +94,7 @@ struct LocalPOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_view_settings") == false)
+        #expect(sut.hasCapability("view_pos_settings") == false)
     }
 
     // MARK: - signIn
@@ -243,7 +243,7 @@ struct LocalPOSPermissionProviderTests {
 
         let token = try await sut.requestManagerApproval(
             managerPIN: "1234",
-            for: "woocommerce_refund_orders",
+            for: "refund_shop_orders",
             orderID: 42
         )
 
@@ -258,7 +258,7 @@ struct LocalPOSPermissionProviderTests {
         await #expect(throws: POSAuthError.invalidPIN) {
             try await sut.requestManagerApproval(
                 managerPIN: "9999",
-                for: "woocommerce_refund_orders",
+                for: "refund_shop_orders",
                 orderID: 42
             )
         }
@@ -311,7 +311,7 @@ struct LocalPOSPermissionProviderTests {
 
     @Test func test_cashierCapabilities_does_not_include_refund_orders() {
         // Then
-        #expect(LocalPOSPermissionProvider.cashierCapabilities.contains("woocommerce_refund_orders") == false)
+        #expect(LocalPOSPermissionProvider.cashierCapabilities.contains("refund_shop_orders") == false)
     }
 
     // MARK: - Helpers

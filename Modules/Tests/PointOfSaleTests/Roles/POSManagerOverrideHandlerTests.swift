@@ -15,7 +15,7 @@ struct POSManagerOverrideHandlerTests {
 
         // When
         var approved = false
-        let wasImmediate = handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { _ in
+        let wasImmediate = handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { _ in
             approved = true
         }
 
@@ -33,7 +33,7 @@ struct POSManagerOverrideHandlerTests {
 
         // When
         var receivedToken: String? = "should-be-nil"
-        handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { token in
+        handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { token in
             receivedToken = token
         }
 
@@ -46,12 +46,12 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_requestPermission_when_requiresOverride_then_shows_modal() {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
         // When
         var approved = false
-        let wasImmediate = handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { _ in
+        let wasImmediate = handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { _ in
             approved = true
         }
 
@@ -65,19 +65,19 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_requestPermission_when_requiresOverride_then_stores_action_description() {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
         // When
         _ = handler.requestPermission(
-            for: .refundOrders,
+            for: .refundShopOrders,
             actionDescription: "Issue a refund for Order #42",
             permissions: mock
         ) { _ in }
 
         // Then
         #expect(handler.actionDescription == "Issue a refund for Order #42")
-        #expect(handler.activeCapability == "woocommerce_refund_orders")
+        #expect(handler.activeCapability == "refund_shop_orders")
     }
 
     @Test func test_requestPermission_when_no_operator_then_shows_modal() {
@@ -86,7 +86,7 @@ struct POSManagerOverrideHandlerTests {
         let handler = POSManagerOverrideHandler()
 
         // When
-        let wasImmediate = handler.requestPermission(for: .posViewSettings, actionDescription: "Test", permissions: mock) { _ in }
+        let wasImmediate = handler.requestPermission(for: .viewPOSSettings, actionDescription: "Test", permissions: mock) { _ in }
 
         // Then
         #expect(wasImmediate == false)
@@ -98,12 +98,12 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_handlePINEntered_when_valid_then_sets_approved_and_calls_onApproved() async {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         mock.approvalTokenToReturn = "approval-token"
         let handler = POSManagerOverrideHandler()
 
         var receivedToken: String?
-        _ = handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { token in
+        _ = handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { token in
             receivedToken = token
         }
 
@@ -114,17 +114,17 @@ struct POSManagerOverrideHandlerTests {
         #expect(receivedToken == "approval-token")
         #expect(handler.isShowingOverride == false)
         #expect(mock.requestedManagerPIN == "1234")
-        #expect(mock.requestedCapability == "woocommerce_refund_orders")
+        #expect(mock.requestedCapability == "refund_shop_orders")
     }
 
     @Test func test_handlePINEntered_when_valid_then_passes_orderID_to_permissions() async {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
         _ = handler.requestPermission(
-            for: .refundOrders,
+            for: .refundShopOrders,
             actionDescription: "Test",
             permissions: mock,
             orderID: 42
@@ -142,12 +142,12 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_handlePINEntered_when_invalid_then_sets_error_state() async {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         mock.approvalErrorToThrow = TestError.invalidPIN
         let handler = POSManagerOverrideHandler()
 
         var approved = false
-        _ = handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { _ in
+        _ = handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { _ in
             approved = true
         }
 
@@ -169,10 +169,10 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_cancel_when_override_showing_then_hides_modal() {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
-        _ = handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { _ in }
+        _ = handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { _ in }
         #expect(handler.isShowingOverride == true)
 
         // When
@@ -185,11 +185,11 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_cancel_when_override_showing_then_clears_callback() async {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_refund_orders"] = .requiresOverride
+        mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
         var approved = false
-        _ = handler.requestPermission(for: .refundOrders, actionDescription: "Test", permissions: mock) { _ in
+        _ = handler.requestPermission(for: .refundShopOrders, actionDescription: "Test", permissions: mock) { _ in
             approved = true
         }
 

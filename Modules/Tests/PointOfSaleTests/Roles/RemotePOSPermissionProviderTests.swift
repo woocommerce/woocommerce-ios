@@ -14,8 +14,8 @@ struct RemotePOSPermissionProviderTests {
         // Given
         let response = makePINAuthResponse(
             capabilities: [
-                "woocommerce_pos_access": true,
-                "woocommerce_refund_orders": true,
+                "view_pos": true,
+                "refund_shop_orders": true,
                 "publish_shop_coupons": false
             ]
         )
@@ -28,7 +28,7 @@ struct RemotePOSPermissionProviderTests {
         #expect(op.userID == 100)
         #expect(op.displayName == "Test Cashier")
         #expect(op.role == "pos_cashier")
-        #expect(op.capabilities == Set(["woocommerce_pos_access", "woocommerce_refund_orders"]))
+        #expect(op.capabilities == Set(["view_pos", "refund_shop_orders"]))
         #expect(sut.currentOperator == op)
         #expect(sut.isLocked == false)
     }
@@ -37,10 +37,10 @@ struct RemotePOSPermissionProviderTests {
         // Given
         let response = makePINAuthResponse(
             capabilities: [
-                "woocommerce_pos_access": true,
-                "woocommerce_refund_orders": false,
+                "view_pos": true,
+                "refund_shop_orders": false,
                 "publish_shop_coupons": false,
-                "woocommerce_pos_view_settings": true
+                "view_pos_settings": true
             ]
         )
         let sut = makeSUT(pinAuthResponse: response)
@@ -49,8 +49,8 @@ struct RemotePOSPermissionProviderTests {
         let op = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
 
         // Then
-        #expect(op.capabilities == Set(["woocommerce_pos_access", "woocommerce_pos_view_settings"]))
-        #expect(op.capabilities.contains("woocommerce_refund_orders") == false)
+        #expect(op.capabilities == Set(["view_pos", "view_pos_settings"]))
+        #expect(op.capabilities.contains("refund_shop_orders") == false)
         #expect(op.capabilities.contains("publish_shop_coupons") == false)
     }
 
@@ -167,12 +167,12 @@ struct RemotePOSPermissionProviderTests {
 
     @Test func test_checkPermission_when_operator_has_capability_then_returns_allowed() async throws {
         // Given
-        let response = makePINAuthResponse(capabilities: ["woocommerce_pos_access": true])
+        let response = makePINAuthResponse(capabilities: ["view_pos": true])
         let sut = makeSUT(pinAuthResponse: response)
         _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_access")
+        let result = sut.checkPermission("view_pos")
 
         // Then
         #expect(result == .allowed)
@@ -180,12 +180,12 @@ struct RemotePOSPermissionProviderTests {
 
     @Test func test_checkPermission_when_operator_lacks_capability_then_returns_requiresOverride() async throws {
         // Given
-        let response = makePINAuthResponse(capabilities: ["woocommerce_pos_access": true])
+        let response = makePINAuthResponse(capabilities: ["view_pos": true])
         let sut = makeSUT(pinAuthResponse: response)
         _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
 
         // When
-        let result = sut.checkPermission("woocommerce_refund_orders")
+        let result = sut.checkPermission("refund_shop_orders")
 
         // Then
         #expect(result == .requiresOverride)
@@ -196,7 +196,7 @@ struct RemotePOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_access")
+        let result = sut.checkPermission("view_pos")
 
         // Then
         #expect(result == .requiresOverride)
@@ -206,22 +206,22 @@ struct RemotePOSPermissionProviderTests {
 
     @Test func test_hasCapability_when_operator_has_it_then_returns_true() async throws {
         // Given
-        let response = makePINAuthResponse(capabilities: ["woocommerce_pos_access": true])
+        let response = makePINAuthResponse(capabilities: ["view_pos": true])
         let sut = makeSUT(pinAuthResponse: response)
         _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_access") == true)
+        #expect(sut.hasCapability("view_pos") == true)
     }
 
     @Test func test_hasCapability_when_operator_lacks_it_then_returns_false() async throws {
         // Given
-        let response = makePINAuthResponse(capabilities: ["woocommerce_pos_access": true])
+        let response = makePINAuthResponse(capabilities: ["view_pos": true])
         let sut = makeSUT(pinAuthResponse: response)
         _ = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_refund_orders") == false)
+        #expect(sut.hasCapability("refund_shop_orders") == false)
     }
 
     @Test func test_hasCapability_when_no_operator_then_returns_false() {
@@ -229,7 +229,7 @@ struct RemotePOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_access") == false)
+        #expect(sut.hasCapability("view_pos") == false)
     }
 
     // MARK: - signIn
@@ -316,14 +316,14 @@ struct RemotePOSPermissionProviderTests {
         // When - refundOrders has supportsBackendApproval = true
         let token = try await sut.requestManagerApproval(
             managerPIN: "1234",
-            for: "woocommerce_refund_orders",
+            for: "refund_shop_orders",
             orderID: 99
         )
 
         // Then
         #expect(token == "approval-token-xyz")
         #expect(approvalService.spyCapturedPIN == "1234")
-        #expect(approvalService.spyCapturedAction == "woocommerce_refund_orders")
+        #expect(approvalService.spyCapturedAction == "refund_shop_orders")
         #expect(approvalService.spyCapturedContext == ["order_id": 99])
     }
 
@@ -336,7 +336,7 @@ struct RemotePOSPermissionProviderTests {
         // When
         _ = try await sut.requestManagerApproval(
             managerPIN: "1234",
-            for: "woocommerce_refund_orders",
+            for: "refund_shop_orders",
             orderID: nil
         )
 
@@ -354,7 +354,7 @@ struct RemotePOSPermissionProviderTests {
         await #expect(throws: TestError.approvalFailed) {
             try await sut.requestManagerApproval(
                 managerPIN: "1234",
-                for: "woocommerce_refund_orders",
+                for: "refund_shop_orders",
                 orderID: nil
             )
         }
@@ -363,14 +363,14 @@ struct RemotePOSPermissionProviderTests {
     @Test func test_requestManagerApproval_when_not_backend_approvable_then_uses_verify_endpoint() async throws {
         // Given - posReadSettings has supportsBackendApproval = false
         let verifyResponse = makeVerifyResponse(capabilities: [
-            "woocommerce_pos_view_settings": true
+            "view_pos_settings": true
         ])
         let sut = makeSUT(verifyResponse: verifyResponse)
 
         // When
         let token = try await sut.requestManagerApproval(
             managerPIN: "1234",
-            for: "woocommerce_pos_view_settings",
+            for: "view_pos_settings",
             orderID: nil
         )
 
@@ -381,7 +381,7 @@ struct RemotePOSPermissionProviderTests {
     @Test func test_requestManagerApproval_when_not_backend_approvable_and_lacks_capability_then_throws() async {
         // Given - verify returns capabilities that don't include the required one
         let verifyResponse = makeVerifyResponse(capabilities: [
-            "woocommerce_pos_access": true
+            "view_pos": true
         ])
         let sut = makeSUT(verifyResponse: verifyResponse)
 
@@ -389,7 +389,7 @@ struct RemotePOSPermissionProviderTests {
         await #expect(throws: Error.self) {
             try await sut.requestManagerApproval(
                 managerPIN: "1234",
-                for: "woocommerce_pos_edit_settings",
+                for: "edit_pos_settings",
                 orderID: nil
             )
         }
@@ -446,7 +446,7 @@ struct RemotePOSPermissionProviderTests {
         userLogin: String = "test_cashier",
         displayName: String = "Test Cashier",
         role: String = "pos_cashier",
-        capabilities: [String: Bool] = ["woocommerce_pos_access": true],
+        capabilities: [String: Bool] = ["view_pos": true],
         applicationPassword: String = "app-pass",
         applicationPasswordUUID: String = "uuid-123",
         sessionExpires: String = "2026-04-10T00:00:00Z",
@@ -470,8 +470,8 @@ struct RemotePOSPermissionProviderTests {
         displayName: String = "Store Manager",
         role: String = "shop_manager",
         capabilities: [String: Bool] = [
-            "woocommerce_pos_view_settings": true,
-            "woocommerce_pos_edit_settings": true
+            "view_pos_settings": true,
+            "edit_pos_settings": true
         ]
     ) -> POSPINVerifyResponse {
         POSPINVerifyResponse(
@@ -487,7 +487,7 @@ struct RemotePOSPermissionProviderTests {
             userID: 100,
             displayName: "Test Cashier",
             role: "pos_cashier",
-            capabilities: Set(["woocommerce_pos_access"]),
+            capabilities: Set(["view_pos"]),
             isAppAccountHolder: false
         )
     }

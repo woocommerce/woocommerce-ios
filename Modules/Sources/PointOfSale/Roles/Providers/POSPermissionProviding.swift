@@ -22,7 +22,7 @@ public protocol POSPermissionProviding: AnyObject {
 
 extension POSPermissionProviding {
     /// Check permission using the typed capability enum.
-    /// Usage: `permissions.checkPermission(.refundOrders)`
+    /// Usage: `permissions.checkPermission(.refundShopOrders)`
     func checkPermission(_ capability: POSCapability) -> POSPermissionResult {
         checkPermission(capability.rawValue)
     }

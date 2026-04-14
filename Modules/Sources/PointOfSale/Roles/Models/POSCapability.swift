@@ -4,12 +4,12 @@ import Foundation
 /// Only capabilities that are actively gated in the iOS app are listed here.
 /// Add new cases when the app needs to check a new capability.
 public enum POSCapability: String, CaseIterable, Sendable {
-    /// View POS settings. Managers and admins have this.
-    case posViewSettings = "woocommerce_pos_view_settings"
-    /// Modify POS settings, manage staff, exit POS. Admins only.
-    case posEditSettings = "woocommerce_pos_edit_settings"
-    /// Process refunds.
-    case refundOrders = "woocommerce_refund_orders"
+    /// View POS settings. Managers and admins.
+    case viewPOSSettings = "view_pos_settings"
+    /// Modify settings, manage staff, exit POS. Admins only.
+    case editPOSSettings = "edit_pos_settings"
+    /// Issue refunds.
+    case refundShopOrders = "refund_shop_orders"
     /// Create coupons.
     case publishCoupons = "publish_shop_coupons"
 
@@ -22,9 +22,9 @@ public enum POSCapability: String, CaseIterable, Sendable {
     /// - Local mode always uses local PIN verification regardless of this value.
     public var supportsBackendApproval: Bool {
         switch self {
-        case .refundOrders:
+        case .refundShopOrders:
             return true
-        case .posViewSettings, .posEditSettings, .publishCoupons:
+        case .viewPOSSettings, .editPOSSettings, .publishCoupons:
             return false
         }
     }

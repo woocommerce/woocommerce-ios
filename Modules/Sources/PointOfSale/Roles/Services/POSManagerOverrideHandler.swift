@@ -12,7 +12,7 @@ import Foundation
 ///
 /// // 1. Request permission (checks capability, shows modal only if needed)
 /// overrideHandler.requestPermission(
-///     for: .refundOrders,
+///     for: .refundShopOrders,
 ///     actionDescription: "Issue a refund for Order #1042",
 ///     permissions: permissions,
 ///     orderID: orderID,

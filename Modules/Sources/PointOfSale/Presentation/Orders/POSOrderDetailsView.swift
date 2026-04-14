@@ -559,7 +559,7 @@ private extension POSOrderDetailsView {
 private extension POSOrderDetailsView {
     func requestPermissionForRefund() {
         overrideHandler.requestPermission(
-            for: .refundOrders,
+            for: .refundShopOrders,
             actionDescription: Localization.refundOverrideDescription(order.number),
             permissions: permissions,
             orderID: order.id,

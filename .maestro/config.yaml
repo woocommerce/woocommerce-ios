@@ -1,0 +1,38 @@
+# Maestro Workspace Configuration for WooCommerce iOS Smoke Tests
+#
+# Run all smoke tests:
+#   maestro test --include-tags=smoke .maestro/
+#
+# Run a specific category:
+#   maestro test --include-tags=login .maestro/
+#   maestro test --include-tags=orders .maestro/
+#
+# Pass credentials via environment variables:
+#   export MAESTRO_WOO_EMAIL="user@example.com"
+#   export MAESTRO_WOO_PASSWORD="password"
+#   export MAESTRO_WOO_STORE_URL="https://store.example.com"
+
+appId: com.automattic.alpha.woocommerce
+
+flows:
+  - "flows/*"
+
+executionOrder:
+  continueOnFailure: true
+  flowsOrder:
+    - flows/login_successful.yaml
+    - flows/dashboard_stats.yaml
+    - flows/orders_list_and_search.yaml
+    - flows/orders_create.yaml
+    - flows/orders_details_and_actions.yaml
+    - flows/products_list_and_sort.yaml
+    - flows/products_detail.yaml
+    - flows/products_create.yaml
+    - flows/menu_settings.yaml
+    - flows/menu_payments.yaml
+    - flows/menu_reviews.yaml
+    - flows/menu_view_store.yaml
+    - flows/blaze_campaign.yaml
+    - flows/google_for_woo.yaml
+    - flows/login_not_wp_site.yaml
+    - flows/login_wrong_credentials.yaml

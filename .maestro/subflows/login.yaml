@@ -1,0 +1,72 @@
+# Reusable login subflow
+# Logs into the WooCommerce iOS app via WordPress.com email + password.
+#
+# Required env vars: WOO_EMAIL, WOO_PASSWORD
+#
+# Flow: Launch -> Skip Onboarding (if shown) -> Prologue -> GetStarted (email) ->
+#       Password -> Dismiss Save Password dialog -> Login Epilogue -> Dashboard
+appId: com.automattic.alpha.woocommerce
+---
+- launchApp:
+    clearState: true
+
+# Wait for the app to finish loading (onboarding or prologue)
+- extendedWaitUntil:
+    visible: ".*Login Onboarding Skip Button.*|.*prologue-title-label.*"
+    timeout: 30000
+
+# Skip onboarding carousel if shown
+- runFlow:
+    when:
+      visible: "Login Onboarding Skip Button"
+    commands:
+      - tapOn: "Login Onboarding Skip Button"
+
+# Wait for Prologue screen
+- extendedWaitUntil:
+    visible: "prologue-title-label"
+    timeout: 15000
+
+# Tap "Continue with WordPress.com"
+- tapOn: "Prologue Continue Button"
+
+# Enter email address
+- extendedWaitUntil:
+    visible: "Email address"
+    timeout: 15000
+- tapOn: "Email address"
+- inputText: ${WOO_EMAIL}
+- tapOn: "Get Started Email Continue Button"
+
+# Enter password
+- extendedWaitUntil:
+    visible: "Password"
+    timeout: 15000
+- tapOn: "Password"
+- inputText: ${WOO_PASSWORD}
+- tapOn: "Continue Button"
+
+# Handle iOS "Save Password?" system dialog
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+
+# Login epilogue - select store and continue
+- extendedWaitUntil:
+    visible: "login-epilogue-continue-button"
+    timeout: 30000
+- tapOn: "login-epilogue-continue-button"
+
+# Wait for dashboard to fully load
+- extendedWaitUntil:
+    visible: "tab-bar-my-store-item"
+    timeout: 30000
+
+# Dismiss any onboarding or setup dialogs that may appear
+- runFlow:
+    when:
+      visible: "Got it"
+    commands:
+      - tapOn: "Got it"

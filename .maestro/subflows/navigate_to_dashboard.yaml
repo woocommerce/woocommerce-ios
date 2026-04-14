@@ -1,0 +1,7 @@
+# Navigate to the Dashboard (My Store) tab
+appId: com.automattic.alpha.woocommerce
+---
+- tapOn: "tab-bar-my-store-item"
+- extendedWaitUntil:
+    visible: "revenue-value"
+    timeout: 15000

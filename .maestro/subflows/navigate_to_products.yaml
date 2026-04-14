@@ -1,0 +1,7 @@
+# Navigate to the Products tab
+appId: com.automattic.alpha.woocommerce
+---
+- tapOn: "tab-bar-products-item"
+- extendedWaitUntil:
+    visible: "products-table-view"
+    timeout: 15000

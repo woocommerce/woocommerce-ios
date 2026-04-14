@@ -1,0 +1,7 @@
+# Navigate to the Orders tab
+appId: com.automattic.alpha.woocommerce
+---
+- tapOn: "tab-bar-orders-item"
+- extendedWaitUntil:
+    visible: "orders-table-view"
+    timeout: 15000

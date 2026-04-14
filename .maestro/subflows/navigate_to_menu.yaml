@@ -1,0 +1,7 @@
+# Navigate to the Menu (More) tab
+appId: com.automattic.alpha.woocommerce
+---
+- tapOn: "tab-bar-menu-item"
+- extendedWaitUntil:
+    visible: "menu-reviews"
+    timeout: 10000

@@ -222,6 +222,8 @@ final class DashboardViewModel: ObservableObject {
         observeStoreSetupEligibility()
         configureOrdersResultController()
         setupDashboardCards()
+        observeValuesForDashboardCards()
+        observeDashboardCardsAndReload()
         observeWPCOMSiteSuspendedState()
         observeSelfDrivenPushTokenPersistence()
         bindClientSideBannerWebViewSheet()
@@ -385,8 +387,6 @@ private extension DashboardViewModel {
             }))
         }
         savedCards = storageCards ?? []
-        observeValuesForDashboardCards()
-        observeDashboardCardsAndReload()
     }
 
     func saveDashboardCards(cards: [DashboardCard]) {

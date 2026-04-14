@@ -217,6 +217,17 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
+            // Shared network for all POS services that make mutating API calls.
+            // When a cashier authenticates via PIN, overridePOSCredentials() updates
+            // this network so refunds, orders, receipts, etc. are attributed correctly.
+            guard let credentials else {
+                DDLogError("⛔️ POS cannot start without credentials")
+                return
+            }
+            let posNetwork = AlamofireNetwork(credentials: credentials,
+                                              selectedSite: defaultSitePublisher,
+                                              appPasswordSupportState: isAppPasswordSupported)
+
             let serviceAdaptor = POSServiceLocatorAdaptor(posNetwork: posNetwork)
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
@@ -245,17 +256,6 @@ private extension POSTabCoordinator {
             // otherwise falls back to remote API-based scanning
             let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
                                                               grdbManager: grdbManager)
-
-            // Shared network for all POS services that make mutating API calls.
-            // When a cashier authenticates via PIN, overridePOSCredentials() updates
-            // this network so refunds, orders, receipts, etc. are attributed correctly.
-            guard let credentials else {
-                DDLogError("⛔️ POS cannot start without credentials")
-                return
-            }
-            let posNetwork = AlamofireNetwork(credentials: credentials,
-                                              selectedSite: defaultSitePublisher,
-                                              appPasswordSupportState: isAppPasswordSupported)
 
             let refundsService = POSRefundsService(siteID: siteID,
                                                    network: posNetwork,

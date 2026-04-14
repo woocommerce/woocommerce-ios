@@ -347,12 +347,13 @@ private struct POSStaffSettingsRemoteView: View {
 
 private extension POSStaffSettingsRemoteView {
     var staffListCard: some View {
+        let sorted = sortedStaffMembers
         POSInformationCard {
             VStack(spacing: POSSpacing.none) {
-                ForEach(Array(staffMembers.enumerated()), id: \.element.id) { index, member in
-                    staffRow(member: member)
+                ForEach(Array(sorted.enumerated()), id: \.element.id) { index, member in
+                    staffRow(member: member, isCurrentOperator: member.id == currentOperatorID)
 
-                    if index < staffMembers.count - 1 {
+                    if index < sorted.count - 1 {
                         Divider()
                             .padding(.vertical, POSPadding.small)
                     }
@@ -361,7 +362,22 @@ private extension POSStaffSettingsRemoteView {
         }
     }
 
-    func staffRow(member: StaffMemberInfo) -> some View {
+    private var currentOperatorID: Int64? {
+        permissions.currentOperator?.userID
+    }
+
+    private var sortedStaffMembers: [StaffMemberInfo] {
+        staffMembers.sorted { lhs, rhs in
+            let lhsCurrent = lhs.id == currentOperatorID
+            let rhsCurrent = rhs.id == currentOperatorID
+            if lhsCurrent != rhsCurrent {
+                return lhsCurrent
+            }
+            return lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending
+        }
+    }
+
+    func staffRow(member: StaffMemberInfo, isCurrentOperator: Bool) -> some View {
         HStack(alignment: .center, spacing: POSSpacing.medium) {
             VStack(alignment: .leading, spacing: POSPadding.xSmall) {
                 Text(member.displayName)
@@ -370,6 +386,9 @@ private extension POSStaffSettingsRemoteView {
                 Text(member.role)
                     .font(.posBodySmallRegular())
                     .foregroundStyle(.secondary)
+                if isCurrentOperator {
+                    signedInBadge
+                }
             }
 
             Spacer()
@@ -378,6 +397,16 @@ private extension POSStaffSettingsRemoteView {
         }
         .padding(.vertical, POSPadding.xSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var signedInBadge: some View {
+        Text(Localization.signedInBadge)
+            .font(.posCaptionRegular)
+            .foregroundStyle(Color.posOnInfoLowest)
+            .padding(.horizontal, POSPadding.small)
+            .padding(.vertical, POSPadding.xSmall)
+            .background(Color.posInfoLowest)
+            .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
     @ViewBuilder
@@ -612,6 +641,12 @@ private enum Localization {
     )
 
     // MARK: Remote Mode
+    static let signedInBadge = NSLocalizedString(
+        "posStaffSettingsView.signedInBadge",
+        value: "Signed in",
+        comment: "Badge label shown next to the currently signed-in staff member in the POS staff list."
+    )
+
     static let pinSetLabel = NSLocalizedString(
         "posStaffSettingsView.pinSetLabel",
         value: "PIN set",

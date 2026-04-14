@@ -64,24 +64,7 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
-        .posModal(isPresented: $overrideHandler.isShowingOverride) {
-            POSManagerOverrideView(
-                actionDescription: overrideHandler.actionDescription,
-                capability: overrideHandler.activeCapability ?? "",
-                overrideState: Binding(
-                    get: { overrideHandler.overrideState },
-                    set: { _ in }
-                ),
-                onPINEntered: { pin in
-                    Task { @MainActor in
-                        await overrideHandler.handlePINEntered(pin, permissions: permissions)
-                    }
-                },
-                onCancelled: {
-                    overrideHandler.cancel()
-                }
-            )
-        }
+        .posManagerOverrideModal(handler: overrideHandler, permissions: permissions)
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)

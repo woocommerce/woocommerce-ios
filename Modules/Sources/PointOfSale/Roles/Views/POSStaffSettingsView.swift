@@ -3,7 +3,9 @@ import SwiftUI
 // MARK: - Mode & Data Types
 
 public enum POSStaffSettingsMode {
-    case local(pinService: POSPINService)
+    /// Local mode with on-device PINs. The `onAdminPINSet` callback is called with the PIN
+    /// when the admin PIN is first configured, allowing the caller to sign in the admin operator.
+    case local(pinService: POSPINService, onAdminPINSet: ((String) -> Void)? = nil)
     case remote(loadStaff: () async throws -> [StaffMemberInfo], manageURL: URL)
 }
 
@@ -28,8 +30,8 @@ struct POSStaffSettingsView: View {
 
     var body: some View {
         switch mode {
-        case .local(let pinService):
-            POSStaffSettingsLocalView(pinService: pinService)
+        case .local(let pinService, let onAdminPINSet):
+            POSStaffSettingsLocalView(pinService: pinService, onAdminPINSet: onAdminPINSet)
         case .remote(let loadStaff, let manageURL):
             POSStaffSettingsRemoteView(loadStaff: loadStaff, manageURL: manageURL)
         }
@@ -40,6 +42,7 @@ struct POSStaffSettingsView: View {
 
 private struct POSStaffSettingsLocalView: View {
     let pinService: POSPINService
+    let onAdminPINSet: ((String) -> Void)?
     @Environment(\.posPermissions) private var permissions
     @State private var pinManager: POSStaffPINManager
 
@@ -49,8 +52,9 @@ private struct POSStaffSettingsLocalView: View {
     @State private var pinEntryRole: PINRole = .manager
     @State private var pinEntryState: POSPINEntryState = .idle
 
-    init(pinService: POSPINService) {
+    init(pinService: POSPINService, onAdminPINSet: ((String) -> Void)? = nil) {
         self.pinService = pinService
+        self.onAdminPINSet = onAdminPINSet
         self._pinManager = State(initialValue: POSStaffPINManager(pinService: pinService))
     }
 
@@ -203,21 +207,6 @@ private extension POSStaffSettingsLocalView {
         .padding(.top, POSPadding.small)
     }
 
-    func confirmationBanner(message: String) -> some View {
-        HStack(spacing: POSSpacing.small) {
-            Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(Color.posSuccess)
-            Text(message)
-                .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.posSurfaceContainerLowest)
-        .posItemCardBorderStyles()
-        .transition(.opacity)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-    }
 
     var pinEntryModal: some View {
         VStack(spacing: POSSpacing.xLarge) {
@@ -288,9 +277,7 @@ private extension POSStaffSettingsLocalView {
         }
         // When admin PIN is first set, sign in as admin so the lock screen doesn't appear
         if pinEntryRole == .manager, permissions.currentOperator == nil {
-            if let provider = permissions as? LocalPOSPermissionProvider {
-                provider.authenticatePIN(pin)
-            }
+            onAdminPINSet?(pin)
         }
         dismissPINEntry()
     }
@@ -475,7 +462,6 @@ private extension POSStaffSettingsRemoteView {
 
 private enum Constants {
     static let pinEntryModalMaxWidth: CGFloat = 500
-    static let confirmationDismissDelay: TimeInterval = 3.0
 }
 
 // MARK: - Localization
@@ -579,23 +565,6 @@ private enum Localization {
         comment: "Error message shown when an invalid PIN format is entered in POS staff settings."
     )
 
-    static let pinSetConfirmationFormat = NSLocalizedString(
-        "posStaffSettingsView.pinUpdatedConfirmationFormat",
-        value: "%1$@ PIN has been updated",
-        comment: "Confirmation message after successfully setting a PIN. %1$@ is the role name (Admin or Cashier)."
-    )
-
-    static let adminRoleName = NSLocalizedString(
-        "posStaffSettingsView.adminRoleName",
-        value: "Admin",
-        comment: "Role name used in the PIN confirmation message for the admin role."
-    )
-
-    static let cashierRoleName = NSLocalizedString(
-        "posStaffSettingsView.cashierRoleName",
-        value: "Cashier",
-        comment: "Role name used in the PIN confirmation message for the cashier role."
-    )
 
     static let localFooter = NSLocalizedString(
         "posStaffSettingsView.localAutoLockFooter",

@@ -148,24 +148,7 @@ struct POSOrderDetailsView: View {
             }
             .posHeaderBackButtonIcon(systemName: "xmark")
         }
-        .posModal(isPresented: $overrideHandler.isShowingOverride) {
-            POSManagerOverrideView(
-                actionDescription: overrideHandler.actionDescription,
-                capability: overrideHandler.activeCapability ?? "",
-                overrideState: Binding(
-                    get: { overrideHandler.overrideState },
-                    set: { _ in }
-                ),
-                onPINEntered: { pin in
-                    Task { @MainActor in
-                        await overrideHandler.handlePINEntered(pin, permissions: permissions)
-                    }
-                },
-                onCancelled: {
-                    overrideHandler.cancel()
-                }
-            )
-        }
+        .posManagerOverrideModal(handler: overrideHandler, permissions: permissions)
         .task {
             guard shouldShowDedicatedRefundsSection else { return }
             await orderListModel.ordersController.loadOrderRefunds()

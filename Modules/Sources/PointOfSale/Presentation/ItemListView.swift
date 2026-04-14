@@ -159,24 +159,7 @@ struct ItemListView: View {
                 await posModel.couponsController.refreshItems(base: .root)
             }
         })
-        .posModal(isPresented: $couponOverrideHandler.isShowingOverride) {
-            POSManagerOverrideView(
-                actionDescription: couponOverrideHandler.actionDescription,
-                capability: couponOverrideHandler.activeCapability ?? "",
-                overrideState: Binding(
-                    get: { couponOverrideHandler.overrideState },
-                    set: { _ in }
-                ),
-                onPINEntered: { pin in
-                    Task { @MainActor in
-                        await couponOverrideHandler.handlePINEntered(pin, permissions: permissions)
-                    }
-                },
-                onCancelled: {
-                    couponOverrideHandler.cancel()
-                }
-            )
-        }
+        .posManagerOverrideModal(handler: couponOverrideHandler, permissions: permissions)
         .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
             posModel.barcodeScanned(scannedCode)
         }

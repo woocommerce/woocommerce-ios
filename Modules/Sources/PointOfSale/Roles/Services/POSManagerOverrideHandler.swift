@@ -101,6 +101,7 @@ final class POSManagerOverrideHandler {
     /// Cancels the override flow and hides the modal.
     func cancel() {
         isShowingOverride = false
+        overrideState = .awaitingPIN
         cleanup()
     }
 

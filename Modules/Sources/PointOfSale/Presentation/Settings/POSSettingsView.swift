@@ -27,24 +27,7 @@ struct POSSettingsView: View {
                 selection = .store
             }
         }
-        .posModal(isPresented: $staffOverrideHandler.isShowingOverride) {
-            POSManagerOverrideView(
-                actionDescription: staffOverrideHandler.actionDescription,
-                capability: staffOverrideHandler.activeCapability ?? "",
-                overrideState: Binding(
-                    get: { staffOverrideHandler.overrideState },
-                    set: { _ in }
-                ),
-                onPINEntered: { pin in
-                    Task { @MainActor in
-                        await staffOverrideHandler.handlePINEntered(pin, permissions: permissions)
-                    }
-                },
-                onCancelled: {
-                    staffOverrideHandler.cancel()
-                }
-            )
-        }
+        .posManagerOverrideModal(handler: staffOverrideHandler, permissions: permissions)
     }
 }
 

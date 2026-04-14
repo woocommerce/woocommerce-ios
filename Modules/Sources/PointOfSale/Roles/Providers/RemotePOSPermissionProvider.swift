@@ -136,7 +136,6 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     // MARK: - Session State
 
     private(set) var sessionCredential: POSSessionCredential?
-    private var cachedCapabilities: Set<String> = []
 
     // MARK: - Private
 
@@ -251,7 +250,6 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
                 .filter { $0.value }
                 .map { $0.key }
         )
-        cachedCapabilities = enabledCapabilities
 
         let isAppAccountHolder = response.userID == appAccountUserID
 

@@ -14,26 +14,12 @@ enum POSManagerOverrideState: Equatable {
 /// Embeds a PIN entry numpad; the parent drives verification and state transitions.
 struct POSManagerOverrideView: View {
     let actionDescription: String
-    let capability: String
+    let overrideState: POSManagerOverrideState
     let onPINEntered: (String) -> Void
     let onCancelled: () -> Void
 
-    @Binding var overrideState: POSManagerOverrideState
-
     @State private var pinState: POSPINEntryState = .idle
     @State private var isApproved: Bool = false
-
-    init(actionDescription: String,
-         capability: String,
-         overrideState: Binding<POSManagerOverrideState>,
-         onPINEntered: @escaping (String) -> Void,
-         onCancelled: @escaping () -> Void) {
-        self.actionDescription = actionDescription
-        self.capability = capability
-        self._overrideState = overrideState
-        self.onPINEntered = onPINEntered
-        self.onCancelled = onCancelled
-    }
 
     var body: some View {
         VStack(spacing: POSSpacing.xLarge) {
@@ -144,15 +130,10 @@ private extension POSManagerOverrideView {
 
 #if DEBUG
 #Preview("Manager Override - PIN Entry") {
-    @Previewable @State var state: POSManagerOverrideState = .awaitingPIN
-
     POSManagerOverrideView(
         actionDescription: "Process a refund for Order #1042",
-        capability: "woocommerce_refund_orders",
-        overrideState: $state,
-        onPINEntered: { _ in
-            state = .error(message: "Invalid PIN")
-        },
+        overrideState: .awaitingPIN,
+        onPINEntered: { _ in },
         onCancelled: {}
     )
     .padding()
@@ -160,12 +141,9 @@ private extension POSManagerOverrideView {
 }
 
 #Preview("Manager Override - Approved") {
-    @Previewable @State var state: POSManagerOverrideState = .approved
-
     POSManagerOverrideView(
         actionDescription: "Process a refund for Order #1042",
-        capability: "woocommerce_refund_orders",
-        overrideState: $state,
+        overrideState: .approved,
         onPINEntered: { _ in },
         onCancelled: {}
     )

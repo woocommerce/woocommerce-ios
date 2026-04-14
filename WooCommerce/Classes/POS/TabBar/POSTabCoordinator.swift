@@ -277,10 +277,19 @@ private extension POSTabCoordinator {
             let isBookingsEligible = storesManager.sessionManager.defaultSite
                 .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
 
-            let staffSettingsMode = self.createStaffSettingsMode(
+            var staffSettingsMode = self.createStaffSettingsMode(
                 siteID: siteID,
                 stores: storesManager
             )
+            // Wire auto sign-in callback for local mode after the service adaptor is created
+            if case .local(let pinService, _) = staffSettingsMode {
+                let permissions = serviceAdaptor.permissions
+                staffSettingsMode = .local(pinService: pinService, onAdminPINSet: { pin in
+                    if let provider = permissions as? LocalPOSPermissionProvider {
+                        provider.authenticatePIN(pin)
+                    }
+                })
+            }
 
             let posView = PointOfSaleEntryPointView(
                 siteID: siteID,

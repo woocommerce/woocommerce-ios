@@ -21,7 +21,7 @@ struct POSManagerOverrideView: View {
     @Binding var overrideState: POSManagerOverrideState
 
     @State private var pinState: POSPINEntryState = .idle
-    @State private var showApprovedIcon: Bool = false
+    @State private var isApproved: Bool = false
 
     init(actionDescription: String,
          capability: String,
@@ -67,17 +67,7 @@ struct POSManagerOverrideView: View {
 
     // MARK: - Content
 
-    @ViewBuilder
     private var contentSection: some View {
-        switch overrideState {
-        case .awaitingPIN, .error:
-            pinInputContent
-        case .approved:
-            approvedContent
-        }
-    }
-
-    private var pinInputContent: some View {
         VStack(spacing: POSSpacing.xLarge) {
             iconSection
             POSPINEntryView(
@@ -93,24 +83,11 @@ struct POSManagerOverrideView: View {
     }
 
     private var iconSection: some View {
-        Image(systemName: "lock.shield")
+        Image(systemName: isApproved ? "checkmark.circle.fill" : "lock.shield")
             .font(.system(size: Constants.iconSize, weight: .regular))
-            .foregroundColor(.posOnSurfaceVariantLowest)
-    }
-
-    private var approvedContent: some View {
-        Image(systemName: showApprovedIcon ? "checkmark.circle.fill" : "lock.shield")
-            .font(.system(size: Constants.iconSize, weight: .regular))
-            .foregroundColor(showApprovedIcon ? .posSuccess : .posOnSurfaceVariantLowest)
+            .foregroundColor(isApproved ? .posSuccess : .posOnSurfaceVariantLowest)
             .contentTransition(.symbolEffect(.replace))
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, POSPadding.xxLarge)
-            .onAppear {
-                withAnimation {
-                    showApprovedIcon = true
-                }
-            }
-            .accessibilityLabel(Localization.approved)
+            .accessibilityLabel(isApproved ? Localization.approved : Localization.title)
     }
 
     // MARK: - State Handling
@@ -119,10 +96,15 @@ struct POSManagerOverrideView: View {
         switch newState {
         case .awaitingPIN:
             pinState = .idle
+            isApproved = false
         case .error(let message):
             pinState = .error(message: message)
+            isApproved = false
         case .approved:
-            break
+            pinState = .loading
+            withAnimation {
+                isApproved = true
+            }
         }
     }
 }

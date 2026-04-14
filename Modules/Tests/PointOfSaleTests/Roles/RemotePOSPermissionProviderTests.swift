@@ -363,14 +363,14 @@ struct RemotePOSPermissionProviderTests {
     @Test func test_requestManagerApproval_when_not_backend_approvable_then_uses_verify_endpoint() async throws {
         // Given - posReadSettings has supportsBackendApproval = false
         let verifyResponse = makeVerifyResponse(capabilities: [
-            "woocommerce_pos_manage_settings": true
+            "woocommerce_pos_view_settings": true
         ])
         let sut = makeSUT(verifyResponse: verifyResponse)
 
         // When
         let token = try await sut.requestManagerApproval(
             managerPIN: "1234",
-            for: "woocommerce_pos_manage_settings",
+            for: "woocommerce_pos_view_settings",
             orderID: nil
         )
 
@@ -389,7 +389,7 @@ struct RemotePOSPermissionProviderTests {
         await #expect(throws: Error.self) {
             try await sut.requestManagerApproval(
                 managerPIN: "1234",
-                for: "manage_woocommerce",
+                for: "woocommerce_pos_edit_settings",
                 orderID: nil
             )
         }
@@ -470,8 +470,8 @@ struct RemotePOSPermissionProviderTests {
         displayName: String = "Store Manager",
         role: String = "shop_manager",
         capabilities: [String: Bool] = [
-            "woocommerce_pos_manage_settings": true,
-            "manage_woocommerce": true
+            "woocommerce_pos_view_settings": true,
+            "woocommerce_pos_edit_settings": true
         ]
     ) -> POSPINVerifyResponse {
         POSPINVerifyResponse(

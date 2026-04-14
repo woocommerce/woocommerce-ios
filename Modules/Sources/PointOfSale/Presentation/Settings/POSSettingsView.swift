@@ -113,7 +113,7 @@ extension POSSettingsView {
 
     private func requestPermissionForStaff() {
         staffOverrideHandler.requestPermission(
-            for: .posWriteSettings,
+            for: .posEditSettings,
             actionDescription: Localization.staffOverrideDescription,
             permissions: permissions,
             onApproved: { _ in selection = .staff }

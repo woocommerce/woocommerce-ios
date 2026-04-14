@@ -5,6 +5,7 @@ struct POSLockScreenOverlay: View {
     @StateObject private var model: POSLockScreenModel
     @State private var pinState: POSPINEntryState = .idle
     @State private var showForgotPINAlert: Bool = false
+    @State private var pinViewID = UUID()
 
     private let isRemoteMode: Bool
     private let onLogOut: (() -> Void)?
@@ -46,6 +47,11 @@ struct POSLockScreenOverlay: View {
                 forgotPINAlertButtons
             } message: {
                 Text(forgotPINAlertMessage)
+            }
+            .id(pinViewID)
+            .onAppear {
+                pinState = .idle
+                pinViewID = UUID()
             }
             .transition(.opacity)
             .animation(.easeInOut(duration: 0.25), value: model.isShowingLockScreen)

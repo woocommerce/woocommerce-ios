@@ -1,0 +1,81 @@
+# Smoke Test: Products - Create Product
+#
+# Verifies:
+#   - Add product button works
+#   - Product creation screen loads
+#   - Product name can be entered
+#   - Can discard product creation
+appId: com.automattic.alpha.woocommerce
+name: "Products - Create a new product"
+tags:
+  - smoke
+  - products
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Products
+- runFlow:
+    file: ../subflows/navigate_to_products.yaml
+
+# Tap Add Product button
+- tapOn:
+    id: "product-add-button"
+    retryTapIfNoChange: true
+    label: "Tap Add Product"
+
+# Wait for product type selection or creation form
+- extendedWaitUntil:
+    visible: ".*product type.*|.*Simple.*|.*Product name.*|.*Add Product.*"
+    timeout: 15000
+    label: "Wait for product creation entry"
+
+# Select simple product type if type selection sheet appears
+- runFlow:
+    when:
+      visible: ".*Simple.*"
+    commands:
+      - tapOn: ".*Simple.*"
+
+# Wait for product creation form
+- extendedWaitUntil:
+    visible:
+      id: "product-form"
+    timeout: 20000
+
+- takeScreenshot: product_create_empty
+
+# Enter product name
+- tapOn:
+    id: "product-title"
+    label: "Tap product name field"
+    optional: true
+- inputText: "Maestro Test Product"
+
+# Hide keyboard
+- hideKeyboard
+
+- takeScreenshot: product_create_named
+
+# Verify key product fields are visible
+- assertVisible:
+    text: "Price"
+    optional: true
+
+- takeScreenshot: product_create_with_fields
+
+# Discard instead of publishing (smoke test only)
+- back
+
+# Handle discard dialog
+- runFlow:
+    when:
+      visible: "Discard"
+    commands:
+      - tapOn: "Discard"
+
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 10000

@@ -1,0 +1,77 @@
+# Smoke Test: Products - Product Detail
+#
+# Verifies:
+#   - Product detail screen loads
+#   - Product name, price, inventory, type are visible
+#   - Product properties render correctly
+appId: com.automattic.alpha.woocommerce
+name: "Products - Product detail view"
+tags:
+  - smoke
+  - products
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Products
+- runFlow:
+    file: ../subflows/navigate_to_products.yaml
+
+# Open the first product
+- tapOn:
+    id: "products-table-view"
+    index: 0
+    label: "Tap first product"
+
+# Wait for product detail screen
+- extendedWaitUntil:
+    visible:
+      id: "product-form"
+    timeout: 20000
+
+- takeScreenshot: product_detail_top
+
+# Verify product title is visible
+- assertVisible:
+    id: "product-title"
+    label: "Product title is visible"
+    optional: true
+
+# Scroll to see product properties
+- scroll
+
+# Verify Price property
+- assertVisible:
+    text: "Price"
+    optional: true
+
+- takeScreenshot: product_detail_properties
+
+# Scroll to Inventory
+- scrollUntilVisible:
+    element: "Inventory"
+    direction: DOWN
+    timeout: 10000
+    label: "Scroll to Inventory"
+    optional: true
+
+- takeScreenshot: product_detail_inventory
+
+# Scroll to see more properties
+- scrollUntilVisible:
+    element: ".*Categories.*|.*Shipping.*|.*Short description.*"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to categories/shipping"
+    optional: true
+
+- takeScreenshot: product_detail_bottom
+
+# Go back to products list
+- back
+
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 10000

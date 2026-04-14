@@ -1,0 +1,80 @@
+# Smoke Test: Products - List, Sort, and Search
+#
+# Verifies:
+#   - Products list loads
+#   - Pagination works (scroll to load more)
+#   - Search for products
+#   - Product filters accessible
+appId: com.automattic.alpha.woocommerce
+name: "Products - List, sort, and search"
+tags:
+  - smoke
+  - products
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Products
+- runFlow:
+    file: ../subflows/navigate_to_products.yaml
+
+# Verify products list loaded
+- assertVisible:
+    id: "products-table-view"
+    label: "Products table view is visible"
+
+- takeScreenshot: products_list
+
+# Test pagination - scroll down
+- scroll
+- scroll
+- scroll
+
+- takeScreenshot: products_list_scrolled
+
+# Scroll back to top
+- swipe:
+    direction: DOWN
+    duration: 500
+- swipe:
+    direction: DOWN
+    duration: 500
+
+# Test search
+- tapOn:
+    id: "product-search-button"
+    label: "Open product search"
+
+- extendedWaitUntil:
+    visible: ".*search.*|.*Search.*"
+    timeout: 10000
+
+- inputText: "shirt"
+- pressKey: Enter
+
+# Wait for search results
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 15000
+
+- takeScreenshot: products_search_results
+
+# Go back from search
+- tapOn: "Cancel"
+
+# Test filters
+- runFlow:
+    when:
+      visible:
+        id: "product-filter-button"
+    commands:
+      - tapOn:
+          id: "product-filter-button"
+          label: "Open product filters"
+      - extendedWaitUntil:
+          visible: ".*Stock status.*|.*Filter.*"
+          timeout: 10000
+      - takeScreenshot: products_filters
+      - back

@@ -31,9 +31,9 @@ enum StorePickerErrorType: Equatable {
 
     private enum Localization {
         static let serverErrorBody = NSLocalizedString(
-            "storePickerError.serverErrorBody",
+            "storePickerError.serverErrorBody.v2",
             value: "There was a problem verifying your permissions. " +
-                "Please contact your hosting provider for assistance, or reach out to us.",
+                "Please try again or reach out to us and we'll be happy to assist you!",
             comment: "Body text for the store picker error screen when the site returns a server error")
         static let genericBody = NSLocalizedString(
             "storePickerError.genericBody",

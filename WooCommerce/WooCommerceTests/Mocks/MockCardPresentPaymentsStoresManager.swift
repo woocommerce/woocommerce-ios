@@ -17,11 +17,15 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private var failDiscovery: Bool
     private var failUpdate: Bool
     private var failConnection: Bool
+    private var selectedPaymentGatewayAccount: Yosemite.PaymentGatewayAccount?
     private var softwareUpdateSubject: CurrentValueSubject<CardReaderSoftwareUpdateState, Never> = .init(.none)
     private var reconnectionSubject: CurrentValueSubject<CardReaderReconnectionState, Never> = .init(.idle)
     private var paymentExtension: CardPresentPaymentsPlugin
 
     var receivedActions: [CardPresentPaymentAction] = []
+    var onStartCardReaderDiscovery: (() -> Void)?
+    var shouldHoldDiscovery = false
+    private var heldReaderDiscoveredCallback: (([CardReader]) -> Void)?
 
     init(connectedReaders: [CardReader],
          discoveredReaders: [CardReader],
@@ -45,6 +49,8 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     override func dispatch(_ action: Action) {
         if let action = action as? CardPresentPaymentAction {
             onCardPresentPaymentAction(action: action)
+        } else if let action = action as? AppSettingsAction {
+            onAppSettingsAction(action: action)
         } else {
             super.dispatch(action)
         }
@@ -53,11 +59,22 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
     private func onCardPresentPaymentAction(action: CardPresentPaymentAction) {
         receivedActions.append(action)
         switch action {
+        case .use(let account):
+            selectedPaymentGatewayAccount = account
+        case .selectedPaymentGatewayAccount(let onCompletion):
+            onCompletion(selectedPaymentGatewayAccount)
+        case .checkDeviceSupport(_, _, _, _, let onCompletion):
+            onCompletion(true)
         case .observeConnectedReaders(let onCompletion):
             onCompletion(connectedReaders)
         case .startCardReaderDiscovery(_, _, let onReaderDiscovered, let onError):
+            onStartCardReaderDiscovery?()
             guard !failDiscovery else {
                 onError(MockErrors.discoveryFailure)
+                return
+            }
+            if shouldHoldDiscovery {
+                heldReaderDiscoveredCallback = onReaderDiscovered
                 return
             }
             guard discoveredReaders.isNotEmpty else {
@@ -102,6 +119,20 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         default:
             break
         }
+    }
+
+    private func onAppSettingsAction(action: AppSettingsAction) {
+        switch action {
+        case .loadFirstInPersonPaymentsTransactionDate(_, _, let onCompletion):
+            onCompletion(nil)
+        default:
+            super.dispatch(action)
+        }
+    }
+
+    func completeHeldDiscovery(with readers: [CardReader]) {
+        heldReaderDiscoveredCallback?(readers)
+        heldReaderDiscoveredCallback = nil
     }
 
     var softwareUpdateEvents: AnyPublisher<CardReaderSoftwareUpdateState, Never> {
@@ -171,7 +202,7 @@ extension MockCardPresentPaymentsStoresManager {
     }
 
     func insertSamplePaymentGateway(forSiteID siteID: Int64) {
-        let paymentGatewayAccount = PaymentGatewayAccount
+        let paymentGatewayAccount = Yosemite.PaymentGatewayAccount
             .fake()
             .copy(
                 siteID: siteID,

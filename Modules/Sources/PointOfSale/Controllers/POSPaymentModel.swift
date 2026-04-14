@@ -53,6 +53,7 @@ final class POSPaymentModel {
     /// have been enqueued as Tasks) can detect they've been superseded.
     private var startPaymentGeneration: Int = 0
     private var cardPaymentCancelTask: Task<Void, Never>?
+    private var connectCardReaderTask: Task<Void, Never>?
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
@@ -185,8 +186,10 @@ extension POSPaymentModel {
 
     func connectCardReader() {
         analytics.track(.pointOfSaleCardReaderConnectionTapped)
-        Task { @MainActor [weak self] in
-            _ = try await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
+        guard connectCardReaderTask == nil else { return }
+        connectCardReaderTask = Task { @MainActor [weak self] in
+            defer { self?.connectCardReaderTask = nil }
+            _ = try? await self?.cardPresentPaymentService.connectReader(using: .bluetooth)
         }
     }
 
@@ -325,12 +328,18 @@ extension POSPaymentModel {
 // MARK: - Reset
 extension POSPaymentModel {
     func reset() {
+        cancelConnectCardReaderTask()
         paymentSessionCancellables.removeAll()
         paymentState = .idle
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
         formattedOrderTotalPrice = nil
         cancelReaderPreparation()
+    }
+
+    private func cancelConnectCardReaderTask() {
+        connectCardReaderTask?.cancel()
+        connectCardReaderTask = nil
     }
 
     private func cancelReaderPreparation() {
@@ -530,6 +539,7 @@ extension POSPaymentModel {
     /// Otherwise, it would wait until the timeout (30-45 minutes), using more battery
     /// and risking a shopper paying for the wrong order.
     func tearDown() {
+        cancelConnectCardReaderTask()
         cardPresentPaymentService.cancelPayment()
         resetCardReaderObservation()
         paymentSessionCancellables.removeAll()

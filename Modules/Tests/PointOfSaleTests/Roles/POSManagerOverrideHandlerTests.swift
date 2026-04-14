@@ -206,16 +206,16 @@ struct POSManagerOverrideHandlerTests {
     @Test func test_requestPermission_when_different_capabilities_then_tracks_correct_capability() async {
         // Given
         let mock = MockPOSPermissionProvider()
-        mock.capabilityOverrides["woocommerce_apply_discounts"] = .requiresOverride
+        mock.capabilityOverrides["publish_shop_coupons"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
-        _ = handler.requestPermission(for: .applyDiscounts, actionDescription: "Test", permissions: mock) { _ in }
+        _ = handler.requestPermission(for: .publishCoupons, actionDescription: "Test", permissions: mock) { _ in }
 
         // When
         await handler.handlePINEntered("1234", permissions: mock)
 
         // Then
-        #expect(mock.requestedCapability == "woocommerce_apply_discounts")
+        #expect(mock.requestedCapability == "publish_shop_coupons")
     }
 
     // MARK: - Helpers

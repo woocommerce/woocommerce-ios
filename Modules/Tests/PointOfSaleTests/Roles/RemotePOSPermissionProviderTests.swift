@@ -16,7 +16,7 @@ struct RemotePOSPermissionProviderTests {
             capabilities: [
                 "woocommerce_pos_access": true,
                 "woocommerce_refund_orders": true,
-                "woocommerce_void_orders": false
+                "publish_shop_coupons": false
             ]
         )
         let sut = makeSUT(pinAuthResponse: response)
@@ -39,8 +39,8 @@ struct RemotePOSPermissionProviderTests {
             capabilities: [
                 "woocommerce_pos_access": true,
                 "woocommerce_refund_orders": false,
-                "woocommerce_void_orders": false,
-                "woocommerce_apply_discounts": true
+                "publish_shop_coupons": false,
+                "woocommerce_pos_view_settings": true
             ]
         )
         let sut = makeSUT(pinAuthResponse: response)
@@ -49,9 +49,9 @@ struct RemotePOSPermissionProviderTests {
         let op = try await sut.authenticateRemotePIN("1234", registerID: "register-1")
 
         // Then
-        #expect(op.capabilities == Set(["woocommerce_pos_access", "woocommerce_apply_discounts"]))
+        #expect(op.capabilities == Set(["woocommerce_pos_access", "woocommerce_pos_view_settings"]))
         #expect(op.capabilities.contains("woocommerce_refund_orders") == false)
-        #expect(op.capabilities.contains("woocommerce_void_orders") == false)
+        #expect(op.capabilities.contains("publish_shop_coupons") == false)
     }
 
     @Test func test_authenticateRemotePIN_when_userID_matches_app_account_then_isAppAccountHolder_is_true() async throws {

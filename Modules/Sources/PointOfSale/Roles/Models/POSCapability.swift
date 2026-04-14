@@ -10,10 +10,8 @@ public enum POSCapability: String, CaseIterable, Sendable {
     case posEditSettings = "woocommerce_pos_edit_settings"
     /// Process refunds.
     case refundOrders = "woocommerce_refund_orders"
-    /// Void/cancel orders.
-    case voidOrders = "woocommerce_void_orders"
-    /// Create and apply discount coupons.
-    case applyDiscounts = "woocommerce_apply_discounts"
+    /// Create coupons.
+    case publishCoupons = "publish_shop_coupons"
 
     // MARK: - Approval Path
 
@@ -24,9 +22,9 @@ public enum POSCapability: String, CaseIterable, Sendable {
     /// - Local mode always uses local PIN verification regardless of this value.
     public var supportsBackendApproval: Bool {
         switch self {
-        case .refundOrders, .voidOrders:
+        case .refundOrders:
             return true
-        case .posViewSettings, .posEditSettings, .applyDiscounts:
+        case .posViewSettings, .posEditSettings, .publishCoupons:
             return false
         }
     }

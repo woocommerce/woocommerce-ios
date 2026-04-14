@@ -28,7 +28,7 @@ extension POSPermissionProviding {
     }
 
     /// Check if the current operator has the typed capability.
-    /// Usage: `permissions.hasCapability(.applyDiscounts)`
+    /// Usage: `permissions.hasCapability(.publishCoupons)`
     func hasCapability(_ capability: POSCapability) -> Bool {
         hasCapability(capability.rawValue)
     }

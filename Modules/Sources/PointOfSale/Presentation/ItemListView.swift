@@ -593,7 +593,7 @@ private extension ItemListView {
 private extension ItemListView {
     func requestPermissionForCouponCreation() {
         couponOverrideHandler.requestPermission(
-            for: .applyDiscounts,
+            for: .publishCoupons,
             actionDescription: Localization.couponOverrideDescription,
             permissions: permissions,
             onApproved: { _ in showCouponCreationModal = true }

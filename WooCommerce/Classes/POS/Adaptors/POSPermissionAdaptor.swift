@@ -1,4 +1,5 @@
 import Foundation
+import class NetworkingCore.AlamofireNetwork
 import PointOfSale
 import Yosemite
 import enum Experiments.FeatureFlag

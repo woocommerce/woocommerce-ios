@@ -7,6 +7,7 @@ import class WooFoundation.CurrencySettings
 import WooFoundationCore
 import protocol Storage.GRDBManagerProtocol
 import protocol Storage.StorageManagerType
+import class NetworkingCore.AlamofireNetwork
 import struct NetworkingCore.JetpackSite
 import struct NetworkingCore.OrderItem
 import PointOfSale

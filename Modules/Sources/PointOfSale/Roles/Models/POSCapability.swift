@@ -24,9 +24,9 @@ public enum POSCapability: String, CaseIterable, Sendable {
     /// - Local mode always uses local PIN verification regardless of this value.
     public var supportsBackendApproval: Bool {
         switch self {
-        case .refundOrders, .voidOrders, .applyDiscounts:
+        case .refundOrders, .voidOrders:
             return true
-        case .posViewSettings, .posEditSettings:
+        case .posViewSettings, .posEditSettings, .applyDiscounts:
             return false
         }
     }

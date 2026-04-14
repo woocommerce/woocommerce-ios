@@ -12,33 +12,19 @@ CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
 SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
-## Collect output paths.
+## Collect output paths from the per-target build phase's `outputPaths`.
+## Xcode exposes them as SCRIPT_OUTPUT_FILE_N (with SCRIPT_OUTPUT_FILE_COUNT).
 ##
-## Xcode populates SCRIPT_OUTPUT_FILE_N (and SCRIPT_OUTPUT_FILE_COUNT) from the
-## build phase's `outputPaths`. When this script is invoked from a per-target
-## build phase that declares its output in `$(DERIVED_FILE_DIR)`, we use those
-## paths verbatim and write one file per invocation.
-##
-## When invoked from the legacy `GenerateCredentials` aggregate target — whose
-## outputs are declared via an xcfilelist, which Xcode does *not* expand into
-## SCRIPT_OUTPUT_FILE_N — we fall back to the per-target folders inside the
-## repo's `DerivedSources/` tree.
-##
-OUTPUT_PATHS=()
-if [[ -n "${SCRIPT_OUTPUT_FILE_COUNT:-}" && "${SCRIPT_OUTPUT_FILE_COUNT}" -gt 0 ]]; then
-    for (( i=0; i<SCRIPT_OUTPUT_FILE_COUNT; i++ )); do
-        var="SCRIPT_OUTPUT_FILE_${i}"
-        OUTPUT_PATHS+=("${!var}")
-    done
-else
-    OUTPUT_PATHS+=("${SOURCE_ROOT}/DerivedSources/WooCommerce/ApiCredentials.swift")
-    OUTPUT_PATHS+=("${SOURCE_ROOT}/DerivedSources/WatchApp/ApiCredentials.swift")
+if [[ -z "${SCRIPT_OUTPUT_FILE_COUNT:-}" || "${SCRIPT_OUTPUT_FILE_COUNT}" -lt 1 ]]; then
+    echo "error: generate-credentials.sh expects at least one output file declared via the build phase's outputPaths." >&2
+    exit 1
 fi
 
-## Ensure each target's parent folder exists.
-##
-for OUTPUT_PATH in "${OUTPUT_PATHS[@]}"; do
-    mkdir -p "$(dirname "${OUTPUT_PATH}")"
+OUTPUT_PATHS=()
+for (( i=0; i<SCRIPT_OUTPUT_FILE_COUNT; i++ )); do
+    var="SCRIPT_OUTPUT_FILE_${i}"
+    OUTPUT_PATHS+=("${!var}")
+    mkdir -p "$(dirname "${!var}")"
 done
 
 ## Validate Secrets!

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-24 13:57:06+0000 */
+/* Translation-Revision-Date: 2026-04-07 09:58:40+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -9777,6 +9777,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "Aktifkan layanan lokasi di pengaturan perangkat untuk mengizinkan pembayaran.";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"cardPresentPayment.settingsWebView.title" = "Pengaturan WooCommerce";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "Kembali ke Pesanan";
 
@@ -9827,6 +9830,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "Terima Pembayaran (%1$@)";
+
+/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
+"ciabOrderStatusMapper.open" = "Buka";
 
 /* Title of the button to add address in the order form customer card. */
 "collapsibleCustomerCard.addAddress.title" = "Tambahkan alamat pelanggan";
@@ -9960,20 +9966,41 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Memecahkan Masalah Koneksi";
 
+/* Action button to enable WooCommerce Analytics in the connectivity tool */
+"connectivityToolViewModel.action.enableAnalytics" = "Aktifkan Analitik";
+
+/* Action button to enable order notifications in the connectivity tool */
+"connectivityToolViewModel.action.enableOrderNotifications" = "Aktifkan Pemberitahuan Pesanan";
+
+/* Action button to open device notification settings in the connectivity tool */
+"connectivityToolViewModel.action.openSettings" = "Buka Pengaturan";
+
 /* Action button title for an error on the connectivity tool */
 "connectivityToolViewModel.action.readMore" = "Baca selengkapnya";
+
+/* Action button to register the device for push notifications in the connectivity tool */
+"connectivityToolViewModel.action.registerDevice" = "Daftarkan Perangkat";
 
 /* Retry test button in the connectivity tool screen */
 "connectivityToolViewModel.action.retry" = "Coba ulang pengujian";
 
+/* Action button to start the Jetpack setup flow in the connectivity tool */
+"connectivityToolViewModel.action.setupJetpack" = "Siapkan Jetpack";
+
 /* Button to view technical error details in the connectivity tool */
 "connectivityToolViewModel.action.viewTechnicalDetails" = "Lihat detail teknis";
+
+/* Title for the analytics setting check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.analyticsSetting" = "Memeriksa pengaturan analitik";
 
 /* Title for the internet connection connectivity tool card */
 "connectivityToolViewModel.connectivityTest.internetConnection" = "Koneksi Internet";
 
 /* Title for the test to load products in connectivity tool */
 "connectivityToolViewModel.connectivityTest.loadingProducts" = "Mengambil produk di toko Anda";
+
+/* Title for the notification settings check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.notifications" = "Memeriksa pengaturan pemberitahuan";
 
 /* Title for the Your Site connectivity tool card */
 "connectivityToolViewModel.connectivityTest.site" = "Menyambungkan ke situs Anda";
@@ -9984,23 +10011,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers connectivity tool card */
 "connectivityToolViewModel.connectivityTest.wpComServers" = "Menyambungkan ke Server WordPress.com";
 
+/* Message when the analytics setting check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsCheckFailed" = "Kami tidak dapat memeriksa pengaturan analitik Anda.\n\nHubungi tim dukungan untuk meminta bantuan.";
+
+/* Message when WooCommerce Analytics is disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsDisabled" = "WooCommerce Analytics tidak diaktifkan di toko Anda.\n\nData analitik seperti pendapatan dan statistik pesanan tidak akan tersedia sebelum diaktifkan.";
+
 /* Message when we there is a decoding error in the recovery tool */
 "connectivityToolViewModel.errorMessage.decodingError" = "Kami tidak dapat menangani respons situs Anda.\n\nLihat detail teknis di bawah atau hubungi tim dukungan kami dan kami dengan senang hati siap membantu.";
 
 /* Message when we there is a generic error in the recovery tool */
 "connectivityToolViewModel.errorMessage.default" = "Situs Anda tampaknya mengalami masalah.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
 
+/* Message when the device is not registered for push notifications in the connectivity tool */
+"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "Perangkat Anda sepertinya tidak terdaftar untuk pemberitahuan push.\n\nCoba logout dan masuk kembali untuk mendaftar.";
+
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Terjadi masalah dengan koneksi Jetpack Anda.\n\nBaca selengkapnya atau hubungi tim dukungan kami dan kami dengan senang hati siap membantu.";
 
+/* Message when Jetpack plugin is not active in the connectivity tool */
+"connectivityToolViewModel.errorMessage.jetpackPluginNotActive" = "Plugin Jetpack sepertinya tidak aktif di situs Anda.\n\nPemberitahuan push memerlukan sambungan Jetpack aktif.";
+
 /* Message when there is no internet connection in the recovery tool */
 "connectivityToolViewModel.errorMessage.noInternet" = "Tampaknya Anda tidak terhubung ke internet.\n\nPastikan Wi-Fi Anda aktif. Jika Anda menggunakan data seluler, aktifkan di pengaturan perangkat Anda.";
+
+/* Message when the notification config check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationConfigCheckFailed" = "Kami tidak dapat memeriksa pengaturan pemberitahuan Anda.\n\nHubungi tim dukungan untuk meminta bantuan.";
+
+/* Message when iOS notification permission is denied in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationsNotAuthorized" = "Pemberitahuan push tidak diizinkan untuk aplikasi ini.\n\nAktifkan penerimaan pemberitahuan pesanan di Pengaturan perangkat Anda.";
+
+/* Message when order notifications are disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.orderNotificationsDisabled" = "Pemberitahuan pesanan tidak diaktifkan untuk toko ini.\n\nAktifkan untuk menerima pemberitahuan saat ada pesanan baru.";
 
 /* Message when we there is a timeout error in the recovery tool */
 "connectivityToolViewModel.errorMessage.timeout" = "Situs Anda merespons terlalu lama.\n\nHubungi penyedia hosting Anda untuk mendapatkan bantuan lebih lanjut.";
 
 /* Message when we can't reach WPCom in the recovery tool */
 "connectivityToolViewModel.errorMessage.wpcomConnection" = "Saat ini kami tidak dapat terhubung dengan WordPress.com.\n\nCoba lagi dalam beberapa menit, atau hubungi tim dukungan kami yang akan dengan senang hati membantu Anda.";
+
+/* Message shown after successfully enabling analytics in the connectivity tool */
+"connectivityToolViewModel.message.analyticsEnabledRelaunch" = "Analitik telah diaktifkan. Luncurkan ulang aplikasi untuk menyediakan data analitik.";
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssues" = "Tidak ada masalah koneksi";
@@ -10795,6 +10846,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "Kartu dimasukkan";
 
+/* Error message when WooPayments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.message" = "Anda perlu menginstal ekstensi WooPayments gratis di toko Anda untuk menerima Pembayaran Langsung.";
+
+/* Title for the error screen when WooPayments is not installed */
+"inPersonPaymentsPluginNotInstalled.title" = "Instal WooPayments";
+
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "Batal";
 
@@ -11499,6 +11558,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Pembayaran Langsung";
+
+/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
+"paymentMethods.ciabUpgrade.learnMore.text" = "Terima pembayaran secara langsung dengan biaya hanya 2,70%% + $0,10 per transaksi. Upgrade ke paket Pro guna mengakses fitur Ketuk untuk Membayar di ponsel Anda dan sistem titik penjualan lengkap kami beserta sinkronisasi inventaris dan pesanan secara real-time. %1$@";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Pesanan dibayar dengan uang tunai. Pelanggan membayar %1$@. Kembalian terutang sebesar %2$@.";
@@ -12604,6 +12666,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "Batalkan pemesanan ini?";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"pos.cardReader.updateAddress.webview.title" = "Pengaturan WooCommerce";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Ketuk produk untuk \n menambahkannya ke keranjang, atau ";
 
@@ -12646,11 +12711,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
+/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabPricingInfo" = "Terima pembayaran secara langsung dengan biaya hanya 2,70% + $0,10 per transaksi.";
+
+/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabUpgradePrompt" = "Upgrade ke paket Pro guna mengakses fitur Ketuk untuk Membayar di ponsel Anda dan sistem titik penjualan lengkap kami beserta sinkronisasi inventaris dan pesanan secara real-time.";
+
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Keluar dari POS";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Aktifkan fitur POS";
+
+/* Button title to learn more about upgrading the plan for POS access */
+"pos.ineligible.learnMore.button.title" = "Baca Selengkapnya";
+
+/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
+"pos.ineligible.planUpgrade.title" = "Paket Pro diperlukan";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Coba lagi";
@@ -12675,6 +12752,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Tidak dapat memuat";
+
+/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
+"pos.ineligible.upgradePlan.webview.title" = "Upgrade Paket";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Harap periksa koneksi internet Anda dan coba lagi.";
@@ -13893,6 +13973,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "Lihat semua tugas %1$d";
 
+/* Header text format on the store onboarding WooPayments/payments setup screen. %1$@ can be 'WooPayments' when available, or 'Payment Methods.' */
+"storeOnboardingPaymentsSetup.headerFormat" = "Siapkan %1$@";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Konversi";
 
@@ -14067,6 +14150,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Maaf, permintaan dukungan tidak dapat dibuat saat ini, coba lagi nanti.";
+
+/* Title of the WooPayments support area option */
+"supportFormViewModel.wooPayments" = "WooPayments";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Laporan Status Sistem";
@@ -14424,6 +14510,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "Pesanan";
+
+/* Button title to dismiss the authenticated web view */
+"wcAuthenticatedWebView.done.button.title" = "Selesai";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Tutup";

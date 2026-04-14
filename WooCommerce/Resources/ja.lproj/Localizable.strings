@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-24 09:59:05+0000 */
+/* Translation-Revision-Date: 2026-04-07 09:57:21+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9780,6 +9780,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "端末設定で位置情報サービスを有効にして、支払いを許可します。";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"cardPresentPayment.settingsWebView.title" = "WooCommerce 設定";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "注文に戻る";
 
@@ -9830,6 +9833,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "支払い (%1$@) を受け取る";
+
+/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
+"ciabOrderStatusMapper.open" = "開く";
 
 /* Title of the button to add address in the order form customer card. */
 "collapsibleCustomerCard.addAddress.title" = "お客様のアドレスを追加";
@@ -9963,20 +9969,41 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "接続のトラブルシューティング";
 
+/* Action button to enable WooCommerce Analytics in the connectivity tool */
+"connectivityToolViewModel.action.enableAnalytics" = "アナリティクスを有効化";
+
+/* Action button to enable order notifications in the connectivity tool */
+"connectivityToolViewModel.action.enableOrderNotifications" = "注文通知を有効化";
+
+/* Action button to open device notification settings in the connectivity tool */
+"connectivityToolViewModel.action.openSettings" = "設定を開く";
+
 /* Action button title for an error on the connectivity tool */
 "connectivityToolViewModel.action.readMore" = "続きを読む";
+
+/* Action button to register the device for push notifications in the connectivity tool */
+"connectivityToolViewModel.action.registerDevice" = "端末を登録";
 
 /* Retry test button in the connectivity tool screen */
 "connectivityToolViewModel.action.retry" = "テストを再試行";
 
+/* Action button to start the Jetpack setup flow in the connectivity tool */
+"connectivityToolViewModel.action.setupJetpack" = "Jetpack を設定";
+
 /* Button to view technical error details in the connectivity tool */
 "connectivityToolViewModel.action.viewTechnicalDetails" = "技術詳細を表示";
+
+/* Title for the analytics setting check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.analyticsSetting" = "アナリティクス設定を確認しています";
 
 /* Title for the internet connection connectivity tool card */
 "connectivityToolViewModel.connectivityTest.internetConnection" = "インターネット接続";
 
 /* Title for the test to load products in connectivity tool */
 "connectivityToolViewModel.connectivityTest.loadingProducts" = "ストアで商品を取得中";
+
+/* Title for the notification settings check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.notifications" = "通知設定を確認しています";
 
 /* Title for the Your Site connectivity tool card */
 "connectivityToolViewModel.connectivityTest.site" = "サイトに接続しています";
@@ -9987,23 +10014,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers connectivity tool card */
 "connectivityToolViewModel.connectivityTest.wpComServers" = "WordPress.com サーバーに接続しています";
 
+/* Message when the analytics setting check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsCheckFailed" = "アナリティクスの設定を確認できませんでした。\n\nヘルプが必要な場合はサポートチームにご連絡ください。";
+
+/* Message when WooCommerce Analytics is disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsDisabled" = "ストアで WooCommerce Analytics が有効になっていません。\n\n有効にされるまで、収益や注文統計などのアナリティクスデータは利用できません。";
+
 /* Message when we there is a decoding error in the recovery tool */
 "connectivityToolViewModel.errorMessage.decodingError" = "サイトの応答が正常に機能していません。\n\n技術詳細を以下で表示してください。またはサポートチームにお気軽にご相談ください。";
 
 /* Message when we there is a generic error in the recovery tool */
 "connectivityToolViewModel.errorMessage.default" = "サイトに問題があるようです。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
 
+/* Message when the device is not registered for push notifications in the connectivity tool */
+"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "お使いの端末がプッシュ通知に登録されていないようです。\n\n再登録するには、ログアウトして再度ログインしてみてください。";
+
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Jetpack 連携で問題が発生しています。\n\n詳細についてご確認ください。またはサポートチームにお気軽にご相談ください。";
 
+/* Message when Jetpack plugin is not active in the connectivity tool */
+"connectivityToolViewModel.errorMessage.jetpackPluginNotActive" = "Jetpack プラグインがサイトで有効になっていないようです。\n\nプッシュ通知には有効な Jetpack 連携が必要です。";
+
 /* Message when there is no internet connection in the recovery tool */
 "connectivityToolViewModel.errorMessage.noInternet" = "インターネットに接続されていないようです。\n\nWi-Fi がオンになっていることをご確認ください。 モバイルデータを使用している場合、デバイスの設定で有効になっていることを確認してください。 ";
+
+/* Message when the notification config check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationConfigCheckFailed" = "通知設定を確認できませんでした。\n\nヘルプが必要な場合はサポートチームにご連絡ください。";
+
+/* Message when iOS notification permission is denied in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationsNotAuthorized" = "このアプリではプッシュ通知が許可されていません。\n\nお使いの端末の設定で有効にすると、注文通知を受け取ることができます。";
+
+/* Message when order notifications are disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.orderNotificationsDisabled" = "このストアでは注文通知が有効になっていません。\n\n有効にすると、新規注文が入った際にアラートを受け取ることができます。";
 
 /* Message when we there is a timeout error in the recovery tool */
 "connectivityToolViewModel.errorMessage.timeout" = "サイトの応答に時間がかかっています。\n\nホスティングサービスに連絡のうえサポートを受けてください。";
 
 /* Message when we can't reach WPCom in the recovery tool */
 "connectivityToolViewModel.errorMessage.wpcomConnection" = "現在 WordPress.com に接続できません。\n\n数分後にもう一度お試しください。またはサポートチームにお気軽にご相談ください。";
+
+/* Message shown after successfully enabling analytics in the connectivity tool */
+"connectivityToolViewModel.message.analyticsEnabledRelaunch" = "アナリティクスを有効化しました。 アナリティクスデータを利用するには、アプリを再起動してください。";
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssues" = "接続の問題なし";
@@ -10798,6 +10849,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "カードを挿入しました";
 
+/* Error message when WooPayments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.message" = "オフラインでの支払いを受け取るには、無料の WooPayments 拡張機能をストアにインストールする必要があります。";
+
+/* Title for the error screen when WooPayments is not installed */
+"inPersonPaymentsPluginNotInstalled.title" = "WooPayments をインストール";
+
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "キャンセル";
 
@@ -11502,6 +11561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "直接支払い";
+
+/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
+"paymentMethods.ciabUpgrade.learnMore.text" = "取引ごとにわずか2.70%% + 0.10ドルで直接支払いを受け取れます。 Pro にアップグレードすると、スマートフォンで Tap To Pay を利用できるほか、在庫と注文のリアルタイム同期を備えた POS システムをフル活用できます。%1$@";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "注文は現金で支払われました。 顧客は %1$@支払いました。 変更期限は%2$@でした。";
@@ -12607,6 +12669,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "この予約をキャンセルしますか ?";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "商品をタップして\n お買い物カゴに追加するか ";
 
@@ -12649,11 +12714,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "販売時点管理モードを終了しますか ?";
 
+/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabPricingInfo" = "取引ごとにわずか2.70% + 0.10ドルで直接支払いを受け取れます。";
+
+/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabUpgradePrompt" = "Pro にアップグレードすると、スマートフォンで Tap To Pay を利用できるほか、在庫と注文のリアルタイム同期を備えた POS システムをフル活用できます。";
+
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "POS を終了";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS 機能を有効化";
+
+/* Button title to learn more about upgrading the plan for POS access */
+"pos.ineligible.learnMore.button.title" = "さらに詳しく";
+
+/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
+"pos.ineligible.planUpgrade.title" = "Pro プランが必要です";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "再試行";
@@ -12678,6 +12755,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "読み込めません";
+
+/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
+"pos.ineligible.upgradePlan.webview.title" = "プランをアップグレード";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "ネットワーク接続を確認して、もう一度お試しください。";
@@ -13896,6 +13976,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "%1$d件のタスクをすべて表示";
 
+/* Header text format on the store onboarding WooPayments/payments setup screen. %1$@ can be 'WooPayments' when available, or 'Payment Methods.' */
+"storeOnboardingPaymentsSetup.headerFormat" = "%1$@ を設定";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "コンバージョン";
 
@@ -14070,6 +14153,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "申し訳ありません。現在、サポートリクエストを作成できません。しばらくしてからもう一度お試しください。";
+
+/* Title of the WooPayments support area option */
+"supportFormViewModel.wooPayments" = "WooPayments";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "システムステータスレポート";
@@ -14427,6 +14513,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "注文";
+
+/* Button title to dismiss the authenticated web view */
+"wcAuthenticatedWebView.done.button.title" = "完了";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "削除";

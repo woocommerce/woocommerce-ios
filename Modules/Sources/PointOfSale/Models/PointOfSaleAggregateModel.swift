@@ -577,6 +577,9 @@ extension PointOfSaleAggregateModel {
         // cancelling them explicitly helps reduce the risk of user-visible bugs while we work on the memory leaks.
         paymentModel.tearDown()
         cancellables.forEach { $0.cancel() }
+
+        // Stop the GRDB observation so stale cart IDs are not watched after dismissal.
+        cartProductObserver?.observe(productIDs: [], variationIDs: [])
     }
 }
 

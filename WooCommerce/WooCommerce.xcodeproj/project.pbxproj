@@ -199,6 +199,7 @@
 		3F0904082D26A40800D8ACCE /* WordPressAuthenticatorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WordPressAuthenticatorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F096E462D23F50800D8ACCE /* WooCommerce.common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = WooCommerce.common.xcconfig; sourceTree = "<group>"; };
 		3F09A3FC2D243D3F00D8ACCE /* WordPressAuthenticator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WordPressAuthenticator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F0BFD622F85DF6E001182F9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3F0BFD642F85E1C4001182F9 /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCredentials.swift; sourceTree = DERIVED_FILE_DIR; };
 		3F0BFD662F85E1C4001182F9 /* ApiCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiCredentials.swift; sourceTree = DERIVED_FILE_DIR; };
 		3F1FA84028B60125009E246C /* StoreWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StoreWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -604,8 +605,9 @@
 			children = (
 				3F0BFD652F85E1C4001182F9 /* WatchApp */,
 				3F0BFD672F85E1C4001182F9 /* WooCommerce */,
+				3F0BFD622F85DF6E001182F9 /* README.md */,
 			);
-			name = DerivedSources;
+			path = DerivedSources;
 			sourceTree = "<group>";
 		};
 		3F0BFD652F85E1C4001182F9 /* WatchApp */ = {

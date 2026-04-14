@@ -302,8 +302,6 @@ private struct POSStaffSettingsRemoteView: View {
     @State private var isLoading: Bool = false
     @State private var loadError: Error?
     @State private var showManageStaff: Bool = false
-    @State private var showManagerOverride: Bool = false
-    @State private var managerOverrideState: POSManagerOverrideState = .awaitingPIN
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -339,21 +337,6 @@ private struct POSStaffSettingsRemoteView: View {
                     Task {
                         await fetchStaff()
                     }
-                }
-            )
-        }
-        .posModal(isPresented: $showManagerOverride) {
-            POSManagerOverrideView(
-                actionDescription: Localization.manageStaffOverrideDescription,
-                capability: POSCapability.posManageSettings.rawValue,
-                overrideState: $managerOverrideState,
-                onPINEntered: { pin in
-                    Task { @MainActor in
-                        await handleManagerOverridePIN(pin)
-                    }
-                },
-                onCancelled: {
-                    showManagerOverride = false
                 }
             )
         }
@@ -419,13 +402,27 @@ private extension POSStaffSettingsRemoteView {
     }
 
     var manageStaffCard: some View {
-        Button {
-            handleManageStaffTapped()
-        } label: {
-            Text(Localization.manageStaffButton)
+        VStack(spacing: POSSpacing.small) {
+            Button {
+                handleManageStaffTapped()
+            } label: {
+                Text(Localization.manageStaffButton)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+            .frame(maxWidth: .infinity)
+            .disabled(!isAppAccountHolder)
+
+            if !isAppAccountHolder {
+                Text(Localization.manageStaffAdminOnly)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
         }
-        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-        .frame(maxWidth: .infinity)
+    }
+
+    private var isAppAccountHolder: Bool {
+        permissions.currentOperator?.isAppAccountHolder == true
     }
 
     var footerText: some View {
@@ -452,32 +449,10 @@ private extension POSStaffSettingsRemoteView {
     }
 
     func handleManageStaffTapped() {
-        let result = permissions.checkPermission(.posManageSettings)
-        switch result {
-        case .allowed:
-            showManageStaff = true
-        case .requiresOverride:
-            managerOverrideState = .awaitingPIN
-            showManagerOverride = true
-        }
+        guard isAppAccountHolder else { return }
+        showManageStaff = true
     }
 
-    func handleManagerOverridePIN(_ pin: String) async {
-        do {
-            _ = try await permissions.requestManagerApproval(
-                managerPIN: pin,
-                for: .posManageSettings,
-                orderID: nil
-            )
-            managerOverrideState = .approved
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                showManagerOverride = false
-                showManageStaff = true
-            }
-        } catch {
-            managerOverrideState = .error(message: error.posOverrideErrorMessage)
-        }
-    }
 }
 
 // MARK: - Constants
@@ -661,10 +636,10 @@ private enum Localization {
         comment: "Navigation title for the web view showing WordPress admin staff management."
     )
 
-    static let manageStaffOverrideDescription = NSLocalizedString(
-        "posStaffSettingsView.manageStaffOverrideDescription",
-        value: "Open WordPress admin staff management",
-        comment: "Description of the action shown in the manager override modal when opening wp-admin."
+    static let manageStaffAdminOnly = NSLocalizedString(
+        "posStaffSettingsView.manageStaffAdminOnly",
+        value: "Staff can only be managed by the store admin.",
+        comment: "Explanation shown below the disabled Manage staff button when the current user is not an admin."
     )
 
     static let remoteFooter = NSLocalizedString(

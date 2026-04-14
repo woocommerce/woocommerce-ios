@@ -1208,7 +1208,7 @@
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
 		};
-		CD6E8C9AF2614F85B5C626E5 /* Generate Credentials */ = {
+		5F732A9C2F824605B5314303 /* Generate Credentials */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1229,7 +1229,7 @@
 			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials.sh\n";
 			showEnvVarsInLog = 0;
 		};
-		5F732A9C2F824605B5314303 /* Generate Credentials */ = {
+		CD6E8C9AF2614F85B5C626E5 /* Generate Credentials */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

@@ -13,7 +13,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_read_settings")
+        let result = sut.checkPermission("woocommerce_pos_manage_settings")
 
         // Then
         #expect(result == .allowed)
@@ -52,7 +52,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_read_settings")
+        let result = sut.checkPermission("woocommerce_pos_manage_settings")
 
         // Then
         #expect(result == .requiresOverride)
@@ -63,7 +63,7 @@ struct LocalPOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_read_settings")
+        let result = sut.checkPermission("woocommerce_pos_manage_settings")
 
         // Then
         #expect(result == .requiresOverride)
@@ -77,7 +77,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(makeManagerOperator())
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_read_settings") == true)
+        #expect(sut.hasCapability("woocommerce_pos_manage_settings") == true)
     }
 
     @Test func test_hasCapability_when_operator_lacks_it_then_returns_false() {
@@ -94,7 +94,7 @@ struct LocalPOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_read_settings") == false)
+        #expect(sut.hasCapability("woocommerce_pos_manage_settings") == false)
     }
 
     // MARK: - signIn

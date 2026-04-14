@@ -107,16 +107,14 @@ struct POSPINEntryView: View {
                 }
             }
 
-            Group {
-                if let displayMessage {
-                    Text(displayMessage)
-                        .font(.posBodyMediumRegular())
-                        .foregroundColor(messageColor)
-                        .multilineTextAlignment(.center)
-                        .transition(.opacity)
-                }
-            }
-            .frame(height: Constants.errorMessageHeight)
+            Text(displayMessage ?? " ")
+                .font(.posBodyMediumRegular())
+                .foregroundColor(messageColor)
+                .multilineTextAlignment(.center)
+                .lineLimit(3)
+                .opacity(displayMessage != nil ? 1 : 0)
+                .frame(minHeight: Constants.errorMessageHeight)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .animation(.default, value: displayMessage)
     }
@@ -262,7 +260,7 @@ private extension POSPINEntryView {
         static let buttonSize: CGFloat = 72
         static let dotSize: CGFloat = 16
         static let dotBorderWidth: CGFloat = 2
-        static let errorMessageHeight: CGFloat = 20
+        static let errorMessageHeight: CGFloat = 40
         static let shakeDistance: CGFloat = 10
         static let shakeStepDuration: TimeInterval = 0.08
         static let waveHeight: CGFloat = 6

@@ -5,9 +5,11 @@ import Foundation
 /// Add new cases when the app needs to check a new capability.
 public enum POSCapability: String, CaseIterable, Sendable {
     /// View POS settings. Managers and admins have this.
-    case posReadSettings = "woocommerce_pos_read_settings"
+    /// Maps to the backend's `woocommerce_pos_manage_settings` capability.
+    case posReadSettings = "woocommerce_pos_manage_settings"
     /// Modify POS settings, manage staff, exit POS. Admins only.
-    case posWriteSettings = "woocommerce_pos_write_settings"
+    /// Maps to the backend's `manage_woocommerce` capability (admin/shop_manager only).
+    case posWriteSettings = "manage_woocommerce"
     /// Process refunds.
     case refundOrders = "woocommerce_refund_orders"
     /// Void/cancel orders.

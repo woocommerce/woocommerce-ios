@@ -1,0 +1,23 @@
+# Smoke Test: Successful Login via WordPress.com
+#
+# Prerequisites:
+#   - WOO_EMAIL, WOO_PASSWORD env vars set
+#
+# Run:
+#   maestro test -e WOO_EMAIL="..." -e WOO_PASSWORD="..." .maestro/flows/login_successful.yaml
+appId: com.automattic.alpha.woocommerce
+name: "Login - Successful WPCom login"
+tags:
+  - smoke
+  - login
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Verify we landed on the Dashboard
+- assertVisible:
+    id: "tab-bar-my-store-item"
+    label: "Verify My Store tab is visible after login"
+
+- takeScreenshot: login_successful

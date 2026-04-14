@@ -1,0 +1,47 @@
+# Smoke Test: Login - Not a WordPress site
+#
+# Enters a non-WordPress URL via the site address login flow
+# and verifies the appropriate error message is shown.
+appId: com.automattic.alpha.woocommerce
+name: "Login - Not a WordPress site error"
+tags:
+  - smoke
+  - login
+---
+- launchApp:
+    clearState: true
+
+# Wait for app to finish loading
+- extendedWaitUntil:
+    visible: ".*Login Onboarding Skip Button.*|.*prologue-title-label.*"
+    timeout: 30000
+
+# Skip onboarding if shown
+- runFlow:
+    when:
+      visible: "Login Onboarding Skip Button"
+    commands:
+      - tapOn: "Login Onboarding Skip Button"
+
+# Wait for Prologue screen
+- extendedWaitUntil:
+    visible: "prologue-title-label"
+    timeout: 15000
+
+# Tap "Log in with site address" (self-hosted button)
+- tapOn: "Prologue Self Hosted Button"
+
+# Enter a non-WordPress site URL
+- extendedWaitUntil:
+    visible: "Site address"
+    timeout: 10000
+- tapOn: "Site address"
+- inputText: "google.com"
+- tapOn: "Site Address Next Button"
+
+# Verify error message appears
+- extendedWaitUntil:
+    visible: ".*not a WordPress site.*|.*not able to.*WordPress.*"
+    timeout: 20000
+
+- takeScreenshot: login_not_wp_site

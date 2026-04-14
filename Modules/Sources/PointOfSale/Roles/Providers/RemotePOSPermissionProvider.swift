@@ -294,22 +294,13 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
                                                           context: context)
     }
 
-    /// Verifies a PIN and checks if the authenticated user has the required capability.
+    /// Verifies a PIN via the dedicated verify endpoint and checks if the user has the required capability.
     /// Used for actions that the backend approval endpoint doesn't support (e.g. settings, exit POS).
-    /// Tries the dedicated /pos/auth/pin/verify endpoint first, falls back to /pos/auth/pin
-    /// if the verify endpoint is not available.
+    /// Unlike /pos/auth/pin, this does not create an Application Password session.
     private func verifyPINAndCheckCapability(pin: String, capability: String) async throws -> String? {
-        let capabilities: [String: Bool]
-        do {
-            let response = try await verifyPINRemote(pin)
-            capabilities = response.capabilities
-        } catch {
-            // Fall back to PIN auth if verify endpoint is not available
-            let response = try await authenticatePINRemote(pin, "default")
-            capabilities = response.capabilities
-        }
+        let response = try await verifyPINRemote(pin)
         let enabledCapabilities = Set(
-            capabilities
+            response.capabilities
                 .filter { $0.value }
                 .map { $0.key }
         )

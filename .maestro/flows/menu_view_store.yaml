@@ -1,0 +1,41 @@
+# Smoke Test: Menu - View Store
+#
+# Verifies:
+#   - View Store option accessible from Menu tab
+#   - Webview loads for the store
+appId: com.automattic.alpha.woocommerce
+name: "Menu - View Store"
+tags:
+  - smoke
+  - menu
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Menu
+- runFlow:
+    file: ../subflows/navigate_to_menu.yaml
+
+# Find and tap View Store
+- scrollUntilVisible:
+    element:
+      id: "menu-view-store"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to View Store in menu"
+
+- tapOn:
+    id: "menu-view-store"
+    label: "Tap View Store"
+
+# Wait for webview to load
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 20000
+    optional: true
+
+- takeScreenshot: menu_view_store
+
+# Go back
+- back

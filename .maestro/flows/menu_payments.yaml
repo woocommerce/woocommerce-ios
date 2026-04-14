@@ -1,0 +1,46 @@
+# Smoke Test: Menu - Payments
+#
+# Verifies:
+#   - Payments section accessible from Menu tab
+#   - Payments screen loads with options
+appId: com.automattic.alpha.woocommerce
+name: "Menu - Payments"
+tags:
+  - smoke
+  - payments
+  - menu
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Menu
+- runFlow:
+    file: ../subflows/navigate_to_menu.yaml
+
+# Find and tap Payments
+- scrollUntilVisible:
+    element:
+      id: "menu-payments"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to Payments in menu"
+
+- tapOn:
+    id: "menu-payments"
+    label: "Tap Payments"
+
+# Wait for Payments screen to load
+- extendedWaitUntil:
+    visible: ".*Pay in Person.*|.*Payments.*|.*Card Reader.*"
+    timeout: 15000
+
+- takeScreenshot: menu_payments_screen
+
+# Scroll to see all payment options
+- scroll
+
+- takeScreenshot: menu_payments_scrolled
+
+# Go back
+- back

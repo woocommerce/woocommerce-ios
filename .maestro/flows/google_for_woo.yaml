@@ -1,0 +1,42 @@
+# Smoke Test: Google for Woo
+#
+# Verifies:
+#   - Google for Woo option accessible from Menu tab
+#   - Webview loads for Google campaign creation
+appId: com.automattic.alpha.woocommerce
+name: "Google for Woo - Campaign creation webview"
+tags:
+  - smoke
+  - google_for_woo
+  - menu
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Menu
+- runFlow:
+    file: ../subflows/navigate_to_menu.yaml
+
+# Find and tap Google for WooCommerce (Google Ads)
+- scrollUntilVisible:
+    element:
+      id: "menu-google-ads"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to Google Ads in menu"
+
+- tapOn:
+    id: "menu-google-ads"
+    label: "Tap Google for WooCommerce"
+
+# Wait for Google for Woo webview to load
+- extendedWaitUntil:
+    visible: ".*Google.*|.*Get started.*"
+    timeout: 25000
+    label: "Wait for Google for Woo webview"
+
+- takeScreenshot: google_for_woo
+
+# Go back
+- back

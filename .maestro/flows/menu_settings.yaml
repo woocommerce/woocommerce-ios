@@ -1,0 +1,41 @@
+# Smoke Test: Menu - Settings
+#
+# Verifies:
+#   - Settings screen opens from Menu tab
+#   - Key settings options are visible
+appId: com.automattic.alpha.woocommerce
+name: "Menu - Settings"
+tags:
+  - smoke
+  - settings
+  - menu
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Menu
+- runFlow:
+    file: ../subflows/navigate_to_menu.yaml
+
+# Verify Menu items are visible
+- assertVisible:
+    id: "menu-reviews"
+    label: "Reviews menu item visible"
+
+- takeScreenshot: menu_overview
+
+# Open Settings
+- tapOn:
+    id: "dashboard-settings-button"
+    label: "Tap Settings button"
+
+# Wait for Settings screen
+- extendedWaitUntil:
+    visible: ".*settings.*|.*Settings.*|.*Log Out.*"
+    timeout: 15000
+
+- takeScreenshot: settings_screen
+
+# Go back to Menu
+- back

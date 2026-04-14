@@ -1,0 +1,41 @@
+# Smoke Test: Menu - Reviews
+#
+# Verifies:
+#   - Reviews section accessible from Menu tab
+#   - Reviews screen loads
+appId: com.automattic.alpha.woocommerce
+name: "Menu - Reviews"
+tags:
+  - smoke
+  - reviews
+  - menu
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Menu
+- runFlow:
+    file: ../subflows/navigate_to_menu.yaml
+
+# Find and tap Reviews
+- scrollUntilVisible:
+    element:
+      id: "menu-reviews"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to Reviews in menu"
+
+- tapOn:
+    id: "menu-reviews"
+    label: "Tap Reviews"
+
+# Wait for Reviews screen to load
+- extendedWaitUntil:
+    visible: ".*Reviews.*|.*review.*"
+    timeout: 15000
+
+- takeScreenshot: menu_reviews_screen
+
+# Go back
+- back

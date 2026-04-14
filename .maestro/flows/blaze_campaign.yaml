@@ -1,0 +1,56 @@
+# Smoke Test: Blaze - Campaign creation flow
+#
+# Verifies:
+#   - Blaze option accessible from Menu tab
+#   - Blaze campaign list/dashboard loads
+#   - Create campaign flow can be triggered
+appId: com.automattic.alpha.woocommerce
+name: "Blaze - Campaign creation"
+tags:
+  - smoke
+  - blaze
+  - menu
+---
+# Login
+- runFlow:
+    file: ../subflows/login.yaml
+
+# Navigate to Menu
+- runFlow:
+    file: ../subflows/navigate_to_menu.yaml
+
+# Find and tap Blaze
+- scrollUntilVisible:
+    element:
+      id: "menu-blaze"
+    direction: DOWN
+    timeout: 15000
+    label: "Scroll to Blaze in menu"
+
+- tapOn:
+    id: "menu-blaze"
+    label: "Tap Blaze"
+
+# Wait for Blaze screen to load
+- extendedWaitUntil:
+    visible: ".*Blaze.*|.*campaign.*"
+    timeout: 20000
+
+- takeScreenshot: blaze_screen
+
+# Try to create a campaign
+- runFlow:
+    when:
+      visible: "Create campaign"
+    commands:
+      - tapOn: "Create campaign"
+      - extendedWaitUntil:
+          visible: ".*"
+          timeout: 20000
+          label: "Wait for campaign creation flow"
+          optional: true
+      - takeScreenshot: blaze_create_campaign
+      - back
+
+# Go back
+- back

@@ -24,9 +24,6 @@ public enum POSCapability: String, CaseIterable, Sendable {
     case viewPersonalSales = "woocommerce_view_personal_sales"
     case exportReports = "woocommerce_export_reports"
 
-    // MARK: - Staff & Overrides
-    case approveOverrides = "woocommerce_approve_overrides"
-
     // MARK: - Customer Data
     case viewCustomerData = "woocommerce_view_customer_data"
     case editCustomerData = "woocommerce_edit_customer_data"
@@ -36,4 +33,20 @@ public enum POSCapability: String, CaseIterable, Sendable {
 
     // MARK: - Inventory
     case adjustStock = "woocommerce_adjust_stock"
+
+    // MARK: - Approval Path
+
+    /// Whether this capability supports backend approval via `/pos/auth/approve` (remote mode).
+    ///
+    /// - `true`: Remote mode uses the approve endpoint, which returns an audit token.
+    /// - `false`: Remote mode uses `/pos/auth/pin/verify` for a capability check only.
+    /// - Local mode always uses local PIN verification regardless of this value.
+    public var supportsBackendApproval: Bool {
+        switch self {
+        case .refundOrders, .voidOrders, .applyDiscounts:
+            return true
+        default:
+            return false
+        }
+    }
 }

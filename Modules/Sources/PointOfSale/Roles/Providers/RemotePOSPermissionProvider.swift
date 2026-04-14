@@ -196,7 +196,8 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     }
 
     public func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? {
-        if Self.backendApprovableActions.contains(capability) {
+        let useBackendApproval = POSCapability(rawValue: capability)?.supportsBackendApproval ?? false
+        if useBackendApproval {
             return try await requestApproval(managerPIN: managerPIN, action: capability, orderID: orderID)
         } else {
             return try await verifyPINAndCheckCapability(pin: managerPIN, capability: capability)
@@ -276,14 +277,6 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     }
 
     // MARK: - Manager Approval
-
-    /// Actions that the backend's `/pos/auth/approve` endpoint supports.
-    /// All other actions use PIN verification + local capability check via `/pos/auth/pin/verify`.
-    private static let backendApprovableActions: Set<String> = [
-        POSCapability.refundOrders.rawValue,
-        POSCapability.voidOrders.rawValue,
-        POSCapability.applyDiscounts.rawValue
-    ]
 
     /// Requests manager approval for a restricted action via the approval service.
     /// - Parameters:

@@ -201,6 +201,30 @@ final class WooShippingRemoteTests: XCTestCase {
         XCTAssertEqual(successResponse.first?.additionalHandling.count, 2)
     }
 
+    func test_loadLabelRates_parses_invalid_destination_name_rate_error() throws {
+        // Given
+        let remote = WooShippingRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "label/rate",
+                                 filename: "wooshipping-get-label-rates-invalid-destination-name")
+
+        // When
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
+            remote.loadLabelRates(siteID: self.sampleSiteID,
+                                  orderID: self.sampleOrderID,
+                                  originAddress: WooShippingAddress.fake(),
+                                  destinationAddress: WooShippingAddress.fake(),
+                                  packages: [ShippingLabelPackageSelected.fake()]) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        let response = try XCTUnwrap(result.get())
+        XCTAssertEqual(response.first?.defaultErrors.first?.code, "rate_error")
+        XCTAssertEqual(response.first?.defaultErrors.first?.message,
+                       "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character")
+    }
+
     func test_loadLabelRates_returns_error_on_failure() throws {
         // Given
         let remote = WooShippingRemote(network: network)

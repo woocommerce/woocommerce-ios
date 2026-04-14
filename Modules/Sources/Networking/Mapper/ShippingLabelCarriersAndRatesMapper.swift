@@ -48,6 +48,7 @@ private struct ShippingLabelDefaultBoxEnvelope: Decodable {
         boxes = dictionary.map { key, value in
             return ShippingLabelCarriersAndRates(packageID: key,
                                                  defaultRates: value.defaultRates,
+                                                 defaultErrors: value.defaultErrors,
                                                  signatureRequired: value.signatureRequired,
                                                  adultSignatureRequired: value.adultSignatureRequired,
                                                  carbonNeutral: value.carbonNeutral,

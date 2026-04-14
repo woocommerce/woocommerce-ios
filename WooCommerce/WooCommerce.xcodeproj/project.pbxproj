@@ -6,20 +6,6 @@
 	objectVersion = 74;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		B55D4C0F20B612F300D7A50F /* GenerateCredentials */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = B55D4C1020B612F300D7A50F /* Build configuration list for PBXAggregateTarget "GenerateCredentials" */;
-			buildPhases = (
-				B55D4C1320B612FE00D7A50F /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = GenerateCredentials;
-			productName = GenerateInfoPlist;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260837082AA66E4A0004A12B /* UserNotifications.framework */; };
 		2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */; };
@@ -99,26 +85,12 @@
 			remoteGlobalIDString = 3F1FA83F28B60125009E246C;
 			remoteInfo = StoreWidgetsExtension;
 		};
-		B55D4C1420B6131400D7A50F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B55D4C0F20B612F300D7A50F;
-			remoteInfo = GenerateInfoPlist;
-		};
 		B56DB3DE2049BFAA00D4AA8E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B56DB3C52049BFAA00D4AA8E;
 			remoteInfo = WooCommerce;
-		};
-		BA3A98EF567948209638343C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B55D4C0F20B612F300D7A50F;
-			remoteInfo = GenerateCredentials;
 		};
 		CCDC49CF23FFFFF4003166BA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -798,7 +770,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				6E989DC1086243CA8E3AB379 /* PBXTargetDependency */,
 				267A048F2C051C5300C91CB4 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
@@ -892,7 +863,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				B55D4C1520B6131400D7A50F /* PBXTargetDependency */,
 				3F1FA84E28B60126009E246C /* PBXTargetDependency */,
 				260837142AA66E4B0004A12B /* PBXTargetDependency */,
 				26F81B212BE433A3009EC58E /* PBXTargetDependency */,
@@ -1034,10 +1004,6 @@
 					3F1FA83F28B60125009E246C = {
 						CreatedOnToolsVersion = 13.4.1;
 					};
-					B55D4C0F20B612F300D7A50F = {
-						CreatedOnToolsVersion = 9.3.1;
-						ProvisioningStyle = Automatic;
-					};
 					B56DB3C52049BFAA00D4AA8E = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1020;
@@ -1109,7 +1075,6 @@
 			targets = (
 				B56DB3C52049BFAA00D4AA8E /* WooCommerce */,
 				B56DB3DC2049BFAA00D4AA8E /* WooCommerceTests */,
-				B55D4C0F20B612F300D7A50F /* GenerateCredentials */,
 				F997170123DBB97500592D8E /* WooCommerceScreenshots */,
 				CCDC49C923FFFFF4003166BA /* WooCommerceUITests */,
 				3F1FA83F28B60125009E246C /* StoreWidgetsExtension */,
@@ -1244,26 +1209,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "$SRCROOT/../Scripts/build-phases/swiftlint.sh\n";
-		};
-		B55D4C1320B612FE00D7A50F /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-inputs.xcfilelist",
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-				"$(SRCROOT)/../Scripts/build-phases/generate-credentials-outputs.xcfilelist",
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "$SRCROOT/../Scripts/build-phases/generate-credentials.sh\n";
-			showEnvVarsInLog = 0;
 		};
 		CD6E8C9AF2614F85B5C626E5 /* Generate Credentials */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1422,16 +1367,6 @@
 			target = 3F1FA83F28B60125009E246C /* StoreWidgetsExtension */;
 			targetProxy = 3F1FA84D28B60126009E246C /* PBXContainerItemProxy */;
 		};
-		6E989DC1086243CA8E3AB379 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
-			targetProxy = BA3A98EF567948209638343C /* PBXContainerItemProxy */;
-		};
-		B55D4C1520B6131400D7A50F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
-			targetProxy = B55D4C1420B6131400D7A50F /* PBXContainerItemProxy */;
-		};
 		B56DB3DF2049BFAA00D4AA8E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
@@ -1556,15 +1491,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WooCommerce.app/WooCommerce";
-				VALID_ARCHS = "$(inherited)";
-			};
-			name = "Release-Alpha";
-		};
-		1A9690362359CF720061E383 /* Release-Alpha */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "$(inherited)";
 			};
 			name = "Release-Alpha";
@@ -2173,24 +2099,6 @@
 			};
 			name = "Release-Alpha";
 		};
-		B55D4C1120B612F300D7A50F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "$(inherited)";
-			};
-			name = Debug;
-		};
-		B55D4C1220B612F300D7A50F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "$(inherited)";
-			};
-			name = Release;
-		};
 		B56DB3E42049BFAA00D4AA8E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8CA4F6DD220B257000A47B5D /* WooCommerce.debug.xcconfig */;
@@ -2707,16 +2615,6 @@
 				3F1FA85128B60126009E246C /* Debug */,
 				3F1FA85228B60126009E246C /* Release */,
 				3F1FA85328B60126009E246C /* Release-Alpha */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B55D4C1020B612F300D7A50F /* Build configuration list for PBXAggregateTarget "GenerateCredentials" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B55D4C1120B612F300D7A50F /* Debug */,
-				B55D4C1220B612F300D7A50F /* Release */,
-				1A9690362359CF720061E383 /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

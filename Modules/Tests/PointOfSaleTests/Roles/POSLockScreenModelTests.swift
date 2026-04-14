@@ -20,10 +20,11 @@ struct POSLockScreenModelTests {
         #expect(sut.isShowingLockScreen == true)
     }
 
-    @Test func test_isShowingLockScreen_when_not_locked_then_false() async {
+    @Test func test_isShowingLockScreen_when_not_locked_and_no_pins_then_false() async {
         // Given
         let provider = MockPOSPermissionProvider()
         provider.isLocked = false
+        provider.hasAnyPINs = false
         provider.currentOperator = nil
 
         // When
@@ -33,10 +34,39 @@ struct POSLockScreenModelTests {
         #expect(sut.isShowingLockScreen == false)
     }
 
+    @Test func test_isShowingLockScreen_when_not_locked_but_has_pins_and_no_operator_then_true() async {
+        // Given - first POS open with PINs configured
+        let provider = MockPOSPermissionProvider()
+        provider.isLocked = false
+        provider.hasAnyPINs = true
+        provider.currentOperator = nil
+
+        // When
+        let sut = makeSUT(provider: provider)
+
+        // Then
+        #expect(sut.isShowingLockScreen == true)
+    }
+
     @Test func test_isShowingLockScreen_when_locked_with_operator_then_false() async {
         // Given
         let provider = MockPOSPermissionProvider()
         provider.isLocked = true
+        provider.hasAnyPINs = true
+        provider.currentOperator = makeOperator()
+
+        // When
+        let sut = makeSUT(provider: provider)
+
+        // Then
+        #expect(sut.isShowingLockScreen == false)
+    }
+
+    @Test func test_isShowingLockScreen_when_has_pins_and_signed_in_then_false() async {
+        // Given - operator authenticated
+        let provider = MockPOSPermissionProvider()
+        provider.isLocked = false
+        provider.hasAnyPINs = true
         provider.currentOperator = makeOperator()
 
         // When
@@ -78,6 +108,7 @@ struct POSLockScreenModelTests {
         // Given
         let provider = MockPOSPermissionProvider()
         provider.isLocked = true
+        provider.hasAnyPINs = true
         provider.currentOperator = nil
         let authenticator = MockPOSPINAuthenticator()
         authenticator.authenticateResult = true

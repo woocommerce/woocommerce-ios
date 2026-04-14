@@ -17,7 +17,7 @@ final class POSLockScreenModel: ObservableObject {
          authenticator: POSPINAuthenticating) {
         self.provider = provider
         self.authenticator = authenticator
-        self.isShowingLockScreen = provider.isLocked && provider.currentOperator == nil
+        self.isShowingLockScreen = Self.shouldShowLockScreen(provider)
         startObserving()
     }
 
@@ -31,7 +31,7 @@ final class POSLockScreenModel: ObservableObject {
             while !Task.isCancelled {
                 guard let self else { return }
                 let newValue = withObservationTracking {
-                    self.provider.isLocked && self.provider.currentOperator == nil
+                    Self.shouldShowLockScreen(self.provider)
                 } onChange: { }
 
                 if newValue != self.isShowingLockScreen {
@@ -53,6 +53,18 @@ final class POSLockScreenModel: ObservableObject {
     }
 
     private func updateLockState() {
-        isShowingLockScreen = provider.isLocked && provider.currentOperator == nil
+        isShowingLockScreen = Self.shouldShowLockScreen(provider)
+    }
+
+    /// The lock screen should show when:
+    /// 1. PINs are configured AND no operator is signed in (first open or after lock)
+    /// 2. Provider is explicitly locked (persists across app kills via UserDefaults)
+    ///
+    /// When PINs are enabled, there is no "unlocked with no operator" state.
+    /// Someone must authenticate via PIN before using POS.
+    private static func shouldShowLockScreen(_ provider: POSPermissionProviding) -> Bool {
+        let hasNoOperator = provider.currentOperator == nil
+        // Show lock screen if explicitly locked, or if PINs exist but nobody signed in
+        return hasNoOperator && (provider.isLocked || provider.hasAnyPINs)
     }
 }

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-24 11:57:44+0000 */
+/* Translation-Revision-Date: 2026-04-07 11:55:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -9777,6 +9777,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "在裝置設定中啟用位置服務，即可允許付款。";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"cardPresentPayment.settingsWebView.title" = "WooCommerce 設定";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "返回訂單";
 
@@ -9827,6 +9830,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "收款 (%1$@)";
+
+/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
+"ciabOrderStatusMapper.open" = "開啟";
 
 /* Title of the button to add address in the order form customer card. */
 "collapsibleCustomerCard.addAddress.title" = "新增顧客地址";
@@ -9960,20 +9966,41 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "對連結進行疑難排解";
 
+/* Action button to enable WooCommerce Analytics in the connectivity tool */
+"connectivityToolViewModel.action.enableAnalytics" = "啟用分析";
+
+/* Action button to enable order notifications in the connectivity tool */
+"connectivityToolViewModel.action.enableOrderNotifications" = "啟用訂單通知";
+
+/* Action button to open device notification settings in the connectivity tool */
+"connectivityToolViewModel.action.openSettings" = "開啟設定";
+
 /* Action button title for an error on the connectivity tool */
 "connectivityToolViewModel.action.readMore" = "閱讀更多內容";
+
+/* Action button to register the device for push notifications in the connectivity tool */
+"connectivityToolViewModel.action.registerDevice" = "註冊裝置";
 
 /* Retry test button in the connectivity tool screen */
 "connectivityToolViewModel.action.retry" = "重試測試";
 
+/* Action button to start the Jetpack setup flow in the connectivity tool */
+"connectivityToolViewModel.action.setupJetpack" = "設定 Jetpack";
+
 /* Button to view technical error details in the connectivity tool */
 "connectivityToolViewModel.action.viewTechnicalDetails" = "檢視技術詳細資料";
+
+/* Title for the analytics setting check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.analyticsSetting" = "檢查分析設定";
 
 /* Title for the internet connection connectivity tool card */
 "connectivityToolViewModel.connectivityTest.internetConnection" = "網際網路連線";
 
 /* Title for the test to load products in connectivity tool */
 "connectivityToolViewModel.connectivityTest.loadingProducts" = "正在商店擷取商品";
+
+/* Title for the notification settings check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.notifications" = "檢查通知設定";
 
 /* Title for the Your Site connectivity tool card */
 "connectivityToolViewModel.connectivityTest.site" = "正在連結你的網站";
@@ -9984,23 +10011,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers connectivity tool card */
 "connectivityToolViewModel.connectivityTest.wpComServers" = "正在連結 WordPress.com 伺服器";
 
+/* Message when the analytics setting check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsCheckFailed" = "我們無法檢查你的分析設定。\n\n請聯絡支援團隊取得進一步協助。";
+
+/* Message when WooCommerce Analytics is disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsDisabled" = "你的商店未啟用 WooCommerce Analytics。\n\n啟用後才能取得收益和訂單統計等分析資料。";
+
 /* Message when we there is a decoding error in the recovery tool */
 "connectivityToolViewModel.errorMessage.decodingError" = "你的網站回應無法正常運作。\n\n請在下方檢視技術詳細資料，或聯絡我們的支援團隊，我們很樂意提供協助。";
 
 /* Message when we there is a generic error in the recovery tool */
 "connectivityToolViewModel.errorMessage.default" = "看來你的網站發生問題。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
 
+/* Message when the device is not registered for push notifications in the connectivity tool */
+"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "你的裝置似乎未註冊推播通知。\n\n若想重新註冊，請嘗試登出並重新登入。";
+
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "你的 Jetpack 連結發生問題。\n\n深入了解或聯絡我們的支援團隊，我們很樂意提供協助。";
 
+/* Message when Jetpack plugin is not active in the connectivity tool */
+"connectivityToolViewModel.errorMessage.jetpackPluginNotActive" = "網站似乎並未啟用 Jetpack 外掛程式。\n\n需具備有效 Jetpack 連線，才能推播通知。";
+
 /* Message when there is no internet connection in the recovery tool */
 "connectivityToolViewModel.errorMessage.noInternet" = "你目前沒有網際網路連線。\n\n請確認 Wi-Fi 已開啟。 如果你使用行動數據，請確認已在裝置設定中啟用。";
+
+/* Message when the notification config check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationConfigCheckFailed" = "我們無法檢查你的通知設定。\n\n請聯絡支援團隊取得進一步協助。";
+
+/* Message when iOS notification permission is denied in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationsNotAuthorized" = "此應用程式不允許推播通知。\n\n在裝置設定啟用此功能，即可接收訂單通知。";
+
+/* Message when order notifications are disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.orderNotificationsDisabled" = "此商店未啟用訂單通知。\n\n啟用該功能後，即可接收新訂單提醒。";
 
 /* Message when we there is a timeout error in the recovery tool */
 "connectivityToolViewModel.errorMessage.timeout" = "你的網站太久沒有回應。\n\n請聯絡你的主機服務提供者，尋求進一步協助。";
 
 /* Message when we can't reach WPCom in the recovery tool */
 "connectivityToolViewModel.errorMessage.wpcomConnection" = "我們目前無法連結至 WordPress.com。\n\n請稍待幾分鐘後再試一次，或聯絡我們的支援團隊，我們很樂意提供協助。";
+
+/* Message shown after successfully enabling analytics in the connectivity tool */
+"connectivityToolViewModel.message.analyticsEnabledRelaunch" = "已啟用分析。 請重新啟動應用程式，以取得分析資料。";
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssues" = "沒有連結問題";
@@ -10795,6 +10846,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "卡片已插入";
 
+/* Error message when WooPayments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.message" = "若想當面接收付款，請先為商店安裝免費 WooCommerce Payments 擴充功能。";
+
+/* Title for the error screen when WooPayments is not installed */
+"inPersonPaymentsPluginNotInstalled.title" = "安裝 WooPayments";
+
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "取消";
 
@@ -11499,6 +11558,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "親自付款";
+
+/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
+"paymentMethods.ciabUpgrade.learnMore.text" = "當面付款，每筆交易只要 2.70%% + 0.10 美元。 升級至專業版，即可存取手機的感應支付功能，以及我們的完整銷售點系統，包括即時庫存與訂單同步處理。%1$@";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "這筆訂單使用現金付款。 顧客支付了 %1$@。 需找零 %2$@。";
@@ -12604,6 +12666,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "要取消此預訂嗎？";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"pos.cardReader.updateAddress.webview.title" = "WooCommerce 設定";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "點選商品即可\n 將其新增至購物車，或 ";
 
@@ -12646,11 +12711,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "要結束銷售時點情報系統模式嗎？";
 
+/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabPricingInfo" = "當面付款，每筆交易只要 2.70% + 0.10 美元。";
+
+/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabUpgradePrompt" = "升級至專業版，即可存取手機的感應支付功能，以及我們的完整銷售點系統，包括即時庫存與訂單同步處理。";
+
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "結束 POS";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "啟用 POS 功能";
+
+/* Button title to learn more about upgrading the plan for POS access */
+"pos.ineligible.learnMore.button.title" = "深入了解";
+
+/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
+"pos.ineligible.planUpgrade.title" = "需要專業版方案";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "重試";
@@ -12675,6 +12752,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "無法載入";
+
+/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
+"pos.ineligible.upgradePlan.webview.title" = "升級方案";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "請檢查你的網際網路連線並再試一次。";
@@ -13893,6 +13973,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "檢視所有 %1$d 個工作項目";
 
+/* Header text format on the store onboarding WooPayments/payments setup screen. %1$@ can be 'WooPayments' when available, or 'Payment Methods.' */
+"storeOnboardingPaymentsSetup.headerFormat" = "設定「%1$@」";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "轉換";
 
@@ -14067,6 +14150,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "抱歉，我們目前無法建立支援請求，請稍後再試一次。";
+
+/* Title of the WooPayments support area option */
+"supportFormViewModel.wooPayments" = "WooPayments";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "系統狀態報告";
@@ -14424,6 +14510,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "訂單";
+
+/* Button title to dismiss the authenticated web view */
+"wcAuthenticatedWebView.done.button.title" = "完成";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "關閉";

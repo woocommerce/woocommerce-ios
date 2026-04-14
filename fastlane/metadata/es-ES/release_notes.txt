@@ -1,0 +1,1 @@
+La herramienta de solución de problemas ahora comprueba los ajustes de análisis y notificaciones, lo que facilita el diagnóstico de problemas con tu tienda.

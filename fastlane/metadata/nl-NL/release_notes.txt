@@ -1,0 +1,1 @@
+De tool voor probleemoplossing controleert nu je instellingen voor analyses en meldingen, waardoor het eenvoudiger wordt om problemen met je winkel te diagnosticeren.

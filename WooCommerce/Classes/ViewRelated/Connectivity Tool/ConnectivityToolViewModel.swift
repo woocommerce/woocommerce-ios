@@ -4,11 +4,13 @@ import UIKit
 import Yosemite
 import enum Networking.DotcomError
 import class Networking.AlamofireNetwork
+import protocol NetworkingCore.Network
 import class Networking.AnnouncementsRemote
 import class Networking.SystemStatusRemote
 import class Networking.OrdersRemote
 import class Networking.ProductsRemote
 import class Networking.UserAgent
+import struct Networking.SystemPlugin
 import protocol WooFoundation.Analytics
 
 final class ConnectivityToolViewModel {
@@ -65,17 +67,30 @@ final class ConnectivityToolViewModel {
     ///
     let siteID: Int64
 
+    /// Active plugins from the system status report, cached after the site connectivity test.
+    /// Used by the notification check to verify Jetpack is active without calling `/wp/v2/plugins`.
+    ///
+    private var activeSystemPlugins: [SystemPlugin] = []
+
+    /// Whether Jetpack is among the active plugins from the system status report.
+    /// Populated after the site connectivity test. Internal for testability.
+    ///
+    var isJetpackPluginActive: Bool {
+        activeSystemPlugins.contains { $0.plugin.hasPrefix(Constants.jetpackPluginSlug) }
+    }
+
     private var latestTestResult: [ConnectivityTestResult] = []
 
-    let network: AlamofireNetwork
+    private let network: Network
 
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         network: Network? = nil) {
 
-        let network = AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
+        let network = network ?? AlamofireNetwork(credentials: session.defaultCredentials, selectedSite: nil, appPasswordSupportState: nil)
         self.network = network
         self.announcementsRemote = AnnouncementsRemote(network: network)
         self.systemStatusRemote = SystemStatusRemote(network: network)
@@ -242,8 +257,9 @@ final class ConnectivityToolViewModel {
                 guard let self else { return }
 
                 switch result {
-                case .success:
+                case .success(let report):
                     DDLogInfo("Connectivity Tool: ✅ Site connection")
+                    self.activeSystemPlugins = report.activePlugins
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
@@ -660,6 +676,10 @@ private extension ConnectivityToolViewModel {
 }
 
 private extension ConnectivityToolViewModel {
+    enum Constants {
+        static let jetpackPluginSlug = "jetpack/"
+    }
+
     enum SystemImages: String {
         case retry = "arrow.clockwise"
         case readMore = "arrow.up.forward.app"

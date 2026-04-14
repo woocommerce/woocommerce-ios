@@ -216,8 +216,7 @@ private extension SettingsViewModel {
         let configureSection: Section? = {
             var rows: [Row] = []
 
-            if stores.isAuthenticated,
-               stores.sessionManager.defaultSite?.isWordPressComStore == false {
+            if stores.isAuthenticated {
                 rows.append(.connectivity)
             }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-03-24 13:54:27+0000 */
+/* Translation-Revision-Date: 2026-04-07 13:57:40+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -9780,6 +9780,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "Включите службы определения местоположения в настройках устройства, чтобы разрешить платежи.";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"cardPresentPayment.settingsWebView.title" = "Настройки WooCommerce";
+
 /* Button to dismiss modal overlay. Presented to users after collecting a payment fails */
 "cardPresentPaymentsModal.error.backToOrder" = "Назад к заказу";
 
@@ -9830,6 +9833,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigation bar title for the cash tender view. Reads like 'Take Payment ($34.45)' */
 "cashPaymentTenderView.navigationBarTitle" = "Принять оплату (%1$@)";
+
+/* Display label for the CIAB 'Open' order status, which groups pending, processing, on-hold, and failed orders. */
+"ciabOrderStatusMapper.open" = "Открыть";
 
 /* Title of the button to add address in the order form customer card. */
 "collapsibleCustomerCard.addAddress.title" = "Добавьте адрес клиента";
@@ -9963,20 +9969,41 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Устранение неполадок при подключении";
 
+/* Action button to enable WooCommerce Analytics in the connectivity tool */
+"connectivityToolViewModel.action.enableAnalytics" = "Включить аналитику";
+
+/* Action button to enable order notifications in the connectivity tool */
+"connectivityToolViewModel.action.enableOrderNotifications" = "Включить уведомления о заказах";
+
+/* Action button to open device notification settings in the connectivity tool */
+"connectivityToolViewModel.action.openSettings" = "Открыть настройки";
+
 /* Action button title for an error on the connectivity tool */
 "connectivityToolViewModel.action.readMore" = "Читать далее";
+
+/* Action button to register the device for push notifications in the connectivity tool */
+"connectivityToolViewModel.action.registerDevice" = "Зарегистрировать устройство";
 
 /* Retry test button in the connectivity tool screen */
 "connectivityToolViewModel.action.retry" = "Повторить тест";
 
+/* Action button to start the Jetpack setup flow in the connectivity tool */
+"connectivityToolViewModel.action.setupJetpack" = "Настроить Jetpack";
+
 /* Button to view technical error details in the connectivity tool */
 "connectivityToolViewModel.action.viewTechnicalDetails" = "Просмотр технических данных";
+
+/* Title for the analytics setting check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.analyticsSetting" = "Проверка настроек аналитики";
 
 /* Title for the internet connection connectivity tool card */
 "connectivityToolViewModel.connectivityTest.internetConnection" = "Подключение к Интернету";
 
 /* Title for the test to load products in connectivity tool */
 "connectivityToolViewModel.connectivityTest.loadingProducts" = "Получение товаров вашего магазина";
+
+/* Title for the notification settings check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.notifications" = "Проверка настроек уведомлений";
 
 /* Title for the Your Site connectivity tool card */
 "connectivityToolViewModel.connectivityTest.site" = "Идёт подключение к вашему сайту";
@@ -9987,23 +10014,47 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers connectivity tool card */
 "connectivityToolViewModel.connectivityTest.wpComServers" = "Подключение к серверам WordPress.com";
 
+/* Message when the analytics setting check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsCheckFailed" = "Не удалось проверить настройки аналитики.\n\nОбратитесь в службу поддержки.";
+
+/* Message when WooCommerce Analytics is disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsDisabled" = "Аналитика WooCommerce не включена в вашем магазине.\n\nАналитические данные, такие как статистика доходов и заказов, не будут доступны, пока они не включены.";
+
 /* Message when we there is a decoding error in the recovery tool */
 "connectivityToolViewModel.errorMessage.decodingError" = "Мы не можем правильно обработать ответ вашего сайта.\n\nПросмотрите технические данные ниже или обратитесь в службу поддержки, и мы будем рады вам помочь.";
 
 /* Message when we there is a generic error in the recovery tool */
 "connectivityToolViewModel.errorMessage.default" = "Похоже, с вашим сайтом возникла проблема.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
 
+/* Message when the device is not registered for push notifications in the connectivity tool */
+"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "Похоже, ваше устройство не зарегистрировано для push-уведомлений.\n\nПопробуйте выйти из системы и снова войти, чтобы перерегистрироваться.";
+
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Возникла проблема с подключением к Jetpack.\n\nУзнайте подробнее, в чём дело, или обратитесь в службу поддержки, и мы будем рады вам помочь.";
 
+/* Message when Jetpack plugin is not active in the connectivity tool */
+"connectivityToolViewModel.errorMessage.jetpackPluginNotActive" = "Похоже, плагин Jetpack не активен на вашем сайте.\n\nДля push-уведомлений требуется активное подключение Jetpack.";
+
 /* Message when there is no internet connection in the recovery tool */
 "connectivityToolViewModel.errorMessage.noInternet" = "Похоже, отсутствует подключение к Интернету.\n\nУбедитесь, что ваш Wi-Fi включён. Если вы используете мобильные данные, убедитесь, что они включены в настройках вашего устройства.";
+
+/* Message when the notification config check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationConfigCheckFailed" = "Не удалось проверить настройки уведомлений.\n\nОбратитесь в службу поддержки.";
+
+/* Message when iOS notification permission is denied in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationsNotAuthorized" = "Push-уведомления не разрешены для этого приложения.\n\nВключите их в настройках устройства, чтобы получать уведомления о заказах.";
+
+/* Message when order notifications are disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.orderNotificationsDisabled" = "Уведомления о заказах не включены для этого магазина.\n\nВключите возможность получать оповещения при поступлении новых заказов.";
 
 /* Message when we there is a timeout error in the recovery tool */
 "connectivityToolViewModel.errorMessage.timeout" = "Ваш сайт отвечает слишком медленно.\n\nЧтобы решить эту проблему, обратитесь к своему хостинг-провайдеру.";
 
 /* Message when we can't reach WPCom in the recovery tool */
 "connectivityToolViewModel.errorMessage.wpcomConnection" = "Не удалось подключиться к WordPress.com.\n\nПовторите попытку через несколько минут или обратитесь в службу поддержки, и мы будем рады вам помочь.";
+
+/* Message shown after successfully enabling analytics in the connectivity tool */
+"connectivityToolViewModel.message.analyticsEnabledRelaunch" = "Аналитика включена. Перезапустите приложение, чтобы получить доступ к аналитическим данным.";
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssues" = "Проблем с подключением нет";
@@ -10798,6 +10849,14 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "Карта вставлена";
 
+/* Error message when WooPayments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.message" = "Чтобы иметь возможность принимать платежи при личном контакте с покупателем, вам потребуется установить бесплатное расширение WooPayments для вашего магазина.";
+
+/* Title for the error screen when WooPayments is not installed */
+"inPersonPaymentsPluginNotInstalled.title" = "Установить WooPayments";
+
 /* Button to dismiss the confirmation alert on the Inbox screen. */
 "inbox.alert.cancel" = "Отмена";
 
@@ -11502,6 +11561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Очная оплата";
+
+/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
+"paymentMethods.ciabUpgrade.learnMore.text" = "Принимайте платежи лично всего за 2,70 %% + 0,10 долл. США за транзакцию. Перейдите на Pro, чтобы получить доступ к оплате касанием прямо с телефона и полноценной системе продаж с синхронизацией заказов и запасов в реальном времени. %1$@";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Заказ оплачен наличными. Клиент уплатил %1$@. Сумма сдачи составила %2$@.";
@@ -12607,6 +12669,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the cancel booking confirmation modal in POS. */
 "pos.cancelBookingConfirmation.title" = "Отменить это бронирование?";
 
+/* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
+"pos.cardReader.updateAddress.webview.title" = "Настройки WooCommerce";
+
 /* Hint to add products to the Cart when this is empty. */
 "pos.cartView.addItemsToCartOrScanHint" = "Нажмите на товар, чтобы \n добавить его в корзину, или ";
 
@@ -12649,11 +12714,23 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Выйти из режима «Пункт продажи»?";
 
+/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabPricingInfo" = "Принимайте платежи лично всего за 2,70 % + 0,10 долл. США за транзакцию.";
+
+/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabUpgradePrompt" = "Перейдите на Pro, чтобы получить доступ к оплате касанием прямо с телефона и полноценной системе продаж с синхронизацией заказов и запасов в реальном времени.";
+
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Выйти из режима POS";
 
 /* Button title to enable the POS feature switch and refresh POS eligibility check */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Включить функцию POS";
+
+/* Button title to learn more about upgrading the plan for POS access */
+"pos.ineligible.learnMore.button.title" = "Подробнее";
+
+/* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
+"pos.ineligible.planUpgrade.title" = "Требуется тарифный план Pro";
 
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Повторить";
@@ -12678,6 +12755,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown in POS ineligible view */
 "pos.ineligible.title" = "Не удалось загрузить";
+
+/* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
+"pos.ineligible.upgradePlan.webview.title" = "Обновить тарифный план";
 
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Проверьте подключение к Интернету и повторите попытку.";
@@ -13896,6 +13976,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "Посмотреть все задачи (%1$d)";
 
+/* Header text format on the store onboarding WooPayments/payments setup screen. %1$@ can be 'WooPayments' when available, or 'Payment Methods.' */
+"storeOnboardingPaymentsSetup.headerFormat" = "Настройка %1$@";
+
 /* Conversion stat label on dashboard. */
 "storePerformanceView.conversion" = "Конверсия";
 
@@ -14070,6 +14153,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when the app can't create a support request. */
 "supportFormViewModel.supportRequestFailed" = "Не удалось создать запрос в службу поддержки. Повторите попытку позже.";
+
+/* Title of the WooPayments support area option */
+"supportFormViewModel.wooPayments" = "WooPayments";
 
 /* Navigation title of system status report screen */
 "systemStatusReportView.title" = "Отчёт о статусе системы";
@@ -14427,6 +14513,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the watch orders list screen. */
 "watch.orders.title" = "Заказы";
+
+/* Button title to dismiss the authenticated web view */
+"wcAuthenticatedWebView.done.button.title" = "Готово";
 
 /* Verb. Dismiss the web view screen. */
 "webKit.button.dismiss" = "Закрыть";

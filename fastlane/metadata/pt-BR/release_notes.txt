@@ -1,0 +1,1 @@
+A ferramenta de solução de problemas agora verifica suas análises e configurações de notificação, facilitando o diagnóstico de problemas na sua loja.

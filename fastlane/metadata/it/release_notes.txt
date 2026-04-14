@@ -1,0 +1,1 @@
+Lo strumento di risoluzione dei problemi ora verifica le impostazioni relative all'analisi e alle notifiche, rendendo più semplice individuare eventuali problemi relativi al tuo negozio.

@@ -133,6 +133,12 @@ final class MainTabBarController: UITabBarController {
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
 
+    /// Whether POS was locked when the app was last terminated.
+    /// Uses the same UserDefaults key as LocalPOSPermissionProvider/RemotePOSPermissionProvider.
+    private static var wasPOSLockedWhenTerminated: Bool {
+        UserDefaults.standard.bool(forKey: "com.woocommerce.pos.isLocked")
+    }
+
     private let bookingsContainerController = TabContainerController()
 
     private let hubMenuContainerController = TabContainerController()
@@ -979,6 +985,14 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
+
+        // Auto-reopen POS if it was locked when the app was terminated.
+        // This prevents killing the app from bypassing the lock screen.
+        if isPOSTabVisible, Self.wasPOSLockedWhenTerminated {
+            DispatchQueue.main.async { [weak self] in
+                self?.posTabCoordinator?.onTabSelected()
+            }
+        }
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)

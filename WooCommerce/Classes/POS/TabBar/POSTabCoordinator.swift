@@ -381,6 +381,11 @@ private extension POSTabCoordinator {
     func updateDefaultConfigurationForPointOfSale(_ isPointOfSaleActive: Bool) {
         updateInAppNotifications(isPointOfSaleActive)
         updateTrackEventPrefix(isPointOfSaleActive)
+
+        // When POS exits, clear the lock state so it doesn't auto-reopen next launch.
+        if !isPointOfSaleActive {
+            UserDefaults.standard.set(false, forKey: "com.woocommerce.pos.isLocked")
+        }
     }
 
     /// Disables foreground in-app notifications when Point of Sale is active.

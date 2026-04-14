@@ -60,6 +60,11 @@ task :mocks do
   sh './API-Mocks/scripts/start.sh'
 end
 
+desc 'Run Maestro smoke tests'
+task :maestro do
+  sh 'maestro test --format junit --output .maestro/report.xml --include-tags=smoke .maestro/'
+end
+
 desc 'Checks the source for style errors'
 task :lint do
   swiftlint

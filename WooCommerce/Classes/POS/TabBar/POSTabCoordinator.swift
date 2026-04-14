@@ -242,102 +242,118 @@ private extension POSTabCoordinator {
             // otherwise falls back to remote API-based scanning
             let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
                                                               grdbManager: grdbManager)
-            let refundsService = POSRefundsService(siteID: siteID,
+            let refundsService: POSRefundsService
+            if let sharedNetwork = storesManager.posSharedNetwork {
+                refundsService = POSRefundsService(siteID: siteID,
+                                                   network: sharedNetwork,
+                                                   currencySettings: currencySettings)
+            } else {
+                refundsService = POSRefundsService(siteID: siteID,
                                                    credentials: credentials,
                                                    selectedSite: defaultSitePublisher,
                                                    appPasswordSupportState: isAppPasswordSupported,
                                                    currencySettings: currencySettings)
-
-            if let receiptService = POSReceiptService(siteID: siteID,
-                                                      credentials: credentials,
-                                                      selectedSite: defaultSitePublisher,
-                                                      appPasswordSupportState: isAppPasswordSupported) {
-
-                let orderService: POSOrderServiceProtocol
-                if ProcessConfiguration.shouldBypassPOSOrderSyncing {
-                    orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
-                } else if let posOrderService = POSOrderService(siteID: siteID,
-                                                           credentials: credentials,
-                                                           selectedSite: defaultSitePublisher,
-                                                           appPasswordSupportState: isAppPasswordSupported) {
-                    orderService = posOrderService
-                } else {
-                    DDLogError("POSOrderService not provided")
-                    return
-                }
-
-                var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
-                if ProcessConfiguration.shouldLoadMockedPOSProducts {
-                    itemProvider = PointOfSaleItemServiceScreenshotMock()
-                }
-
-                // Resolve TTP eligibility once, up front, so we can hand the right
-                // preferred method down to POSPaymentModel. The same checker is also
-                // passed in for the availability controller that drives the buttons /
-                // hero, but POSPaymentModel needs the answer synchronously to know
-                // whether to skip the BT auto-collect on checkout entry.
-                let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
-                    siteID: siteID,
-                    eligibilityService: POSEligibilityService()
-                )
-                let preferredConnectionMethod: CardReaderConnectionMethod
-                switch await tapToPayAvailabilityChecker.checkAvailability() {
-                case .available:
-                    preferredConnectionMethod = .tapToPay
-                case .unknown, .unavailable:
-                    preferredConnectionMethod = .bluetooth
-                }
-
-                let staffSettingsMode = self.createStaffSettingsMode(
-                    siteID: siteID,
-                    stores: storesManager
-                )
-
-                let posView = PointOfSaleEntryPointView(
-                    siteID: siteID,
-                    itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
-                    popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
-                    couponProvider: posCouponProvider,
-                    couponFetchStrategyFactory: posCouponFetchStrategyFactory,
-                    orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
-                        siteID: siteID,
-                        credentials: credentials,
-                        selectedSite: defaultSitePublisher,
-                        appPasswordSupportState: isAppPasswordSupported,
-                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-                        analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
-                    ),
-                    orderService: orderService,
-                    refundsService: refundsService,
-                    onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
-                        self?.updateDefaultConfigurationForPointOfSale(isEnabled)
-                    },
-                    cardPresentPaymentService: cardPresentPaymentService,
-                    receiptService: receiptService,
-                    pluginsService: pluginsService,
-                    settingsService: settingsService,
-                    collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
-                    searchHistoryService: POSSearchHistoryService(siteID: siteID),
-                    barcodeScanService: barcodeScanService,
-                    posEligibilityChecker: eligibilityChecker,
-                    siteTimezone: siteTimezone,
-                    defaultSiteName: storesManager.sessionManager.defaultSite?.name,
-                    siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
-                    grdbManager: grdbManager,
-                    catalogSyncCoordinator: catalogSyncCoordinator,
-                    isLocalCatalogEligible: isLocalCatalogEligible,
-                    sunsetWarningChecker: sunsetWarningChecker,
-                    tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
-                    preferredConnectionMethod: preferredConnectionMethod,
-                    services: serviceAdaptor,
-                    itemProvider: itemProvider,
-                    staffSettingsMode: staffSettingsMode
-                )
-
-                let hostingController = UIHostingController(rootView: posView)
-                hostingController.modalPresentationStyle = .fullScreen
-                viewControllerToPresent.present(hostingController, animated: true)
             }
+
+            let receiptService: POSReceiptServiceProtocol
+            if let sharedNetwork = storesManager.posSharedNetwork {
+                receiptService = POSReceiptService(siteID: siteID, network: sharedNetwork)
+            } else if let fallbackService = POSReceiptService(siteID: siteID,
+                                                              credentials: credentials,
+                                                              selectedSite: defaultSitePublisher,
+                                                              appPasswordSupportState: isAppPasswordSupported) {
+                receiptService = fallbackService
+            } else {
+                DDLogError("POSReceiptService not provided")
+                return
+            }
+
+            let orderService: POSOrderServiceProtocol
+            if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+                orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+            } else if let sharedNetwork = storesManager.posSharedNetwork {
+                orderService = POSOrderService(siteID: siteID, network: sharedNetwork)
+            } else if let posOrderService = POSOrderService(siteID: siteID,
+                                                       credentials: credentials,
+                                                       selectedSite: defaultSitePublisher,
+                                                       appPasswordSupportState: isAppPasswordSupported) {
+                orderService = posOrderService
+            } else {
+                DDLogError("POSOrderService not provided")
+                return
+            }
+
+            var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
+            if ProcessConfiguration.shouldLoadMockedPOSProducts {
+                itemProvider = PointOfSaleItemServiceScreenshotMock()
+            }
+
+            // Resolve TTP eligibility once, up front, so we can hand the right
+            // preferred method down to POSPaymentModel. The same checker is also
+            // passed in for the availability controller that drives the buttons /
+            // hero, but POSPaymentModel needs the answer synchronously to know
+            // whether to skip the BT auto-collect on checkout entry.
+            let tapToPayAvailabilityChecker = POSTapToPayAvailabilityChecker(
+                siteID: siteID,
+                eligibilityService: POSEligibilityService()
+            )
+            let preferredConnectionMethod: CardReaderConnectionMethod
+            switch await tapToPayAvailabilityChecker.checkAvailability() {
+            case .available:
+                preferredConnectionMethod = .tapToPay
+            case .unknown, .unavailable:
+                preferredConnectionMethod = .bluetooth
+            }
+
+            let staffSettingsMode = self.createStaffSettingsMode(
+                siteID: siteID,
+                stores: storesManager
+            )
+
+            let posView = PointOfSaleEntryPointView(
+                siteID: siteID,
+                itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                couponProvider: posCouponProvider,
+                couponFetchStrategyFactory: posCouponFetchStrategyFactory,
+                orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
+                    siteID: siteID,
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported,
+                    currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                    analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
+                ),
+                orderService: orderService,
+                refundsService: refundsService,
+                onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
+                    self?.updateDefaultConfigurationForPointOfSale(isEnabled)
+                },
+                cardPresentPaymentService: cardPresentPaymentService,
+                receiptService: receiptService,
+                pluginsService: pluginsService,
+                settingsService: settingsService,
+                collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
+                searchHistoryService: POSSearchHistoryService(siteID: siteID),
+                barcodeScanService: barcodeScanService,
+                posEligibilityChecker: eligibilityChecker,
+                siteTimezone: siteTimezone,
+                defaultSiteName: storesManager.sessionManager.defaultSite?.name,
+                siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                grdbManager: grdbManager,
+                catalogSyncCoordinator: catalogSyncCoordinator,
+                isLocalCatalogEligible: isLocalCatalogEligible,
+                sunsetWarningChecker: sunsetWarningChecker,
+                tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
+                preferredConnectionMethod: preferredConnectionMethod,
+                services: serviceAdaptor,
+                itemProvider: itemProvider,
+                staffSettingsMode: staffSettingsMode
+            )
+
+            let hostingController = UIHostingController(rootView: posView)
+            hostingController.modalPresentationStyle = .fullScreen
+            viewControllerToPresent.present(hostingController, animated: true)
         }
     }
 }

@@ -16,6 +16,21 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
     private let siteID: Int64
     private let mapper: POSRefundMapper
 
+    /// Creates a refunds service using a shared network instance.
+    /// Use this init so credential overrides (POS operator switching) apply to refund requests.
+    public init(siteID: Int64,
+                network: Network,
+                currencySettings: CurrencySettings
+    ) {
+        self.siteID = siteID
+        self.currencySettings = currencySettings
+        self.refundsRemote = RefundsRemote(network: network)
+        self.paymentGatewayRemote = PaymentGatewayRemote(network: network)
+        self.refundCalculator = POSRefundCalculator()
+        self.mapper = POSRefundMapper()
+    }
+
+    @available(*, deprecated, message: "Use init(siteID:network:currencySettings:) to share the network instance with credential overrides")
     public init(siteID: Int64,
                 credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,

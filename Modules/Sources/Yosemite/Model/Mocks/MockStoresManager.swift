@@ -1,6 +1,7 @@
 import Combine
 import Storage
 import enum NetworkingCore.RequestAuthenticationMode
+import protocol Networking.Network
 
 public class MockStoresManager: StoresManager {
 
@@ -264,6 +265,8 @@ public class MockStoresManager: StoresManager {
     public func shouldAuthenticateAdminPage(for site: Site) -> Bool {
         return false
     }
+
+    public var posSharedNetwork: Network? { nil }
 
     public func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
         // no-op

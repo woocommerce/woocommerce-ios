@@ -391,6 +391,10 @@ class DefaultStoresManager: StoresManager {
         return true
     }
 
+    var posSharedNetwork: Network? {
+        (state as? AuthenticatedState)?.sharedNetwork
+    }
+
     func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
         guard let state = state as? AuthenticatedState else { return }
         state.overridePOSCredentials(username: username, applicationPassword: applicationPassword, siteAddress: siteAddress)

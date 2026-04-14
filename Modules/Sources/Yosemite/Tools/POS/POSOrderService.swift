@@ -34,6 +34,14 @@ public final class POSOrderService: POSOrderServiceProtocol {
     private let siteID: Int64
     private let ordersRemote: POSOrdersRemoteProtocol
 
+    /// Creates an order service using a shared network instance.
+    /// Use this init so credential overrides (POS operator switching) apply to order requests.
+    public convenience init(siteID: Int64, network: Network) {
+        self.init(siteID: siteID,
+                  ordersRemote: OrdersRemote(network: network))
+    }
+
+    @available(*, deprecated, message: "Use init(siteID:network:) to share the network instance with credential overrides")
     public convenience init?(siteID: Int64,
                              credentials: Credentials?,
                              selectedSite: AnyPublisher<JetpackSite?, Never>,

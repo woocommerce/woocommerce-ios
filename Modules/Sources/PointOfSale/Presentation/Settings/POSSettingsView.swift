@@ -112,6 +112,11 @@ extension POSSettingsView {
     }
 
     private func requestPermissionForStaff() {
+        // No PINs configured yet - admin is setting up for the first time
+        guard permissions.hasAnyPINs else {
+            selection = .staff
+            return
+        }
         staffOverrideHandler.requestPermission(
             for: .editPOSSettings,
             actionDescription: Localization.staffOverrideDescription,

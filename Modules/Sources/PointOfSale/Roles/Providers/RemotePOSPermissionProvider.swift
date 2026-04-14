@@ -1,4 +1,5 @@
 import Foundation
+import enum Networking.POSAuthError
 import Observation
 
 /// Response from POST /wc/v3/pos/auth/pin
@@ -172,7 +173,11 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     }
 
     public func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? {
-        try await requestApproval(managerPIN: managerPIN, action: capability, orderID: orderID)
+        if Self.backendApprovableActions.contains(capability) {
+            return try await requestApproval(managerPIN: managerPIN, action: capability, orderID: orderID)
+        } else {
+            return try await verifyPINAndCheckCapability(pin: managerPIN, capability: capability)
+        }
     }
 
     public func signIn(_ posOperator: POSOperator) {
@@ -249,15 +254,22 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Manager Approval
 
+    /// Actions that the backend's `/pos/auth/approve` endpoint supports.
+    /// All other actions use PIN authentication + local capability verification.
+    private static let backendApprovableActions: Set<String> = [
+        POSCapability.refundOrders.rawValue,
+        POSCapability.voidOrders.rawValue
+    ]
+
     /// Requests manager approval for a restricted action via the approval service.
     /// - Parameters:
     ///   - managerPIN: The manager's PIN.
     ///   - action: The capability being approved (e.g. "woocommerce_refund_orders").
     ///   - orderID: The order ID for context, if applicable.
     /// - Returns: An approval token string.
-    public func requestApproval(managerPIN: String,
-                                action: String,
-                                orderID: Int64? = nil) async throws -> String {
+    private func requestApproval(managerPIN: String,
+                                 action: String,
+                                 orderID: Int64? = nil) async throws -> String {
         var context: [String: Int64] = [:]
         if let orderID {
             context["order_id"] = orderID
@@ -265,5 +277,20 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         return try await approvalService.requestApproval(pin: managerPIN,
                                                           action: action,
                                                           context: context)
+    }
+
+    /// Verifies a PIN via the backend and checks if the authenticated user has the required capability.
+    /// Used for actions that the backend approval endpoint doesn't support (e.g. settings, coupons).
+    private func verifyPINAndCheckCapability(pin: String, capability: String) async throws -> String? {
+        let response = try await authenticatePINRemote(pin, "default")
+        let enabledCapabilities = Set(
+            response.capabilities
+                .filter { $0.value }
+                .map { $0.key }
+        )
+        guard enabledCapabilities.contains(capability) else {
+            throw POSAuthError.approvalForbidden
+        }
+        return nil
     }
 }

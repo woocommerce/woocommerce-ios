@@ -359,8 +359,12 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let ratesWithError = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
                                                             defaultRates: [],
-                                                            defaultErrors: [ShippingLabelRateError(code: "rate_error",
-                                                                                                  message: "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character")],
+                                                            defaultErrors: [ShippingLabelRateError(
+                                                                code: "rate_error",
+                                                                message: "shipment.to_address: invalid name; " +
+                                                                "A first and last name is required if passed in: " +
+                                                                "input name needs at least 1 space character"
+                                                            )],
                                                             signatureRequired: [],
                                                             adultSignatureRequired: [],
                                                             carbonNeutral: [],

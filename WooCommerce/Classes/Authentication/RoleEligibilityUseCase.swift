@@ -1,4 +1,5 @@
 import Yosemite
+import enum NetworkingCore.DotcomError
 
 /// Encapsulates the logic for checking the eligibility of user roles.
 protocol RoleEligibilityUseCaseProtocol {
@@ -80,7 +81,11 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
                 completion(.success(()))
 
             case .failure(let error):
-                DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(error)")
+                if case .requestFailed(let message, _) = error as? DotcomError {
+                    DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(message ?? error.localizedDescription)")
+                } else {
+                    DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(error)")
+                }
                 completion(.failure(.unknown(error: error)))
             }
         }

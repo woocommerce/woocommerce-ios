@@ -121,11 +121,7 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Response Empty", comment: "WordPress.com Error thrown when the response body is empty")
         case .invalidToken:
             return NSLocalizedString("Dotcom Token Invalid", comment: "WordPress.com Invalid Token")
-        case .requestFailed(let message, _):
-            if let message {
-                let format = NSLocalizedString("Dotcom Request Failed: %1$@", comment: "WordPress.com Request Failure with details. Parameter: %1$@ - error message")
-                return String.localizedStringWithFormat(format, message)
-            }
+        case .requestFailed:
             return NSLocalizedString("Dotcom Request Failed", comment: "WordPress.com Request Failure")
         case .unauthorized:
             return NSLocalizedString("Dotcom Missing Token", comment: "WordPress.com Missing Token")

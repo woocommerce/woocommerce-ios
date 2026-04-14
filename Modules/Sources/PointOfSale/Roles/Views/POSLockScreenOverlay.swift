@@ -1,4 +1,5 @@
 import SwiftUI
+import enum Networking.POSAuthError
 
 /// Overlay that shows the POS lock screen when the permission provider is locked.
 struct POSLockScreenOverlay: View {
@@ -81,11 +82,26 @@ struct POSLockScreenOverlay: View {
     private func handlePINEntered(_ pin: String) {
         pinState = .loading
         Task { @MainActor in
-            let success = await model.authenticatePIN(pin)
-            if !success {
+            do {
+                let success = try await model.authenticatePIN(pin)
+                if !success {
+                    pinState = .error(message: Localization.invalidPIN)
+                } else {
+                    pinState = .idle
+                }
+            } catch let error as POSAuthError {
+                switch error {
+                case .rateLimited(let retryAfter):
+                    if retryAfter < 0 {
+                        pinState = .lockout(message: Localization.permanentlyLocked)
+                    } else {
+                        pinState = .lockout(message: error.errorDescription ?? Localization.invalidPIN)
+                    }
+                default:
+                    pinState = .error(message: error.errorDescription ?? Localization.invalidPIN)
+                }
+            } catch {
                 pinState = .error(message: Localization.invalidPIN)
-            } else {
-                pinState = .idle
             }
         }
     }
@@ -95,6 +111,11 @@ struct POSLockScreenOverlay: View {
             "pos.lockScreen.invalidPIN",
             value: "Invalid PIN",
             comment: "Error shown when an incorrect PIN is entered on the POS lock screen"
+        )
+        static let permanentlyLocked = NSLocalizedString(
+            "pos.lockScreen.permanentlyLocked",
+            value: "Too many failed attempts. Log out to reset.",
+            comment: "Message shown on the POS lock screen after too many failed PIN attempts, requiring logout to recover."
         )
         static let forgotPINTitle = NSLocalizedString(
             "pos.lockScreen.forgotPIN.title",
@@ -131,6 +152,5 @@ struct POSLockScreenOverlay: View {
 
 /// No-op authenticator used when the provider type is neither local nor remote.
 private struct NoOpPOSPINAuthenticator: POSPINAuthenticating {
-    func authenticate(pin: String) async -> Bool { false }
-    func verifyManagerPIN(_ pin: String) -> Bool { false }
+    func authenticate(pin: String) async throws -> Bool { false }
 }

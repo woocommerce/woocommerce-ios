@@ -286,7 +286,7 @@ private extension POSTabCoordinator {
                 let permissions = serviceAdaptor.permissions
                 staffSettingsMode = .local(pinService: pinService, onAdminPINSet: { pin in
                     if let provider = permissions as? LocalPOSPermissionProvider {
-                        provider.authenticatePIN(pin)
+                        try? provider.authenticatePIN(pin)
                     }
                 })
             }

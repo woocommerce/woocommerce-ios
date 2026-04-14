@@ -78,33 +78,33 @@ struct POSLockScreenModelTests {
 
     // MARK: - authenticatePIN
 
-    @Test func test_authenticatePIN_when_valid_then_returns_true() async {
+    @Test func test_authenticatePIN_when_valid_then_returns_true() async throws {
         // Given
         let authenticator = MockPOSPINAuthenticator()
         authenticator.authenticateResult = true
         let sut = makeSUT(authenticator: authenticator)
 
         // When
-        let result = await sut.authenticatePIN("1234")
+        let result = try await sut.authenticatePIN("1234")
 
         // Then
         #expect(result == true)
     }
 
-    @Test func test_authenticatePIN_when_invalid_then_returns_false() async {
+    @Test func test_authenticatePIN_when_invalid_then_returns_false() async throws {
         // Given
         let authenticator = MockPOSPINAuthenticator()
         authenticator.authenticateResult = false
         let sut = makeSUT(authenticator: authenticator)
 
         // When
-        let result = await sut.authenticatePIN("9999")
+        let result = try await sut.authenticatePIN("9999")
 
         // Then
         #expect(result == false)
     }
 
-    @Test func test_authenticatePIN_when_valid_then_lock_screen_dismisses() async {
+    @Test func test_authenticatePIN_when_valid_then_lock_screen_dismisses() async throws {
         // Given
         let provider = MockPOSPermissionProvider()
         provider.isLocked = true
@@ -119,21 +119,21 @@ struct POSLockScreenModelTests {
         // When - simulate what happens after auth: provider unlocks
         provider.isLocked = false
         provider.currentOperator = makeOperator()
-        let result = await sut.authenticatePIN("1234")
+        let result = try await sut.authenticatePIN("1234")
 
         // Then
         #expect(result == true)
         #expect(sut.isShowingLockScreen == false)
     }
 
-    @Test func test_authenticatePIN_passes_pin_to_authenticator() async {
+    @Test func test_authenticatePIN_passes_pin_to_authenticator() async throws {
         // Given
         let authenticator = MockPOSPINAuthenticator()
         authenticator.authenticateResult = true
         let sut = makeSUT(authenticator: authenticator)
 
         // When
-        _ = await sut.authenticatePIN("5678")
+        _ = try await sut.authenticatePIN("5678")
 
         // Then
         #expect(authenticator.lastAuthenticatedPIN == "5678")
@@ -163,17 +163,14 @@ struct POSLockScreenModelTests {
 
 final class MockPOSPINAuthenticator: POSPINAuthenticating {
     var authenticateResult: Bool = false
-    var verifyManagerPINResult: Bool = false
+    var errorToThrow: Error?
     var lastAuthenticatedPIN: String?
-    var lastVerifiedManagerPIN: String?
 
-    func authenticate(pin: String) async -> Bool {
+    func authenticate(pin: String) async throws -> Bool {
         lastAuthenticatedPIN = pin
+        if let errorToThrow {
+            throw errorToThrow
+        }
         return authenticateResult
-    }
-
-    func verifyManagerPIN(_ pin: String) -> Bool {
-        lastVerifiedManagerPIN = pin
-        return verifyManagerPINResult
     }
 }

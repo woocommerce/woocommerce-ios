@@ -38,6 +38,7 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
     private let appAccountUserID: Int64
     private let appAccountDisplayName: String
     private var autoLockTimer: Timer?
+    private let rateLimiter = POSLocalRateLimiter()
 
     // MARK: - Init
 
@@ -68,9 +69,12 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
     }
 
     public func requestManagerApproval(managerPIN: String, for capability: String, orderID: Int64?) async throws -> String? {
+        try rateLimiter.checkAllowed()
         guard verifyManagerPIN(managerPIN) else {
-            throw POSAuthError.invalidPIN
+            rateLimiter.recordFailure()
+            throw try rateLimiter.errorForCurrentState(fallback: .invalidPIN)
         }
+        rateLimiter.reset()
         return nil
     }
 
@@ -111,9 +115,13 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
     }
 
     /// Verifies a PIN against all roles and signs in the matching operator.
-    /// Returns the created operator on success, or nil if no match.
-    public func authenticatePIN(_ pin: String) -> POSOperator? {
+    /// Returns the created operator on success, nil if no match.
+    /// Throws `POSAuthError.rateLimited` if too many failed attempts.
+    @discardableResult
+    public func authenticatePIN(_ pin: String) throws -> POSOperator? {
+        try rateLimiter.checkAllowed()
         guard let role = pinService.verifyPIN(pin) else {
+            rateLimiter.recordFailure()
             return nil
         }
 
@@ -137,17 +145,19 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
             )
         }
 
+        rateLimiter.reset()
         signIn(op)
         return op
     }
 
-    /// Verifies a manager PIN without signing in. Used for manager override approval.
-    public func verifyManagerPIN(_ pin: String) -> Bool {
-        pinService.verifyPIN(pin, for: .manager)
+    /// Whether too many failed PIN attempts have permanently locked the device.
+    /// The only recovery is to log out.
+    public var isPermanentlyLocked: Bool {
+        rateLimiter.isPermanentlyLocked
     }
 
-    /// Verifies the app account holder PIN. Used for exiting POS.
-    public func verifyAccountHolderPIN(_ pin: String) -> Bool {
+    /// Verifies a manager PIN without signing in. Used for manager override approval.
+    public func verifyManagerPIN(_ pin: String) -> Bool {
         pinService.verifyPIN(pin, for: .manager)
     }
 }

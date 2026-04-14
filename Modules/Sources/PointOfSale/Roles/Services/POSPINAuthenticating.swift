@@ -1,9 +1,10 @@
 import Foundation
 
 /// Protocol for authenticating PINs against the permission provider.
+/// Returns true on success, false on wrong PIN.
+/// Throws `POSAuthError.rateLimited` when too many attempts.
 protocol POSPINAuthenticating {
-    func authenticate(pin: String) async -> Bool
-    func verifyManagerPIN(_ pin: String) -> Bool
+    func authenticate(pin: String) async throws -> Bool
 }
 
 /// Authenticates PINs using the local on-device PIN service.
@@ -14,12 +15,8 @@ final class LocalPOSPINAuthenticator: POSPINAuthenticating {
         self.provider = provider
     }
 
-    func authenticate(pin: String) async -> Bool {
-        provider.authenticatePIN(pin) != nil
-    }
-
-    func verifyManagerPIN(_ pin: String) -> Bool {
-        provider.verifyManagerPIN(pin)
+    func authenticate(pin: String) async throws -> Bool {
+        try provider.authenticatePIN(pin) != nil
     }
 }
 
@@ -31,16 +28,8 @@ final class RemotePOSPINAuthenticator: POSPINAuthenticating {
         self.provider = provider
     }
 
-    func authenticate(pin: String) async -> Bool {
-        do {
-            _ = try await provider.authenticateRemotePIN(pin, registerID: "default")
-            return true
-        } catch {
-            return false
-        }
-    }
-
-    func verifyManagerPIN(_ pin: String) -> Bool {
-        false
+    func authenticate(pin: String) async throws -> Bool {
+        _ = try await provider.authenticateRemotePIN(pin, registerID: "default")
+        return true
     }
 }

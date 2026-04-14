@@ -44,8 +44,10 @@ final class POSLockScreenModel: ObservableObject {
         }
     }
 
-    func authenticatePIN(_ pin: String) async -> Bool {
-        let success = await authenticator.authenticate(pin: pin)
+    /// Authenticates a PIN. Returns true on success, false on wrong PIN.
+    /// Throws `POSAuthError.rateLimited` when too many failed attempts.
+    func authenticatePIN(_ pin: String) async throws -> Bool {
+        let success = try await authenticator.authenticate(pin: pin)
         if success {
             updateLockState()
         }

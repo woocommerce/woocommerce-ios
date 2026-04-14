@@ -129,14 +129,14 @@ struct LocalPOSPermissionProviderTests {
 
     // MARK: - authenticatePIN
 
-    @Test func test_authenticatePIN_when_manager_pin_matches_then_signs_in_as_manager() {
+    @Test func test_authenticatePIN_when_manager_pin_matches_then_signs_in_as_manager() throws {
         // Given
         let pinService = makePINService()
         pinService.setPIN("1234", for: .manager)
         let sut = makeSUT(pinService: pinService)
 
         // When
-        let op = sut.authenticatePIN("1234")
+        let op = try sut.authenticatePIN("1234")
 
         // Then
         #expect(op != nil)
@@ -149,14 +149,14 @@ struct LocalPOSPermissionProviderTests {
         #expect(sut.isLocked == false)
     }
 
-    @Test func test_authenticatePIN_when_cashier_pin_matches_then_signs_in_as_cashier() {
+    @Test func test_authenticatePIN_when_cashier_pin_matches_then_signs_in_as_cashier() throws {
         // Given
         let pinService = makePINService()
         pinService.setPIN("5678", for: .cashier)
         let sut = makeSUT(pinService: pinService)
 
         // When
-        let op = sut.authenticatePIN("5678")
+        let op = try sut.authenticatePIN("5678")
 
         // Then
         #expect(op != nil)
@@ -168,7 +168,7 @@ struct LocalPOSPermissionProviderTests {
         #expect(sut.currentOperator == op)
     }
 
-    @Test func test_authenticatePIN_when_locked_and_valid_pin_then_unlocks() {
+    @Test func test_authenticatePIN_when_locked_and_valid_pin_then_unlocks() throws {
         // Given
         let pinService = makePINService()
         pinService.setPIN("1234", for: .manager)
@@ -178,7 +178,7 @@ struct LocalPOSPermissionProviderTests {
         #expect(sut.currentOperator == nil)
 
         // When
-        let op = sut.authenticatePIN("1234")
+        let op = try sut.authenticatePIN("1234")
 
         // Then
         #expect(op != nil)
@@ -186,14 +186,14 @@ struct LocalPOSPermissionProviderTests {
         #expect(sut.currentOperator != nil)
     }
 
-    @Test func test_authenticatePIN_when_no_match_then_returns_nil() {
+    @Test func test_authenticatePIN_when_no_match_then_returns_nil() throws {
         // Given
         let pinService = makePINService()
         pinService.setPIN("1234", for: .manager)
         let sut = makeSUT(pinService: pinService)
 
         // When
-        let op = sut.authenticatePIN("9999")
+        let op = try sut.authenticatePIN("9999")
 
         // Then
         #expect(op == nil)
@@ -233,26 +233,6 @@ struct LocalPOSPermissionProviderTests {
     }
 
     // MARK: - verifyAccountHolderPIN
-
-    @Test func test_verifyAccountHolderPIN_when_manager_pin_correct_then_returns_true() {
-        // Given
-        let pinService = makePINService()
-        pinService.setPIN("1234", for: .manager)
-        let sut = makeSUT(pinService: pinService)
-
-        // When / Then
-        #expect(sut.verifyAccountHolderPIN("1234") == true)
-    }
-
-    @Test func test_verifyAccountHolderPIN_when_wrong_then_returns_false() {
-        // Given
-        let pinService = makePINService()
-        pinService.setPIN("1234", for: .manager)
-        let sut = makeSUT(pinService: pinService)
-
-        // When / Then
-        #expect(sut.verifyAccountHolderPIN("9999") == false)
-    }
 
     // MARK: - requestManagerApproval
 

@@ -82,7 +82,7 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
 
             case .failure(let error):
                 if case .requestFailed(let message, _) = error as? DotcomError {
-                    DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(message ?? error.localizedDescription)")
+                    DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(message ?? String(describing: error))")
                 } else {
                     DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(error)")
                 }

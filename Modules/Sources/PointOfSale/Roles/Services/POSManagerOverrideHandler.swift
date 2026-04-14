@@ -57,6 +57,11 @@ final class POSManagerOverrideHandler {
                            permissions: POSPermissionProviding,
                            orderID: Int64? = nil,
                            onApproved: @escaping (String?) -> Void) -> Bool {
+        // No PINs configured - no security boundary to enforce
+        guard permissions.hasAnyPINs else {
+            onApproved(nil)
+            return true
+        }
         let result = permissions.checkPermission(capability)
         switch result {
         case .allowed:

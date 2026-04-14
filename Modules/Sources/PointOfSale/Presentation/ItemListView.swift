@@ -592,10 +592,6 @@ private extension ItemListView {
 
 private extension ItemListView {
     func requestPermissionForCouponCreation() {
-        guard permissions.hasAnyPINs else {
-            showCouponCreationModal = true
-            return
-        }
         couponOverrideHandler.requestPermission(
             for: .publishCoupons,
             actionDescription: Localization.couponOverrideDescription,

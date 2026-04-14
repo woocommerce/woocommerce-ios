@@ -310,6 +310,37 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    func test_loadLabelRates_maps_invalid_destination_name_rate_error() throws {
+        // Given
+        let remote = MockWooShippingRemote()
+        let ratesWithError = [ShippingLabelCarriersAndRates(packageID: "123",
+                                                            defaultRates: [],
+                                                            defaultErrors: [ShippingLabelRateError(code: "rate_error",
+                                                                                                  message: "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character")],
+                                                            signatureRequired: [],
+                                                            adultSignatureRequired: [],
+                                                            carbonNeutral: [],
+                                                            saturdayDelivery: [],
+                                                            additionalHandling: [])]
+        remote.whenLoadLabelRates(siteID: sampleSiteID, thenReturn: .success(ratesWithError))
+        let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result: Result<[ShippingLabelCarriersAndRates], Error> = waitFor { promise in
+            let action = WooShippingAction.loadLabelRates(siteID: self.sampleSiteID,
+                                                          orderID: self.sampleOrderID,
+                                                          originAddress: WooShippingAddress.fake(),
+                                                          destinationAddress: WooShippingAddress.fake(),
+                                                          packages: [ShippingLabelPackageSelected.fake()]) { _, result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(result.failure as? WooShippingLoadLabelRatesError)
+    }
+
     func test_loadLabelRates_returns_sent_packages_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()

@@ -151,6 +151,7 @@ struct RemotePOSPermissionProviderTests {
                 capturedRegisterID = registerID
                 return response
             },
+            verifyPINRemote: { _ in self.makeVerifyResponse() },
             appAccountUserID: 1
         )
 
@@ -382,9 +383,12 @@ struct RemotePOSPermissionProviderTests {
 
     private func makeSUT(pinAuthResponse: POSPINAuthResponse? = nil,
                          pinAuthError: Error? = nil,
+                         verifyResponse: POSPINVerifyResponse? = nil,
+                         verifyError: Error? = nil,
                          approvalService: MockApprovalService = MockApprovalService(),
                          appAccountUserID: Int64 = 1) -> RemotePOSPermissionProvider {
         let response = pinAuthResponse ?? makePINAuthResponse()
+        let defaultVerify = verifyResponse ?? makeVerifyResponse()
         return RemotePOSPermissionProvider(
             approvalService: approvalService,
             authenticatePINRemote: { _, _ in
@@ -392,6 +396,12 @@ struct RemotePOSPermissionProviderTests {
                     throw error
                 }
                 return response
+            },
+            verifyPINRemote: { _ in
+                if let error = verifyError {
+                    throw error
+                }
+                return defaultVerify
             },
             appAccountUserID: appAccountUserID
         )
@@ -402,6 +412,9 @@ struct RemotePOSPermissionProviderTests {
             approvalService: approvalService,
             authenticatePINRemote: { _, _ in
                 self.makePINAuthResponse()
+            },
+            verifyPINRemote: { _ in
+                self.makeVerifyResponse()
             },
             appAccountUserID: 1
         )
@@ -428,6 +441,24 @@ struct RemotePOSPermissionProviderTests {
             applicationPasswordUUID: applicationPasswordUUID,
             sessionExpires: sessionExpires,
             idleTimeoutSeconds: idleTimeoutSeconds
+        )
+    }
+
+    private func makeVerifyResponse(
+        userID: Int64 = 100,
+        displayName: String = "Store Manager",
+        role: String = "shop_manager",
+        capabilities: [String: Bool] = [
+            "woocommerce_pos_access": true,
+            "woocommerce_pos_manage_settings": true,
+            "woocommerce_approve_overrides": true
+        ]
+    ) -> POSPINVerifyResponse {
+        POSPINVerifyResponse(
+            userID: userID,
+            displayName: displayName,
+            role: role,
+            capabilities: capabilities
         )
     }
 

@@ -65,6 +65,25 @@ public struct POSSessionCredential: Equatable, Sendable {
     }
 }
 
+/// Response from POST /wc/v3/pos/auth/pin/verify
+/// Verifies a PIN and returns user identity and capabilities without creating a session.
+public struct POSPINVerifyResponse: Equatable, Sendable {
+    public let userID: Int64
+    public let displayName: String
+    public let role: String
+    public let capabilities: [String: Bool]
+
+    public init(userID: Int64,
+                displayName: String,
+                role: String,
+                capabilities: [String: Bool]) {
+        self.userID = userID
+        self.displayName = displayName
+        self.role = role
+        self.capabilities = capabilities
+    }
+}
+
 /// Response from POST /wc/v3/pos/auth/approve
 public struct POSApprovalResponse: Decodable, Equatable, Sendable {
     public let approved: Bool
@@ -137,6 +156,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     private let approvalService: POSApprovalServiceProtocol
     private let authenticatePINRemote: (String, String) async throws -> POSPINAuthResponse
+    private let verifyPINRemote: (String) async throws -> POSPINVerifyResponse
     private let appAccountUserID: Int64
 
     // MARK: - Init
@@ -145,12 +165,15 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     /// - Parameters:
     ///   - approvalService: Service for requesting manager approval.
     ///   - authenticatePINRemote: Closure that calls POST /wc/v3/pos/auth/pin. Parameters: (pin, registerID).
+    ///   - verifyPINRemote: Closure that calls POST /wc/v3/pos/auth/pin/verify. Parameter: pin.
     ///   - appAccountUserID: The userID of the WP-authenticated app account holder.
     public init(approvalService: POSApprovalServiceProtocol,
                 authenticatePINRemote: @escaping (String, String) async throws -> POSPINAuthResponse,
+                verifyPINRemote: @escaping (String) async throws -> POSPINVerifyResponse,
                 appAccountUserID: Int64) {
         self.approvalService = approvalService
         self.authenticatePINRemote = authenticatePINRemote
+        self.verifyPINRemote = verifyPINRemote
         self.appAccountUserID = appAccountUserID
         self.isLocked = UserDefaults.standard.bool(forKey: Self.isLockedKey)
     }
@@ -279,10 +302,11 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
                                                           context: context)
     }
 
-    /// Verifies a PIN via the backend and checks if the authenticated user has the required capability.
+    /// Verifies a PIN via the dedicated verify endpoint and checks if the user has the required capability.
     /// Used for actions that the backend approval endpoint doesn't support (e.g. settings, coupons).
+    /// Unlike /pos/auth/pin, this does not create an Application Password session.
     private func verifyPINAndCheckCapability(pin: String, capability: String) async throws -> String? {
-        let response = try await authenticatePINRemote(pin, "default")
+        let response = try await verifyPINRemote(pin)
         let enabledCapabilities = Set(
             response.capabilities
                 .filter { $0.value }

@@ -31,6 +31,8 @@ public class POSAuthStore: Store {
             authenticatePIN(siteID: siteID, pin: pin, registerID: registerID, onCompletion: onCompletion)
         case let .requestApproval(siteID, pin, action, context, onCompletion):
             requestApproval(siteID: siteID, pin: pin, action: action, context: context, onCompletion: onCompletion)
+        case let .verifyPIN(siteID, pin, onCompletion):
+            verifyPIN(siteID: siteID, pin: pin, onCompletion: onCompletion)
         case let .fetchStaffStatus(siteID, onCompletion):
             fetchStaffStatus(siteID: siteID, onCompletion: onCompletion)
         case let .managePIN(siteID, userID, pin, action, onCompletion):
@@ -68,6 +70,19 @@ private extension POSAuthStore {
                                                               pin: pin,
                                                               action: action,
                                                               context: context)
+                onCompletion(.success(result))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func verifyPIN(siteID: Int64,
+                   pin: String,
+                   onCompletion: @escaping (Result<POSPINVerifyResult, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let result = try await remote.verifyPIN(siteID: siteID, pin: pin)
                 onCompletion(.success(result))
             } catch {
                 onCompletion(.failure(error))

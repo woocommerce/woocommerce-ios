@@ -70,6 +70,28 @@ struct POSStaffStatusMapper: Mapper {
     }
 }
 
+/// Maps a PIN verify response with the same envelope/error handling.
+struct POSPINVerifyResultMapper: Mapper {
+    typealias Output = POSPINVerifyResult
+
+    func map(response: Data) throws -> POSPINVerifyResult {
+        // Check for WC REST error at root level (direct REST)
+        if let wcError = try? JSONDecoder().decode(WCRESTError.self, from: response),
+           wcError.code != nil {
+            throw mapWCError(wcError)
+        }
+        if hasDataEnvelope(in: response) {
+            // Check for WC REST error inside the data envelope (Jetpack tunnel)
+            if let envelope = try? JSONDecoder().decode(WCRESTErrorEnvelope.self, from: response),
+               envelope.data.code != nil {
+                throw mapWCError(envelope.data)
+            }
+            return try JSONDecoder().decode(POSPINVerifyResultEnvelope.self, from: response).data
+        }
+        return try JSONDecoder().decode(POSPINVerifyResult.self, from: response)
+    }
+}
+
 // MARK: - Envelope wrappers for Jetpack tunnel responses
 
 private struct POSPINAuthResultEnvelope: Decodable {
@@ -82,6 +104,10 @@ private struct POSApprovalResultEnvelope: Decodable {
 
 private struct POSStaffStatusResponseEnvelope: Decodable {
     let data: POSStaffStatusResponse
+}
+
+private struct POSPINVerifyResultEnvelope: Decodable {
+    let data: POSPINVerifyResult
 }
 
 // MARK: - WC REST Error

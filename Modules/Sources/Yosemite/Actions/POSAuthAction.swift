@@ -25,6 +25,12 @@ public enum POSAuthAction: Action {
     case fetchStaffStatus(siteID: Int64,
                           onCompletion: (Result<[POSStaffUser], Error>) -> Void)
 
+    /// Verifies a PIN and returns user identity and capabilities without creating a session.
+    ///
+    case verifyPIN(siteID: Int64,
+                   pin: String,
+                   onCompletion: (Result<POSPINVerifyResult, Error>) -> Void)
+
     /// Sets or deletes a PIN for a POS staff user.
     ///
     case managePIN(siteID: Int64,

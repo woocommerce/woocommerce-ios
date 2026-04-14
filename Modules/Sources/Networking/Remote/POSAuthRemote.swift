@@ -71,6 +71,35 @@ public final class POSAuthRemote: Remote {
         }
     }
 
+    /// Verifies a PIN and returns the user's identity and capabilities
+    /// without creating an Application Password session.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site for which to verify the PIN.
+    ///   - pin: The PIN to verify.
+    /// - Returns: The verified user's identity and capabilities.
+    /// - Throws: `POSAuthError` when the PIN is invalid or another error occurs.
+    ///
+    public func verifyPIN(siteID: Int64, pin: String) async throws -> POSPINVerifyResult {
+        let path = Constants.authPINVerifyPath
+        let parameters: [String: Any] = [
+            ParameterKeys.pin: pin
+        ]
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        do {
+            return try await enqueue(request, mapper: POSPINVerifyResultMapper())
+        } catch let posError as POSAuthError {
+            throw posError
+        } catch {
+            throw POSAuthError.from(error)
+        }
+    }
+
     /// Fetches staff status including PIN setup state for all POS users.
     ///
     /// - Parameter siteID: Site for which to fetch staff status.
@@ -141,6 +170,7 @@ private extension POSAuthRemote {
 
     enum Constants {
         static let authPINPath = "pos/auth/pin"
+        static let authPINVerifyPath = "pos/auth/pin/verify"
         static let authApprovePath = "pos/auth/approve"
         static let pinStatusPath = "pos/auth/pin/status"
         static let pinManagePath = "pos/auth/pin/manage"

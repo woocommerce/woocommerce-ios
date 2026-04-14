@@ -47,6 +47,30 @@ struct POSPermissionAdaptor {
                         }
                     }
                 },
+                verifyPINRemote: { pin in
+                    try await withCheckedThrowingContinuation { continuation in
+                        let action = POSAuthAction.verifyPIN(
+                            siteID: siteID,
+                            pin: pin
+                        ) { result in
+                            switch result {
+                            case .success(let networkResult):
+                                let response = POSPINVerifyResponse(
+                                    userID: networkResult.userID,
+                                    displayName: networkResult.displayName,
+                                    role: networkResult.role,
+                                    capabilities: networkResult.capabilities
+                                )
+                                continuation.resume(returning: response)
+                            case .failure(let error):
+                                continuation.resume(throwing: error)
+                            }
+                        }
+                        Task { @MainActor in
+                            stores.dispatch(action)
+                        }
+                    }
+                },
                 appAccountUserID: userID
             )
             provider.onAuthenticated = { response in

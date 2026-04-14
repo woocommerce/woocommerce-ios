@@ -10,12 +10,12 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
     // MARK: - Capability Sets
 
     /// Capabilities for the local "Admin" role (the app account holder).
-    /// Includes `posManageStaff` which gates admin-only actions
+    /// Includes `posWriteSettings` which gates admin-only actions
     /// like managing staff and exiting POS.
     public static let adminCapabilities: Set<String> = [
         "woocommerce_pos_access",
-        "woocommerce_pos_manage_settings",
-        "woocommerce_pos_manage_staff",
+        "woocommerce_pos_read_settings",
+        "woocommerce_pos_write_settings",
         "woocommerce_void_orders",
         "woocommerce_refund_orders",
         "woocommerce_apply_discounts",

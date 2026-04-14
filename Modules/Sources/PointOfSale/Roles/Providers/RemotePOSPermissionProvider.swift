@@ -278,10 +278,11 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     // MARK: - Manager Approval
 
     /// Actions that the backend's `/pos/auth/approve` endpoint supports.
-    /// All other actions use PIN authentication + local capability verification.
+    /// All other actions use PIN verification + local capability check via `/pos/auth/pin/verify`.
     private static let backendApprovableActions: Set<String> = [
         POSCapability.refundOrders.rawValue,
-        POSCapability.voidOrders.rawValue
+        POSCapability.voidOrders.rawValue,
+        POSCapability.applyDiscounts.rawValue
     ]
 
     /// Requests manager approval for a restricted action via the approval service.

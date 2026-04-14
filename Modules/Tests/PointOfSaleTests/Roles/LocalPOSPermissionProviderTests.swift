@@ -319,8 +319,8 @@ struct LocalPOSPermissionProviderTests {
     @Test func test_adminCapabilities_contains_expected_capabilities() {
         // Then
         #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_access"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_manage_settings"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_manage_staff"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_read_settings"))
+        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_write_settings"))
         #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_void_orders"))
         #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_refund_orders"))
         #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_apply_discounts"))

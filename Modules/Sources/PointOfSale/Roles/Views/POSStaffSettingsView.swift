@@ -451,7 +451,7 @@ private extension POSStaffSettingsRemoteView {
     }
 
     private var canManageStaff: Bool {
-        permissions.hasCapability(.posManageStaff)
+        permissions.hasCapability(.posWriteSettings)
     }
 
     var footerText: some View {

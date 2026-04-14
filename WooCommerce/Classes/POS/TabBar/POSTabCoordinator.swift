@@ -216,7 +216,7 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
-            let serviceAdaptor = POSServiceLocatorAdaptor()
+            let serviceAdaptor = POSServiceLocatorAdaptor(posNetwork: posNetwork)
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
             let cardPresentPaymentService: CardPresentPaymentFacade
@@ -244,87 +244,86 @@ private extension POSTabCoordinator {
             // otherwise falls back to remote API-based scanning
             let barcodeScanService = createBarcodeScanService(isLocalCatalogEligible: isLocalCatalogEligible,
                                                               grdbManager: grdbManager)
-            let refundsService = POSRefundsService(siteID: siteID,
-                                                   credentials: credentials,
-                                                   selectedSite: defaultSitePublisher,
-                                                   appPasswordSupportState: isAppPasswordSupported,
-                                                   currencySettings: currencySettings)
 
-            if let receiptService = POSReceiptService(siteID: siteID,
-                                                      credentials: credentials,
-                                                      selectedSite: defaultSitePublisher,
-                                                      appPasswordSupportState: isAppPasswordSupported) {
-
-                let orderService: POSOrderServiceProtocol
-                if ProcessConfiguration.shouldBypassPOSOrderSyncing {
-                    orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
-                } else if let posOrderService = POSOrderService(siteID: siteID,
-                                                           credentials: credentials,
-                                                           selectedSite: defaultSitePublisher,
-                                                           appPasswordSupportState: isAppPasswordSupported) {
-                    orderService = posOrderService
-                } else {
-                    DDLogError("POSOrderService not provided")
-                    return
-                }
-
-                var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
-                if ProcessConfiguration.shouldLoadMockedPOSProducts {
-                    itemProvider = PointOfSaleItemServiceScreenshotMock()
-                }
-
-                let isBookingsEligible = storesManager.sessionManager.defaultSite
-                    .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
-
-                let staffSettingsMode = self.createStaffSettingsMode(
-                    siteID: siteID,
-                    stores: storesManager
-                )
-
-                let posView = PointOfSaleEntryPointView(
-                    siteID: siteID,
-                    itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
-                    popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
-                    couponProvider: posCouponProvider,
-                    couponFetchStrategyFactory: posCouponFetchStrategyFactory,
-                    orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
-                        siteID: siteID,
-                        credentials: credentials,
-                        selectedSite: defaultSitePublisher,
-                        appPasswordSupportState: isAppPasswordSupported,
-                        currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
-                        analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
-                    ),
-                    bookingListFetchStrategyFactory: posBookingListFetchStrategyFactory,
-                    isBookingsEligible: isBookingsEligible,
-                    orderService: orderService,
-                    refundsService: refundsService,
-                    onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
-                        self?.updateDefaultConfigurationForPointOfSale(isEnabled)
-                    },
-                    cardPresentPaymentService: cardPresentPaymentService,
-                    receiptService: receiptService,
-                    pluginsService: pluginsService,
-                    settingsService: settingsService,
-                    collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
-                    searchHistoryService: POSSearchHistoryService(siteID: siteID),
-                    barcodeScanService: barcodeScanService,
-                    posEligibilityChecker: eligibilityChecker,
-                    siteTimezone: siteTimezone,
-                    defaultSiteName: storesManager.sessionManager.defaultSite?.name,
-                    siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
-                    grdbManager: grdbManager,
-                    catalogSyncCoordinator: catalogSyncCoordinator,
-                    isLocalCatalogEligible: isLocalCatalogEligible,
-                    services: serviceAdaptor,
-                    itemProvider: itemProvider,
-                    staffSettingsMode: staffSettingsMode
-                )
-
-                let hostingController = UIHostingController(rootView: posView)
-                hostingController.modalPresentationStyle = .fullScreen
-                viewControllerToPresent.present(hostingController, animated: true)
+            // Shared network for all POS services that make mutating API calls.
+            // When a cashier authenticates via PIN, overridePOSCredentials() updates
+            // this network so refunds, orders, receipts, etc. are attributed correctly.
+            guard let credentials else {
+                DDLogError("⛔️ POS cannot start without credentials")
+                return
             }
+            let posNetwork = AlamofireNetwork(credentials: credentials,
+                                              selectedSite: defaultSitePublisher,
+                                              appPasswordSupportState: isAppPasswordSupported)
+
+            let refundsService = POSRefundsService(siteID: siteID,
+                                                   network: posNetwork,
+                                                   currencySettings: currencySettings)
+            let receiptService = POSReceiptService(siteID: siteID, network: posNetwork)
+
+            let orderService: POSOrderServiceProtocol
+            if ProcessConfiguration.shouldBypassPOSOrderSyncing {
+                orderService = POSOrderServiceScreenshotMock(currency: currencySettings.currencyCode.rawValue)
+            } else {
+                orderService = POSOrderService(siteID: siteID, network: posNetwork)
+            }
+
+            var itemProvider: Yosemite.PointOfSaleItemServiceProtocol? = nil
+            if ProcessConfiguration.shouldLoadMockedPOSProducts {
+                itemProvider = PointOfSaleItemServiceScreenshotMock()
+            }
+
+            let isBookingsEligible = storesManager.sessionManager.defaultSite
+                .map { CIABEligibilityChecker().isSiteCIAB($0) } ?? false
+
+            let staffSettingsMode = self.createStaffSettingsMode(
+                siteID: siteID,
+                stores: storesManager
+            )
+
+            let posView = PointOfSaleEntryPointView(
+                siteID: siteID,
+                itemFetchStrategyFactory: createItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                popularItemFetchStrategyFactory: createPopularItemFetchStrategyFactory(isLocalCatalogEnabled: isLocalCatalogEligible),
+                couponProvider: posCouponProvider,
+                couponFetchStrategyFactory: posCouponFetchStrategyFactory,
+                orderListFetchStrategyFactory: POSOrderListFetchStrategyFactory(
+                    siteID: siteID,
+                    credentials: credentials,
+                    selectedSite: defaultSitePublisher,
+                    appPasswordSupportState: isAppPasswordSupported,
+                    currencyFormatter: CurrencyFormatter(currencySettings: currencySettings),
+                    analytics: POSOrderListFetchAnalytics(analytics: serviceAdaptor.analytics)
+                ),
+                bookingListFetchStrategyFactory: posBookingListFetchStrategyFactory,
+                isBookingsEligible: isBookingsEligible,
+                orderService: orderService,
+                refundsService: refundsService,
+                onPointOfSaleModeActiveStateChange: { [weak self] isEnabled in
+                    self?.updateDefaultConfigurationForPointOfSale(isEnabled)
+                },
+                cardPresentPaymentService: cardPresentPaymentService,
+                receiptService: receiptService,
+                pluginsService: pluginsService,
+                settingsService: settingsService,
+                collectOrderPaymentAnalyticsTracker: collectPaymentAnalyticsAdaptor,
+                searchHistoryService: POSSearchHistoryService(siteID: siteID),
+                barcodeScanService: barcodeScanService,
+                posEligibilityChecker: eligibilityChecker,
+                siteTimezone: siteTimezone,
+                defaultSiteName: storesManager.sessionManager.defaultSite?.name,
+                siteSettings: ServiceLocator.selectedSiteSettings.siteSettings,
+                grdbManager: grdbManager,
+                catalogSyncCoordinator: catalogSyncCoordinator,
+                isLocalCatalogEligible: isLocalCatalogEligible,
+                services: serviceAdaptor,
+                itemProvider: itemProvider,
+                staffSettingsMode: staffSettingsMode
+            )
+
+            let hostingController = UIHostingController(rootView: posView)
+            hostingController.modalPresentationStyle = .fullScreen
+            viewControllerToPresent.present(hostingController, animated: true)
         }
     }
 }

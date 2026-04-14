@@ -15,7 +15,10 @@ import protocol PointOfSale.POSExternalViewProviding
 import protocol PointOfSale.POSPermissionProviding
 
 final class POSServiceLocatorAdaptor: POSDependencyProviding {
-    init() {
+    private let posNetwork: AlamofireNetwork?
+
+    init(posNetwork: AlamofireNetwork? = nil) {
+        self.posNetwork = posNetwork
     }
 
     var analytics: POSAnalyticsProviding {
@@ -50,7 +53,8 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         return POSPermissionAdaptor.createProvider(
             siteID: siteID,
             userID: userID,
-            displayName: displayName
+            displayName: displayName,
+            posNetwork: posNetwork
         )
     }()
 

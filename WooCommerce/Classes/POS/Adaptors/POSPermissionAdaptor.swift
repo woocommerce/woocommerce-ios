@@ -5,10 +5,14 @@ import enum Experiments.FeatureFlag
 
 /// Factory that creates the correct POS permission provider based on feature flags.
 struct POSPermissionAdaptor {
+    /// Creates the correct POS permission provider based on feature flags.
+    /// - Parameter posNetwork: The shared POS network instance. When provided, credential overrides
+    ///   after PIN auth update this network so all POS services use the operator's credentials.
     static func createProvider(
         siteID: Int64,
         userID: Int64,
         displayName: String,
+        posNetwork: AlamofireNetwork? = nil,
         stores: StoresManager = ServiceLocator.stores
     ) -> POSPermissionProviding {
         let featureFlagService = ServiceLocator.featureFlagService
@@ -74,14 +78,14 @@ struct POSPermissionAdaptor {
                 appAccountUserID: userID
             )
             provider.onAuthenticated = { response in
-                stores.overridePOSCredentials(
+                posNetwork?.overridePOSCredentials(
                     username: response.userLogin,
                     applicationPassword: response.applicationPassword,
                     siteAddress: siteURL
                 )
             }
             provider.onLock = {
-                stores.revertPOSCredentialOverride()
+                posNetwork?.revertPOSCredentialOverride()
             }
             return provider
         } else if featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalRoles) {

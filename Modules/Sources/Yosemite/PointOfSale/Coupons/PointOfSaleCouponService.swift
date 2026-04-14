@@ -31,13 +31,8 @@ public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
 
     public convenience init(siteID: Int64,
                             currencySettings: CurrencySettings,
-                            credentials: Credentials?,
-                            selectedSite: AnyPublisher<JetpackSite?, Never>,
-                            appPasswordSupportState: AnyPublisher<Bool, Never>,
+                            network: Network,
                             storage: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials,
-                                       selectedSite: selectedSite,
-                                       appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
                   currencySettings: currencySettings,
                   settingStoreMethods: SettingStoreMethods(storageManager: storage, network: network),

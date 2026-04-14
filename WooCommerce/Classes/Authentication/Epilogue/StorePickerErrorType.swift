@@ -20,31 +20,6 @@ enum StorePickerErrorType: Equatable {
         return .generic
     }
 
-    /// Extracts a compact technical summary from a `DotcomError.requestFailed` data dictionary.
-    /// Returns `nil` for non-DotcomError errors or when no useful data is available.
-    ///
-    static func technicalDetails(from error: Error) -> String? {
-        guard let dotcomError = error as? DotcomError,
-              case .requestFailed(let data) = dotcomError,
-              let data else {
-            return nil
-        }
-
-        var parts: [String] = []
-        if let status = data["status"]?.value {
-            parts.append("Status: \(status)")
-        }
-        if let errors = data["errors"]?.value as? [String: Any] {
-            if let code = errors["code"] {
-                parts.append("Error: \(code)")
-            }
-            if let message = errors["message"] {
-                parts.append("\(message)")
-            }
-        }
-        return parts.isEmpty ? nil : parts.joined(separator: "\n")
-    }
-
     var bodyText: String {
         switch self {
         case .serverError:

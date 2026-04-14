@@ -80,6 +80,7 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
                 completion(.success(()))
 
             case .failure(let error):
+                DDLogError("⛔️ Role eligibility check failed for site \(storeID): \(error)")
                 completion(.failure(.unknown(error: error)))
             }
         }

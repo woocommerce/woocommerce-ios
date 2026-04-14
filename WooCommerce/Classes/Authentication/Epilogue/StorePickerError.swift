@@ -8,9 +8,8 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
     /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
     ///
     static func createWithActions(presenting: UIViewController,
-                                  errorType: StorePickerErrorType = .generic,
-                                  technicalDetails: String? = nil) -> StorePickerErrorHostingController {
-        let viewController = StorePickerErrorHostingController(errorType: errorType, technicalDetails: technicalDetails)
+                                  errorType: StorePickerErrorType = .generic) -> StorePickerErrorHostingController {
+        let viewController = StorePickerErrorHostingController(errorType: errorType)
         viewController.setActions(troubleshootingAction: {
             WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: viewController)
         },
@@ -26,8 +25,8 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         return viewController
     }
 
-    init(errorType: StorePickerErrorType = .generic, technicalDetails: String? = nil) {
-        super.init(rootView: StorePickerError(errorType: errorType, technicalDetails: technicalDetails))
+    init(errorType: StorePickerErrorType = .generic) {
+        super.init(rootView: StorePickerError(errorType: errorType))
     }
 
     override func viewDidLoad() {
@@ -58,10 +57,6 @@ struct StorePickerError: View {
     ///
     let errorType: StorePickerErrorType
 
-    /// Technical details string to show in a detail sheet, if available.
-    ///
-    let technicalDetails: String?
-
     /// Closure invoked when the "Troubleshooting" button is pressed
     ///
     var troubleshootingAction: () -> Void = {}
@@ -73,15 +68,6 @@ struct StorePickerError: View {
     /// Closure invoked when the "Back To Sites" button is pressed
     ///
     var dismissAction: () -> Void = {}
-
-    /// Item used to present the technical details sheet.
-    ///
-    @State private var technicalDetailsItem: TechnicalDetailsItem?
-
-    init(errorType: StorePickerErrorType = .generic, technicalDetails: String? = nil) {
-        self.errorType = errorType
-        self.technicalDetails = technicalDetails
-    }
 
     var body: some View {
         // Adds an outer transparent padding and constraints the view max width
@@ -122,19 +108,10 @@ struct StorePickerError: View {
                         .buttonStyle(SecondaryButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
 
-                    if let technicalDetails {
-                        // Technical details button (close is handled by the header button)
-                        Button(Localization.viewTechnicalDetails) {
-                            technicalDetailsItem = TechnicalDetailsItem(details: technicalDetails)
-                        }
+                    // Dismiss button
+                    Button(Localization.back, action: dismissAction)
                         .buttonStyle(LinkButtonStyle())
                         .fixedSize(horizontal: false, vertical: true)
-                    } else {
-                        // Dismiss button
-                        Button(Localization.back, action: dismissAction)
-                            .buttonStyle(LinkButtonStyle())
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
                 }
             }
             .padding([.leading, .trailing, .bottom])
@@ -146,9 +123,6 @@ struct StorePickerError: View {
         .background(Color.clear)
         .scrollVerticallyIfNeeded()
         .frame(maxWidth: Layout.maxModalWidth)
-        .sheet(item: $technicalDetailsItem) { item in
-            TechnicalDetailsView(technicalDetails: item.details)
-        }
     }
 }
 
@@ -163,10 +137,6 @@ private extension StorePickerError {
                                                comment: "Text for the button to contact support from the store picker error screen")
         static let back = NSLocalizedString("Back to sites",
                                             comment: "Text for the button to dismiss the store picker error screen")
-        static let viewTechnicalDetails = NSLocalizedString(
-            "storePickerError.viewTechnicalDetails",
-            value: "View Technical Details",
-            comment: "Text for the button to view technical error details from the store picker error screen")
     }
 
     enum Layout {
@@ -192,9 +162,7 @@ struct StorePickerError_Preview: PreviewProvider {
         .previewDisplayName("Generic Error")
 
         VStack {
-            StorePickerError(errorType: .serverError,
-                             technicalDetails: "Status: 500\nError: http_request_failed\n"
-                                + "cURL error 28: Operation timed out after 3001 milliseconds")
+            StorePickerError(errorType: .serverError)
         }
         .padding()
         .background(Color.gray)

@@ -239,6 +239,9 @@ final class MainTabBarController: UITabBarController {
         cardPresentExpansionRefreshTask?.cancel()
     }
 
+    /// Whether we still need to check if POS should auto-reopen after app launch.
+    private var needsPOSAutoReopenCheck = Self.wasPOSLockedWhenTerminated
+
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
@@ -851,12 +854,6 @@ private extension MainTabBarController {
 
             // Update POS eligibility - coordinator will check actual eligibility if tab is visible
             posTabCoordinator?.updatePOSEligibility(isPOSTabVisible: isPOSTabVisible)
-
-            // Auto-reopen POS if it was locked when the app was terminated.
-            // This prevents killing the app from bypassing the lock screen.
-            if isPOSTabVisible, Self.wasPOSLockedWhenTerminated {
-                posTabCoordinator?.onTabSelected()
-            }
         }
     }
 
@@ -991,6 +988,7 @@ private extension MainTabBarController {
             localCatalogEligibilityService: stores.posCatalogEligibilityChecker
         )
         posTabCoordinator = coordinator
+        autoReopenPOSIfNeeded()
 
         // Setup bookings wrapped view controller
         let bookingsViewController = createBookingsViewController(siteID: siteID)
@@ -998,6 +996,16 @@ private extension MainTabBarController {
 
         // Updates site ID for the bookings tab to display correct bookings
         (bookingsContainerController.wrappedController as? BookingsTabViewHostingController)?.didSwitchStore(id: siteID)
+    }
+
+    /// Auto-reopens POS if it was locked when the app was terminated.
+    /// Defers to the next runloop to ensure the view hierarchy is ready for presentation.
+    private func autoReopenPOSIfNeeded() {
+        guard needsPOSAutoReopenCheck, posTabCoordinator != nil else { return }
+        needsPOSAutoReopenCheck = false
+        DispatchQueue.main.async { [weak self] in
+            self?.posTabCoordinator?.onTabSelected()
+        }
     }
 
     func createDashboardViewController(siteID: Int64) -> UIViewController {

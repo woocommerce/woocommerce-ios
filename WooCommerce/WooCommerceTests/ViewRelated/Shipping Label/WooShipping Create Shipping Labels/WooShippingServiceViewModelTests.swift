@@ -354,6 +354,38 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: true)))
     }
 
+    func test_when_loadLabelRates_receives_invalid_destination_name_rate_error_it_sets_error_state() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let ratesWithError = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
+                                                            defaultRates: [],
+                                                            defaultErrors: [ShippingLabelRateError(code: "rate_error",
+                                                                                                  message: "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character")],
+                                                            signatureRequired: [],
+                                                            adultSignatureRequired: [],
+                                                            carbonNeutral: [],
+                                                            saturdayDelivery: [],
+                                                            additionalHandling: [])]
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case let .loadLabelRates(_, _, _, _, packages, completion):
+                completion(packages, .success(ratesWithError))
+            default:
+                XCTFail("Received unexpected action: \(action)")
+            }
+        }
+        let viewModel = WooShippingServiceViewModel(order: Order.fake(),
+                                                    originAddress: WooShippingAddress.fake(),
+                                                    destinationAddress: sampleDestinationAddress(),
+                                                    stores: stores)
+
+        // When
+        viewModel.loadLabelRates(for: samplePackage)
+
+        // Then
+        XCTAssertEqual(viewModel.loadingState, .error(.invalidDestinationName))
+    }
+
     func test_switching_tab_updates_the_card_list() {
         // Given
         let viewModel = WooShippingServiceViewModel(order: Order.fake(),

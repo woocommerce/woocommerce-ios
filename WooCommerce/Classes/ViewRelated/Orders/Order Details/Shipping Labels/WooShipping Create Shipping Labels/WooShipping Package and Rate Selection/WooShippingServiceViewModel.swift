@@ -189,9 +189,16 @@ final class WooShippingServiceViewModel: ObservableObject {
                 onLoadingCompletion(.success(()))
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
-                updateLoadingState(to: .error(Error.failedLoadingLabelRates))
+                let loadingError: Error
+                switch error {
+                case WooShippingLoadLabelRatesError.invalidDestinationName:
+                    loadingError = .invalidDestinationName
+                default:
+                    loadingError = .failedLoadingLabelRates
+                }
+                updateLoadingState(to: .error(loadingError))
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
-                onLoadingCompletion(.failure(Error.failedLoadingLabelRates))
+                onLoadingCompletion(.failure(loadingError))
             }
         }
         stores.dispatch(action)
@@ -232,6 +239,7 @@ extension WooShippingServiceViewModel {
         case missingDestinationAddress
         case missingShipmentWeight
         case failedLoadingLabelRates
+        case invalidDestinationName
         case noRatesAvailable(isHAZMAT: Bool)
     }
 }

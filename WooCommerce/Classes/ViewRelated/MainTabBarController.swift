@@ -240,7 +240,7 @@ final class MainTabBarController: UITabBarController {
     }
 
     /// Whether we still need to check if POS should auto-reopen after app launch.
-    private var needsPOSAutoReopenCheck = Self.wasPOSLockedWhenTerminated
+    private lazy var needsPOSAutoReopenCheck = MainTabBarController.wasPOSLockedWhenTerminated
 
     // MARK: - Overridden Methods
 

@@ -15,9 +15,6 @@ SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
 CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
 
-BASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl
-BASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets
-
 SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
 ## Validate Secrets!
@@ -42,13 +39,6 @@ if [ ! -f "$SECRETS_PATH" ]; then
             cp "${CREDS_TEMPLATE_PATH}" "${TARGET_PATH}/ApiCredentials.swift"
         fi
     done
-
-    ## Create a bash secrets file from the template (if needed)
-    ##
-    if [ ! -f "$BASH_OUTPUT_PATH" ]; then
-        echo ">> Creating Bash Secrets File from Template: ${BASH_INPUT_PATH}"
-        cp "${BASH_INPUT_PATH}" "${BASH_OUTPUT_PATH}"
-    fi
 
 else
 
@@ -76,10 +66,5 @@ else
         echo ">> Generating Credentials ${TARGET_PATH}/ApiCredentials.swift"
         ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${TARGET_PATH}/ApiCredentials.swift"
     done
-
-    ## Generate bash_secrets
-    ##
-    echo ">> Generating Credentials ${BASH_OUTPUT_PATH}"
-    ruby "${SCRIPT_PATH}" -i "${BASH_INPUT_PATH}" -s "${SECRETS_PATH}" > "${BASH_OUTPUT_PATH}"
 
 fi

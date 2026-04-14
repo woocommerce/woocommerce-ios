@@ -40,6 +40,7 @@ struct POSStaffSettingsView: View {
 
 private struct POSStaffSettingsLocalView: View {
     let pinService: POSPINService
+    @Environment(\.posPermissions) private var permissions
     @State private var pinManager: POSStaffPINManager
 
     @AppStorage("com.woocommerce.pos.pinAccessEnabled") private var pinAccessEnabled: Bool = false
@@ -285,6 +286,12 @@ private extension POSStaffSettingsLocalView {
             pinEntryState = .error(message: Localization.invalidPINError)
             return
         }
+        // When admin PIN is first set, sign in as admin so the lock screen doesn't appear
+        if pinEntryRole == .manager, permissions.currentOperator == nil {
+            if let provider = permissions as? LocalPOSPermissionProvider {
+                provider.authenticatePIN(pin)
+            }
+        }
         dismissPINEntry()
     }
 }
@@ -430,27 +437,13 @@ private extension POSStaffSettingsRemoteView {
     }
 
     var manageStaffCard: some View {
-        VStack(spacing: POSSpacing.small) {
-            Button {
-                handleManageStaffTapped()
-            } label: {
-                Text(Localization.manageStaffButton)
-            }
-            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
-            .frame(maxWidth: .infinity)
-            .disabled(!canManageStaff)
-
-            if !canManageStaff {
-                Text(Localization.manageStaffAdminOnly)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
+        Button {
+            showManageStaff = true
+        } label: {
+            Text(Localization.manageStaffButton)
         }
-    }
-
-    private var canManageStaff: Bool {
-        permissions.hasCapability(.posWriteSettings)
+        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        .frame(maxWidth: .infinity)
     }
 
     var footerText: some View {
@@ -474,11 +467,6 @@ private extension POSStaffSettingsRemoteView {
             loadError = error
         }
         isLoading = false
-    }
-
-    func handleManageStaffTapped() {
-        guard canManageStaff else { return }
-        showManageStaff = true
     }
 
 }
@@ -668,12 +656,6 @@ private enum Localization {
         "posStaffSettingsView.manageStaffWebTitle",
         value: "Manage Staff",
         comment: "Navigation title for the web view showing WordPress admin staff management."
-    )
-
-    static let manageStaffAdminOnly = NSLocalizedString(
-        "posStaffSettingsView.manageStaffAdminOnly",
-        value: "Staff can only be managed by the store admin.",
-        comment: "Explanation shown below the disabled Manage staff button when the current user is not an admin."
     )
 
     static let remoteFooter = NSLocalizedString(

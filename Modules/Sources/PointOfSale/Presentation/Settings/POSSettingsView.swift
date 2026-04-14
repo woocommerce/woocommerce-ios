@@ -4,8 +4,10 @@ struct POSSettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
+    @Environment(\.posPermissions) private var permissions
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
+    @State private var staffOverrideHandler = POSManagerOverrideHandler()
 
     let settingsController: POSSettingsControllerProtocol
     let staffSettingsMode: POSStaffSettingsMode
@@ -24,6 +26,24 @@ struct POSSettingsView: View {
             if selection == nil {
                 selection = .store
             }
+        }
+        .posModal(isPresented: $staffOverrideHandler.isShowingOverride) {
+            POSManagerOverrideView(
+                actionDescription: staffOverrideHandler.actionDescription,
+                capability: staffOverrideHandler.activeCapability ?? "",
+                overrideState: Binding(
+                    get: { staffOverrideHandler.overrideState },
+                    set: { _ in }
+                ),
+                onPINEntered: { pin in
+                    Task { @MainActor in
+                        await staffOverrideHandler.handlePINEntered(pin, permissions: permissions)
+                    }
+                },
+                onCancelled: {
+                    staffOverrideHandler.cancel()
+                }
+            )
         }
     }
 }
@@ -71,7 +91,7 @@ extension POSSettingsView {
                                         subtitle: POSSettingsView.SidebarNavigation.staff.subtitle,
                                         isSelected: selection == .staff,
                                         action: {
-                        selection = .staff
+                        requestPermissionForStaff()
                     })
                 }
                 Spacer()
@@ -106,6 +126,15 @@ extension POSSettingsView {
     private var isStaffSectionVisible: Bool {
         featureFlags.isFeatureFlagEnabled(.pointOfSaleLocalRoles) ||
         featureFlags.isFeatureFlagEnabled(.pointOfSaleRemoteRoles)
+    }
+
+    private func requestPermissionForStaff() {
+        staffOverrideHandler.requestPermission(
+            for: .posWriteSettings,
+            actionDescription: Localization.staffOverrideDescription,
+            permissions: permissions,
+            onApproved: { _ in selection = .staff }
+        )
     }
 
     @ViewBuilder
@@ -176,6 +205,12 @@ extension POSSettingsView {
     }
 
     enum Localization {
+        static let staffOverrideDescription = NSLocalizedString(
+            "pointOfSaleSettingsView.staffOverrideDescription",
+            value: "Access and change staff settings",
+            comment: "Description shown in the manager override modal when staff settings access requires admin approval."
+        )
+
         static let navigationTitle = NSLocalizedString(
             "pointOfSaleSettingsView.navigationTitle",
             value: "Settings",

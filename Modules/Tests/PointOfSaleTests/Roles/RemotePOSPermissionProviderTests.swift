@@ -470,9 +470,8 @@ struct RemotePOSPermissionProviderTests {
         displayName: String = "Store Manager",
         role: String = "shop_manager",
         capabilities: [String: Bool] = [
-            "woocommerce_pos_access": true,
             "woocommerce_pos_read_settings": true,
-            "woocommerce_approve_overrides": true
+            "woocommerce_pos_write_settings": true
         ]
     ) -> POSPINVerifyResponse {
         POSPINVerifyResponse(

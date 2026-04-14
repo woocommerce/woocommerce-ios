@@ -93,7 +93,7 @@ private extension POSFloatingControlView {
     @ViewBuilder private func menuOptions() -> some View {
         if let op = permissions.currentOperator {
             Label {
-                Text("\(op.displayName) - \(roleDisplayName(for: op.role))")
+                Text(operatorMenuLabel(op))
             } icon: {
                 Image(systemName: "person.circle")
             }
@@ -147,6 +147,14 @@ private extension POSFloatingControlView {
                 }
             }
         }
+    }
+
+    func operatorMenuLabel(_ op: POSOperator) -> String {
+        let roleName = roleDisplayName(for: op.role)
+        if op.displayName.caseInsensitiveCompare(roleName) == .orderedSame {
+            return roleName
+        }
+        return "\(op.displayName) - \(roleName)"
     }
 
     func roleDisplayName(for role: String) -> String {
@@ -259,7 +267,7 @@ private extension POSFloatingControlView {
 
         static let settingsOverrideDescription = NSLocalizedString(
             "pointOfSale.floatingButtons.settingsOverride.description",
-            value: "Access POS settings",
+            value: "Access and change POS settings",
             comment: "Description shown in the manager override modal when settings access requires approval."
         )
 

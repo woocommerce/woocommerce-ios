@@ -9,30 +9,13 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Capability Sets
 
-    /// Capabilities for the local "Admin" role (the app account holder).
-    /// Includes `posWriteSettings` which gates admin-only actions
-    /// like managing staff and exiting POS.
-    public static let adminCapabilities: Set<String> = [
-        "woocommerce_pos_access",
-        "woocommerce_pos_read_settings",
-        "woocommerce_pos_write_settings",
-        "woocommerce_void_orders",
-        "woocommerce_refund_orders",
-        "woocommerce_apply_discounts",
-        "woocommerce_override_prices",
-        "woocommerce_view_sales_reports",
-        "woocommerce_view_personal_sales",
-        "woocommerce_view_customer_data",
-        "woocommerce_edit_customer_data",
-        "woocommerce_adjust_stock",
-        "woocommerce_view_audit_logs",
-    ]
+    /// All capabilities for the local admin role (the app account holder).
+    public static let adminCapabilities: Set<String> = Set(
+        POSCapability.allCases.map(\.rawValue)
+    )
 
-    public static let cashierCapabilities: Set<String> = [
-        "woocommerce_pos_access",
-        "woocommerce_view_personal_sales",
-        "woocommerce_view_customer_data",
-    ]
+    /// Minimal capabilities for the local cashier role.
+    public static let cashierCapabilities: Set<String> = []
 
     // MARK: - Auto-Lock
 

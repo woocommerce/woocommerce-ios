@@ -86,7 +86,7 @@ struct POSManagerOverrideHandlerTests {
         let handler = POSManagerOverrideHandler()
 
         // When
-        let wasImmediate = handler.requestPermission(for: .posAccess, actionDescription: "Test", permissions: mock) { _ in }
+        let wasImmediate = handler.requestPermission(for: .posReadSettings, actionDescription: "Test", permissions: mock) { _ in }
 
         // Then
         #expect(wasImmediate == false)

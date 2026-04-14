@@ -13,7 +13,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_access")
+        let result = sut.checkPermission("woocommerce_pos_read_settings")
 
         // Then
         #expect(result == .allowed)
@@ -45,17 +45,17 @@ struct LocalPOSPermissionProviderTests {
         #expect(result == .requiresOverride)
     }
 
-    @Test func test_checkPermission_when_cashier_signed_in_then_returns_allowed_for_cashier_capability() {
-        // Given
+    @Test func test_checkPermission_when_cashier_signed_in_then_returns_requiresOverride_for_all_capabilities() {
+        // Given - cashiers have no capabilities, all actions need override
         let sut = makeSUT()
         let op = makeCashierOperator()
         sut.signIn(op)
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_access")
+        let result = sut.checkPermission("woocommerce_pos_read_settings")
 
         // Then
-        #expect(result == .allowed)
+        #expect(result == .requiresOverride)
     }
 
     @Test func test_checkPermission_when_no_operator_then_returns_requiresOverride() {
@@ -63,7 +63,7 @@ struct LocalPOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When
-        let result = sut.checkPermission("woocommerce_pos_access")
+        let result = sut.checkPermission("woocommerce_pos_read_settings")
 
         // Then
         #expect(result == .requiresOverride)
@@ -77,7 +77,7 @@ struct LocalPOSPermissionProviderTests {
         sut.signIn(makeManagerOperator())
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_access") == true)
+        #expect(sut.hasCapability("woocommerce_pos_read_settings") == true)
     }
 
     @Test func test_hasCapability_when_operator_lacks_it_then_returns_false() {
@@ -94,7 +94,7 @@ struct LocalPOSPermissionProviderTests {
         let sut = makeSUT()
 
         // When / Then
-        #expect(sut.hasCapability("woocommerce_pos_access") == false)
+        #expect(sut.hasCapability("woocommerce_pos_read_settings") == false)
     }
 
     // MARK: - signIn
@@ -316,19 +316,11 @@ struct LocalPOSPermissionProviderTests {
 
     // MARK: - Capability Sets
 
-    @Test func test_adminCapabilities_contains_expected_capabilities() {
-        // Then
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_access"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_read_settings"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_pos_write_settings"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_void_orders"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_refund_orders"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_apply_discounts"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_override_prices"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_view_sales_reports"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_edit_customer_data"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_adjust_stock"))
-        #expect(LocalPOSPermissionProvider.adminCapabilities.contains("woocommerce_view_audit_logs"))
+    @Test func test_adminCapabilities_contains_all_POSCapability_cases() {
+        // Then - admin capabilities should include every POSCapability case
+        for capability in POSCapability.allCases {
+            #expect(LocalPOSPermissionProvider.adminCapabilities.contains(capability.rawValue))
+        }
     }
 
     @Test func test_cashierCapabilities_is_subset_of_adminCapabilities() {

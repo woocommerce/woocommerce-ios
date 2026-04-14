@@ -86,8 +86,13 @@ final class POSManagerOverrideHandler {
             overrideState = .approved
             try? await Task.sleep(for: .milliseconds(500))
             isShowingOverride = false
-            onApproved?(token)
+            // Delay the approved callback to let the modal dismiss animation complete
+            // before the caller presents another view (e.g. exit confirmation modal).
+            let approvedCallback = onApproved
+            let approvedToken = token
             cleanup()
+            try? await Task.sleep(for: .milliseconds(300))
+            approvedCallback?(approvedToken)
         } catch {
             overrideState = .error(message: error.posOverrideErrorMessage)
         }

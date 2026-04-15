@@ -192,6 +192,11 @@ public struct PointOfSaleEntryPointView: View {
                 permissionProvider: permissionProvider
             )
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
+            if permissionProvider.hasAnyPINs, permissionProvider.currentOperator != nil {
+                permissionProvider.lock()
+            }
+        }
         .task {
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.

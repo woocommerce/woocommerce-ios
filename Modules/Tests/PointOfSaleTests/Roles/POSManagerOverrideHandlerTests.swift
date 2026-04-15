@@ -9,7 +9,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_requestPermission_when_allowed_then_calls_onApproved_immediately() {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.currentOperator = makeManagerOperator()
         let handler = POSManagerOverrideHandler()
 
@@ -27,7 +27,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_requestPermission_when_allowed_then_passes_nil_token() {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.currentOperator = makeManagerOperator()
         let handler = POSManagerOverrideHandler()
 
@@ -45,7 +45,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_requestPermission_when_requiresOverride_then_shows_modal() {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
@@ -64,7 +64,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_requestPermission_when_requiresOverride_then_stores_action_description() {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
@@ -82,7 +82,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_requestPermission_when_no_operator_then_shows_modal() {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         let handler = POSManagerOverrideHandler()
 
         // When
@@ -97,7 +97,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_handlePINEntered_when_valid_then_sets_approved_and_calls_onApproved() async {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         mock.approvalTokenToReturn = "approval-token"
         let handler = POSManagerOverrideHandler()
@@ -119,7 +119,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_handlePINEntered_when_valid_then_passes_orderID_to_permissions() async {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
@@ -141,7 +141,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_handlePINEntered_when_invalid_then_sets_error_state() async {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         mock.approvalErrorToThrow = TestError.invalidPIN
         let handler = POSManagerOverrideHandler()
@@ -168,7 +168,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_cancel_when_override_showing_then_hides_modal() {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
@@ -184,7 +184,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_cancel_when_override_showing_then_clears_callback() async {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["refund_shop_orders"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
@@ -205,7 +205,7 @@ struct POSManagerOverrideHandlerTests {
 
     @Test func test_requestPermission_when_different_capabilities_then_tracks_correct_capability() async {
         // Given
-        let mock = MockPOSPermissionProvider()
+        let mock = makeMock()
         mock.capabilityOverrides["publish_shop_coupons"] = .requiresOverride
         let handler = POSManagerOverrideHandler()
 
@@ -226,6 +226,12 @@ struct POSManagerOverrideHandlerTests {
         var errorDescription: String? {
             "Invalid PIN"
         }
+    }
+
+    private func makeMock() -> MockPOSPermissionProvider {
+        let mock = makeMock()
+        mock.hasAnyPINs = true
+        return mock
     }
 
     private func makeManagerOperator() -> POSOperator {

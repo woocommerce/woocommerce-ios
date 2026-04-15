@@ -7,8 +7,9 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 
     /// Creates an `StorePickerErrorHostingController` with preconfigured button actions.
     ///
-    static func createWithActions(presenting: UIViewController) -> StorePickerErrorHostingController {
-        let viewController = StorePickerErrorHostingController()
+    static func createWithActions(presenting: UIViewController,
+                                  isPermissionError: Bool = false) -> StorePickerErrorHostingController {
+        let viewController = StorePickerErrorHostingController(isPermissionError: isPermissionError)
         viewController.setActions(troubleshootingAction: {
             WebviewHelper.launch(WooConstants.URLs.troubleshootErrorLoadingData.asURL(), with: viewController)
         },
@@ -24,8 +25,8 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         return viewController
     }
 
-    init() {
-        super.init(rootView: StorePickerError())
+    init(isPermissionError: Bool = false) {
+        super.init(rootView: StorePickerError(isPermissionError: isPermissionError))
     }
 
     override func viewDidLoad() {
@@ -52,6 +53,10 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
 ///
 struct StorePickerError: View {
 
+    /// Whether this error is a permission verification failure.
+    ///
+    let isPermissionError: Bool
+
     /// Closure invoked when the "Troubleshooting" button is pressed
     ///
     var troubleshootingAction: () -> Void = {}
@@ -76,7 +81,7 @@ struct StorePickerError: View {
                 Image(uiImage: .errorImage)
 
                 // Body text
-                Text(Localization.body)
+                Text(isPermissionError ? Localization.permissionErrorBody : Localization.body)
                     .multilineTextAlignment(.center)
                     .bodyStyle()
 
@@ -116,6 +121,11 @@ private extension StorePickerError {
         static let title = NSLocalizedString("We couldn't load your site", comment: "Title for the default store picker error screen")
         static let body = NSLocalizedString("Please try again or reach out to us and we'll be happy to assist you!",
                                             comment: "Body text for the default store picker error screen")
+        static let permissionErrorBody = NSLocalizedString(
+            "storePickerError.permissionErrorBody",
+            value: "There was a problem verifying your permissions. " +
+                "Please try again or reach out to us and we'll be happy to assist you!",
+            comment: "Body text for the store picker error screen when the permission check fails")
         static let troubleshoot = NSLocalizedString("Read our Troubleshooting Tips",
                                                     comment: "Text for the button to navigate to troubleshooting tips from the store picker error screen")
         static let contact = NSLocalizedString("Contact Support",
@@ -139,18 +149,19 @@ private extension StorePickerError {
 struct StorePickerError_Preview: PreviewProvider {
     static var previews: some View {
         VStack {
-            StorePickerError()
+            StorePickerError(isPermissionError: false)
         }
         .padding()
         .background(Color.gray)
         .previewLayout(.sizeThatFits)
+        .previewDisplayName("Generic Error")
 
         VStack {
-            StorePickerError()
+            StorePickerError(isPermissionError: true)
         }
         .padding()
         .background(Color.gray)
-        .environment(\.colorScheme, .dark)
         .previewLayout(.sizeThatFits)
+        .previewDisplayName("Permission Error")
     }
 }

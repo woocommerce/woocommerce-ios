@@ -6,6 +6,7 @@ import WordPressAuthenticator
 import WordPressUI
 import Yosemite
 import Experiments
+import enum NetworkingCore.DotcomError
 
 
 typealias SelectStoreClosure = () -> Void
@@ -610,10 +611,10 @@ private extension StorePickerViewController {
         actionButton.showActivityIndicator(false)
     }
 
-    /// Displays a generic error view as a modal with options to see troubleshooting tips and to contact support.
+    /// Displays an error view as a modal with options to see troubleshooting tips and to contact support.
     ///
-    func displayUnknownErrorModal() {
-        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self)
+    func displayUnknownErrorModal(isPermissionError: Bool = false) {
+        let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, isPermissionError: isPermissionError)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         present(viewController, animated: true)
@@ -840,7 +841,9 @@ private extension StorePickerViewController {
                         self?.dismiss()
                     }
                 } else {
-                    self.displayUnknownErrorModal()
+                    let underlyingError = (error as? RoleEligibilityError)?.underlyingError ?? error
+                    let isPermissionError = underlyingError is DotcomError
+                    self.displayUnknownErrorModal(isPermissionError: isPermissionError)
                 }
             }
         }

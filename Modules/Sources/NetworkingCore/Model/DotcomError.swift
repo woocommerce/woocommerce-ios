@@ -19,7 +19,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
 
     /// Remote Request Failed
     ///
-    case requestFailed(data: [String: AnyDecodable]? = nil)
+    case requestFailed(message: String? = nil, data: [String: AnyDecodable]? = nil)
 
     /// No route was found matching the URL and request method
     ///
@@ -61,7 +61,7 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         case Constants.invalidToken:
             self = .invalidToken(data: data)
         case Constants.requestFailed:
-            self = .requestFailed(data: data)
+            self = .requestFailed(message: message, data: data)
         case Constants.unauthorized where message == ErrorMessages.noStatsPermission:
             self = .noStatsPermission(data: data)
         case Constants.unauthorized:

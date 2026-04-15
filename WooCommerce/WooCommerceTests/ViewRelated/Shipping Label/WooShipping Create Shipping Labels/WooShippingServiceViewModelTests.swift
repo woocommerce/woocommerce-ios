@@ -2,7 +2,6 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import enum Networking.NetworkError
-import struct Networking.ShippingLabelRateError
 
 final class WooShippingServiceViewModelTests: XCTestCase {
 
@@ -358,23 +357,10 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     func test_when_loadLabelRates_receives_invalid_destination_name_rate_error_it_sets_error_state() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let ratesWithError = [ShippingLabelCarriersAndRates(packageID: Self.samplePackageID,
-                                                            defaultRates: [],
-                                                            defaultErrors: [ShippingLabelRateError(
-                                                                code: "rate_error",
-                                                                message: "shipment.to_address: invalid name; " +
-                                                                "A first and last name is required if passed in: " +
-                                                                "input name needs at least 1 space character"
-                                                            )],
-                                                            signatureRequired: [],
-                                                            adultSignatureRequired: [],
-                                                            carbonNeutral: [],
-                                                            saturdayDelivery: [],
-                                                            additionalHandling: [])]
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
             case let .loadLabelRates(_, _, _, _, packages, completion):
-                completion(packages, .success(ratesWithError))
+                completion(packages, .failure(WooShippingLoadLabelRatesError.invalidDestinationName))
             default:
                 XCTFail("Received unexpected action: \(action)")
             }

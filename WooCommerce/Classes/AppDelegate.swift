@@ -408,9 +408,7 @@ extension AppDelegate {
     ///
     private func listenToAuthenticationFailureNotifications() {
         let stores = ServiceLocator.stores
-        if stores.isAuthenticatedWithoutWPCom {
-            stores.listenToApplicationPasswordGenerationFailureNotification()
-        } else {
+        if stores.isAuthenticatedWithoutWPCom == false {
             stores.listenToWPCOMInvalidWPCOMTokenNotification()
         }
     }

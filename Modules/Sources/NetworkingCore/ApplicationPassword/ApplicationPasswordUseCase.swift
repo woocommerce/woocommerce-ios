@@ -23,6 +23,9 @@ public protocol ApplicationPasswordUseCase {
     ///
     var applicationPassword: ApplicationPassword? { get }
 
+    /// Whether the use case is capable of re-generating password
+    var canRegenerateApplicationPassword: Bool { get }
+
     /// Generates new ApplicationPassword
     ///
     /// - Returns: Generated `ApplicationPassword` instance
@@ -126,6 +129,9 @@ final public class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     public var applicationPassword: ApplicationPassword? {
         storage.applicationPassword
     }
+
+    /// Whether the use case is capable of re-generating password
+    public var canRegenerateApplicationPassword: Bool { true }
 
     /// Generates new ApplicationPassword
     ///

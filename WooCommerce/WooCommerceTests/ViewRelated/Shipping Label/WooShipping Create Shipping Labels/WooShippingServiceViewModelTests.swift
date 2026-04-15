@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import enum Networking.NetworkError
+import struct Networking.ShippingLabelRateError
 
 final class WooShippingServiceViewModelTests: XCTestCase {
 

@@ -230,6 +230,7 @@ extension PushNotificationsManager {
     /// Waits for the device token to arrive via `registerDeviceToken(with:)`.
     /// Returns immediately if a result is already available, otherwise subscribes
     /// to `deviceTokenResult` with a 10-second timeout.
+    @MainActor
     private func waitForDeviceToken() async throws -> String {
         isAwaitingTokenForRegistration = true
 
@@ -398,9 +399,11 @@ extension PushNotificationsManager {
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
 
-        // Notify any pending `waitForDeviceToken()` subscriber so the awaiting caller gets the error
-        if isAwaitingTokenForRegistration {
-            deviceTokenResult.send(.failure(error))
+        // Always publish the failure so `waitForDeviceToken()` can pick it up,
+        // matching the symmetric behavior in `registerDeviceToken(with:)`.
+        deviceTokenResult.send(.failure(error))
+
+        guard !isAwaitingTokenForRegistration else {
             return
         }
 

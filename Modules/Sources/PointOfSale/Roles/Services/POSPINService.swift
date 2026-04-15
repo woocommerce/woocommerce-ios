@@ -101,18 +101,21 @@ public final class POSPINService {
         return pin.range(of: pattern, options: .regularExpression) != nil
     }
 
-    /// Stores a SHA-256 hashed PIN for the given role.
+    /// Stores a salted SHA-256 hashed PIN for the given role.
+    /// Format stored: "salt:hash" where salt is 16 random bytes hex-encoded.
     public func setPIN(_ pin: String, for role: PINRole) {
-        let hash = hashPIN(pin)
-        storage.store(hash, forKey: role.rawValue)
+        let salt = generateSalt()
+        let hash = hashPIN(pin, salt: salt)
+        storage.store("\(salt):\(hash)", forKey: role.rawValue)
     }
 
-    /// Verifies a PIN against the stored hash for a specific role.
+    /// Verifies a PIN against the stored salted hash for a specific role.
     public func verifyPIN(_ pin: String, for role: PINRole) -> Bool {
-        guard let storedHash = storage.retrieve(forKey: role.rawValue) else {
+        guard let stored = storage.retrieve(forKey: role.rawValue),
+              let (salt, storedHash) = parseSaltedHash(stored) else {
             return false
         }
-        return hashPIN(pin) == storedHash
+        return hashPIN(pin, salt: salt) == storedHash
     }
 
     /// Checks all roles and returns the matching role, or nil if no match.
@@ -137,9 +140,21 @@ public final class POSPINService {
 
     // MARK: - Private
 
-    private func hashPIN(_ pin: String) -> String {
-        let data = Data(pin.utf8)
+    private func generateSalt() -> String {
+        var bytes = [UInt8](repeating: 0, count: 16)
+        _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
+        return bytes.map { String(format: "%02x", $0) }.joined()
+    }
+
+    private func hashPIN(_ pin: String, salt: String) -> String {
+        let data = Data((salt + pin).utf8)
         let digest = SHA256.hash(data: data)
         return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
+    private func parseSaltedHash(_ stored: String) -> (salt: String, hash: String)? {
+        let parts = stored.split(separator: ":", maxSplits: 1)
+        guard parts.count == 2 else { return nil }
+        return (String(parts[0]), String(parts[1]))
     }
 }

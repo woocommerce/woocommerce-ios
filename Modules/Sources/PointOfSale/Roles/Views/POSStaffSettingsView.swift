@@ -444,7 +444,7 @@ private extension POSStaffSettingsRemoteView {
                 Text(member.displayName)
                     .font(.posBodyMediumBold)
                     .foregroundStyle(Color.posOnSurface)
-                Text(member.role)
+                Text(Self.displayName(for: member.role))
                     .font(.posBodySmallRegular())
                     .foregroundStyle(.secondary)
                 if isCurrentOperator {
@@ -458,6 +458,21 @@ private extension POSStaffSettingsRemoteView {
         }
         .padding(.vertical, POSPadding.xSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private static func displayName(for role: String) -> String {
+        switch role {
+        case "administrator":
+            return Localization.roleAdmin
+        case "shop_manager":
+            return Localization.roleShopManager
+        case "pos_manager":
+            return Localization.rolePOSManager
+        case "pos_cashier":
+            return Localization.rolePOSCashier
+        default:
+            return role
+        }
     }
 
     private var signedInBadge: some View {
@@ -729,6 +744,30 @@ private enum Localization {
         "posStaffSettingsView.manageStaffWebTitle",
         value: "Manage Staff",
         comment: "Navigation title for the web view showing WordPress admin staff management."
+    )
+
+    static let roleAdmin = NSLocalizedString(
+        "posStaffSettingsView.role.admin",
+        value: "Admin",
+        comment: "Display name for the administrator role in the POS staff list."
+    )
+
+    static let roleShopManager = NSLocalizedString(
+        "posStaffSettingsView.role.shopManager",
+        value: "Shop Manager",
+        comment: "Display name for the shop manager role in the POS staff list."
+    )
+
+    static let rolePOSManager = NSLocalizedString(
+        "posStaffSettingsView.role.posManager",
+        value: "POS Manager",
+        comment: "Display name for the POS manager role in the POS staff list."
+    )
+
+    static let rolePOSCashier = NSLocalizedString(
+        "posStaffSettingsView.role.posCashier",
+        value: "POS Cashier",
+        comment: "Display name for the POS cashier role in the POS staff list."
     )
 
     static let remoteFooter = NSLocalizedString(

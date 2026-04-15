@@ -174,7 +174,12 @@ private extension WooShippingStore {
                               destinationAddress: destinationAddress,
                               packages: packages,
                               completion: { result in
-            completion(packages, result)
+            switch result {
+            case let .success(rates) where rates.contains(where: \.hasInvalidDestinationNameRateError):
+                completion(packages, .failure(WooShippingLoadLabelRatesError.invalidDestinationName))
+            default:
+                completion(packages, result)
+            }
         })
     }
 
@@ -908,4 +913,17 @@ public enum WooShippingLabelPurchaseError: Error {
     case purchaseMissingLabels
     case failedToRefreshSelectedPackage
     case failedToRefreshSelectedRate
+}
+
+public enum WooShippingLoadLabelRatesError: Error {
+    case invalidDestinationName
+}
+
+private extension ShippingLabelCarriersAndRates {
+    var hasInvalidDestinationNameRateError: Bool {
+        defaultErrors.contains { error in
+            error.code == "rate_error" &&
+            error.message?.localizedCaseInsensitiveContains("shipment.to_address: invalid name") == true
+        }
+    }
 }

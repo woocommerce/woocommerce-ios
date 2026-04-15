@@ -51,6 +51,7 @@ private struct POSStaffSettingsLocalView: View {
     @State private var showPINEntry: Bool = false
     @State private var pinEntryRole: PINRole = .manager
     @State private var pinEntryState: POSPINEntryState = .idle
+    @State private var showGuidedAccessModal: Bool = false
 
     init(pinService: POSPINService, onAdminPINSet: ((String) -> Void)? = nil) {
         self.pinService = pinService
@@ -195,9 +196,7 @@ private extension POSStaffSettingsLocalView {
             }
 
             Button {
-                if let url = URL(string: "App-prefs:ACCESSIBILITY") {
-                    UIApplication.shared.open(url)
-                }
+                showGuidedAccessModal = true
             } label: {
                 Text(Localization.guidedAccessButton)
             }
@@ -205,6 +204,75 @@ private extension POSStaffSettingsLocalView {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, POSPadding.small)
+        .posModal(isPresented: $showGuidedAccessModal) {
+            guidedAccessModalContent
+        }
+    }
+
+    private var guidedAccessModalContent: some View {
+        VStack(spacing: POSSpacing.xLarge) {
+            HStack {
+                Spacer()
+                Button {
+                    showGuidedAccessModal = false
+                } label: {
+                    Text(Image(systemName: "xmark"))
+                        .font(.posButtonSymbolLarge)
+                }
+                .foregroundColor(.posOnSurfaceVariantLowest)
+            }
+
+            VStack(spacing: POSSpacing.large) {
+                Image(systemName: "lock.ipad")
+                    .font(.system(size: 40, weight: .regular))
+                    .foregroundColor(.posOnSurfaceVariantLowest)
+
+                Text(Localization.guidedAccessModalTitle)
+                    .font(.posHeadingBold)
+                    .foregroundColor(.posOnSurface)
+                    .multilineTextAlignment(.center)
+
+                Text(Localization.guidedAccessModalDescription)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                guidedAccessStep(number: 1, text: Localization.guidedAccessStep1)
+                guidedAccessStep(number: 2, text: Localization.guidedAccessStep2)
+                guidedAccessStep(number: 3, text: Localization.guidedAccessStep3)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            Button {
+                showGuidedAccessModal = false
+                if let url = URL(string: "App-prefs:ACCESSIBILITY") {
+                    UIApplication.shared.open(url)
+                }
+            } label: {
+                Text(Localization.guidedAccessContinue)
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
+        }
+        .padding(POSPadding.xLarge)
+        .frame(maxWidth: 500)
+        .background(Color.posSurfaceBright)
+        .cornerRadius(POSCornerRadiusStyle.large.value)
+    }
+
+    private func guidedAccessStep(number: Int, text: String) -> some View {
+        HStack(alignment: .top, spacing: POSSpacing.medium) {
+            Text("\(number)")
+                .font(.posBodyMediumBold)
+                .foregroundColor(.posSurfaceBright)
+                .frame(width: 28, height: 28)
+                .background(Color.posPrimary)
+                .clipShape(Circle())
+            Text(text)
+                .font(.posBodyMediumRegular())
+                .foregroundColor(.posOnSurface)
+        }
     }
 
 
@@ -588,6 +656,42 @@ private enum Localization {
         "posStaffSettingsView.guidedAccessButton",
         value: "Set up Guided Access",
         comment: "Button to open iOS Settings to set up Guided Access in POS staff settings."
+    )
+
+    static let guidedAccessModalTitle = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessModalTitle",
+        value: "Set up Guided Access",
+        comment: "Title of the Guided Access setup modal in POS staff settings."
+    )
+
+    static let guidedAccessModalDescription = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessModalDescription",
+        value: "Guided Access locks the iPad to this app, preventing staff from switching apps or exiting. A passcode is required to turn it off.",
+        comment: "Description explaining Guided Access in the setup modal."
+    )
+
+    static let guidedAccessStep1 = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessStep1",
+        value: "Turn on Guided Access",
+        comment: "Step 1 instruction in the Guided Access setup modal."
+    )
+
+    static let guidedAccessStep2 = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessStep2",
+        value: "Set a passcode for Guided Access",
+        comment: "Step 2 instruction in the Guided Access setup modal."
+    )
+
+    static let guidedAccessStep3 = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessStep3",
+        value: "Enable the Accessibility Shortcut (triple-click home or side button to start)",
+        comment: "Step 3 instruction in the Guided Access setup modal."
+    )
+
+    static let guidedAccessContinue = NSLocalizedString(
+        "posStaffSettingsView.guidedAccessContinue",
+        value: "Open Settings",
+        comment: "Button in the Guided Access setup modal that opens iOS Settings."
     )
 
     static let guidedAccessActive = NSLocalizedString(

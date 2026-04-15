@@ -188,9 +188,9 @@ fileprivate extension MyStoreView {
 
     enum Localization {
         static let revenue = AppLocalizedString(
-            "watch.mystore.netSales.title",
-            value: "Net sales",
-            comment: "Net sales title on the watch store stats screen."
+            "watch.mystore.totalSales.title",
+            value: "Total sales",
+            comment: "Total sales title on the watch store stats screen."
         )
         static let today = AppLocalizedString(
             "watch.mystore.today.title",

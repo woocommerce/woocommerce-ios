@@ -117,7 +117,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
         guard let applicationPasswordUseCase else {
             return false
         }
-        return applicationPasswordUseCase is DefaultApplicationPasswordUseCase
+        return applicationPasswordUseCase.canRegenerateApplicationPassword
     }
 
     /// Generates application password

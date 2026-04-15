@@ -222,6 +222,8 @@ final class DashboardViewModel: ObservableObject {
         observeStoreSetupEligibility()
         configureOrdersResultController()
         setupDashboardCards()
+        observeValuesForDashboardCards()
+        observeDashboardCardsAndReload()
         observeWPCOMSiteSuspendedState()
         observeSelfDrivenPushTokenPersistence()
         bindClientSideBannerWebViewSheet()
@@ -385,8 +387,6 @@ private extension DashboardViewModel {
             }))
         }
         savedCards = storageCards ?? []
-        observeValuesForDashboardCards()
-        observeDashboardCardsAndReload()
     }
 
     func saveDashboardCards(cards: [DashboardCard]) {
@@ -398,10 +398,32 @@ private extension DashboardViewModel {
 // MARK: Reload cards
 
 private extension DashboardViewModel {
-    /// Sync essential data to construct the dashboard
+    /// Sync essential data to construct the dashboard.
+    ///
+    /// Split into two phases to reduce the initial request burst and avoid
+    /// rate limiting (429 errors) on self-hosted sites. Phase 1 handles data
+    /// needed for the initial dashboard render; phase 2 handles card availability
+    /// checks that only toggle visibility and can appear slightly later.
     ///
     @MainActor
     func syncDashboardEssentialData() async {
+        // Phase 1: Data needed for initial dashboard render.
+        // Local checks (no network) + hasOrders check (1 request).
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask { [weak self] in
+                await self?.updateJetpackBannerVisibilityFromAppSettings()
+            }
+            group.addTask { [weak self] in
+                await self?.updateHasOrdersStatus()
+            }
+            group.addTask { [weak self] in
+                await self?.updateSelfDrivenPushRegistrationStatus()
+            }
+        }
+
+        // Phase 2: Card availability checks and announcements.
+        // These toggle card visibility and load banners — not needed for initial render.
+        // Deferred to reduce the concurrent request count in the initial burst.
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 guard let self else { return }
@@ -411,16 +433,7 @@ private extension DashboardViewModel {
                 await self?.blazeCampaignDashboardViewModel.checkAvailability()
             }
             group.addTask { [weak self] in
-                await self?.updateJetpackBannerVisibilityFromAppSettings()
-            }
-            group.addTask { [weak self] in
-                await self?.updateHasOrdersStatus()
-            }
-            group.addTask { [weak self] in
                 await self?.googleAdsDashboardCardViewModel.checkAvailability()
-            }
-            group.addTask { [weak self] in
-                await self?.updateSelfDrivenPushRegistrationStatus()
             }
         }
     }

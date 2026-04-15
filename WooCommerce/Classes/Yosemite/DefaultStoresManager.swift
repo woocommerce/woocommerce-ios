@@ -768,22 +768,31 @@ private extension DefaultStoresManager {
             restoreJetpackSiteAndSynchronizeIfNeeded(with: siteID)
         }
 
-        synchronizeSettings(with: siteID) {
-            ServiceLocator.shippingSettingsService.update(siteID: siteID)
-        }
-        synchronizePaymentGateways(siteID: siteID)
-        synchronizeAddOnsGroups(siteID: siteID)
-        synchronizeSitePlugins(siteID: siteID)
+        // Requests are split into three batches to avoid rate limiting (429 errors)
+        // on self-hosted sites. The dashboard also fires its own requests concurrently
+        // (via syncDashboardEssentialData), so keeping each batch small is important.
+        //
+        // Batch 1 (immediate): Site settings — needed for dashboard rendering.
         loadStoreUUID(siteID: siteID)
+        synchronizeSettings(with: siteID) { [weak self] in
+            guard let self else { return }
+            ServiceLocator.shippingSettingsService.update(siteID: siteID)
 
-        sendTelemetryIfNeeded(siteID: siteID)
+            // Batch 2 (after settings complete): Order statuses and system info for snapshot tracking.
+            // Sequenced after batch 1 so these don't overlap with the initial burst.
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                async let orderStatuses = retrieveOrderStatus(with: siteID)
+                async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
 
-        Task { @MainActor in
-            // Order statuses and system plugins syncing are required outside of snapshot tracking.
-            async let orderStatuses = retrieveOrderStatus(with: siteID)
-            async let systemInformation = fetchSystemInformationAndRetryIfFails(siteID: siteID)
+                trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
 
-            trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemInformation?.systemPlugins)
+                // Batch 3 (after batch 2 completes): Non-essential data.
+                synchronizePaymentGateways(siteID: siteID)
+                synchronizeAddOnsGroups(siteID: siteID)
+                synchronizeSitePlugins(siteID: siteID)
+                sendTelemetryIfNeeded(siteID: siteID)
+            }
         }
     }
 

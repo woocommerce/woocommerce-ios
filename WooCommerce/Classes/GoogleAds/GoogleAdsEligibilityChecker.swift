@@ -15,13 +15,34 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
 
+    /// In-flight eligibility checks keyed by siteID, shared across all instances.
+    /// Thread-safe because all access is on @MainActor.
+    private static var inFlightChecks: [Int64: Task<Bool, Never>] = [:]
+
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
         self.featureFlagService = featureFlagService
     }
 
+    @MainActor
     func isSiteEligible(siteID: Int64) async -> Bool {
+        if let existingTask = Self.inFlightChecks[siteID] {
+            return await existingTask.value
+        }
+
+        let task = Task { @MainActor [weak self] () -> Bool in
+            guard let self else { return false }
+            return await self.performEligibilityCheck(siteID: siteID)
+        }
+        Self.inFlightChecks[siteID] = task
+        let result = await task.value
+        Self.inFlightChecks.removeValue(forKey: siteID)
+        return result
+    }
+
+    @MainActor
+    private func performEligibilityCheck(siteID: Int64) async -> Bool {
         guard featureFlagService.isFeatureFlagEnabled(.googleAdsCampaignCreationOnWebView) else {
             return false
         }

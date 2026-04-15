@@ -132,6 +132,7 @@ struct WooShippingCreateLabelsView: View {
                         }
                     })
                     .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
                 }
             }
             .sheet(isPresented: $viewModel.shouldShowFedExTermsAndConditions) {
@@ -143,6 +144,7 @@ struct WooShippingCreateLabelsView: View {
                         }
                     })
                     .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
                 }
             }
         }

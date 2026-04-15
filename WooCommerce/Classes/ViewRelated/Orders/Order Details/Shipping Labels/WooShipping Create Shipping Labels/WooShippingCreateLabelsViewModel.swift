@@ -4,6 +4,7 @@ import WooFoundation
 import Combine
 import struct Networking.WooShippingAccountSettings
 import enum Networking.DotcomError
+import enum Networking.NetworkError
 import protocol Storage.StorageManagerType
 
 enum WooShippingCreateLabelSelection {
@@ -389,6 +390,10 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingUPSDAPTermsOfServiceAcceptance {
             shouldShowUPSTermsAndConditions = true
         } catch let DotcomError.unknown(code, _, _) where code == Constants.missingFedExTermsOfServiceAcceptance {
+            shouldShowFedExTermsAndConditions = true
+        } catch let networkError as NetworkError where networkError.errorCode == Constants.missingUPSDAPTermsOfServiceAcceptance {
+            shouldShowUPSTermsAndConditions = true
+        } catch let networkError as NetworkError where networkError.errorCode == Constants.missingFedExTermsOfServiceAcceptance {
             shouldShowFedExTermsAndConditions = true
         } catch {
             if let phoneMessage = invalidPhoneNumberMessage(from: error) {

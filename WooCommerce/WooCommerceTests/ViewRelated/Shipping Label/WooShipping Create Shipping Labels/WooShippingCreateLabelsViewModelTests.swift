@@ -6,6 +6,7 @@ import WooFoundation
 import Yosemite
 import struct NetworkingCore.AnyDecodable
 import enum NetworkingCore.DotcomError
+import enum NetworkingCore.NetworkError
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
@@ -737,6 +738,40 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
             purchaseError: DotcomError.unknown(code: "missing_upsdap_terms_of_service_acceptance",
                                                message: "UPS Terms of Service have not been accepted.",
                                                data: nil)
+        )
+        XCTAssertFalse(viewModel.shouldShowUPSTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowUPSTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_fedex_tos_NetworkError_then_shows_fedex_terms() async {
+        // Given
+        let responseJSON = #"{"code":"missing_fedex_terms_of_service_acceptance","message":"FedEx ToS not accepted."}"#
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: NetworkError.unacceptableStatusCode(statusCode: 403, response: responseJSON.data(using: .utf8))
+        )
+        XCTAssertFalse(viewModel.shouldShowFedExTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowFedExTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_ups_tos_NetworkError_then_shows_ups_terms() async {
+        // Given
+        let responseJSON = #"{"code":"missing_upsdap_terms_of_service_acceptance","message":"UPS ToS not accepted."}"#
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: NetworkError.unacceptableStatusCode(statusCode: 403, response: responseJSON.data(using: .utf8))
         )
         XCTAssertFalse(viewModel.shouldShowUPSTermsAndConditions)
 

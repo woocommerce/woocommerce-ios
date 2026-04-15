@@ -107,8 +107,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
-        case .wooShippingFedEx:
-            return !buildConfig.isProduction
         case .ciabBookingReschedule:
             return !buildConfig.isProduction
         case .loggedOutFFPanel:

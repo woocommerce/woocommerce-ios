@@ -5,8 +5,9 @@
 ## Build generated
 build/
 DerivedData/
-# Any folder named DerivedSources, regardless of the location, so that if we move it, we won't risk accidentally committing it
-DerivedSources/
+# Ignore contents of any DerivedSources folder (except README.md) so that if we move it, we won't risk accidentally committing it
+**/DerivedSources/*
+!**/DerivedSources/README.md
 # Any file named ApiCredentials.swift, regardless of the location, so that if we move it, we won't risk accidentally committing it
 ApiCredentials.swift
 

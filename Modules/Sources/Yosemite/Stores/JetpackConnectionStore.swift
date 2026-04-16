@@ -64,11 +64,19 @@ private extension JetpackConnectionStore {
     }
 
     func retrieveJetpackPluginDetails(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        jetpackConnectionRemote?.retrieveJetpackPluginDetails(siteID: siteID, completion: completion)
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
+        jetpackConnectionRemote.retrieveJetpackPluginDetails(siteID: siteID, completion: completion)
     }
 
     func installJetpackPlugin(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
-        jetpackConnectionRemote?.installJetpackPlugin(siteID: siteID, completion: { result in
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
+        jetpackConnectionRemote.installJetpackPlugin(siteID: siteID, completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -79,7 +87,11 @@ private extension JetpackConnectionStore {
     }
 
     func activateJetpackPlugin(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
-        jetpackConnectionRemote?.activateJetpackPlugin(siteID: siteID, completion: { result in
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
+        jetpackConnectionRemote.activateJetpackPlugin(siteID: siteID, completion: { result in
             switch result {
             case .success:
                 completion(.success(()))
@@ -91,11 +103,15 @@ private extension JetpackConnectionStore {
 
     func fetchJetpackConnectionURL(authenticatedWithWPCom: Bool,
                                    completion: @escaping (Result<URL, Error>) -> Void) {
-        guard authenticatedWithWPCom else {
-            jetpackConnectionRemote?.fetchJetpackConnectionURL(completion: completion)
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
             return
         }
-        jetpackConnectionRemote?.fetchJetpackConnectionURL { [weak self] result in
+        guard authenticatedWithWPCom else {
+            jetpackConnectionRemote.fetchJetpackConnectionURL(completion: completion)
+            return
+        }
+        jetpackConnectionRemote.fetchJetpackConnectionURL { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let url):
@@ -112,11 +128,18 @@ private extension JetpackConnectionStore {
     }
 
     func fetchJetpackConnectionData(siteID: Int64, completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
-        jetpackConnectionRemote?.fetchJetpackConnectionData(siteID: siteID, completion: completion)
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
+        jetpackConnectionRemote.fetchJetpackConnectionData(siteID: siteID, completion: completion)
     }
 
     func registerSite(completion: @escaping (Result<Int64, Error>) -> Void) {
-        guard let jetpackConnectionRemote else { return }
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
         Task { @MainActor in
             do {
                 let blogID = try await jetpackConnectionRemote.registerSite()
@@ -128,7 +151,10 @@ private extension JetpackConnectionStore {
     }
 
     func provisionConnection(completion: @escaping (Result<JetpackConnectionProvisionResponse, Error>) -> Void) {
-        guard let jetpackConnectionRemote else { return }
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
         Task { @MainActor in
             do {
                 let response = try await jetpackConnectionRemote.provisionConnection()
@@ -175,5 +201,9 @@ private extension JetpackConnectionStore {
 private extension JetpackConnectionStore {
     enum Constants {
         static let jetpackAccountConnectionURL = "https://jetpack.wordpress.com/jetpack.authorize"
+    }
+
+    enum JetpackConnectionStoreError: Error {
+        case remoteNotConfigured
     }
 }

@@ -58,6 +58,7 @@ final class EditStoreListViewModel: ObservableObject {
         isUpdatingNotificationSettings = true
         do {
             try await updateNotificationSettings(displayedSiteIDs: displayedSiteIDs, hiddenSiteIDs: hiddenSiteIDs)
+            await unregisterHiddenSitesFromSelfDrivenPushNotifications(hiddenSiteIDs: hiddenSiteIDs)
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
             analytics.track(event: .SitePicker.listEditSavingSuccess())
             onCompletion()
@@ -110,6 +111,36 @@ private extension EditStoreListViewModel {
             stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: settings, onCompletion: { result in
                 continuation.resume(with: result)
             }))
+        }
+    }
+
+    /// Unregisters hidden sites from the self-driven push notification system.
+    /// This is best-effort — failures are logged but do not block the save operation.
+    @MainActor
+    func unregisterHiddenSitesFromSelfDrivenPushNotifications(hiddenSiteIDs: [Int64]) async {
+        guard let tokenString = pushNotificationManager.wooPushNotificationToken,
+              let tokenID = Int64(tokenString) else {
+            return
+        }
+
+        let registeredSiteIDs = pushNotificationManager.siteIDsRegisteredForWooPNs
+        let siteIDsToUnregister = hiddenSiteIDs.filter { registeredSiteIDs.contains($0) }
+
+        for siteID in siteIDsToUnregister {
+            do {
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                    stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                        siteID: siteID,
+                        tokenID: tokenID,
+                        onCompletion: { result in
+                            continuation.resume(with: result)
+                        }
+                    ))
+                }
+                pushNotificationManager.unmarkSiteAsRegisteredForWooPNs(siteID)
+            } catch {
+                DDLogError("⛔️ Failed to unregister site \(siteID) from self-driven push notifications: \(error)")
+            }
         }
     }
 }

@@ -118,9 +118,15 @@ final class PushNotificationsManager: PushNotesManager {
     private var selfDrivenPushNotificationEnabled: Bool?
     private var pendingTokenData: Data?
 
-    /// Continuation used by `registerDeviceAndWaitForTokenAcceptance()` to wait for the device token
-    /// delivered asynchronously via `registerDeviceToken(with:)`.
-    private var deviceTokenContinuation: CheckedContinuation<String, Error>?
+    /// Holds the latest device token result, delivered asynchronously via `registerDeviceToken(with:)` or `registrationDidFail(with:)`.
+    /// Starts as `nil` (no result yet). `waitForDeviceToken()` reads `.value` for an immediate result
+    /// or subscribes for the first non-nil emission.
+    private let deviceTokenResult = CurrentValueSubject<Result<String, Error>?, Never>(nil)
+
+    /// Whether `registerDeviceAndWaitForTokenAcceptance()` is actively waiting for a token.
+    /// When true, `registerDeviceToken(with:)` skips its own registration path
+    /// because the awaited flow handles it.
+    private var isAwaitingTokenForRegistration = false
 
     /// Initializes the PushNotificationsManager.
     ///
@@ -196,6 +202,10 @@ extension PushNotificationsManager {
             return mockTokenID
         }
         #endif
+
+        // Reset any previous token result before starting a new registration
+        deviceTokenResult.send(nil)
+
         // 1. Register with iOS for remote notifications
         registerForRemoteNotifications()
 
@@ -218,14 +228,31 @@ extension PushNotificationsManager {
     }
 
     /// Waits for the device token to arrive via `registerDeviceToken(with:)`.
-    /// Returns immediately if a token is already available.
+    /// Returns immediately if a result is already available, otherwise subscribes
+    /// to `deviceTokenResult` with a 10-second timeout.
+    @MainActor
     private func waitForDeviceToken() async throws -> String {
-        if let existingToken = registrationState.deviceToken {
-            return existingToken
+        isAwaitingTokenForRegistration = true
+
+        defer {
+            isAwaitingTokenForRegistration = false
         }
-        return try await withCheckedThrowingContinuation { continuation in
-            deviceTokenContinuation = continuation
+
+        if let existing = deviceTokenResult.value {
+            return try existing.get()
         }
+
+        guard
+            let result = await deviceTokenResult
+                .compactMap({ $0 })
+                .timeout(.seconds(10), scheduler: DispatchQueue.main)
+                .values
+                .first(where: { _ in true })
+        else {
+            throw PushNotificationError.deviceTokenTimeout
+        }
+
+        return try result.get()
     }
 
 
@@ -305,6 +332,10 @@ extension PushNotificationsManager {
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
     func registerDeviceToken(with tokenData: Data) {
+        // Always publish the token so `waitForDeviceToken()` can pick it up,
+        // even when eligibility is not yet determined.
+        deviceTokenResult.send(.success(tokenData.hexString))
+
         guard let selfDrivenPushNotificationEnabled else {
             pendingTokenData = tokenData
             return
@@ -313,12 +344,9 @@ extension PushNotificationsManager {
 
         registrationState.applyNewDeviceToken(newToken)
 
-        // Resume any pending continuation waiting for the device token
-        // (from registerDeviceAndWaitForTokenAcceptance). The caller handles
-        // the self-driven registration flow, so we skip the existing path.
-        if let continuation = deviceTokenContinuation {
-            deviceTokenContinuation = nil
-            continuation.resume(returning: newToken)
+        // The awaited flow handles its own registration,
+        // so skip the existing path below.
+        if isAwaitingTokenForRegistration {
             return
         }
 
@@ -371,10 +399,11 @@ extension PushNotificationsManager {
     func registrationDidFail(with error: Error) {
         DDLogError("⛔️ Push Notifications Registration Failure: \(error)")
 
-        // Resume any pending continuation so the awaiting caller gets the error
-        if let continuation = deviceTokenContinuation {
-            deviceTokenContinuation = nil
-            continuation.resume(throwing: error)
+        // Always publish the failure so `waitForDeviceToken()` can pick it up,
+        // matching the symmetric behavior in `registerDeviceToken(with:)`.
+        deviceTokenResult.send(.failure(error))
+
+        guard !isAwaitingTokenForRegistration else {
             return
         }
 
@@ -897,6 +926,10 @@ private enum AnalyticKey {
     static let token = "push_notification_token"
     static let fromSelectedSite = "is_from_selected_site"
     static let appState = "app_state"
+}
+
+private enum PushNotificationError: Error {
+    case deviceTokenTimeout
 }
 
 private enum PushType {

@@ -351,6 +351,15 @@ extension PushNotificationsManager {
         }
         let newToken = tokenData.hexString
 
+        // When the device token changes, clear registered site IDs so all sites
+        // re-register with the new token.
+        if let existingToken = registrationState.deviceToken, existingToken != newToken {
+            DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")
+            for siteID in registrationState.siteIDsRegisteredForWooPNs {
+                registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+            }
+        }
+
         registrationState.applyNewDeviceToken(newToken)
 
         // The awaited flow handles its own registration,

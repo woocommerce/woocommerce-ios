@@ -70,8 +70,9 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                 return try? DefaultApplicationPasswordUseCase(username: username,
                                                               password: password,
                                                               siteAddress: siteAddress)
-            case .some(.applicationPassword(_, _, let siteAddress)):
-                return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
+            case let .some(.applicationPassword(username, password, siteAddress)):
+                let appPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: "")
+                return OneTimeApplicationPasswordUseCase(applicationPassword: appPassword, siteAddress: siteAddress)
             case .some(.wpcom):
                 guard let network, let selectedSite else {
                     return nil

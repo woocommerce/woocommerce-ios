@@ -326,6 +326,8 @@ public extension AlamofireNetwork {
     /// Temporarily overrides the request authenticator with POS operator credentials.
     /// Call `revertPOSCredentialOverride()` to restore the original credentials.
     func overridePOSCredentials(username: String, applicationPassword: String, siteAddress: String) {
+        DDLogInfo("🔑 POS credential override: switching to \(username) at \(siteAddress)")
+
         // Save current state for later restoration
         savedRequestConverter = requestConverter
         savedAuthenticationMode = authenticationMode

@@ -104,10 +104,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderTracking: [ShipmentTracking] = []
 
-    /// Order fulfillments list
-    ///
-    var orderFulfillments: [OrderFulfillment] = []
-
     /// Order statuses list
     ///
     var currentSiteStatuses: [OrderStatus] = []
@@ -1178,7 +1174,6 @@ extension OrderDetailsDataSource {
         refunds = resultsControllers.refunds
         customAmounts = resultsControllers.feeLines
         orderTracking = resultsControllers.orderTracking
-        orderFulfillments = resultsControllers.orderFulfillments
         currentSiteStatuses = resultsControllers.currentSiteStatuses
         products = resultsControllers.products
         addOnGroups = resultsControllers.addOnGroups

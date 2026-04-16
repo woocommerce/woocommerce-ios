@@ -325,6 +325,7 @@
         <relationship name="refunds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderRefundCondensed" inverseName="order" inverseEntity="OrderRefundCondensed"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderSearchResults" inverseName="orders" inverseEntity="OrderSearchResults"/>
         <relationship name="shipments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="WooShippingShipment" inverseName="order" inverseEntity="WooShippingShipment"/>
+        <relationship name="fulfillments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderFulfillment" inverseName="order" inverseEntity="OrderFulfillment"/>
         <relationship name="shippingLabels" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLabel" inverseName="order" inverseEntity="ShippingLabel"/>
         <relationship name="shippingLabelSettings" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ShippingLabelSettings" inverseName="order" inverseEntity="ShippingLabelSettings"/>
         <relationship name="shippingLines" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShippingLine" inverseName="order" inverseEntity="ShippingLine"/>
@@ -358,6 +359,7 @@
         <attribute name="statusKey" optional="YES" attributeType="String"/>
         <attribute name="trackingNumber" optional="YES" attributeType="String"/>
         <attribute name="trackingURL" optional="YES" attributeType="String"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="fulfillments" inverseEntity="Order"/>
     </entity>
     <entity name="OrderFeeLine" representedClassName="OrderFeeLine" syncable="YES">
         <attribute name="feeID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

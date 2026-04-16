@@ -83,6 +83,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderCustomFields = customFields?.map { $0.toReadOnly() } ?? [Yosemite.MetaData]()
         let orderGiftCards = appliedGiftCards?.map { $0.toReadOnly() } ?? [Yosemite.OrderGiftCard]()
         let orderShippingLabels = shippingLabels?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLabel]()
+        let orderFulfillments = fulfillments?.map { $0.toReadOnly() } ?? [Yosemite.OrderFulfillment]()
 
         return Order(siteID: siteID,
                      orderID: orderID,
@@ -124,6 +125,7 @@ extension Storage.Order: ReadOnlyConvertible {
                      appliedGiftCards: orderGiftCards,
                      attributionInfo: attributionInfo?.toReadOnly(),
                      shippingLabels: orderShippingLabels,
+                     fulfillments: orderFulfillments,
                      createdVia: createdVia)
 
     }

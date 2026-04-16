@@ -6,7 +6,7 @@ import Codegen
 /// Fulfillments contain shipment details — tracking number, shipping provider, tracking URL, and fulfillment date —
 /// stored as private metadata on the fulfillment entity.
 ///
-public struct OrderFulfillment: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct OrderFulfillment: Decodable, Sendable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Site Identifier.
     ///

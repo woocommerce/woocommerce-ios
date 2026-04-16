@@ -4,6 +4,7 @@ import class Networking.ProductsRemote
 import enum Networking.ProductStatus
 import class WooFoundation.CurrencySettings
 import class Networking.AlamofireNetwork
+import protocol Networking.Network
 import enum Networking.NetworkError
 import struct Combine.AnyPublisher
 import struct NetworkingCore.JetpackSite
@@ -42,6 +43,14 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
     }
 
     public convenience init(siteID: Int64,
+                            network: Network,
+                            currencySettings: CurrencySettings) {
+        self.init(siteID: siteID,
+                  productsRemote: ProductsRemote(network: network),
+                  currencySettings: currencySettings)
+    }
+
+    public convenience init(siteID: Int64,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,
@@ -50,7 +59,7 @@ public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceP
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.init(siteID: siteID,
-                  productsRemote: ProductsRemote(network: network),
+                  network: network,
                   currencySettings: currencySettings)
     }
 

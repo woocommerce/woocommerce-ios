@@ -28,23 +28,22 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
     private let storageManager: StorageManagerType
     private let pluginsService: PluginsServiceProtocol
 
-    public init(credentials: Credentials?,
-                selectedSite: AnyPublisher<JetpackSite?, Never>,
-                appPasswordSupportState: AnyPublisher<Bool, Never>,
+    public init(network: Network,
                 storageManager: StorageManagerType) {
-        let network = AlamofireNetwork(credentials: credentials,
-                                       selectedSite: selectedSite,
-                                       appPasswordSupportState: appPasswordSupportState)
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
         self.pluginsService = PluginsService(storageManager: storageManager)
     }
 
-    /// Test-friendly initializer that accepts a network implementation.
-    init(network: Network, storageManager: StorageManagerType) {
-        self.remote = SystemStatusRemote(network: network)
-        self.storageManager = storageManager
-        self.pluginsService = PluginsService(storageManager: storageManager)
+    public convenience init(credentials: Credentials?,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
+                            appPasswordSupportState: AnyPublisher<Bool, Never>,
+                            storageManager: StorageManagerType) {
+        let network = AlamofireNetwork(credentials: credentials,
+                                       selectedSite: selectedSite,
+                                       appPasswordSupportState: appPasswordSupportState)
+        self.init(network: network,
+                  storageManager: storageManager)
     }
 
     @MainActor

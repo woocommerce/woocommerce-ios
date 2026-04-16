@@ -19,6 +19,13 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
     }
 
     public convenience init(siteID: Int64,
+                            network: Network,
+                            storage: StorageManagerType) {
+        self.init(siteID: siteID, settingStoreMethods: SettingStoreMethods(storageManager: storage,
+                                                                           network: network))
+    }
+
+    public convenience init(siteID: Int64,
                             credentials: Credentials?,
                             selectedSite: AnyPublisher<JetpackSite?, Never>,
                             appPasswordSupportState: AnyPublisher<Bool, Never>,
@@ -26,8 +33,9 @@ public final class PointOfSaleSettingsService: PointOfSaleSettingsServiceProtoco
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
-        self.init(siteID: siteID, settingStoreMethods: SettingStoreMethods(storageManager: storage,
-                                                                           network: network))
+        self.init(siteID: siteID,
+                  network: network,
+                  storage: storage)
     }
 
     public func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {

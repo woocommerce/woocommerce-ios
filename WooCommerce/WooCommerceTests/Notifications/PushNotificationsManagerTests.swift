@@ -833,8 +833,8 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked after 404 error")
     }
 
-    func test_registerDeviceToken_when_self_driven_registration_fails_with_non_404_error_does_not_unmark_site() async {
-        // Given — register the site first, then re-register with a different token to trigger re-registration
+    func test_registerDeviceToken_when_token_changes_then_clears_registered_sites_before_reregistration() async {
+        // Given — site is registered with an old token
         let siteID: Int64 = 99
         defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
         defaults.set("old-token", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
@@ -870,16 +870,16 @@ final class PushNotificationsManagerTests: XCTestCase {
             return XCTFail("Invalid sample token")
         }
 
-        // When — new token triggers re-registration for all sites
+        // When — new token arrives, clearing previously registered sites
         manager.registerDeviceToken(with: tokenAsData)
         await fulfillment(of: [fallbackExpectation], timeout: 1.0)
 
-        // Then — site should NOT be unmarked (only 404 unmarks)
+        // Then — site was cleared from registered list due to token change, and re-registration failed
         let storedSiteIDs = defaults.string(
             forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
         ) ?? ""
         XCTAssertFalse(storedSiteIDs.contains("\(siteID)"),
-                       "Site ID should not be in registered list since re-registration failed, but it was not explicitly unmarked")
+                       "Site should be cleared from registered list when token changes")
     }
 
     // MARK: - Multi-site registration tests
@@ -895,7 +895,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             eligibilityCheckExpectation.fulfill()
         })
 
-        insertSitesIntoStorage(siteIDs: [100, 200, 300])
+        await insertSitesIntoStorage(siteIDs: [100, 200, 300])
 
         manager = makeManager(featureFlagService: featureFlagService)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
@@ -941,7 +941,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             eligibilityCheckExpectation.fulfill()
         })
 
-        insertSitesIntoStorage(siteIDs: [100, 200, 300])
+        await insertSitesIntoStorage(siteIDs: [100, 200, 300])
 
         manager = makeManager(featureFlagService: featureFlagService)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
@@ -987,7 +987,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             eligibilityCheckExpectation.fulfill()
         })
 
-        insertSitesIntoStorage(siteIDs: [100, 200, 300])
+        await insertSitesIntoStorage(siteIDs: [100, 200, 300])
 
         manager = makeManager(featureFlagService: featureFlagService)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
@@ -1025,7 +1025,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             eligibilityCheckExpectation.fulfill()
         })
 
-        insertSitesIntoStorage(siteIDs: [100, 200])
+        await insertSitesIntoStorage(siteIDs: [100, 200])
 
         manager = makeManager(featureFlagService: featureFlagService)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
@@ -1074,7 +1074,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             eligibilityCheckExpectation.fulfill()
         })
 
-        insertSitesIntoStorage(siteIDs: [100, 200])
+        await insertSitesIntoStorage(siteIDs: [100, 200])
 
         manager = makeManager(featureFlagService: featureFlagService)
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
@@ -1106,6 +1106,121 @@ final class PushNotificationsManagerTests: XCTestCase {
         ) ?? ""
         XCTAssertTrue(storedSiteIDs.contains("100"), "Site 100 should be registered")
         XCTAssertFalse(storedSiteIDs.contains("200"), "Site 200 should be unmarked after notFound error")
+    }
+
+    func test_registerDeviceToken_when_storage_is_empty_then_falls_back_to_current_siteID() async {
+        // Given — no sites in storage, but defaultStoreID is set
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        // No insertSitesIntoStorage — storage is empty
+        manager = makeManager(featureFlagService: featureFlagService)
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        var registeredSiteIDs = Set<Int64>()
+        let registrationExpectation = expectation(description: "Registration attempted")
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+                registeredSiteIDs.insert(siteID)
+                onCompletion(.success(Int64(siteID + 1000)))
+                registrationExpectation.fulfill()
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+
+        // Then — falls back to current siteID (99)
+        XCTAssertEqual(registeredSiteIDs, [99])
+    }
+
+    func test_registerDeviceToken_when_all_sites_already_registered_then_skips_registration() async {
+        // Given — all sites already registered
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        defaults.set("100,200", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
+        // Set the same device token so token-change logic doesn't clear sites
+        defaults.set(Sample.deviceToken.data(using: .utf8)!.hexString,
+                     forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        await insertSitesIntoStorage(siteIDs: [100, 200])
+
+        manager = makeManager(featureFlagService: featureFlagService)
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        var registrationAttempted = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case .registerDeviceForSelfDrivenPushNotifications = action {
+                registrationAttempted = true
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Give time for any async work to run
+        try? await Task.sleep(for: .milliseconds(100))
+
+        // Then — no registration action dispatched (all sites already registered)
+        XCTAssertFalse(registrationAttempted, "Should not attempt registration when all sites are already registered")
+    }
+
+    func test_registerDeviceToken_when_eligibility_unknown_then_retries_eligibility_check() async {
+        // Given — eligibility check does not complete during init
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(99)
+
+        // Do NOT set up mockRemoteFeatureFlagAction yet — eligibility stays nil
+        manager = makeManager()
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When — first call stores pending token since eligibility is nil
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Then — set up the mock so the re-triggered check can complete
+        let registrationExpectation = expectation(description: "Registration completed after eligibility resolved")
+        registrationExpectation.assertForOverFulfill = false
+        mockRemoteFeatureFlagAction(isEnabled: true)
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(42))
+                registrationExpectation.fulfill()
+            }
+        }
+
+        // The re-triggered eligibility check should complete and process the pending token
+        await fulfillment(of: [registrationExpectation], timeout: 2.0)
+
+        // Then — registration was dispatched after eligibility resolved
+        let notificationActions = storesManager.receivedActions.compactMap { $0 as? NotificationAction }
+        XCTAssertTrue(notificationActions.contains(where: {
+            if case .registerDeviceForSelfDrivenPushNotifications = $0 { return true }
+            return false
+        }))
     }
 }
 
@@ -1200,13 +1315,14 @@ private extension PushNotificationsManagerTests {
         }
     }
 
-    func insertSitesIntoStorage(siteIDs: [Int64]) {
-        for siteID in siteIDs {
-            let site = storageManager.viewStorage.insertNewObject(ofType: Site.self)
-            site.siteID = siteID
-            site.isWooCommerceActive = NSNumber(value: true)
-        }
-        storageManager.viewStorage.saveIfNeeded()
+    func insertSitesIntoStorage(siteIDs: [Int64]) async {
+        await storageManager.performAndSaveAsync({ storage in
+            for siteID in siteIDs {
+                let site = storage.insertNewObject(ofType: Site.self)
+                site.siteID = siteID
+                site.isWooCommerceActive = NSNumber(value: true)
+            }
+        })
     }
 }
 

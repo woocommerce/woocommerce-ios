@@ -225,7 +225,7 @@ extension PushNotificationsManager {
 
         // 4. Send token to endpoint and wait for acceptance
         guard let siteID else {
-            throw PushNotificationError.deviceTokenTimeout
+            throw PushNotificationError.missingSiteID
         }
         return try await withCheckedThrowingContinuation { continuation in
             registerSelfDrivenPushNotificationFlow(with: deviceToken, siteID: siteID) { result in
@@ -990,6 +990,7 @@ private enum AnalyticKey {
 
 private enum PushNotificationError: Error {
     case deviceTokenTimeout
+    case missingSiteID
 }
 
 private enum PushType {

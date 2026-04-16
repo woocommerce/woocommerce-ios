@@ -119,9 +119,12 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
 
     func createCouponCreationView(discountType: Coupon.DiscountType,
                                   showTypeSelection: Binding<Bool>,
+                                  approvalToken: String?,
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView {
+        // TODO: Pass approvalToken to the coupon creation form so it includes _pos_approval in the API request.
+        // Requires backend to add publish_shop_coupons to APPROVABLE_ACTIONS.
         AnyView(POSCouponCreationViewAdaptor(
             discountType: discountType,
             showTypeSelection: showTypeSelection,

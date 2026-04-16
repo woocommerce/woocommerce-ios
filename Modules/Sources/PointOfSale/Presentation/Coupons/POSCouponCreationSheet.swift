@@ -8,15 +8,21 @@ import struct Yosemite.POSCoupon
 extension View {
     func posCouponCreationSheet(
         isPresented: Binding<Bool>,
+        approvalToken: String? = nil,
         currencySettings: CurrencySettings,
         onSuccess: @escaping (POSItem) -> Void
     ) -> some View {
-        modifier(POSCouponCreationSheetModifier(isPresented: isPresented, currencySettings: currencySettings, onSuccess: onSuccess))
+        modifier(POSCouponCreationSheetModifier(isPresented: isPresented,
+                                                approvalToken: approvalToken,
+                                                currencySettings: currencySettings,
+                                                onSuccess: onSuccess))
     }
 }
 
 private struct POSCouponCreationSheetModifier: ViewModifier {
     @Binding var isPresented: Bool
+    /// Approval token from manager override, passed to the coupon creation API.
+    let approvalToken: String?
     let currencySettings: CurrencySettings
     let onSuccess: (POSItem) -> Void
 
@@ -31,6 +37,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
                 externalViews.createCouponCreationView(
                     discountType: posDiscountType.discountType,
                     showTypeSelection: $showCouponSelectionSheet,
+                    approvalToken: approvalToken,
                     onSuccess: { coupon in
                         let id = POSItemIdentifier(underlyingType: .coupon, itemID: coupon.couponID)
                         addedCouponItem = .coupon(.init(id: id, code: coupon.code, summary: coupon.summary(currencySettings: currencySettings)))

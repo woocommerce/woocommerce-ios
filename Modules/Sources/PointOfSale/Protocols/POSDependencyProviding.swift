@@ -48,8 +48,10 @@ public protocol POSExternalNavigationProviding {
 ///
 public protocol POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
+    /// - Parameter approvalToken: POS approval token from manager override, passed to the API for capability bypass.
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
+                                  approvalToken: String?,
                                   onSuccess: @escaping (Coupon) -> Void,
                                   dismissHandler: @escaping () -> Void,
                                   onDisappear: @escaping () -> Void) -> AnyView

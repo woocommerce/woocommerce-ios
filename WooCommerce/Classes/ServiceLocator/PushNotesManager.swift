@@ -33,6 +33,10 @@ protocol PushNotesManager {
     ///
     var deviceID: String? { get }
 
+    /// Self-driven push notification token ID
+    ///
+    var wooPushNotificationToken: String? { get }
+
     /// Site IDs registered for Woo Push Notifications.
     ///
     var siteIDsRegisteredForWooPNs: [Int64] { get }
@@ -44,6 +48,10 @@ protocol PushNotesManager {
     /// Indicates whether the registered site IDs value exists in storage.
     ///
     var hasStoredSiteIDsRegisteredForWooPNs: Bool { get }
+
+    /// Unmarks a site as registered for Woo Push Notifications.
+    ///
+    func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64)
 
     /// Resets the Badge Count.
     ///

@@ -90,6 +90,14 @@ final class PushNotificationsManager: PushNotesManager {
         registrationState.deviceID
     }
 
+    var wooPushNotificationToken: String? {
+        registrationState.wooPushNotificationToken
+    }
+
+    func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+    }
+
     /// Site IDs registered to Woo PN system.
     ///
     var siteIDsRegisteredForWooPNs: [Int64] {

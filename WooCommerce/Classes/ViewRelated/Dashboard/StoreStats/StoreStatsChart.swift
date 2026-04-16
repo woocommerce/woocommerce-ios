@@ -139,8 +139,8 @@ private extension StoreStatsChart {
             comment: "Value for the x-Axis of the store stats chart on the Dashboard screen"
         )
         static let yValue = NSLocalizedString(
-            "storeStatsChart.yValueNetSales",
-            value: "Net sales",
+            "storeStatsChart.yValueTotalSales",
+            value: "Total sales",
             comment: "Value for the y-Axis of the store stats chart on the Dashboard screen"
         )
         static let zeroRevenue = NSLocalizedString(

@@ -6,6 +6,7 @@
 
 24.5
 -----
+- [*] Fix dashboard showing total sales instead of net sales to match what merchants expect [https://github.com/woocommerce/woocommerce-ios/pull/16942]
 - [*] Add analytics setting check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16871]
 - [*] Add notification check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16875]
 

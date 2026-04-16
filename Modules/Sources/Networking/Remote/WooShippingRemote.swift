@@ -571,19 +571,11 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                         originAddress: WooShippingAddress,
                                         completion: @escaping(Result<Bool, Error>) -> Void) {
         do {
-            let path = Path.upsdapCarrierStrategy
             let parameters: [String: Any] = [
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.confirmed: true
             ]
-            let request = JetpackRequest(wooApiVersion: .wooShipping,
-                                         method: .post,
-                                         siteID: siteID,
-                                         path: path,
-                                         parameters: parameters,
-                                         availableAsRESTRequest: true)
-            let mapper = SuccessDataResultMapper()
-            enqueue(request, mapper: mapper, completion: completion)
+            acceptCarrierTermsOfService(siteID: siteID, path: Path.upsdapCarrierStrategy, parameters: parameters, completion: completion)
         } catch {
             completion(.failure(error))
         }
@@ -596,10 +588,17 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///
     public func acceptFedExTermsOfService(siteID: Int64,
                                           completion: @escaping(Result<Bool, Error>) -> Void) {
-        let path = Path.fedexCarrierStrategy
         let parameters: [String: Any] = [
             ParameterKey.confirmed: true
         ]
+        acceptCarrierTermsOfService(siteID: siteID, path: Path.fedexCarrierStrategy, parameters: parameters, completion: completion)
+    }
+
+    /// Sends a carrier ToS acceptance request.
+    private func acceptCarrierTermsOfService(siteID: Int64,
+                                             path: String,
+                                             parameters: [String: Any],
+                                             completion: @escaping(Result<Bool, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .wooShipping,
                                      method: .post,
                                      siteID: siteID,

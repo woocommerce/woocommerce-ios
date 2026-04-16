@@ -6,9 +6,8 @@ struct FedExTermsView: View {
     let onConfirmation: () -> Void
 
     var body: some View {
-        CarrierTermsView(viewModel: viewModel, checkboxes: { vm in
-            LinkedCheckboxToggle(isOn: Binding(get: { vm.isTOSAccepted },
-                                               set: { vm.isTOSAccepted = $0 }),
+        CarrierTermsView(viewModel: viewModel, checkboxes: { _ in
+            LinkedCheckboxToggle(isOn: $viewModel.isTOSAccepted,
                                  labelFormat: FedExTermsViewModel.Localization.checkbox,
                                  linkText: FedExTermsViewModel.Localization.termsOfService,
                                  linkURL: FedExTermsViewModel.Links.termsOfService)

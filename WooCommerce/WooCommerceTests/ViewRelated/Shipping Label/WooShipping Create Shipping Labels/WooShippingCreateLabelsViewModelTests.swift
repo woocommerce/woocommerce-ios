@@ -1843,46 +1843,20 @@ private extension WooShippingCreateLabelsViewModelTests {
 
     /// Creates a `WooShippingCreateLabelsViewModel` configured with a mock store that returns
     /// the given `purchaseError` when a shipping label purchase is attempted.
-    /// The returned view model is ready to call `purchaseLabel`.
     @MainActor
     func makePurchaseLabelViewModel(purchaseError: Error) async -> WooShippingCreateLabelsViewModel {
-        let shippingAddress = Address(firstName: "Jane",
-                                      lastName: "Doe",
-                                      company: nil,
-                                      address1: "123 Main Street",
-                                      address2: nil,
-                                      city: "San Francisco",
-                                      state: "CA",
-                                      postcode: "94107",
-                                      country: "US",
-                                      phone: "234-567-8901",
-                                      email: "test@example.com")
-        let originAddress = WooShippingOriginAddress.fake().copy(
-            id: "default",
-            company: "HEADQUARTERS",
-            address1: "15 ALGONKIN ST",
-            address2: "STE 100",
-            city: "TICONDEROGA",
-            state: "NY",
-            postcode: "12883-1487",
-            country: "US",
-            phone: "223-456-7890",
-            defaultAddress: true
-        )
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", country: "US", defaultAddress: true)
         insert(originAddress: originAddress)
 
-        let destinationAddress = WooShippingNormalizedAddress.fake().copy(phone: "234-567-8901", country: "US", state: "CA")
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(country: "US", state: "CA")
+        let shippingAddress = Address.fake().copy(state: "CA", country: "US")
         let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingAddress: shippingAddress)
-        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(
-            paymentMethodID: 11743265,
-            name: "Example User",
-            cardType: .visa,
-            cardDigits: "4242"
-        )
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(paymentMethodID: 1)
         let accountSettings = ShippingLabelAccountSettings.fake().copy(
             paymentMethods: [paymentMethod],
             selectedPaymentMethodID: paymentMethod.paymentMethodID
         )
+
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -1896,51 +1870,23 @@ private extension WooShippingCreateLabelsViewModelTests {
                                                                                isVerified: true)))
             case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
                 completion(.failure(purchaseError))
-            case .loadPackages, .loadConfig:
-                break
             default:
                 break
             }
         }
 
-        let viewModel = WooShippingCreateLabelsViewModel(order: order,
-                                                         stores: stores,
-                                                         storageManager: storageManager)
-        await until {
-            viewModel.state == .ready
-        }
-        await until {
-            viewModel.currentShipmentDetailsViewModel.shippingService != nil
-        }
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
+        await until { viewModel.state == .ready }
+        await until { viewModel.currentShipmentDetailsViewModel.shippingService != nil }
         viewModel.didUpdateAccountSettings(accountSettings)
 
-        let package = WooShippingPackageData(id: "small_flat_box",
-                                             name: "Small Flat Rate Box",
-                                             length: "21.91",
-                                             width: "13.65",
-                                             height: "4.13",
-                                             weight: ".25",
-                                             source: .predefined(sourceTitle: "usps", sourceID: "usps"),
+        let package = WooShippingPackageData(id: "box", name: "Box", length: "10", width: "10", height: "5",
+                                             weight: "1", source: .predefined(sourceTitle: "usps", sourceID: "usps"),
                                              packageType: "box")
         let selectedRate = WooShippingSelectedRate(
-            rate: ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
-                                           insurance: "100",
-                                           retailRate: 40.06,
-                                           rate: 40.06,
-                                           rateID: "rate_a8a29d5f34984722942f466c30ea27eh",
-                                           serviceID: "",
-                                           carrierID: "usps",
-                                           shipmentID: "",
-                                           hasTracking: true,
-                                           isSelected: false,
-                                           isPickupFree: true,
-                                           deliveryDays: 2,
-                                           deliveryDateGuaranteed: false),
-            signatureRate: nil,
-            adultSignatureRate: nil,
-            carbonNeutralRate: nil,
-            saturdayDeliveryRate: nil,
-            additionalHandlingRate: nil
+            rate: ShippingLabelCarrierRate.fake().copy(rateID: "rate_1", carrierID: "usps"),
+            signatureRate: nil, adultSignatureRate: nil, carbonNeutralRate: nil,
+            saturdayDeliveryRate: nil, additionalHandlingRate: nil
         )
         viewModel.currentShipmentDetailsViewModel.selectPackage(package)
         viewModel.currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)

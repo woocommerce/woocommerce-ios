@@ -7,17 +7,9 @@ final class FedExTermsViewModel: ObservableObject, CarrierTermsViewModel {
 
     @Published private(set) var isConfirming = false
 
-    let title: String = NSLocalizedString(
-        "fedExTermsView.title",
-        value: "FedEx Terms of Service",
-        comment: "Title of the FedEx Terms of Service view"
-    )
+    let title: String = Localization.title
 
-    let message: String = NSLocalizedString(
-        "fedExTermsView.message",
-        value: "To purchase FedEx shipping labels, you need to agree to the following terms:",
-        comment: "Message on the FedEx Terms of Service view"
-    )
+    let message: String = Localization.message
 
     var displayedOriginAddress: String? {
         nil
@@ -57,6 +49,16 @@ extension FedExTermsViewModel {
     }
 
     enum Localization {
+        static let title = NSLocalizedString(
+            "fedExTermsView.title",
+            value: "FedEx Terms of Service",
+            comment: "Title of the FedEx Terms of Service view"
+        )
+        static let message = NSLocalizedString(
+            "fedExTermsView.message",
+            value: "To purchase FedEx shipping labels, you need to agree to the following terms:",
+            comment: "Message on the FedEx Terms of Service view"
+        )
         static let checkbox = NSLocalizedString(
             "fedExTermsView.checkbox",
             value: "I agree to the %1$@.",

@@ -106,47 +106,35 @@ private extension CarrierTermsView {
     }
 
     enum Localization {
-        static var shippingFrom: String {
-            NSLocalizedString(
-                "carrierTermsView.shippingFrom",
-                value: "Shipping from",
-                comment: "Title label for the origin address on the carrier Terms and Conditions view"
-            )
-        }
-        static var confirmButton: String {
-            NSLocalizedString(
-                "carrierTermsView.confirmButton",
-                value: "Confirm and continue",
-                comment: "Button to confirm all agreements on the carrier Terms and Conditions view"
-            )
-        }
-        static var errorTitle: String {
-            NSLocalizedString(
-                "carrierTermsView.errorTitle",
-                value: "Error confirming acceptance",
-                comment: "Title of the alert when confirming agreements on the carrier Terms and Conditions view fails"
-            )
-        }
-        static var errorMessage: String {
-            NSLocalizedString(
-                "carrierTermsView.errorMessage",
-                value: "An unexpected error occurred when confirming your acceptance. Please try again.",
-                comment: "Message of the alert when confirming agreements on the carrier Terms and Conditions view fails"
-            )
-        }
-        static var retry: String {
-            NSLocalizedString(
-                "carrierTermsView.retry",
-                value: "Retry",
-                comment: "Button to retry confirming agreements on the carrier Terms and Conditions view"
-            )
-        }
-        static var cancel: String {
-            NSLocalizedString(
-                "carrierTermsView.cancel",
-                value: "Cancel",
-                comment: "Button to cancel confirming agreements on the carrier Terms and Conditions view"
-            )
-        }
+        static var shippingFrom: String { NSLocalizedString(
+            "carrierTermsView.shippingFrom",
+            value: "Shipping from",
+            comment: "Title label for the origin address on the carrier Terms and Conditions view"
+        ) }
+        static var confirmButton: String { NSLocalizedString(
+            "carrierTermsView.confirmButton",
+            value: "Confirm and continue",
+            comment: "Button to confirm all agreements on the carrier Terms and Conditions view"
+        ) }
+        static var errorTitle: String { NSLocalizedString(
+            "carrierTermsView.errorTitle",
+            value: "Error confirming acceptance",
+            comment: "Title of the alert when confirming agreements on the carrier Terms and Conditions view fails"
+        ) }
+        static var errorMessage: String { NSLocalizedString(
+            "carrierTermsView.errorMessage",
+            value: "An unexpected error occurred when confirming your acceptance. Please try again.",
+            comment: "Message of the alert when confirming agreements on the carrier Terms and Conditions view fails"
+        ) }
+        static var retry: String { NSLocalizedString(
+            "carrierTermsView.retry",
+            value: "Retry",
+            comment: "Button to retry confirming agreements on the carrier Terms and Conditions view"
+        ) }
+        static var cancel: String { NSLocalizedString(
+            "carrierTermsView.cancel",
+            value: "Cancel",
+            comment: "Button to cancel confirming agreements on the carrier Terms and Conditions view"
+        ) }
     }
 }

@@ -6,19 +6,16 @@ struct UPSTermsView: View {
     let onConfirmation: () -> Void
 
     var body: some View {
-        CarrierTermsView(viewModel: viewModel, checkboxes: { vm in
-            LinkedCheckboxToggle(isOn: Binding(get: { vm.isTOSAccepted },
-                                               set: { vm.isTOSAccepted = $0 }),
+        CarrierTermsView(viewModel: viewModel, checkboxes: { _ in
+            LinkedCheckboxToggle(isOn: $viewModel.isTOSAccepted,
                                  labelFormat: UPSTermsViewModel.Localization.checkbox1,
                                  linkText: UPSTermsViewModel.Localization.termsOfService,
                                  linkURL: UPSTermsViewModel.Links.termsOfService)
-            LinkedCheckboxToggle(isOn: Binding(get: { vm.isProhibitedItemsAccepted },
-                                               set: { vm.isProhibitedItemsAccepted = $0 }),
+            LinkedCheckboxToggle(isOn: $viewModel.isProhibitedItemsAccepted,
                                  labelFormat: UPSTermsViewModel.Localization.checkbox2,
                                  linkText: UPSTermsViewModel.Localization.prohibitedItems,
                                  linkURL: UPSTermsViewModel.Links.prohibitedItems)
-            LinkedCheckboxToggle(isOn: Binding(get: { vm.isTechnologyAgreementAccepted },
-                                               set: { vm.isTechnologyAgreementAccepted = $0 }),
+            LinkedCheckboxToggle(isOn: $viewModel.isTechnologyAgreementAccepted,
                                  labelFormat: UPSTermsViewModel.Localization.checkbox3,
                                  linkText: UPSTermsViewModel.Localization.technologyAgreement,
                                  linkURL: UPSTermsViewModel.Links.techAgreement)

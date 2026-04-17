@@ -833,6 +833,144 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked after 404 error")
     }
 
+    func test_registerDeviceToken_when_plugin_version_is_incompatible_then_unmarks_site_and_skips_registration() async {
+        // Given
+        let siteID: Int64 = 99
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        // Set up mock plugin version checker to return incompatible version
+        let mockChecker = MockPluginVersionChecker()
+        mockChecker.result = .success(.incompatible(currentVersion: "10.5.0", requiredVersion: "10.8.0"))
+        let mockCheckerFactory = MockPluginVersionCheckerFactory(checker: mockChecker)
+
+        manager = makeManager(featureFlagService: featureFlagService, pluginVersionCheckerFactory: mockCheckerFactory)
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        // No registration action should be dispatched since version check fails
+        var registrationAttempted = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case .registerDeviceForSelfDrivenPushNotifications = action {
+                registrationAttempted = true
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+
+        // Wait a bit for async operations to complete
+        try? await Task.sleep(nanoseconds: 500_000_000)
+
+        // Then
+        XCTAssertFalse(registrationAttempted, "Registration should not be attempted when plugin version is incompatible")
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked when plugin version is incompatible")
+    }
+
+    func test_registerDeviceToken_when_plugin_version_is_compatible_then_proceeds_with_registration() async {
+        // Given
+        let siteID: Int64 = 99
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        // Set up mock plugin version checker to return compatible version
+        let mockChecker = MockPluginVersionChecker()
+        mockChecker.result = .success(.compatible)
+        let mockCheckerFactory = MockPluginVersionCheckerFactory(checker: mockChecker)
+
+        manager = makeManager(featureFlagService: featureFlagService, pluginVersionCheckerFactory: mockCheckerFactory)
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        let registrationExpectation = expectation(description: "Registration attempted")
+        registrationExpectation.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(42))
+                registrationExpectation.fulfill()
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+
+        // Then
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertTrue(storedSiteIDs.contains("\(siteID)"), "Site ID should be marked as registered when plugin version is compatible")
+    }
+
+    func test_registerDeviceToken_when_plugin_version_check_fails_then_proceeds_with_registration() async {
+        // Given
+        let siteID: Int64 = 99
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        // Set up mock plugin version checker to throw an error
+        let mockChecker = MockPluginVersionChecker()
+        mockChecker.result = .failure(NSError(domain: "test", code: -1))
+        let mockCheckerFactory = MockPluginVersionCheckerFactory(checker: mockChecker)
+
+        manager = makeManager(featureFlagService: featureFlagService, pluginVersionCheckerFactory: mockCheckerFactory)
+
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        // Registration should still proceed even when version check fails
+        let registrationExpectation = expectation(description: "Registration attempted")
+        registrationExpectation.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(42))
+                registrationExpectation.fulfill()
+            }
+        }
+
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+        await fulfillment(of: [registrationExpectation], timeout: 1.0)
+
+        // Then - registration should have proceeded despite version check failure
+        let storedSiteIDs = defaults.string(
+            forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications
+        ) ?? ""
+        XCTAssertTrue(storedSiteIDs.contains("\(siteID)"), "Site ID should be registered even when version check fails")
+    }
+
     func test_registerDeviceToken_when_token_changes_then_clears_registered_sites_before_reregistration() async {
         // Given — site is registered with an old token
         let siteID: Int64 = 99
@@ -1229,7 +1367,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 //
 private extension PushNotificationsManagerTests {
     func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-                     storageManager: MockStorageManager? = nil) -> PushNotificationsManager {
+                     storageManager: MockStorageManager? = nil,
+                     pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil) -> PushNotificationsManager {
         // Capture strong local references so the @autoclosure closures in
         // PushNotificationsConfiguration don't go through the test's IUO
         // properties, which may be nilled in tearDown while async Tasks are still in flight.
@@ -1246,7 +1385,8 @@ private extension PushNotificationsManagerTests {
         return PushNotificationsManager(configuration: configuration,
                                         backgroundSynchronizerFactory: backgroundSynchronizerFactory,
                                         storageManager: storageManager ?? self.storageManager,
-                                        featureFlagService: featureFlagService)
+                                        featureFlagService: featureFlagService,
+                                        pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory())
     }
 
 
@@ -1369,5 +1509,17 @@ private class MockPushNotificationBackgroundSynchronizerFactory: PushNotificatio
     var synchronizer = MockPushNotificationBackgroundSynchronizer()
     func make(userInfo: [AnyHashable: Any], stores: StoresManager) -> any PushNotificationBackgroundSynchronizerProtocol {
         return synchronizer
+    }
+}
+
+private class MockPluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol {
+    let checker: MockPluginVersionChecker
+
+    init(checker: MockPluginVersionChecker = MockPluginVersionChecker()) {
+        self.checker = checker
+    }
+
+    func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol {
+        return checker
     }
 }

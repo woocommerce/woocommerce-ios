@@ -117,6 +117,7 @@ final class PushNotificationsManager: PushNotesManager {
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
     private let selfDriventPNEligiblityChecker: WooPushNotificationEligibilityCheck
+    private let pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol
     private var selfDrivenPushNotificationEnabled: Bool?
     private var pendingTokenData: Data?
 
@@ -138,12 +139,14 @@ final class PushNotificationsManager: PushNotesManager {
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol = PluginVersionCheckerFactory()) {
         self.configuration = configuration
         self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults, log: { DDLogInfo($0) })
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
         self.storageManager = storageManager
+        self.pluginVersionCheckerFactory = pluginVersionCheckerFactory
         self.selfDriventPNEligiblityChecker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
             stores: configuration.storesManager
@@ -816,6 +819,37 @@ private extension PushNotificationsManager {
                                                 onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         DDLogInfo("📱 Registering self-driven push notification token for site \(siteID)")
 
+        // Check plugin version before attempting registration
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            let minimumVersion = WooPluginRequirements.minimumVersion
+            let pluginVersionChecker = pluginVersionCheckerFactory.makeChecker(
+                siteID: siteID,
+                pluginPath: WooPluginRequirements.pluginPath,
+                minimumVersion: minimumVersion
+            )
+            do {
+                let result = try await pluginVersionChecker.checkCompatibility()
+                if case .incompatible(let currentVersion, _) = result {
+                    DDLogError("⛔️ Unable to register self-driven push token: WooCommerce plugin version \(currentVersion) is below required \(minimumVersion)")
+                    registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+                    onCompletion(.failure(PushNotificationError.pluginVersionIncompatible(
+                        currentVersion: currentVersion,
+                        requiredVersion: minimumVersion
+                    )))
+                    return
+                }
+            } catch {
+                DDLogError("⛔️ Failed to check plugin version: \(error)")
+                // Continue with registration even if version check fails - the server will validate
+            }
+
+            // Plugin version is compatible (or check failed), proceed with registration
+            performDeviceRegistration(siteID: siteID, deviceToken: deviceToken, onCompletion: onCompletion)
+        }
+    }
+
+    private func performDeviceRegistration(siteID: Int64, deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
             siteID: siteID,
@@ -998,6 +1032,7 @@ private enum PushNotificationError: Error {
     case deviceTokenTimeout
     case missingSiteID
     case siteRegistrationFailed(siteIDs: [Int64])
+    case pluginVersionIncompatible(currentVersion: String, requiredVersion: String)
 }
 
 private enum PushType {

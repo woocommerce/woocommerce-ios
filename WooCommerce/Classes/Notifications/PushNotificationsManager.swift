@@ -741,6 +741,7 @@ private extension PushNotificationsManager {
     func registerSelfDrivenPushNotificationFlow(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         guard let siteID else {
             DDLogError("⛔️ Unable to register self-driven push token: missing siteID")
+            onCompletion(.failure(PushNotificationError.missingSiteID))
             return
         }
 
@@ -930,6 +931,7 @@ private enum AnalyticKey {
 
 private enum PushNotificationError: Error {
     case deviceTokenTimeout
+    case missingSiteID
 }
 
 private enum PushType {

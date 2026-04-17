@@ -189,7 +189,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let featuresParam = try XCTUnwrap(request.parameters["features_supported_by_client"] as? [String])
-        XCTAssertEqual(featuresParam, ["upsdap"])
+        XCTAssertEqual(featuresParam, ["upsdap", "fedex"])
         let packagesParam = try XCTUnwrap(request.parameters["packages"] as? [[String: Any]])
         let package = try XCTUnwrap(packagesParam.first)
         XCTAssertEqual(package["height"] as? Double, 0.25)
@@ -261,7 +261,7 @@ final class WooShippingRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
         let featuresParam = try XCTUnwrap(request.parameters["features_supported_by_client"] as? [String])
-        XCTAssertEqual(featuresParam, ["upsdap"])
+        XCTAssertEqual(featuresParam, ["upsdap", "fedex"])
 
         let successResponse = try XCTUnwrap(result.get())
         XCTAssertEqual(successResponse.savedPredefinedPackages.count, 2)

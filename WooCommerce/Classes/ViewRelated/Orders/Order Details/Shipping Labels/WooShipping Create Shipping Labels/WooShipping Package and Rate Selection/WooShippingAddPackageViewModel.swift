@@ -11,7 +11,6 @@ final class WooShippingAddPackageViewModel: ObservableObject {
     private let stores: StoresManager
     private let storage: StorageManagerType
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
 
     private let starAnimation: Animation = .spring(duration: 0.2)
 
@@ -22,13 +21,11 @@ final class WooShippingAddPackageViewModel: ObservableObject {
          siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          stores: StoresManager = ServiceLocator.stores,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storage = storage
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
 
         selectedPackageType = .custom
         previousSelectedPackage = selectedPackage
@@ -176,13 +173,9 @@ final class WooShippingAddPackageViewModel: ObservableObject {
         }.sorted { $0.id < $1.id }
         let predefinedSavedPackages = packages.savedPredefinedPackages.map {
             return $0.toPackageData()
-        }.filter {
-            $0.source.sourceID != WooShippingCarrier.fedex.rawValue || featureFlagService.isFeatureFlagEnabled(.wooShippingFedEx)
         }.sorted { $0.id < $1.id }
         var carrierPackages: [WooShippingCarrierPackages] = packages.allPredefinedOptions.compactMap {
             return $0.toCarrierPackages()
-        }.filter {
-            $0.carrier != .fedex || featureFlagService.isFeatureFlagEnabled(.wooShippingFedEx)
         }
         if self.carrierPackages.isNotEmpty {
             // sort new packages so they stay in similar order

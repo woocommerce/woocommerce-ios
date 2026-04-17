@@ -80,6 +80,9 @@ final class MockWooShippingRemote {
     /// The results to return for `acceptUPSTermsOfService`
     private var acceptUPSTermsOfService = [AcceptUPSTOSKey: Result<Bool, Error>]()
 
+    /// The results to return for `acceptFedExTermsOfService`
+    private var acceptFedExTermsOfService = [ResultKey: Result<Bool, Error>]()
+
     /// Set the value passed to the `completion` block if `createPackage` is called.
     func whenCheckEligibility(siteID: Int64,
                               orderID: Int64,
@@ -214,6 +217,13 @@ final class MockWooShippingRemote {
                              thenReturn result: Result<Bool, Error>) {
         let key = AcceptUPSTOSKey(siteID: siteID, originAddress: originAddress)
         acceptUPSTermsOfService[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `acceptFedExTermsOfService` is called
+    func whenAcceptingFedExTOS(siteID: Int64,
+                               thenReturn result: Result<Bool, Error>) {
+        let key = ResultKey(siteID: siteID)
+        acceptFedExTermsOfService[key] = result
     }
 }
 
@@ -510,6 +520,19 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
             guard let self else { return }
             let key = AcceptUPSTOSKey(siteID: siteID, originAddress: originAddress)
             if let result = self.acceptUPSTermsOfService[key] {
+                completion(result)
+            } else {
+                XCTFail("\(String(describing: self)) Could not find Result for \(key)")
+            }
+        }
+    }
+
+    func acceptFedExTermsOfService(siteID: Int64,
+                                   completion: @escaping (Result<Bool, Error>) -> Void) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            let key = ResultKey(siteID: siteID)
+            if let result = self.acceptFedExTermsOfService[key] {
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

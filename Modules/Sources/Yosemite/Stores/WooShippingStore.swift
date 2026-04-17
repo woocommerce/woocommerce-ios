@@ -97,6 +97,8 @@ public final class WooShippingStore: Store {
             refundShippingLabel(shippingLabel: shippingLabel, completion: completion)
         case let .acceptUPSTermsOfService(siteID, originAddress, completion):
             acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
+        case let .acceptFedExTermsOfService(siteID, completion):
+            acceptFedExTermsOfService(siteID: siteID, completion: completion)
         }
     }
 }
@@ -307,6 +309,11 @@ private extension WooShippingStore {
                                  originAddress: WooShippingAddress,
                                  completion: @escaping (Result<Bool, Error>) -> Void) {
         remote.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
+    }
+
+    func acceptFedExTermsOfService(siteID: Int64,
+                                   completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.acceptFedExTermsOfService(siteID: siteID, completion: completion)
     }
 
     func syncShipments(siteID: Int64,

@@ -68,6 +68,7 @@ extension Order {
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
+    @NSManaged public var fulfillments: Set<OrderFulfillment>?
     @NSManaged public var shippingLabels: Set<ShippingLabel>?
     @NSManaged public var shippingLabelSettings: ShippingLabelSettings?
     @NSManaged public var taxes: Set<OrderTaxLine>?

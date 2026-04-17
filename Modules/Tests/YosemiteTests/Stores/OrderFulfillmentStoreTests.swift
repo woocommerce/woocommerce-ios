@@ -58,6 +58,8 @@ final class OrderFulfillmentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Synchronize order fulfillments")
         let store = OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/fulfillments", filename: "order_fulfillment_list")
 
         // When
@@ -99,6 +101,8 @@ final class OrderFulfillmentStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Synchronize order fulfillments error")
         let store = OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
+        insertOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/fulfillments", error: NetworkError.notFound())
 
         // When
@@ -120,14 +124,20 @@ final class OrderFulfillmentStoreTests: XCTestCase {
         // Given
         let store = OrderFulfillmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        // Insert a stale fulfillment that won't be in the response
-        let insertExpectation = expectation(description: "Insert stale fulfillment")
+        // Insert an order and a stale fulfillment that won't be in the response
+        let insertExpectation = expectation(description: "Insert order and stale fulfillment")
         storageManager.performAndSave({ storage in
+            let order = storage.insertNewObject(ofType: Storage.Order.self)
+            order.siteID = self.sampleSiteID
+            order.orderID = self.sampleOrderID
+            order.statusKey = "processing"
+
             let staleFulfillment = storage.insertNewObject(ofType: Storage.OrderFulfillment.self)
             staleFulfillment.siteID = self.sampleSiteID
             staleFulfillment.orderID = self.sampleOrderID
             staleFulfillment.fulfillmentID = 999
             staleFulfillment.statusKey = "stale"
+            staleFulfillment.order = order
         }, completion: { insertExpectation.fulfill() }, on: .main)
         await fulfillment(of: [insertExpectation], timeout: Constants.expectationTimeout)
 
@@ -149,6 +159,18 @@ final class OrderFulfillmentStoreTests: XCTestCase {
     }
 }
 
+
+// MARK: - Helpers
+//
+private extension OrderFulfillmentStoreTests {
+    func insertOrder(siteID: Int64, orderID: Int64) {
+        let storage = viewStorage
+        let order = storage.insertNewObject(ofType: Storage.Order.self)
+        order.siteID = siteID
+        order.orderID = orderID
+        order.statusKey = "processing"
+    }
+}
 
 // MARK: - Constants
 //

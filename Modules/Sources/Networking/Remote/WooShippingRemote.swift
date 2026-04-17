@@ -81,6 +81,9 @@ public protocol WooShippingRemoteProtocol {
     func acceptUPSTermsOfService(siteID: Int64,
                                  originAddress: WooShippingAddress,
                                  completion: @escaping(Result<Bool, Error>) -> Void)
+
+    func acceptFedExTermsOfService(siteID: Int64,
+                                   completion: @escaping(Result<Bool, Error>) -> Void)
 }
 
 /// Shipping Labels Remote Endpoints for the WooShipping Plugin.
@@ -187,7 +190,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
                 ParameterKey.packages: try packages.map { try $0.toDictionary() },
-                ParameterKey.featuresSupported: [Values.upsdap]
+                ParameterKey.featuresSupported: [Values.upsdap, Values.fedex]
             ]
             let path = Path.rates
             let request = JetpackRequest(wooApiVersion: .wooShipping,
@@ -213,7 +216,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                              completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
         do {
             let parameters: [String: Any] = [
-                ParameterKey.featuresSupported: [Values.upsdap]
+                ParameterKey.featuresSupported: [Values.upsdap, Values.fedex]
             ]
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wooShipping,
@@ -302,7 +305,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 ParameterKey.packages: [ try package.toDictionary() ],
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
                 ParameterKey.selectedRateOptions: package.selectedRateOptions,
-                ParameterKey.featuresSupported: [Values.upsdap],
+                ParameterKey.featuresSupported: [Values.upsdap, Values.fedex],
                 ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: try package.encodedCustomsForm(),
                 ParameterKey.userMeta: userMeta,
@@ -568,22 +571,42 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                         originAddress: WooShippingAddress,
                                         completion: @escaping(Result<Bool, Error>) -> Void) {
         do {
-            let path = Path.upsdapCarrierStrategy
             let parameters: [String: Any] = [
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.confirmed: true
             ]
-            let request = JetpackRequest(wooApiVersion: .wooShipping,
-                                         method: .post,
-                                         siteID: siteID,
-                                         path: path,
-                                         parameters: parameters,
-                                         availableAsRESTRequest: true)
-            let mapper = SuccessDataResultMapper()
-            enqueue(request, mapper: mapper, completion: completion)
+            acceptCarrierTermsOfService(siteID: siteID, path: Path.upsdapCarrierStrategy, parameters: parameters, completion: completion)
         } catch {
             completion(.failure(error))
         }
+    }
+
+    /// Accepts the FedEx Terms of Service.
+    /// - Parameters:
+    ///   - siteID: Remote ID of the site.
+    ///   - completion: Closure to be executed upon completion.
+    ///
+    public func acceptFedExTermsOfService(siteID: Int64,
+                                          completion: @escaping(Result<Bool, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            ParameterKey.confirmed: true
+        ]
+        acceptCarrierTermsOfService(siteID: siteID, path: Path.fedexCarrierStrategy, parameters: parameters, completion: completion)
+    }
+
+    /// Sends a carrier ToS acceptance request.
+    private func acceptCarrierTermsOfService(siteID: Int64,
+                                             path: String,
+                                             parameters: [String: Any],
+                                             completion: @escaping(Result<Bool, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .wooShipping,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = SuccessDataResultMapper()
+        enqueue(request, mapper: mapper, completion: completion)
     }
 }
 
@@ -616,6 +639,7 @@ private extension WooShippingRemote {
             "label/refund/\(orderID)/\(labelID)"
         }
         static let upsdapCarrierStrategy = "carrier-strategy/upsdap"
+        static let fedexCarrierStrategy = "carrier-strategy/fedex"
     }
 
     enum ParameterKey {
@@ -646,6 +670,7 @@ private extension WooShippingRemote {
 
     enum Values {
         static let upsdap = "upsdap"
+        static let fedex = "fedex"
     }
 }
 

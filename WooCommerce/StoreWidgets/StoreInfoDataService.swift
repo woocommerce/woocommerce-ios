@@ -67,7 +67,7 @@ final class StoreInfoDataService {
 
             // Assemble stats data
             let conversion = siteStats.visitors > 0 ? Double(revenueAndOrders.totals.totalOrders) / Double(siteStats.visitors) : 0
-            return Stats(revenue: revenueAndOrders.totals.netRevenue,
+            return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                          totalOrders: revenueAndOrders.totals.totalOrders,
                          totalVisitors: siteStats.visitors,
                          conversion: min(conversion, 1))
@@ -85,7 +85,7 @@ final class StoreInfoDataService {
     ///
     private func todayStatsWithoutVisitors(for storeID: Int64) async throws -> Stats {
         let revenueAndOrders = try await fetchTodaysRevenueAndOrders(for: storeID)
-        return Stats(revenue: revenueAndOrders.totals.netRevenue,
+        return Stats(revenue: revenueAndOrders.totals.grossRevenue,
                      totalOrders: revenueAndOrders.totals.totalOrders,
                      totalVisitors: nil,
                      conversion: nil)

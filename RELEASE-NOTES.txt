@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
+24.7
+-----
+- [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
+
+
 24.6
 -----
 - [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]
@@ -9,10 +14,12 @@
 - [*] Update Tap to Pay requirement to iOS 18.0.1 [https://github.com/woocommerce/woocommerce-ios/pull/16914]
 - [*] Add clear button to search fields [https://github.com/woocommerce/woocommerce-ios/pull/16913]
 - [Internal] Tag CIAB support tickets with commerce_in_a_box for proper routing [https://github.com/woocommerce/woocommerce-ios/pull/16910]
+- [Internal] Fix analytics crash caused by concurrent access to TracksService [https://github.com/woocommerce/woocommerce-ios/pull/16944]
 
 
 24.5
 -----
+- [*] Fix dashboard showing total sales instead of net sales to match what merchants expect [https://github.com/woocommerce/woocommerce-ios/pull/16942]
 - [*] Add analytics setting check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16871]
 - [*] Add notification check to troubleshooting tool [https://github.com/woocommerce/woocommerce-ios/pull/16875]
 

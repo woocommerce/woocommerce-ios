@@ -226,10 +226,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ageRangeRequirementsCompliance
 
-    /// Enables FedEx as a carrier option in WooShipping label creation
-    ///
-    case wooShippingFedEx
-
     /// Enables the reschedule booking entry point in booking details
     ///
     case ciabBookingReschedule

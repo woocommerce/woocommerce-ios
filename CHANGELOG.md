@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 24.6
+This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
+
 ## 24.5
 The troubleshooting tool now checks your analytics and notification settings, making it easier to diagnose issues with your store.
 

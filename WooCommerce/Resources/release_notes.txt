@@ -1,8 +1,1 @@
-- [*] POS: Show reconnecting status when Bluetooth card reader temporarily disconnects [https://github.com/woocommerce/woocommerce-ios/pull/16586]
-- [*] POS: visual fixes in iOS 26 [https://github.com/woocommerce/woocommerce-ios/pull/16898]
-- [*] Add troubleshooting tool for login [https://github.com/woocommerce/woocommerce-ios/pull/16890]
-- [*] POS: update prices on checkout if they've changed since last catalog sync [https://github.com/woocommerce/woocommerce-ios/pull/16921]
-- [*] Update Tap to Pay requirement to iOS 18.0.1 [https://github.com/woocommerce/woocommerce-ios/pull/16914]
-- [*] Add clear button to search fields [https://github.com/woocommerce/woocommerce-ios/pull/16913]
-- [Internal] Tag CIAB support tickets with commerce_in_a_box for proper routing [https://github.com/woocommerce/woocommerce-ios/pull/16910]
-- [Internal] Fix analytics crash caused by concurrent access to TracksService [https://github.com/woocommerce/woocommerce-ios/pull/16944]
+Point of Sale just got more reliable! You'll now see clear status updates when your Bluetooth card reader temporarily disconnects, and prices automatically refresh at checkout if they've changed. We've also added a login troubleshooting tool to help diagnose connection issues, plus visual polish for iOS 26 and a convenient clear button in search fields.

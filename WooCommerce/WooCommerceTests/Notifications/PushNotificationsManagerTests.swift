@@ -850,6 +850,11 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockChecker.result = .success(.incompatible(currentVersion: "10.5.0", requiredVersion: "10.8.0"))
         let mockCheckerFactory = MockPluginVersionCheckerFactory(checker: mockChecker)
 
+        let versionCheckExpectation = expectation(description: "Version check completed")
+        mockChecker.onCheckCompatibility = {
+            versionCheckExpectation.fulfill()
+        }
+
         manager = makeManager(featureFlagService: featureFlagService, pluginVersionCheckerFactory: mockCheckerFactory)
 
         await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
@@ -868,9 +873,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // When
         manager.registerDeviceToken(with: tokenAsData)
-
-        // Wait a bit for async operations to complete
-        try? await Task.sleep(nanoseconds: 500_000_000)
+        await fulfillment(of: [versionCheckExpectation], timeout: 1.0)
 
         // Then
         XCTAssertFalse(registrationAttempted, "Registration should not be attempted when plugin version is incompatible")

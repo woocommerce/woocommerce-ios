@@ -136,16 +136,14 @@ struct WooShippingCreateLabelsView: View {
                 }
             }
             .sheet(isPresented: $viewModel.shouldShowFedExTermsAndConditions) {
-                if let termsViewModel = viewModel.fedExTermsViewModel {
-                    FedExTermsView(viewModel: termsViewModel, onConfirmation: {
-                        viewModel.shouldShowFedExTermsAndConditions = false
-                        Task { @MainActor in
-                            await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
-                        }
-                    })
-                    .presentationDetents([.large])
-                    .presentationDragIndicator(.visible)
-                }
+                FedExTermsView(viewModel: viewModel.fedExTermsViewModel, onConfirmation: {
+                    viewModel.shouldShowFedExTermsAndConditions = false
+                    Task { @MainActor in
+                        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: true)
+                    }
+                })
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
         }
     }

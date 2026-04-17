@@ -207,9 +207,7 @@ final class WooShippingCreateLabelsViewModel: ObservableObject {
         return UPSTermsViewModel(siteID: order.siteID, originAddress: originAddress)
     }
 
-    var fedExTermsViewModel: FedExTermsViewModel? {
-        FedExTermsViewModel(siteID: order.siteID)
-    }
+    private(set) lazy var fedExTermsViewModel = FedExTermsViewModel(siteID: order.siteID)
 
     let isOrderCompleted: Bool
 

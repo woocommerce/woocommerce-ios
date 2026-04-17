@@ -110,7 +110,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ageRangeRequirementsCompliance:
             return false
         case .starReceiptPrinterSupport:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

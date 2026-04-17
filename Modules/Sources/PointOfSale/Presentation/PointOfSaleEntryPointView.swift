@@ -44,6 +44,7 @@ public struct PointOfSaleEntryPointView: View {
     private let popularPurchasableItemsController: PointOfSaleItemsControllerProtocol
     private let barcodeScanService: PointOfSaleBarcodeScanServiceProtocol
     private let receiptSender: POSReceiptSending
+    private let receiptPrinterService: POSReceiptPrinterProviding?
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
     private let siteID: Int64
@@ -78,7 +79,8 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          services: POSDependencyProviding,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         receiptPrinterService: POSReceiptPrinterProviding? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
 
         let selectedItemProvider = itemProvider ?? PointOfSaleItemService(currencySettings: services.currency.currencySettings)
@@ -140,6 +142,7 @@ public struct PointOfSaleEntryPointView: View {
         )
         self.barcodeScanService = barcodeScanService
         self.receiptSender = receiptSender
+        self.receiptPrinterService = receiptPrinterService
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
@@ -195,6 +198,7 @@ public struct PointOfSaleEntryPointView: View {
                 popularPurchasableItemsController: popularPurchasableItemsController,
                 barcodeScanService: barcodeScanService,
                 receiptSender: receiptSender,
+                receiptPrinterService: receiptPrinterService,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 isLocalCatalogEligible: isLocalCatalogEligible)

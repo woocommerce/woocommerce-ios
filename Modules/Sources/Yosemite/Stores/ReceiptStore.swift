@@ -276,7 +276,7 @@ public class ReceiptGenerator {
 
     func discountLineDescription(order: Order) -> String {
         var couponCodes = ""
-        if order.coupons.count > 0 {
+        if order.coupons.isEmpty {
             couponCodes = order.coupons.map {
                 $0.code
             }

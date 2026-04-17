@@ -316,7 +316,8 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     services: serviceAdaptor,
-                    itemProvider: itemProvider
+                    itemProvider: itemProvider,
+                    receiptPrinterService: StarReceiptPrinterServiceAdaptor()
                 )
 
                 let hostingController = UIHostingController(rootView: posView)

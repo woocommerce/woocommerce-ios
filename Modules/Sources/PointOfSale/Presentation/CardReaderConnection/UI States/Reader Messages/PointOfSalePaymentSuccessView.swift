@@ -1,13 +1,17 @@
 import SwiftUI
+import enum Hardware.DeviceStatus
 
 struct PointOfSalePaymentSuccessView: View {
     let viewModel: PointOfSalePaymentSuccessViewModel
     let customerEmail: String?
     let onSendReceipt: (String) async throws -> Void
+    let onPrintReceipt: (() -> Void)?
+    let printerConnectionState: DeviceStatus
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
+    @State private var isShowingReceiptModal: Bool = false
     @State private var isShowingSendReceiptView: Bool = false
     @State private var isViewLoaded: Bool = false
 
@@ -29,6 +33,12 @@ struct PointOfSalePaymentSuccessView: View {
                 .padding([.leading, .trailing], dynamicTypeSize.isAccessibilitySize ? nil : POSPadding.small)
                 .background(Color.posSurfaceBright)
             }
+        }
+        .posModal(isPresented: $isShowingReceiptModal) {
+            POSReceiptOptionsModal(
+                isPresented: $isShowingReceiptModal,
+                isShowingSendReceiptView: $isShowingSendReceiptView,
+                onPrintReceipt: { onPrintReceipt?() })
         }
         .barcodeScanning(enabled: .constant(onSuccessScreenBarcodeScanned != nil && !isShowingSendReceiptView)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
@@ -84,6 +94,8 @@ struct PointOfSalePaymentSuccessView: View {
                 Spacer().frame(height: POSSpacing.xxLarge)
 
                 PaymentsActionButtons(successAction: successAction,
+                                      printerConnectionState: printerConnectionState,
+                                      isShowingReceiptModal: $isShowingReceiptModal,
                                       isShowingSendReceiptView: $isShowingSendReceiptView)
                     .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -122,6 +134,8 @@ private extension PointOfSalePaymentSuccessView {
                                                       paymentMethod: .card),
         customerEmail: "test@example.com",
         onSendReceipt: { _ in },
+        onPrintReceipt: { },
+        printerConnectionState: .connected,
         successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
         onSuccessScreenBarcodeScanned: nil
     )

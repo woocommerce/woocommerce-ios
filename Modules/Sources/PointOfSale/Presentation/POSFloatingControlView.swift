@@ -56,7 +56,8 @@ struct POSFloatingControlView: View {
                 .disabled(posModel.paymentState.shownFullScreen)
                 .disabled(horizontalSizeClass != .regular)
 
-            if featureFlags.isFeatureFlagEnabled(.starReceiptPrinterSupport) {
+            if featureFlags.isFeatureFlagEnabled(.starReceiptPrinterSupport),
+               posModel.orderStage == .building {
                 switch posModel.printerConnectionState {
                 case .connected:
                     Menu {

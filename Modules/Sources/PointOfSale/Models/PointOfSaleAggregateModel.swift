@@ -22,6 +22,8 @@ import struct Yosemite.POSVariation
 import enum Hardware.DeviceStatus
 import class Yosemite.ReceiptGenerator
 import struct Hardware.CardPresentReceiptParameters
+import struct Hardware.CardPresentTransactionDetails
+import enum Hardware.CardBrand
 
 protocol PointOfSaleAggregateModelProtocol {
     var cart: Cart { get }
@@ -611,20 +613,61 @@ extension PointOfSaleAggregateModel {
         }
     }
 
+    /// Prints a receipt using the current payment's order and receipt parameters.
+    @MainActor
+    func printReceiptForCurrentPayment() async {
+        guard let order = paymentModel.currentOrder,
+              let receiptPrinterService else {
+            DDLogError("🖨️ [PDFPrinter] Cannot print: missing order or printer service")
+            return
+        }
+
+        let receiptParameters = paymentModel.lastReceiptParameters ?? makeBasicReceiptParameters(for: order)
+        await printReceipt(order: order, receiptParameters: receiptParameters, printerService: receiptPrinterService)
+    }
+
     /// Prints a receipt for the given order and receipt parameters.
     func printReceiptIfConnected(order: Order, receiptParameters: CardPresentReceiptParameters) async {
         guard case .connected = printerConnectionState,
               let receiptPrinterService else {
             return
         }
+        await printReceipt(order: order, receiptParameters: receiptParameters, printerService: receiptPrinterService)
+    }
+
+    private func printReceipt(order: Order, receiptParameters: CardPresentReceiptParameters, printerService: POSReceiptPrinterProviding) async {
         do {
             let content = ReceiptGenerator().generateReceiptContent(
                 order: order,
                 parameters: receiptParameters)
-            try await receiptPrinterService.printReceipt(content: content)
+            try await printerService.printReceipt(content: content)
         } catch {
-            DDLogError("Failed to print receipt: \(error)")
+            DDLogError("🖨️ Failed to print receipt: \(error)")
         }
+    }
+
+    /// Creates basic receipt parameters for orders without card payment data (e.g. cash payments).
+    private func makeBasicReceiptParameters(for order: Order) -> CardPresentReceiptParameters {
+        CardPresentReceiptParameters(
+            amount: UInt(Double(order.total) ?? 0),
+            formattedAmount: order.total,
+            currency: order.currency,
+            date: order.dateCreated,
+            storeName: settingsController.storeViewModel.storeName,
+            cardDetails: CardPresentTransactionDetails(
+                last4: "Cash",
+                expMonth: 0,
+                expYear: 0,
+                cardholderName: nil,
+                brand: .unknown,
+                generatedCard: nil,
+                receipt: nil,
+                emvAuthData: nil,
+                wallet: nil,
+                network: nil
+            ),
+            orderID: Int64(order.orderID)
+        )
     }
 }
 

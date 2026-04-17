@@ -179,7 +179,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                               alertProvider: paymentAlertProvider,
                                                               onCompleted: onCompleted)
                             }
-                            onPaymentCompletion()
                         }
                         onPaymentCompletion(paymentData)
                     }

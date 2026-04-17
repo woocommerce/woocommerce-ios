@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentInLineMessage: View {
     private let messageType: PointOfSaleCardPresentPaymentMessageType
     @Environment(POSPaymentModel.self) private var paymentModel
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
 
     init(messageType: PointOfSaleCardPresentPaymentMessageType) {
         self.messageType = messageType
@@ -29,6 +30,12 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
                 viewModel: viewModel,
                 customerEmail: paymentModel.customerBillingEmail,
                 onSendReceipt: { email in try await paymentModel.sendReceipt(to: email) },
+                onPrintReceipt: {
+                    Task {
+                        await posModel.printReceiptForCurrentPayment()
+                    }
+                },
+                printerConnectionState: posModel.printerConnectionState,
                 successAction: paymentModel.configuration.successAction,
                 onSuccessScreenBarcodeScanned: paymentModel.configuration.onSuccessScreenBarcodeScanned)
         case .paymentError(let viewModel):

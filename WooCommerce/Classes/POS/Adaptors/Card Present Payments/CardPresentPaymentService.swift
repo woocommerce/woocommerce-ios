@@ -175,7 +175,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             // TODO: fetch the receipt URL to return an accurate value.
             let transaction = CardPresentPaymentTransaction(
                 receiptURL: URL(string: "https://example.com")!,
-                paymentData: capturedPaymentData)
+                receiptParameters: capturedPaymentData.receiptParameters)
             return .success(transaction)
         case .cancellation:
             return .cancellation

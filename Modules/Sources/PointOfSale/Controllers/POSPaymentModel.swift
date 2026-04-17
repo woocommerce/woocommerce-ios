@@ -3,6 +3,7 @@ import Foundation
 import Combine
 
 import struct Yosemite.Order
+import struct Hardware.CardPresentReceiptParameters
 import enum Yosemite.CardReaderSoftwareUpdateState
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 import class Yosemite.PaymentCaptureCelebration
@@ -55,8 +56,9 @@ final class POSPaymentModel {
     private var onOnboardingCancellation: (() -> Void)?
     private var cancellables: Set<AnyCancellable> = []
     private var paymentSessionCancellables: Set<AnyCancellable> = []
-    private var currentOrder: Order?
+    private(set) var currentOrder: Order?
     private var formattedOrderTotalPrice: String?
+    private(set) var lastReceiptParameters: CardPresentReceiptParameters?
 
     init(cardPresentPaymentService: CardPresentPaymentFacade,
          orderProvider: POSPaymentOrderProviding,
@@ -159,7 +161,10 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order) async throws {
-        _ = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+        let result = try await cardPresentPaymentService.collectPayment(for: order, using: .bluetooth, channel: .pos)
+        if case .success(let transaction) = result {
+            lastReceiptParameters = transaction.receiptParameters
+        }
     }
 
     func cancelThenCollectPayment() {

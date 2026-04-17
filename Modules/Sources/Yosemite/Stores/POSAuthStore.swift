@@ -4,7 +4,7 @@ import Storage
 
 // MARK: - POSAuthStore
 //
-public class POSAuthStore: Store {
+public final class POSAuthStore: Store {
     private let remote: POSAuthRemote
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {

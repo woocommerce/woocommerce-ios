@@ -1,5 +1,6 @@
 import Combine
 import EventHorizonSDK
+import PointOfSale
 import SwiftUI
 import UIKit
 import Yosemite
@@ -136,7 +137,7 @@ final class MainTabBarController: UITabBarController {
     /// Whether POS was locked when the app was last terminated.
     /// Uses the same UserDefaults key as LocalPOSPermissionProvider/RemotePOSPermissionProvider.
     private static var wasPOSLockedWhenTerminated: Bool {
-        UserDefaults.standard.bool(forKey: "com.woocommerce.pos.isLocked")
+        UserDefaults.standard.bool(forKey: POSLockStateKey.isLocked)
     }
 
     private let bookingsContainerController = TabContainerController()

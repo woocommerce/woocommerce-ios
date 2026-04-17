@@ -139,7 +139,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Private
 
-    private static let isLockedKey = "com.woocommerce.pos.isLocked"
+    private static let isLockedKey = POSLockStateKey.isLocked
     private var autoLockTimer: Timer?
 
     // MARK: - Callbacks

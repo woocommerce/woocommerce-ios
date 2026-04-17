@@ -32,7 +32,7 @@ public final class LocalPOSPermissionProvider: POSPermissionProviding {
 
     // MARK: - Private
 
-    private static let isLockedKey = "com.woocommerce.pos.isLocked"
+    private static let isLockedKey = POSLockStateKey.isLocked
 
     private let pinService: POSPINService
     private let appAccountUserID: Int64

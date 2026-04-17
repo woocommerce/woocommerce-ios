@@ -190,7 +190,12 @@ public struct PointOfSaleEntryPointView: View {
             }
 
             POSLockScreenOverlay(
-                permissionProvider: permissionProvider
+                permissionProvider: permissionProvider,
+                onLogOut: {
+                    // Clear lock state and dismiss POS so the user can log out from the main app
+                    UserDefaults.standard.set(false, forKey: POSLockStateKey.isLocked)
+                    dismiss()
+                }
             )
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in

@@ -229,7 +229,7 @@ struct POSManagerOverrideHandlerTests {
     }
 
     private func makeMock() -> MockPOSPermissionProvider {
-        let mock = makeMock()
+        let mock = MockPOSPermissionProvider()
         mock.hasAnyPINs = true
         return mock
     }

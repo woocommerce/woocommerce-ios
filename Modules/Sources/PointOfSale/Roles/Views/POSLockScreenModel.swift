@@ -30,16 +30,27 @@ final class POSLockScreenModel: ObservableObject {
         observationTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
-                let newValue = withObservationTracking {
-                    Self.shouldShowLockScreen(self.provider)
-                } onChange: { }
 
-                if newValue != self.isShowingLockScreen {
-                    self.isShowingLockScreen = newValue
+                // Wait for the next property change using a continuation.
+                // withObservationTracking registers observation, and onChange
+                // fires once when any observed property changes.
+                await withCheckedContinuation { continuation in
+                    let newValue = withObservationTracking {
+                        Self.shouldShowLockScreen(self.provider)
+                    } onChange: {
+                        continuation.resume()
+                    }
+
+                    if newValue != self.isShowingLockScreen {
+                        self.isShowingLockScreen = newValue
+                    }
                 }
 
-                // Yield to let onChange fire before re-entering the loop
-                try? await Task.sleep(for: .milliseconds(50))
+                // Re-read after onChange (which fires with willSet semantics)
+                let updatedValue = Self.shouldShowLockScreen(self.provider)
+                if updatedValue != self.isShowingLockScreen {
+                    self.isShowingLockScreen = updatedValue
+                }
             }
         }
     }

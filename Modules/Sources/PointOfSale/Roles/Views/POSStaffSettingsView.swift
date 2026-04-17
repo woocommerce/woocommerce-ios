@@ -377,6 +377,8 @@ private struct POSStaffSettingsRemoteView: View {
                         ProgressView()
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, POSPadding.xLarge)
+                    } else if let loadError {
+                        staffLoadErrorView(error: loadError)
                     } else if staffMembers.isEmpty == false {
                         staffListCard
                     }
@@ -514,6 +516,24 @@ private extension POSStaffSettingsRemoteView {
         }
         .buttonStyle(POSOutlinedButtonStyle(size: .normal))
         .frame(maxWidth: .infinity)
+    }
+
+    func staffLoadErrorView(error: Error) -> some View {
+        VStack(spacing: POSSpacing.medium) {
+            Text(Localization.staffLoadError)
+                .font(.posBodyMediumRegular())
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+
+            Button {
+                Task { await fetchStaff() }
+            } label: {
+                Text(Localization.staffLoadRetry)
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .compact))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, POSPadding.xLarge)
     }
 
     var footerText: some View {
@@ -768,6 +788,18 @@ private enum Localization {
         "posStaffSettingsView.role.posCashier",
         value: "POS Cashier",
         comment: "Display name for the POS cashier role in the POS staff list."
+    )
+
+    static let staffLoadError = NSLocalizedString(
+        "posStaffSettingsView.staffLoadError",
+        value: "Unable to load staff. Check your connection and try again.",
+        comment: "Error message shown when the remote staff list fails to load."
+    )
+
+    static let staffLoadRetry = NSLocalizedString(
+        "posStaffSettingsView.staffLoadRetry",
+        value: "Retry",
+        comment: "Button to retry loading the remote staff list after a failure."
     )
 
     static let remoteFooter = NSLocalizedString(

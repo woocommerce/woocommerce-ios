@@ -72,7 +72,11 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
                                                               siteAddress: siteAddress)
             case let .some(.applicationPassword(username, password, siteAddress)):
                 let appPassword = ApplicationPassword(wpOrgUsername: username, password: .init(password), uuid: "")
-                return OneTimeApplicationPasswordUseCase(applicationPassword: appPassword, siteAddress: siteAddress)
+                // Use in-memory storage to avoid persisting POS operator credentials
+                // to the shared Keychain, which would overwrite the admin's application password.
+                return OneTimeApplicationPasswordUseCase(applicationPassword: appPassword,
+                                                        siteAddress: siteAddress,
+                                                        injectedStorage: InMemoryApplicationPasswordStorage())
             case .some(.wpcom):
                 guard let network, let selectedSite else {
                     return nil

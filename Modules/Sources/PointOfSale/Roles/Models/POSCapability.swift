@@ -22,9 +22,12 @@ public enum POSCapability: String, CaseIterable, Sendable {
     /// - Local mode always uses local PIN verification regardless of this value.
     public var supportsBackendApproval: Bool {
         switch self {
-        case .refundShopOrders, .publishCoupons:
+        case .refundShopOrders:
             return true
-        case .viewPOSSettings, .editPOSSettings:
+        case .viewPOSSettings, .editPOSSettings, .publishCoupons:
+            // publishCoupons: approval token not yet threaded to the coupon creation API.
+            // Switch to true when backend adds publish_shop_coupons to APPROVABLE_ACTIONS
+            // and the app passes _pos_approval through POSCouponCreationViewAdaptor.
             return false
         }
     }

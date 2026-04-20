@@ -2,11 +2,8 @@ import SwiftUI
 
 /// Modal shown when the operator taps the read-only "PIN access" toggle in the
 /// remote POS staff settings screen. Explains that PIN access is controlled by
-/// whether any staff has a PIN (set on the web) and offers a direct jump to the
-/// Manage staff web view.
-///
-/// Uses the same `PointOfSaleInformationModal` shell as the "Where are my
-/// products?" modal for visual consistency.
+/// whether any staff has a PIN (set on the web) and offers a primary call-to-
+/// action to jump to the Manage staff web view. Dismiss via the header's X.
 struct POSPINAccessInformation: View {
     @Binding var isPresented: Bool
     let hasAnyPINs: Bool
@@ -21,31 +18,36 @@ struct POSPINAccessInformation: View {
     }
 
     var body: some View {
-        PointOfSaleInformationModal(isPresented: $isPresented,
-                                    title: AttributedString(Localization.title)) {
-            PointOfSaleInformationModalParagraphView {
-                Text(hasAnyPINs ? Localization.disableMessage : Localization.enableMessage)
+        VStack(spacing: POSSpacing.xxLarge) {
+            PointOfSaleModalHeader(isPresented: $isPresented,
+                                   title: .constant(AttributedString(Localization.title)))
+
+            Text(hasAnyPINs ? Localization.disableMessage : Localization.enableMessage)
+                .font(.posBodyLargeRegular())
+                .foregroundStyle(Color.posOnSurface)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button {
+                isPresented = false
+                onManageStaffTapped()
+            } label: {
+                Text(Localization.manageButton)
             }
-
-            PointOfSaleInformationModalParagraphView(style: .outlined) {
-                Text(Localization.manageHint)
-
-                Spacer().frame(height: POSSpacing.small)
-
-                Button {
-                    isPresented = false
-                    onManageStaffTapped()
-                } label: {
-                    Label(Localization.manageButton, systemImage: "safari")
-                        .font(.posBodySmallRegular())
-                }
-                .foregroundStyle(Color.posPrimary)
-            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal))
         }
+        .padding(POSPadding.xxLarge)
+        .background(Color.posSurfaceBright)
+        .frame(width: Constants.modalFrameWidth)
     }
 }
 
 private extension POSPINAccessInformation {
+    enum Constants {
+        static var modalFrameWidth: CGFloat { 640 }
+    }
+
     enum Localization {
         static let title = NSLocalizedString(
             "pos.pinAccessModal.title",
@@ -65,16 +67,10 @@ private extension POSPINAccessInformation {
             comment: "Message shown when the operator tries to turn off PIN access from the POS app."
         )
 
-        static let manageHint = NSLocalizedString(
-            "pos.pinAccessModal.manageHint",
-            value: "Manage staff PINs in WooCommerce \u{203A} Settings \u{203A} Point of sale \u{203A} Staff.",
-            comment: "Hint directing the operator to the Manage staff web view. The '\u{203A}' separator is a single-character right-pointing angle quote."
-        )
-
         static let manageButton = NSLocalizedString(
             "pos.pinAccessModal.manageButton",
             value: "Manage staff on the web",
-            comment: "Button in the PIN access info modal that opens the Manage staff web view."
+            comment: "Primary button in the PIN access info modal that opens the Manage staff web view."
         )
     }
 }

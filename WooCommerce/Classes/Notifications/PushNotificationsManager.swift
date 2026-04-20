@@ -957,18 +957,16 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: Any]()
 
-        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
-
         // Determine notification source
-        let isWooDriven = notificationSiteID.map { registrationState.isSiteRegisteredForWooPNs($0) } ?? false
+        let isWooDriven = userInfo[APNSKey.identifier] != nil
         properties[AnalyticKey.source] = isWooDriven ? NotificationSource.wooDriven : NotificationSource.wpcom
 
         // Set identifier based on source
         if let noteID = userInfo.string(forKey: APNSKey.identifier) {
             properties[AnalyticKey.identifier] = noteID
-        } else if isWooDriven, let notificationSiteID {
+        } else if isWooDriven {
             if let notification = PushNotification.from(userInfo: userInfo),
-               let localID = localIdentifier(siteID: notificationSiteID, kind: notification.kind, meta: notification.meta) {
+               let localID = localIdentifier(kind: notification.kind, meta: notification.meta) {
                 properties[AnalyticKey.identifier] = localID
             }
         }
@@ -981,8 +979,11 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.token] = theToken
         }
 
-        if let siteID = siteID, let notificationSiteID {
+        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        if let siteID, let notificationSiteID, stores.isAuthenticatedWithoutWPCom == false {
             properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+        } else if stores.isAuthenticatedWithoutWPCom {
+            properties[AnalyticKey.fromSelectedSite] = true
         }
 
         switch applicationState {
@@ -1009,13 +1010,14 @@ private extension PushNotificationsManager {
     }
 
     /// Generates a local identifier for Woo-driven notifications.
-    /// Format: woo:<site-id>:<type>:<entity-id>
-    func localIdentifier(siteID: Int64, kind: Note.Kind, meta: MetaContainer?) -> String? {
-        guard let key = metaKey(for: kind),
+    /// Format: woo:<store-id>:<type>:<entity-id>
+    func localIdentifier(kind: Note.Kind, meta: MetaContainer?) -> String? {
+        guard let storeID = stores.sessionManager.defaultStoreUUID,
+              let key = metaKey(for: kind),
               let entityID = meta?.identifier(forKey: key) else {
             return nil
         }
-        return "woo:\(siteID):\(kind.rawValue):\(entityID)"
+        return "woo:\(storeID):\(kind.rawValue):\(entityID)"
     }
 }
 

@@ -47,6 +47,7 @@ final class MockCardPresentPaymentService: CardPresentPaymentFacade {
 
     var onConnectReaderCalled: (() -> Void)?
 
+    @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
         connectReaderCallCount += 1
         onConnectReaderCalled?()

@@ -208,10 +208,10 @@ private extension POSCatalogFullSyncService {
                                    maxAttempts: Int) async throws -> POSCatalog {
         let downloadStartTime = CFAbsoluteTimeGetCurrent()
         let (catalog, pollingResult) = try await downloadCatalog(for: siteID,
-                                                                  syncRemote: syncRemote,
-                                                                  regenerateCatalog: regenerateCatalog,
-                                                                  allowCellular: allowCellular,
-                                                                  maxAttempts: maxAttempts)
+                                                                 syncRemote: syncRemote,
+                                                                 regenerateCatalog: regenerateCatalog,
+                                                                 allowCellular: allowCellular,
+                                                                 maxAttempts: maxAttempts)
         let downloadTime = CFAbsoluteTimeGetCurrent() - downloadStartTime
         DDLogInfo("🟣 Catalog download completed - Time: \(String(format: "%.2f", downloadTime))s")
 

@@ -149,13 +149,15 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     /// Whether any staff member on the backend has a PIN configured.
     ///
-    /// Defaults to `true` so the lock screen shows by default (security-safe),
-    /// and is updated by `refreshStaffStatus()` after the first fetch.
-    /// Becomes `false` when every returned staff member has `hasPIN == false`,
-    /// which covers "admin deleted all users / removed all PINs" — in that
-    /// case we also drop any persisted `isLocked` flag so the operator isn't
-    /// trapped at a lock screen that nobody can unlock.
-    public private(set) var hasAnyPINs: Bool = true
+    /// Initialized from the last-known value persisted in `UserDefaults` so
+    /// relaunches don't flash the PIN entry view before the first fetch
+    /// completes. Defaults to `true` on first-ever launch (security-safe).
+    /// Updated by `refreshPINStatus()`; becomes `false` when every returned
+    /// staff member has `hasPIN == false`, which covers "admin deleted all
+    /// users / removed all PINs" — in that case we also drop any persisted
+    /// `isLocked` flag so the operator isn't trapped at a lock screen that
+    /// nobody can unlock.
+    public private(set) var hasAnyPINs: Bool
 
     // MARK: - Session State
 
@@ -164,6 +166,9 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     // MARK: - Private
 
     private static let isLockedKey = POSLockStateKey.isLocked
+    /// Persisted last-known value of `hasAnyPINs` so a relaunch doesn't flash the
+    /// lock screen before the first `refreshPINStatus()` network call completes.
+    private static let hasAnyPINsKey = "com.woocommerce.pos.hasAnyPINs"
     private var autoLockTimer: Timer?
 
     // MARK: - Callbacks
@@ -204,6 +209,10 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
         self.fetchStaffStatusRemote = fetchStaffStatusRemote
         self.appAccountUserID = appAccountUserID
         self.isLocked = UserDefaults.standard.bool(forKey: Self.isLockedKey)
+        // Restore last-known state so the lock screen doesn't flash before the
+        // first network refresh. First-ever launch has no saved value -> default
+        // to `true` (show lock screen until refresh confirms otherwise).
+        self.hasAnyPINs = UserDefaults.standard.object(forKey: Self.hasAnyPINsKey) as? Bool ?? true
     }
 
     /// Fetches the current staff list and updates `hasAnyPINs` based on whether any member has a PIN.
@@ -215,11 +224,12 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     ///
     /// On fetch failure the cached value is left untouched (`hasAnyPINs` stays `true` by default),
     /// which keeps the lock screen shown and preserves the security boundary.
-    public func refreshStaffStatus() async {
+    public func refreshPINStatus() async {
         do {
             let staff = try await fetchStaffStatusRemote()
             let anyPINs = staff.contains { $0.hasPIN }
             hasAnyPINs = anyPINs
+            UserDefaults.standard.set(anyPINs, forKey: Self.hasAnyPINsKey)
             if !anyPINs && isLocked {
                 isLocked = false
                 UserDefaults.standard.set(false, forKey: Self.isLockedKey)

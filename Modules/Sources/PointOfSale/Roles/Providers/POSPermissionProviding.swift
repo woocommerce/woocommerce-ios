@@ -16,6 +16,20 @@ public protocol POSPermissionProviding: AnyObject {
     /// Whether any PINs are configured (at least one staff member has a PIN).
     /// Used to determine if "Lock POS" should be available.
     var hasAnyPINs: Bool { get }
+
+    /// Re-reads PIN status from the backing store so observers (e.g. menu items,
+    /// the lock screen) pick up changes made outside the app — for instance after
+    /// the admin sets or removes a PIN via the Manage staff web view.
+    ///
+    /// Local providers can compute `hasAnyPINs` synchronously from the Keychain
+    /// so their implementation is a no-op; remote providers hit the network.
+    func refreshPINStatus() async
+}
+
+public extension POSPermissionProviding {
+    /// Default no-op so implementations that read PIN state synchronously
+    /// (LocalPOSPermissionProvider, test doubles) don't need to override.
+    func refreshPINStatus() async { }
 }
 
 // MARK: - POSCapability convenience

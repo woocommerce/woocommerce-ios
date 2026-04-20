@@ -588,6 +588,10 @@ private extension POSStaffSettingsRemoteView {
         loadError = nil
         do {
             staffMembers = try await loadStaff()
+            // Keep the permission provider in sync so menu items like "Lock POS"
+            // pick up PIN changes made via the Manage staff web view without
+            // requiring the user to quit and relaunch POS.
+            await permissions.refreshPINStatus()
         } catch {
             loadError = error
         }

@@ -22,14 +22,14 @@ final class POSLockScreenModel: ObservableObject {
         refreshRemoteStaffStatusIfNeeded()
     }
 
-    /// For remote providers, fetch the current staff list so `hasAnyPINs` reflects
-    /// backend state. This covers the "admin deleted all users / removed all PINs
-    /// while POS was locked" case — the refresh will clear `hasAnyPINs` (and the
-    /// persisted lock flag), and the observed `isShowingLockScreen` will drop.
+    /// Refresh PIN status from the backing store. No-op for local providers;
+    /// remote providers hit the network. Covers the "admin deleted all users /
+    /// removed all PINs while POS was locked" case — after the refresh the
+    /// observed `isShowingLockScreen` will drop to false.
     private func refreshRemoteStaffStatusIfNeeded() {
-        guard let remote = provider as? RemotePOSPermissionProvider else { return }
+        let currentProvider = provider
         Task { @MainActor in
-            await remote.refreshStaffStatus()
+            await currentProvider.refreshPINStatus()
         }
     }
 

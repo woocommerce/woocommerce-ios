@@ -3,7 +3,7 @@ import Testing
 @testable import PointOfSale
 
 /// `RemotePOSPermissionProvider` reads the persisted `isLocked` flag from
-/// `UserDefaults.standard` during init, and the `refreshStaffStatus` tests
+/// `UserDefaults.standard` during init, and the `refreshPINStatus` tests
 /// below write to it. `.serialized` prevents parallel tests from reading
 /// another test's write and flaking.
 @Suite(.serialized)
@@ -11,6 +11,7 @@ struct RemotePOSPermissionProviderTests {
     init() {
         // Ensure each test starts from a known persisted state.
         UserDefaults.standard.removeObject(forKey: POSLockStateKey.isLocked)
+        UserDefaults.standard.removeObject(forKey: "com.woocommerce.pos.hasAnyPINs")
     }
 
     @Test func test_autoLockTimeoutSeconds_when_no_session_then_uses_default_timeout() {
@@ -407,9 +408,9 @@ struct RemotePOSPermissionProviderTests {
         }
     }
 
-    // MARK: - refreshStaffStatus
+    // MARK: - refreshPINStatus
 
-    @Test func test_refreshStaffStatus_when_no_staff_have_pin_then_clears_hasAnyPINs() async {
+    @Test func test_refreshPINStatus_when_no_staff_have_pin_then_clears_hasAnyPINs() async {
         // Given - backend returns staff but none has a PIN (admin removed all PINs)
         let sut = makeSUT(staffStatus: [
             makeStaffStatus(userID: 1, hasPIN: false),
@@ -418,24 +419,24 @@ struct RemotePOSPermissionProviderTests {
         #expect(sut.hasAnyPINs == true) // default
 
         // When
-        await sut.refreshStaffStatus()
+        await sut.refreshPINStatus()
 
         // Then
         #expect(sut.hasAnyPINs == false)
     }
 
-    @Test func test_refreshStaffStatus_when_empty_staff_then_clears_hasAnyPINs() async {
+    @Test func test_refreshPINStatus_when_empty_staff_then_clears_hasAnyPINs() async {
         // Given - backend returns no staff at all (admin deleted all POS users)
         let sut = makeSUT(staffStatus: [])
 
         // When
-        await sut.refreshStaffStatus()
+        await sut.refreshPINStatus()
 
         // Then
         #expect(sut.hasAnyPINs == false)
     }
 
-    @Test func test_refreshStaffStatus_when_some_staff_have_pin_then_hasAnyPINs_stays_true() async {
+    @Test func test_refreshPINStatus_when_some_staff_have_pin_then_hasAnyPINs_stays_true() async {
         // Given
         let sut = makeSUT(staffStatus: [
             makeStaffStatus(userID: 1, hasPIN: false),
@@ -443,13 +444,13 @@ struct RemotePOSPermissionProviderTests {
         ])
 
         // When
-        await sut.refreshStaffStatus()
+        await sut.refreshPINStatus()
 
         // Then
         #expect(sut.hasAnyPINs == true)
     }
 
-    @Test func test_refreshStaffStatus_when_no_pins_and_previously_locked_then_clears_isLocked() async {
+    @Test func test_refreshPINStatus_when_no_pins_and_previously_locked_then_clears_isLocked() async {
         // Given - a POS session was locked before the admin removed all PINs
         UserDefaults.standard.set(true, forKey: POSLockStateKey.isLocked)
         defer { UserDefaults.standard.removeObject(forKey: POSLockStateKey.isLocked) }
@@ -457,32 +458,32 @@ struct RemotePOSPermissionProviderTests {
         #expect(sut.isLocked == true)
 
         // When
-        await sut.refreshStaffStatus()
+        await sut.refreshPINStatus()
 
         // Then - lock is cleared so the lock screen doesn't trap the user at an unreachable PIN prompt
         #expect(sut.isLocked == false)
         #expect(UserDefaults.standard.bool(forKey: POSLockStateKey.isLocked) == false)
     }
 
-    @Test func test_refreshStaffStatus_when_some_pins_exist_then_preserves_isLocked() async {
+    @Test func test_refreshPINStatus_when_some_pins_exist_then_preserves_isLocked() async {
         // Given
         UserDefaults.standard.set(true, forKey: POSLockStateKey.isLocked)
         defer { UserDefaults.standard.removeObject(forKey: POSLockStateKey.isLocked) }
         let sut = makeSUT(staffStatus: [makeStaffStatus(hasPIN: true)])
 
         // When
-        await sut.refreshStaffStatus()
+        await sut.refreshPINStatus()
 
         // Then - lock stays because someone can still unlock via PIN
         #expect(sut.isLocked == true)
     }
 
-    @Test func test_refreshStaffStatus_when_fetch_fails_then_preserves_default_hasAnyPINs() async {
+    @Test func test_refreshPINStatus_when_fetch_fails_then_preserves_default_hasAnyPINs() async {
         // Given
         let sut = makeSUT(staffStatusError: TestError.authFailed)
 
         // When
-        await sut.refreshStaffStatus()
+        await sut.refreshPINStatus()
 
         // Then - default `true` is kept so the lock screen stays up on network failure
         #expect(sut.hasAnyPINs == true)

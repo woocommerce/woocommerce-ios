@@ -379,8 +379,11 @@ private struct POSStaffSettingsRemoteView: View {
                             .padding(.vertical, POSPadding.xLarge)
                     } else if let loadError {
                         staffLoadErrorView(error: loadError)
-                    } else if staffMembers.isEmpty == false {
-                        staffListCard
+                    } else {
+                        pinAccessStatusCard
+                        if staffMembers.isEmpty == false {
+                            staffListCard
+                        }
                     }
                     manageStaffCard
                     footerText
@@ -410,6 +413,36 @@ private struct POSStaffSettingsRemoteView: View {
 // MARK: - Remote Mode Subviews
 
 private extension POSStaffSettingsRemoteView {
+    /// True when at least one staff member has a PIN configured on the backend.
+    /// Drives the read-only PIN access status card.
+    var anyStaffHasPIN: Bool {
+        staffMembers.contains { $0.hasPIN }
+    }
+
+    /// Read-only toggle card indicating whether PIN lock is active on the backend.
+    /// Remote mode cannot toggle this from the app — it's derived from whether any
+    /// staff has a PIN. Disabled appearance makes the read-only nature clear.
+    var pinAccessStatusCard: some View {
+        POSInformationCard {
+            VStack(alignment: .leading, spacing: POSPadding.small) {
+                POSInformationCardFieldRowWithToggle(
+                    label: Localization.pinAccessLabel,
+                    value: anyStaffHasPIN ? Localization.remotePINAccessOnDescription : Localization.remotePINAccessOffDescription,
+                    showSeparator: false,
+                    isOn: .constant(anyStaffHasPIN)
+                )
+                .disabled(true)
+
+                if !anyStaffHasPIN {
+                    Text(Localization.remotePINAccessOffGuidance)
+                        .font(.posBodySmallRegular())
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .opacity(anyStaffHasPIN ? 1.0 : 0.7)
+        }
+    }
+
     var staffListCard: some View {
         POSInformationCard {
             VStack(spacing: POSSpacing.none) {
@@ -591,9 +624,28 @@ private enum Localization {
     )
 
     static let pinAccessDescription = NSLocalizedString(
-        "posStaffSettingsView.pinAccessDescription",
-        value: "When enabled, POS can be locked and staff use PINs to access the register.",
+        "posStaffSettingsView.pinAccessDescription.v2",
+        value: "When enabled, POS can be locked and staff use PINs to access it.",
         comment: "Description of the PIN access toggle in POS staff settings."
+    )
+
+    // MARK: Remote Mode - PIN Access Status
+    static let remotePINAccessOnDescription = NSLocalizedString(
+        "posStaffSettingsView.remotePINAccessOnDescription",
+        value: "Staff must enter a PIN to use POS.",
+        comment: "Description shown in POS staff settings when at least one staff member has a PIN configured."
+    )
+
+    static let remotePINAccessOffDescription = NSLocalizedString(
+        "posStaffSettingsView.remotePINAccessOffDescription",
+        value: "No staff have a PIN. POS opens without authentication.",
+        comment: "Description shown in POS staff settings when no staff member has a PIN configured."
+    )
+
+    static let remotePINAccessOffGuidance = NSLocalizedString(
+        "posStaffSettingsView.remotePINAccessOffGuidance",
+        value: "Managed by the store owner. Set a PIN for any staff in Manage staff to turn this on.",
+        comment: "Guidance shown under the disabled PIN access toggle in remote POS staff settings."
     )
 
     static let adminPINLabel = NSLocalizedString(

@@ -1042,14 +1042,12 @@ struct POSPaymentModelTests {
         let sut = makePaymentController(cardPresentPaymentService: service)
 
         // When
-        sut.connectCardReader()
-        sut.connectCardReader()
-
-        // Wait for the single enqueued Task to complete
         await withCheckedContinuation { continuation in
             service.onConnectReaderCalled = {
                 continuation.resume()
             }
+            sut.connectCardReader()
+            sut.connectCardReader()
         }
 
         // Then - only one call made; guard rejected the second
@@ -1104,25 +1102,25 @@ struct POSPaymentModelTests {
         }
         #expect(service.connectReaderCallCount == 1)
 
-        // Second call while first is still awaiting in the mock
         sut.connectCardReader()
+        #expect(service.connectReaderCallCount == 1)
 
-        // Resume the first connection to complete it
-        service.resumeConnectReader(with: .connected(CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)))
-
-        // Flush pending MainActor tasks by observing a publisher change
+        let reader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
         await withCheckedContinuation { continuation in
             withObservationTracking {
                 _ = sut.cardReaderConnectionStatus
             } onChange: {
                 Task { @MainActor in
-                    continuation.resume()
+                    if case .connected = sut.cardReaderConnectionStatus {
+                        continuation.resume()
+                    }
                 }
             }
-            service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
+            service.resumeConnectReader(with: .connected(reader))
+            service.connectedReader = reader
         }
 
-        // Then - service was only called once; second call was blocked
+        // Then
         #expect(service.connectReaderCallCount == 1)
     }
 }

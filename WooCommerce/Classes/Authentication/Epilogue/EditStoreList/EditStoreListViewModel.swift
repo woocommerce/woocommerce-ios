@@ -132,6 +132,11 @@ private extension EditStoreListViewModel {
                     stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
                         siteID: siteID,
                         tokenID: tokenID,
+                        // Force Jetpack tunnel: the hidden site is never the currently selected site,
+                        // so the REST fallback in `RequestConverter` would route to the wrong host.
+                        // The Jetpack tunnel carries `siteID` in the URL path and always reaches the
+                        // correct site.
+                        availableAsRESTRequest: false,
                         onCompletion: { result in
                             continuation.resume(with: result)
                         }

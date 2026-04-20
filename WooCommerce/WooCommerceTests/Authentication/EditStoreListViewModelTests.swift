@@ -220,8 +220,11 @@ struct EditStoreListViewModelTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, onCompletion):
+            case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, availableAsRESTRequest, onCompletion):
                 #expect(tokenID == 99)
+                // EditStoreListViewModel always unregisters non-current sites, so REST fallback
+                // must be disabled to force the Jetpack tunnel to the correct site.
+                #expect(availableAsRESTRequest == false)
                 unregisteredSiteIDs.append(siteID)
                 onCompletion(.success(()))
             default:
@@ -331,7 +334,7 @@ struct EditStoreListViewModelTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .unregisterFromSelfDrivenPushNotifications(_, _, onCompletion):
+            case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "test", code: 500)))
             default:
                 break
@@ -370,7 +373,7 @@ struct EditStoreListViewModelTests {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .unregisterFromSelfDrivenPushNotifications(siteID, _, onCompletion):
+            case let .unregisterFromSelfDrivenPushNotifications(siteID, _, _, onCompletion):
                 unregisteredSiteIDs.append(siteID)
                 onCompletion(.success(()))
             default:

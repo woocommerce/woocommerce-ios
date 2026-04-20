@@ -941,6 +941,10 @@ private extension PushNotificationsManager {
         stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
             siteID: siteID,
             tokenID: tokenIDInt,
+            // The target siteID is the currently selected site, so REST fallback via
+            // `RequestConverter` is safe and preserved for site-credentials users who have no
+            // Jetpack tunnel available.
+            availableAsRESTRequest: true,
             onCompletion: completion
         ))
     }

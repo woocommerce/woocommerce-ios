@@ -364,6 +364,7 @@ private struct POSStaffSettingsRemoteView: View {
     @State private var isLoading: Bool = false
     @State private var loadError: Error?
     @State private var showManageStaff: Bool = false
+    @State private var showPINAccessInfo: Bool = false
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -407,6 +408,14 @@ private struct POSStaffSettingsRemoteView: View {
                 }
             )
         }
+        .alert(Localization.pinAccessInfoTitle, isPresented: $showPINAccessInfo) {
+            Button(Localization.pinAccessInfoManageButton) {
+                showManageStaff = true
+            }
+            Button(Localization.pinAccessInfoDismissButton, role: .cancel) { }
+        } message: {
+            Text(anyStaffHasPIN ? Localization.pinAccessDisableInfoMessage : Localization.pinAccessEnableInfoMessage)
+        }
     }
 }
 
@@ -419,27 +428,26 @@ private extension POSStaffSettingsRemoteView {
         staffMembers.contains { $0.hasPIN }
     }
 
-    /// Read-only toggle card indicating whether PIN lock is active on the backend.
-    /// Remote mode cannot toggle this from the app — it's derived from whether any
-    /// staff has a PIN. Disabled appearance makes the read-only nature clear.
+    /// Binding that renders the toggle as the current backend state, and on any tap
+    /// attempt, shows the "managed on the web" modal instead of flipping the value.
+    var pinAccessBinding: Binding<Bool> {
+        Binding(
+            get: { anyStaffHasPIN },
+            set: { _ in showPINAccessInfo = true }
+        )
+    }
+
+    /// Status card showing whether PIN access is active. Looks like the local mode
+    /// toggle so the two modes stay visually aligned, but attempting to flip it
+    /// opens an explanatory modal that deep-links to the Manage staff web view.
     var pinAccessStatusCard: some View {
         POSInformationCard {
-            VStack(alignment: .leading, spacing: POSPadding.small) {
-                POSInformationCardFieldRowWithToggle(
-                    label: Localization.pinAccessLabel,
-                    value: anyStaffHasPIN ? Localization.remotePINAccessOnDescription : Localization.remotePINAccessOffDescription,
-                    showSeparator: false,
-                    isOn: .constant(anyStaffHasPIN)
-                )
-                .disabled(true)
-
-                if !anyStaffHasPIN {
-                    Text(Localization.remotePINAccessOffGuidance)
-                        .font(.posBodySmallRegular())
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .opacity(anyStaffHasPIN ? 1.0 : 0.7)
+            POSInformationCardFieldRowWithToggle(
+                label: Localization.pinAccessLabel,
+                value: Localization.pinAccessDescription,
+                showSeparator: false,
+                isOn: pinAccessBinding
+            )
         }
     }
 
@@ -629,23 +637,35 @@ private enum Localization {
         comment: "Description of the PIN access toggle in POS staff settings."
     )
 
-    // MARK: Remote Mode - PIN Access Status
-    static let remotePINAccessOnDescription = NSLocalizedString(
-        "posStaffSettingsView.remotePINAccessOnDescription",
-        value: "Staff must enter a PIN to use POS.",
-        comment: "Description shown in POS staff settings when at least one staff member has a PIN configured."
+    // MARK: Remote Mode - PIN Access Modal
+    static let pinAccessInfoTitle = NSLocalizedString(
+        "posStaffSettingsView.pinAccessInfoTitle",
+        value: "PIN access is managed on the web",
+        comment: "Title of the modal shown when tapping the PIN access toggle in remote POS staff settings."
     )
 
-    static let remotePINAccessOffDescription = NSLocalizedString(
-        "posStaffSettingsView.remotePINAccessOffDescription",
-        value: "No staff have a PIN. POS opens without authentication.",
-        comment: "Description shown in POS staff settings when no staff member has a PIN configured."
+    static let pinAccessEnableInfoMessage = NSLocalizedString(
+        "posStaffSettingsView.pinAccessEnableInfoMessage",
+        value: "PIN access turns on automatically as soon as any staff member has a PIN. Set a PIN for a staff member in Manage staff to turn it on.",
+        comment: "Message shown when a user tries to turn on PIN access in remote POS staff settings."
     )
 
-    static let remotePINAccessOffGuidance = NSLocalizedString(
-        "posStaffSettingsView.remotePINAccessOffGuidance",
-        value: "Managed by the store owner. Set a PIN for any staff in Manage staff to turn this on.",
-        comment: "Guidance shown under the disabled PIN access toggle in remote POS staff settings."
+    static let pinAccessDisableInfoMessage = NSLocalizedString(
+        "posStaffSettingsView.pinAccessDisableInfoMessage",
+        value: "To turn PIN access off, remove the PIN from every staff member in Manage staff.",
+        comment: "Message shown when a user tries to turn off PIN access in remote POS staff settings."
+    )
+
+    static let pinAccessInfoManageButton = NSLocalizedString(
+        "posStaffSettingsView.pinAccessInfoManageButton",
+        value: "Manage staff on the web",
+        comment: "Button in the PIN access modal that opens the Manage staff web view."
+    )
+
+    static let pinAccessInfoDismissButton = NSLocalizedString(
+        "posStaffSettingsView.pinAccessInfoDismissButton",
+        value: "Cancel",
+        comment: "Dismiss button in the PIN access modal."
     )
 
     static let adminPINLabel = NSLocalizedString(

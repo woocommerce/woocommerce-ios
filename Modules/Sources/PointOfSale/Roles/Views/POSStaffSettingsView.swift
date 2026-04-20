@@ -528,24 +528,17 @@ private extension POSStaffSettingsRemoteView {
             .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.small.value))
     }
 
-    @ViewBuilder
+    /// Neutral lock-icon + label indicator for PIN status. Uses shape (filled vs
+    /// slashed) rather than color to distinguish states, so it reads correctly for
+    /// colorblind users and doesn't imply "No PIN" is an error — the store owner
+    /// manages PINs on the web, so a missing one is informational, not a warning.
     func pinStatusBadge(hasPIN: Bool) -> some View {
-        if hasPIN {
-            HStack(spacing: POSSpacing.small) {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(Color.posSuccess)
-                Text(Localization.pinSetLabel)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(.secondary)
-            }
-        } else {
-            HStack(spacing: POSSpacing.small) {
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .foregroundStyle(Color.posAlert)
-                Text(Localization.noPINLabel)
-                    .font(.posBodySmallRegular())
-                    .foregroundStyle(.secondary)
-            }
+        HStack(spacing: POSSpacing.small) {
+            Image(systemName: hasPIN ? "lock.fill" : "lock.slash")
+                .foregroundStyle(hasPIN ? Color.posOnSurface : Color.posOnSurfaceVariantLowest)
+            Text(hasPIN ? Localization.pinSetLabel : Localization.noPINLabel)
+                .font(.posBodySmallRegular())
+                .foregroundStyle(.secondary)
         }
     }
 

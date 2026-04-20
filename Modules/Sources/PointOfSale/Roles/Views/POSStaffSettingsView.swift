@@ -408,13 +408,14 @@ private struct POSStaffSettingsRemoteView: View {
                 }
             )
         }
-        .alert(Localization.pinAccessInfoTitle, isPresented: $showPINAccessInfo) {
-            Button(Localization.pinAccessInfoManageButton) {
-                showManageStaff = true
-            }
-            Button(Localization.pinAccessInfoDismissButton, role: .cancel) { }
-        } message: {
-            Text(anyStaffHasPIN ? Localization.pinAccessDisableInfoMessage : Localization.pinAccessEnableInfoMessage)
+        .posModal(isPresented: $showPINAccessInfo) {
+            POSPINAccessInformation(
+                isPresented: $showPINAccessInfo,
+                hasAnyPINs: anyStaffHasPIN,
+                onManageStaffTapped: {
+                    showManageStaff = true
+                }
+            )
         }
     }
 }
@@ -630,36 +631,6 @@ private enum Localization {
         comment: "Description of the PIN access toggle in POS staff settings."
     )
 
-    // MARK: Remote Mode - PIN Access Modal
-    static let pinAccessInfoTitle = NSLocalizedString(
-        "posStaffSettingsView.pinAccessInfoTitle",
-        value: "PIN access is managed on the web",
-        comment: "Title of the modal shown when tapping the PIN access toggle in remote POS staff settings."
-    )
-
-    static let pinAccessEnableInfoMessage = NSLocalizedString(
-        "posStaffSettingsView.pinAccessEnableInfoMessage",
-        value: "PIN access turns on automatically as soon as any staff member has a PIN. Set a PIN for a staff member in Manage staff to turn it on.",
-        comment: "Message shown when a user tries to turn on PIN access in remote POS staff settings."
-    )
-
-    static let pinAccessDisableInfoMessage = NSLocalizedString(
-        "posStaffSettingsView.pinAccessDisableInfoMessage",
-        value: "To turn PIN access off, remove the PIN from every staff member in Manage staff.",
-        comment: "Message shown when a user tries to turn off PIN access in remote POS staff settings."
-    )
-
-    static let pinAccessInfoManageButton = NSLocalizedString(
-        "posStaffSettingsView.pinAccessInfoManageButton",
-        value: "Manage staff on the web",
-        comment: "Button in the PIN access modal that opens the Manage staff web view."
-    )
-
-    static let pinAccessInfoDismissButton = NSLocalizedString(
-        "posStaffSettingsView.pinAccessInfoDismissButton",
-        value: "Cancel",
-        comment: "Dismiss button in the PIN access modal."
-    )
 
     static let adminPINLabel = NSLocalizedString(
         "posStaffSettingsView.adminPINLabel",

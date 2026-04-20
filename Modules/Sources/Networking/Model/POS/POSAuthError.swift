@@ -24,6 +24,10 @@ public enum POSAuthError: Error, Equatable {
 
     /// An unmapped error code was returned.
     case unknown(code: String, message: String)
+
+    /// The response body could not be decoded into any known POS auth format.
+    /// `preview` contains a truncated UTF-8 representation of the body for debugging.
+    case malformedResponse(preview: String)
 }
 
 // MARK: - LocalizedError
@@ -64,6 +68,12 @@ extension POSAuthError: LocalizedError {
             )
         case .unknown(_, let message):
             return message
+        case .malformedResponse:
+            return NSLocalizedString(
+                "posAuthError.malformedResponse",
+                value: "We couldn't understand the response from the server. Please try again.",
+                comment: "Error shown when the POS auth response body does not match any expected format"
+            )
         }
     }
 }
@@ -74,58 +84,94 @@ public extension POSAuthError {
 
     /// Attempts to create a `POSAuthError` from a generic `Error`.
     ///
-    /// Inspects `NetworkError` response data for known POS error codes and
-    /// extracts `retry_after` from the `data` payload when rate limited.
+    /// Unwraps the two shapes POS auth errors can arrive in:
+    /// - `DotcomError.unknown(code, message, data)`: WPCOM Jetpack-tunneled requests
+    ///   return HTTP 200 with an error body like
+    ///   `{"error": "woocommerce_pos_invalid_pin", "message": "...", "data": {"status": 422}}`.
+    ///   `DotcomValidator` converts that into `DotcomError.unknown` before the mapper runs.
+    /// - `NetworkError.unacceptableStatusCode(_, response)` / `NetworkError.notFound` /
+    ///   `NetworkError.timeout`: direct REST requests (application password) that fail
+    ///   Alamofire's status validation return a `NetworkError` whose body decodes into
+    ///   `{"code": "...", "message": "...", "data": {...}}`.
     ///
+    /// Both shapes are normalized into a common `code` + `data` representation which is
+    /// then matched against the known POS auth error codes.
+    ///
+    /// When the error is already a `POSAuthError` (e.g. thrown directly by the mapper),
+    /// it's returned unchanged.
     static func from(_ error: Error) -> POSAuthError {
-        guard let networkError = error as? NetworkError else {
+        if let posError = error as? POSAuthError {
+            return posError
+        }
+        guard let details = POSAuthErrorDetails(error: error) else {
             return .unknown(code: "unknown", message: error.localizedDescription)
         }
-
-        guard let code = networkError.errorCode else {
-            return .unknown(code: "unknown", message: error.localizedDescription)
-        }
-
-        switch code {
-        case ErrorCodes.invalidPIN:
-            return .invalidPIN
-        case ErrorCodes.rateLimited:
-            let retryAfter = networkError.retryAfterSeconds ?? Constants.defaultRetryAfter
-            return .rateLimited(retryAfter: retryAfter)
-        case ErrorCodes.approvalForbidden:
-            return .approvalForbidden
-        case ErrorCodes.invalidAction:
-            return .invalidAction
-        case ErrorCodes.sessionExpired:
-            return .sessionExpired
-        default:
-            let message = networkError.localizedDescription
-            return .unknown(code: code, message: message)
-        }
+        return details.asPOSAuthError()
     }
 }
 
-// MARK: - NetworkError Helper
+// MARK: - Error unwrapping
 //
-private extension NetworkError {
-    /// Extracts the `retry_after` value from the error response `data` payload.
-    var retryAfterSeconds: Int? {
-        guard let data = errorData,
-              let retryAfterValue = data["retry_after"]?.value as? Int else {
-            // Also try Double in case the backend sends a numeric value
-            if let data = errorData,
-               let doubleValue = data["retry_after"]?.value as? Double {
-                return Int(doubleValue)
+/// Canonical representation of the `code` + optional `message` + optional `data`
+/// extracted from an upstream error (DotcomError, NetworkError, etc.).
+///
+/// Mirrors the pattern used by `PaymentsError`: unwrap once into a flat struct,
+/// then map known codes to typed cases.
+private struct POSAuthErrorDetails {
+    let code: String
+    let message: String?
+    let data: [String: AnyDecodable]?
+
+    init?(error: Error) {
+        switch error {
+        case let DotcomError.unknown(code, message, data):
+            self.code = code
+            self.message = message
+            self.data = data
+        case let networkError as NetworkError:
+            guard let code = networkError.errorCode else {
+                return nil
             }
+            self.code = code
+            self.message = nil
+            self.data = networkError.errorData
+        default:
             return nil
         }
-        return retryAfterValue
+    }
+
+    func asPOSAuthError() -> POSAuthError {
+        switch code {
+        case POSAuthError.ErrorCodes.invalidPIN:
+            return .invalidPIN
+        case POSAuthError.ErrorCodes.rateLimited:
+            return .rateLimited(retryAfter: retryAfterSeconds ?? POSAuthError.Constants.defaultRetryAfter)
+        case POSAuthError.ErrorCodes.approvalForbidden:
+            return .approvalForbidden
+        case POSAuthError.ErrorCodes.invalidAction:
+            return .invalidAction
+        case POSAuthError.ErrorCodes.sessionExpired:
+            return .sessionExpired
+        default:
+            return .unknown(code: code, message: message ?? code)
+        }
+    }
+
+    private var retryAfterSeconds: Int? {
+        guard let value = data?["retry_after"]?.value else { return nil }
+        if let intValue = value as? Int {
+            return intValue
+        }
+        if let doubleValue = value as? Double {
+            return Int(doubleValue)
+        }
+        return nil
     }
 }
 
 // MARK: - Constants
 //
-private extension POSAuthError {
+extension POSAuthError {
     enum ErrorCodes {
         static let invalidPIN = "woocommerce_pos_invalid_pin"
         static let rateLimited = "woocommerce_pos_rate_limited"

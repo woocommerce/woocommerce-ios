@@ -345,6 +345,10 @@ public extension AlamofireNetwork {
             DefaultRequestAuthenticator(credentials: posCredentials)
         )
         requestAuthenticator.delegate = nil
+        // Keep the error handler in sync with the active credentials so retry
+        // logic doesn't fall back to the admin's Jetpack tunnel when a POS
+        // cashier's REST request fails (e.g. 403 on refunds).
+        errorHandler.updateCredentials(posCredentials)
         updateAuthenticationMode(.appPasswords)
     }
 
@@ -359,6 +363,9 @@ public extension AlamofireNetwork {
         requestAuthenticator.updateAuthenticator(
             DefaultRequestAuthenticator(credentials: credentials)
         )
+        // Restore the error handler's credentials so the Jetpack-tunnel retry
+        // path is available again for the admin session.
+        errorHandler.updateCredentials(credentials)
         if let savedAuthenticationMode {
             updateAuthenticationMode(savedAuthenticationMode)
         }

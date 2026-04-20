@@ -6,8 +6,22 @@ import XCTest
 import Testing
 
 public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTracker {
-    var receivedEvents = [String]()
-    var receivedProperties = [[AnyHashable: Any]]()
+    private let lock = NSLock()
+
+    private var _receivedEvents = [String]()
+    var receivedEvents: [String] {
+        lock.lock()
+        defer { lock.unlock() }
+        return _receivedEvents
+    }
+
+    private var _receivedProperties = [[AnyHashable: Any]]()
+    var receivedProperties: [[AnyHashable: Any]] {
+        lock.lock()
+        defer { lock.unlock() }
+        return _receivedProperties
+    }
+
     var userID: String?
     var userOptedIn = true
 }
@@ -25,15 +39,19 @@ public extension MockAnalyticsProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        receivedEvents.append(eventName)
+        lock.lock()
+        _receivedEvents.append(eventName)
         if let properties = properties {
-            receivedProperties.append(properties)
+            _receivedProperties.append(properties)
         }
+        lock.unlock()
     }
 
     func clearEvents() {
-        receivedEvents.removeAll()
-        receivedProperties.removeAll()
+        lock.lock()
+        _receivedEvents.removeAll()
+        _receivedProperties.removeAll()
+        lock.unlock()
     }
 
     func clearUsers() {

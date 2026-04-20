@@ -27,13 +27,21 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
     private(set) var readerDisconnectInProgress: Bool = false
 
+    private(set) var readerReconnectionInProgress: Bool = false
+    private(set) var readerReconnectionCancellationInProgress: Bool = false
+    private var reconnectingReader: CardReader?
+
     private var subscriptions = Set<AnyCancellable>()
 
     var connectedReaderID: String?
     var connectedReaderBatteryLevel: String?
     var connectedReaderSoftwareVersion: String?
     var connectedReaderModel: String? {
-        connectedReaders.first?.readerType.model
+        currentReader?.readerType.model
+    }
+
+    private var currentReader: CardReader? {
+        connectedReaders.first ?? reconnectingReader
     }
 
     /// The connected gateway ID (plugin slug) - useful for the view controller's tracks events
@@ -145,6 +153,27 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
                 .store(in: &self.subscriptions)
         }
         ServiceLocator.stores.dispatch(softwareUpdateAction)
+
+        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionEvents in
+            reconnectionEvents
+                .sink { [weak self] state in
+                    guard let self = self else { return }
+
+                    switch state {
+                    case .reconnecting(let reader):
+                        self.readerReconnectionInProgress = true
+                        self.reconnectingReader = reader
+                    case .succeeded, .failed, .idle:
+                        self.readerReconnectionInProgress = false
+                        self.readerReconnectionCancellationInProgress = false
+                        self.reconnectingReader = nil
+                    }
+                    self.updateProperties()
+                    self.reevaluateShouldShow()
+                }
+                .store(in: &self.subscriptions)
+        }
+        ServiceLocator.stores.dispatch(reconnectionAction)
     }
 
     /// This screen is only used for managing Bluetooth card readers.
@@ -170,11 +199,11 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     }
 
     private func updateReaderID() {
-        connectedReaderID = connectedReaders.first?.id
+        connectedReaderID = currentReader?.id
     }
 
     private func updateBatteryLevel() {
-        guard let batteryLevel = connectedReaders.first?.batteryLevel else {
+        guard let batteryLevel = currentReader?.batteryLevel else {
             connectedReaderBatteryLevel = Localization.unknownBatteryStatus
             return
         }
@@ -185,7 +214,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     }
 
     private func updateSoftwareVersion() {
-        guard let softwareVersion = connectedReaders.first?.softwareVersion else {
+        guard let softwareVersion = currentReader?.softwareVersion else {
             connectedReaderSoftwareVersion = Localization.unknownSoftwareVersion
             return
         }
@@ -234,6 +263,23 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         didUpdate?()
     }
 
+    /// Dispatch a request to cancel an in-progress reconnection attempt
+    ///
+    func cancelReconnection() {
+        readerReconnectionCancellationInProgress = true
+        didUpdate?()
+
+        let action = CardPresentPaymentAction.cancelReconnection { [weak self] result in
+            guard let self else { return }
+            if case .failure(let error) = result {
+                DDLogError("Failed to cancel reader reconnection: \(error)")
+                self.readerReconnectionCancellationInProgress = false
+                self.didUpdate?()
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
     /// Dispatch a request to disconnect from a reader
     ///
     func disconnectReader() {
@@ -262,9 +308,11 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     private func reevaluateShouldShow() {
         var newShouldShow: CardReaderSettingsTriState = .isUnknown
 
+        let hasNoActiveOrReconnectingReaders = connectedReaders.isEmpty && !readerReconnectionInProgress && !readerReconnectionCancellationInProgress
+
         if !didGetConnectedReaders {
             newShouldShow = .isUnknown
-        } else if connectedReaders.isEmpty {
+        } else if hasNoActiveOrReconnectingReaders {
             newShouldShow = .isFalse
         } else if connectedReaders.includesTapToPayReader() {
             /// This screen only supports management of Bluetooth readers, and will have started disconnection

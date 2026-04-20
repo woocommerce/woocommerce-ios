@@ -132,4 +132,8 @@ public enum WooShippingAction: Action {
                                  originAddress: WooShippingAddress,
                                  completion: (Result<Bool, Error>) -> Void)
 
+    /// Accept FedEx TOS
+    case acceptFedExTermsOfService(siteID: Int64,
+                                   completion: (Result<Bool, Error>) -> Void)
+
 }

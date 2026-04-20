@@ -2,6 +2,8 @@ import SwiftUI
 import class WooFoundation.CurrencyFormatter
 import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import protocol Yosemite.POSCartProductObserving
+import class Yosemite.POSCartProductObserver
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSBookingListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderServiceProtocol
@@ -48,6 +50,7 @@ public struct PointOfSaleEntryPointView: View {
     private let services: POSDependencyProviding
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
+    private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
     private let isBookingsEligible: Bool
     private let sunsetWarningChecker: POSSunsetWarningChecking?
@@ -160,6 +163,15 @@ public struct PointOfSaleEntryPointView: View {
         } else {
             self.bookingsModel = nil
         }
+        if isLocalCatalogEligible, let grdbManager {
+            self.cartProductObserver = POSCartProductObserver(
+                siteID: siteID,
+                grdbManager: grdbManager,
+                currencySettings: services.currency.currencySettings
+            )
+        } else {
+            self.cartProductObserver = nil
+        }
         self.siteTimezone = siteTimezone
         self.services = services
         self.siteID = siteID
@@ -200,6 +212,7 @@ public struct PointOfSaleEntryPointView: View {
                 receiptSender: receiptSender,
                 siteID: siteID,
                 catalogSyncCoordinator: catalogSyncCoordinator,
+                cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
                 sunsetWarningChecker: sunsetWarningChecker)
         }

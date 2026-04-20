@@ -190,6 +190,7 @@ extension NetworkingCore.Order {
             appliedGiftCards: .fake(),
             attributionInfo: .fake(),
             shippingLabels: .fake(),
+            fulfillments: .fake(),
             createdVia: .fake()
         )
     }

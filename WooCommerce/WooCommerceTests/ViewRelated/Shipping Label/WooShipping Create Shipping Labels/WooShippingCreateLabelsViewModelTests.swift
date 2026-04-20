@@ -6,6 +6,7 @@ import WooFoundation
 import Yosemite
 import struct NetworkingCore.AnyDecodable
 import enum NetworkingCore.DotcomError
+import enum NetworkingCore.NetworkError
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
@@ -710,6 +711,76 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
                                                 value: "Please enter a valid phone number for the destination address.",
                                                 comment: "")
         XCTAssertEqual(viewModel.labelPurchaseErrorNotice?.message, expectedMessage)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_fedex_tos_error_then_shows_fedex_terms() async {
+        // Given
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: DotcomError.unknown(code: "missing_fedex_terms_of_service_acceptance",
+                                               message: "FedEx Terms of Service have not been accepted.",
+                                               data: nil)
+        )
+        XCTAssertFalse(viewModel.shouldShowFedExTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowFedExTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_ups_tos_error_then_shows_ups_terms() async {
+        // Given
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: DotcomError.unknown(code: "missing_upsdap_terms_of_service_acceptance",
+                                               message: "UPS Terms of Service have not been accepted.",
+                                               data: nil)
+        )
+        XCTAssertFalse(viewModel.shouldShowUPSTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowUPSTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_fedex_tos_NetworkError_then_shows_fedex_terms() async {
+        // Given
+        let responseJSON = #"{"code":"missing_fedex_terms_of_service_acceptance","message":"FedEx ToS not accepted."}"#
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: NetworkError.unacceptableStatusCode(statusCode: 403, response: responseJSON.data(using: .utf8))
+        )
+        XCTAssertFalse(viewModel.shouldShowFedExTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowFedExTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_missing_ups_tos_NetworkError_then_shows_ups_terms() async {
+        // Given
+        let responseJSON = #"{"code":"missing_upsdap_terms_of_service_acceptance","message":"UPS ToS not accepted."}"#
+        let viewModel = await makePurchaseLabelViewModel(
+            purchaseError: NetworkError.unacceptableStatusCode(statusCode: 403, response: responseJSON.data(using: .utf8))
+        )
+        XCTAssertFalse(viewModel.shouldShowUPSTermsAndConditions)
+
+        // When
+        await viewModel.purchaseLabel(shouldRefreshPackageAndRate: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowUPSTermsAndConditions)
+        XCTAssertNil(viewModel.labelPurchaseErrorNotice)
     }
 
     func test_originAddressLines_is_correct_for_both_purchased_label_and_unfulfilled_shipment() {
@@ -1768,6 +1839,59 @@ private extension WooShippingCreateLabelsViewModelTests {
     func insert(accountSettings: ShippingLabelAccountSettings) {
         let storageSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
         storageSettings.update(with: accountSettings)
+    }
+
+    /// Creates a `WooShippingCreateLabelsViewModel` configured with a mock store that returns
+    /// the given `purchaseError` when a shipping label purchase is attempted.
+    @MainActor
+    func makePurchaseLabelViewModel(purchaseError: Error) async -> WooShippingCreateLabelsViewModel {
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", country: "US", defaultAddress: true)
+        insert(originAddress: originAddress)
+
+        let destinationAddress = WooShippingNormalizedAddress.fake().copy(country: "US", state: "CA")
+        let shippingAddress = Address.fake().copy(state: "CA", country: "US")
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingAddress: shippingAddress)
+        let paymentMethod = ShippingLabelPaymentMethod.fake().copy(paymentMethodID: 1)
+        let accountSettings = ShippingLabelAccountSettings.fake().copy(
+            paymentMethods: [paymentMethod],
+            selectedPaymentMethodID: paymentMethod.paymentMethodID
+        )
+
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            case .verifyDestinationAddress(_, _, let completion):
+                completion(.success(WooShippingVerifyDestinationAddressSuccess(normalizedAddress: destinationAddress,
+                                                                               isTrivialNormalization: nil,
+                                                                               isVerified: true)))
+            case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion):
+                completion(.failure(purchaseError))
+            default:
+                break
+            }
+        }
+
+        let viewModel = WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
+        await until { viewModel.state == .ready }
+        await until { viewModel.currentShipmentDetailsViewModel.shippingService != nil }
+        viewModel.didUpdateAccountSettings(accountSettings)
+
+        let package = WooShippingPackageData(id: "box", name: "Box", length: "10", width: "10", height: "5",
+                                             weight: "1", source: .predefined(sourceTitle: "usps", sourceID: "usps"),
+                                             packageType: "box")
+        let selectedRate = WooShippingSelectedRate(
+            rate: ShippingLabelCarrierRate.fake().copy(rateID: "rate_1", carrierID: "usps"),
+            signatureRate: nil, adultSignatureRate: nil, carbonNeutralRate: nil,
+            saturdayDeliveryRate: nil, additionalHandlingRate: nil
+        )
+        viewModel.currentShipmentDetailsViewModel.selectPackage(package)
+        viewModel.currentShipmentDetailsViewModel.shippingService?.onSelectRate?(selectedRate)
+
+        return viewModel
     }
 }
 

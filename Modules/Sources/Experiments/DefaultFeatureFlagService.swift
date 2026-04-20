@@ -92,7 +92,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
-            return true
+            return !buildConfig.isProduction
         case .pointOfSaleCatalogAPI:
             return false
         case .pointOfSaleRefundsi1:
@@ -107,8 +107,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .ageRangeRequirementsCompliance:
             return false
-        case .wooShippingFedEx:
-            return false
+        case .ciabBookingReschedule:
+            return !buildConfig.isProduction
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
         default:

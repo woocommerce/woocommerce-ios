@@ -28,10 +28,10 @@ final class StoreStatsPeriodViewModel {
     private(set) lazy var revenueStatsText: AnyPublisher<String, Never> = $orderStatsData.combineLatest($selectedIntervalIndex, currencySettings.$currencyCode)
         .compactMap { [weak self] orderStatsData, selectedIntervalIndex, currencyCode in
             guard let self else { return "-" }
-            return StatsDataTextFormatter.createNetSalesText(orderStats: orderStatsData.stats,
-                                                              selectedIntervalIndex: selectedIntervalIndex,
-                                                              currencyFormatter: self.currencyFormatter,
-                                                              currencyCode: currencyCode.rawValue)
+            return StatsDataTextFormatter.createTotalRevenueText(orderStats: orderStatsData.stats,
+                                                                selectedIntervalIndex: selectedIntervalIndex,
+                                                                currencyFormatter: self.currencyFormatter,
+                                                                currencyCode: currencyCode.rawValue)
         }
         .removeDuplicates()
         .eraseToAnyPublisher()

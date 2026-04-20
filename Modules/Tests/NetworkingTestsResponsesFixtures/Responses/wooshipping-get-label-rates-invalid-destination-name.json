@@ -1,0 +1,61 @@
+{
+  "default_package": {
+    "default": {
+      "rates": [],
+      "errors": [
+        {
+          "code": "rate_error",
+          "message": "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character",
+          "errors": [
+            {
+              "carrier": "UspsShip",
+              "carrier_account_id": "ca_bf7f1fb0afe248ebbef7e457a04322a9"
+            }
+          ]
+        }
+      ]
+    },
+    "signature_required": {
+      "rates": [],
+      "errors": [
+        {
+          "code": "rate_error",
+          "message": "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character",
+          "errors": [
+            {
+              "carrier": "UspsShip",
+              "carrier_account_id": "ca_bf7f1fb0afe248ebbef7e457a04322a9"
+            }
+          ]
+        }
+      ]
+    },
+    "adult_signature_required": {
+      "rates": [],
+      "errors": [
+        {
+          "code": "rate_error",
+          "message": "shipment.to_address: invalid name; A first and last name is required if passed in: input name needs at least 1 space character",
+          "errors": [
+            {
+              "carrier": "UspsShip",
+              "carrier_account_id": "ca_bf7f1fb0afe248ebbef7e457a04322a9"
+            }
+          ]
+        }
+      ]
+    },
+    "carbon_neutral": {
+      "rates": [],
+      "errors": []
+    },
+    "additional_handling": {
+      "rates": [],
+      "errors": []
+    },
+    "saturday_delivery": {
+      "rates": [],
+      "errors": []
+    }
+  }
+}

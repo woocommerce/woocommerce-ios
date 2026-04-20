@@ -97,6 +97,8 @@ public final class WooShippingStore: Store {
             refundShippingLabel(shippingLabel: shippingLabel, completion: completion)
         case let .acceptUPSTermsOfService(siteID, originAddress, completion):
             acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
+        case let .acceptFedExTermsOfService(siteID, completion):
+            acceptFedExTermsOfService(siteID: siteID, completion: completion)
         }
     }
 }
@@ -174,7 +176,12 @@ private extension WooShippingStore {
                               destinationAddress: destinationAddress,
                               packages: packages,
                               completion: { result in
-            completion(packages, result)
+            switch result {
+            case let .success(rates) where rates.contains(where: \.hasInvalidDestinationNameRateError):
+                completion(packages, .failure(WooShippingLoadLabelRatesError.invalidDestinationName))
+            default:
+                completion(packages, result)
+            }
         })
     }
 
@@ -302,6 +309,11 @@ private extension WooShippingStore {
                                  originAddress: WooShippingAddress,
                                  completion: @escaping (Result<Bool, Error>) -> Void) {
         remote.acceptUPSTermsOfService(siteID: siteID, originAddress: originAddress, completion: completion)
+    }
+
+    func acceptFedExTermsOfService(siteID: Int64,
+                                   completion: @escaping (Result<Bool, Error>) -> Void) {
+        remote.acceptFedExTermsOfService(siteID: siteID, completion: completion)
     }
 
     func syncShipments(siteID: Int64,
@@ -908,4 +920,17 @@ public enum WooShippingLabelPurchaseError: Error {
     case purchaseMissingLabels
     case failedToRefreshSelectedPackage
     case failedToRefreshSelectedRate
+}
+
+public enum WooShippingLoadLabelRatesError: Error {
+    case invalidDestinationName
+}
+
+private extension ShippingLabelCarriersAndRates {
+    var hasInvalidDestinationNameRateError: Bool {
+        defaultErrors.contains { error in
+            error.code == "rate_error" &&
+            error.message?.localizedCaseInsensitiveContains("shipment.to_address: invalid name") == true
+        }
+    }
 }

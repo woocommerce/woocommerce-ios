@@ -3,8 +3,10 @@ import Foundation
 
 final class MockPluginVersionChecker: PluginVersionCheckerProtocol {
     var result: Result<PluginVersionResult, Error> = .success(.compatible)
+    var onCheckCompatibility: (() -> Void)?
 
     func checkCompatibility() async throws -> PluginVersionResult {
-        try result.get()
+        onCheckCompatibility?()
+        return try result.get()
     }
 }

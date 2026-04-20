@@ -39,6 +39,8 @@ struct WooShippingServiceView: View {
                             viewModel.loadLabelRates(for: package)
                         }
                     }
+                case .invalidDestinationName:
+                    ErrorState(message: Localization.invalidDestinationNameError)
                 case .noRatesAvailable(let isHAZMAT):
                     ErrorState(message: isHAZMAT ?
                                Localization.noRatesAvailableWithHAZMAT :
@@ -213,6 +215,11 @@ private extension WooShippingServiceView {
                                                               value: "We are unable to load shipping rates",
                                                               comment: "Error message when loading shipping label rates "
                                                               + "failed on the shipping label creation screen")
+        static let invalidDestinationNameError = NSLocalizedString(
+            "wooShipping.createLabels.rates.invalidDestinationNameError",
+            value: "We couldn't load shipping rates. Please add a first and last name to the destination address and try again.",
+            comment: "Error message when shipping rates fail to load because the destination address name is invalid."
+        )
         static let noRatesAvailableNoHAZMAT = NSLocalizedString(
             "wooShipping.createLabels.rates.noRatesAvailableNoHAZMAT",
             value: "We couldn't find a shipping service for the combination of the selected package "

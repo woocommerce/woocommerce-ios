@@ -166,6 +166,9 @@ struct ItemListRow: View {
                                           imageSource: parentProduct.productImageSource,
                                           detailText: Localization.variationsAvailable)
                 }
+                .simultaneousGesture(TapGesture().onEnded {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                })
             } else {
                 // Use a button to trigger navigation programmatically on iOS 17.
 

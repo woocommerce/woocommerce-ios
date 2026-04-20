@@ -102,4 +102,11 @@ public enum CardPresentPaymentAction: Action {
     /// Fetches Charge details by charge ID
     ///
     case fetchWCPayCharge(siteID: Int64, chargeID: String, onCompletion: (Result<WCPayCharge, Error>) -> Void)
+
+    /// Provides a publisher for card reader reconnection state changes.
+    /// Used to observe when a Bluetooth card reader is attempting to auto-reconnect.
+    case observeCardReaderReconnectionState(onCompletion: (AnyPublisher<CardReaderReconnectionState, Never>) -> Void)
+
+    /// Cancels an in-progress auto-reconnection attempt.
+    case cancelReconnection(onCompletion: (Result<Void, Error>) -> Void)
 }

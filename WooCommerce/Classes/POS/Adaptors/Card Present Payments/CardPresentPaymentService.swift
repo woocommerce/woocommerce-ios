@@ -6,7 +6,8 @@ import struct Yosemite.CardPresentPaymentsConfiguration
 import struct Yosemite.CardReader
 import enum Yosemite.CardPresentPaymentAction
 import enum Yosemite.PaymentChannel
-import enum Hardware.CardReaderSoftwareUpdateState
+import enum Yosemite.CardReaderSoftwareUpdateState
+import enum Yosemite.CardReaderReconnectionState
 import protocol Yosemite.StoresManager
 
 final class CardPresentPaymentService: CardPresentPaymentFacade {
@@ -17,6 +18,8 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     let cardReaderUpdateStatePublisher: AnyPublisher<CardReaderSoftwareUpdateState, Never>
 
     private let connectedReaderPublisher: AnyPublisher<CardPresentPaymentCardReader?, Never>
+
+    private let reconnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>
 
     private let paymentEventSubject = PassthroughSubject<CardPresentPaymentEvent, Never>()
 
@@ -36,6 +39,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
     }
 
     private var paymentTask: Task<CardPresentPaymentAdaptedCollectOrderPaymentResult, Error>?
+    private var connectReaderTask: Task<CardPresentPaymentReaderConnectionResult, Error>?
 
     @MainActor
     init(siteID: Int64, stores: StoresManager = ServiceLocator.stores, collectOrderPaymentAnalyticsTracker: CollectOrderPaymentAnalyticsTracking) async {
@@ -69,6 +73,9 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         let connectedReaderPublisher = await Self.createCardReaderConnectionPublisher(stores: stores)
         self.connectedReaderPublisher = connectedReaderPublisher
 
+        let reconnectionStatusPublisher = await Self.createReconnectionStatusPublisher(stores: stores)
+        self.reconnectionStatusPublisher = reconnectionStatusPublisher
+
         readerConnectionStatusPublisher = self.connectedReaderPublisher
             .map({ reader -> CardPresentPaymentReaderConnectionStatus in
                 guard let reader else {
@@ -78,6 +85,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
             })
             .merge(with: paymentAlertsPresenterAdaptor.readerConnectionStatusPublisher)
             .merge(with: readerConnectionStatusSubject)
+            .merge(with: reconnectionStatusPublisher)
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
 
@@ -89,25 +97,44 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
 
     @MainActor
     func connectReader(using connectionMethod: CardReaderConnectionMethod) async throws -> CardPresentPaymentReaderConnectionResult {
-        // What happens if this gets called while there's another connection ongoing?
-        let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: createPreflightController())
-
-        let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
-
-        switch preflightResult {
-        case .completed(let cardReader, _):
-            let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
-                                                               batteryLevel: cardReader.batteryLevel,
-                                                               softwareVersion: cardReader.softwareVersion)
-            paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
-                self?.paymentEventSubject.send(.idle)
-            })))
-            return .connected(connectedReader)
-        case .canceled:
-            readerConnectionStatusSubject.send(.disconnected)
-            paymentEventSubject.send(.idle)
-            return .canceled
+        if let existingTask = connectReaderTask {
+            existingTask.cancel()
+            _ = try? await existingTask.value
         }
+
+        let task = Task { @MainActor [weak self] () throws -> CardPresentPaymentReaderConnectionResult in
+            guard let self else { return .canceled }
+            defer { self.connectReaderTask = nil }
+
+            let preflightControllerAdaptor = CardPresentPaymentPreflightAdaptor(preflightController: self.createPreflightController())
+            do {
+                let preflightResult = try await preflightControllerAdaptor.attemptConnection(discoveryMethod: connectionMethod.discoveryMethod)
+                switch preflightResult {
+                case .completed(let cardReader, _):
+                    let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
+                                                                       batteryLevel: cardReader.batteryLevel,
+                                                                       softwareVersion: cardReader.softwareVersion)
+                    self.paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
+                        self?.paymentEventSubject.send(.idle)
+                    })))
+                    return .connected(connectedReader)
+                case .canceled:
+                    self.readerConnectionStatusSubject.send(.disconnected)
+                    self.paymentEventSubject.send(.idle)
+                    return .canceled
+                }
+            } catch is CancellationError {
+                await self.cancelReaderConnectionAttempt()
+                return .canceled
+            } catch {
+                DDLogError("⛔️ Card reader connection failed: \(error.localizedDescription)")
+                await self.cancelReaderConnectionAttempt()
+                throw error
+            }
+        }
+
+        connectReaderTask = task
+        return try await task.value
     }
 
     @MainActor
@@ -199,6 +226,36 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
         paymentTask?.cancel()
         paymentTask = nil
     }
+
+    @MainActor
+    private func cancelReaderConnectionAttempt() async {
+        paymentAlertsPresenterAdaptor.dismiss()
+
+        await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
+
+            let action = CardPresentPaymentAction.cancelCardReaderDiscovery { _ in
+                nillableContinuation?.resume()
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    func cancelReconnection() async {
+        await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<Void, Never>? = continuation
+
+            let action = CardPresentPaymentAction.cancelReconnection { result in
+                if case .failure(let error) = result {
+                    DDLogError("Failed to cancel reconnection: \(error)")
+                }
+                nillableContinuation?.resume()
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 private extension CardPresentPaymentService {
@@ -234,6 +291,46 @@ private extension CardPresentPaymentService {
 
             let action = CardPresentPaymentAction.observeCardReaderUpdateState { updateStatePublisher in
                 nillableContinuation?.resume(returning: updateStatePublisher)
+                nillableContinuation = nil
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    static func createReconnectionStatusPublisher(stores: StoresManager) async -> AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never> {
+        return await withCheckedContinuation { continuation in
+            var nillableContinuation: CheckedContinuation<AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>, Never>? = continuation
+
+            let action = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionPublisher in
+                let statusPublisher = reconnectionPublisher
+                    .compactMap { state -> CardPresentPaymentReaderConnectionStatus? in
+                        switch state {
+                        case .idle:
+                            // Don't emit status for idle - other publishers handle connected/disconnected
+                            return nil
+                        case .reconnecting(let reader):
+                            let cardReader = CardPresentPaymentCardReader(
+                                name: reader.name ?? reader.id,
+                                batteryLevel: reader.batteryLevel,
+                                softwareVersion: reader.softwareVersion
+                            )
+                            return .reconnecting(cardReader)
+                        case .succeeded(let reader):
+                            let cardReader = CardPresentPaymentCardReader(
+                                name: reader.name ?? reader.id,
+                                batteryLevel: reader.batteryLevel,
+                                softwareVersion: reader.softwareVersion
+                            )
+                            return .connected(cardReader)
+                        case .failed:
+                            return .disconnected
+                        }
+                    }
+                    .receive(on: DispatchQueue.main)
+                    .eraseToAnyPublisher()
+
+                nillableContinuation?.resume(returning: statusPublisher)
                 nillableContinuation = nil
             }
             stores.dispatch(action)

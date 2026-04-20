@@ -20,7 +20,7 @@ PUBLIC_CONFIG_FILE = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xc
 RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 RELEASE_NOTES_SOURCE_PATH = File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt')
 FASTLANE_DIR = File.join(PROJECT_ROOT_FOLDER, 'fastlane')
-DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
+DERIVED_DATA_DIR = File.join(PROJECT_ROOT_FOLDER, 'DerivedData')
 SCREENSHOTS_DIR =  File.join(FASTLANE_DIR, 'screenshots')
 FASTLANE_METADATA_FOLDER = File.join(FASTLANE_DIR, 'metadata')
 WORKSPACE_PATH = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.xcworkspace')
@@ -876,7 +876,7 @@ platform :ios do
     run_tests(
       workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
-      derived_data_path: 'DerivedData',
+      derived_data_path: DERIVED_DATA_DIR,
       build_for_testing: true,
       device: device,
       deployment_target_version: ios_version
@@ -1406,7 +1406,7 @@ end
 desc 'Run tests without building'
 lane :test_without_building do |options|
   # Find the referenced .xctestrun file based on its name
-  build_products_path = File.expand_path('DerivedData/Build/Products/', File.dirname(Dir.pwd))
+  build_products_path = File.join(DERIVED_DATA_DIR, 'Build', 'Products')
 
   xctestrun_path = Dir.glob(File.join(build_products_path, '*.xctestrun')).select do |e|
     e.include?(options[:name])

@@ -458,6 +458,9 @@ final class MainTabBarControllerTests: XCTestCase {
             if case let .observeCardReaderUpdateState(completion) = action {
                 completion(Just(.none).eraseToAnyPublisher())
             }
+            if case let .observeCardReaderReconnectionState(completion) = action {
+                completion(Just(.idle).eraseToAnyPublisher())
+            }
         }
 
         guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in

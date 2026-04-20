@@ -5,4 +5,5 @@ public enum CardPresentPaymentReaderConnectionStatus: Equatable {
     case connected(CardPresentPaymentCardReader)
     case cancellingConnection
     case disconnecting
+    case reconnecting(CardPresentPaymentCardReader)
 }

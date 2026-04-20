@@ -15,6 +15,10 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
     private let stores: StoresManager
     private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
+    /// In-flight eligibility checks keyed by siteID, shared across all instances.
+    /// Thread-safe because all access is on @MainActor.
+    private static var inFlightChecks: [Int64: Task<Bool, Never>] = [:]
+
     init(
         stores: StoresManager = ServiceLocator.stores,
         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()
@@ -25,23 +29,42 @@ final class BlazeEligibilityChecker: BlazeEligibilityCheckerProtocol {
 
     /// Checks if the site is eligible for Blaze.
     /// - Returns: Whether the site is eligible for Blaze.
+    @MainActor
     func isSiteEligible(_ site: Site) async -> Bool {
-        await checkSiteEligibility(site)
+        await deduplicatedCheckSiteEligibility(site)
     }
 
     /// Checks if the product is eligible for Blaze.
     /// - Parameter product: The product to check for Blaze eligibility.
     /// - Parameter isPasswordProtected: Whether the product is password protected.
     /// - Returns: Whether the product is eligible for Blaze.
+    @MainActor
     func isProductEligible(site: Site, product: ProductFormDataModel, isPasswordProtected: Bool) async -> Bool {
         guard product.status == .published && isPasswordProtected == false else {
             return false
         }
-        return await checkSiteEligibility(site)
+        return await deduplicatedCheckSiteEligibility(site)
     }
 }
 
 private extension BlazeEligibilityChecker {
+    @MainActor
+    func deduplicatedCheckSiteEligibility(_ site: Site) async -> Bool {
+        let siteID = site.siteID
+        if let existingTask = Self.inFlightChecks[siteID] {
+            return await existingTask.value
+        }
+
+        let task = Task { @MainActor [weak self] () -> Bool in
+            guard let self else { return false }
+            return await self.checkSiteEligibility(site)
+        }
+        Self.inFlightChecks[siteID] = task
+        let result = await task.value
+        Self.inFlightChecks.removeValue(forKey: siteID)
+        return result
+    }
+
     @MainActor
     func checkSiteEligibility(_ site: Site) async -> Bool {
         guard

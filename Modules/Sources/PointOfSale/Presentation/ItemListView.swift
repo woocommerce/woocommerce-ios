@@ -6,7 +6,6 @@ import struct WooFoundationCore.WooAnalyticsEvent
 struct ItemListView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(PointOfSaleAggregateModel.self) private var posModel
-    @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @EnvironmentObject var modalManager: POSModalManager
     @EnvironmentObject var sheetManager: POSSheetManager
@@ -83,14 +82,15 @@ struct ItemListView: View {
         VStack(spacing: 0) {
             headerView
 
-            TabView(selection: $selectedItemListType) {
+            ZStack {
                 itemListTabContent(.products(search: false))
+                    .opacity(selectedItemListType.isProducts ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isProducts)
                 itemListTabContent(.coupons(search: false))
+                    .opacity(selectedItemListType.isCoupons ? 1 : 0)
+                    .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(.none, value: selectedItemListType)
-            // Respect the keyboard safe area when a full keyboard is shown, but not the external keyboard shortcut bar.
-            .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .container : [.keyboard, .container])
+            .ignoresSafeArea(.container)
         }
         // N.B. This navigationDestination causes a runtime warning in iOS 17, and is ignored. On iOS 17,
         // the navigation is handled in a NavigationLink in ItemList.swift. Avoiding the warning is impractical.
@@ -125,6 +125,7 @@ struct ItemListView: View {
     private func itemListTabContent(_ itemListType: ItemListType) -> some View {
         ZStack {
             itemListContent(itemListType)
+                .ignoresSafeArea(.keyboard)
                 .accessibilityElement(children: isSearching ? .ignore : .contain)
 
             if isSearching {
@@ -137,12 +138,15 @@ struct ItemListView: View {
                 ) { _ in
                     itemListContent(selectedItemListType)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.posSurface)
                 .scrollDismissesKeyboard(.immediately)
                 .zIndex(1)
             }
         }
-        .tag(itemListType)
-        .gesture(DragGesture()) // Disable a default swipe gesture between the tabs
+        // Both tabs exist in the ZStack simultaneously — prevent taps reaching the hidden tab.
+        // Compare by tab kind only — selectedItemListType includes search state that itemListType doesn't.
+        .allowsHitTesting(selectedItemListType.itemType == itemListType.itemType)
     }
 
     @ViewBuilder

@@ -1315,6 +1315,7 @@ extension Networking.OrderFulfillment {
         dateFulfilled: NullableCopiableProp<Date> = .copy,
         trackingNumber: NullableCopiableProp<String> = .copy,
         shipmentProvider: NullableCopiableProp<String> = .copy,
+        providerName: NullableCopiableProp<String> = .copy,
         trackingURL: NullableCopiableProp<String> = .copy
     ) -> Networking.OrderFulfillment {
         let siteID = siteID ?? self.siteID
@@ -1326,6 +1327,7 @@ extension Networking.OrderFulfillment {
         let dateFulfilled = dateFulfilled ?? self.dateFulfilled
         let trackingNumber = trackingNumber ?? self.trackingNumber
         let shipmentProvider = shipmentProvider ?? self.shipmentProvider
+        let providerName = providerName ?? self.providerName
         let trackingURL = trackingURL ?? self.trackingURL
 
         return Networking.OrderFulfillment(
@@ -1338,6 +1340,7 @@ extension Networking.OrderFulfillment {
             dateFulfilled: dateFulfilled,
             trackingNumber: trackingNumber,
             shipmentProvider: shipmentProvider,
+            providerName: providerName,
             trackingURL: trackingURL
         )
     }

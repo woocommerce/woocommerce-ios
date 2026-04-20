@@ -77,3 +77,15 @@ private extension PluginVersionChecker {
 enum PluginVersionError: Error {
     case pluginNotFound
 }
+
+// MARK: - Plugin Version Checker Factory
+
+protocol PluginVersionCheckerFactoryProtocol {
+    func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol
+}
+
+final class PluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol {
+    func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol {
+        PluginVersionChecker(siteID: siteID, pluginPath: pluginPath, minimumVersion: minimumVersion)
+    }
+}

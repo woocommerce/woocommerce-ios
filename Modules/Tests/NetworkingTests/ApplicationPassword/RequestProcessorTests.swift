@@ -558,6 +558,10 @@ private class MockRequestAuthenticator: RequestAuthenticator {
         return urlRequest
     }
 
+    func canGenerateApplicationPassword() -> Bool {
+        return true
+    }
+
     func generateApplicationPassword() async throws {
         generateApplicationPasswordCalled = true
         if let mockErrorWhileGeneratingPassword {

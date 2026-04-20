@@ -1,0 +1,1 @@
+Nu kontrollerar felsökningsverktyget dina analyser och inställningar för avisering, och gör det enklare att diagnostisera problem med din butik.

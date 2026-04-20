@@ -8,6 +8,7 @@ struct PointOfSalePaymentSuccessView: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     @State private var isViewLoaded: Bool = false
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
 
     private var isBarcodeScanningEnabled: Bool {
@@ -31,6 +32,7 @@ struct PointOfSalePaymentSuccessView: View {
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
                     isViewLoaded = true
                 }
+                isTitleFocused = true
             }
         }
     }
@@ -52,6 +54,7 @@ struct PointOfSalePaymentSuccessView: View {
                         .font(.posHeadingBold)
                         .foregroundStyle(Color.posOnSurface)
                         .accessibilityAddTraits(.isHeader)
+                        .accessibilityFocused($isTitleFocused)
                         .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                         .opacity(isViewLoaded ? 1 : 0)
 

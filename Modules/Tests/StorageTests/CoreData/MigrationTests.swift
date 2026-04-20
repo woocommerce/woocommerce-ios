@@ -2579,6 +2579,7 @@ final class MigrationTests: XCTestCase {
         fulfillment.setValue(true, forKey: "isFulfilled")
         fulfillment.setValue("1Z999AA10123456784", forKey: "trackingNumber")
         fulfillment.setValue("ups", forKey: "shipmentProvider")
+        fulfillment.setValue("Custom Provider", forKey: "providerName")
         fulfillment.setValue("https://ups.com/track", forKey: "trackingURL")
         fulfillment.setValue(Date(), forKey: "dateUpdated")
         fulfillment.setValue(Date(), forKey: "dateFulfilled")

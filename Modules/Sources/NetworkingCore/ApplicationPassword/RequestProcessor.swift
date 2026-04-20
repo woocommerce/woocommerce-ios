@@ -55,7 +55,7 @@ extension RequestProcessor: RequestRetrier {
 
         let shouldRetryRequest = state.shouldRetry(urlRequest)
 
-        guard shouldRetryRequest else {
+        guard shouldRetryRequest, state.authenticator.canGenerateApplicationPassword() else {
             completion(.doNotRetry)
             return
         }

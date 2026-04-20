@@ -39,19 +39,23 @@ struct POSPINAccessInformation: View {
         }
         .padding(POSPadding.xxLarge)
         .background(Color.posSurfaceBright)
-        .frame(width: Constants.modalFrameWidth)
+        .frame(maxWidth: Constants.modalMaxWidth)
+        .padding(.horizontal, POSPadding.medium)
     }
 }
 
 private extension POSPINAccessInformation {
     enum Constants {
-        static var modalFrameWidth: CGFloat { 640 }
+        /// Upper bound for readability on iPad. Shrinks below this on narrower
+        /// contexts (e.g. Split View) because the underlying `maxWidth` lets the
+        /// container dictate width when less space is available.
+        static var modalMaxWidth: CGFloat { 640 }
     }
 
     enum Localization {
         static let title = NSLocalizedString(
-            "pos.pinAccessModal.title",
-            value: "PIN access is managed on the web",
+            "pos.pinAccessModal.title.v2",
+            value: "Managed on the web",
             comment: "Title of the modal explaining that POS PIN access is controlled via the web admin."
         )
 

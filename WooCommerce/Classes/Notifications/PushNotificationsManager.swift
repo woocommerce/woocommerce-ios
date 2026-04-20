@@ -6,6 +6,8 @@ import AutomatticTracks
 import Yosemite
 import WooFoundation
 import enum NetworkingCore.NetworkError
+import struct NetworkingCore.MetaContainer
+import struct NetworkingCore.Note
 import protocol Storage.StorageManagerType
 
 
@@ -955,8 +957,20 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: Any]()
 
+        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+
+        // Determine notification source
+        let isWooDriven = notificationSiteID.map { registrationState.isSiteRegisteredForWooPNs($0) } ?? false
+        properties[AnalyticKey.source] = isWooDriven ? NotificationSource.wooDriven : NotificationSource.wpcom
+
+        // Set identifier based on source
         if let noteID = userInfo.string(forKey: APNSKey.identifier) {
             properties[AnalyticKey.identifier] = noteID
+        } else if isWooDriven, let notificationSiteID {
+            if let notification = PushNotification.from(userInfo: userInfo),
+               let localID = localIdentifier(siteID: notificationSiteID, kind: notification.kind, meta: notification.meta) {
+                properties[AnalyticKey.identifier] = localID
+            }
         }
 
         if let type = userInfo.string(forKey: APNSKey.type) {
@@ -967,8 +981,7 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.token] = theToken
         }
 
-        if let siteID = siteID,
-           let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+        if let siteID = siteID, let notificationSiteID {
             properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
@@ -979,6 +992,30 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.appState] = applicationState.rawValue
             analytics.track(.pushNotificationReceived, withProperties: properties)
         }
+    }
+
+    /// Maps notification kind to the appropriate meta key for entity ID extraction.
+    func metaKey(for kind: Note.Kind) -> MetaContainer.Keys? {
+        switch kind {
+        case .storeOrder:
+            return .order
+        case .comment, .commentLike:
+            return .comment
+        case .blazePerformedNote, .blazeCancelledNote, .blazeRejectedNote, .blazeApprovedNote:
+            return .campaignID
+        default:
+            return nil
+        }
+    }
+
+    /// Generates a local identifier for Woo-driven notifications.
+    /// Format: woo:<site-id>:<type>:<entity-id>
+    func localIdentifier(siteID: Int64, kind: Note.Kind, meta: MetaContainer?) -> String? {
+        guard let key = metaKey(for: kind),
+              let entityID = meta?.identifier(forKey: key) else {
+            return nil
+        }
+        return "woo:\(siteID):\(kind.rawValue):\(entityID)"
     }
 }
 
@@ -1033,6 +1070,12 @@ private enum AnalyticKey {
     static let token = "push_notification_token"
     static let fromSelectedSite = "is_from_selected_site"
     static let appState = "app_state"
+    static let source = "push_notification_source"
+}
+
+private enum NotificationSource {
+    static let wpcom = "wpcom"
+    static let wooDriven = "woo_driven"
 }
 
 private enum PushNotificationError: Error {

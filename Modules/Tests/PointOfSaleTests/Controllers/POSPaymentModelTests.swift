@@ -1032,6 +1032,97 @@ struct POSPaymentModelTests {
         // Alert should be shown
         #expect(sut.cardPresentPaymentAlertViewModel != nil)
     }
+    // MARK: - Connect Card Reader Concurrency
+
+    @Test("connectCardReader called twice only triggers one connectReader call on the service")
+    @MainActor
+    func test_connectCardReader_when_called_twice_while_first_is_in_progress_then_only_one_connectReader_call() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = {
+                continuation.resume()
+            }
+            sut.connectCardReader()
+            sut.connectCardReader()
+        }
+
+        // Then - only one call made; guard rejected the second
+        #expect(service.connectReaderCallCount == 1)
+    }
+
+    @Test("connectCardReader can be called again after first connection completes")
+    @MainActor
+    func test_connectCardReader_when_called_after_first_completes_then_second_call_succeeds() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When - first connect call completes
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = {
+                continuation.resume()
+                service.onConnectReaderCalled = nil
+            }
+            sut.connectCardReader()
+        }
+        #expect(service.connectReaderCallCount == 1)
+
+        // When - second connect call after first completed
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = {
+                continuation.resume()
+                service.onConnectReaderCalled = nil
+            }
+            sut.connectCardReader()
+        }
+
+        // Then - service should have been called twice (once per completed cycle)
+        #expect(service.connectReaderCallCount == 2)
+    }
+
+    @Test("connectCardReader blocks second call while first is suspended in the service")
+    @MainActor
+    func test_connectCardReader_when_second_call_while_first_suspended_then_blocks_second() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        service.shouldSuspendConnectReader = true
+        let sut = makePaymentController(cardPresentPaymentService: service)
+
+        // When - first call suspends inside connectReader
+        await withCheckedContinuation { continuation in
+            service.onConnectReaderCalled = {
+                continuation.resume()
+                service.onConnectReaderCalled = nil
+            }
+            sut.connectCardReader()
+        }
+        #expect(service.connectReaderCallCount == 1)
+
+        sut.connectCardReader()
+        #expect(service.connectReaderCallCount == 1)
+
+        let reader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                _ = sut.cardReaderConnectionStatus
+            } onChange: {
+                Task { @MainActor in
+                    if case .connected = sut.cardReaderConnectionStatus {
+                        continuation.resume()
+                    }
+                }
+            }
+            service.resumeConnectReader(with: .connected(reader))
+            service.connectedReader = reader
+        }
+
+        // Then
+        #expect(service.connectReaderCallCount == 1)
+    }
 }
 
 // MARK: - Factory

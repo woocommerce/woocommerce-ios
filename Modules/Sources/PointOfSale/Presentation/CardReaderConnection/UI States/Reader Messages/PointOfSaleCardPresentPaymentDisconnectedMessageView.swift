@@ -4,6 +4,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
     private let viewModel = PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel()
     private let connectCardReader: () -> Void
     private let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @ScaledMetric private var scale: CGFloat = 1.0
 
     @State private var width: CGFloat = 0
@@ -27,6 +28,7 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.instruction)
@@ -52,6 +54,9 @@ struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageView: View {
             width = containerWidth
         })
         .multilineTextAlignment(.center)
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 
     private func dynamicSpacing(_ spacing: CGFloat) -> CGFloat {

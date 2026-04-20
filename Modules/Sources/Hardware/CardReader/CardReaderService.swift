@@ -20,6 +20,9 @@ public protocol CardReaderService {
     /// The Publisher that emits when TTP Terms and Services are accepted
     var tapToPayCardReaderAcceptToSEvents: AnyPublisher<Void, Never> { get }
 
+    /// The Publisher that emits reconnection state changes for Bluetooth readers
+    var reconnectionEvents: AnyPublisher<CardReaderReconnectionState, Never> { get }
+
     // MARK: - Commands
 
     /// Checks for support of a given reader type and discovery method combination. Does not start discovery.
@@ -73,4 +76,9 @@ public protocol CardReaderService {
     ///
     /// To check the progress of the update, observe the softwareUpdateEvents publisher.
     func installUpdate() -> Void
+
+    /// Cancels an in-progress auto-reconnection attempt.
+    /// Use this when the user wants to manually connect a different reader
+    /// or cancel the automatic reconnection process.
+    func cancelReconnection() -> Future<Void, Error>
 }

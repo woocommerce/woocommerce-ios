@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Networking
 @testable import NetworkingCore
@@ -311,5 +312,59 @@ struct BookingsRemoteTests {
         #expect(parameters["attendance_status"] == nil)
         #expect(parameters["status"] == nil)
         #expect((parameters["note"] as? String) == "hello")
+    }
+
+    // MARK: - rescheduleBooking
+
+    @Test func test_rescheduleBooking_sends_correct_parameters_with_resourceID() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        let startDate = Date(timeIntervalSince1970: 1776078000)
+        let endDate = Date(timeIntervalSince1970: 1776081600)
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.rescheduleBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            startDate: startDate,
+            endDate: endDate,
+            resourceID: 42
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["start"] as? Int64) == 1776078000)
+        #expect((parameters["end"] as? Int64) == 1776081600)
+        #expect((parameters["resource_id"] as? String) == "42")
+    }
+
+    @Test func test_rescheduleBooking_sends_correct_parameters_without_resourceID() async throws {
+        // Given
+        let remote = BookingsRemote(network: network)
+        let bookingID: Int64 = 206
+        let startDate = Date(timeIntervalSince1970: 1776078000)
+        let endDate = Date(timeIntervalSince1970: 1776081600)
+        network.simulateResponse(requestUrlSuffix: "bookings/\(bookingID)", filename: "booking-no-create-update-dates")
+
+        // When
+        _ = try await remote.rescheduleBooking(
+            from: sampleSiteID,
+            bookingID: bookingID,
+            startDate: startDate,
+            endDate: endDate,
+            resourceID: nil
+        )
+
+        // Then
+        let request = try #require(network.requestsForResponseData.first as? JetpackRequest)
+        let parameters = request.parameters
+
+        #expect((parameters["start"] as? Int64) == 1776078000)
+        #expect((parameters["end"] as? Int64) == 1776081600)
+        #expect(parameters["resource_id"] == nil)
     }
 }

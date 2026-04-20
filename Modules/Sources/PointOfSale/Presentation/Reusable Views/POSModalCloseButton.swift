@@ -25,6 +25,7 @@ struct POSModalCloseButton: View {
             })
             .foregroundColor(Color.posOnSurface)
             .accessibilityLabel(accessibilityLabel)
+            .accessibilitySortPriority(-1)
         }
     }
 }

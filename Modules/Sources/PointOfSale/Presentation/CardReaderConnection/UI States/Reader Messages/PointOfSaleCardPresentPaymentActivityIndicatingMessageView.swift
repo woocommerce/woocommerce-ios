@@ -4,6 +4,7 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
     let title: String
     let message: String
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isMessageFocused: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
@@ -24,10 +25,14 @@ struct PointOfSaleCardPresentPaymentActivityIndicatingMessageView: View {
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isMessageFocused)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
         }
         .multilineTextAlignment(.center)
+        .onAppear {
+            isMessageFocused = true
+        }
     }
 }
 

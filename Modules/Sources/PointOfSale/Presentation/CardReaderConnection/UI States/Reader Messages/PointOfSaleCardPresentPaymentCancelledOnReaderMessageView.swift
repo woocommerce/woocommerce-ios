@@ -3,6 +3,7 @@ import SwiftUI
 struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
     let viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel
     let animation: POSCardPresentPaymentInLineMessageAnimation
+    @AccessibilityFocusState private var isTitleFocused: Bool
     @State private var width: CGFloat = 0
 
     var body: some View {
@@ -20,6 +21,7 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
                     .font(.posHeadingBold)
                     .foregroundStyle(Color.posOnSurface)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($isTitleFocused)
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
             }
             .dynamicWidthScaling(containerWidth: width)
@@ -41,6 +43,9 @@ struct PointOfSaleCardPresentPaymentCancelledOnReaderMessageView: View {
         .measureWidth({ containerWidth in
             width = containerWidth
         })
+        .onAppear {
+            isTitleFocused = true
+        }
     }
 }
 

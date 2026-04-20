@@ -13,7 +13,6 @@ final class WooShippingServiceViewModel: ObservableObject {
     private let destinationAddress: WooShippingAddress?
     private let stores: StoresManager
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
 
     /// List of tabs to display for the shipping services.
     /// Contains the data about available shipping rates, grouped by carrier.
@@ -60,7 +59,6 @@ final class WooShippingServiceViewModel: ObservableObject {
          destinationAddress: WooShippingAddress?,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onSelectRate: ((_ selectedRate: WooShippingSelectedRate) -> Void)? = nil) {
         self.siteID = order.siteID
         self.orderID = order.orderID
@@ -68,7 +66,6 @@ final class WooShippingServiceViewModel: ObservableObject {
         self.destinationAddress = destinationAddress
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.onSelectRate = onSelectRate
         observeSelectedTab()
     }
@@ -189,9 +186,16 @@ final class WooShippingServiceViewModel: ObservableObject {
                 onLoadingCompletion(.success(()))
             case let .failure(error):
                 DDLogError("⛔️ Error loading shipping label rates for Woo Shipping: \(error)")
-                updateLoadingState(to: .error(Error.failedLoadingLabelRates))
+                let loadingError: Error
+                switch error {
+                case WooShippingLoadLabelRatesError.invalidDestinationName:
+                    loadingError = .invalidDestinationName
+                default:
+                    loadingError = .failedLoadingLabelRates
+                }
+                updateLoadingState(to: .error(loadingError))
                 analytics.track(event: .WooShipping.rateSelectionStep(state: .loadingFailed, error: error))
-                onLoadingCompletion(.failure(Error.failedLoadingLabelRates))
+                onLoadingCompletion(.failure(loadingError))
             }
         }
         stores.dispatch(action)
@@ -232,6 +236,7 @@ extension WooShippingServiceViewModel {
         case missingDestinationAddress
         case missingShipmentWeight
         case failedLoadingLabelRates
+        case invalidDestinationName
         case noRatesAvailable(isHAZMAT: Bool)
     }
 }
@@ -243,9 +248,6 @@ private extension WooShippingServiceViewModel {
         serviceTabs = standardRates.grouped(by: { $0.carrierID })
             .compactMap { (carrierID, rates) -> WooShippingServiceTab? in
                 guard let carrier = WooShippingCarrier(rawValue: carrierID) else {
-                    return nil
-                }
-                if carrier == .fedex && !featureFlagService.isFeatureFlagEnabled(.wooShippingFedEx) {
                     return nil
                 }
                 let cards = rates

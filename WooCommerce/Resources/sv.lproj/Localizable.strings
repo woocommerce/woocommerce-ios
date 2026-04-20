@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-04-03 10:46:25+0000 */
+/* Translation-Revision-Date: 2026-04-07 13:57:48+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -9969,6 +9969,12 @@ which should be translated separately and considered part of this sentence. */
 /* Screen title for the connectivity tool */
 "connectivityTool.title" = "Felsök anslutning";
 
+/* Action button to enable WooCommerce Analytics in the connectivity tool */
+"connectivityToolViewModel.action.enableAnalytics" = "Aktivera analys";
+
+/* Action button to enable order notifications in the connectivity tool */
+"connectivityToolViewModel.action.enableOrderNotifications" = "Aktivera orderaviseringar";
+
 /* Action button to open device notification settings in the connectivity tool */
 "connectivityToolViewModel.action.openSettings" = "Öppna inställningar";
 
@@ -9986,6 +9992,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button to view technical error details in the connectivity tool */
 "connectivityToolViewModel.action.viewTechnicalDetails" = "Visa tekniska detaljer";
+
+/* Title for the analytics setting check in the connectivity tool */
+"connectivityToolViewModel.connectivityTest.analyticsSetting" = "Kontrollerar analysinställningar";
 
 /* Title for the internet connection connectivity tool card */
 "connectivityToolViewModel.connectivityTest.internetConnection" = "Internetanslutning";
@@ -10005,14 +10014,26 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the WPCom servers connectivity tool card */
 "connectivityToolViewModel.connectivityTest.wpComServers" = "Ansluter till WordPress.com-servrar";
 
+/* Message when the analytics setting check fails in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsCheckFailed" = "Vi kunde inte kontrollera dina analysinställningar.\n\nKontakta vårt supportteam för att få hjälp.";
+
+/* Message when WooCommerce Analytics is disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.analyticsDisabled" = "WooCommerce Analytics är inte aktiverat för din butik.\n\nAnalysdata, som intäkter och orderstatistik, är inte tillgängliga förrän de aktiverats.";
+
 /* Message when we there is a decoding error in the recovery tool */
 "connectivityToolViewModel.errorMessage.decodingError" = "Vi kan inte arbeta korrekt med din webbplats svar.\n\nVisa tekniska detaljer nedan eller kontakta vårt supportteam så hjälper vi dig.";
 
 /* Message when we there is a generic error in the recovery tool */
 "connectivityToolViewModel.errorMessage.default" = "Det verkar vara problem med din webbplats.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
 
+/* Message when the device is not registered for push notifications in the connectivity tool */
+"connectivityToolViewModel.errorMessage.deviceNotRegistered" = "Din enhet verkar inte vara registrerad för pushnotiser.\n\nProva att logga ut och logga in igen för att registrera på nytt.";
+
 /* Message when we there is a jetpack error in the recovery tool */
 "connectivityToolViewModel.errorMessage.jetpackNotConnected" = "Det har uppstått ett problem med din Jetpack-anslutning.\n\nLäs mer om problemet, eller kontakta vårt supportteam så hjälper vi dig.";
+
+/* Message when Jetpack plugin is not active in the connectivity tool */
+"connectivityToolViewModel.errorMessage.jetpackPluginNotActive" = "Jetpack-tillägget verkar inte vara aktivt på din webbplats.\n\nPushnotiser kräver en aktiv Jetpack-anslutning.";
 
 /* Message when there is no internet connection in the recovery tool */
 "connectivityToolViewModel.errorMessage.noInternet" = "Det verkar som att du inte är ansluten till internet.\n\nKontrollera att ditt Wi-Fi är på. Se till att mobildata är aktiverat i dina enhetsinställningar om du använder detta.";
@@ -10020,11 +10041,20 @@ which should be translated separately and considered part of this sentence. */
 /* Message when the notification config check fails in the connectivity tool */
 "connectivityToolViewModel.errorMessage.notificationConfigCheckFailed" = "Vi kunde inte kontrollera dina aviseringsinställningar.\n\nKontakta vårt supportteam för vidare hjälp.";
 
+/* Message when iOS notification permission is denied in the connectivity tool */
+"connectivityToolViewModel.errorMessage.notificationsNotAuthorized" = "Pushnotiser är inte tillåtna för den här appen.\n\nAktivera dem i enhetens inställningar för att få orderaviseringar.";
+
+/* Message when order notifications are disabled in the connectivity tool */
+"connectivityToolViewModel.errorMessage.orderNotificationsDisabled" = "Orderaviseringar är inte aktiverade för denna butik.\n\nAktivera dem för att få aviseringar när nya ordrar kommer in.";
+
 /* Message when we there is a timeout error in the recovery tool */
 "connectivityToolViewModel.errorMessage.timeout" = "Det tar för lång tid för din webbplats att svara.\n\nKontakta ditt webbhotell för att få ytterligare hjälp.";
 
 /* Message when we can't reach WPCom in the recovery tool */
 "connectivityToolViewModel.errorMessage.wpcomConnection" = "Vi kan inte ansluta till WordPress.com för tillfället.\n\nFörsök igen om några minuter, eller kontakta vårt supportteam så hjälper vi dig.";
+
+/* Message shown after successfully enabling analytics in the connectivity tool */
+"connectivityToolViewModel.message.analyticsEnabledRelaunch" = "Analys har aktiverats. Starta om appen för att analysdata ska vara tillgängliga.";
 
 /* Title for when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssues" = "Inga anslutningsproblem";
@@ -10819,6 +10849,11 @@ which should be translated separately and considered part of this sentence. */
 /* Indicates the status of a card reader. Presented to merchants when the card is inserted to the reader */
 "inPersonPayments.cardPresent.cardInserted.title" = "Kort isatt";
 
+/* Error message when WooPayments is not installed
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.message" = "Du måste installera den kostnadsfria utökningen WooPayments för din butik för att ta emot personliga betalningar.";
+
 /* Title for the error screen when WooPayments is not installed */
 "inPersonPaymentsPluginNotInstalled.title" = "Installera WooPayments";
 
@@ -11526,6 +11561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A title for a payment method where customer pays by cash in person */
 "paymentMethods.cashOnDelivery.title" = "Betala personligen";
+
+/* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
+"paymentMethods.ciabUpgrade.learnMore.text" = "Ta emot betalningar personligen för endast 2,70%% + 0,10 USD per transaktion. Uppgradera till Pro för att få åtkomst till tryck-för-att-betala på din telefon, vårt fullständiga kassasystem med lagersaldo i realtid samt ordersynkronisering. %1$@";
 
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Beställningen betalades kontant. Kunden betalade %1$@. Växeln var %2$@.";
@@ -12675,6 +12713,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the exit Point of Sale modal alert */
 "pos.exitPOSModal.exitTitle" = "Lämna Försäljningsplatsläge?";
+
+/* Pricing info shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabPricingInfo" = "Ta emot betalningar personligen för endast 2,70 % + 0,10 USD per transaktion.";
+
+/* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabUpgradePrompt" = "Uppgradera till Pro för att få åtkomst till tryck-för-att-betala på din telefon, vårt fullständiga kassasystem med lagersaldo i realtid samt ordersynkronisering.";
 
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Avsluta POS";

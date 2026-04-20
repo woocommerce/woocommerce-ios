@@ -14,6 +14,8 @@ public class TracksProvider: NSObject, AnalyticsProvider {
         return tracksService
     }()
 
+    private static let tracksQueue = DispatchQueue(label: "com.woocommerce.TracksProvider")
+
     private static var isPOSModeActive: Bool = false
 
     public static func setPOSMode(_ active: Bool) {
@@ -36,26 +38,30 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         let eventName = decorateEventNameForPOSIfNeeded(eventName)
-        if let properties {
-            guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
-                return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
-            }
-
-            let keyValuePairs = properties
-                .map { key, value in
-                    "\(key): \(value)"
+        Self.tracksQueue.async {
+            if let properties {
+                guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
+                    return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
                 }
-                .joined(separator: ", ")
 
-            DDLogInfo("🔵 Tracked \(eventName), properties: [\(keyValuePairs)]")
-        } else {
-            Self.tracksService.trackEventName(eventName)
-            DDLogInfo("🔵 Tracked \(eventName)")
+                let keyValuePairs = properties
+                    .map { key, value in
+                        "\(key): \(value)"
+                    }
+                    .joined(separator: ", ")
+
+                DDLogInfo("🔵 Tracked \(eventName), properties: [\(keyValuePairs)]")
+            } else {
+                Self.tracksService.trackEventName(eventName)
+                DDLogInfo("🔵 Tracked \(eventName)")
+            }
         }
     }
 
     func clearEvents() {
-        Self.tracksService.clearQueuedEvents()
+        Self.tracksQueue.async {
+            Self.tracksService.clearQueuedEvents()
+        }
     }
 
     /// When a user opts-out, wipe data
@@ -65,7 +71,10 @@ public extension TracksProvider {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil
-            Self.tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
+            let anonymousUserID = ServiceLocator.stores.sessionManager.anonymousUserID
+            Self.tracksQueue.async {
+                Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousUserID)
+            }
             return
         }
 
@@ -86,27 +95,35 @@ private extension TracksProvider {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username
-                Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                             userID: String(account.userID),
-                                                             wpComToken: authToken,
-                                                             skipAliasEventCreation: false)
+                Self.tracksQueue.async {
+                    Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                                 userID: String(account.userID),
+                                                                 wpComToken: authToken,
+                                                                 skipAliasEventCreation: false)
+                }
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
-                Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                             userID: String(account.userID),
-                                                             wpComToken: authToken,
-                                                             skipAliasEventCreation: true)
+                Self.tracksQueue.async {
+                    Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                                 userID: String(account.userID),
+                                                                 wpComToken: authToken,
+                                                                 skipAliasEventCreation: true)
+                }
             } else {
                 // Username changed for some reason - switch back to anonymous first
-                Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
-                Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                             userID: String(account.userID),
-                                                             wpComToken: authToken,
-                                                             skipAliasEventCreation: false)
+                Self.tracksQueue.async {
+                    Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                    Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                                 userID: String(account.userID),
+                                                                 wpComToken: authToken,
+                                                                 skipAliasEventCreation: false)
+                }
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
-            Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+            Self.tracksQueue.async {
+                Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+            }
         }
     }
 
@@ -293,12 +310,23 @@ private extension TracksProvider {
 
     func refreshTracksMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
-        var userProperties = [String: Any]()
-        userProperties[UserProperties.platformKey] = "iOS"
-        userProperties[UserProperties.voiceOverKey] = UIAccessibility.isVoiceOverRunning
-        userProperties[UserProperties.rtlKey] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
-        Self.tracksService.userProperties.removeAllObjects()
-        Self.tracksService.userProperties.addEntries(from: userProperties)
+        let readUIKitAndApply = {
+            let voiceOver = UIAccessibility.isVoiceOverRunning
+            let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
+            Self.tracksQueue.async {
+                Self.tracksService.userProperties.removeAllObjects()
+                Self.tracksService.userProperties.addEntries(from: [
+                    UserProperties.platformKey: "iOS",
+                    UserProperties.voiceOverKey: voiceOver,
+                    UserProperties.rtlKey: isRTL
+                ])
+            }
+        }
+        if Thread.isMainThread {
+            readUIKitAndApply()
+        } else {
+            DispatchQueue.main.async { readUIKitAndApply() }
+        }
     }
 }
 

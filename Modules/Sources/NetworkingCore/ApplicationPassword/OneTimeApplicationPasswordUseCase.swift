@@ -13,6 +13,9 @@ extension URLSession: URLSessionProtocol {}
 final public class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase {
     public let applicationPassword: ApplicationPassword?
 
+    /// Whether the use case is capable of re-generating password
+    public var canRegenerateApplicationPassword: Bool { false }
+
     private let siteAddress: String
     private let session: URLSessionProtocol
     private let storage: ApplicationPasswordStorageType

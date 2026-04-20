@@ -775,6 +775,7 @@ extension Networking.OrderFulfillment {
             dateFulfilled: .fake(),
             trackingNumber: .fake(),
             shipmentProvider: .fake(),
+            providerName: .fake(),
             trackingURL: .fake()
         )
     }

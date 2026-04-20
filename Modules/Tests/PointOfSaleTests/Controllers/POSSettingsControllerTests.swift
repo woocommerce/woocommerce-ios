@@ -55,8 +55,27 @@ struct POSSettingsControllerTests {
         #expect(sut.connectedCardReader?.batteryLevel == 0.75)
     }
 
+    @Test func cardReader_reconnecting_provides_reader_info() async throws {
+        // Given
+        let mockService = MockCardPresentPaymentService()
+        let sut = PointOfSaleSettingsController(siteID: sampleSiteID,
+                                                settingsService: mockSettingsService,
+                                                cardPresentPaymentService: mockService,
+                                                pluginsService: mockPluginService,
+                                                defaultSiteName: "Test Store",
+                                                siteSettings: [],
+                                                grdbManager: nil,
+                                                catalogSyncCoordinator: nil,
+                                                isLocalCatalogEligible: true)
 
+        // When
+        let cardReader = CardPresentPaymentCardReader(name: "WisePad 3", batteryLevel: 0.75)
+        mockService.connectionStatus = .reconnecting(cardReader)
 
+        // Then
+        #expect(sut.connectedCardReader?.name == "WisePad 3")
+        #expect(sut.connectedCardReader?.batteryLevel == 0.75)
+    }
 }
 
 private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {

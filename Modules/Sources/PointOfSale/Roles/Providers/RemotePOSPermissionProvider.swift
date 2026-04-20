@@ -2,6 +2,21 @@ import Foundation
 import enum Networking.POSAuthError
 import Observation
 
+/// A POS staff member returned by the staff status endpoint.
+public struct POSStaffMemberStatus: Equatable, Sendable {
+    public let userID: Int64
+    public let displayName: String
+    public let role: String
+    public let hasPIN: Bool
+
+    public init(userID: Int64, displayName: String, role: String, hasPIN: Bool) {
+        self.userID = userID
+        self.displayName = displayName
+        self.role = role
+        self.hasPIN = hasPIN
+    }
+}
+
 /// Response from POST /wc/v3/pos/auth/pin
 public struct POSPINAuthResponse: Decodable, Equatable, Sendable {
     public let userID: Int64
@@ -131,7 +146,16 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     public private(set) var currentOperator: POSOperator?
     public private(set) var isLocked: Bool = false
-    public var hasAnyPINs: Bool { true }
+
+    /// Whether any staff member on the backend has a PIN configured.
+    ///
+    /// Defaults to `true` so the lock screen shows by default (security-safe),
+    /// and is updated by `refreshStaffStatus()` after the first fetch.
+    /// Becomes `false` when every returned staff member has `hasPIN == false`,
+    /// which covers "admin deleted all users / removed all PINs" — in that
+    /// case we also drop any persisted `isLocked` flag so the operator isn't
+    /// trapped at a lock screen that nobody can unlock.
+    public private(set) var hasAnyPINs: Bool = true
 
     // MARK: - Session State
 
@@ -156,6 +180,7 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     private let approvalService: POSApprovalServiceProtocol
     private let authenticatePINRemote: (String, String) async throws -> POSPINAuthResponse
     private let verifyPINRemote: (String) async throws -> POSPINVerifyResponse
+    private let fetchStaffStatusRemote: () async throws -> [POSStaffMemberStatus]
     private let appAccountUserID: Int64
 
     // MARK: - Init
@@ -165,16 +190,43 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
     ///   - approvalService: Service for requesting manager approval.
     ///   - authenticatePINRemote: Closure that calls POST /wc/v3/pos/auth/pin. Parameters: (pin, registerID).
     ///   - verifyPINRemote: Closure that calls POST /wc/v3/pos/auth/pin/verify. Parameter: pin.
+    ///   - fetchStaffStatusRemote: Closure that calls GET /wc/v3/pos/auth/pin/status. Used to discover
+    ///     whether any staff have a PIN configured, so the lock screen can be skipped when none do.
     ///   - appAccountUserID: The userID of the WP-authenticated app account holder.
     public init(approvalService: POSApprovalServiceProtocol,
                 authenticatePINRemote: @escaping (String, String) async throws -> POSPINAuthResponse,
                 verifyPINRemote: @escaping (String) async throws -> POSPINVerifyResponse,
+                fetchStaffStatusRemote: @escaping () async throws -> [POSStaffMemberStatus],
                 appAccountUserID: Int64) {
         self.approvalService = approvalService
         self.authenticatePINRemote = authenticatePINRemote
         self.verifyPINRemote = verifyPINRemote
+        self.fetchStaffStatusRemote = fetchStaffStatusRemote
         self.appAccountUserID = appAccountUserID
         self.isLocked = UserDefaults.standard.bool(forKey: Self.isLockedKey)
+    }
+
+    /// Fetches the current staff list and updates `hasAnyPINs` based on whether any member has a PIN.
+    ///
+    /// If the fetched list contains no staff with a PIN, this also clears `isLocked` (including the
+    /// persisted UserDefaults flag) so a previously-locked session doesn't trap the operator at a
+    /// lock screen that nobody can unlock — the case when the admin deletes all users or removes
+    /// all PINs while POS is locked.
+    ///
+    /// On fetch failure the cached value is left untouched (`hasAnyPINs` stays `true` by default),
+    /// which keeps the lock screen shown and preserves the security boundary.
+    public func refreshStaffStatus() async {
+        do {
+            let staff = try await fetchStaffStatusRemote()
+            let anyPINs = staff.contains { $0.hasPIN }
+            hasAnyPINs = anyPINs
+            if !anyPINs && isLocked {
+                isLocked = false
+                UserDefaults.standard.set(false, forKey: Self.isLockedKey)
+            }
+        } catch {
+            // Leave hasAnyPINs at its current value; default `true` keeps the lock screen up.
+        }
     }
 
     // MARK: - POSPermissionProviding

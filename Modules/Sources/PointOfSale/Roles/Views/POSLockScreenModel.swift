@@ -19,6 +19,18 @@ final class POSLockScreenModel: ObservableObject {
         self.authenticator = authenticator
         self.isShowingLockScreen = Self.shouldShowLockScreen(provider)
         startObserving()
+        refreshRemoteStaffStatusIfNeeded()
+    }
+
+    /// For remote providers, fetch the current staff list so `hasAnyPINs` reflects
+    /// backend state. This covers the "admin deleted all users / removed all PINs
+    /// while POS was locked" case — the refresh will clear `hasAnyPINs` (and the
+    /// persisted lock flag), and the observed `isShowingLockScreen` will drop.
+    private func refreshRemoteStaffStatusIfNeeded() {
+        guard let remote = provider as? RemotePOSPermissionProvider else { return }
+        Task { @MainActor in
+            await remote.refreshStaffStatus()
+        }
     }
 
     deinit {

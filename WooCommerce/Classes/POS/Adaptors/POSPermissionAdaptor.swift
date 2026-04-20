@@ -76,6 +76,29 @@ struct POSPermissionAdaptor {
                         }
                     }
                 },
+                fetchStaffStatusRemote: {
+                    try await withCheckedThrowingContinuation { continuation in
+                        let action = POSAuthAction.fetchStaffStatus(siteID: siteID) { result in
+                            switch result {
+                            case .success(let users):
+                                let mapped = users.map {
+                                    POSStaffMemberStatus(
+                                        userID: $0.userID,
+                                        displayName: $0.displayName,
+                                        role: $0.role,
+                                        hasPIN: $0.hasPIN
+                                    )
+                                }
+                                continuation.resume(returning: mapped)
+                            case .failure(let error):
+                                continuation.resume(throwing: error)
+                            }
+                        }
+                        Task { @MainActor in
+                            stores.dispatch(action)
+                        }
+                    }
+                },
                 appAccountUserID: userID
             )
             provider.onAuthenticated = { response in

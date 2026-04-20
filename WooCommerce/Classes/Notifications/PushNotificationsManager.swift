@@ -6,6 +6,7 @@ import AutomatticTracks
 import Yosemite
 import WooFoundation
 import enum NetworkingCore.NetworkError
+import protocol Storage.StorageManagerType
 
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
@@ -112,6 +113,7 @@ final class PushNotificationsManager: PushNotesManager {
     }
 
     private let analytics: Analytics
+    private let storageManager: StorageManagerType
 
     private let backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol
     private let selfDriventPNEligiblityChecker: WooPushNotificationEligibilityCheck
@@ -135,11 +137,13 @@ final class PushNotificationsManager: PushNotesManager {
     init(configuration: PushNotificationsConfiguration = .default,
          backgroundSynchronizerFactory: PushNotificationBackgroundSynchronizerFactoryProtocol = PushNotificationBackgroundSynchronizerFactory(),
          analytics: Analytics = ServiceLocator.analytics,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
         self.registrationState = PushNotificationRegistrationState(defaults: configuration.defaults, log: { DDLogInfo($0) })
         self.backgroundSynchronizerFactory = backgroundSynchronizerFactory
         self.analytics = analytics
+        self.storageManager = storageManager
         self.selfDriventPNEligiblityChecker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
             stores: configuration.storesManager
@@ -220,8 +224,11 @@ extension PushNotificationsManager {
         let deviceToken = try await waitForDeviceToken()
 
         // 4. Send token to endpoint and wait for acceptance
+        guard let siteID else {
+            throw PushNotificationError.missingSiteID
+        }
         return try await withCheckedThrowingContinuation { continuation in
-            registerSelfDrivenPushNotificationFlow(with: deviceToken) { result in
+            registerSelfDrivenPushNotificationFlow(with: deviceToken, siteID: siteID) { result in
                 continuation.resume(with: result)
             }
         }
@@ -337,10 +344,21 @@ extension PushNotificationsManager {
         deviceTokenResult.send(.success(tokenData.hexString))
 
         guard let selfDrivenPushNotificationEnabled else {
+            DDLogDebug("📱 Self-driven eligibility not yet determined — storing token and re-checking")
             pendingTokenData = tokenData
+            checkSelfDrivenPushNotificationsEligibility()
             return
         }
         let newToken = tokenData.hexString
+
+        // When the device token changes, clear registered site IDs so all sites
+        // re-register with the new token.
+        if let existingToken = registrationState.deviceToken, existingToken != newToken {
+            DDLogDebug("📱 Device token changed — clearing registered site IDs for re-registration")
+            for siteID in registrationState.siteIDsRegisteredForWooPNs {
+                registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+            }
+        }
 
         registrationState.applyNewDeviceToken(newToken)
 
@@ -365,24 +383,15 @@ extension PushNotificationsManager {
         }
 
         if selfDrivenPushNotificationEnabled {
-            DDLogInfo("📱 Self Registering Push Notifications")
-            // We will need to remove the old registartion, this is just for the newly registered stores
-            registerSelfDrivenPushNotificationFlow(with: newToken) { [weak self] result in
+            DDLogInfo("📱 Self Registering Push Notifications for all sites")
+            Task { @MainActor [weak self] in
                 guard let self else { return }
-                switch result {
-                case .failure(let error):
-                    DDLogError("⛔️ Self Registering Push Notifications Registration Failure: \(error)")
-                    analytics.track(.wooPushTokenRegisterError, withError: error)
-                    if let siteID, case .notFound = error as? NetworkError {
-                        registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
-                    }
-                    // Falls back to dotcom PNs if authenticated with WPCom
+                do {
+                    try await registerSelfDrivenPushNotificationsForAllSites(with: newToken)
+                } catch {
                     if !stores.isAuthenticatedWithoutWPCom {
                         registerForWPComPushNotifications()
                     }
-                case .success(let token):
-                    DDLogInfo("📱 Self Registering Push Notifications success: \(token)")
-                    analytics.track(.wooPushTokenRegisterSuccess)
                 }
             }
         } else if !stores.isAuthenticatedWithoutWPCom {
@@ -738,14 +747,74 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func registerSelfDrivenPushNotificationFlow(with deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
-        guard let siteID else {
-            DDLogError("⛔️ Unable to register self-driven push token: missing siteID")
-            onCompletion(.failure(PushNotificationError.missingSiteID))
+    /// Registers the push notification token for all user sites concurrently.
+    /// Throws if any site fails to register.
+    @MainActor
+    func registerSelfDrivenPushNotificationsForAllSites(with deviceToken: String) async throws {
+        var allSiteIDs = storageManager.viewStorage.loadAllSites()
+            .filter { $0.isWooCommerceActive?.boolValue == true }
+            .map(\.siteID)
+        if allSiteIDs.isEmpty, let siteID {
+            allSiteIDs = [siteID]
+        }
+
+        let siteIDsToRegister = allSiteIDs.filter { !registrationState.isSiteRegisteredForWooPNs($0) }
+        guard siteIDsToRegister.isNotEmpty else {
+            DDLogDebug("📱 All \(allSiteIDs.count) site(s) already registered for push notifications")
             return
         }
 
-        DDLogInfo("📱 Registering self-driven push notification token")
+        DDLogDebug("📱 Registering push token for \(siteIDsToRegister.count) site(s): \(siteIDsToRegister) " +
+                   "(skipping \(allSiteIDs.count - siteIDsToRegister.count) already registered)")
+
+        var failedSiteIDs: [Int64] = []
+        await withTaskGroup(of: (Int64, Bool).self) { group in
+            for siteID in siteIDsToRegister {
+                group.addTask { [weak self] in
+                    let succeeded = await self?.registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID) ?? false
+                    return (siteID, succeeded)
+                }
+            }
+            for await (siteID, succeeded) in group where !succeeded {
+                failedSiteIDs.append(siteID)
+            }
+        }
+
+        disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: registrationState.deviceID)
+
+        if failedSiteIDs.isNotEmpty {
+            throw PushNotificationError.siteRegistrationFailed(siteIDs: failedSiteIDs)
+        }
+    }
+
+    /// Registers the push notification token for a single site and handles the result.
+    /// - Returns: `true` on success, `false` on failure.
+    @MainActor
+    private func registerSelfDrivenPushNotification(with deviceToken: String, siteID: Int64) async -> Bool {
+        DDLogDebug("📱 Requesting push token registration for site \(siteID)")
+        do {
+            let tokenID = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Int64, Error>) in
+                registerSelfDrivenPushNotificationFlow(with: deviceToken, siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+            }
+            DDLogDebug("📱 Push token registration succeeded for site \(siteID): tokenID \(tokenID)")
+            analytics.track(.wooPushTokenRegisterSuccess)
+            return true
+        } catch {
+            DDLogDebug("📱 Push token registration failed for site \(siteID): \(error)")
+            analytics.track(.wooPushTokenRegisterError, withError: error)
+            if case .notFound = error as? NetworkError {
+                registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
+            }
+            return false
+        }
+    }
+
+    func registerSelfDrivenPushNotificationFlow(with deviceToken: String,
+                                                siteID: Int64,
+                                                onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+        DDLogInfo("📱 Registering self-driven push notification token for site \(siteID)")
 
         let device = APNSDevice(deviceToken: deviceToken)
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
@@ -759,10 +828,10 @@ private extension PushNotificationsManager {
 
             switch result {
             case .success(let tokenID):
-                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, onCompletion: onCompletion)
+                self.handleSelfDrivenRegistrationSuccess(tokenID: tokenID, siteID: siteID, onCompletion: onCompletion)
 
             case .failure(let error):
-                DDLogError("⛔️ Unable to register self-driven push token: \(error)")
+                DDLogError("⛔️ Unable to register self-driven push token for site \(siteID): \(error)")
                 onCompletion(.failure(error))
             }
         }
@@ -770,15 +839,11 @@ private extension PushNotificationsManager {
         stores.dispatch(action)
     }
 
-    func handleSelfDrivenRegistrationSuccess(tokenID: Int64, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
+    func handleSelfDrivenRegistrationSuccess(tokenID: Int64,
+                                             siteID: Int64,
+                                             onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         registrationState.setWooPushNotificationTokenID(tokenID)
-
-        guard let siteID else {
-            return onCompletion(.success(tokenID))
-        }
         registrationState.markSiteAsRegisteredForWooPNs(siteID)
-
-        disableWPComPushNotificationsIfNeeded(siteIDs: [siteID], deviceID: registrationState.deviceID)
         onCompletion(.success(tokenID))
     }
 
@@ -932,6 +997,7 @@ private enum AnalyticKey {
 private enum PushNotificationError: Error {
     case deviceTokenTimeout
     case missingSiteID
+    case siteRegistrationFailed(siteIDs: [Int64])
 }
 
 private enum PushType {

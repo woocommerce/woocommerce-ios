@@ -372,7 +372,7 @@ extension PushNotificationsManager {
         }
 
         func registerForWPComPushNotificationsIfPossible() {
-            guard !stores.isAuthenticatedWithoutWPCom else { return }
+            if stores.isAuthenticatedWithoutWPCom { return }
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { (device, error) in
                 guard let deviceID = device?.deviceID else {

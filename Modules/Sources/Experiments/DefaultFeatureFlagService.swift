@@ -112,7 +112,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .pointOfSaleLocalRoles:
             return false
         case .pointOfSaleRemoteRoles:
-            return false
+            return true
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:

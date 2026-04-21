@@ -1010,14 +1010,14 @@ private extension PushNotificationsManager {
     }
 
     /// Generates a local identifier for Woo-driven notifications.
-    /// Format: woo:<store-id>:<type>:<entity-id>
+    /// Format: <site-id>:<type>:<entity-id>
     func localIdentifier(kind: Note.Kind, meta: MetaContainer?) -> String? {
-        guard let storeID = stores.sessionManager.defaultStoreUUID,
+        guard let siteID = meta?.identifier(forKey: .site),
               let key = metaKey(for: kind),
               let entityID = meta?.identifier(forKey: key) else {
             return nil
         }
-        return "woo:\(storeID):\(kind.rawValue):\(entityID)"
+        return "\(siteID):\(kind.rawValue):\(entityID)"
     }
 }
 

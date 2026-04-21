@@ -240,7 +240,16 @@ private extension POSCatalogFullSyncService {
             return date
         }
         formatter.formatOptions = [.withInternetDateTime]
-        return formatter.date(from: string)
+        if let date = formatter.date(from: string) {
+            return date
+        }
+
+        // Server format has no timezone suffix (e.g. "2026-01-23T08:30:55"). Treat as UTC.
+        let fallback = DateFormatter()
+        fallback.locale = Locale(identifier: "en_US_POSIX")
+        fallback.timeZone = TimeZone(secondsFromGMT: 0)
+        fallback.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        return fallback.date(from: string)
     }
 }
 

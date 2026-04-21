@@ -385,6 +385,74 @@ struct POSCatalogFullSyncServiceTests {
         #expect(mockSyncRemote.catalogRequestCallCount == 1)
     }
 
+    @Test func startFullSync_when_server_returns_timestamps_without_timezone_then_populates_generationDurationMs() async throws {
+        // Given - Initial request already completed, timestamps in server format with no timezone suffix
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed,
+                                                             downloadURL: "https://example.com/catalog.json",
+                                                             scheduledAt: "2026-01-23T08:30:25",
+                                                             completedAt: "2026-01-23T08:30:55"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+
+        // Then - Generation duration derived from UTC-parsed timestamps (30s = 30_000 ms)
+        #expect(result.syncMetadata?.generationDurationMs == 30_000)
+        #expect(result.syncMetadata?.pollAttempts == 0)
+    }
+
+    @Test func startFullSync_when_server_returns_timestamps_with_Z_suffix_then_populates_generationDurationMs() async throws {
+        // Given - Timestamps in ISO8601 format with Z (UTC) suffix — existing parse path must still work
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed,
+                                                             downloadURL: "https://example.com/catalog.json",
+                                                             scheduledAt: "2026-01-23T08:30:25Z",
+                                                             completedAt: "2026-01-23T08:31:15Z"))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+
+        // Then - 50s delta
+        #expect(result.syncMetadata?.generationDurationMs == 50_000)
+    }
+
+    @Test func startFullSync_when_server_omits_timestamps_then_generationDurationMs_is_nil() async throws {
+        // Given - Completed response with no scheduledAt / completedAt
+        mockSyncRemote.catalogRequestResult = .success(.init(status: .completed,
+                                                             downloadURL: "https://example.com/catalog.json",
+                                                             scheduledAt: nil,
+                                                             completedAt: nil))
+        mockSyncRemote.catalogDownloadResult = .success(.init(products: [], variations: []))
+
+        let sut = POSCatalogFullSyncService(
+            syncRemote: mockSyncRemote,
+            batchSize: 2,
+            persistenceService: mockPersistenceService,
+            usesCatalogAPI: true
+        )
+
+        // When
+        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+
+        // Then
+        #expect(result.syncMetadata?.generationDurationMs == nil)
+        #expect(result.syncMetadata?.pollAttempts == 0)
+    }
+
     @Test func pollingConfig_has_correct_values() {
         // Verify the polling configuration constants match the PRD requirements
         #expect(POSCatalogFullSyncService.PollingConfig.initialDelay == 3.0)

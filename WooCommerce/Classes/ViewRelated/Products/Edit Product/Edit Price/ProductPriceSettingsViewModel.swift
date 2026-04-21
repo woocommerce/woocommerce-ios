@@ -196,11 +196,11 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Tap actions
 
     func didTapScheduleSaleFromRow() {
-        datePickerSaleFromVisible = !datePickerSaleFromVisible
+        datePickerSaleFromVisible.toggle()
     }
 
     func didTapScheduleSaleToRow() {
-        datePickerSaleToVisible = !datePickerSaleToVisible
+        datePickerSaleToVisible.toggle()
     }
 
     // MARK: - UI changes

@@ -1,5 +1,6 @@
 // periphery:ignore:all
 import Foundation
+import Networking
 import Storage
 import GRDB
 import Alamofire
@@ -116,6 +117,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
+    private let backgroundDownloadResumer: BackgroundCatalogDownloadResuming
 
     /// Tracks ongoing incremental syncs by site ID to prevent duplicates
     private var ongoingIncrementalSyncs: Set<Int64> = []
@@ -138,7 +140,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 catalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol,
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
-                connectivityObserver: ConnectivityObserver? = nil) {
+                connectivityObserver: ConnectivityObserver? = nil,
+                backgroundDownloadResumer: BackgroundCatalogDownloadResuming = BackgroundCatalogDownloadCoordinator()) {
         self.fullSyncService = fullSyncService
         self.incrementalSyncService = incrementalSyncService
         self.grdbManager = grdbManager
@@ -146,6 +149,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
+        self.backgroundDownloadResumer = backgroundDownloadResumer
     }
 
     public func performFullSyncIfApplicable(for siteID: Int64, maxAge: TimeInterval, regenerateCatalog: Bool, isBackgroundSync: Bool) async throws {
@@ -248,6 +252,14 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     // pending catalog generation from a previous session (requires state persistence). If so,
     // poll once for status and download/parse if ready instead of starting a new generation.
     public func performSmartSync(for siteID: Int64, fullSyncMaxAge: TimeInterval, incrementalSyncMaxAge: TimeInterval, isBackgroundSync: Bool) async throws {
+        // If a previous background download staged a catalog file but never finished
+        // parse + persist (iOS killed the process within the ~30s window), retry it now that we're
+        // in the foreground without time pressure. Errors are swallowed since a fresh sync would overwrite anyway.
+        await backgroundDownloadResumer.resumePendingDownloadIfNeeded { [weak self] fileURL, pendingSiteID in
+            guard let self else { return }
+            _ = try await self.fullSyncService.parseAndPersistBackgroundDownload(fileURL: fileURL, siteID: pendingSiteID)
+        }
+
         let lastFullSync = await lastFullSyncDate(for: siteID) ?? Date(timeIntervalSince1970: 0)
         let lastFullSyncUTC = ISO8601DateFormatter().string(from: lastFullSync)
 

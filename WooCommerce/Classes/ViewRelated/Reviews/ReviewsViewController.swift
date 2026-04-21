@@ -104,10 +104,32 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
     // MARK: - Initializers
     //
-    convenience init(siteID: Int64) {
+    convenience init(siteID: Int64,
+                     stores: StoresManager = ServiceLocator.stores,
+                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+        let supportsNotificationBasedFeatures = Self.supportsNotificationBasedFeatures(
+            siteID: siteID,
+            stores: stores,
+            pushNotesManager: pushNotesManager
+        )
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: ReviewsDataSource(siteID: siteID,
-                                                                             customizer: GlobalReviewsDataSourceCustomizer())))
+                                                                      customizer: GlobalReviewsDataSourceCustomizer(),
+                                                                      supportsNotificationBasedFeatures: supportsNotificationBasedFeatures),
+                                              stores: stores,
+                                              pushNotesManager: pushNotesManager))
+    }
+
+    private static func supportsNotificationBasedFeatures(siteID: Int64,
+                                                          stores: StoresManager,
+                                                          pushNotesManager: PushNotesManager) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return false
+        }
+        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
+            return false
+        }
+        return true
     }
 
     init(viewModel: ViewModel) {

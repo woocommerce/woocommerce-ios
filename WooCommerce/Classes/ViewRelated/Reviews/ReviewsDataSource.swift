@@ -82,12 +82,13 @@ final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
     }
 
     /// Whether notifications-based features (unread indicators) should be available.
-    /// Set to false for sites using Woo-driven push notifications.
-    var supportsNotificationBasedFeatures: Bool = true
+    /// Returns false for sites using Woo-driven push notifications.
+    let supportsNotificationBasedFeatures: Bool
 
-    init(siteID: Int64, customizer: ReviewsDataSourceCustomizing) {
+    init(siteID: Int64, customizer: ReviewsDataSourceCustomizing, supportsNotificationBasedFeatures: Bool = true) {
         self.siteID = siteID
         self.customizer = customizer
+        self.supportsNotificationBasedFeatures = supportsNotificationBasedFeatures
         super.init()
         observeResults()
     }

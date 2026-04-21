@@ -351,7 +351,11 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     var reviews: [ProductReview] = []
     var mockNotifications: [Note] = []
-    var supportsNotificationBasedFeatures: Bool = true
+    let supportsNotificationBasedFeatures: Bool
+
+    init(supportsNotificationBasedFeatures: Bool = true) {
+        self.supportsNotificationBasedFeatures = supportsNotificationBasedFeatures
+    }
 
     var isEmpty: Bool {
         return reviews.isEmpty

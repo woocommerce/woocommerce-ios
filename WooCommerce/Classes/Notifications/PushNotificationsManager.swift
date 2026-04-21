@@ -805,6 +805,12 @@ private extension PushNotificationsManager {
         }
     }
 
+    /// Looks up the target `Yosemite.Site` for analytics attribution. The lookup is best-effort —
+    /// a missing local record simply results in an event without per-site properties.
+    private func loadTargetSite(siteID: Int64) -> Yosemite.Site? {
+        storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
+    }
+
     /// Registers the push notification token for a single site and handles the result.
     /// - Returns: `true` on success, `false` on failure.
     @MainActor
@@ -817,11 +823,11 @@ private extension PushNotificationsManager {
                 }
             }
             DDLogDebug("📱 Push token registration succeeded for site \(siteID): tokenID \(tokenID)")
-            analytics.track(.wooPushTokenRegisterSuccess)
+            analytics.track(event: .PushNotifications.wooPushTokenRegisterSuccess(targetSite: loadTargetSite(siteID: siteID)))
             return true
         } catch {
             DDLogDebug("📱 Push token registration failed for site \(siteID): \(error)")
-            analytics.track(.wooPushTokenRegisterError, withError: error)
+            analytics.track(event: .PushNotifications.wooPushTokenRegisterError(targetSite: loadTargetSite(siteID: siteID), error: error))
             if case .notFound = error as? NetworkError {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
             }

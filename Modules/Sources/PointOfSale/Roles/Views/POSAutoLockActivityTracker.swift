@@ -16,6 +16,7 @@ import SwiftUI
 private struct POSAutoLockActivityTrackingModifier: ViewModifier {
     let permissions: POSPermissionProviding
     let paymentModel: POSPaymentModel?
+    let aggregateModel: PointOfSaleAggregateModel?
 
     @State private var lastResetAt: Date = .distantPast
 
@@ -38,6 +39,13 @@ private struct POSAutoLockActivityTrackingModifier: ViewModifier {
                 // Reset on every card/cash state transition. Catches the common
                 // case of a payment flow where the user isn't actively touching
                 // the screen but the system is progressing.
+                resetThrottled()
+            }
+            .onChange(of: aggregateModel?.cart.purchasableItems.count) { _, _ in
+                // Cart mutations come from both touch adds/removes and barcode
+                // scans (Bluetooth HID scanners deliver GameController keyboard
+                // events, not touch events, so the DragGesture above wouldn't
+                // see them).
                 resetThrottled()
             }
             .task(id: paymentModel?.paymentState.isAutoLockSuppressing ?? false) {
@@ -68,8 +76,11 @@ extension View {
     ///     it's ready; the modifier tolerates the nil and only starts the payment pulse
     ///     once it's attached.
     func posAutoLockActivityTracking(permissions: POSPermissionProviding,
-                                     paymentModel: POSPaymentModel?) -> some View {
-        modifier(POSAutoLockActivityTrackingModifier(permissions: permissions, paymentModel: paymentModel))
+                                     paymentModel: POSPaymentModel?,
+                                     aggregateModel: PointOfSaleAggregateModel?) -> some View {
+        modifier(POSAutoLockActivityTrackingModifier(permissions: permissions,
+                                                     paymentModel: paymentModel,
+                                                     aggregateModel: aggregateModel))
     }
 }
 

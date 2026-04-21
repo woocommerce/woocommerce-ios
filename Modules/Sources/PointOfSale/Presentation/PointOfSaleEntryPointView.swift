@@ -199,7 +199,8 @@ public struct PointOfSaleEntryPointView: View {
             )
         }
         .posAutoLockActivityTracking(permissions: permissionProvider,
-                                     paymentModel: posModel?.paymentModel)
+                                     paymentModel: posModel?.paymentModel,
+                                     aggregateModel: posModel)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)) { _ in
             if permissionProvider.hasAnyPINs, permissionProvider.currentOperator != nil {
                 permissionProvider.lock()

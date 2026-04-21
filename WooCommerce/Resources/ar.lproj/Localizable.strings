@@ -12460,182 +12460,64 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeScannerSetup.test.title" = "اختبر ماسحك الضوئي";
 
 /* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d ساعة";
-
 /* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "⁦%1$d⁩ ساعة ⁦%2$d⁩ دقيقة";
-
 /* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d دقيقة";
-
 /* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "مُتابَع";
-
 /* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "غير مُتابَع";
-
 /* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "اليوم التالي";
-
 /* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "اليوم السابق";
-
 /* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "%1$@، اضغط لفتح التقويم";
-
 /* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "إضافة ملاحظة";
-
 /* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "حالة الحضور";
-
 /* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "ضع علامة الحضور للحفاظ على دقة تقاريرك واتجاهات الحجز الفورية.";
-
 /* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "فشل تحديث الحضور يُرجى المحاولة مرة أخرى.";
-
 /* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "مُتابَع";
-
 /* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "الحجز رقم%lld";
-
 /* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "ملاحظة الحجز";
-
 /* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "هذه ملاحظة خاصة. لن تتم مشاركتها مع العميل.";
-
 /* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "إلغاء الحجوزات";
-
 /* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "تحصيل المدفوعات";
-
 /* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "نسخ عنوان البريد الإلكتروني";
-
 /* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "نسخ رقم الهاتف";
-
 /* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "العميل";
-
 /* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "المدة";
-
 /* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "تحرير الملاحظة";
-
 /* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "البريد الإلكتروني: %1$@";
-
 /* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "ضيف";
-
 /* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "إصدار أمر باسترداد المبالغ المدفوعة";
-
 /* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "الموقع";
-
 /* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "مزيد من الإجراءات";
-
 /* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "الملاحظة";
-
 /* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "الهاتف: %1$@";
-
 /* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "أعضاء الفريق";
-
 /* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "غير مُتابَع";
-
 /* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "عرض الطلب";
-
 /* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "اضغط على أي حجز لعرض تفاصيله";
-
 /* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "محجوز";
-
 /* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "تم الإلغاء";
-
 /* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "مكتمل";
-
 /* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "يتعذّر تحميل مزيد من الحجوزات";
-
 /* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "يتعذّر تحميل الحجوزات";
-
 /* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "الحجوزات";
-
 /* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "لم نتمكن من العثور على أي شيء يُطابق بحثك. حاول ضبط مصطلح البحث الخاص بك.";
-
 /* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "لم يُعثر على أي حجوزات";
-
 /* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "ستظهر أي حجوزات مجدولة لهذا التاريخ هنا.";
-
 /* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "لا توجد حجوزات لهذا اليوم";
-
 /* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "البحث عن الحجوزات";
-
 /* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "البحث عن الحجوزات";
-
 /* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "إضافة";
-
 /* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "إضافة ملاحظة";
-
 /* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "تحرير الملاحظة";
-
 /* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "كتابة ملاحظة";
-
 /* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "حفظ";
-
 /* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "فشل حفظ الملاحظة. حاول مرة أخرى.";
-
 /* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "تم إلغاء المصادقة";
-
 /* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "تمت المصادقة";
-
 /* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "فشل";
-
 /* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "مدفوع";
-
 /* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "تم استرداد المبالغ المدفوعة";
-
 /* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "غير مدفوع";
-
 /* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "تم إلغاء الحجز بنجاح.";
-
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "سيتم إلغاء الحجز رقم %1$@ الخاص بـ %2$@ بتاريخ %3$@.";
 

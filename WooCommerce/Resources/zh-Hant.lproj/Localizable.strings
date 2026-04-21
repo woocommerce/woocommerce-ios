@@ -12458,182 +12458,64 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeScannerSetup.test.title" = "測試掃描器";
 
 /* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
-"pos.booking.durationHours" = "%d 小時";
-
 /* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
-"pos.booking.durationHoursAndMinutes" = "%1$d 小時 %2$d 分";
-
 /* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
-"pos.booking.durationMinutes" = "%d 分";
-
 /* POS booking attendance status label when the customer attended. */
-"pos.bookingAttendanceDisplay.attended" = "已出席";
-
 /* POS booking attendance status label when the customer has not attended. */
-"pos.bookingAttendanceDisplay.unattended" = "未出席";
-
 /* Accessibility label for the next day button in the bookings date bar. */
-"pos.bookingDateBar.nextDay" = "隔天";
-
 /* Accessibility label for the previous day button in the bookings date bar. */
-"pos.bookingDateBar.previousDay" = "前一天";
-
 /* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
-"pos.bookingDateBar.selectedDate" = "點選 %1$@ 以開啟月曆";
-
 /* Button to add a private note to a booking. */
-"pos.bookingDetailView.addNoteButton" = "新增備註";
-
 /* Section title for the attendance status in booking details. */
-"pos.bookingDetailView.attendanceStatusTitle" = "出席狀態";
-
 /* Subtitle text below the attendance section explaining why marking attendance matters. */
-"pos.bookingDetailView.attendanceSubtitle" = "標示出席狀況，讓報告保持準確並掌握預訂趨勢。";
-
 /* Error message shown below attendance section when updating attendance status fails. */
-"pos.bookingDetailView.attendanceUpdateError" = "無法更新出席狀態。 請再試一次。";
-
 /* Label for the attended pill button in booking attendance section. */
-"pos.bookingDetailView.attendedPill" = "已出席";
-
 /* Section title for booking details showing the booking ID number. %lld is the booking ID. */
-"pos.bookingDetailView.bookingIdTitle" = "預訂 #%lld";
-
 /* Label for the private booking note section in booking details. */
-"pos.bookingDetailView.bookingNoteLabel" = "預訂備註";
-
 /* Subtitle text below the booking note section explaining the note is private. */
-"pos.bookingDetailView.bookingNoteSubtitle" = "這是私人備註。 不會與顧客分享。";
-
 /* Menu action to cancel a booking from the POS booking detail view. */
-"pos.bookingDetailView.cancelBookingAction" = "取消預訂";
-
 /* Button to initiate payment collection for a booking. */
-"pos.bookingDetailView.collectPaymentButton" = "收取付款";
-
 /* Accessibility label for the copy email button in booking details. */
-"pos.bookingDetailView.copyEmail.accessibilityLabel" = "複製電子郵件地址";
-
 /* Accessibility label for the copy phone button in booking details. */
-"pos.bookingDetailView.copyPhone.accessibilityLabel" = "複製電話號碼";
-
 /* Section title for the customer details in booking details. */
-"pos.bookingDetailView.customerTitle" = "顧客";
-
 /* Label for the duration in booking details. */
-"pos.bookingDetailView.durationLabel" = "時間長度";
-
 /* Button to edit an existing private note on a booking. */
-"pos.bookingDetailView.editNoteButton" = "編輯備註";
-
 /* Accessibility label for customer email row in booking details. %1$@ is the email address. */
-"pos.bookingDetailView.email.accessibilityLabel" = "電子郵件地址：%1$@";
-
 /* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
-"pos.bookingDetailView.guestBadge" = "訪客";
-
 /* Menu action to issue a full refund for a booking. */
-"pos.bookingDetailView.issueRefundAction" = "核發退款";
-
 /* Label for the location in booking details. */
-"pos.bookingDetailView.locationLabel" = "地點";
-
 /* Accessibility label for the overflow actions menu button in booking details. */
-"pos.bookingDetailView.moreActions.accessibilityLabel" = "更多動作";
-
 /* Label for the customer note in booking details. */
-"pos.bookingDetailView.noteLabel" = "備註";
-
 /* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
-"pos.bookingDetailView.phone.accessibilityLabel" = "電話：%1$@";
-
 /* Label for the team member / staff resource in booking details. */
-"pos.bookingDetailView.teamMemberLabel" = "團隊成員";
-
 /* Label for the unattended pill button in booking attendance section. */
-"pos.bookingDetailView.unattendedPill" = "未出席";
-
 /* Button to view the linked order from the booking detail header. */
-"pos.bookingDetailView.viewOrderAction" = "檢視訂單";
-
 /* Text appearing in the booking details pane when no booking is selected. */
-"pos.bookingDetailsEmptyView.description" = "點選預訂以檢視其詳細資料";
-
 /* POS booking lifecycle status label for active bookings. */
-"pos.bookingLifecycleStatus.booked" = "已預訂";
-
 /* POS booking lifecycle status label for canceled bookings. */
-"pos.bookingLifecycleStatus.canceled" = "已取消";
-
 /* POS booking lifecycle status label for completed bookings. */
-"pos.bookingLifecycleStatus.completed" = "已完成";
-
 /* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
-"pos.bookingList.failedToLoadBookingsNextPageTitle" = "無法載入更多預訂";
-
 /* Text appearing on the booking list screen when there's an error loading bookings. */
-"pos.bookingList.failedToLoadBookingsTitle" = "無法載入預訂";
-
 /* Title at the header for the Bookings view. */
-"pos.bookingListView.bookingsTitle" = "預訂";
-
 /* Subtitle appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchSubtitle" = "我們找不到任何符合搜尋條件的預訂。 請嘗試調整搜尋字詞。";
-
 /* Title appearing when booking search returns no results. */
-"pos.bookingListView.emptyBookingsSearchTitle" = "找不到預訂";
-
 /* Subtitle appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsSubtitle.2" = "此日期的排程的任何預訂皆會顯示於此處。";
-
 /* Title appearing when there are no bookings to display. */
-"pos.bookingListView.emptyBookingsTitle.2" = "這一天沒有預訂";
-
 /* Accessibility label for the search button in bookings list. */
-"pos.bookingListView.searchButton.accessibilityLabel" = "搜尋預訂";
-
 /* Placeholder for a search field in the Bookings view. */
-"pos.bookingListView.searchFieldPlaceholder" = "搜尋預訂";
-
 /* Button label shown when no changes have been made to the booking note yet. */
-"pos.bookingNoteView.addButton" = "新增";
-
 /* Title shown at the top of the booking note editor screen when adding a new note. */
-"pos.bookingNoteView.addTitle" = "新增備註";
-
 /* Title shown at the top of the booking note editor screen when editing an existing note. */
-"pos.bookingNoteView.editTitle" = "編輯備註";
-
 /* Placeholder text shown in the booking note text field when empty. */
-"pos.bookingNoteView.placeholder" = "輸入備註";
-
 /* Button to save the booking note. */
-"pos.bookingNoteView.saveButton" = "儲存";
-
 /* Error message shown when saving a booking note fails. */
-"pos.bookingNoteView.saveError" = "無法儲存備註。 請再試一次。";
-
 /* POS booking payment status label when the booking order payment authorization has been voided. */
-"pos.bookingPaymentStatus.authorizationVoided" = "授權作廢";
-
 /* POS booking payment status label when the booking order payment is authorized but not yet captured. */
-"pos.bookingPaymentStatus.authorized" = "已授權";
-
 /* POS booking payment status label when the booking order payment failed. */
-"pos.bookingPaymentStatus.failed" = "失敗";
-
 /* POS booking payment status label when the booking is paid. */
-"pos.bookingPaymentStatus.paid" = "已付費";
-
 /* POS booking payment status label when the booking order has been refunded. */
-"pos.bookingPaymentStatus.refunded" = "已退款";
-
 /* POS booking payment status label when the booking is unpaid. */
-"pos.bookingPaymentStatus.unpaid" = "未付款";
-
 /* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
-"pos.bookingsContainer.cancelBookingSuccess.notice" = "預訂已成功取消。";
-
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%3$@ 的 %2$@ 預訂 #%1$@ 將取消。";
 

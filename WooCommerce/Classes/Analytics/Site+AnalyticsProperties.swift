@@ -22,7 +22,7 @@ extension Site {
         return properties
     }
 
-    enum PropertyKeys {
+    private enum PropertyKeys {
         static let blogID = "blog_id"
         static let siteURL = "site_url"
         static let isWPComStore = "is_wpcom_store"

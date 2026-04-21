@@ -3,6 +3,7 @@
 24.7
 -----
 - [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
+- [**] POS Local Catalog performance gains for stores of any size for merchants in WooCommerce 10.5+ [https://github.com/woocommerce/woocommerce-ios/pull/16958]
 
 
 24.6

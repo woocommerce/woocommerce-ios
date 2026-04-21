@@ -12709,11 +12709,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.exitPOSModal.exitTitle" = "退出销售点模式？";
 
 /* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "现场收款每笔交易仅需 2.70% + 0.10 美元手续费。";
-
 /* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "升级至专业版，即可在手机上使用轻触支付功能，并使用我们完整的销售点系统，实现实时库存与订单同步。";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "退出 POS";
 
@@ -12721,11 +12717,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "启用 POS 功能";
 
 /* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "了解更多";
-
 /* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "需订阅专业版套餐";
-
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "重试";
 
@@ -12751,8 +12743,6 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.title" = "无法加载";
 
 /* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "升级套餐";
-
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "请检查您的互联网连接，然后重试。";
 

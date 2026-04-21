@@ -12709,11 +12709,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.exitPOSModal.exitTitle" = "¿Salir del modo de punto de venta?";
 
 /* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "Acepta pagos en persona por solo 2,70 % + 0,10 $ por transacción.";
-
 /* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Mejora a Pro para acceder a la función de pago con toque en tu teléfono y a nuestro sistema de punto de venta completo con inventario en tiempo real y sincronización de pedidos.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Salir de POS";
 
@@ -12721,11 +12717,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Activar la función POS";
 
 /* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "Más información";
-
 /* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "Se necesita el plan Pro";
-
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Reintentar";
 
@@ -12751,8 +12743,6 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.title" = "No se puede cargar";
 
 /* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "Mejorar plan";
-
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Revisa tu conexión a Internet e inténtalo de nuevo.";
 

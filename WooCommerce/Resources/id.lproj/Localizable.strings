@@ -12706,11 +12706,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.exitPOSModal.exitTitle" = "Keluar dari mode Point of Sale?";
 
 /* Pricing info shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabPricingInfo" = "Terima pembayaran secara langsung dengan biaya hanya 2,70% + $0,10 per transaksi.";
-
 /* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
-"pos.ineligible.ciabUpgradePrompt" = "Upgrade ke paket Pro guna mengakses fitur Ketuk untuk Membayar di ponsel Anda dan sistem titik penjualan lengkap kami beserta sinkronisasi inventaris dan pesanan secara real-time.";
-
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "Keluar dari POS";
 
@@ -12718,11 +12714,7 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "Aktifkan fitur POS";
 
 /* Button title to learn more about upgrading the plan for POS access */
-"pos.ineligible.learnMore.button.title" = "Baca Selengkapnya";
-
 /* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
-"pos.ineligible.planUpgrade.title" = "Paket Pro diperlukan";
-
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Coba lagi";
 
@@ -12748,8 +12740,6 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.title" = "Tidak dapat memuat";
 
 /* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
-"pos.ineligible.upgradePlan.webview.title" = "Upgrade Paket";
-
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Harap periksa koneksi internet Anda dan coba lagi.";
 

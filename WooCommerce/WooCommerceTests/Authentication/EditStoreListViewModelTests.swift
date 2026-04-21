@@ -204,4 +204,197 @@ struct EditStoreListViewModelTests {
         #expect(completionTriggered == false)
         #expect(viewModel.shouldShowErrorAlert == true)
     }
+
+    // MARK: - Self-driven push notification unregistration
+
+    @MainActor
+    @Test func saveChanges_unregisters_hidden_sites_from_self_driven_push_notifications() async {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let notificationManager = MockPushNotificationsManager(
+            wooPushNotificationToken: "99",
+            siteIDsRegisteredForWooPNs: [site1.siteID]
+        )
+
+        var unregisteredSiteIDs: [Int64] = []
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, availableAsRESTRequest, onCompletion):
+                #expect(tokenID == 99)
+                // EditStoreListViewModel always unregisters non-current sites, so REST fallback
+                // must be disabled to force the Jetpack tunnel to the correct site.
+                #expect(availableAsRESTRequest == false)
+                unregisteredSiteIDs.append(siteID)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               onCompletion: {})
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then
+        #expect(unregisteredSiteIDs == [site1.siteID])
+        #expect(notificationManager.unmarkedSiteIDs == [site1.siteID])
+    }
+
+    @MainActor
+    @Test func saveChanges_skips_self_driven_unregistration_when_site_is_not_registered() async {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let notificationManager = MockPushNotificationsManager(
+            wooPushNotificationToken: "99",
+            siteIDsRegisteredForWooPNs: [] // site1 is NOT registered
+        )
+
+        var unregisterActionDispatched = false
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .unregisterFromSelfDrivenPushNotifications:
+                unregisterActionDispatched = true
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               onCompletion: {})
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then
+        #expect(unregisterActionDispatched == false)
+    }
+
+    @MainActor
+    @Test func saveChanges_skips_self_driven_unregistration_when_no_token() async {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let notificationManager = MockPushNotificationsManager(
+            wooPushNotificationToken: nil,
+            siteIDsRegisteredForWooPNs: [site1.siteID]
+        )
+
+        var unregisterActionDispatched = false
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .unregisterFromSelfDrivenPushNotifications:
+                unregisterActionDispatched = true
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               onCompletion: {})
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then
+        #expect(unregisterActionDispatched == false)
+    }
+
+    @MainActor
+    @Test func saveChanges_succeeds_even_when_self_driven_unregistration_fails() async {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        var completionTriggered = false
+        let notificationManager = MockPushNotificationsManager(
+            wooPushNotificationToken: "99",
+            siteIDsRegisteredForWooPNs: [site1.siteID]
+        )
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "test", code: 500)))
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               onCompletion: { completionTriggered = true })
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then — save should still succeed despite self-driven PN unregistration failure
+        #expect(userDefaults.hiddenStoreIDs == [site1.siteID])
+        #expect(completionTriggered == true)
+        #expect(notificationManager.unmarkedSiteIDs.isEmpty) // not unmarked because API failed
+    }
+
+    @MainActor
+    @Test func saveChanges_unregisters_self_driven_PNs_even_without_WPCom_deviceID() async {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let notificationManager = MockPushNotificationsManager(
+            mockedDeviceID: nil, // no WPCom device ID
+            wooPushNotificationToken: "99",
+            siteIDsRegisteredForWooPNs: [site1.siteID]
+        )
+
+        var unregisteredSiteIDs: [Int64] = []
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .unregisterFromSelfDrivenPushNotifications(siteID, _, _, onCompletion):
+                unregisteredSiteIDs.append(siteID)
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               onCompletion: {})
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then — self-driven PN unregistration should still happen
+        #expect(unregisteredSiteIDs == [site1.siteID])
+        #expect(notificationManager.unmarkedSiteIDs == [site1.siteID])
+    }
 }

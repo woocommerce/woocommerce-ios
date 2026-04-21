@@ -65,8 +65,11 @@ public class NotificationStore: Store {
                 appVersion: appVersion,
                 onCompletion: onCompletion
             )
-        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, onCompletion):
-            unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID, onCompletion: onCompletion)
+        case let .unregisterFromSelfDrivenPushNotifications(siteID, tokenID, availableAsRESTRequest, onCompletion):
+            unregisterFromSelfDrivenPushNotifications(siteID: siteID,
+                                                      tokenID: tokenID,
+                                                      availableAsRESTRequest: availableAsRESTRequest,
+                                                      onCompletion: onCompletion)
         }
     }
 }
@@ -122,10 +125,15 @@ private extension NotificationStore {
     ///
     func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
                                                    tokenID: Int64,
+                                                   availableAsRESTRequest: Bool,
                                                    onCompletion: @escaping (Result<Void, Error>) -> Void) {
         Task { @MainActor in
             do {
-                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(siteID: siteID, tokenID: tokenID)
+                try await devicesRemote.unregisterFromSelfDrivenPushNotifications(
+                    siteID: siteID,
+                    tokenID: tokenID,
+                    availableAsRESTRequest: availableAsRESTRequest
+                )
                 onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))

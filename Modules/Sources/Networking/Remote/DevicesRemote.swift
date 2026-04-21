@@ -107,15 +107,21 @@ public class DevicesRemote: Remote {
     /// - Parameters:
     ///     - siteID: ID of the site
     ///     - tokenID: The push token ID to delete
+    ///     - availableAsRESTRequest: Whether the request can be sent as a direct REST call when an
+    ///       application password is available. Only safe when the target `siteID` is the currently
+    ///       selected site, because the REST fallback routes to the current site's URL. For cross-site
+    ///       calls (e.g. unregistering a non-selected site) pass `false` to force the Jetpack tunnel,
+    ///       which carries the `siteID` in the URL path and always reaches the correct site.
     ///
     public func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
-                                                          tokenID: Int64) async throws {
+                                                          tokenID: Int64,
+                                                          availableAsRESTRequest: Bool = true) async throws {
         let path = Paths.selfDrivenPN + "/\(tokenID)"
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .delete,
                                      siteID: siteID,
                                      path: path,
-                                     availableAsRESTRequest: true)
+                                     availableAsRESTRequest: availableAsRESTRequest)
         try await enqueue(request)
     }
 }

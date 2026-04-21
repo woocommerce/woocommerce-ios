@@ -519,7 +519,8 @@ final class NotificationStoreTests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
-                tokenID: self.sampleTokenID
+                tokenID: self.sampleTokenID,
+                availableAsRESTRequest: true
             ) { result in
                 promise(result)
             }
@@ -548,7 +549,8 @@ final class NotificationStoreTests: XCTestCase {
         let result: Result<Void, Error> = waitFor { promise in
             let action = NotificationAction.unregisterFromSelfDrivenPushNotifications(
                 siteID: self.sampleSiteID,
-                tokenID: self.sampleTokenID
+                tokenID: self.sampleTokenID,
+                availableAsRESTRequest: true
             ) { result in
                 promise(result)
             }

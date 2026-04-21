@@ -50,5 +50,15 @@ public enum NotificationAction: Action {
 
     /// Removes a given tokenID from the the self-driven push notification system.
     ///
-    case unregisterFromSelfDrivenPushNotifications(siteID: Int64, tokenID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+    /// - Parameters:
+    ///     - siteID: ID of the site
+    ///     - tokenID: The push token ID to delete
+    ///     - availableAsRESTRequest: Whether the underlying request can be sent as a direct REST
+    ///       call when an application password is available. Safe only when `siteID` is the currently
+    ///       selected site. For cross-site unregistration pass `false` to force the Jetpack tunnel.
+    ///
+    case unregisterFromSelfDrivenPushNotifications(siteID: Int64,
+                                                   tokenID: Int64,
+                                                   availableAsRESTRequest: Bool,
+                                                   onCompletion: (Result<Void, Error>) -> Void)
 }

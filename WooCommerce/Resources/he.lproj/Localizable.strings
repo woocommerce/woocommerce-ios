@@ -11563,8 +11563,6 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.cashOnDelivery.title" = "לשלם באופן אישי";
 
 /* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "ניתן לקבל תשלומים במסירה אישית בעלות של 2.70%%% + 0.10 דולר לכל עסקה. יש לשדרג לתוכנית Pro כדי לגשת לתשלום בנגיעה בטלפון ולמערכת נקודת המכירה המלאה שלנו, עם סנכרון של מלאי והזמנות בזמן אמת. %1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "התקבל עבור ההזמנה תשלום במזומן. הלקוח שילם %1$@. העודף הנדרש היה %2$@.";
 

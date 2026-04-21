@@ -11560,8 +11560,6 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.cashOnDelivery.title" = "親自付款";
 
 /* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "當面付款，每筆交易只要 2.70%% + 0.10 美元。 升級至專業版，即可存取手機的感應支付功能，以及我們的完整銷售點系統，包括即時庫存與訂單同步處理。%1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "這筆訂單使用現金付款。 顧客支付了 %1$@。 需找零 %2$@。";
 

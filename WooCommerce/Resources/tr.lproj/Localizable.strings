@@ -11560,8 +11560,6 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.cashOnDelivery.title" = "Şahsen Ödeyin";
 
 /* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "İşlem başına sadece %%2,70 + 0,10 ile şahsen ödemeleri kabul edin. Telefonunuzda tap-to-pay'e ve eşzamanlı envanter ve sipariş senkronizasyonu ile tam satış noktası sistemimize erişmek için Pro'ya yükseltin.%1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Sipariş nakit ile ödendi. Müşteri %1$@ ödedi. Ödenmesi gereken para üstü %2$@.";
 

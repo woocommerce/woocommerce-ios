@@ -11563,8 +11563,6 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.cashOnDelivery.title" = "现场付款";
 
 /* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "现场收款每笔交易仅需 2.70%% + 0.10 美元手续费。 升级至专业版，即可在手机上使用轻触支付功能，并使用我们完整的销售点系统，实现实时库存与订单同步。%1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "该笔订单采用现金付款。 客户已支付 %1$@。 找零 %2$@。";
 

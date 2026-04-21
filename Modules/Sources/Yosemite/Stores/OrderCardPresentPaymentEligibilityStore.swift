@@ -50,6 +50,5 @@ private extension OrderCardPresentPaymentEligibilityStore {
 extension OrderCardPresentPaymentEligibilityStore {
     enum OrderIsEligibleForCardPresentPaymentError: Error {
         case orderNotFoundInStorage
-        case cardReaderPaymentOptionIsNotSupportedForCIABSites
     }
 }

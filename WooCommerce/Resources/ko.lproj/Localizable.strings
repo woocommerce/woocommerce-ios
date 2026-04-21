@@ -11563,8 +11563,6 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.cashOnDelivery.title" = "대면 결제";
 
 /* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
-"paymentMethods.ciabUpgrade.learnMore.text" = "거래당 단 2.70%% + $0.10로 대면 결제를 수락하세요. Pro로 업그레이드하여 실시간 재고 및 주문 동기화를 통해 스마트폰과 전체 POS(판매 지점) 시스템의 눌러서 결제 기능을 이용하세요. %1$@";
-
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "주문이 현금으로 결제되었습니다. 고객이 %1$@을(를) 결제했습니다. %2$@이(가) 거슬러줄 잔돈이었습니다.";
 

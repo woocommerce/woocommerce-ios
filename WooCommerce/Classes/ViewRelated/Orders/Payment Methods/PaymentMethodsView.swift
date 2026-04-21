@@ -140,10 +140,7 @@ struct PaymentMethodsView: View {
                 .background(FullScreenCoverClearBackgroundView())
         }
         .navigationDestination(isPresented: $showingLearnMore) {
-            AuthenticatableWebView(url: viewModel.learnMoreViewModel.url,
-                                   onDismiss: {
-                viewModel.syncSiteAndRefreshVisibility()
-            })
+            AuthenticatableWebView(url: viewModel.learnMoreViewModel.url)
         }
         .navigationDestination(isPresented: $showingCashAlert) {
             CashPaymentTenderView(viewModel: CashPaymentTenderViewModel(total: viewModel.total,

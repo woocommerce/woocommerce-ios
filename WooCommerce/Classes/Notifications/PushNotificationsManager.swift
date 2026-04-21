@@ -348,6 +348,10 @@ extension PushNotificationsManager {
     /// - Throws: If registration fails or device token is not available.
     @MainActor
     func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
+        guard selfDrivenPushNotificationEnabled == true else {
+            DDLogDebug("📱 Self-driven push notifications not enabled — skipping registration for site \(siteID)")
+            return
+        }
         guard let deviceToken = registrationState.deviceToken else {
             throw PushNotificationError.missingDeviceToken
         }

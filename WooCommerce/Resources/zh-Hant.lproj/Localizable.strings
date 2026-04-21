@@ -12004,8 +12004,6 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.couponRow.invalidCoupon" = "未套用優惠券";
 
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "預訂";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "請稍候";
 
@@ -12106,11 +12104,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.paymentError.noOrder" = "尚未載入訂單。 請先開始付款，再傳送收據。";
 
 /* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "返回預訂";
-
 /* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "完成";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "編輯訂單";
 

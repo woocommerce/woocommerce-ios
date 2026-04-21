@@ -12007,8 +12007,6 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.couponRow.invalidCoupon" = "Coupon non applicato";
 
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "Prenotazioni";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Attendi";
 
@@ -12109,11 +12107,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.paymentError.noOrder" = "Nessun ordine ancora caricato. Avvia un pagamento prima di inviare una ricevuta.";
 
 /* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Torna alla prenotazione";
-
 /* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Fatto";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Modifica ordine";
 

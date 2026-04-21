@@ -12007,8 +12007,6 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.couponRow.invalidCoupon" = "クーポンが適用されませんでした";
 
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "予約";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "しばらくお待ちください";
 
@@ -12109,11 +12107,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.paymentError.noOrder" = "まだ注文が読み込まれていません。 領収書を送信する前に支払いを開始してください。";
 
 /* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "予約に戻る";
-
 /* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "完了";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "注文を編集";
 

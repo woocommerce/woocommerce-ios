@@ -12004,8 +12004,6 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.couponRow.invalidCoupon" = "Kupon uygulanmadı";
 
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
-"pointOfSale.floatingButtons.bookings.button.title" = "Rezervasyonlar";
-
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Lütfen bekleyin";
 
@@ -12106,11 +12104,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.paymentError.noOrder" = "Henüz sipariş yüklenmedi. Fatura göndermeden önce ödeme başlatın.";
 
 /* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Rezervasyona geri dön";
-
 /* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
-"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Tamam";
-
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Siparişi düzenle";
 

@@ -199,8 +199,7 @@ extension Analytics {
 fileprivate extension Analytics {
     /// Appends site properties (blog_id, is_wpcom_store, etc.) to the given properties dictionary,
     /// using the currently selected site from the session. Delegates the per-site property mapping
-    /// to `Site.analyticsProperties(ciabEligibilityChecker:)` so per-target-site event factories can
-    /// share the same logic.
+    /// to `Site.analyticsProperties` so per-target-site event factories can share the same logic.
     func appendSiteProperties(to properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
         guard ServiceLocator.stores.isAuthenticated else {
             return properties

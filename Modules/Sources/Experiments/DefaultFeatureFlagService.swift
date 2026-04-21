@@ -99,9 +99,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleBookings:
             return true
-        case .selfDrivenPushTokenWPCom:
-            return false
-        case .selfDrivenPushTokenAppPasswords:
+        case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha

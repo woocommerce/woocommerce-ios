@@ -68,7 +68,7 @@ final class JetpackSetupCoordinator {
     /// Skips the benefits modal when the self-driven push notifications feature flag is enabled.
     ///
     func startSetup() {
-        if featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) {
+        if featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) {
             Task { @MainActor in
                 await startSetupDirectly()
             }

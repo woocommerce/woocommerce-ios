@@ -53,7 +53,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
 
     func test_checkM1Eligibility_passes_local_feature_flag_as_default_value() async {
         // Given
-        featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let checker = WooPushNotificationEligibilityCheck(
             featureFlagService: featureFlagService,
             stores: storesManager

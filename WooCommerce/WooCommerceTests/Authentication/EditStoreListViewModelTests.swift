@@ -482,8 +482,8 @@ struct EditStoreListViewModelTests {
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
             case .updateNotificationSettings(let settings, let onCompletion):
-                capturedEnabledSites = settings.blogs?.filter { $0.devices?.first?.newComment == true }.map { $0.blogID }
-                capturedDisabledSites = settings.blogs?.filter { $0.devices?.first?.newComment == false }.map { $0.blogID }
+                capturedEnabledSites = settings.blogs.filter { $0.devices.first?.newComment == true }.map { $0.blogID }
+                capturedDisabledSites = settings.blogs.filter { $0.devices.first?.newComment == false }.map { $0.blogID }
                 onCompletion(.success(()))
             default:
                 break

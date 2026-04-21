@@ -252,6 +252,146 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
     }
+
+    // MARK: - Woo-driven Push Notifications Tests
+
+    @MainActor
+    func test_supportsNotificationBasedFeatures_returns_true_when_site_not_registered_for_woo_pns() async {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+
+        // When
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertTrue(viewModel.supportsNotificationBasedFeatures)
+    }
+
+    @MainActor
+    func test_supportsNotificationBasedFeatures_returns_false_when_site_registered_for_woo_pns() async {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+
+        // When
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+    }
+
+    @MainActor
+    func test_supportsNotificationBasedFeatures_returns_false_when_authenticated_without_wpcom() async {
+        // Given
+        let storesWithoutWPCom = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true,
+                                                                                                  isAuthenticatedWithoutWPCom: true))
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+
+        // When
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: storesWithoutWPCom,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+    }
+
+    @MainActor
+    func test_reloadData_skips_notification_sync_when_site_registered_for_woo_pns() async {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        insertReviews(sampleReviews)
+
+        stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(self.sampleReviews))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success(([], true)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        var notificationSyncCalled = false
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .synchronizeNotifications:
+                notificationSyncCalled = true
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertFalse(notificationSyncCalled)
+    }
+
+    @MainActor
+    func test_reloadData_syncs_notifications_when_site_not_registered_for_woo_pns() async {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        insertReviews(sampleReviews)
+
+        stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(self.sampleReviews))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success(([], true)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        var notificationSyncCalled = false
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .synchronizeNotifications(onCompletion):
+                notificationSyncCalled = true
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertTrue(notificationSyncCalled)
+    }
 }
 
 extension ReviewsDashboardCardViewModelTests {

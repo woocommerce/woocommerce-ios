@@ -167,6 +167,177 @@ final class ReviewsViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(retrievedProductIDs, [55, 668, 789])
     }
+
+    // MARK: - Woo-driven Push Notifications Tests
+
+    func test_supportsNotificationBasedFeatures_returns_true_when_site_not_registered_for_woo_pns() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+
+        // When
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertTrue(viewModel.supportsNotificationBasedFeatures)
+    }
+
+    func test_supportsNotificationBasedFeatures_returns_false_when_site_registered_for_woo_pns() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+
+        // When
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+    }
+
+    func test_supportsNotificationBasedFeatures_returns_false_when_authenticated_without_wpcom() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isAuthenticatedWithoutWPCom: true))
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+
+        // When
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+    }
+
+    func test_hasUnreadNotifications_returns_false_when_site_registered_for_woo_pns() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        mockDataSource.mockNotifications = [Note.fake().copy(read: false)]
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+
+        // When
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         pushNotesManager: mockPushNotesManager)
+
+        // Then
+        XCTAssertFalse(viewModel.hasUnreadNotifications)
+    }
+
+    func test_synchronizeReviews_skips_notification_sync_when_site_registered_for_woo_pns() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let sampleReviews: [ProductReview] = [.fake().copy(productID: 55)]
+
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(sampleReviews))
+            default:
+                break
+            }
+        }
+
+        mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success((products: [], hasNextPage: false)))
+            default:
+                break
+            }
+        }
+
+        var notificationSyncCalled = false
+        mockStores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .synchronizeNotifications(let onCompletion):
+                notificationSyncCalled = true
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
+
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         pushNotesManager: mockPushNotesManager)
+
+        // When
+        let expectation = expectation(description: "Wait for synchronizeReviews to complete")
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 10, handler: nil)
+
+        // Then
+        XCTAssertFalse(notificationSyncCalled)
+    }
+
+    func test_synchronizeReviews_syncs_notifications_when_site_not_registered_for_woo_pns() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let sampleReviews: [ProductReview] = [.fake().copy(productID: 55)]
+
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(sampleReviews))
+            default:
+                break
+            }
+        }
+
+        mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success((products: [], hasNextPage: false)))
+            default:
+                break
+            }
+        }
+
+        var notificationSyncCalled = false
+        mockStores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .synchronizeNotifications(let onCompletion):
+                notificationSyncCalled = true
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
+
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         pushNotesManager: mockPushNotesManager)
+
+        // When
+        let expectation = expectation(description: "Wait for synchronizeReviews to complete")
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 10, handler: nil)
+
+        // Then
+        XCTAssertTrue(notificationSyncCalled)
+    }
 }
 
 
@@ -179,6 +350,7 @@ private extension ReviewsViewModelTests {
 final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     var reviews: [ProductReview] = []
+    var mockNotifications: [Note] = []
 
     var isEmpty: Bool {
         return reviews.isEmpty
@@ -195,7 +367,7 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
     }
 
     var notifications: [Note] {
-        return []
+        return mockNotifications
     }
 
     var startForwardingEventsWasHit = false

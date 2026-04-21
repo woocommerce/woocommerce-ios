@@ -104,6 +104,9 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
         self.data = data
         self.stores = stores
         self.pushNotesManager = pushNotesManager
+
+        // Propagate notification support status to the data source
+        self.data.supportsNotificationBasedFeatures = supportsNotificationBasedFeatures
     }
 
     func configureResultsController(tableView: UITableView) {

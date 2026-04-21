@@ -250,7 +250,7 @@ private extension ReviewsDashboardCardViewModel {
                 showProductTitle: product != nil,
                 review: review,
                 product: product,
-                notification: notification
+                notification: supportsNotificationBasedFeatures ? notification : nil
             )
         }
     }

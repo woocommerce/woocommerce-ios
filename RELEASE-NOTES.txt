@@ -3,6 +3,7 @@
 24.7
 -----
 - [*] Add FedEx Terms of Service handling for shipping label purchases [https://github.com/woocommerce/woocommerce-ios/pull/16925]
+- [Internal] Attribute per-site push token registration analytics to the target site instead of the selected site
 
 
 24.6

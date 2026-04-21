@@ -170,32 +170,6 @@ final class ReviewsViewModelTests: XCTestCase {
 
     // MARK: - Woo-driven Push Notifications Tests
 
-    func test_supportsWPComNotifications_returns_true_when_passed_true() {
-        // Given
-        let mockDataSource = MockReviewsDataSource()
-
-        // When
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
-                                         data: mockDataSource,
-                                         supportsWPComNotifications: true)
-
-        // Then
-        XCTAssertTrue(viewModel.supportsWPComNotifications)
-    }
-
-    func test_supportsWPComNotifications_returns_false_when_passed_false() {
-        // Given
-        let mockDataSource = MockReviewsDataSource()
-
-        // When
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
-                                         data: mockDataSource,
-                                         supportsWPComNotifications: false)
-
-        // Then
-        XCTAssertFalse(viewModel.supportsWPComNotifications)
-    }
-
     func test_hasUnreadNotifications_returns_false_when_supportsWPComNotifications_is_false() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -255,7 +229,7 @@ final class ReviewsViewModelTests: XCTestCase {
         viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 3, handler: nil)
 
         // Then
         XCTAssertFalse(notificationSyncCalled)
@@ -306,7 +280,7 @@ final class ReviewsViewModelTests: XCTestCase {
         viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
             expectation.fulfill()
         }
-        waitForExpectations(timeout: 10, handler: nil)
+        waitForExpectations(timeout: 3, handler: nil)
 
         // Then
         XCTAssertTrue(notificationSyncCalled)

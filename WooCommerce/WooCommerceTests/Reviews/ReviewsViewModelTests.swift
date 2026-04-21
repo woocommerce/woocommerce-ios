@@ -205,7 +205,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func test_supportsNotificationBasedFeatures_returns_false_when_authenticated_without_wpcom() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isAuthenticatedWithoutWPCom: true))
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
 
         // When

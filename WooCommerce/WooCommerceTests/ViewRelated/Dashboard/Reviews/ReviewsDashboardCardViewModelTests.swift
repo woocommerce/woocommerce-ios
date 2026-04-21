@@ -288,8 +288,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
     @MainActor
     func test_supportsNotificationBasedFeatures_returns_false_when_authenticated_without_wpcom() async {
         // Given
-        let storesWithoutWPCom = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true,
-                                                                                                  isAuthenticatedWithoutWPCom: true))
+        let storesWithoutWPCom = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true, isWPCom: false))
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
 
         // When

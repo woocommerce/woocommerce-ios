@@ -1484,6 +1484,40 @@ final class PushNotificationsManagerTests: XCTestCase {
             return false
         }))
     }
+
+    func test_registerSiteForSelfDrivenPushNotifications_when_feature_disabled_then_skips_registration() async {
+        // Given
+        let siteID: Int64 = 99
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: false, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        manager = makeManager()
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        // Provide a device token so the manager has one
+        guard let tokenAsData = Sample.deviceToken.data(using: .utf8) else {
+            return XCTFail("Invalid sample token")
+        }
+        manager.registerDeviceToken(with: tokenAsData)
+
+        var registrationAttempted = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case .registerDeviceForSelfDrivenPushNotifications = action {
+                registrationAttempted = true
+            }
+        }
+
+        // When
+        try? await manager.registerSiteForSelfDrivenPushNotifications(siteID)
+
+        // Then
+        XCTAssertFalse(registrationAttempted, "Should not attempt registration when feature is disabled")
+    }
 }
 
 

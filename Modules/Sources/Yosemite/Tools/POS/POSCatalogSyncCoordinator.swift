@@ -422,15 +422,12 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             throw POSCatalogSyncError.requestCancelled
         } catch {
             DDLogError("⛔️ POSCatalogSyncCoordinator failed to complete incremental sync for site \(siteID): \(error)")
-            // Track sync failed analytics
-            let (pollAttempts, lastGenerationState) = Self.extractPollingMetadata(from: error)
+            // Track sync failed analytics.
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncFailed(
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: error,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify,
-                pollAttempts: pollAttempts,
-                lastGenerationState: lastGenerationState
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw error
         }

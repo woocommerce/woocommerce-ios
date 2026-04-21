@@ -121,7 +121,7 @@ public class DevicesRemote: Remote {
     ///
     public func unregisterFromSelfDrivenPushNotifications(siteID: Int64,
                                                           tokenID: Int64,
-                                                          availableAsRESTRequest: Bool = true) async throws {
+                                                          availableAsRESTRequest: Bool = false) async throws {
         let path = Paths.selfDrivenPN + "/\(tokenID)"
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .delete,

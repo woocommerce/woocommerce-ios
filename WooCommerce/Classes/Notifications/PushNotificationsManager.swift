@@ -343,6 +343,25 @@ extension PushNotificationsManager {
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
     }
 
+    /// Registers a specific site for self-driven push notifications.
+    /// - Parameter siteID: The site ID to register.
+    /// - Throws: If registration fails or device token is not available.
+    @MainActor
+    func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
+        guard let deviceToken = registrationState.deviceToken else {
+            throw PushNotificationError.missingDeviceToken
+        }
+        guard !registrationState.isSiteRegisteredForWooPNs(siteID) else {
+            DDLogDebug("📱 Site \(siteID) is already registered for self-driven push notifications")
+            return
+        }
+        _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Int64, Error>) in
+            registerSelfDrivenPushNotificationFlow(with: deviceToken, siteID: siteID) { result in
+                continuation.resume(with: result)
+            }
+        }
+    }
+
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
     ///
     /// - Parameters:
@@ -1043,6 +1062,7 @@ private enum AnalyticKey {
 private enum PushNotificationError: Error {
     case deviceTokenTimeout
     case missingSiteID
+    case missingDeviceToken
     case siteRegistrationFailed(siteIDs: [Int64])
     case pluginVersionIncompatible(currentVersion: String, requiredVersion: String)
 }

@@ -690,7 +690,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockSelfDrivenRegistrationActions(token: 123)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -750,7 +750,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -798,7 +798,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let siteID: Int64 = 99
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(siteID)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -838,7 +838,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let siteID: Int64 = 99
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(siteID)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -888,7 +888,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let siteID: Int64 = 99
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(siteID)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -933,7 +933,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let siteID: Int64 = 99
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(siteID)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -981,7 +981,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         defaults.set("old-token", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(siteID)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1029,7 +1029,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1075,7 +1075,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1121,7 +1121,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
         defaults.set("100,200", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1159,7 +1159,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1208,7 +1208,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1253,7 +1253,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given — no sites in storage, but defaultStoreID is set
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(99)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1294,7 +1294,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Set the same device token so token-change logic doesn't clear sites
         defaults.set(Sample.deviceToken.data(using: .utf8)!.hexString,
                      forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1368,7 +1368,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
@@ -1438,7 +1438,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         mockSelfDrivenRegistrationActions(token: 123)
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
         storesManager.sessionManager.setStoreId(100)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
 
         let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
         mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {

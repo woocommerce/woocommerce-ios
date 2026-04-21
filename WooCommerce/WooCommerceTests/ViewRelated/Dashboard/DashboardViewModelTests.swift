@@ -1035,7 +1035,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
@@ -1060,7 +1060,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Given
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 
@@ -1133,7 +1133,7 @@ final class DashboardViewModelTests: XCTestCase {
         stores.updateDefaultStore(jcpSite)
         mockReloadingData()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [],
                                                             hasStoredSiteIDsRegisteredForWooPNs: true)
 

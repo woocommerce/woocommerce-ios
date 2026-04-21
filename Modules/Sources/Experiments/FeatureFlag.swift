@@ -209,13 +209,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleBookings
 
-    /// Enables self driven push token registration for users authenticated with WPCom
+    /// Enables self driven push token registration
     ///
-    case selfDrivenPushTokenWPCom
-
-    /// Enables self driven push token registration for users authenticated with app passwords
-    ///
-    case selfDrivenPushTokenAppPasswords
+    case selfDrivenPushToken
 
     /// Enables client-side promotional banners for non-Jetpack stores on the dashboard
     ///

@@ -307,7 +307,7 @@ private extension SettingsViewModel {
                 guard let siteID = stores.sessionManager.defaultSite?.siteID else {
                     return false
                 }
-                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenWPCom) &&
+                return featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) &&
                 pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID)
             }()
             if notificationAvailable && !isSelfDrivenPushNotificationsRegistered {
@@ -381,7 +381,7 @@ private extension SettingsViewModel {
             return false
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords) else {
+        guard featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken) else {
             return false
         }
 

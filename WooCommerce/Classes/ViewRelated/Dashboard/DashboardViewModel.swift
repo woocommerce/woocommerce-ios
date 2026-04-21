@@ -986,7 +986,7 @@ private extension DashboardViewModel {
             registeredSiteIDs.contains(siteID) == false &&
             (stores.isAuthenticatedWithoutWPCom || stores.sessionManager.defaultSite?.isJetpackCPConnected == true) &&
             !dismissedWPComConnectionSuggestion &&
-            featureFlagService.isFeatureFlagEnabled(.selfDrivenPushTokenAppPasswords)
+            featureFlagService.isFeatureFlagEnabled(.selfDrivenPushToken)
     }
 
 }

@@ -234,7 +234,7 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)

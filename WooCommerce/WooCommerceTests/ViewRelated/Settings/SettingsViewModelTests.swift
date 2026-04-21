@@ -275,7 +275,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_sections_contains_does_not_contain_notifications_row_for_selfregisteredtoken() {
         // Given
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenWPCom: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123], hasStoredSiteIDsRegisteredForWooPNs: true)
@@ -293,7 +293,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_sections_contains_enable_push_notifications_row_for_app_password_users_when_feature_flag_on() {
         // Given
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
         let viewModel = SettingsViewModel(stores: stores,
@@ -309,7 +309,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_sections_does_not_contain_enable_push_notifications_row_when_feature_flag_off() {
         // Given
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
         let viewModel = SettingsViewModel(stores: stores,
@@ -325,7 +325,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_sections_contains_enablePushNotifications_row_when_site_is_JCP_and_feature_flag_enabled_and_not_registered() {
         // Given
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: false, isJetpackConnected: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
         let pushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])

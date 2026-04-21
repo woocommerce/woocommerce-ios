@@ -29,7 +29,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_startSetup_when_feature_flag_disabled_then_presents_benefit_modal() {
         // Given
         let testSite = Site.fake()
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: false)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   featureFlagService: featureFlagService)
@@ -191,7 +191,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_startSetup_when_feature_flag_enabled_then_presents_email_login_directly() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
@@ -221,7 +221,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_startSetup_when_feature_flag_enabled_then_does_not_present_benefit_modal() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
@@ -250,7 +250,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_startSetup_when_feature_flag_enabled_and_wpcom_credentials_then_presents_setup_steps_directly() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
@@ -270,7 +270,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     func test_startSetup_when_feature_flag_enabled_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushTokenAppPasswords: true)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,

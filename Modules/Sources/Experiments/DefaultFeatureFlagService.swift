@@ -87,8 +87,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleHistoricalOrdersi1:
             return true
-        case .pointOfSaleLocalCatalogi1:
-            return true
         case .pointOfSaleFTSSearch:
             return true
         case .ciabBookings:
@@ -99,9 +97,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSaleBookings:
             return true
-        case .selfDrivenPushTokenWPCom:
-            return false
-        case .selfDrivenPushTokenAppPasswords:
+        case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:
             return buildConfig == .localDeveloper || buildConfig == .alpha

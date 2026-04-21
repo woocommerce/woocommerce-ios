@@ -112,7 +112,7 @@ struct POSOrdersView: View {
                     viewModel: POSOrderListEmptyViewModel(isSearching: false)
                 ) {
                     Task { @MainActor in
-                        await orderListModel.ordersController.refreshOrders()
+                        await orderListModel.ordersController.loadOrders()
                     }
                 }
                 Spacer()

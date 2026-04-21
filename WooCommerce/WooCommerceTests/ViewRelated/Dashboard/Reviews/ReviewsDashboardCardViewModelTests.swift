@@ -39,7 +39,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
                                                       stores: stores,
                                                       storageManager: storageManager)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -173,7 +173,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       storageManager: storageManager)
         XCTAssertNil(viewModel.syncingError)
         let error = NSError(domain: "test", code: 500)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -217,7 +217,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       storageManager: storageManager)
         XCTAssertNil(viewModel.syncingError)
         let error = NSError(domain: "test", code: 500)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -309,7 +309,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       storageManager: storageManager,
                                                       pushNotesManager: mockPushNotesManager)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
@@ -354,7 +354,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       storageManager: storageManager,
                                                       pushNotesManager: mockPushNotesManager)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
             switch action {
@@ -394,16 +394,17 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
 }
 
 extension ReviewsDashboardCardViewModelTests {
-    func insertReviews(_ readOnlyReviews: [ProductReview]) {
-        let expectation = expectation(description: "Insert reviews")
-        storageManager.performAndSave({ storage in
-            readOnlyReviews.forEach { review in
-                let newReview = storage.insertNewObject(ofType: StorageProductReview.self)
-                newReview.update(with: review)
-            }
-        }, completion: {
-            expectation.fulfill()
-        }, on: .main)
-        wait(for: [expectation], timeout: 1.0)
+    @MainActor
+    func insertReviews(_ readOnlyReviews: [ProductReview]) async {
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ storage in
+                readOnlyReviews.forEach { review in
+                    let newReview = storage.insertNewObject(ofType: StorageProductReview.self)
+                    newReview.update(with: review)
+                }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
+        }
     }
 }

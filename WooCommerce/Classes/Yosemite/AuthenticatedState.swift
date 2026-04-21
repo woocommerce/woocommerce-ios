@@ -213,7 +213,8 @@ class AuthenticatedState: StoresManagerState {
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
-                connectivityObserver: ServiceLocator.connectivityObserver
+                connectivityObserver: ServiceLocator.connectivityObserver,
+                usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility
@@ -234,7 +235,7 @@ class AuthenticatedState: StoresManagerState {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1)
+        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)

@@ -398,7 +398,8 @@ extension PushNotificationsManager {
             return
         }
 
-        func registerForWPComPushNotifications() {
+        func registerForWPComPushNotificationsIfPossible() {
+            if stores.isAuthenticatedWithoutWPCom { return }
             // Register in the Dotcom's Infrastructure
             registerDotcomDevice(with: newToken) { (device, error) in
                 guard let deviceID = device?.deviceID else {
@@ -418,14 +419,22 @@ extension PushNotificationsManager {
                 guard let self else { return }
                 do {
                     try await registerSelfDrivenPushNotificationsForAllSites(with: newToken)
-                } catch {
-                    if !stores.isAuthenticatedWithoutWPCom {
-                        registerForWPComPushNotifications()
+                    // Disable WPCom PNs for successfully registered sites
+                    if let deviceID = registrationState.deviceID {
+                        disableWPComPushNotificationsIfNeeded(
+                            siteIDs: registrationState.siteIDsRegisteredForWooPNs,
+                            deviceID: deviceID
+                        )
+                    } else {
+                        // Register with WPCom to get deviceID for disabling
+                        registerForWPComPushNotificationsIfPossible()
                     }
+                } catch {
+                    registerForWPComPushNotificationsIfPossible()
                 }
             }
-        } else if !stores.isAuthenticatedWithoutWPCom {
-            registerForWPComPushNotifications()
+        } else {
+            registerForWPComPushNotificationsIfPossible()
         }
     }
 
@@ -755,7 +764,7 @@ private extension PushNotificationsManager {
 
     func checkSelfDrivenPushNotificationsEligibility() {
         Task { @MainActor in
-            let isEnabled = await selfDriventPNEligiblityChecker.checkM1Eligibility()
+            let isEnabled = await selfDriventPNEligiblityChecker.checkEligibility()
             if selfDrivenPushNotificationEnabled != isEnabled {
                 selfDrivenPushNotificationEnabled = isEnabled
                 if let pendingTokenData {
@@ -809,8 +818,6 @@ private extension PushNotificationsManager {
                 failedSiteIDs.append(siteID)
             }
         }
-
-        disableWPComPushNotificationsIfNeeded(siteIDs: registrationState.siteIDsRegisteredForWooPNs, deviceID: registrationState.deviceID)
 
         if failedSiteIDs.isNotEmpty {
             throw PushNotificationError.siteRegistrationFailed(siteIDs: failedSiteIDs)

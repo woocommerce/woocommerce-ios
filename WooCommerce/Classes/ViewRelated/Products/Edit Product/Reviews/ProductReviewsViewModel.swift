@@ -26,7 +26,7 @@ final class ProductReviewsViewModel {
 
     /// Whether notifications-based features (unread indicators) should be available.
     /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
-    private var supportsNotificationBasedFeatures: Bool {
+    private var supportsWPComNotifications: Bool {
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }

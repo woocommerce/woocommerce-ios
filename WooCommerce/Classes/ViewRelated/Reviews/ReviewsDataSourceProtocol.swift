@@ -47,7 +47,7 @@ protocol ReviewsDataSourceProtocol: UITableViewDataSource, ReviewsInteractionDel
     /// Whether notifications-based features (unread indicators) should be available.
     /// Returns false for sites using Woo-driven push notifications.
     ///
-    var supportsNotificationBasedFeatures: Bool { get }
+    var supportsWPComNotifications: Bool { get }
 
     /// Initializes observers for incoming reviews
     ///

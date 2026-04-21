@@ -178,7 +178,7 @@ private extension ReviewsDashboardCard {
 
     func unreadIndicatorColor(for reviewViewModel: ReviewViewModel) -> Color {
         // Don't show unread indicator for Woo-driven sites (notifications not available)
-        guard viewModel.supportsNotificationBasedFeatures else {
+        guard viewModel.supportsWPComNotifications else {
             return Color.secondary
         }
         // Show purple for unread, secondary for read or no notification

@@ -62,7 +62,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     /// Whether notifications-based features (unread indicators) should be available.
     /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
-    var supportsNotificationBasedFeatures: Bool {
+    var supportsWPComNotifications: Bool {
         // Skip if authenticated without WPCom (no notifications available)
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
@@ -250,7 +250,7 @@ private extension ReviewsDashboardCardViewModel {
                 showProductTitle: product != nil,
                 review: review,
                 product: product,
-                notification: supportsNotificationBasedFeatures ? notification : nil
+                notification: supportsWPComNotifications ? notification : nil
             )
         }
     }
@@ -272,7 +272,7 @@ private extension ReviewsDashboardCardViewModel {
                 group.addTask { [weak self] in
                     try await self?.retrieveProducts(for: productIDs)
                 }
-                if supportsNotificationBasedFeatures {
+                if supportsWPComNotifications {
                     group.addTask { [weak self] in
                         try await self?.synchronizeNotifications()
                     }

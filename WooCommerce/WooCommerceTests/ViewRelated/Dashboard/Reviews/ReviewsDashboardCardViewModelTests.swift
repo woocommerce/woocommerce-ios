@@ -256,7 +256,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
     // MARK: - Woo-driven Push Notifications Tests
 
     @MainActor
-    func test_supportsNotificationBasedFeatures_returns_true_when_site_not_registered_for_woo_pns() async {
+    func test_supportsWPComNotifications_returns_true_when_site_not_registered_for_woo_pns() async {
         // Given
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
 
@@ -267,11 +267,11 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       pushNotesManager: mockPushNotesManager)
 
         // Then
-        XCTAssertTrue(viewModel.supportsNotificationBasedFeatures)
+        XCTAssertTrue(viewModel.supportsWPComNotifications)
     }
 
     @MainActor
-    func test_supportsNotificationBasedFeatures_returns_false_when_site_registered_for_woo_pns() async {
+    func test_supportsWPComNotifications_returns_false_when_site_registered_for_woo_pns() async {
         // Given
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
 
@@ -282,11 +282,11 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       pushNotesManager: mockPushNotesManager)
 
         // Then
-        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+        XCTAssertFalse(viewModel.supportsWPComNotifications)
     }
 
     @MainActor
-    func test_supportsNotificationBasedFeatures_returns_false_when_authenticated_without_wpcom() async {
+    func test_supportsWPComNotifications_returns_false_when_authenticated_without_wpcom() async {
         // Given
         let storesWithoutWPCom = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true, isWPCom: false))
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
@@ -298,7 +298,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       pushNotesManager: mockPushNotesManager)
 
         // Then
-        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+        XCTAssertFalse(viewModel.supportsWPComNotifications)
     }
 
     @MainActor

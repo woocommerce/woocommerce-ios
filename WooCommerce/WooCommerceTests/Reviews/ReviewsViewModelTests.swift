@@ -170,7 +170,7 @@ final class ReviewsViewModelTests: XCTestCase {
 
     // MARK: - Woo-driven Push Notifications Tests
 
-    func test_supportsNotificationBasedFeatures_returns_true_when_site_not_registered_for_woo_pns() {
+    func test_supportsWPComNotifications_returns_true_when_site_not_registered_for_woo_pns() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let mockStores = MockStoresManager(sessionManager: .makeForTesting())
@@ -183,10 +183,10 @@ final class ReviewsViewModelTests: XCTestCase {
                                          pushNotesManager: mockPushNotesManager)
 
         // Then
-        XCTAssertTrue(viewModel.supportsNotificationBasedFeatures)
+        XCTAssertTrue(viewModel.supportsWPComNotifications)
     }
 
-    func test_supportsNotificationBasedFeatures_returns_false_when_site_registered_for_woo_pns() {
+    func test_supportsWPComNotifications_returns_false_when_site_registered_for_woo_pns() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let mockStores = MockStoresManager(sessionManager: .makeForTesting())
@@ -199,10 +199,10 @@ final class ReviewsViewModelTests: XCTestCase {
                                          pushNotesManager: mockPushNotesManager)
 
         // Then
-        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+        XCTAssertFalse(viewModel.supportsWPComNotifications)
     }
 
-    func test_supportsNotificationBasedFeatures_returns_false_when_authenticated_without_wpcom() {
+    func test_supportsWPComNotifications_returns_false_when_authenticated_without_wpcom() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -215,7 +215,7 @@ final class ReviewsViewModelTests: XCTestCase {
                                          pushNotesManager: mockPushNotesManager)
 
         // Then
-        XCTAssertFalse(viewModel.supportsNotificationBasedFeatures)
+        XCTAssertFalse(viewModel.supportsWPComNotifications)
     }
 
     func test_hasUnreadNotifications_returns_false_when_site_registered_for_woo_pns() {
@@ -351,10 +351,10 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     var reviews: [ProductReview] = []
     var mockNotifications: [Note] = []
-    let supportsNotificationBasedFeatures: Bool
+    let supportsWPComNotifications: Bool
 
-    init(supportsNotificationBasedFeatures: Bool = true) {
-        self.supportsNotificationBasedFeatures = supportsNotificationBasedFeatures
+    init(supportsWPComNotifications: Bool = true) {
+        self.supportsWPComNotifications = supportsWPComNotifications
     }
 
     var isEmpty: Bool {

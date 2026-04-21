@@ -83,12 +83,12 @@ final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     /// Whether notifications-based features (unread indicators) should be available.
     /// Returns false for sites using Woo-driven push notifications.
-    let supportsNotificationBasedFeatures: Bool
+    let supportsWPComNotifications: Bool
 
-    init(siteID: Int64, customizer: ReviewsDataSourceCustomizing, supportsNotificationBasedFeatures: Bool = true) {
+    init(siteID: Int64, customizer: ReviewsDataSourceCustomizing, supportsWPComNotifications: Bool = true) {
         self.siteID = siteID
         self.customizer = customizer
-        self.supportsNotificationBasedFeatures = supportsNotificationBasedFeatures
+        self.supportsWPComNotifications = supportsWPComNotifications
         super.init()
         observeResults()
     }
@@ -182,7 +182,7 @@ private extension ReviewsDataSource {
     private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewProduct = product(id: review.productID)
-        let note = supportsNotificationBasedFeatures ? notification(id: review.reviewID) : nil
+        let note = supportsWPComNotifications ? notification(id: review.reviewID) : nil
 
         return ReviewViewModel(showProductTitle: customizer.shouldShowProductTitleOnCells, review: review, product: reviewProduct, notification: note)
     }

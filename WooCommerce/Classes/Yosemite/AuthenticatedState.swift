@@ -213,7 +213,8 @@ class AuthenticatedState: StoresManagerState {
                 grdbManager: ServiceLocator.grdbManager,
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
-                connectivityObserver: ServiceLocator.connectivityObserver
+                connectivityObserver: ServiceLocator.connectivityObserver,
+                usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
             )
 
             // Note: POS eligibility will be set later by POSTabCoordinator.updatePOSEligibility

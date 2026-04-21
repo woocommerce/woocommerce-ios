@@ -65,6 +65,8 @@ only_rules:
   # Lines should not have trailing whitespace.
   - trailing_whitespace
 
+  - unused_import
+
   - vertical_whitespace
 
   - weak_delegate

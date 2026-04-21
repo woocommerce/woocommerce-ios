@@ -10,7 +10,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func testDataSourceReturnsInjectedReviewsDataSource() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // When
         let dataSource = viewModel.dataSource
@@ -22,7 +22,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func testDelegateReturnsInjectedReviewsDelegate() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // When
         let delegate = viewModel.delegate
@@ -34,7 +34,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func testIsEmptyReturnsTheSameAsTheDataSource() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // Then
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
@@ -44,7 +44,7 @@ final class ReviewsViewModelTests: XCTestCase {
         // Given
         let table = UITableView()
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // When
         viewModel.configureResultsController(tableView: table)
@@ -57,7 +57,7 @@ final class ReviewsViewModelTests: XCTestCase {
         // Given
         let storesManager = MockReviewsStoresManager()
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager, supportsWPComNotifications: true)
 
         // Then
         let expectation = expectation(description: "Wait for synchronizeReviews to complete")
@@ -85,7 +85,7 @@ final class ReviewsViewModelTests: XCTestCase {
                 return
             }
         }
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager, supportsWPComNotifications: true)
         viewModel.dataLoadingError = MockError()
 
         // When
@@ -107,7 +107,7 @@ final class ReviewsViewModelTests: XCTestCase {
                 return
             }
         }
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager, supportsWPComNotifications: true)
         viewModel.dataLoadingError = nil
 
         // When
@@ -155,7 +155,7 @@ final class ReviewsViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: mockStores)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: mockStores, supportsWPComNotifications: true)
 
         // When
         let expectation = expectation(description: "Wait for synchronizeReviews to complete")
@@ -170,72 +170,47 @@ final class ReviewsViewModelTests: XCTestCase {
 
     // MARK: - Woo-driven Push Notifications Tests
 
-    func test_supportsWPComNotifications_returns_true_when_site_not_registered_for_woo_pns() {
+    func test_supportsWPComNotifications_returns_true_when_passed_true() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
 
         // When
         let viewModel = ReviewsViewModel(siteID: sampleSiteID,
                                          data: mockDataSource,
-                                         stores: mockStores,
-                                         pushNotesManager: mockPushNotesManager)
+                                         supportsWPComNotifications: true)
 
         // Then
         XCTAssertTrue(viewModel.supportsWPComNotifications)
     }
 
-    func test_supportsWPComNotifications_returns_false_when_site_registered_for_woo_pns() {
+    func test_supportsWPComNotifications_returns_false_when_passed_false() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
 
         // When
         let viewModel = ReviewsViewModel(siteID: sampleSiteID,
                                          data: mockDataSource,
-                                         stores: mockStores,
-                                         pushNotesManager: mockPushNotesManager)
+                                         supportsWPComNotifications: false)
 
         // Then
         XCTAssertFalse(viewModel.supportsWPComNotifications)
     }
 
-    func test_supportsWPComNotifications_returns_false_when_authenticated_without_wpcom() {
-        // Given
-        let mockDataSource = MockReviewsDataSource()
-        let mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
-
-        // When
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
-                                         data: mockDataSource,
-                                         stores: mockStores,
-                                         pushNotesManager: mockPushNotesManager)
-
-        // Then
-        XCTAssertFalse(viewModel.supportsWPComNotifications)
-    }
-
-    func test_hasUnreadNotifications_returns_false_when_site_registered_for_woo_pns() {
+    func test_hasUnreadNotifications_returns_false_when_supportsWPComNotifications_is_false() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         mockDataSource.mockNotifications = [Note.fake().copy(read: false)]
-        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
 
         // When
         let viewModel = ReviewsViewModel(siteID: sampleSiteID,
                                          data: mockDataSource,
-                                         stores: mockStores,
-                                         pushNotesManager: mockPushNotesManager)
+                                         supportsWPComNotifications: false)
 
         // Then
         XCTAssertFalse(viewModel.hasUnreadNotifications)
     }
 
-    func test_synchronizeReviews_skips_notification_sync_when_site_registered_for_woo_pns() {
+    func test_synchronizeReviews_skips_notification_sync_when_supportsWPComNotifications_is_false() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let sampleReviews: [ProductReview] = [.fake().copy(productID: 55)]
@@ -270,11 +245,10 @@ final class ReviewsViewModelTests: XCTestCase {
             }
         }
 
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
         let viewModel = ReviewsViewModel(siteID: sampleSiteID,
                                          data: mockDataSource,
                                          stores: mockStores,
-                                         pushNotesManager: mockPushNotesManager)
+                                         supportsWPComNotifications: false)
 
         // When
         let expectation = expectation(description: "Wait for synchronizeReviews to complete")
@@ -287,7 +261,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertFalse(notificationSyncCalled)
     }
 
-    func test_synchronizeReviews_syncs_notifications_when_site_not_registered_for_woo_pns() {
+    func test_synchronizeReviews_syncs_notifications_when_supportsWPComNotifications_is_true() {
         // Given
         let mockDataSource = MockReviewsDataSource()
         let sampleReviews: [ProductReview] = [.fake().copy(productID: 55)]
@@ -322,11 +296,10 @@ final class ReviewsViewModelTests: XCTestCase {
             }
         }
 
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
         let viewModel = ReviewsViewModel(siteID: sampleSiteID,
                                          data: mockDataSource,
                                          stores: mockStores,
-                                         pushNotesManager: mockPushNotesManager)
+                                         supportsWPComNotifications: true)
 
         // When
         let expectation = expectation(description: "Wait for synchronizeReviews to complete")

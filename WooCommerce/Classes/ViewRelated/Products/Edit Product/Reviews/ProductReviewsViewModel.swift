@@ -7,8 +7,6 @@ import class AutomatticTracks.CrashLogging
 /// The Product Reviews view model used in ProductReviewsViewController
 final class ProductReviewsViewModel {
     private let data: ReviewsDataSourceProtocol
-    private let stores: StoresManager
-    private let pushNotesManager: PushNotesManager
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -24,26 +22,10 @@ final class ProductReviewsViewModel {
 
     private let siteID: Int64
 
-    /// Whether notifications-based features (unread indicators) should be available.
-    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
-    private var supportsWPComNotifications: Bool {
-        guard stores.isAuthenticatedWithoutWPCom == false else {
-            return false
-        }
-        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
-            return false
-        }
-        return true
-    }
-
     init(siteID: Int64,
-         data: ReviewsDataSourceProtocol,
-         stores: StoresManager = ServiceLocator.stores,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         data: ReviewsDataSourceProtocol) {
         self.siteID = siteID
         self.data = data
-        self.stores = stores
-        self.pushNotesManager = pushNotesManager
     }
 
     func configureResultsController(tableView: UITableView) {

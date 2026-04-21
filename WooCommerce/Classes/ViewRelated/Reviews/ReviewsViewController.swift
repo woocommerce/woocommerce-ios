@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 // MARK: - ReviewsViewController
 //
@@ -117,12 +118,12 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
                                                                       customizer: GlobalReviewsDataSourceCustomizer(),
                                                                       supportsWPComNotifications: supportsWPComNotifications),
                                               stores: stores,
-                                              pushNotesManager: pushNotesManager))
+                                              supportsWPComNotifications: supportsWPComNotifications))
     }
 
     private static func supportsWPComNotifications(siteID: Int64,
-                                                          stores: StoresManager,
-                                                          pushNotesManager: PushNotesManager) -> Bool {
+                                                   stores: StoresManager,
+                                                   pushNotesManager: PushNotesManager) -> Bool {
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }

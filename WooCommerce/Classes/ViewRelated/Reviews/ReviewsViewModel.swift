@@ -47,7 +47,10 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
 
     private let data: ReviewsDataSourceProtocol
     private let stores: StoresManager
-    private let pushNotesManager: PushNotesManager
+
+    /// Whether notifications-based features (unread indicators, mark as read) should be available.
+    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
+    let supportsWPComNotifications: Bool
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -59,20 +62,6 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
 
     var delegate: ReviewsInteractionDelegate {
         return data
-    }
-
-    /// Whether notifications-based features (unread indicators, mark as read) should be available.
-    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
-    var supportsWPComNotifications: Bool {
-        // Skip if authenticated without WPCom (no notifications available)
-        guard stores.isAuthenticatedWithoutWPCom == false else {
-            return false
-        }
-        // Skip if site is registered for Woo-driven push notifications (WPCom notifications not used)
-        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
-            return false
-        }
-        return true
     }
 
     var hasUnreadNotifications: Bool {
@@ -99,11 +88,11 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     init(siteID: Int64,
          data: ReviewsDataSourceProtocol,
          stores: StoresManager = ServiceLocator.stores,
-         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+         supportsWPComNotifications: Bool) {
         self.siteID = siteID
         self.data = data
         self.stores = stores
-        self.pushNotesManager = pushNotesManager
+        self.supportsWPComNotifications = supportsWPComNotifications
     }
 
     func configureResultsController(tableView: UITableView) {

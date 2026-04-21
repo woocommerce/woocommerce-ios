@@ -70,15 +70,13 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
         viewModel = ProductReviewsViewModel(siteID: product.siteID,
                                             data: ReviewsDataSource(siteID: product.siteID,
                                                                     customizer: ProductReviewsDataSourceCustomizer(product: product),
-                                                                    supportsWPComNotifications: supportsWPComNotifications),
-                                            stores: stores,
-                                            pushNotesManager: pushNotesManager)
+                                                                    supportsWPComNotifications: supportsWPComNotifications))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
     private static func supportsWPComNotifications(siteID: Int64,
-                                                          stores: StoresManager,
-                                                          pushNotesManager: PushNotesManager) -> Bool {
+                                                   stores: StoresManager,
+                                                   pushNotesManager: PushNotesManager) -> Bool {
         guard stores.isAuthenticatedWithoutWPCom == false else {
             return false
         }

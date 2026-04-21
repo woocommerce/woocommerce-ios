@@ -772,7 +772,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         fallbackExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion):
+            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Failure", code: 404)))
             case .registerDevice:
                 fallbackExpectation.fulfill()
@@ -813,7 +813,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let registrationExpectation = expectation(description: "Registration attempted")
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(NetworkError.notFound()))
                 registrationExpectation.fulfill()
             }
@@ -908,7 +908,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let registrationExpectation = expectation(description: "Registration attempted")
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(42))
                 registrationExpectation.fulfill()
             }
@@ -954,7 +954,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let registrationExpectation = expectation(description: "Registration attempted")
         registrationExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(42))
                 registrationExpectation.fulfill()
             }
@@ -999,7 +999,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         fallbackExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion):
+            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
             case .registerDevice:
                 fallbackExpectation.fulfill()
@@ -1046,7 +1046,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let allRegisteredExpectation = expectation(description: "All sites registered")
         allRegisteredExpectation.expectedFulfillmentCount = 3
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
                 onCompletion(.success(Int64(siteID + 1000)))
                 allRegisteredExpectation.fulfill()
@@ -1091,7 +1091,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let allAttemptedExpectation = expectation(description: "All sites attempted")
         allAttemptedExpectation.expectedFulfillmentCount = 3
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 if siteID == 200 {
                     onCompletion(.failure(NSError(domain: "test", code: 500)))
                 } else {
@@ -1137,7 +1137,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         var registeredSiteIDs = Set<Int64>()
         let registrationExpectation = expectation(description: "Only unregistered site attempted")
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
                 onCompletion(.success(Int64(siteID + 1000)))
                 registrationExpectation.fulfill()
@@ -1176,7 +1176,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         fallbackExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion):
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
                 if siteID == 200 {
                     onCompletion(.failure(NSError(domain: "test", code: 500)))
                 } else {
@@ -1231,7 +1231,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         fallbackExpectation.assertForOverFulfill = false
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion):
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion):
                 if siteID == 200 {
                     onCompletion(.failure(NSError(domain: "test", code: 500)))
                 } else {
@@ -1270,6 +1270,45 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(errorProperties["is_jetpack_connected"] as? Bool, false)
     }
 
+    func test_registerDeviceToken_when_target_site_is_not_the_selected_site_then_forces_jetpack_tunnel() async throws {
+        // Given — selected site is 100, storage has two WC-active sites.
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        await insertSitesIntoStorage(siteIDs: [100, 200])
+
+        manager = makeManager(featureFlagService: featureFlagService)
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        // Capture the REST-fallback flag per target site.
+        var restFallbackBySite: [Int64: Bool] = [:]
+        let bothAttempted = expectation(description: "Both sites attempted")
+        bothAttempted.expectedFulfillmentCount = 2
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, availableAsRESTRequest, onCompletion) = action {
+                restFallbackBySite[siteID] = availableAsRESTRequest
+                onCompletion(.success(Int64(siteID + 1000)))
+                bothAttempted.fulfill()
+            }
+        }
+
+        let tokenAsData = try XCTUnwrap(Sample.deviceToken.data(using: .utf8))
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+        await fulfillment(of: [bothAttempted], timeout: 2.0)
+
+        // Then — selected site may use REST fastpath; non-selected site must force the Jetpack tunnel.
+        XCTAssertEqual(restFallbackBySite[100], true, "Selected site should allow REST fallback")
+        XCTAssertEqual(restFallbackBySite[200], false, "Non-selected site must force Jetpack tunnel to avoid mis-routing")
+    }
+
     func test_registerDeviceToken_when_site_returns_notFound_then_unmarks_that_site() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1289,7 +1328,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let allAttemptedExpectation = expectation(description: "All sites attempted")
         allAttemptedExpectation.expectedFulfillmentCount = 2
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 if siteID == 200 {
                     onCompletion(.failure(NetworkError.notFound()))
                 } else {
@@ -1333,7 +1372,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         var registeredSiteIDs = Set<Int64>()
         let registrationExpectation = expectation(description: "Registration attempted")
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, _, onCompletion) = action {
                 registeredSiteIDs.insert(siteID)
                 onCompletion(.success(Int64(siteID + 1000)))
                 registrationExpectation.fulfill()
@@ -1413,7 +1452,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         registrationExpectation.assertForOverFulfill = false
         mockRemoteFeatureFlagAction(isEnabled: true)
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
-            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion) = action {
+            if case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(42))
                 registrationExpectation.fulfill()
             }
@@ -1453,7 +1492,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let dotcomExpectation = expectation(description: "Dotcom registerDevice dispatched")
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, onCompletion):
+            case let .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(123))
             case let .registerDevice(_, _, _, onCompletion):
                 dotcomExpectation.fulfill()
@@ -1620,7 +1659,7 @@ private extension PushNotificationsManagerTests {
     func mockSelfDrivenRegistrationActions(token: Int64 = 42, error: Error? = nil) {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
-            case .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, let completion):
+            case .registerDeviceForSelfDrivenPushNotifications(_, _, _, _, _, _, let completion):
                 if let error {
                     completion(.failure(error))
                 } else {

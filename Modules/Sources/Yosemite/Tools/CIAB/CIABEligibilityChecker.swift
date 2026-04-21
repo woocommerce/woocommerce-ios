@@ -33,4 +33,3 @@ extension CIABEligibilityChecker: CIABEligibilityCheckerProtocol {
         return !isSiteCIAB(site) || !CIABAffectedFeature.unsupportedFeatures.contains(feature)
     }
 }
-

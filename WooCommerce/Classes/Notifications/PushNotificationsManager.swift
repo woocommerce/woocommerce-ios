@@ -737,7 +737,7 @@ private extension PushNotificationsManager {
 
     func checkSelfDrivenPushNotificationsEligibility() {
         Task { @MainActor in
-            let isEnabled = await selfDriventPNEligiblityChecker.checkM1Eligibility()
+            let isEnabled = await selfDriventPNEligiblityChecker.checkEligibility()
             if selfDrivenPushNotificationEnabled != isEnabled {
                 selfDrivenPushNotificationEnabled = isEnabled
                 if let pendingTokenData {

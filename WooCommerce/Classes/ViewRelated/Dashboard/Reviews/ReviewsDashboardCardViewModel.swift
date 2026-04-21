@@ -56,8 +56,23 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let pushNotesManager: PushNotesManager
 
     public let siteID: Int64
+
+    /// Whether notifications-based features (unread indicators) should be available.
+    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
+    var supportsNotificationBasedFeatures: Bool {
+        // Skip if authenticated without WPCom (no notifications available)
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return false
+        }
+        // Skip if site is registered for Woo-driven push notifications (WPCom notifications not used)
+        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
+            return false
+        }
+        return true
+    }
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
     @Published private(set) var currentFilter: ReviewsFilter = .all
 
@@ -67,11 +82,13 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
+        self.pushNotesManager = pushNotesManager
 
         self.productsResultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                            matching: nil,
@@ -249,11 +266,13 @@ private extension ReviewsDashboardCardViewModel {
             updateProductsResultsController(for: productIDs)
 
             // Get product names and, optionally, read status from notifications.
+            // Skip syncing notifications if WPCom notifications are not available
+            // (authenticated without WPCom or site uses Woo-driven push notifications).
             try await withThrowingTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
                     try await self?.retrieveProducts(for: productIDs)
                 }
-                if stores.isAuthenticatedWithoutWPCom == false {
+                if supportsNotificationBasedFeatures {
                     group.addTask { [weak self] in
                         try await self?.synchronizeNotifications()
                     }

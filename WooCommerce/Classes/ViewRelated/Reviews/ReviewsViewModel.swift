@@ -47,6 +47,7 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
 
     private let data: ReviewsDataSourceProtocol
     private let stores: StoresManager
+    private let pushNotesManager: PushNotesManager
 
     var isEmpty: Bool {
         return data.isEmpty
@@ -60,7 +61,24 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
         return data
     }
 
+    /// Whether notifications-based features (unread indicators, mark as read) should be available.
+    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
+    private var supportsNotificationBasedFeatures: Bool {
+        // Skip if authenticated without WPCom (no notifications available)
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return false
+        }
+        // Skip if site is registered for Woo-driven push notifications (WPCom notifications not used)
+        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
+            return false
+        }
+        return true
+    }
+
     var hasUnreadNotifications: Bool {
+        guard supportsNotificationBasedFeatures else {
+            return false
+        }
         return !unreadNotifications.isEmpty
     }
 
@@ -78,10 +96,14 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     ///
     var dataLoadingError: Error?
 
-    init(siteID: Int64, data: ReviewsDataSourceProtocol, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         data: ReviewsDataSourceProtocol,
+         stores: StoresManager = ServiceLocator.stores,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.data = data
         self.stores = stores
+        self.pushNotesManager = pushNotesManager
     }
 
     func configureResultsController(tableView: UITableView) {
@@ -136,8 +158,9 @@ extension ReviewsViewModel {
             }
         }
 
-        // skips checking notifications if authenticated without WPCom.
-        if stores.isAuthenticatedWithoutWPCom == false {
+        // Skip syncing notifications if WPCom notifications are not available
+        // (authenticated without WPCom or site uses Woo-driven push notifications).
+        if supportsNotificationBasedFeatures {
             group.enter()
             synchronizeNotifications {
                 group.leave()

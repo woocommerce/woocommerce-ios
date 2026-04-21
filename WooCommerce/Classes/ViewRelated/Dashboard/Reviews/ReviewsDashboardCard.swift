@@ -134,9 +134,7 @@ private extension ReviewsDashboardCard {
             HStack(alignment: .firstTextBaseline, spacing: Layout.padding) {
                 Image(systemName: "bubble.fill")
                     .foregroundStyle(
-                        viewModel.notification == nil || viewModel.notification?.read == true
-                        ? Color.secondary
-                        : Color(.wooCommercePurple(.shade60))
+                        unreadIndicatorColor(for: viewModel)
                     )
 
                 VStack(alignment: .leading, spacing: Layout.padding) {
@@ -176,6 +174,16 @@ private extension ReviewsDashboardCard {
             }
             .padding(.leading, Layout.padding)
         }
+    }
+
+    func unreadIndicatorColor(for reviewViewModel: ReviewViewModel) -> Color {
+        // Don't show unread indicator for Woo-driven sites (notifications not available)
+        guard viewModel.supportsNotificationBasedFeatures else {
+            return Color.secondary
+        }
+        // Show purple for unread, secondary for read or no notification
+        let isRead = reviewViewModel.notification == nil || reviewViewModel.notification?.read == true
+        return isRead ? Color.secondary : Color(.wooCommercePurple(.shade60))
     }
 
     func reviewText(text: String,

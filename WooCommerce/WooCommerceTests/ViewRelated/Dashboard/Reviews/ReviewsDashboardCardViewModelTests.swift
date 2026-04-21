@@ -395,10 +395,15 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
 
 extension ReviewsDashboardCardViewModelTests {
     func insertReviews(_ readOnlyReviews: [ProductReview]) {
-        readOnlyReviews.forEach { review in
-            let newReview = storage.insertNewObject(ofType: StorageProductReview.self)
-            newReview.update(with: review)
-        }
-        storage.saveIfNeeded()
+        let expectation = expectation(description: "Insert reviews")
+        storageManager.performAndSave({ storage in
+            readOnlyReviews.forEach { review in
+                let newReview = storage.insertNewObject(ofType: StorageProductReview.self)
+                newReview.update(with: review)
+            }
+        }, completion: {
+            expectation.fulfill()
+        }, on: .main)
+        wait(for: [expectation], timeout: 1.0)
     }
 }

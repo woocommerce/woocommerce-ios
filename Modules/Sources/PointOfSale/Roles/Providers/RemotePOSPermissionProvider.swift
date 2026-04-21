@@ -291,9 +291,13 @@ public final class RemotePOSPermissionProvider: POSPermissionProviding {
 
     private func startAutoLockTimer() {
         autoLockTimer?.invalidate()
-        autoLockTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(autoLockTimeoutSeconds), repeats: false) { [weak self] _ in
+        let timer = Timer(timeInterval: TimeInterval(autoLockTimeoutSeconds), repeats: false) { [weak self] _ in
             self?.lock()
         }
+        // Schedule in `.common` so the timer still fires during UI tracking
+        // (scrolls, active animations), where `.default` mode would be starved.
+        RunLoop.main.add(timer, forMode: .common)
+        autoLockTimer = timer
     }
 
     // MARK: - Remote Authentication

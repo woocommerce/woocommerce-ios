@@ -69,13 +69,19 @@ public class DevicesRemote: Remote {
     ///     - applicationID: App ID.
     ///     - deviceLocale: Device locale in `xx_XX` format (e.g. `en_US`).
     ///     - appVersion: App version string (e.g. `1.0.0`).
+    ///     - availableAsRESTRequest: Whether the request can be sent as a direct REST call when an
+    ///       application password is available. Only safe when the target `siteID` is the currently
+    ///       selected site, because the REST fallback routes to the current site's URL. For cross-site
+    ///       calls (e.g. registering a non-selected site) pass `false` to force the Jetpack tunnel,
+    ///       which carries the `siteID` in the URL path and always reaches the correct site.
     /// - Returns: The unique ID of the push token record
     ///
     public func registerForSelfDrivenPushNotifications(siteID: Int64,
                                                        device: APNSDevice,
                                                        applicationID: String,
                                                        deviceLocale: String,
-                                                       appVersion: String) async throws -> Int64 {
+                                                       appVersion: String,
+                                                       availableAsRESTRequest: Bool = false) async throws -> Int64 {
         var parameters: [String: Any] = [
             ParameterKeys.origin: applicationID,
             ParameterKeys.token: device.token,
@@ -97,7 +103,7 @@ public class DevicesRemote: Remote {
                                      siteID: siteID,
                                      path: Paths.selfDrivenPN,
                                      parameters: parameters,
-                                     availableAsRESTRequest: true)
+                                     availableAsRESTRequest: availableAsRESTRequest)
         let mapper = TokenIDMapper()
         return try await enqueue(request, mapper: mapper)
     }

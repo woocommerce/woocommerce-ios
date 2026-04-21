@@ -1,7 +1,6 @@
 import SwiftUI
 import UIKit
 import struct WooFoundation.WooAnalyticsEvent
-import struct WooFoundation.SafariView
 
 struct POSOrdersView: View {
     @Binding var isPresented: Bool
@@ -10,7 +9,6 @@ struct POSOrdersView: View {
     @Environment(\.posAnalytics) private var analytics
     @State private var isSearching: Bool = false
     @State private var searchTerm: String = ""
-    @State private var showBlog = false
 
     var body: some View {
         contentView
@@ -113,7 +111,9 @@ struct POSOrdersView: View {
                 POSListEmptyView(
                     viewModel: POSOrderListEmptyViewModel(isSearching: false)
                 ) {
-                    showBlog = true
+                    Task { @MainActor in
+                        await orderListModel.ordersController.refreshOrders()
+                    }
                 }
                 Spacer()
             }
@@ -127,9 +127,6 @@ struct POSOrdersView: View {
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 Spacer()
             }
-        }
-        .posFullScreenCover(isPresented: $showBlog) {
-            SafariView(url: POSConstants.URLs.wooCommerceBlog.asURL())
         }
     }
 }

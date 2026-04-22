@@ -805,10 +805,20 @@ private extension PushNotificationsManager {
         }
     }
 
-    /// Looks up the target `Yosemite.Site` for analytics attribution. The lookup is best-effort —
-    /// a missing local record simply results in an event without per-site properties.
+    /// Looks up the target `Yosemite.Site` for analytics attribution.
+    ///
+    /// For WPCom users, sites are persisted in storage, so the primary path is a direct lookup.
+    /// For site-credentials users, the synced site is assigned to `sessionManager.defaultSite`
+    /// but not written to storage, so we fall back to the session's default site when — and only
+    /// when — its `siteID` matches the requested one. The match guard prevents a storage miss on a
+    /// non-default site (unlikely, but possible in the WPCom multi-site case) from silently
+    /// attributing the event to the selected site, which is the very bug this fix addresses.
     private func loadTargetSite(siteID: Int64) -> Yosemite.Site? {
-        storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
+        if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() {
+            return site
+        }
+        let defaultSite = stores.sessionManager.defaultSite
+        return defaultSite?.siteID == siteID ? defaultSite : nil
     }
 
     /// Registers the push notification token for a single site and handles the result.

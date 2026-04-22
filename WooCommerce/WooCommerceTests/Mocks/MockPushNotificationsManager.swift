@@ -70,6 +70,8 @@ final class MockPushNotificationsManager: PushNotesManager {
     private var authorizationCompletion: ((Bool) -> Void)?
     var onRequestLocalNotificationCalled: (() -> Void)?
     var registerDeviceAndWaitForTokenAcceptanceResult: Result<Int64, Error> = .success(1)
+    var registerSiteForSelfDrivenPushNotificationsResult: Result<Void, Error> = .success(())
+    private(set) var registeredSiteIDsForSelfDrivenPushNotifications: [Int64] = []
 
     init(mockedDeviceID: String? = nil,
          wooPushNotificationToken: String? = nil,
@@ -104,6 +106,15 @@ final class MockPushNotificationsManager: PushNotesManager {
         // Yield to allow MainActor scheduling to settle
         await Task.yield()
         return try registerDeviceAndWaitForTokenAcceptanceResult.get()
+    }
+
+    @MainActor
+    func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
+        registeredSiteIDsForSelfDrivenPushNotifications.append(siteID)
+        try registerSiteForSelfDrivenPushNotificationsResult.get()
+        if !siteIDsRegisteredForWooPNs.contains(siteID) {
+            siteIDsRegisteredForWooPNs.append(siteID)
+        }
     }
 
     func registerForRemoteNotifications() {

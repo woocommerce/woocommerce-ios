@@ -53,11 +53,21 @@ final class EditStoreListViewModel: ObservableObject {
         let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
         let displayedSiteIDs = Array(selectedSites).map { $0.siteID }
 
+        let originalHiddenSiteIDs = Set(availableSites.map(\.siteID)).subtracting(originalSelectedSites.map(\.siteID))
+        let newlyEnabledSiteIDs = displayedSiteIDs.filter { originalHiddenSiteIDs.contains($0) }
+
         analytics.track(event: .SitePicker.listSaveButtonTapped(hiddenSiteCount: hiddenSiteIDs.count))
         shouldShowErrorAlert = false
         isUpdatingNotificationSettings = true
         do {
-            try await updateNotificationSettings(displayedSiteIDs: displayedSiteIDs, hiddenSiteIDs: hiddenSiteIDs)
+            await registerNewlyEnabledSitesForSelfDrivenPushNotifications(newlyEnabledSiteIDs: newlyEnabledSiteIDs)
+
+            // Sites registered with Woo should be disabled in WPCom to avoid duplicate notifications
+            let siteIDsRegisteredForWooPNs = Set(pushNotificationManager.siteIDsRegisteredForWooPNs)
+            let wpcomEnabledSiteIDs = displayedSiteIDs.filter { !siteIDsRegisteredForWooPNs.contains($0) }
+            let wpcomDisabledSiteIDs = hiddenSiteIDs + displayedSiteIDs.filter { siteIDsRegisteredForWooPNs.contains($0) }
+
+            try await updateNotificationSettings(displayedSiteIDs: wpcomEnabledSiteIDs, hiddenSiteIDs: wpcomDisabledSiteIDs)
             await unregisterHiddenSitesFromSelfDrivenPushNotifications(hiddenSiteIDs: hiddenSiteIDs)
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
             analytics.track(event: .SitePicker.listEditSavingSuccess())
@@ -111,6 +121,25 @@ private extension EditStoreListViewModel {
             stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: settings, onCompletion: { result in
                 continuation.resume(with: result)
             }))
+        }
+    }
+
+    /// Registers newly enabled sites for the self-driven push notification system.
+    /// This is best-effort — failures are logged but do not block the save operation.
+    /// Sites that fail to register will fall back to WPCom push notifications via `updateNotificationSettings`.
+    @MainActor
+    func registerNewlyEnabledSitesForSelfDrivenPushNotifications(newlyEnabledSiteIDs: [Int64]) async {
+        await withTaskGroup(of: Void.self) { group in
+            for siteID in newlyEnabledSiteIDs {
+                group.addTask { [weak self] in
+                    guard let self else { return }
+                    do {
+                        try await pushNotificationManager.registerSiteForSelfDrivenPushNotifications(siteID)
+                    } catch {
+                        DDLogError("⛔️ Failed to register site \(siteID) for self-driven push notifications: \(error)")
+                    }
+                }
+            }
         }
     }
 

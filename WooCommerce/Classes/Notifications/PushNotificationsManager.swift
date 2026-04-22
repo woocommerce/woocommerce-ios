@@ -343,6 +343,25 @@ extension PushNotificationsManager {
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
     }
 
+    /// Registers a specific site for self-driven push notifications.
+    /// - Parameter siteID: The site ID to register.
+    /// - Throws: If registration fails or device token is not available.
+    @MainActor
+    func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
+        guard selfDrivenPushNotificationEnabled == true else {
+            DDLogDebug("📱 Self-driven push notifications not enabled — skipping registration for site \(siteID)")
+            return
+        }
+        guard let deviceToken = registrationState.deviceToken else {
+            throw PushNotificationError.missingDeviceToken
+        }
+        guard !registrationState.isSiteRegisteredForWooPNs(siteID) else {
+            DDLogDebug("📱 Site \(siteID) is already registered for self-driven push notifications")
+            return
+        }
+        try await registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID)
+    }
+
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
     ///
     /// - Parameters:
@@ -791,8 +810,12 @@ private extension PushNotificationsManager {
         await withTaskGroup(of: (Int64, Bool).self) { group in
             for siteID in siteIDsToRegister {
                 group.addTask { [weak self] in
-                    let succeeded = await self?.registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID) ?? false
-                    return (siteID, succeeded)
+                    do {
+                        try await self?.registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID)
+                        return (siteID, true)
+                    } catch {
+                        return (siteID, false)
+                    }
                 }
             }
             for await (siteID, succeeded) in group where !succeeded {
@@ -805,16 +828,26 @@ private extension PushNotificationsManager {
         }
     }
 
-    /// Looks up the target `Yosemite.Site` for analytics attribution. The lookup is best-effort —
-    /// a missing local record simply results in an event without per-site properties.
+    /// Looks up the target `Yosemite.Site` for analytics attribution.
+    ///
+    /// For WPCom users, sites are persisted in storage, so the primary path is a direct lookup.
+    /// For site-credentials users, the synced site is assigned to `sessionManager.defaultSite`
+    /// but not written to storage, so we fall back to the session's default site when — and only
+    /// when — its `siteID` matches the requested one. The match guard prevents a storage miss on a
+    /// non-default site (unlikely, but possible in the WPCom multi-site case) from silently
+    /// attributing the event to the selected site, which is the very bug this fix addresses.
     private func loadTargetSite(siteID: Int64) -> Yosemite.Site? {
-        storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
+        if let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() {
+            return site
+        }
+        let defaultSite = stores.sessionManager.defaultSite
+        return defaultSite?.siteID == siteID ? defaultSite : nil
     }
 
-    /// Registers the push notification token for a single site and handles the result.
-    /// - Returns: `true` on success, `false` on failure.
+    /// Registers the push notification token for a single site with analytics tracking.
+    /// - Throws: Error if registration fails.
     @MainActor
-    private func registerSelfDrivenPushNotification(with deviceToken: String, siteID: Int64) async -> Bool {
+    private func registerSelfDrivenPushNotification(with deviceToken: String, siteID: Int64) async throws {
         DDLogDebug("📱 Requesting push token registration for site \(siteID)")
         do {
             let tokenID = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Int64, Error>) in
@@ -824,14 +857,13 @@ private extension PushNotificationsManager {
             }
             DDLogDebug("📱 Push token registration succeeded for site \(siteID): tokenID \(tokenID)")
             analytics.track(event: .PushNotifications.wooPushTokenRegisterSuccess(targetSite: loadTargetSite(siteID: siteID)))
-            return true
         } catch {
             DDLogDebug("📱 Push token registration failed for site \(siteID): \(error)")
             analytics.track(event: .PushNotifications.wooPushTokenRegisterError(targetSite: loadTargetSite(siteID: siteID), error: error))
             if case .notFound = error as? NetworkError {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
             }
-            return false
+            throw error
         }
     }
 
@@ -1062,6 +1094,7 @@ private enum AnalyticKey {
 private enum PushNotificationError: Error {
     case deviceTokenTimeout
     case missingSiteID
+    case missingDeviceToken
     case siteRegistrationFailed(siteIDs: [Int64])
     case pluginVersionIncompatible(currentVersion: String, requiredVersion: String)
 }

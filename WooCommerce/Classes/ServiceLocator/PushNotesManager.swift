@@ -73,6 +73,11 @@ protocol PushNotesManager {
     /// - Throws: If any step in the registration pipeline fails.
     @MainActor func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64
 
+    /// Registers a specific site for self-driven push notifications.
+    /// - Parameter siteID: The site ID to register.
+    /// - Throws: If registration fails or device token is not available.
+    @MainActor func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws
+
     /// Registers the Application for Remote Notifications.
     ///
     func registerForRemoteNotifications()

@@ -904,12 +904,18 @@ private extension PushNotificationsManager {
 
     private func performDeviceRegistration(siteID: Int64, deviceToken: String, onCompletion: @escaping (Result<Int64, Error>) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
+        // REST fallback via `RequestConverter` routes to the currently selected site's URL, dropping
+        // the target `siteID` from the original `JetpackRequest`. It's only safe when the target is
+        // the selected site (e.g. site-credentials users with no Jetpack tunnel). For any cross-site
+        // registration (multi-store fan-out, re-enabling a hidden site) force the Jetpack tunnel.
+        let isTargetSiteSelected = siteID == self.siteID
         let action = NotificationAction.registerDeviceForSelfDrivenPushNotifications(
             siteID: siteID,
             device: device,
             applicationID: WooConstants.pushApplicationID,
             deviceLocale: Locale.current.languageRegionIdentifier ?? Locale.current.identifier,
-            appVersion: Bundle.main.version
+            appVersion: Bundle.main.version,
+            availableAsRESTRequest: isTargetSiteSelected
         ) { [weak self] result in
             guard let self = self else { return }
 

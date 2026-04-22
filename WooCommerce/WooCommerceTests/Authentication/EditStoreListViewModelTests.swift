@@ -472,8 +472,7 @@ struct EditStoreListViewModelTests {
         let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
         let deviceID = "13435352"
         let notificationManager = MockPushNotificationsManager(
-            mockedDeviceID: deviceID,
-            siteIDsRegisteredForWooPNs: [site1.siteID] // site1 is registered with Woo
+            mockedDeviceID: deviceID
         )
 
         var capturedEnabledSites: [Int64]?
@@ -491,18 +490,19 @@ struct EditStoreListViewModelTests {
         }
 
         let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
-                                               displayedSites: [site1, site2], // both displayed
+                                               displayedSites: [site2], // site1 starts hidden
                                                currentlySelectedSite: nil,
                                                stores: stores,
                                                pushNotificationManager: notificationManager,
                                                userDefaults: userDefaults,
                                                onCompletion: {})
 
-        // When
+        // When — re-enable site1 and save
+        viewModel.toggleSelection(site1)
         await viewModel.saveChanges()
 
-        // Then — site1 (Woo-registered) should be disabled in WPCom, site2 should be enabled
-        #expect(capturedEnabledSites == [site2.siteID])
-        #expect(capturedDisabledSites == [site1.siteID])
+        // Then — site1 (now Woo-registered after save) should be disabled in WPCom, site2 should be enabled
+        #expect(Set(capturedEnabledSites ?? []) == Set([site2.siteID]))
+        #expect(Set(capturedDisabledSites ?? []) == Set([site1.siteID]))
     }
 }

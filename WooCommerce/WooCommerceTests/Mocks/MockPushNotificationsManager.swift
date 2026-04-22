@@ -112,6 +112,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws {
         registeredSiteIDsForSelfDrivenPushNotifications.append(siteID)
         try registerSiteForSelfDrivenPushNotificationsResult.get()
+        if !siteIDsRegisteredForWooPNs.contains(siteID) {
+            siteIDsRegisteredForWooPNs.append(siteID)
+        }
     }
 
     func registerForRemoteNotifications() {

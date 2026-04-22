@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import YosemiteTestHelpers
 import enum NetworkingCore.NetworkError
+import protocol WooFoundation.Analytics
 @testable import WooCommerce
 import class Storage.Site
 
@@ -1204,6 +1205,122 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    func test_registerDeviceToken_when_multiple_sites_then_token_register_events_carry_target_site_properties() async throws {
+        // Given — two stored sites with distinct URLs and capability flags; selected site is site 100.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true),
+            (siteID: 200, url: "https://beta.example", isWPCom: false, isJetpackInstalled: false, isJetpackConnected: false)
+        ])
+
+        manager = makeManager(featureFlagService: featureFlagService, analytics: analytics)
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        // Site 100 succeeds; site 200 fails, which triggers the WPCom fallback we use to sync on flow completion.
+        let fallbackExpectation = expectation(description: "WPCom fallback triggered")
+        fallbackExpectation.assertForOverFulfill = false
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion):
+                if siteID == 200 {
+                    onCompletion(.failure(NSError(domain: "test", code: 500)))
+                } else {
+                    onCompletion(.success(Int64(siteID + 1000)))
+                }
+            case .registerDevice:
+                fallbackExpectation.fulfill()
+            default:
+                break
+            }
+        }
+
+        let tokenAsData = try XCTUnwrap(Sample.deviceToken.data(using: .utf8))
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+        await fulfillment(of: [fallbackExpectation], timeout: 2.0)
+
+        // Then — each event carries the target site's identifiers and capability flags, not the selected site's.
+        let successIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_register_success"),
+                                         "Expected a woo_push_token_register_success event for the site that succeeded")
+        let successProperties = analyticsProvider.receivedProperties[successIndex]
+        XCTAssertEqual(successProperties["blog_id"] as? Int64, 100)
+        XCTAssertEqual(successProperties["site_url"] as? String, "https://alpha.example")
+        XCTAssertEqual(successProperties["is_wpcom_store"] as? Bool, true)
+        XCTAssertEqual(successProperties["is_jetpack_installed"] as? Bool, true)
+        XCTAssertEqual(successProperties["is_jetpack_connected"] as? Bool, true)
+
+        let errorIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_register_error"),
+                                       "Expected a woo_push_token_register_error event for the site that failed")
+        let errorProperties = analyticsProvider.receivedProperties[errorIndex]
+        XCTAssertEqual(errorProperties["blog_id"] as? Int64, 200)
+        XCTAssertEqual(errorProperties["site_url"] as? String, "https://beta.example")
+        XCTAssertEqual(errorProperties["is_wpcom_store"] as? Bool, false)
+        XCTAssertEqual(errorProperties["is_jetpack_installed"] as? Bool, false)
+        XCTAssertEqual(errorProperties["is_jetpack_connected"] as? Bool, false)
+    }
+
+    func test_registerDeviceToken_when_site_credentials_login_then_token_register_event_uses_session_default_site() async throws {
+        // Given — site-credentials style login: the session holds the site, but storage doesn't.
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        storesManager.authenticate(credentials: SessionSettings.wporgCredentials)
+        storesManager.sessionManager.setStoreId(500)
+        storesManager.updateDefaultStore(Yosemite.Site.fake().copy(
+            siteID: 500,
+            url: "https://gamma.example",
+            isJetpackThePluginInstalled: true,
+            isJetpackConnected: false,
+            isWordPressComStore: false
+        ))
+        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+
+        let eligibilityCheckExpectation = expectation(description: "Eligibility check completed")
+        mockRemoteFeatureFlagAction(isEnabled: true, onCompletion: {
+            eligibilityCheckExpectation.fulfill()
+        })
+
+        // Deliberately do NOT insert any sites into storage — this mirrors the site-creds path
+        // where `restoreWordPressSite` writes only to `sessionManager.defaultSite`.
+
+        manager = makeManager(featureFlagService: featureFlagService, analytics: analytics)
+        await fulfillment(of: [eligibilityCheckExpectation], timeout: 1.0)
+
+        let registrationExpectation = expectation(description: "Site registered")
+        storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .registerDeviceForSelfDrivenPushNotifications(siteID, _, _, _, _, onCompletion) = action {
+                onCompletion(.success(Int64(siteID + 1000)))
+                registrationExpectation.fulfill()
+            }
+        }
+
+        let tokenAsData = try XCTUnwrap(Sample.deviceToken.data(using: .utf8))
+
+        // When
+        manager.registerDeviceToken(with: tokenAsData)
+        await fulfillment(of: [registrationExpectation], timeout: 2.0)
+
+        // Then — the event picks up the session's default site even though storage is empty.
+        let successIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_register_success"),
+                                         "Expected a woo_push_token_register_success event")
+        let successProperties = analyticsProvider.receivedProperties[successIndex]
+        XCTAssertEqual(successProperties["blog_id"] as? Int64, 500)
+        XCTAssertEqual(successProperties["site_url"] as? String, "https://gamma.example")
+        XCTAssertEqual(successProperties["is_wpcom_store"] as? Bool, false)
+        XCTAssertEqual(successProperties["is_jetpack_installed"] as? Bool, true)
+        XCTAssertEqual(successProperties["is_jetpack_connected"] as? Bool, false)
+    }
+
     func test_registerDeviceToken_when_site_returns_notFound_then_unmarks_that_site() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1526,7 +1643,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 private extension PushNotificationsManagerTests {
     func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      storageManager: MockStorageManager? = nil,
-                     pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil) -> PushNotificationsManager {
+                     pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,
+                     analytics: Analytics = ServiceLocator.analytics) -> PushNotificationsManager {
         // Capture strong local references so the @autoclosure closures in
         // PushNotificationsConfiguration don't go through the test's IUO
         // properties, which may be nilled in tearDown while async Tasks are still in flight.
@@ -1542,6 +1660,7 @@ private extension PushNotificationsManagerTests {
 
         return PushNotificationsManager(configuration: configuration,
                                         backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                        analytics: analytics,
                                         storageManager: storageManager ?? self.storageManager,
                                         featureFlagService: featureFlagService,
                                         pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory())
@@ -1619,6 +1738,22 @@ private extension PushNotificationsManagerTests {
                 let site = storage.insertNewObject(ofType: Site.self)
                 site.siteID = siteID
                 site.isWooCommerceActive = NSNumber(value: true)
+            }
+        })
+    }
+
+    func insertSitesIntoStorageWithCapabilities(
+        _ sites: [(siteID: Int64, url: String, isWPCom: Bool, isJetpackInstalled: Bool, isJetpackConnected: Bool)]
+    ) async {
+        await storageManager.performAndSaveAsync({ storage in
+            for descriptor in sites {
+                let site = storage.insertNewObject(ofType: Site.self)
+                site.siteID = descriptor.siteID
+                site.url = descriptor.url
+                site.isWooCommerceActive = NSNumber(value: true)
+                site.isWordPressStore = NSNumber(value: descriptor.isWPCom)
+                site.isJetpackThePluginInstalled = descriptor.isJetpackInstalled
+                site.isJetpackConnected = descriptor.isJetpackConnected
             }
         })
     }

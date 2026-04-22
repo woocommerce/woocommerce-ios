@@ -359,11 +359,7 @@ extension PushNotificationsManager {
             DDLogDebug("📱 Site \(siteID) is already registered for self-driven push notifications")
             return
         }
-        _ = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Int64, Error>) in
-            registerSelfDrivenPushNotificationFlow(with: deviceToken, siteID: siteID) { result in
-                continuation.resume(with: result)
-            }
-        }
+        try await registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID)
     }
 
     /// Registers the Device Token agains WordPress.com backend, if there's a default account.
@@ -814,8 +810,12 @@ private extension PushNotificationsManager {
         await withTaskGroup(of: (Int64, Bool).self) { group in
             for siteID in siteIDsToRegister {
                 group.addTask { [weak self] in
-                    let succeeded = await self?.registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID) ?? false
-                    return (siteID, succeeded)
+                    do {
+                        try await self?.registerSelfDrivenPushNotification(with: deviceToken, siteID: siteID)
+                        return (siteID, true)
+                    } catch {
+                        return (siteID, false)
+                    }
                 }
             }
             for await (siteID, succeeded) in group where !succeeded {
@@ -828,10 +828,10 @@ private extension PushNotificationsManager {
         }
     }
 
-    /// Registers the push notification token for a single site and handles the result.
-    /// - Returns: `true` on success, `false` on failure.
+    /// Registers the push notification token for a single site with analytics tracking.
+    /// - Throws: Error if registration fails.
     @MainActor
-    private func registerSelfDrivenPushNotification(with deviceToken: String, siteID: Int64) async -> Bool {
+    private func registerSelfDrivenPushNotification(with deviceToken: String, siteID: Int64) async throws {
         DDLogDebug("📱 Requesting push token registration for site \(siteID)")
         do {
             let tokenID = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Int64, Error>) in
@@ -841,14 +841,13 @@ private extension PushNotificationsManager {
             }
             DDLogDebug("📱 Push token registration succeeded for site \(siteID): tokenID \(tokenID)")
             analytics.track(.wooPushTokenRegisterSuccess)
-            return true
         } catch {
             DDLogDebug("📱 Push token registration failed for site \(siteID): \(error)")
             analytics.track(.wooPushTokenRegisterError, withError: error)
             if case .notFound = error as? NetworkError {
                 registrationState.unmarkSiteAsRegisteredForWooPNs(siteID)
             }
-            return false
+            throw error
         }
     }
 

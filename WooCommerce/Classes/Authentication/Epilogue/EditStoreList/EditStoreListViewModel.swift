@@ -129,11 +129,16 @@ private extension EditStoreListViewModel {
     /// Sites that fail to register will fall back to WPCom push notifications via `updateNotificationSettings`.
     @MainActor
     func registerNewlyEnabledSitesForSelfDrivenPushNotifications(newlyEnabledSiteIDs: [Int64]) async {
-        for siteID in newlyEnabledSiteIDs {
-            do {
-                try await pushNotificationManager.registerSiteForSelfDrivenPushNotifications(siteID)
-            } catch {
-                DDLogError("⛔️ Failed to register site \(siteID) for self-driven push notifications: \(error)")
+        await withTaskGroup(of: Void.self) { group in
+            for siteID in newlyEnabledSiteIDs {
+                group.addTask { [weak self] in
+                    guard let self else { return }
+                    do {
+                        try await pushNotificationManager.registerSiteForSelfDrivenPushNotifications(siteID)
+                    } catch {
+                        DDLogError("⛔️ Failed to register site \(siteID) for self-driven push notifications: \(error)")
+                    }
+                }
             }
         }
     }

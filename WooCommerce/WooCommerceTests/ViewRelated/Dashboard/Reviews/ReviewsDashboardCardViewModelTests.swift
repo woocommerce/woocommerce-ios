@@ -253,52 +253,102 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
     }
 
-    // MARK: - Woo-driven Push Notifications Tests
+    // MARK: - shouldHighlightAsUnread Tests
 
     @MainActor
-    func test_supportsWPComNotifications_returns_true_when_site_not_registered_for_woo_pns() async {
-        // Given
-        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
-
-        // When
-        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
-                                                      stores: stores,
-                                                      storageManager: storageManager,
-                                                      pushNotesManager: mockPushNotesManager)
-
-        // Then
-        XCTAssertTrue(viewModel.supportsWPComNotifications)
-    }
-
-    @MainActor
-    func test_supportsWPComNotifications_returns_false_when_site_registered_for_woo_pns() async {
+    func test_shouldHighlightAsUnread_returns_false_when_site_registered_for_woo_pns() {
         // Given
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
-
-        // When
         let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
                                                       stores: stores,
                                                       storageManager: storageManager,
                                                       pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: false))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
 
         // Then
-        XCTAssertFalse(viewModel.supportsWPComNotifications)
+        XCTAssertFalse(result)
     }
 
     @MainActor
-    func test_supportsWPComNotifications_returns_false_when_authenticated_without_wpcom() async {
+    func test_shouldHighlightAsUnread_returns_false_when_authenticated_without_wpcom() {
         // Given
         let storesWithoutWPCom = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true, isWPCom: false))
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
-
-        // When
         let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
                                                       stores: storesWithoutWPCom,
                                                       storageManager: storageManager,
                                                       pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: false))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
 
         // Then
-        XCTAssertFalse(viewModel.supportsWPComNotifications)
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_false_when_notification_is_nil() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: nil)
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_false_when_notification_is_read() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: true))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_true_when_notification_is_unread_and_supports_wpcom() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: false))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertTrue(result)
     }
 
     @MainActor

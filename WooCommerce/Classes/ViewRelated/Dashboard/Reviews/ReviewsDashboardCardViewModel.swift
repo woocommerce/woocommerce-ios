@@ -62,9 +62,18 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
 
     /// Whether notifications-based features (unread indicators) should be available.
     /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
-    var supportsWPComNotifications: Bool {
+    private var supportsWPComNotifications: Bool {
         pushNotesManager.supportsWPComNotifications(for: siteID, stores: stores)
     }
+
+    func shouldHighlightAsUnread(_ reviewViewModel: ReviewViewModel) -> Bool {
+        guard supportsWPComNotifications else {
+            return false
+        }
+        let isRead = reviewViewModel.notification == nil || reviewViewModel.notification?.read == true
+        return !isRead
+    }
+
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
     @Published private(set) var currentFilter: ReviewsFilter = .all
 

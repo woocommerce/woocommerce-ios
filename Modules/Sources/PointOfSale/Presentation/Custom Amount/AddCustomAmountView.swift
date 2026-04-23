@@ -1,9 +1,5 @@
 import SwiftUI
 
-/// Placeholder sheet for adding a custom amount to the POS cart.
-/// The form UI and model wiring land on follow-up branches; this view only
-/// exists so the homescreen entry points resolve to a visible modal while the
-/// `.pointOfSaleCustomAmounts` feature flag is being rolled out.
 struct AddCustomAmountView: View {
     @Binding var isPresented: Bool
     @Environment(\.posModalParentSize) private var parentSize

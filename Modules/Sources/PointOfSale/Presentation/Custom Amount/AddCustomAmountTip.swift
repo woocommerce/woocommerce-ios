@@ -1,11 +1,5 @@
 import TipKit
 
-/// TipKit tip that points to the POS cart header button for adding a custom
-/// amount. Invalidated permanently when the user taps the button (via
-/// `.actionPerformed`) or the popover's close button (via TipKit's built-in
-/// `.tipClosed`). If the user dismisses the popover by tapping outside, the
-/// tip remains eligible and can reappear at most once per day because
-/// `Tips.configure` uses the default `.daily` display frequency.
 struct AddCustomAmountTip: Tip {
     var title: Text {
         Text(Localization.title)

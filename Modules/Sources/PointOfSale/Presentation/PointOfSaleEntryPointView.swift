@@ -176,10 +176,6 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .task {
-            // `Tips.configure` throws if called twice in the same process, so swallow
-            // the error rather than gate on a flag. We rely on TipKit's default
-            // `.daily` display frequency so a tip dismissed by tapping outside the
-            // popover can only reappear once per day instead of on every view appearance.
             try? Tips.configure()
 
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.

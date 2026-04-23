@@ -93,8 +93,9 @@ private struct CartHeaderView: View {
     let onAddCustomAmountTapped: () -> Void
 
     private var shouldShowAddCustomAmountButton: Bool {
-        featureFlags.isFeatureFlagEnabled(.pointOfSaleCustomAmounts)
-            && posModel.orderStage == .building
+        viewHelper.shouldShowAddCustomAmountButton(
+            featureFlags: featureFlags,
+            orderStage: posModel.orderStage)
     }
 
     private var shouldPreventCartEditing: Bool {

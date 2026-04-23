@@ -29,9 +29,11 @@ final class ConnectivityToolViewModel {
     @Published var shouldStartJetpackSetup = false
 
     /// Whether the AI support chat button should be shown.
+    /// Only available when the feature flag is enabled and user is authenticated with WPCom
+    /// (not application password), since the chatbot requires WPCom authentication.
     ///
     var showChatButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
+        featureFlagService.isFeatureFlagEnabled(.aiSupportChat) && stores.isAuthenticatedWithoutWPCom == false
     }
 
     /// Remote used to check the connection to WPCom servers.

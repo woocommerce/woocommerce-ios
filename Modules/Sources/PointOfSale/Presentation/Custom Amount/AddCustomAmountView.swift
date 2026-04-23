@@ -15,15 +15,15 @@ struct AddCustomAmountView: View {
                 .foregroundColor(.posOnSurfaceVariantLowest)
                 .multilineTextAlignment(.center)
         }
+        .posModalCloseButton(action: {
+            isPresented = false
+        })
+        .padding(POSPadding.xLarge)
+        .background(Color.posSurfaceBright)
         .frame(
             maxWidth: parentSize.width * Constants.parentWidthRatio,
             maxHeight: parentSize.height * Constants.parentHeightRatio
         )
-        .padding(POSPadding.xLarge)
-        .background(Color.posSurfaceBright)
-        .posModalCloseButton(action: {
-            isPresented = false
-        })
     }
 }
 

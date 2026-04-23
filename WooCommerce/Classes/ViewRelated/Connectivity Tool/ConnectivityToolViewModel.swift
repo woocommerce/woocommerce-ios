@@ -12,6 +12,7 @@ import class Networking.ProductsRemote
 import class Networking.UserAgent
 import struct Networking.SystemPlugin
 import protocol WooFoundation.Analytics
+import protocol Experiments.FeatureFlagService
 
 final class ConnectivityToolViewModel {
 
@@ -26,6 +27,12 @@ final class ConnectivityToolViewModel {
     /// Set to `true` when the user taps "Setup Jetpack" to signal the view layer to start the Jetpack setup flow.
     ///
     @Published var shouldStartJetpackSetup = false
+
+    /// Whether the AI support chat button should be shown.
+    ///
+    var showChatButton: Bool {
+        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
+    }
 
     /// Remote used to check the connection to WPCom servers.
     ///
@@ -50,6 +57,10 @@ final class ConnectivityToolViewModel {
     /// Analytics tracker.
     ///
     private let analytics: Analytics
+
+    /// Feature flag service for checking AI support chat availability.
+    ///
+    private let featureFlagService: FeatureFlagService
 
     /// Adapter for checking notification authorization status.
     ///
@@ -86,6 +97,7 @@ final class ConnectivityToolViewModel {
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          network: Network? = nil) {
@@ -98,6 +110,7 @@ final class ConnectivityToolViewModel {
         self.productsRemote = ProductsRemote(network: network)
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
         self.siteURL = session.defaultSite?.url
@@ -165,6 +178,30 @@ final class ConnectivityToolViewModel {
         return latestTestResult.enumerated().map { index, result in
             "## \(index + 1). " + result.description()
         }.joined()
+    }
+
+    /// Creates a SupportChatViewModel with the current troubleshooting context.
+    ///
+    @MainActor
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping () -> Void) -> SupportChatViewModel {
+        var context: [String: Any] = [:]
+
+        if let troubleshootingDescription = troubleshootingDescription() {
+            context["troubleshooting_results"] = troubleshootingDescription
+        }
+
+        if let site = stores.sessionManager.defaultSite {
+            context["site_id"] = site.siteID
+            context["site_url"] = site.url
+        }
+
+        context["app_version"] = Bundle.main.marketingVersion
+        context["ios_version"] = UIDevice.current.systemVersion
+
+        return SupportChatViewModel(
+            initialContext: context,
+            onContactHumanSupport: onContactHumanSupport
+        )
     }
 
     /// Perform the test for a provided test case.

@@ -1,5 +1,6 @@
 import Foundation
 import Networking
+import protocol Storage.StorageManagerType
 
 /// Handles `SupportChatAction` by delegating to the `SupportChatRemote`.
 ///

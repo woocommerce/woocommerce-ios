@@ -223,4 +223,10 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///
     case loggedOutFFPanel
+
+    /// Enables the AI-powered support chat / troubleshooting tool backed by the Odie assistant.
+    /// Part of the Woo Mobile AI-Powered Troubleshooting initiative (WOOMOB-2776 / WOOMOB-2778).
+    /// See HACK-month.md for scope and design.
+    ///
+    case aiSupportChat
 }

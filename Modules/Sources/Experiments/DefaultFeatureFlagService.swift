@@ -105,6 +105,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !buildConfig.isProduction
         case .loggedOutFFPanel:
             return !buildConfig.isProduction
+        case .aiSupportChat:
+            return !buildConfig.isProduction
         default:
             return true
         }

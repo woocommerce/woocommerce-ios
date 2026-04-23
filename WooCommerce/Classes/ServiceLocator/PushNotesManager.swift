@@ -151,3 +151,14 @@ protocol PushNotesManager {
     /// This is the app's default state
     func enableInAppNotifications()
 }
+
+extension PushNotesManager {
+    /// Whether WPCom notifications-based features should be available for a site.
+    /// Returns false for non-WPCom authenticated sites or sites using Woo-driven push notifications.
+    func supportsWPComNotifications(for siteID: Int64, stores: StoresManager) -> Bool {
+        guard stores.isAuthenticatedWithoutWPCom == false else {
+            return false
+        }
+        return !siteIDsRegisteredForWooPNs.contains(siteID)
+    }
+}

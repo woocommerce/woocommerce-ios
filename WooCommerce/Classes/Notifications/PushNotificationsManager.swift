@@ -501,9 +501,14 @@ extension PushNotificationsManager {
                 }
 
             foregroundNotificationsSubject.send(foregroundNotification)
+
+            // Only sync WPCom notifications if this is a WPCom notification (has noteID).
+            // Woo-driven notifications don't have noteID and don't need WPCom notification sync.
+            if foregroundNotification.noteID != nil {
+                _ = await synchronizeNotifications()
+            }
         }
 
-        _ = await synchronizeNotifications()
         return UNNotificationPresentationOptions(rawValue: 0)
     }
 

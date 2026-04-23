@@ -108,29 +108,13 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
     convenience init(siteID: Int64,
                      stores: StoresManager = ServiceLocator.stores,
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
-        let supportsWPComNotifications = Self.supportsWPComNotifications(
-            siteID: siteID,
-            stores: stores,
-            pushNotesManager: pushNotesManager
-        )
+        let supportsWPComNotifications = pushNotesManager.supportsWPComNotifications(for: siteID, stores: stores)
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: ReviewsDataSource(siteID: siteID,
                                                                       customizer: GlobalReviewsDataSourceCustomizer(),
                                                                       supportsWPComNotifications: supportsWPComNotifications),
                                               stores: stores,
                                               supportsWPComNotifications: supportsWPComNotifications))
-    }
-
-    private static func supportsWPComNotifications(siteID: Int64,
-                                                   stores: StoresManager,
-                                                   pushNotesManager: PushNotesManager) -> Bool {
-        guard stores.isAuthenticatedWithoutWPCom == false else {
-            return false
-        }
-        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
-            return false
-        }
-        return true
     }
 
     init(viewModel: ViewModel) {

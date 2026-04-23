@@ -63,15 +63,7 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     /// Whether notifications-based features (unread indicators) should be available.
     /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
     var supportsWPComNotifications: Bool {
-        // Skip if authenticated without WPCom (no notifications available)
-        guard stores.isAuthenticatedWithoutWPCom == false else {
-            return false
-        }
-        // Skip if site is registered for Woo-driven push notifications (WPCom notifications not used)
-        guard pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) == false else {
-            return false
-        }
-        return true
+        pushNotesManager.supportsWPComNotifications(for: siteID, stores: stores)
     }
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
     @Published private(set) var currentFilter: ReviewsFilter = .all

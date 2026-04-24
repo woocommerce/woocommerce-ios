@@ -17,6 +17,16 @@ public enum SupportChatAction: Action {
                      context: [String: Any]?,
                      completion: (Result<SupportChatResponse, Error>) -> Void)
 
+    /// Fetches the full transcript of an existing chat so the UI can rehydrate a resumed session.
+    ///
+    /// - Parameters:
+    ///   - botSlug: Assistant slug the chat was created against.
+    ///   - chatID: Identifier returned by a previous `sendMessage`.
+    ///   - completion: Called on the main thread with every turn (user + bot) in ascending order.
+    case fetchChat(botSlug: String,
+                   chatID: Int64,
+                   completion: (Result<SupportChatResponse, Error>) -> Void)
+
     /// Persists a new chat bookmark so the merchant can revisit it later.
     ///
     /// Called once per chat, typically after the first successful `sendMessage` response.

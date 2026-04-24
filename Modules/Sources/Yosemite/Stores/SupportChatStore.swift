@@ -35,6 +35,8 @@ public final class SupportChatStore: Store {
         switch action {
         case let .sendMessage(botSlug, message, chatID, context, completion):
             sendMessage(botSlug: botSlug, message: message, chatID: chatID, context: context, completion: completion)
+        case let .fetchChat(botSlug, chatID, completion):
+            fetchChat(botSlug: botSlug, chatID: chatID, completion: completion)
         case let .registerChat(chatID, siteID, wpcomUserID, botSlug, firstUserMessage, onCompletion):
             registerChat(chatID: chatID,
                          siteID: siteID,
@@ -66,6 +68,20 @@ private extension SupportChatStore {
                                              message: message,
                                              chatID: chatID,
                                              context: context)
+            }
+
+            await MainActor.run {
+                completion(result)
+            }
+        }
+    }
+
+    func fetchChat(botSlug: String,
+                   chatID: Int64,
+                   completion: @escaping (Result<SupportChatResponse, Error>) -> Void) {
+        Task {
+            let result = await Result {
+                try await remote.fetchChat(botSlug: botSlug, chatID: chatID)
             }
 
             await MainActor.run {

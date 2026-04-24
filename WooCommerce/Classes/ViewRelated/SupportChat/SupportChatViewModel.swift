@@ -55,6 +55,11 @@ final class SupportChatViewModel {
     private(set) var state: State = .idle
     private(set) var shouldPromptHumanSupport: Bool = false
 
+    /// `true` when the view model was seeded with a prior `chatID` — i.e. the merchant
+    /// tapped a history row rather than starting fresh. Drives the "Continuing conversation"
+    /// header in the chat surface.
+    let isResumedChat: Bool
+
     var inputText: String = ""
 
     // MARK: - Private Properties
@@ -76,6 +81,7 @@ final class SupportChatViewModel {
         self.stores = stores
         self.initialContext = initialContext
         self.chatID = chatID
+        self.isResumedChat = chatID != nil
         self.onContactHumanSupport = onContactHumanSupport
     }
 
@@ -93,6 +99,19 @@ final class SupportChatViewModel {
             messages.append(greetingMessage)
             state = .idle
         }
+    }
+
+    /// Fetches the prior transcript for a resumed chat and populates `messages`.
+    /// No-op for fresh chats or if messages have already been loaded.
+    func resumeIfNeeded() {
+        guard let chatID else { return }
+        guard messages.isEmpty else { return }
+        state = .sending
+
+        let action = SupportChatAction.fetchChat(botSlug: botSlug, chatID: chatID) { [weak self] result in
+            self?.handleFetchChatResult(result)
+        }
+        stores.dispatch(action)
     }
 
     func sendMessage() {
@@ -163,6 +182,32 @@ final class SupportChatViewModel {
         }
     }
 
+    /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped
+    /// rather than rendered as garbage; ordering from the server (ts-ascending) is preserved.
+    private func handleFetchChatResult(_ result: Result<SupportChatResponse, Error>) {
+        switch result {
+        case .success(let response):
+            let rehydrated: [ChatMessage] = response.messages.compactMap { message in
+                switch message.role {
+                case .user:
+                    return ChatMessage(role: .user, content: message.content)
+                case .bot:
+                    return ChatMessage(role: .assistant, content: message.content)
+                case .unknown:
+                    return nil
+                }
+            }
+            messages = rehydrated
+            state = .idle
+
+        case .failure(let error):
+            DDLogError("⛔️ Support chat resume error: \(error)")
+            // Fail soft: the merchant can still send a new message into the existing chatID;
+            // they just won't see the prior transcript. Surface as a retry-able error.
+            state = .error(Localization.resumeErrorMessage)
+        }
+    }
+
     /// Persists a local bookmark for the chat so it appears in the chat history UI.
     /// Fire-and-forget: we don't surface storage errors to the user.
     private func persistChatBookmark(wasNewChat: Bool,
@@ -202,6 +247,11 @@ private extension SupportChatViewModel {
             "supportChatViewModel.errorMessage",
             value: "Something went wrong. Please try again.",
             comment: "Error message shown when sending a support chat message fails"
+        )
+        static let resumeErrorMessage = NSLocalizedString(
+            "supportChatViewModel.resumeErrorMessage",
+            value: "We couldn't load the previous conversation. You can still send a new message.",
+            comment: "Error message shown when loading a prior support chat transcript fails on resume"
         )
     }
 }

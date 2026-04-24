@@ -7,7 +7,6 @@ import enum NetworkingCore.NetworkError
 import protocol WooFoundation.Analytics
 @testable import WooCommerce
 import class Storage.Site
-import protocol WooFoundation.Analytics
 
 /// PushNotificationsManager Tests
 ///

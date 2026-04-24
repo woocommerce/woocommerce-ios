@@ -41,6 +41,11 @@ final class ConnectivityToolViewModel {
     ///
     @Published private(set) var showChatButton = false
 
+    /// Whether the contact support button should be shown.
+    /// True when bot chat is NOT supported and all tests have completed.
+    ///
+    @Published private(set) var showContactSupportButton = false
+
     /// Whether the AI support chat is supported.
     /// Only available when the feature flag is enabled and user is authenticated with WPCom
     /// (not application password), since the chatbot requires WPCom authentication.
@@ -138,6 +143,7 @@ final class ConnectivityToolViewModel {
 
     private func updateShowChatButton() {
         showChatButton = allTestsCompleted && isBotChatSupported
+        showContactSupportButton = allTestsCompleted && !isBotChatSupported
     }
 
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.

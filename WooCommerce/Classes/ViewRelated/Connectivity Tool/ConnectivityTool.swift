@@ -41,6 +41,12 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
         }
         .store(in: &subscriptions)
 
+        // Bind contact support button visibility
+        viewModel.$showContactSupportButton.sink { [weak self] show in
+            self?.rootView.showContactSupportButton = show
+        }
+        .store(in: &subscriptions)
+
         // Open selected URL — system URLs (e.g. notification settings) via UIApplication,
         // web URLs in-app using Safari.
         viewModel.$selectedURL
@@ -161,6 +167,10 @@ struct ConnectivityTool: View {
     ///
     var showChatButton: Bool = false
 
+    /// Whether the contact support button should be shown.
+    ///
+    var showContactSupportButton: Bool = false
+
     /// Internal layout values
     ///
     private static let dividerVerticalSpacing = 8.0
@@ -195,7 +205,7 @@ struct ConnectivityTool: View {
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding()
-            } else {
+            } else if showContactSupportButton {
                 Button(Localization.contactSupport) {
                     onContactSupportTapped?()
                 }

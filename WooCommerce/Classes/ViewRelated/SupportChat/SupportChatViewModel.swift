@@ -130,7 +130,7 @@ final class SupportChatViewModel {
         case .success(let response):
             chatID = response.chatID
 
-            if let lastBotMessage = response.messages.last(where: { $0.role == "assistant" }) {
+            if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
                 let assistantMessage = ChatMessage(
                     role: .assistant,
                     content: lastBotMessage.content

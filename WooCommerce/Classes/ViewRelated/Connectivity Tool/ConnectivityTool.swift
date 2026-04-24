@@ -20,8 +20,7 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     init() {
         viewModel = ConnectivityToolViewModel()
-        var view = ConnectivityTool(cards: viewModel.cards)
-        view.showChatButton = viewModel.showChatButton
+        let view = ConnectivityTool(cards: viewModel.cards)
         super.init(rootView: view)
         self.hidesBottomBarWhenPushed = true
         self.title = NSLocalizedString("Troubleshoot Connection", comment: "Screen title for the connectivity tool")
@@ -29,9 +28,16 @@ final class ConnectivityToolViewController: UIHostingController<ConnectivityTool
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Bind cards to view
         viewModel.$cards.sink { [weak self] cards in
             self?.rootView.cards = cards
+        }
+        .store(in: &subscriptions)
+
+        // Bind chat button visibility
+        viewModel.$showChatButton.sink { [weak self] show in
+            self?.rootView.showChatButton = show
         }
         .store(in: &subscriptions)
 
@@ -151,7 +157,7 @@ struct ConnectivityTool: View {
     ///
     var onChatWithSupportTapped: (() -> ())?
 
-    /// Whether the chat button should be shown (controlled by feature flag).
+    /// Whether the chat button should be shown.
     ///
     var showChatButton: Bool = false
 
@@ -403,3 +409,4 @@ struct ConnectivityToolCard: View {
             .navigationBarTitleDisplayMode(.inline)
     }
 }
+

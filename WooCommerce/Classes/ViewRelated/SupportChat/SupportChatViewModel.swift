@@ -102,6 +102,8 @@ final class SupportChatViewModel {
         state = .sending
 
         let context = chatID == nil ? initialContext : nil
+        let wasNewChat = chatID == nil
+        let firstUserMessage = trimmedText
 
         let action = SupportChatAction.sendMessage(
             botSlug: botSlug,
@@ -109,7 +111,9 @@ final class SupportChatViewModel {
             chatID: chatID,
             context: context
         ) { [weak self] result in
-            self?.handleSendMessageResult(result)
+            self?.handleSendMessageResult(result,
+                                          wasNewChat: wasNewChat,
+                                          firstUserMessage: firstUserMessage)
         }
 
         stores.dispatch(action)
@@ -125,10 +129,15 @@ final class SupportChatViewModel {
 
     // MARK: - Private Methods
 
-    private func handleSendMessageResult(_ result: Result<SupportChatResponse, Error>) {
+    private func handleSendMessageResult(_ result: Result<SupportChatResponse, Error>,
+                                         wasNewChat: Bool,
+                                         firstUserMessage: String) {
         switch result {
         case .success(let response):
             chatID = response.chatID
+            persistChatBookmark(wasNewChat: wasNewChat,
+                                response: response,
+                                firstUserMessage: firstUserMessage)
 
             if let lastBotMessage = response.messages.last(where: { $0.role == .bot }) {
                 let assistantMessage = ChatMessage(
@@ -147,6 +156,31 @@ final class SupportChatViewModel {
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
             state = .error(Localization.errorMessage)
+        }
+    }
+
+    /// Persists a local bookmark for the chat so it appears in the chat history UI.
+    /// Fire-and-forget: we don't surface storage errors to the user.
+    private func persistChatBookmark(wasNewChat: Bool,
+                                     response: SupportChatResponse,
+                                     firstUserMessage: String) {
+        if wasNewChat {
+            guard let siteID = stores.sessionManager.defaultStoreID else {
+                // No site context — skip silently. Pre-login / non-WPCom flows aren't persisted yet.
+                return
+            }
+            let wpcomUserID = stores.sessionManager.defaultAccountID ?? -1
+            let action = SupportChatAction.registerChat(chatID: response.chatID,
+                                                       siteID: siteID,
+                                                       wpcomUserID: wpcomUserID,
+                                                       botSlug: botSlug,
+                                                       firstUserMessage: firstUserMessage,
+                                                       onCompletion: { _ in })
+            stores.dispatch(action)
+        } else {
+            let action = SupportChatAction.touchChat(chatID: response.chatID,
+                                                    onCompletion: { _ in })
+            stores.dispatch(action)
         }
     }
 }

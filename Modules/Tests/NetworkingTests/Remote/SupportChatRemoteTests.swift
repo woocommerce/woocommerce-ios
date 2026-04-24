@@ -115,7 +115,7 @@ struct SupportChatRemoteTests {
 
         let firstMessage = try #require(response.messages.first)
         #expect(firstMessage.messageID == 3003)
-        #expect(firstMessage.role == "bot")
+        #expect(firstMessage.role == .bot)
         #expect(firstMessage.content.contains("Placeholder Markdown answer"))
     }
 
@@ -159,6 +159,23 @@ struct SupportChatRemoteTests {
         #expect(flags.cannedResponse == false)
         #expect(flags.loggedIn == false)
         #expect(flags.branch == "default")
+    }
+
+    @Test func sendMessage_when_response_role_is_unknown_then_decodes_as_unknown_case() async throws {
+        // Given
+        let remote = SupportChatRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "odie/chat/\(botSlug)",
+                                 filename: "support-chat-unknown-role")
+
+        // When
+        let response = try await remote.sendMessage(botSlug: botSlug,
+                                                    message: "hi",
+                                                    chatID: nil,
+                                                    context: nil)
+
+        // Then — unrecognized roles must not crash decoding; they fall back to .unknown.
+        let firstMessage = try #require(response.messages.first)
+        #expect(firstMessage.role == .unknown)
     }
 
     @Test func sendMessage_when_response_signals_forward_to_human_then_flag_is_true() async throws {

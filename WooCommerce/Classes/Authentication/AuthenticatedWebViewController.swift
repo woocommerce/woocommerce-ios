@@ -329,18 +329,11 @@ extension AuthenticatedWebViewController: WKUIDelegate {
                  createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
-        // JS-initiated popups (e.g. `window.open()`) arrive here with `targetFrame == nil`.
-        // Stripe's WooPayments KYC relies on a real popup so that `window.opener.postMessage(...)`
-        // can deliver the verification result back to the parent window. Returning `nil` makes
-        // JS `window.open()` return null and Stripe aborts the flow. The child must be built
-        // with the delegate-supplied `configuration` verbatim so it stays in the same
-        // WebContent process and preserves the opener relationship, cookies, and session.
+        // Use the delegate-supplied `configuration` verbatim so the popup preserves the `window.opener` relationship.
         return presentPopupWebView(with: configuration, for: navigationAction)
     }
 
     func webViewDidClose(_ webView: WKWebView) {
-        // Stripe calls `window.close()` once KYC completes. The parent web view is
-        // never the one being closed, so this is safe to delegate to the popup host.
         popupHost(for: webView)?.dismiss(animated: true)
     }
 }
@@ -360,9 +353,7 @@ private extension AuthenticatedWebViewController {
         navigationController.modalPresentationStyle = .pageSheet
         topmostViewController().present(navigationController, animated: true)
 
-        // WebKit loads `navigationAction.request` into the returned web view itself;
-        // calling `webView.load(...)` ourselves would double-load and can invalidate
-        // one-shot tokens in the popup URL.
+        // WebKit loads `navigationAction.request` into the returned web view itself.
         return childWebView
     }
 
@@ -394,10 +385,7 @@ private extension AuthenticatedWebViewController {
     }
 }
 
-/// Hosts a web view spawned by a JS `window.open()` call from the parent
-/// `AuthenticatedWebViewController`. Supports nested popups (popup-from-popup)
-/// and dismisses itself when the underlying page calls `window.close()`.
-///
+/// Hosts a web view spawned by a JS `window.open()` call, supports nested popups, and dismisses itself on `window.close()`.
 final class PopupWebViewController: UIViewController {
     private let webView: WKWebView
 

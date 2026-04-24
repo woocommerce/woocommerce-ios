@@ -957,8 +957,8 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: Any]()
 
-        // Determine notification source
-        let isWooDriven = userInfo[APNSKey.identifier] != nil
+        // Determine notification source - Woo driven PNs don't have `note_id` in the payload
+        let isWooDriven = userInfo[APNSKey.identifier] == nil
         properties[AnalyticKey.source] = isWooDriven ? NotificationSource.wooDriven : NotificationSource.wpcom
 
         // Set identifier based on source
@@ -980,10 +980,10 @@ private extension PushNotificationsManager {
         }
 
         let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
-        if let siteID, let notificationSiteID, stores.isAuthenticatedWithoutWPCom == false {
-            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
-        } else if stores.isAuthenticatedWithoutWPCom {
+        if stores.isAuthenticatedWithoutWPCom {
             properties[AnalyticKey.fromSelectedSite] = true
+        } else if let siteID, let notificationSiteID {
+            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
         switch applicationState {

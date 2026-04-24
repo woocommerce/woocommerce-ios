@@ -34,16 +34,29 @@ public struct SupportChatResponse: Decodable, Equatable {
     }
 }
 
+/// Role of a message sender in a support chat thread.
+///
+public enum SupportChatRole: String, Decodable, Equatable {
+    case bot
+    case unknown
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = SupportChatRole(rawValue: rawValue) ?? .unknown
+    }
+}
+
 /// A single message in a chat thread.
 ///
 public struct SupportChatMessage: Decodable, Equatable {
     public let messageID: Int64
-    public let role: String
+    public let role: SupportChatRole
     public let content: String
     public let context: SupportChatMessageContext?
 
     public init(messageID: Int64,
-                role: String,
+                role: SupportChatRole,
                 content: String,
                 context: SupportChatMessageContext?) {
         self.messageID = messageID

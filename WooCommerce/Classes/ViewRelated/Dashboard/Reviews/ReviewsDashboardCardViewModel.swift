@@ -56,8 +56,24 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let pushNotesManager: PushNotesManager
 
     public let siteID: Int64
+
+    /// Whether notifications-based features (unread indicators) should be available.
+    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
+    private var supportsWPComNotifications: Bool {
+        pushNotesManager.supportsWPComNotifications(for: siteID, stores: stores)
+    }
+
+    func shouldHighlightAsUnread(_ reviewViewModel: ReviewViewModel) -> Bool {
+        guard supportsWPComNotifications else {
+            return false
+        }
+        let isRead = reviewViewModel.notification == nil || reviewViewModel.notification?.read == true
+        return !isRead
+    }
+
     public let filters: [ReviewsFilter] = [.all, .hold, .approved]
     @Published private(set) var currentFilter: ReviewsFilter = .all
 
@@ -67,11 +83,13 @@ final class ReviewsDashboardCardViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
+        self.pushNotesManager = pushNotesManager
 
         self.productsResultsController = ResultsController<StorageProduct>(storageManager: storageManager,
                                                                            matching: nil,
@@ -233,7 +251,7 @@ private extension ReviewsDashboardCardViewModel {
                 showProductTitle: product != nil,
                 review: review,
                 product: product,
-                notification: notification
+                notification: supportsWPComNotifications ? notification : nil
             )
         }
     }
@@ -249,11 +267,13 @@ private extension ReviewsDashboardCardViewModel {
             updateProductsResultsController(for: productIDs)
 
             // Get product names and, optionally, read status from notifications.
+            // Skip syncing notifications if WPCom notifications are not available
+            // (authenticated without WPCom or site uses Woo-driven push notifications).
             try await withThrowingTaskGroup(of: Void.self) { group in
                 group.addTask { [weak self] in
                     try await self?.retrieveProducts(for: productIDs)
                 }
-                if stores.isAuthenticatedWithoutWPCom == false {
+                if supportsWPComNotifications {
                     group.addTask { [weak self] in
                         try await self?.synchronizeNotifications()
                     }

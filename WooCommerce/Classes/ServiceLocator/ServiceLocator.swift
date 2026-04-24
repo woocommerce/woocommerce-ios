@@ -249,13 +249,9 @@ final class ServiceLocator {
     }
 
     /// Provides the access point to the GRDBManager for local catalog persistence.
-    /// - Returns: An instance of GRDBManagerProtocol when the pointOfSaleLocalCatalogi1 feature flag is enabled
+    /// - Returns: An instance of GRDBManagerProtocol
     /// - Throws: Fatal error if GRDBManager initialization fails
     static var grdbManager: GRDBManagerProtocol {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
-            fatalError("GRDBManager accessed when pointOfSaleLocalCatalogi1 feature flag is disabled")
-        }
-
         guard let grdbManager = _grdbManager else {
             do {
                 guard let documentsPath = FileManager.default.urls(
@@ -366,13 +362,9 @@ final class ServiceLocator {
     }
 
     /// Provides access point to the `POSCatalogSyncCoordinator`.
-    /// Returns nil if feature flag is disabled or user is not authenticated.
+    /// Returns nil if user is not authenticated.
     ///
     static var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleLocalCatalogi1) else {
-            return nil
-        }
-
         return stores.posCatalogSyncCoordinator
     }
 }

@@ -39,7 +39,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
                                                       stores: stores,
                                                       storageManager: storageManager)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -173,7 +173,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       storageManager: storageManager)
         XCTAssertNil(viewModel.syncingError)
         let error = NSError(domain: "test", code: 500)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -217,7 +217,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
                                                       storageManager: storageManager)
         XCTAssertNil(viewModel.syncingError)
         let error = NSError(domain: "test", code: 500)
-        insertReviews(sampleReviews)
+        await insertReviews(sampleReviews)
 
         // When
         stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
@@ -252,14 +252,209 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.syncingError as? NSError, error)
     }
+
+    // MARK: - shouldHighlightAsUnread Tests
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_false_when_site_registered_for_woo_pns() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: false))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_false_when_authenticated_without_wpcom() {
+        // Given
+        let storesWithoutWPCom = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true, isWPCom: false))
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: storesWithoutWPCom,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: false))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_false_when_notification_is_nil() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: nil)
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_false_when_notification_is_read() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: true))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    @MainActor
+    func test_shouldHighlightAsUnread_returns_true_when_notification_is_unread_and_supports_wpcom() {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        let reviewViewModel = ReviewViewModel(review: ProductReview.fake(),
+                                              product: nil,
+                                              notification: Note.fake().copy(read: false))
+
+        // When
+        let result = viewModel.shouldHighlightAsUnread(reviewViewModel)
+
+        // Then
+        XCTAssertTrue(result)
+    }
+
+    @MainActor
+    func test_reloadData_skips_notification_sync_when_site_registered_for_woo_pns() async {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [sampleSiteID])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        await insertReviews(sampleReviews)
+
+        stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(self.sampleReviews))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success(([], true)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        var notificationSyncCalled = false
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .synchronizeNotifications:
+                notificationSyncCalled = true
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertFalse(notificationSyncCalled)
+    }
+
+    @MainActor
+    func test_reloadData_syncs_notifications_when_site_not_registered_for_woo_pns() async {
+        // Given
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let viewModel = ReviewsDashboardCardViewModel(siteID: sampleSiteID,
+                                                      stores: stores,
+                                                      storageManager: storageManager,
+                                                      pushNotesManager: mockPushNotesManager)
+        await insertReviews(sampleReviews)
+
+        stores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(self.sampleReviews))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success(([], true)))
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        var notificationSyncCalled = false
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .synchronizeNotifications(onCompletion):
+                notificationSyncCalled = true
+                onCompletion(nil)
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        await viewModel.reloadData()
+
+        // Then
+        XCTAssertTrue(notificationSyncCalled)
+    }
 }
 
 extension ReviewsDashboardCardViewModelTests {
-    func insertReviews(_ readOnlyReviews: [ProductReview]) {
-        readOnlyReviews.forEach { review in
-            let newReview = storage.insertNewObject(ofType: StorageProductReview.self)
-            newReview.update(with: review)
+    @MainActor
+    func insertReviews(_ readOnlyReviews: [ProductReview]) async {
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ storage in
+                readOnlyReviews.forEach { review in
+                    let newReview = storage.insertNewObject(ofType: StorageProductReview.self)
+                    newReview.update(with: review)
+                }
+            }, completion: {
+                continuation.resume()
+            }, on: .main)
         }
-        storage.saveIfNeeded()
     }
 }

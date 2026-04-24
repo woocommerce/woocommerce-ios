@@ -58,11 +58,15 @@ final class ProductReviewsViewController: UIViewController, GhostableViewControl
     @IBOutlet private weak var tableView: UITableView!
 
     // MARK: - View Lifecycle
-    init(product: Product) {
+    init(product: Product,
+         stores: StoresManager = ServiceLocator.stores,
+         pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.product = product
+        let supportsWPComNotifications = pushNotesManager.supportsWPComNotifications(for: product.siteID, stores: stores)
         viewModel = ProductReviewsViewModel(siteID: product.siteID,
                                             data: ReviewsDataSource(siteID: product.siteID,
-                                                                           customizer: ProductReviewsDataSourceCustomizer(product: product)))
+                                                                    customizer: ProductReviewsDataSourceCustomizer(product: product),
+                                                                    supportsWPComNotifications: supportsWPComNotifications))
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

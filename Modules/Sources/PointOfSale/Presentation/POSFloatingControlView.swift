@@ -14,8 +14,6 @@ struct POSFloatingControlView: View {
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
     @State private var showOrders: Bool = false
-    @State private var showBookings: Bool = false
-    @Environment(\.posBookingsEligible) private var isBookingsEligible
 
     init(showExitPOSModal: Binding<Bool>,
          showSupport: Binding<Bool>,
@@ -63,19 +61,6 @@ struct POSFloatingControlView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
-        .posFullScreenCover(isPresented: $showBookings) {
-            POSBookingsContainerView(isPresented: $showBookings)
-                .environment(\.floatingControlAreaSize, .zero)
-        }
-        .onChange(of: showBookings) { _, isShowing in
-            if isShowing {
-                posModel.paymentModel.deactivate()
-            } else if posModel.orderStage == .finalizing {
-                Task { @MainActor in
-                    await posModel.paymentModel.activate()
-                }
-            }
-        }
         .frame(height: Constants.size)
         .background(Color.clear)
         .animation(.default, value: backgroundAppearance)
@@ -114,18 +99,6 @@ private extension POSFloatingControlView {
                     Label(
                         title: { Text(Localization.orders) },
                         icon: { Image(systemName: "text.document") }
-                    )
-                }
-            }
-
-            if featureFlags.isFeatureFlagEnabled(.pointOfSaleBookings) && isBookingsEligible {
-                Button {
-                    analytics.track(event: WooAnalyticsEvent.PointOfSale.bookingsMenuItemTapped())
-                    showBookings = true
-                } label: {
-                    Label(
-                        title: { Text(Localization.bookings) },
-                        icon: { Image(systemName: "calendar") }
                     )
                 }
             }
@@ -177,12 +150,6 @@ private extension POSFloatingControlView {
             value: "Exit POS",
             comment: "The title of the menu button to exit Point of Sale, shown in a popover menu." +
             "The action is confirmed in a modal."
-        )
-
-        static let bookings = NSLocalizedString(
-            "pointOfSale.floatingButtons.bookings.button.title",
-            value: "Bookings",
-            comment: "The title of the menu button to access Point of Sale bookings, shown in a fullscreen view."
         )
 
         static let settings = NSLocalizedString(

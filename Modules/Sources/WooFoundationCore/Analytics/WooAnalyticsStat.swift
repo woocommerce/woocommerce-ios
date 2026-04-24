@@ -1358,27 +1358,11 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleLocalCatalogSyncCompleted = "local_catalog_sync_completed"
     case pointOfSaleLocalCatalogSyncFailed = "local_catalog_sync_failed"
     case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
+    case pointOfSaleLocalCatalogSunsetWarningShown = "local_catalog_sunset_warning_shown"
+    case pointOfSaleLocalCatalogSunsetWarningDismissed = "local_catalog_sunset_warning_dismissed"
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"
     case pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped = "checkout_outdated_item_detected_remove_tapped"
-
-    // MARK: Point of Sale Bookings
-    case pointOfSaleBookingsMenuItemTapped = "bookings_menu_item_tapped"
-    case pointOfSaleBookingsListSearchButtonTapped = "bookings_list_search_button_tapped"
-    case pointOfSaleBookingsListBookingTapped = "bookings_list_booking_tapped"
-    case pointOfSaleBookingCancelled = "booking_cancelled"
-    case pointOfSaleBookingAddNoteTapped = "booking_add_note_tapped"
-    case pointOfSaleBookingIssueRefundTapped = "booking_issue_refund_tapped"
-    case pointOfSaleBookingViewOrderTapped = "booking_view_order_tapped"
-    case pointOfSaleBookingAttendanceChanged = "booking_attendance_changed"
-    case pointOfSaleBookingNoteAdded = "booking_note_added"
-    case pointOfSaleBookingCancelFailed = "booking_cancel_failed"
-    case pointOfSaleBookingAttendanceChangeFailed = "booking_attendance_change_failed"
-    case pointOfSaleBookingNoteAddFailed = "booking_note_add_failed"
-    case pointOfSaleBookingRefundFailed = "booking_refund_failed"
-    case pointOfSaleBookingDatePreviousTapped = "booking_date_previous_tapped"
-    case pointOfSaleBookingDateNextTapped = "booking_date_next_tapped"
-    case pointOfSaleBookingDateCalendarSelected = "booking_date_calendar_selected"
 
     // MARK: Custom Fields events
     case productDetailCustomFieldsTapped = "product_detail_custom_fields_tapped"
@@ -1432,6 +1416,11 @@ extension WooAnalyticsStat {
              .loginJetpackRequiredScreenViewed, .loginJetpackRequiredViewInstructionsButtonTapped,
              .loginWhatIsJetpackHelpScreenViewed, .loginWhatIsJetpackHelpScreenOkButtonTapped,
              .loginWhatIsJetpackHelpScreenLearnMoreButtonTapped, .watchConnectingOpened, .watchStoreDataSynced:
+            return false
+        // Per-site push token registration events attribute properties to the target site via a factory,
+        // so opt out of the default-site enrichment that would otherwise overwrite `blog_id` / `site_url`
+        // with the currently selected site.
+        case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError:
             return false
         default:
             return true

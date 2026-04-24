@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 // MARK: - ReviewsViewController
 //
@@ -104,10 +105,16 @@ final class ReviewsViewController: UIViewController, GhostableViewController {
 
     // MARK: - Initializers
     //
-    convenience init(siteID: Int64) {
+    convenience init(siteID: Int64,
+                     stores: StoresManager = ServiceLocator.stores,
+                     pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
+        let supportsWPComNotifications = pushNotesManager.supportsWPComNotifications(for: siteID, stores: stores)
         self.init(viewModel: ReviewsViewModel(siteID: siteID,
                                               data: ReviewsDataSource(siteID: siteID,
-                                                                             customizer: GlobalReviewsDataSourceCustomizer())))
+                                                                      customizer: GlobalReviewsDataSourceCustomizer(),
+                                                                      supportsWPComNotifications: supportsWPComNotifications),
+                                              stores: stores,
+                                              supportsWPComNotifications: supportsWPComNotifications))
     }
 
     init(viewModel: ViewModel) {

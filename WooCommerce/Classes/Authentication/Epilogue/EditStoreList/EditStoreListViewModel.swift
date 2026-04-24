@@ -53,11 +53,22 @@ final class EditStoreListViewModel: ObservableObject {
         let hiddenSiteIDs = Array(hiddenSites).map { $0.siteID }
         let displayedSiteIDs = Array(selectedSites).map { $0.siteID }
 
+        let originalHiddenSiteIDs = Set(availableSites.map(\.siteID)).subtracting(originalSelectedSites.map(\.siteID))
+        let newlyEnabledSiteIDs = displayedSiteIDs.filter { originalHiddenSiteIDs.contains($0) }
+
         analytics.track(event: .SitePicker.listSaveButtonTapped(hiddenSiteCount: hiddenSiteIDs.count))
         shouldShowErrorAlert = false
         isUpdatingNotificationSettings = true
         do {
-            try await updateNotificationSettings(displayedSiteIDs: displayedSiteIDs, hiddenSiteIDs: hiddenSiteIDs)
+            await registerNewlyEnabledSitesForSelfDrivenPushNotifications(newlyEnabledSiteIDs: newlyEnabledSiteIDs)
+
+            // Sites registered with Woo should be disabled in WPCom to avoid duplicate notifications
+            let siteIDsRegisteredForWooPNs = Set(pushNotificationManager.siteIDsRegisteredForWooPNs)
+            let wpcomEnabledSiteIDs = displayedSiteIDs.filter { !siteIDsRegisteredForWooPNs.contains($0) }
+            let wpcomDisabledSiteIDs = hiddenSiteIDs + displayedSiteIDs.filter { siteIDsRegisteredForWooPNs.contains($0) }
+
+            try await updateNotificationSettings(displayedSiteIDs: wpcomEnabledSiteIDs, hiddenSiteIDs: wpcomDisabledSiteIDs)
+            await unregisterHiddenSitesFromSelfDrivenPushNotifications(hiddenSiteIDs: hiddenSiteIDs)
             userDefaults.saveHiddenStoreIDs(hiddenSiteIDs)
             analytics.track(event: .SitePicker.listEditSavingSuccess())
             onCompletion()
@@ -110,6 +121,60 @@ private extension EditStoreListViewModel {
             stores.dispatch(AccountAction.updateNotificationSettings(notificationSettings: settings, onCompletion: { result in
                 continuation.resume(with: result)
             }))
+        }
+    }
+
+    /// Registers newly enabled sites for the self-driven push notification system.
+    /// This is best-effort — failures are logged but do not block the save operation.
+    /// Sites that fail to register will fall back to WPCom push notifications via `updateNotificationSettings`.
+    @MainActor
+    func registerNewlyEnabledSitesForSelfDrivenPushNotifications(newlyEnabledSiteIDs: [Int64]) async {
+        await withTaskGroup(of: Void.self) { group in
+            for siteID in newlyEnabledSiteIDs {
+                group.addTask { [weak self] in
+                    guard let self else { return }
+                    do {
+                        try await pushNotificationManager.registerSiteForSelfDrivenPushNotifications(siteID)
+                    } catch {
+                        DDLogError("⛔️ Failed to register site \(siteID) for self-driven push notifications: \(error)")
+                    }
+                }
+            }
+        }
+    }
+
+    /// Unregisters hidden sites from the self-driven push notification system.
+    /// This is best-effort — failures are logged but do not block the save operation.
+    @MainActor
+    func unregisterHiddenSitesFromSelfDrivenPushNotifications(hiddenSiteIDs: [Int64]) async {
+        guard let tokenString = pushNotificationManager.wooPushNotificationToken,
+              let tokenID = Int64(tokenString) else {
+            return
+        }
+
+        let registeredSiteIDs = pushNotificationManager.siteIDsRegisteredForWooPNs
+        let siteIDsToUnregister = hiddenSiteIDs.filter { registeredSiteIDs.contains($0) }
+
+        for siteID in siteIDsToUnregister {
+            do {
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+                    stores.dispatch(NotificationAction.unregisterFromSelfDrivenPushNotifications(
+                        siteID: siteID,
+                        tokenID: tokenID,
+                        // Force Jetpack tunnel: the hidden site is never the currently selected site,
+                        // so the REST fallback in `RequestConverter` would route to the wrong host.
+                        // The Jetpack tunnel carries `siteID` in the URL path and always reaches the
+                        // correct site.
+                        availableAsRESTRequest: false,
+                        onCompletion: { result in
+                            continuation.resume(with: result)
+                        }
+                    ))
+                }
+                pushNotificationManager.unmarkSiteAsRegisteredForWooPNs(siteID)
+            } catch {
+                DDLogError("⛔️ Failed to unregister site \(siteID) from self-driven push notifications: \(error)")
+            }
         }
     }
 }

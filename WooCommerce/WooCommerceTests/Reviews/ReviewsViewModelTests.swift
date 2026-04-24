@@ -10,7 +10,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func testDataSourceReturnsInjectedReviewsDataSource() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // When
         let dataSource = viewModel.dataSource
@@ -22,7 +22,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func testDelegateReturnsInjectedReviewsDelegate() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // When
         let delegate = viewModel.delegate
@@ -34,7 +34,7 @@ final class ReviewsViewModelTests: XCTestCase {
     func testIsEmptyReturnsTheSameAsTheDataSource() {
         // Given
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // Then
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
@@ -44,7 +44,7 @@ final class ReviewsViewModelTests: XCTestCase {
         // Given
         let table = UITableView()
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, supportsWPComNotifications: true)
 
         // When
         viewModel.configureResultsController(tableView: table)
@@ -57,7 +57,7 @@ final class ReviewsViewModelTests: XCTestCase {
         // Given
         let storesManager = MockReviewsStoresManager()
         let mockDataSource = MockReviewsDataSource()
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager, supportsWPComNotifications: true)
 
         // Then
         let expectation = expectation(description: "Wait for synchronizeReviews to complete")
@@ -85,7 +85,7 @@ final class ReviewsViewModelTests: XCTestCase {
                 return
             }
         }
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager, supportsWPComNotifications: true)
         viewModel.dataLoadingError = MockError()
 
         // When
@@ -107,7 +107,7 @@ final class ReviewsViewModelTests: XCTestCase {
                 return
             }
         }
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: storesManager, supportsWPComNotifications: true)
         viewModel.dataLoadingError = nil
 
         // When
@@ -155,7 +155,7 @@ final class ReviewsViewModelTests: XCTestCase {
                 break
             }
         }
-        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: mockStores)
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID, data: mockDataSource, stores: mockStores, supportsWPComNotifications: true)
 
         // When
         let expectation = expectation(description: "Wait for synchronizeReviews to complete")
@@ -166,6 +166,124 @@ final class ReviewsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(retrievedProductIDs, [55, 668, 789])
+    }
+
+    // MARK: - Woo-driven Push Notifications Tests
+
+    func test_hasUnreadNotifications_returns_false_when_supportsWPComNotifications_is_false() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        mockDataSource.mockNotifications = [Note.fake().copy(read: false)]
+
+        // When
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         supportsWPComNotifications: false)
+
+        // Then
+        XCTAssertFalse(viewModel.hasUnreadNotifications)
+    }
+
+    func test_synchronizeReviews_skips_notification_sync_when_supportsWPComNotifications_is_false() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let sampleReviews: [ProductReview] = [.fake().copy(productID: 55)]
+
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(sampleReviews))
+            default:
+                break
+            }
+        }
+
+        mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success((products: [], hasNextPage: false)))
+            default:
+                break
+            }
+        }
+
+        var notificationSyncCalled = false
+        mockStores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .synchronizeNotifications(let onCompletion):
+                notificationSyncCalled = true
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
+
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         supportsWPComNotifications: false)
+
+        // When
+        let expectation = expectation(description: "Wait for synchronizeReviews to complete")
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 3, handler: nil)
+
+        // Then
+        XCTAssertFalse(notificationSyncCalled)
+    }
+
+    func test_synchronizeReviews_syncs_notifications_when_supportsWPComNotifications_is_true() {
+        // Given
+        let mockDataSource = MockReviewsDataSource()
+        let sampleReviews: [ProductReview] = [.fake().copy(productID: 55)]
+
+        let mockStores = MockStoresManager(sessionManager: .makeForTesting())
+        mockStores.whenReceivingAction(ofType: ProductReviewAction.self) { action in
+            switch action {
+            case let .synchronizeProductReviews(_, _, _, _, _, onCompletion):
+                onCompletion(.success(sampleReviews))
+            default:
+                break
+            }
+        }
+
+        mockStores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProducts(_, _, _, _, onCompletion):
+                onCompletion(.success((products: [], hasNextPage: false)))
+            default:
+                break
+            }
+        }
+
+        var notificationSyncCalled = false
+        mockStores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case .synchronizeNotifications(let onCompletion):
+                notificationSyncCalled = true
+                onCompletion(nil)
+            default:
+                break
+            }
+        }
+
+        let viewModel = ReviewsViewModel(siteID: sampleSiteID,
+                                         data: mockDataSource,
+                                         stores: mockStores,
+                                         supportsWPComNotifications: true)
+
+        // When
+        let expectation = expectation(description: "Wait for synchronizeReviews to complete")
+        viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25) {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: 3, handler: nil)
+
+        // Then
+        XCTAssertTrue(notificationSyncCalled)
     }
 }
 
@@ -179,6 +297,12 @@ private extension ReviewsViewModelTests {
 final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     var reviews: [ProductReview] = []
+    var mockNotifications: [Note] = []
+    let supportsWPComNotifications: Bool
+
+    init(supportsWPComNotifications: Bool = true) {
+        self.supportsWPComNotifications = supportsWPComNotifications
+    }
 
     var isEmpty: Bool {
         return reviews.isEmpty
@@ -195,7 +319,7 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
     }
 
     var notifications: [Note] {
-        return []
+        return mockNotifications
     }
 
     var startForwardingEventsWasHit = false

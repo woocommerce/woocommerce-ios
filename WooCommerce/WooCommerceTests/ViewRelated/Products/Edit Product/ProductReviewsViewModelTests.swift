@@ -69,6 +69,8 @@ final class MockProductReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
         return [.fake()]
     }()
 
+    let supportsWPComNotifications: Bool = true
+
     var isEmpty: Bool {
         return reviews.isEmpty
     }

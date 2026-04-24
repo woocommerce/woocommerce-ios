@@ -48,6 +48,10 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     private let data: ReviewsDataSourceProtocol
     private let stores: StoresManager
 
+    /// Whether notifications-based features (unread indicators, mark as read) should be available.
+    /// Returns false for sites using Woo-driven push notifications since they don't have WPCom notifications.
+    let supportsWPComNotifications: Bool
+
     var isEmpty: Bool {
         return data.isEmpty
     }
@@ -61,6 +65,9 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     }
 
     var hasUnreadNotifications: Bool {
+        guard supportsWPComNotifications else {
+            return false
+        }
         return !unreadNotifications.isEmpty
     }
 
@@ -78,10 +85,14 @@ final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHan
     ///
     var dataLoadingError: Error?
 
-    init(siteID: Int64, data: ReviewsDataSourceProtocol, stores: StoresManager = ServiceLocator.stores) {
+    init(siteID: Int64,
+         data: ReviewsDataSourceProtocol,
+         stores: StoresManager = ServiceLocator.stores,
+         supportsWPComNotifications: Bool) {
         self.siteID = siteID
         self.data = data
         self.stores = stores
+        self.supportsWPComNotifications = supportsWPComNotifications
     }
 
     func configureResultsController(tableView: UITableView) {
@@ -136,8 +147,9 @@ extension ReviewsViewModel {
             }
         }
 
-        // skips checking notifications if authenticated without WPCom.
-        if stores.isAuthenticatedWithoutWPCom == false {
+        // Skip syncing notifications if WPCom notifications are not available
+        // (authenticated without WPCom or site uses Woo-driven push notifications).
+        if supportsWPComNotifications {
             group.enter()
             synchronizeNotifications {
                 group.leave()

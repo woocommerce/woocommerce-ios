@@ -186,28 +186,6 @@ struct POSTabVisibilityCheckerTests {
         #expect(result == false)
     }
 
-    @Test func is_invisible_when_site_is_CIAB() async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: .us, currency: .USD)
-        accountWhitelistedInBackend(true)
-        let ciabEligibilityChecker = MockCIABEligibilityChecker(mockedIsCurrentSiteCIAB: true,
-                                                                mockedCIABSites: [site],
-                                                                mockedCIABDisabledFeatures: [.pointOfSale])
-        let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .pad,
-                                              siteSettings: siteSettings,
-                                              stores: stores,
-                                              featureFlagService: featureFlagService,
-                                              siteCIABEligibilityChecker: ciabEligibilityChecker)
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
     @Test func checkVisibility_returns_expected_result_after_site_settings_available() async throws {
         // Given - no site settings are immediately available (empty stream that will emit values later)
         let featureFlagService = MockFeatureFlagService()

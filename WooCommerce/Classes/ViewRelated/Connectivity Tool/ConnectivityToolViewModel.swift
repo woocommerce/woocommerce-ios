@@ -28,11 +28,24 @@ final class ConnectivityToolViewModel {
     ///
     @Published var shouldStartJetpackSetup = false
 
+    /// Whether all connectivity tests have completed (with success or failure).
+    ///
+    private(set) var allTestsCompleted = false {
+        didSet {
+            updateShowChatButton()
+        }
+    }
+
     /// Whether the AI support chat button should be shown.
+    /// True when bot chat is supported and all tests have completed.
+    ///
+    @Published private(set) var showChatButton = false
+
+    /// Whether the AI support chat is supported.
     /// Only available when the feature flag is enabled and user is authenticated with WPCom
     /// (not application password), since the chatbot requires WPCom authentication.
     ///
-    var showChatButton: Bool {
+    var isBotChatSupported: Bool {
         featureFlagService.isFeatureFlagEnabled(.aiSupportChat) && stores.isAuthenticatedWithoutWPCom == false
     }
 
@@ -123,6 +136,10 @@ final class ConnectivityToolViewModel {
         }
     }
 
+    private func updateShowChatButton() {
+        showChatButton = allTestsCompleted && isBotChatSupported
+    }
+
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
     /// Provide a `sinceTest` parameter to omit test cases before it..
     ///
@@ -163,12 +180,14 @@ final class ConnectivityToolViewModel {
 
             // Only continue with another test if the current test was successful.
             if !testResult.isSuccess {
+                allTestsCompleted = true
                 return // Exit connectivity test.
             }
         }
 
         // Add no connections issues card if all tests are successful.
         cards.append(noConnectionsIssueState())
+        allTestsCompleted = true
     }
 
     /// This is not a user facing text but will be part of the Zendesk submission for troubleshooting.
@@ -237,6 +256,8 @@ final class ConnectivityToolViewModel {
         if !cards.isEmpty {
             cards.removeLast()
         }
+
+        allTestsCompleted = false
 
         // Run tests again from the failed one.
         Task {

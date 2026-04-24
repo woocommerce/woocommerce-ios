@@ -459,7 +459,24 @@ private extension HelpAndSupportViewController {
             return
         }
         let historyViewModel = SupportChatHistoryViewModel(siteID: siteID)
-        let controller = UIHostingController(rootView: SupportChatHistoryView(viewModel: historyViewModel))
+        let rootView = SupportChatHistoryView(viewModel: historyViewModel) { [weak self] summary in
+            self?.resumeChat(for: summary)
+        }
+        let controller = UIHostingController(rootView: rootView)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
+    /// continues on the assistant's side when the merchant sends the next message.
+    private func resumeChat(for summary: SupportChatSummary) {
+        let chatViewModel = SupportChatViewModel(
+            botSlug: summary.botSlug,
+            chatID: summary.chatID,
+            onContactHumanSupport: { [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        )
+        let controller = SupportChatHostingController(viewModel: chatViewModel)
         navigationController?.pushViewController(controller, animated: true)
     }
 

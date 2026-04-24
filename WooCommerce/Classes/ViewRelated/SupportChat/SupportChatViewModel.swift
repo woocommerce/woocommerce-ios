@@ -70,10 +70,12 @@ final class SupportChatViewModel {
     init(botSlug: String = "woo-workflow-support_woomobile",
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,
+         chatID: Int64? = nil,
          onContactHumanSupport: @escaping () -> Void) {
         self.botSlug = botSlug
         self.stores = stores
         self.initialContext = initialContext
+        self.chatID = chatID
         self.onContactHumanSupport = onContactHumanSupport
     }
 
@@ -81,6 +83,8 @@ final class SupportChatViewModel {
 
     func showGreeting() {
         guard messages.isEmpty else { return }
+        // Resumed chats skip the greeting — the merchant is continuing a prior conversation.
+        guard chatID == nil else { return }
         state = .sending
 
         Task {

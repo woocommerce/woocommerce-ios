@@ -1,13 +1,19 @@
 import SwiftUI
+import Yosemite
 
-/// List of previously-stored support chats. Supports swipe-to-delete.
-/// Tap-to-continue is deferred to a later iteration.
+/// List of previously-stored support chats. Supports swipe-to-delete and tap-to-resume.
 ///
 struct SupportChatHistoryView: View {
     @State private var viewModel: SupportChatHistoryViewModel
 
-    init(viewModel: SupportChatHistoryViewModel) {
+    /// Called when the merchant taps a chat to resume it. The host is responsible
+    /// for presenting the chat UI seeded with the given `chatID`.
+    private let onSelect: (SupportChatSummary) -> Void
+
+    init(viewModel: SupportChatHistoryViewModel,
+         onSelect: @escaping (SupportChatSummary) -> Void) {
         self._viewModel = State(wrappedValue: viewModel)
+        self.onSelect = onSelect
     }
 
     var body: some View {
@@ -27,7 +33,12 @@ struct SupportChatHistoryView: View {
     private var list: some View {
         List {
             ForEach(viewModel.summaries, id: \.chatID) { summary in
-                SupportChatHistoryRow(summary: summary)
+                Button {
+                    onSelect(summary)
+                } label: {
+                    SupportChatHistoryRow(summary: summary)
+                }
+                .buttonStyle(.plain)
             }
             .onDelete { indexSet in
                 viewModel.delete(at: indexSet)

@@ -33,7 +33,7 @@ struct SupportChatMessageRow: View {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
             }
 
-            Text(message.content)
+            messageText
                 .padding(SupportChatLayout.bubblePadding)
                 .background(bubbleBackground)
                 .foregroundColor(bubbleForeground)
@@ -42,6 +42,16 @@ struct SupportChatMessageRow: View {
             if message.role == .assistant {
                 Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
             }
+        }
+    }
+
+    @ViewBuilder
+    private var messageText: some View {
+        switch message.role {
+        case .user:
+            Text(message.content)
+        case .assistant:
+            Text(.init(message.content))
         }
     }
 

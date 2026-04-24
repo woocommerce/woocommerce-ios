@@ -67,7 +67,7 @@ final class SupportChatViewModel {
 
     // MARK: - Initialization
 
-    init(botSlug: String = "woo-chat-allusers",
+    init(botSlug: String = "woo-workflow-support_woomobile",
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,
          onContactHumanSupport: @escaping () -> Void) {

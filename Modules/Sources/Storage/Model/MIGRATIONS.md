@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 137 (Release TBD)
+- @iamgabrielma 2026-04-24
+  - Added `StoredSupportChat` entity with attributes: `chatID`, `siteID`, `wpcomUserID`, `botSlug`, `title`, `createdAt`, `updatedAt`.
+
 ## Model 136 (Release 24.6.0.0)
 - @rafaelkayumov 2026-04-06
   - Added `OrderFulfillment` entity with attributes: `siteID`, `orderID`, `fulfillmentID`, `statusKey`, `isFulfilled`, `dateUpdated`, `dateFulfilled`, `trackingNumber`, `shipmentProvider`, `providerName`, `trackingURL`.

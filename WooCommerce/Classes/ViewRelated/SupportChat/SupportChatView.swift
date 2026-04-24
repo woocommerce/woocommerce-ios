@@ -61,6 +61,7 @@ struct SupportChatView: View {
                 }
                 .padding()
             }
+            .scrollDismissesKeyboard(.immediately)
             .onChange(of: viewModel.messages.count) { _, _ in
                 scrollToBottom(proxy: proxy)
             }
@@ -133,6 +134,7 @@ struct SupportChatView: View {
 
     private func sendMessageIfPossible() {
         guard canSendMessage else { return }
+        isInputFocused = false
         viewModel.sendMessage()
     }
 }

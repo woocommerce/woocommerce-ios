@@ -329,12 +329,60 @@ extension AuthenticatedWebViewController: WKUIDelegate {
                  createWebViewWith configuration: WKWebViewConfiguration,
                  for navigationAction: WKNavigationAction,
                  windowFeatures: WKWindowFeatures) -> WKWebView? {
-        // Allows `target=_blank` links by opening them in the same view, otherwise tapping on these links is no-op.
-        // Reference: https://stackoverflow.com/a/25853806/9185596
-        if navigationAction.targetFrame == nil {
-            webView.load(navigationAction.request)
+        // JS-initiated popups (e.g. `window.open()`) arrive here with `targetFrame == nil`.
+        // Stripe's WooPayments KYC relies on a real popup so that `window.opener.postMessage(...)`
+        // can deliver the verification result back to the parent window. Returning `nil` makes
+        // JS `window.open()` return null and Stripe aborts the flow. The child must be built
+        // with the delegate-supplied `configuration` verbatim so it stays in the same
+        // WebContent process and preserves the opener relationship, cookies, and session.
+        return presentPopupWebView(with: configuration, for: navigationAction)
+    }
+
+    func webViewDidClose(_ webView: WKWebView) {
+        // Stripe calls `window.close()` once KYC completes. The parent web view is
+        // never the one being closed, so this is safe to delegate to the popup host.
+        popupHost(for: webView)?.dismiss(animated: true)
+    }
+}
+
+private extension AuthenticatedWebViewController {
+    func presentPopupWebView(with configuration: WKWebViewConfiguration,
+                             for navigationAction: WKNavigationAction) -> WKWebView? {
+        guard navigationAction.targetFrame == nil else {
+            return nil
+        }
+
+        let childWebView = WKWebView(frame: .zero, configuration: configuration)
+        childWebView.customUserAgent = UserAgent.defaultUserAgent
+
+        let popupViewController = PopupWebViewController(webView: childWebView)
+        let navigationController = UINavigationController(rootViewController: popupViewController)
+        navigationController.modalPresentationStyle = .pageSheet
+        topmostViewController().present(navigationController, animated: true)
+
+        // WebKit loads `navigationAction.request` into the returned web view itself;
+        // calling `webView.load(...)` ourselves would double-load and can invalidate
+        // one-shot tokens in the popup URL.
+        return childWebView
+    }
+
+    func popupHost(for webView: WKWebView) -> UIViewController? {
+        var responder: UIResponder? = webView
+        while let next = responder?.next {
+            if let viewController = next as? PopupWebViewController {
+                return viewController.navigationController ?? viewController
+            }
+            responder = next
         }
         return nil
+    }
+
+    func topmostViewController() -> UIViewController {
+        var viewController: UIViewController = self
+        while let presented = viewController.presentedViewController {
+            viewController = presented
+        }
+        return viewController
     }
 }
 
@@ -343,5 +391,71 @@ private extension AuthenticatedWebViewController {
         static let actionParam = "action"
         static let jetpackSSOAction = "jetpack-sso"
         static let ssoRedirectCookieName = "jetpack_sso_redirect_to"
+    }
+}
+
+/// Hosts a web view spawned by a JS `window.open()` call from the parent
+/// `AuthenticatedWebViewController`. Supports nested popups (popup-from-popup)
+/// and dismisses itself when the underlying page calls `window.close()`.
+///
+final class PopupWebViewController: UIViewController {
+    private let webView: WKWebView
+
+    init(webView: WKWebView) {
+        self.webView = webView
+        super.init(nibName: nil, bundle: nil)
+        webView.uiDelegate = self
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .systemBackground
+
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(webView)
+        NSLayoutConstraint.activate([
+            webView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            webView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .done,
+            target: self,
+            action: #selector(dismissPopup)
+        )
+    }
+
+    @objc private func dismissPopup() {
+        dismiss(animated: true)
+    }
+}
+
+extension PopupWebViewController: WKUIDelegate {
+    func webView(_ webView: WKWebView,
+                 createWebViewWith configuration: WKWebViewConfiguration,
+                 for navigationAction: WKNavigationAction,
+                 windowFeatures: WKWindowFeatures) -> WKWebView? {
+        guard navigationAction.targetFrame == nil else {
+            return nil
+        }
+        let childWebView = WKWebView(frame: .zero, configuration: configuration)
+        childWebView.customUserAgent = UserAgent.defaultUserAgent
+
+        let popupViewController = PopupWebViewController(webView: childWebView)
+        let navigationController = UINavigationController(rootViewController: popupViewController)
+        navigationController.modalPresentationStyle = .pageSheet
+        present(navigationController, animated: true)
+
+        return childWebView
+    }
+
+    func webViewDidClose(_ webView: WKWebView) {
+        dismiss(animated: true)
     }
 }

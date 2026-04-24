@@ -11560,6 +11560,8 @@ which should be translated separately and considered part of this sentence. */
 "paymentMethods.cashOnDelivery.title" = "Şahsen Ödeyin";
 
 /* Upgrade prompt shown in payment methods for non-Pro CIAB sites. %1$@ is a placeholder for the Learn More link text. */
+"paymentMethods.ciabUpgrade.learnMore.text" = "İşlem başına sadece %%2,70 + 0,10 ile şahsen ödemeleri kabul edin. Telefonunuzda tap-to-pay'e ve eşzamanlı envanter ve sipariş senkronizasyonu ile tam satış noktası sistemimize erişmek için Pro'ya yükseltin.%1$@";
+
 /* Note from the cash tender view. */
 "paymentMethods.orderPaidByCashNoteText.note" = "Sipariş nakit ile ödendi. Müşteri %1$@ ödedi. Ödenmesi gereken para üstü %2$@.";
 
@@ -12002,6 +12004,8 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.couponRow.invalidCoupon" = "Kupon uygulanmadı";
 
 /* The title of the menu button to access Point of Sale bookings, shown in a fullscreen view. */
+"pointOfSale.floatingButtons.bookings.button.title" = "Rezervasyonlar";
+
 /* The title of the floating button to indicate that the reader is not ready for another connection, usually because a connection has just been cancelled */
 "pointOfSale.floatingButtons.cancellingConnection.pleaseWait.title" = "Lütfen bekleyin";
 
@@ -12102,7 +12106,11 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.paymentError.noOrder" = "Henüz sipariş yüklenmedi. Fatura göndermeden önce ödeme başlatın.";
 
 /* Button title on payment error screens in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title" = "Rezervasyona geri dön";
+
 /* Button title on the payment success screen in the Point of Sale bookings payment flow to dismiss and return to booking details */
+"pointOfSale.paymentFlowConfiguration.bookings.done.button.title" = "Tamam";
+
 /* Button title on the payment intent creation error screen in the Point of Sale checkout to go back and edit the current order */
 "pointOfSale.paymentFlowConfiguration.cart.editOrder.button.title" = "Siparişi düzenle";
 
@@ -12458,64 +12466,182 @@ which should be translated separately and considered part of this sentence. */
 "pos.barcodeScannerSetup.test.title" = "Tarayıcınızı test edin";
 
 /* Booking duration in whole hours, e.g. '2h'. %d is the number of hours. */
+"pos.booking.durationHours" = "%ds.";
+
 /* Booking duration in hours and minutes, e.g. '1h 30m'. First %d is hours, second %d is minutes. */
+"pos.booking.durationHoursAndMinutes" = "%1$ds. %2$ddk.";
+
 /* Booking duration in minutes, e.g. '60 min'. %d is the number of minutes. */
+"pos.booking.durationMinutes" = "%d dk.";
+
 /* POS booking attendance status label when the customer attended. */
+"pos.bookingAttendanceDisplay.attended" = "Katılındı";
+
 /* POS booking attendance status label when the customer has not attended. */
+"pos.bookingAttendanceDisplay.unattended" = "Katılınmadı";
+
 /* Accessibility label for the next day button in the bookings date bar. */
+"pos.bookingDateBar.nextDay" = "Ertesi gün";
+
 /* Accessibility label for the previous day button in the bookings date bar. */
+"pos.bookingDateBar.previousDay" = "Önceki gün";
+
 /* Accessibility label for the date button in the bookings date bar. %1$@ is the formatted date. */
+"pos.bookingDateBar.selectedDate" = "%1$@, takvimi açmak için dokunun";
+
 /* Button to add a private note to a booking. */
+"pos.bookingDetailView.addNoteButton" = "Not ekle";
+
 /* Section title for the attendance status in booking details. */
+"pos.bookingDetailView.attendanceStatusTitle" = "Katılım durumu";
+
 /* Subtitle text below the attendance section explaining why marking attendance matters. */
+"pos.bookingDetailView.attendanceSubtitle" = "Raporlarınızı doğru tutmak ve rezervasyon trendlerini tespit etmek için katılımı işaretleyin.";
+
 /* Error message shown below attendance section when updating attendance status fails. */
+"pos.bookingDetailView.attendanceUpdateError" = "Katılım güncellenemedi. Lütfen tekrar deneyin.";
+
 /* Label for the attended pill button in booking attendance section. */
+"pos.bookingDetailView.attendedPill" = "Katılındı";
+
 /* Section title for booking details showing the booking ID number. %lld is the booking ID. */
+"pos.bookingDetailView.bookingIdTitle" = "Rezervasyon No.%lld";
+
 /* Label for the private booking note section in booking details. */
+"pos.bookingDetailView.bookingNoteLabel" = "Rezervasyon notu";
+
 /* Subtitle text below the booking note section explaining the note is private. */
+"pos.bookingDetailView.bookingNoteSubtitle" = "Bu özel bir nottur. Bu, müşteriyle paylaşılmayacak.";
+
 /* Menu action to cancel a booking from the POS booking detail view. */
+"pos.bookingDetailView.cancelBookingAction" = "Rezervasyonu İptal Et";
+
 /* Button to initiate payment collection for a booking. */
+"pos.bookingDetailView.collectPaymentButton" = "Ödemeyi topla";
+
 /* Accessibility label for the copy email button in booking details. */
+"pos.bookingDetailView.copyEmail.accessibilityLabel" = "E-posta adresini kopyala";
+
 /* Accessibility label for the copy phone button in booking details. */
+"pos.bookingDetailView.copyPhone.accessibilityLabel" = "Telefon numarasını kopyala";
+
 /* Section title for the customer details in booking details. */
+"pos.bookingDetailView.customerTitle" = "Müşteri";
+
 /* Label for the duration in booking details. */
+"pos.bookingDetailView.durationLabel" = "Süre";
+
 /* Button to edit an existing private note on a booking. */
+"pos.bookingDetailView.editNoteButton" = "Notu düzenle";
+
 /* Accessibility label for customer email row in booking details. %1$@ is the email address. */
+"pos.bookingDetailView.email.accessibilityLabel" = "E-posta: %1$@";
+
 /* Badge label shown next to the customer section title when the booking has no associated customer (guest checkout). */
+"pos.bookingDetailView.guestBadge" = "Misafir";
+
 /* Menu action to issue a full refund for a booking. */
+"pos.bookingDetailView.issueRefundAction" = "Geri Ödeme Yap";
+
 /* Label for the location in booking details. */
+"pos.bookingDetailView.locationLabel" = "Konum";
+
 /* Accessibility label for the overflow actions menu button in booking details. */
+"pos.bookingDetailView.moreActions.accessibilityLabel" = "Daha fazla işlem";
+
 /* Label for the customer note in booking details. */
+"pos.bookingDetailView.noteLabel" = "Not";
+
 /* Accessibility label for customer phone row in booking details. %1$@ is the phone number. */
+"pos.bookingDetailView.phone.accessibilityLabel" = "Telefon: %1$@";
+
 /* Label for the team member / staff resource in booking details. */
+"pos.bookingDetailView.teamMemberLabel" = "Ekip üyesi";
+
 /* Label for the unattended pill button in booking attendance section. */
+"pos.bookingDetailView.unattendedPill" = "Katılınmadı";
+
 /* Button to view the linked order from the booking detail header. */
+"pos.bookingDetailView.viewOrderAction" = "Siparişi Görüntüle";
+
 /* Text appearing in the booking details pane when no booking is selected. */
+"pos.bookingDetailsEmptyView.description" = "Ayrıntılarını görüntülemek için bir rezervasyona dokunun";
+
 /* POS booking lifecycle status label for active bookings. */
+"pos.bookingLifecycleStatus.booked" = "Rezerve Edildi";
+
 /* POS booking lifecycle status label for canceled bookings. */
+"pos.bookingLifecycleStatus.canceled" = "İptal edildi";
+
 /* POS booking lifecycle status label for completed bookings. */
+"pos.bookingLifecycleStatus.completed" = "Tamamlandı";
+
 /* Text appearing on the booking list screen when there's an error loading a page of bookings after the first. Shown inline with the previously loaded bookings above. */
+"pos.bookingList.failedToLoadBookingsNextPageTitle" = "Daha fazla rezervasyon yüklenemiyor";
+
 /* Text appearing on the booking list screen when there's an error loading bookings. */
+"pos.bookingList.failedToLoadBookingsTitle" = "Rezervasyonlar yüklenemiyor";
+
 /* Title at the header for the Bookings view. */
+"pos.bookingListView.bookingsTitle" = "Rezervasyonlar";
+
 /* Subtitle appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchSubtitle" = "Aramanızla eşleşen bir rezervasyon bulamadık. Arama teriminizi düzenlemeyi deneyin.";
+
 /* Title appearing when booking search returns no results. */
+"pos.bookingListView.emptyBookingsSearchTitle" = "Rezervasyon bulunamadı";
+
 /* Subtitle appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsSubtitle.2" = "Bu tarih için zamanlanmış tüm rezervasyonlar burada görünür.";
+
 /* Title appearing when there are no bookings to display. */
+"pos.bookingListView.emptyBookingsTitle.2" = "Bugün için rezervasyon yok";
+
 /* Accessibility label for the search button in bookings list. */
+"pos.bookingListView.searchButton.accessibilityLabel" = "Rezervasyon ara";
+
 /* Placeholder for a search field in the Bookings view. */
+"pos.bookingListView.searchFieldPlaceholder" = "Rezervasyon ara";
+
 /* Button label shown when no changes have been made to the booking note yet. */
+"pos.bookingNoteView.addButton" = "Ekle";
+
 /* Title shown at the top of the booking note editor screen when adding a new note. */
+"pos.bookingNoteView.addTitle" = "Not ekle";
+
 /* Title shown at the top of the booking note editor screen when editing an existing note. */
+"pos.bookingNoteView.editTitle" = "Notu düzenle";
+
 /* Placeholder text shown in the booking note text field when empty. */
+"pos.bookingNoteView.placeholder" = "Notun türü";
+
 /* Button to save the booking note. */
+"pos.bookingNoteView.saveButton" = "Kaydet";
+
 /* Error message shown when saving a booking note fails. */
+"pos.bookingNoteView.saveError" = "Not kaydedilemedi. Tekrar deneyin.";
+
 /* POS booking payment status label when the booking order payment authorization has been voided. */
+"pos.bookingPaymentStatus.authorizationVoided" = "Yetkilendirme İptal Edildi";
+
 /* POS booking payment status label when the booking order payment is authorized but not yet captured. */
+"pos.bookingPaymentStatus.authorized" = "Kimlik Doğrulandı";
+
 /* POS booking payment status label when the booking order payment failed. */
+"pos.bookingPaymentStatus.failed" = "Başarısız";
+
 /* POS booking payment status label when the booking is paid. */
+"pos.bookingPaymentStatus.paid" = "Ücretli";
+
 /* POS booking payment status label when the booking order has been refunded. */
+"pos.bookingPaymentStatus.refunded" = "Geri ödeme yapıldı";
+
 /* POS booking payment status label when the booking is unpaid. */
+"pos.bookingPaymentStatus.unpaid" = "Ödenmemiş";
+
 /* Success notice shown at the bottom of the bookings screen after a booking is cancelled in POS. */
+"pos.bookingsContainer.cancelBookingSuccess.notice" = "Rezervasyon başarıyla iptal edildi.";
+
 /* Confirmation message shown before canceling a booking in POS. %1$@ is the booking number, %2$@ is the service name, %3$@ is the date/time. */
 "pos.cancelBookingConfirmation.canceled.confirmationMessage" = "%3$@ tarihindeki %2$@ için %1$@ numaralı rezervasyon iptal edilecektir.";
 
@@ -12586,7 +12712,11 @@ which should be translated separately and considered part of this sentence. */
 "pos.exitPOSModal.exitTitle" = "Satış Noktası Modundan Çıkılsın Mı?";
 
 /* Pricing info shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabPricingInfo" = "İşlem başına sadece %2,70 + 0,10 ile şahsen ödemeleri kabul edin.";
+
 /* Upgrade prompt shown when CIAB site does not have a Pro plan for POS access */
+"pos.ineligible.ciabUpgradePrompt" = "Telefonunuzda tap-to-pay'e ve eşzamanlı envanter ve sipariş senkronizasyonu ile tam satış noktası sistemimize erişmek için Pro'ya yükseltin.";
+
 /* Button title to dismiss POS ineligible view */
 "pos.ineligible.dismiss.button.title" = "POS'tan çık";
 
@@ -12594,7 +12724,11 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.enable.pos.feature.and.refresh.button.title.1" = "POS Özelliğini Etkinleştir";
 
 /* Button title to learn more about upgrading the plan for POS access */
+"pos.ineligible.learnMore.button.title" = "Daha Fazla Bilgi Edinin";
+
 /* Title shown in POS ineligible view when a CIAB site needs a Pro plan */
+"pos.ineligible.planUpgrade.title" = "Pro paket gerekli";
+
 /* Button title to refresh POS eligibility check */
 "pos.ineligible.refresh.button.title" = "Tekrar dene";
 
@@ -12620,6 +12754,8 @@ which should be translated separately and considered part of this sentence. */
 "pos.ineligible.title" = "Yüklenemedi";
 
 /* Navigation title for the webview shown when a CIAB user taps Learn More to upgrade their plan */
+"pos.ineligible.upgradePlan.webview.title" = "Paketi Yükselt";
+
 /* Subtitle appearing on error screens when there is a network connectivity error. */
 "pos.itemList.connectivityErrorSubtitle" = "Lütfen internet bağlantınızı kontrol edip tekrar deneyin.";
 

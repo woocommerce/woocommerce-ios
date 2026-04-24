@@ -420,6 +420,48 @@ extension NetworkingCore.OrderFeeLine {
     }
 }
 
+extension NetworkingCore.OrderFulfillment {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        orderID: CopiableProp<Int64> = .copy,
+        fulfillmentID: CopiableProp<Int64> = .copy,
+        status: NullableCopiableProp<String> = .copy,
+        isFulfilled: CopiableProp<Bool> = .copy,
+        dateUpdated: NullableCopiableProp<Date> = .copy,
+        dateFulfilled: NullableCopiableProp<Date> = .copy,
+        trackingNumber: NullableCopiableProp<String> = .copy,
+        shipmentProvider: NullableCopiableProp<String> = .copy,
+        providerName: NullableCopiableProp<String> = .copy,
+        trackingURL: NullableCopiableProp<String> = .copy
+    ) -> NetworkingCore.OrderFulfillment {
+        let siteID = siteID ?? self.siteID
+        let orderID = orderID ?? self.orderID
+        let fulfillmentID = fulfillmentID ?? self.fulfillmentID
+        let status = status ?? self.status
+        let isFulfilled = isFulfilled ?? self.isFulfilled
+        let dateUpdated = dateUpdated ?? self.dateUpdated
+        let dateFulfilled = dateFulfilled ?? self.dateFulfilled
+        let trackingNumber = trackingNumber ?? self.trackingNumber
+        let shipmentProvider = shipmentProvider ?? self.shipmentProvider
+        let providerName = providerName ?? self.providerName
+        let trackingURL = trackingURL ?? self.trackingURL
+
+        return NetworkingCore.OrderFulfillment(
+            siteID: siteID,
+            orderID: orderID,
+            fulfillmentID: fulfillmentID,
+            status: status,
+            isFulfilled: isFulfilled,
+            dateUpdated: dateUpdated,
+            dateFulfilled: dateFulfilled,
+            trackingNumber: trackingNumber,
+            shipmentProvider: shipmentProvider,
+            providerName: providerName,
+            trackingURL: trackingURL
+        )
+    }
+}
+
 extension NetworkingCore.OrderGiftCard {
     public func copy(
         giftCardID: CopiableProp<Int64> = .copy,

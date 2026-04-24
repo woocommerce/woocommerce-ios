@@ -120,55 +120,6 @@ class CIABEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(checker.isFeatureSupported(.payments, for: site))
     }
 
-    // MARK: - isCurrentSiteCIABProPlan
-
-    func test_is_current_site_ciab_pro_plan_when_no_default_site_returns_false() {
-        // Given
-        sessionManager.defaultSite = nil
-
-        // Then
-        XCTAssertFalse(checker.isCurrentSiteCIABProPlan)
-    }
-
-    func test_is_current_site_ciab_pro_plan_when_non_ciab_site_returns_false() {
-        // Given
-        sessionManager.defaultSite = makeNonGardenSite()
-
-        // Then
-        XCTAssertFalse(checker.isCurrentSiteCIABProPlan)
-    }
-
-    func test_is_current_site_ciab_pro_plan_when_ciab_with_pro_monthly_returns_true() {
-        // Given
-        sessionManager.defaultSite = makeCIABSite(plan: "woo_hosted_pro_plan_monthly")
-
-        // Then
-        XCTAssertTrue(checker.isCurrentSiteCIABProPlan)
-    }
-
-    func test_is_current_site_ciab_pro_plan_when_ciab_with_pro_yearly_returns_true() {
-        // Given
-        sessionManager.defaultSite = makeCIABSite(plan: "woo_hosted_pro_plan_yearly")
-
-        // Then
-        XCTAssertTrue(checker.isCurrentSiteCIABProPlan)
-    }
-
-    func test_is_current_site_ciab_pro_plan_when_ciab_with_free_plan_returns_false() {
-        // Given
-        sessionManager.defaultSite = makeCIABSite(plan: "woo_hosted_free_plan")
-
-        // Then
-        XCTAssertFalse(checker.isCurrentSiteCIABProPlan)
-    }
-
-    func test_is_current_site_ciab_pro_plan_when_ciab_with_basic_plan_returns_false() {
-        // Given
-        sessionManager.defaultSite = makeCIABSite(plan: "woo_hosted_basic_plan_monthly")
-
-        // Then
-        XCTAssertFalse(checker.isCurrentSiteCIABProPlan)
-    }
 }
 
 // MARK: - Helpers

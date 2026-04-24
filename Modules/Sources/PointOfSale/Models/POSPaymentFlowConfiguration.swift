@@ -3,15 +3,13 @@ import enum WooFoundationCore.WooAnalyticsStat
 
 /// Configures the view-level differences between payment flow callers.
 struct POSPaymentFlowConfiguration {
-    /// Action shown on the success screen (e.g. "New order" for cart, "Done" for bookings).
+    /// Action shown on the success screen (e.g. "New order" for cart).
     let successAction: PaymentFlowAction
 
-    /// Action to leave the payment flow from a capture error
-    /// ("New order" for cart, "Back to Booking" for bookings).
+    /// Action to leave the payment flow from a capture error ("New order" for cart).
     let captureErrorExitAction: PaymentFlowAction
 
-    /// Action to leave the payment flow from an intent creation error
-    /// ("Edit order" for cart, "Back to Booking" for bookings).
+    /// Action to leave the payment flow from an intent creation error ("Edit order" for cart).
     let intentCreationErrorExitAction: PaymentFlowAction
 
     /// Whether to show a close (x) button on the initial payment screen.
@@ -55,29 +53,6 @@ extension POSPaymentFlowConfiguration {
     }
 }
 
-// MARK: - Bookings
-
-extension POSPaymentFlowConfiguration {
-    static func bookings(onDismiss: @escaping () -> Void) -> Self {
-        POSPaymentFlowConfiguration(
-            successAction: PaymentFlowAction(
-                title: Localization.Bookings.done,
-                action: onDismiss,
-                analyticsEvent: nil),
-            captureErrorExitAction: PaymentFlowAction(
-                title: Localization.Bookings.backToBooking,
-                action: onDismiss,
-                analyticsEvent: nil),
-            intentCreationErrorExitAction: PaymentFlowAction(
-                title: Localization.Bookings.backToBooking,
-                action: onDismiss,
-                analyticsEvent: nil),
-            showInitialCloseButton: true,
-            onSuccessScreenBarcodeScanned: nil
-        )
-    }
-}
-
 // MARK: - Localization
 
 private extension POSPaymentFlowConfiguration {
@@ -98,20 +73,5 @@ private extension POSPaymentFlowConfiguration {
             )
         }
 
-        enum Bookings {
-            static let done = NSLocalizedString(
-                "pointOfSale.paymentFlowConfiguration.bookings.done.button.title",
-                value: "Done",
-                comment: "Button title on the payment success screen " +
-                "in the Point of Sale bookings payment flow to dismiss and return to booking details"
-            )
-
-            static let backToBooking = NSLocalizedString(
-                "pointOfSale.paymentFlowConfiguration.bookings.backToBooking.button.title",
-                value: "Back to booking",
-                comment: "Button title on payment error screens " +
-                "in the Point of Sale bookings payment flow to dismiss and return to booking details"
-            )
-        }
     }
 }

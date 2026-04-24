@@ -149,10 +149,9 @@ idle -> validatingOrder -> preparingReader -> acceptingCard -> cardInserted -> p
 **Order provision pattern:**
 - `POSPaymentOrderProviding` protocol abstracts where the order comes from
 - `POSCartPaymentOrderProvider` - provides order from cart controller
-- `POSBookingPaymentOrderProvider` - provides order from booking controller
-- This allows the same `POSPaymentModel` to serve both cart and bookings flows via different configurations (`POSPaymentFlowConfiguration`)
+- This allows `POSPaymentModel` to be configured per-caller via `POSPaymentFlowConfiguration`
 
-**Cash payments** follow a simpler path via `POSCashPaymentHandling` protocol with cart/booking implementations that mark orders as paid without hardware interaction.
+**Cash payments** follow a simpler path via `POSCashPaymentHandling` protocol with a cart implementation that marks orders as paid without hardware interaction.
 
 ### Adding a New POS Feature
 1. If new shared state: add a Controller in `Controllers/`, wire it into `PointOfSaleAggregateModel`

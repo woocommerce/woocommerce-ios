@@ -199,10 +199,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSaleRefundsi1
 
-    /// Enables the bookings functionality within POS
-    ///
-    case pointOfSaleBookings
-
     /// Enables self driven push token registration
     ///
     case selfDrivenPushToken

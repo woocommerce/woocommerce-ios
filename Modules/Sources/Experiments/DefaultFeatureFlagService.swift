@@ -95,8 +95,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSaleRefundsi1:
             return true
-        case .pointOfSaleBookings:
-            return true
         case .selfDrivenPushToken:
             return false
         case .clientSideDashboardBanner:

@@ -6,7 +6,7 @@ import YosemiteTestHelpers
 import enum NetworkingCore.NetworkError
 @testable import WooCommerce
 import class Storage.Site
-
+import protocol WooFoundation.Analytics
 
 /// PushNotificationsManager Tests
 ///
@@ -41,6 +41,10 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
+    /// Mock: Analytics Provider
+    ///
+    private var analyticsProvider: MockAnalyticsProvider!
+
     private var subscriptions = Set<AnyCancellable>()
 
     // MARK: - Overridden Methods
@@ -64,6 +68,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         userNotificationCenter = MockUserNotificationsCenterAdapter()
         backgroundSynchronizerFactory = MockPushNotificationBackgroundSynchronizerFactory()
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
 
         manager = makeManager()
     }
@@ -76,6 +81,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         backgroundSynchronizerFactory = nil
         storageManager = nil
         storesManager = nil
+        analyticsProvider = nil
 
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
         defaults = nil
@@ -1327,6 +1333,139 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(registrationAttempted, "Should not attempt registration when all sites are already registered")
     }
 
+    // MARK: - Notification Tracking Tests
+
+    func test_handleNotificationInTheForeground_when_wpcom_notification_then_tracks_with_wpcom_source() async throws {
+        // Given
+        application.applicationState = .active
+        let noteID: Int64 = 9981
+        let payload = notificationPayload(noteID: noteID, type: .storeOrder, title: Sample.defaultTitle)
+        manager = makeManager()
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "wpcom",
+                "push_notification_note_id": "\(noteID)",
+                "push_notification_type": "store_order"
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_woo_driven_notification_then_tracks_with_woo_driven_source() async throws {
+        // Given
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, title: Sample.defaultTitle)
+        manager = makeManager()
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "woo_driven",
+                "push_notification_type": "store_order"
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_notification_from_same_site_then_tracks_fromSelectedSite_true() async throws {
+        // Given
+        let siteID: Int64 = 134
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: siteID, title: Sample.defaultTitle)
+        manager = makeManager()
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "is_from_selected_site": true
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_notification_from_different_site_then_tracks_fromSelectedSite_false() async throws {
+        // Given
+        let selectedSiteID: Int64 = 100
+        let notificationSiteID: Int64 = 200
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: notificationSiteID, title: Sample.defaultTitle)
+        manager = makeManager()
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "is_from_selected_site": false
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_authenticated_without_wpcom_then_tracks_fromSelectedSite_true() async throws {
+        // Given
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: 200, title: Sample.defaultTitle)
+        manager = makeManager()
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "is_from_selected_site": true
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_woo_driven_notification_with_meta_then_tracks_local_identifier() async throws {
+        // Given
+        application.applicationState = .active
+        let siteID: Int64 = 205617935
+        let orderID = 306
+        let payload = try wooDrivenNotificationPayload(siteID: siteID, orderID: orderID, title: Sample.defaultTitle)
+        manager = makeManager()
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        let expectedLocalIdentifier = "\(siteID):store_order:\(orderID)"
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "woo_driven",
+                "push_notification_note_id": expectedLocalIdentifier
+            ]
+        )
+    }
+
     func test_registerDeviceToken_when_eligibility_unknown_then_retries_eligibility_check() async {
         // Given — eligibility check does not complete during init
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1371,7 +1510,8 @@ final class PushNotificationsManagerTests: XCTestCase {
 private extension PushNotificationsManagerTests {
     func makeManager(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      storageManager: MockStorageManager? = nil,
-                     pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil) -> PushNotificationsManager {
+                     pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,
+                     analytics: Analytics? = nil) -> PushNotificationsManager {
         // Capture strong local references so the @autoclosure closures in
         // PushNotificationsConfiguration don't go through the test's IUO
         // properties, which may be nilled in tearDown while async Tasks are still in flight.
@@ -1387,6 +1527,7 @@ private extension PushNotificationsManagerTests {
 
         return PushNotificationsManager(configuration: configuration,
                                         backgroundSynchronizerFactory: backgroundSynchronizerFactory,
+                                        analytics: analytics ?? WooAnalytics(analyticsProvider: analyticsProvider),
                                         storageManager: storageManager ?? self.storageManager,
                                         featureFlagService: featureFlagService,
                                         pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory())
@@ -1456,6 +1597,40 @@ private extension PushNotificationsManagerTests {
                 onCompletion?()
             }
         }
+    }
+
+    func wooDrivenNotificationPayload(siteID: Int64, orderID: Int, title: String) throws -> [AnyHashable: Any] {
+        let noteData: [String: Any] = [
+            "notes": [
+                [
+                    "meta": [
+                        "ids": [
+                            "site": siteID,
+                            "order": orderID
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: noteData)
+        let compressedData = try (jsonData as NSData).compressed(using: .zlib)
+        var dataWithHeader = Data([0x78, 0x9C])
+        dataWithHeader.append(compressedData as Data)
+        let base64Encoded = dataWithHeader.base64EncodedString()
+
+        return [
+            "blog": siteID,
+            "note_full_data": base64Encoded,
+            "aps": [
+                "category": "store_order",
+                "badge": 1,
+                "alert": [
+                    "title": title
+                ]
+            ],
+            "type": "store_order"
+        ]
     }
 
     func insertSitesIntoStorage(siteIDs: [Int64]) async {

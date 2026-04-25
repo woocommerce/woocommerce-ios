@@ -8,7 +8,6 @@ import protocol WooFoundation.Analytics
 @testable import WooCommerce
 import class Storage.Site
 
-
 /// PushNotificationsManager Tests
 ///
 @MainActor
@@ -42,6 +41,10 @@ final class PushNotificationsManagerTests: XCTestCase {
     ///
     private var storageManager: MockStorageManager!
 
+    /// Mock: Analytics Provider
+    ///
+    private var analyticsProvider: MockAnalyticsProvider!
+
     private var subscriptions = Set<AnyCancellable>()
 
     // MARK: - Overridden Methods
@@ -65,6 +68,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         userNotificationCenter = MockUserNotificationsCenterAdapter()
         backgroundSynchronizerFactory = MockPushNotificationBackgroundSynchronizerFactory()
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
 
         manager = makeManager()
     }
@@ -77,6 +81,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         backgroundSynchronizerFactory = nil
         storageManager = nil
         storesManager = nil
+        analyticsProvider = nil
 
         defaults.removePersistentDomain(forName: Sample.defaultSuiteName)
         defaults = nil
@@ -1483,6 +1488,151 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(registrationAttempted, "Should not attempt registration when all sites are already registered")
     }
 
+    // MARK: - Notification Tracking Tests
+
+    func test_handleNotificationInTheForeground_when_wpcom_notification_then_tracks_with_wpcom_source() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let noteID: Int64 = 9981
+        let payload = notificationPayload(noteID: noteID, type: .storeOrder, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "wpcom",
+                "push_notification_note_id": "\(noteID)",
+                "push_notification_type": "store_order"
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_woo_driven_notification_then_tracks_with_woo_driven_source() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "woo_driven",
+                "push_notification_type": "store_order"
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_notification_from_same_site_then_tracks_fromSelectedSite_true() async throws {
+        // Given
+        let siteID: Int64 = 134
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(siteID)
+        application.applicationState = .active
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: siteID, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "is_from_selected_site": true
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_notification_from_different_site_then_tracks_fromSelectedSite_false() async throws {
+        // Given
+        let selectedSiteID: Int64 = 100
+        let notificationSiteID: Int64 = 200
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: notificationSiteID, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "is_from_selected_site": false
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_authenticated_without_wpcom_then_tracks_fromSelectedSite_true() async throws {
+        // Given
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        application.applicationState = .active
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: 200, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "is_from_selected_site": true
+            ]
+        )
+    }
+
+    func test_handleNotificationInTheForeground_when_woo_driven_notification_with_meta_then_tracks_local_identifier() async throws {
+        // Given
+        application.applicationState = .active
+        let siteID: Int64 = 205617935
+        let orderID = 306
+        let payload = try wooDrivenNotificationPayload(siteID: siteID, orderID: orderID, title: Sample.defaultTitle)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        let expectedLocalIdentifier = "\(siteID):store_order:\(orderID)"
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "woo_driven",
+                "push_notification_note_id": expectedLocalIdentifier
+            ]
+        )
+    }
+
     func test_registerDeviceToken_when_eligibility_unknown_then_retries_eligibility_check() async {
         // Given — eligibility check does not complete during init
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1769,6 +1919,40 @@ private extension PushNotificationsManagerTests {
                 onCompletion?()
             }
         }
+    }
+
+    func wooDrivenNotificationPayload(siteID: Int64, orderID: Int, title: String) throws -> [AnyHashable: Any] {
+        let noteData: [String: Any] = [
+            "notes": [
+                [
+                    "meta": [
+                        "ids": [
+                            "site": siteID,
+                            "order": orderID
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: noteData)
+        let compressedData = try (jsonData as NSData).compressed(using: .zlib)
+        var dataWithHeader = Data([0x78, 0x9C])
+        dataWithHeader.append(compressedData as Data)
+        let base64Encoded = dataWithHeader.base64EncodedString()
+
+        return [
+            "blog": siteID,
+            "note_full_data": base64Encoded,
+            "aps": [
+                "category": "store_order",
+                "badge": 1,
+                "alert": [
+                    "title": title
+                ]
+            ],
+            "type": "store_order"
+        ]
     }
 
     func insertSitesIntoStorage(siteIDs: [Int64]) async {

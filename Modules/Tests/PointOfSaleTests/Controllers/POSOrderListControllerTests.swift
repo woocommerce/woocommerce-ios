@@ -1232,11 +1232,11 @@ final class POSOrderListControllerTests {
 
     @MainActor
     @Test func test_loadOrderRefunds_when_selected_order_changes_during_fetch_then_discards_stale_result() async throws {
-        // Given: Select Order A and start loading its refunds
+        // Given
         featureFlags.isPointOfSaleRefundsi1Enabled = true
         let orderA = makeOrder(id: 1, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let orderB = makeOrder(id: 2, refunds: [POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")])
         sut.selectOrder(orderA)
-        refundsService.shouldSuspendLoadOrderRefunds = true
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
                 POSRefundItem(refundedItemID: 1,
@@ -1247,22 +1247,14 @@ final class POSOrderListControllerTests {
                               imageSrc: nil)
             ])
         ]
-
-        // Start the fetch. Await until mock confirms it's been called and is suspended
-        let loadTask = Task { @MainActor in
-            await sut.loadOrderRefunds()
+        refundsService.onLoadOrderRefundsCalled = { [weak sut] _ in
+            sut?.selectOrder(orderB)
         }
-        await refundsService.awaitLoadOrderRefundsCall()
 
-        // When: Switch to Order B while fetch is genuinely in-flight
-        let orderB = makeOrder(id: 2, refunds: [POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")])
-        sut.selectOrder(orderB)
+        // When
+        await sut.loadOrderRefunds()
 
-        // Resume Order A's fetch — it should complete but discard the result
-        refundsService.resumeLoadOrderRefunds()
-        await loadTask.value
-
-        // Then: selectedOrder should still be Order B, not overwritten by Order A's result
+        // Then
         #expect(sut.selectedOrder?.id == 2)
         #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
@@ -1275,18 +1267,16 @@ final class POSOrderListControllerTests {
         let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
 
-        // When — refunds are still loading
-        refundsService.shouldSuspendLoadOrderRefunds = true
-        let loadTask = Task { @MainActor in
-            await sut.loadOrderRefunds()
+        var displayedLineItemsCountWhileLoading: Int?
+        refundsService.onLoadOrderRefundsCalled = { [weak sut] _ in
+            displayedLineItemsCountWhileLoading = sut?.displayedLineItems.count
         }
-        await refundsService.awaitLoadOrderRefundsCall()
+
+        // When
+        await sut.loadOrderRefunds()
 
         // Then
-        #expect(sut.displayedLineItems.count == 2)
-
-        refundsService.resumeLoadOrderRefunds()
-        await loadTask.value
+        #expect(displayedLineItemsCountWhileLoading == 2)
     }
 
     @MainActor

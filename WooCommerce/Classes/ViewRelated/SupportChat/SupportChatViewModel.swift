@@ -72,7 +72,7 @@ final class SupportChatViewModel {
 
     // MARK: - Initialization
 
-    init(botSlug: String = "woo-workflow-support_woomobile",
+    init(botSlug: String = "woo-workflow-support_mobile_inapp",
          stores: StoresManager = ServiceLocator.stores,
          initialContext: [String: Any]? = nil,
          chatID: Int64? = nil,

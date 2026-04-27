@@ -2,9 +2,10 @@ import Foundation
 
 /// Decision-only retry policy for `WCRESTClient` requests.
 ///
-/// Non-idempotent methods (POST, PUT, PATCH, DELETE) never auto-retry: without
-/// an idempotency key the same write reaching the upstream twice could double
-/// charge or duplicate inventory mutations.
+/// Writes (POST, PUT, PATCH) never auto-retry. A duplicate write reaching the
+/// upstream could double-charge or duplicate inventory mutations, and the
+/// runtime can't tell whether the first attempt landed when the transport
+/// drops mid-flight.
 public struct RESTRetryPolicy: Sendable, Equatable {
     public let maxRetries: Int
     public let backoff: [TimeInterval]

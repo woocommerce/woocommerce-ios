@@ -41,15 +41,18 @@ public enum ToolResult: Sendable {
     public struct Failed: Sendable {
         public let toolName: String
         public let toolCallID: String
+        public let kind: AssistantErrorKind
         public let reason: String
         public let code: String?
 
         public init(toolName: String,
                     toolCallID: String,
+                    kind: AssistantErrorKind,
                     reason: String,
                     code: String? = nil) {
             self.toolName = toolName
             self.toolCallID = toolCallID
+            self.kind = kind
             self.reason = reason
             self.code = code
         }

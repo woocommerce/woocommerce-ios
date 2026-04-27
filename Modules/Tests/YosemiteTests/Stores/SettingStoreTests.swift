@@ -941,6 +941,124 @@ final class SettingStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
     }
+
+    // MARK: - SettingAction.retrieveAnalyticsOrderDateType
+
+    func test_retrieveAnalyticsOrderDateType_returns_paid_value() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-success")
+
+        // When
+        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let dateType = try XCTUnwrap(result.get())
+        XCTAssertEqual(dateType, .paid)
+    }
+
+    func test_retrieveAnalyticsOrderDateType_returns_completed_value() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-completed")
+
+        // When
+        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let dateType = try XCTUnwrap(result.get())
+        XCTAssertEqual(dateType, .completed)
+    }
+
+    func test_retrieveAnalyticsOrderDateType_returns_parse_error_when_value_is_unknown() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-parse-error")
+
+        // When
+        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result else {
+            return XCTFail("Expected failure")
+        }
+        XCTAssertEqual(error as? SettingError, .parseError)
+    }
+
+    func test_retrieveAnalyticsOrderDateType_returns_failure_when_network_fails() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type", error: expectedError)
+
+        // When
+        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: - SettingAction.updateAnalyticsOrderDateType
+
+    func test_updateAnalyticsOrderDateType_returns_updated_value() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
+                                 filename: "setting-analytics-date-type-completed")
+
+        // When
+        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let dateType = try XCTUnwrap(result.get())
+        XCTAssertEqual(dateType, .completed)
+    }
+
+    func test_updateAnalyticsOrderDateType_returns_failure_when_network_fails() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type", error: expectedError)
+
+        // When
+        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .allOrders) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 }
 
 

@@ -62,13 +62,14 @@ public struct ToolProposal: Equatable, Sendable {
 
 /// User-visible failure carried by `AssistantEvent.failed`. `kind` lets the
 /// UI distinguish typed states (e.g. `outcome_unknown` for in-flight write
-/// cancellations) from generic failures.
+/// cancellations) from generic failures. Use `.unknown` when the cause is
+/// genuinely unidentified.
 public struct AssistantError: Error, Equatable, Sendable {
-    public let kind: AssistantErrorKind?
+    public let kind: AssistantErrorKind
     public let code: String?
     public let message: String
 
-    public init(kind: AssistantErrorKind? = nil,
+    public init(kind: AssistantErrorKind,
                 code: String? = nil,
                 message: String) {
         self.kind = kind

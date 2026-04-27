@@ -22,12 +22,12 @@ struct AssistantEventTests {
     }
 
     @Test
-    func test_assistantError_when_constructed_without_kind_then_kind_is_nil() {
+    func test_assistantError_when_constructed_with_unknown_kind_then_code_is_nil() {
         // Given / When
-        let error = AssistantError(message: "Generic failure")
+        let error = AssistantError(kind: .unknown, message: "Generic failure")
 
         // Then
-        #expect(error.kind == nil)
+        #expect(error.kind == .unknown)
         #expect(error.code == nil)
     }
 

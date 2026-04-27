@@ -65,11 +65,11 @@ public struct ToolProposal: Equatable, Sendable {
 /// cancellations) from generic failures.
 public struct AssistantError: Error, Equatable, Sendable {
     public let kind: AssistantErrorKind?
-    public let code: Int?
+    public let code: String?
     public let message: String
 
     public init(kind: AssistantErrorKind? = nil,
-                code: Int? = nil,
+                code: String? = nil,
                 message: String) {
         self.kind = kind
         self.code = code

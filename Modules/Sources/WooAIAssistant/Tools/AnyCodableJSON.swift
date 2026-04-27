@@ -1,13 +1,8 @@
 import Foundation
 
-/// A `Sendable` JSON value type. WooAIAssistant cannot use the existing
-/// `NetworkingCore.AnyCodable` because that type is `Any`-backed, which
-/// forces `@unchecked Sendable` on every actor-isolated tool result.
-/// Sealed enum with explicit cases keeps Sendable type-safe.
-///
-/// Loosely-typed JSON value that round-trips through `Codable`. Used for
-/// tool result envelopes and JSON Schema fragments where the inner shape
-/// is per-tool and we don't want to define a Swift type per variant.
+/// Sealed `Sendable` JSON value used for tool result envelopes and JSON Schema fragments.
+/// Explicit cases avoid the `@unchecked Sendable` that an `Any`-backed type would force on
+/// every actor-isolated tool result.
 public enum AnyCodableJSON: Codable, Sendable, Equatable {
     case null
     case bool(Bool)

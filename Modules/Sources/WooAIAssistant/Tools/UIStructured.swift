@@ -9,8 +9,8 @@ public struct UIStructured: Sendable, Equatable {
     }
 }
 
-/// One card the renderer will draw. `element` is the family-typed render
-/// JSON (full entity for `order` / `product` / `customer` v1 families).
+/// One card the renderer will draw. `element` is the family-typed render JSON
+/// (the full entity for `order`, `product`, and `customer` families).
 public struct RenderedCardPayload: Sendable, Equatable {
     public let family: CardFamilyID
     public let id: Int64
@@ -23,8 +23,8 @@ public struct RenderedCardPayload: Sendable, Equatable {
     }
 }
 
-/// Card families the v1 renderer supports. Coupon / review / refund land
-/// in a v2 PR; the catalog is intentionally narrow for the first cut.
+/// Card families the renderer supports. Kept intentionally narrow so each
+/// family has a hand-written renderer rather than a generic JSON walker.
 public enum CardFamilyID: String, Sendable, Codable, Equatable {
     case order
     case product

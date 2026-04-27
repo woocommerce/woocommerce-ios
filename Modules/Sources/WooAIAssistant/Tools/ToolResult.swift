@@ -1,5 +1,3 @@
-import Foundation
-
 /// Result of a single tool dispatch. Sealed so every executor commits to
 /// one of the four shapes; the orchestrator pattern-matches without
 /// stringly-typed status fields, and tools never `throw` past this point.

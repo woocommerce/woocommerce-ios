@@ -1,5 +1,3 @@
-import Foundation
-
 /// Render payload a tool can attach to a successful result. Lives app-side
 /// only - the orchestrator must never serialize it back into model context,
 /// or the model starts parroting the same JSON the renderer is drawing.

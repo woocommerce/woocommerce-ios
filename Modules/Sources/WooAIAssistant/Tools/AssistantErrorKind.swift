@@ -1,5 +1,3 @@
-import Foundation
-
 /// Typed kinds the transport layer and orchestrator classify errors into.
 /// Surfaced through `ToolResult.Failed.kind`, transport telemetry, and the
 /// confirmation/retry decisions higher layers make.

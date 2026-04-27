@@ -655,11 +655,10 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
 
             await withCheckedContinuation { continuation in
-                var resumed = false
+                let once = OnceFlag()
                 cardPresentPaymentService.onCollectPaymentCalled = {
-                    if !resumed {
+                    if once.tryFire() {
                         continuation.resume()
-                        resumed = true
                     }
                 }
 
@@ -723,11 +722,10 @@ struct PointOfSaleAggregateModelTests {
             cardPresentPaymentService.collectPaymentWasCalled = false
 
             await withCheckedContinuation { continuation in
-                var resumed = false
+                let once = OnceFlag()
                 cardPresentPaymentService.onCollectPaymentCalled = {
-                    if !resumed {
+                    if once.tryFire() {
                         continuation.resume()
-                        resumed = true
                     }
                 }
 
@@ -884,15 +882,14 @@ struct PointOfSaleAggregateModelTests {
 
             // When card payment succeeds
             await withCheckedContinuation { continuation in
-                var resumed = false
+                let once = OnceFlag()
                 coordinator.onPerformIncrementalSyncCalled = {
-                    if !resumed {
+                    if once.tryFire() {
                         continuation.resume()
-                        resumed = true
                     }
                 }
 
-                Task {
+                Task { @MainActor in
                     await sut.checkOut()
                 }
             }
@@ -905,15 +902,14 @@ struct PointOfSaleAggregateModelTests {
 
             // When cash payment succeeds
             await withCheckedContinuation { continuation in
-                var resumed = false
+                let once = OnceFlag()
                 coordinator.onPerformIncrementalSyncCalled = {
-                    if !resumed {
+                    if once.tryFire() {
                         continuation.resume()
-                        resumed = true
                     }
                 }
 
-                Task {
+                Task { @MainActor in
                     try await sut.collectCashPayment(changeDueAmount: "0.00")
                 }
             }
@@ -1123,15 +1119,15 @@ struct PointOfSaleAggregateModelTests {
 
             // Then: set the callback before checkOut so it fires when the fire-and-forget Task runs
             await withCheckedContinuation { continuation in
-                var resumed = false
+                let once = OnceFlag()
                 catalogSyncCoordinator.onPerformIncrementalSyncCalled = {
-                    guard !resumed else { return }
-                    resumed = true
-                    continuation.resume()
+                    if once.tryFire() {
+                        continuation.resume()
+                    }
                 }
 
                 // When
-                Task { await sut.checkOut() }
+                Task { @MainActor in await sut.checkOut() }
             }
             #expect(catalogSyncCoordinator.performIncrementalSyncInvocationCount >= 1)
             #expect(catalogSyncCoordinator.performIncrementalSyncSiteID == siteID)
@@ -1277,4 +1273,17 @@ private func makePointOfSaleAggregateModel(
         catalogSyncCoordinator: catalogSyncCoordinator,
         sunsetWarningChecker: sunsetWarningChecker
     )
+}
+
+private final class OnceFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var fired = false
+
+    func tryFire() -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard !fired else { return false }
+        fired = true
+        return true
+    }
 }

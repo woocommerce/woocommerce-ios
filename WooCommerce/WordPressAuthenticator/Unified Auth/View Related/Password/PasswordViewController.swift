@@ -130,7 +130,7 @@ class PasswordViewController: LoginViewController {
             return
         }
 
-        if let source = source, loginFields.meta.userIsDotCom {
+        if let source, loginFields.meta.userIsDotCom {
             let passwordError = SignInError.invalidWPComPassword(source: source)
             if authenticationDelegate.shouldHandleError(passwordError) {
                 authenticationDelegate.handleError(passwordError) { _ in
@@ -278,7 +278,7 @@ private extension PasswordViewController {
             secondaryButton.accessibilityIdentifier = AccessibilityIdentifier.loginWithMagicLink
             secondaryButton.on(.touchUpInside) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.secondaryButton.isEnabled = false
                     await self.loginWithMagicLink()
                     self.secondaryButton.isEnabled = true
@@ -427,7 +427,7 @@ private extension PasswordViewController {
             return configuration.wpcomPasswordInstructions
         }()
 
-        guard let instructions = instructions else {
+        guard let instructions else {
             return
         }
 
@@ -464,7 +464,7 @@ private extension PasswordViewController {
                              accessibilityTrait: .link,
                              showBorder: true)
         cell.actionHandler = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -491,7 +491,7 @@ private extension PasswordViewController {
         loginLinkCell = cell
 
         cell.actionHandler = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

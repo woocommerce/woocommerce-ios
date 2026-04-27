@@ -38,7 +38,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
         }
 
         modalController = CardPresentPaymentsModalViewController(viewModel: viewModel)
-        guard let modalController = modalController else {
+        guard let modalController else {
             return
         }
 
@@ -57,7 +57,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
             let shouldAnimateDismissal = animated && present == nil
             modalController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.modalController = nil
-                guard let from = from, let present = present else {
+                guard let from, let present else {
                     return
                 }
                 from.present(present, animated: false)
@@ -67,7 +67,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
 
         /// Or, if there was no common modal to dismiss, present straight-away
         ///
-        guard let from = from, let present = present else {
+        guard let from, let present else {
             return
         }
         from.present(present, animated: animated)
@@ -94,7 +94,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
             let shouldAnimateDismissal = animated && present == nil
             severalFoundController?.dismiss(animated: shouldAnimateDismissal, completion: { [weak self] in
                 self?.severalFoundController = nil
-                guard let from = from, let present = present else {
+                guard let from, let present else {
                     return
                 }
                 from.present(present, animated: false)
@@ -103,7 +103,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
         }
         /// Or, if there was no several-found modal to dismiss, present straight-away
         ///
-        guard let from = from, let present = present else {
+        guard let from, let present else {
             return
         }
         from.present(present, animated: animated)
@@ -121,7 +121,7 @@ final class CardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresentin
                              cancelSearch: @escaping () -> Void) {
         severalFoundController = SeveralReadersFoundViewController()
 
-        if let severalFoundController = severalFoundController {
+        if let severalFoundController {
             severalFoundController.configureController(
                 readerIDs: readerIDs,
                 connect: connect,

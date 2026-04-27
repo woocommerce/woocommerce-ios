@@ -270,7 +270,7 @@ private enum Localization {
         )
         var label = String(format: baseFormat, index, amount)
 
-        if let reason = reason, !reason.isEmpty {
+        if let reason, !reason.isEmpty {
             let reasonFormat = NSLocalizedString(
                 "pos.totalsSectionView.refund.accessibilityLabel.reason",
                 value: "Reason: %1$@",

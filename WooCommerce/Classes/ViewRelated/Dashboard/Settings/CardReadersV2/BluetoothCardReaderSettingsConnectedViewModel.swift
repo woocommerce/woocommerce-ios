@@ -76,7 +76,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
 
     private func configureResultsControllers() {
         dataSource.configureResultsControllers(onReload: { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.connectedGatewayID = self.dataSource.cardPresentPaymentGatewayID()
@@ -102,7 +102,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
     private func beginObservation() {
         // This completion should be called repeatedly as the list of connected readers changes
         let action = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -118,7 +118,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { softwareUpdateEvents in
             softwareUpdateEvents
                 .sink { [weak self] state in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     switch state {
                     case .started(cancelable: let cancelable):
@@ -157,7 +157,7 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionEvents in
             reconnectionEvents
                 .sink { [weak self] state in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     switch state {
                     case .reconnecting(let reader):
@@ -236,10 +236,10 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
             return nil
         }
         return { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analyticsTracker.cardReaderSoftwareUpdateCancelTapped()
             self.softwareUpdateCancelable?.cancel(completion: { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 if case .failure(let error) = result {
                     DDLogError("💳 Error: canceling software update \(error)")

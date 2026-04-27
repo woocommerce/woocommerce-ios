@@ -108,7 +108,7 @@ final class OrderStatusListViewModel {
     }
 
     func confirmSelectedStatus() {
-        guard let indexOfSelectedStatus = indexOfSelectedStatus else {
+        guard let indexOfSelectedStatus else {
             didCancelSelection?()
             return
         }

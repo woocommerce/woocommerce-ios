@@ -21,7 +21,7 @@ struct UpdateProductInventoryView: View {
     }
 
     private func displayErrorNotice(_ productName: String, _ error: Error? = nil) {
-        if let error = error {
+        if let error {
             DDLogError("Update inventory error: \(error)")
         }
         viewModel.displayErrorNotice(productName)

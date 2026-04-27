@@ -8,7 +8,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
     typealias StorageModel = StorageProduct
 
     lazy var customResultsSortOrder: ((Product, Product) -> Bool)? = { [weak self] (lhs, rhs) in
-        guard let self = self else {
+        guard let self else {
             return true
         }
         let lhsProductID = lhs.productID
@@ -78,7 +78,7 @@ final class LinkedProductListSelectorDataSource: PaginatedListSelectorDataSource
         cell.update(viewModel: viewModel, imageService: imageService)
 
         cell.configureAccessoryDeleteButton { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(.connectedProductsList, withProperties: ["action": "delete_tapped", "context": self.trackingContext])
             self.deleteProduct(model)
         }

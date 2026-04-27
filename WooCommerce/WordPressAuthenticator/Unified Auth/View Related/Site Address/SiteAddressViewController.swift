@@ -349,7 +349,7 @@ private extension SiteAddressViewController {
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
         cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.findSiteButtonTitle)
         cell.actionHandler = { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -450,7 +450,7 @@ private extension SiteAddressViewController {
 
         // Checks that the site exists
         checkSiteExistence(url: url) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             // skips XMLRPC check for site discovery or site address login if needed
             if (self.isSiteDiscovery && self.configuration.skipXMLRPCCheckForSiteDiscovery) ||
                 self.configuration.skipXMLRPCCheckForSiteAddressLogin {
@@ -468,9 +468,9 @@ private extension SiteAddressViewController {
         request.timeoutInterval = 10.0 // waits for 10 seconds
         let task = URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
             DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
-                if let error = error, (error as NSError).code != NSURLErrorAppTransportSecurityRequiresSecureConnection {
+                if let error, (error as NSError).code != NSURLErrorAppTransportSecurityRequiresSecureConnection {
                     self.configureViewLoading(false)
 
                     if self.authenticationDelegate.shouldHandleError(error) {
@@ -528,7 +528,7 @@ private extension SiteAddressViewController {
         let service = WordPressComBlogService()
 
         let successBlock: (WordPressComSiteInfo) -> Void = { [weak self] siteInfo in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.configureViewLoading(false)
@@ -541,7 +541,7 @@ private extension SiteAddressViewController {
         }
 
         service.fetchUnauthenticatedSiteInfoForAddress(for: baseSiteUrl, success: successBlock, failure: { [weak self] error in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -696,7 +696,7 @@ private extension SiteAddressViewController {
     ///
     func attemptAPIDiscoveryFallback(for siteURL: String, siteInfoError: Error) {
         authenticationDelegate.handleSiteInfoFailure(siteURL: siteURL, error: siteInfoError) { [weak self] hasRESTAPI in
-            guard let self = self else { return }
+            guard let self else { return }
             self.configureViewLoading(false)
 
             if hasRESTAPI {

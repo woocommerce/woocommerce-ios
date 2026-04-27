@@ -87,7 +87,7 @@ struct InPersonPaymentsSelectPluginView: View {
     }
 
     private func confirmPluginSelection() {
-        guard let selectedPlugin = selectedPlugin else {
+        guard let selectedPlugin else {
             // This should not be possible
             assertionFailure()
             return DDLogError("Attempt to confirm a payment gateway selection with no gateway selected")

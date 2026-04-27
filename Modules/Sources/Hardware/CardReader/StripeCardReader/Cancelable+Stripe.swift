@@ -10,7 +10,7 @@ final class StripeCancelable: FallibleCancelable {
 
     func cancel(completion: @escaping (Result<Void, Error>) -> Void) {
         cancelable.cancel { error in
-            if let error = error {
+            if let error {
                 completion(.failure(error))
             } else {
                 completion(.success(()))

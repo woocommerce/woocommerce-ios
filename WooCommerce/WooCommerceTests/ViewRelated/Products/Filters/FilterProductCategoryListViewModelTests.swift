@@ -80,9 +80,9 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
         productCategoryListViewModel.performFetch()
 
         let categoryViewModels: [ProductCategoryCellViewModel] = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.subscription = self.productCategoryListViewModel.$syncCategoriesState.sink { [weak self] state in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 

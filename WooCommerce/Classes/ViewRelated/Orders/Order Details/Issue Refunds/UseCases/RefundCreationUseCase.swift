@@ -60,7 +60,7 @@ struct RefundCreationUseCase {
                             total: calculateTotal(of: refundable))
         }
 
-        if let shippingLine = shippingLine {
+        if let shippingLine {
             refundItems.append(createShippingItem(from: shippingLine))
         }
 

@@ -89,7 +89,7 @@ extension ProductDownloadFileViewModel: ProductDownloadFileActionHandler {
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductDownloadFileViewController.Completion) {
-        if let fileURL = fileURL, isChangesValid() {
+        if let fileURL, isChangesValid() {
             onCompletion(fileName, fileURL, fileID, hasUnsavedChanges())
         }
         return

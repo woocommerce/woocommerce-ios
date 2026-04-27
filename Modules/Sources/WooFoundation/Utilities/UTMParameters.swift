@@ -31,7 +31,7 @@ public extension UTMParametersProviding {
             return nil
         }
 
-        if let limitToHosts = limitToHosts {
+        if let limitToHosts {
             return urlAddingUTMParamsForAllowedHosts(limitToHosts, urlComponents: components)
         } else {
             return urlAddingUTMParams(urlComponents: components)

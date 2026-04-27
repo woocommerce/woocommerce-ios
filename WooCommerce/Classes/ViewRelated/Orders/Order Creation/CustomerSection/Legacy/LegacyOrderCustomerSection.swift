@@ -120,7 +120,7 @@ private struct OrderCustomerSectionContent: View {
         VStack(alignment: .leading, spacing: Layout.verticalAddressSpacing) {
             Text(title)
                 .headlineStyle()
-            if let formattedAddress = formattedAddress, formattedAddress.isNotEmpty {
+            if let formattedAddress, formattedAddress.isNotEmpty {
                 Text(formattedAddress)
                     .bodyStyle()
             } else {

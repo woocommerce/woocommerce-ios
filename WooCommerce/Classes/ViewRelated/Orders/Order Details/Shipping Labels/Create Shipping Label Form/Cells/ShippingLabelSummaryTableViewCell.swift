@@ -110,7 +110,7 @@ final class ShippingLabelSummaryTableViewCell: UITableViewCell {
     }
 
     func setDiscount(_ discount: String?) {
-        guard let discount = discount else {
+        guard let discount else {
             discountView.isHidden = true
             return
         }

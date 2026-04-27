@@ -85,7 +85,7 @@ public struct PointOfSaleEntryPointView: View {
 
         // Use observable controller with GRDB if local catalog is eligible,
         // otherwise fall back to standard controller.
-        if isLocalCatalogEligible, let grdbManager = grdbManager, let catalogSyncCoordinator {
+        if isLocalCatalogEligible, let grdbManager, let catalogSyncCoordinator {
             self.itemsController = PointOfSaleObservableItemsController(
                 siteID: siteID,
                 grdbManager: grdbManager,

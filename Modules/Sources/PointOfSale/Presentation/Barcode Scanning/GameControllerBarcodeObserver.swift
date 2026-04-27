@@ -112,7 +112,7 @@ final class GameControllerBarcodeObserver {
         )
 
         keyboard.keyboardInput?.keyChangedHandler = { [weak self] _, _, keyCode, pressed in
-            guard let self = self else { return }
+            guard let self else { return }
 
             if keyCode == .leftShift || keyCode == .rightShift {
                 self.isShiftPressed = pressed

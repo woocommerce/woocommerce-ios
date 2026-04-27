@@ -78,7 +78,7 @@ class PointOfSaleBarcodeScannerSetupFlow {
     // MARK: - Private Methods
 
     private func transition(to transitionType: PointOfSaleBarcodeScannerTransitionType, fallback: (() -> Void)? = nil) {
-        guard let currentStep = currentStep,
+        guard let currentStep,
               let targetStep = currentStep.transitions[transitionType] else {
             fallback?()
             return

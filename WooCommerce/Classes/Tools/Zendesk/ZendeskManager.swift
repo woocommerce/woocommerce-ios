@@ -377,7 +377,7 @@ private extension ZendeskManager {
 
     func createZendeskIdentity(completion: @escaping (Bool) -> Void) {
 
-        guard let userEmail = userEmail else {
+        guard let userEmail else {
             DDLogInfo("No user email to create Zendesk identity with.")
             let identity = Identity.createAnonymous()
             Zendesk.instance?.setIdentity(identity)
@@ -486,7 +486,7 @@ private extension ZendeskManager {
         // Name Text Field
         if withName {
             alertController.addTextField { [weak self] textField in
-                guard let self = self else { return }
+                guard let self else { return }
                 textField.clearButtonMode = .always
                 textField.placeholder = LocalizedText.namePlaceholder
                 textField.text = self.userName

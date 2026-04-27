@@ -235,7 +235,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     func handleSaleStartDateChange(_ date: Date) {
         dateOnSaleStart = date.startOfDay(timezone: timezoneForScheduleSaleDates)
 
-        if let dateOnSaleEnd = dateOnSaleEnd, dateOnSaleEnd < date {
+        if let dateOnSaleEnd, dateOnSaleEnd < date {
             self.dateOnSaleEnd = date.endOfDay(timezone: timezoneForScheduleSaleDates)
         }
     }
@@ -244,7 +244,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         if date == nil {
             datePickerSaleToVisible = false
         }
-        if let date = date, let dateOnSaleStart = dateOnSaleStart, date < dateOnSaleStart {
+        if let date, let dateOnSaleStart, date < dateOnSaleStart {
             return
         }
         else {

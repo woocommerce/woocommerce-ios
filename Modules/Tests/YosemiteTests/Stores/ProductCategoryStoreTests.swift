@@ -73,7 +73,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -98,7 +98,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -123,7 +123,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -151,7 +151,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -183,7 +183,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -204,7 +204,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `synchronizeProductCategories` action
         let errorResponse: ProductCategoryActionError? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -296,7 +296,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-empty")
 
         let _: Bool = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -315,7 +315,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
 
         let addedCategory: Storage.ProductCategory? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -334,7 +334,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
 
         let result: Result<Networking.ProductCategory, Error>? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -353,7 +353,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: DotcomError.resourceDoesNotExist())
 
         let retrievedError: Error? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

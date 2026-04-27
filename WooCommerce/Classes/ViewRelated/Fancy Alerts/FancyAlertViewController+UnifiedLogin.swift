@@ -175,7 +175,7 @@ private extension FancyAlertViewController {
             let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
             let supportViewController = UIStoryboard.settings.instantiateViewController(identifier: identifier,
                                                                                          creator: { coder -> HelpAndSupportViewController? in
-                guard let customHelpCenterContent = customHelpCenterContent else {
+                guard let customHelpCenterContent else {
                     /// Returning nil as we don't need to customise the HelpAndSupportViewController
                     /// In this case `instantiateViewController` method will use the default `HelpAndSupportViewController` created from storyboard.
                     ///

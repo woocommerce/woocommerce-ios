@@ -42,7 +42,7 @@ final class PaymentSettingsFlowPresentingViewController: UIViewController {
         childViewController?.removeFromParent()
         childViewController?.view.removeFromSuperview()
 
-        guard let viewModelAndView = viewModelAndView else {
+        guard let viewModelAndView else {
             return
         }
 

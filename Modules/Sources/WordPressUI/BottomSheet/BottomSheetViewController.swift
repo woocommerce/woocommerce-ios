@@ -80,7 +80,7 @@ public class BottomSheetViewController: UIViewController {
             } else {
                 modalPresentationStyle = .popover
 
-                if let sourceBarButtonItem = sourceBarButtonItem {
+                if let sourceBarButtonItem {
                     popoverPresentationController?.barButtonItem = sourceBarButtonItem
                 } else {
                     popoverPresentationController?.permittedArrowDirections = arrowDirections
@@ -145,7 +145,7 @@ public class BottomSheetViewController: UIViewController {
             gripButton.heightAnchor.constraint(equalToConstant: Constants.gripHeight)
         ])
 
-        guard let childViewController = childViewController else {
+        guard let childViewController else {
             return
         }
 
@@ -293,7 +293,7 @@ extension BottomSheetViewController: DrawerPresentable {
     }
 
     public func handleDismiss() {
-        if let childViewController = childViewController {
+        if let childViewController {
             childViewController.handleDismiss()
         }
     }

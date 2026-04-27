@@ -70,7 +70,7 @@ extension SelectedSiteSettings {
     ///
     private func configureResultsController() {
         resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
             self.siteSettings = self.resultsController.fetchedObjects
             guard let siteID = stores.sessionManager.defaultStoreID else {

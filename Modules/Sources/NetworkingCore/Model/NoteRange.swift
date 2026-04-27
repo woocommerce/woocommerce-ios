@@ -103,7 +103,7 @@ private extension NoteRange {
     /// Parses the NoteRange.Type field into a Swift Native enum. Returns .unknown on failure.
     ///
     static func kind(forType type: String?, siteID: Int64?, url: URL?) -> Kind {
-        if let type = type, let kind = Kind(rawValue: type) {
+        if let type, let kind = Kind(rawValue: type) {
             return kind
         }
 

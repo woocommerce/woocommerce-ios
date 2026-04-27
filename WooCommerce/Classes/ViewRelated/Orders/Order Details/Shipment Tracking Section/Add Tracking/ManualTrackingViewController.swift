@@ -515,7 +515,7 @@ private extension ManualTrackingViewController {
                                                            dateShipped: dateShipped,
                                                            trackingNumber: trackingNumber) { [weak self] error in
 
-                                                            if let error = error {
+                                                            if let error {
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
                                                                 ServiceLocator.analytics.track(.orderTrackingAddFailed,
@@ -562,7 +562,7 @@ private extension ManualTrackingViewController {
                                                       trackingNumber: trackingNumber,
                                                       trackingURL: trackingLink,
                                                       dateShipped: dateShipped) { [weak self] error in
-                                                        if let error = error {
+                                                        if let error {
                                                             DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
                                                             ServiceLocator.analytics.track(.orderTrackingAddFailed,

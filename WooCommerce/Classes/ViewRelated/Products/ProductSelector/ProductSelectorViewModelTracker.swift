@@ -80,7 +80,7 @@ final class ProductSelectorViewModelTracker {
 private extension ProductSelectorViewModelTracker {
     func retrieveTrackingSource(for productID: Int64) -> ProductTrackingSource? {
         guard trackProductsSource,
-              let viewModel = viewModel else {
+              let viewModel else {
             return nil
         }
 
@@ -100,7 +100,7 @@ private extension ProductSelectorViewModelTracker {
     }
 
     func sectionContainsProductID(sectionType: ProductSelectorSectionType, productID: Int64) -> Bool {
-        guard let viewModel = viewModel else {
+        guard let viewModel else {
             return false
         }
 

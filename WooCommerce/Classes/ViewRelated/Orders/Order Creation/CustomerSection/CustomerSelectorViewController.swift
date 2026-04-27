@@ -103,7 +103,7 @@ private extension CustomerSelectorViewController {
     func loadCustomersContent() {
         if viewModel.isEligibleForAdvancedSearch() {
             viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 

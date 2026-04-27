@@ -21,7 +21,7 @@ extension StorageNote {
     /// Returns the Timestamp as a Date instance. If parsing fails, this method returns now()
     ///
     private var timestampAsDate: Date {
-        guard let timestamp = timestamp, let parsed = DateFormatter.Defaults.iso8601.date(from: timestamp) else {
+        guard let timestamp, let parsed = DateFormatter.Defaults.iso8601.date(from: timestamp) else {
             return Date()
         }
 

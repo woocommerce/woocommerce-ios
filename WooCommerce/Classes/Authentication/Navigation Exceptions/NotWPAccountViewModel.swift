@@ -70,7 +70,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 private extension NotWPAccountViewModel {
     func whatIsWPComButtonTapped() {
         analytics.track(.whatIsWPComOnInvalidEmailScreenTapped)
-        guard let viewController = viewController else {
+        guard let viewController else {
             return
         }
         WebviewHelper.launch(WooConstants.URLs.whatIsWPCom.asURL(), with: viewController)

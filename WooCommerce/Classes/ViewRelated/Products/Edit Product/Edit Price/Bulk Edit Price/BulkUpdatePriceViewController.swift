@@ -31,7 +31,7 @@ final class BulkUpdatePriceViewController: UIViewController {
     init(viewModel: BulkUpdatePriceSettingsViewModel, noticePresenter: NoticePresenter? = nil) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-        if let noticePresenter = noticePresenter {
+        if let noticePresenter {
             self.noticePresenter = noticePresenter
         }
     }
@@ -81,7 +81,7 @@ final class BulkUpdatePriceViewController: UIViewController {
         }.store(in: &subscriptions)
 
         viewModel.$bulkUpdatePriceError.sink { [weak self] error in
-            guard let error = error else {
+            guard let error else {
                 return
             }
             self?.displayNoticeForError(error)

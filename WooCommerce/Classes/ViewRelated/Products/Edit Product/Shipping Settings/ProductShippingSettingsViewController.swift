@@ -88,7 +88,7 @@ private extension ProductShippingSettingsViewController {
         let action = ProductShippingClassAction
             .retrieveProductShippingClass(siteID: viewModel.product.siteID,
                                           remoteID: viewModel.product.shippingClassID) { [weak self] (shippingClass, error) in
-                                            guard let shippingClass = shippingClass, error == nil else {
+                                            guard let shippingClass, error == nil else {
                                                 return
                                             }
                                             self?.viewModel.onShippingClassRetrieved(shippingClass: shippingClass)
@@ -172,7 +172,7 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in
-                                                        guard let self = self else {
+                                                        guard let self else {
                                                             return
                                                         }
                                                         self.viewModel.handleShippingClassChange(selected)

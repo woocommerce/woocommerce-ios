@@ -56,6 +56,9 @@ only_rules:
 
   - overridden_super_call
 
+  # Prefer the shorthand `if let foo` form over `if let foo = foo`.
+  - shorthand_optional_binding
+
   # Prefer `someBool.toggle()` over `someBool = !someBool`.
   - toggle_bool
 

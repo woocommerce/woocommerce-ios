@@ -44,7 +44,7 @@ private extension OrderNoteStore {
     ///
     func retrieveOrderNotes(siteID: Int64, orderID: Int64, onCompletion: @escaping ([OrderNote]?, Error?) -> Void) {
         remote.loadOrderNotes(for: siteID, orderID: orderID) { [weak self] (orderNotes, error) in
-            guard let orderNotes = orderNotes else {
+            guard let orderNotes else {
                 onCompletion(nil, error)
                 return
             }

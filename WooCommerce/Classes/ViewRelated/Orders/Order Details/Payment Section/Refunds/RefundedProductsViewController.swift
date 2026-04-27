@@ -111,7 +111,7 @@ private extension RefundedProductsViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] order in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.viewModel.updateOrderStatus(order: order)

@@ -234,7 +234,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
         transitionToSyncingState(pageNumber: pageNumber)
         dataSource.sync(pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

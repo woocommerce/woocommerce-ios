@@ -460,7 +460,7 @@ public extension StorageType {
     /// Retrieves a stored TaxClass for the provided tax slug.
     ///
     func loadTaxClass(slug: String?) -> TaxClass? {
-        guard let slug = slug else {
+        guard let slug else {
             return nil
         }
 

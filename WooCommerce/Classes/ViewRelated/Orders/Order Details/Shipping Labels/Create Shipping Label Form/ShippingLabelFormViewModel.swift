@@ -56,7 +56,7 @@ final class ShippingLabelFormViewModel {
     }
 
     var selectedPackages: [ShippingLabelPackageSelected] {
-        guard let packagesResponse = packagesResponse else {
+        guard let packagesResponse else {
             return []
         }
 
@@ -138,8 +138,8 @@ final class ShippingLabelFormViewModel {
     /// Check for the need of customs form
     ///
     var customsFormRequired: Bool {
-        guard let originAddress = originAddress,
-              let destinationAddress = destinationAddress else {
+        guard let originAddress,
+              let destinationAddress else {
             return false
         }
         // Special case: Any shipment from/to military addresses must have Customs
@@ -613,7 +613,7 @@ private extension ShippingLabelFormViewModel {
     }
 
     static func fromAddressToShippingLabelAddress(address: Address?) -> ShippingLabelAddress? {
-        guard let address = address else { return nil }
+        guard let address else { return nil }
 
         // In this way we support localized name correctly,
         // because the order is often reversed in a few Asian languages.
@@ -653,7 +653,7 @@ private extension ShippingLabelFormViewModel {
     // Search the custom package based on the id
     //
     private func searchCustomPackage(id: String) -> ShippingLabelCustomPackage? {
-        guard let packagesResponse = packagesResponse else {
+        guard let packagesResponse else {
             return nil
         }
 
@@ -669,7 +669,7 @@ private extension ShippingLabelFormViewModel {
     // Search the predefined package based on the id
     //
     private func searchPredefinedPackage(id: String) -> ShippingLabelPredefinedPackage? {
-        guard let packagesResponse = packagesResponse else {
+        guard let packagesResponse else {
             return nil
         }
 
@@ -724,13 +724,13 @@ private extension ShippingLabelFormViewModel {
     ///
     private func monitorAccountSettingsResultsController() {
         accountSettingsResultsController.onDidChangeContent = { [weak self] in
-            guard let self = self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
+            guard let self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
 
             self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
         }
 
         accountSettingsResultsController.onDidResetContent = { [weak self] in
-            guard let self = self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
+            guard let self, let fetchedAccountSettings = self.accountSettingsResultsController.fetchedObjects.first else { return }
 
             self.handlePaymentMethodValueChanges(settings: fetchedAccountSettings, editable: true)
         }
@@ -744,7 +744,7 @@ extension ShippingLabelFormViewModel {
     func fetchCountries() {
         try? resultsController.performFetch()
         let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 try? self.resultsController.performFetch()
@@ -775,7 +775,7 @@ extension ShippingLabelFormViewModel {
 
         let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
 
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let response):
                 self.updateValidatingAddressState(false, type: type)
@@ -801,7 +801,7 @@ extension ShippingLabelFormViewModel {
     ///
     func syncShippingLabelAccountSettings() {
         let action = ShippingLabelAction.synchronizeShippingLabelAccountSettings(siteID: order.siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let value):
@@ -837,8 +837,8 @@ extension ShippingLabelFormViewModel {
     /// - Parameter onCompletion: Closure to be executed on completion with the success/failure result of the purchase.
     ///
     func purchaseLabel(onCompletion: @escaping ((Result<TimeInterval, Error>) -> Void)) {
-        guard let originAddress = originAddress,
-              let destinationAddress = destinationAddress,
+        guard let originAddress,
+              let destinationAddress,
               selectedPackages.isNotEmpty,
               selectedRates.isNotEmpty,
               let accountSettings = shippingLabelAccountSettings else {
@@ -878,7 +878,7 @@ extension ShippingLabelFormViewModel {
                                                                destinationAddress: destinationAddress,
                                                                packages: packages,
                                                                emailCustomerReceipt: accountSettings.isEmailReceiptsEnabled) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let labels):
                 self.purchasedShippingLabels = labels.filter { $0.orderID == self.order.orderID && $0.status == .purchased }
@@ -916,7 +916,7 @@ extension ShippingLabelFormViewModel {
 
     private func updateEUShippingNoticeVisibility() {
         verifyEUShippingNoticeDismissState { [weak self] dismissed in
-            guard let self = self, dismissed else {
+            guard let self, dismissed else {
                 self?.shouldPresentEUShippingNotice = false
                 return
             }

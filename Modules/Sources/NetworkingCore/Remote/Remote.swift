@@ -87,11 +87,11 @@ open class Remote: NSObject {
     ///
     public func enqueue<M: Mapper>(_ request: Request, mapper: M, completion: @escaping (M.Output?, Error?) -> Void) {
         network.responseData(for: request) { [weak self] (data, networkError) in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
-            guard let data = data else {
+            guard let data else {
                 let error: Error? = networkError.map { self.mapNetworkError(error: $0, for: request) }
                 completion(nil, error)
                 return
@@ -124,7 +124,7 @@ open class Remote: NSObject {
     public func enqueue<M: Mapper>(_ request: Request, mapper: M,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.responseData(for: request) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -203,11 +203,11 @@ open class Remote: NSObject {
                                                    completion: @escaping (Result<M.Output, Error>) -> Void) {
         network.uploadMultipartFormData(multipartFormData: multipartFormData,
                                         to: request) { [weak self] (data, networkError) in
-                                            guard let self = self else {
+                                            guard let self else {
                                                 return
                                             }
 
-                                            guard let data = data else {
+                                            guard let data else {
                                                 completion(.failure(networkError ?? NetworkError.notFound()))
                                                 return
                                             }

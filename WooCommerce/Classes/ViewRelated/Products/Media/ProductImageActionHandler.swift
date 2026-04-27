@@ -48,7 +48,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     private(set) var productImageStatuses: [ProductImageStatus] {
         didSet {
             queue.async { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 self.observations.allStatusesUpdated.values.forEach { closure in
@@ -93,12 +93,12 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         let id = UUID()
 
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
             self.observations.allStatusesUpdated[id] = { [weak self, weak observer] allStatuses in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -133,7 +133,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         let id = UUID()
 
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -158,7 +158,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
     func addSiteMediaLibraryImagesToProduct(mediaItems: [Media]) {
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -172,7 +172,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
     func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType) {
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             let uploadingStatus = ProductImageStatus.uploading(asset: asset, siteID: self.siteID, productID: self.productOrVariationID)
@@ -187,7 +187,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
             self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
                                                 self?.queue.async { [weak self] in
-                                                    guard let self = self else {
+                                                    guard let self else {
                                                         return
                                                     }
 
@@ -215,7 +215,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
     private func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             let action: MediaAction
             switch asset {
                 case .phAsset(let asset):
@@ -256,7 +256,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     ///
     func updateProductID(_ remoteProductID: ProductOrVariationID) {
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.productOrVariationID = remoteProductID
@@ -275,7 +275,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 
     func deleteProductImage(_ productImage: ProductImage) {
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -294,7 +294,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     ///
     func resetProductImages(to product: ProductFormDataModel) {
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -306,7 +306,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     ///
     func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus]) {
         queue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

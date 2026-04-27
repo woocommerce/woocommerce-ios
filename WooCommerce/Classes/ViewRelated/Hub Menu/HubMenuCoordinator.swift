@@ -62,7 +62,7 @@ final class HubMenuCoordinator {
         hubMenuController = HubMenuViewController(siteID: siteID,
                                                   stores: storesManager,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
-        if let hubMenuController = hubMenuController {
+        if let hubMenuController {
             let navigationController = UINavigationController(rootViewController: hubMenuController)
             tabContainerController.wrappedController = navigationController
         }
@@ -139,7 +139,7 @@ final class HubMenuCoordinator {
 // MARK: - Deeplinks
 extension HubMenuCoordinator: DeepLinkNavigator {
     func navigate(to destination: any DeepLinkDestinationProtocol) {
-        guard let hubMenuController = hubMenuController else {
+        guard let hubMenuController else {
             return
         }
         hubMenuController.navigate(to: destination)

@@ -100,7 +100,7 @@ final class ShippingLabelAddressFormViewModel {
         self.phoneNumberRequired = phoneNumberRequired
         self.needsPhoneNumberValidation = needsPhoneNumberValidation
         self.stores = stores
-        if let validationError = validationError {
+        if let validationError {
             addressValidationError = validationError
             addressValidated = .remote
         }
@@ -213,7 +213,7 @@ extension ShippingLabelAddressFormViewModel {
             .removeDuplicates()
             .withLatestFrom(currentRow)
             .sink { [weak self] _, row in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.updateSections()
                 let index: Int? = self.sections.first?.rows.firstIndex(where: { $0 == row })
                 self.onChange?(index)

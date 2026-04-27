@@ -37,11 +37,11 @@ extension WooAnalyticsEvent {
                 Keys.isLowPowerMode: isLowPowerMode
             ]
 
-            if let backgroundTimeGranted = backgroundTimeGranted {
+            if let backgroundTimeGranted {
                 properties[Keys.backgroundTimeGranted] = Int64(backgroundTimeGranted)
             }
 
-            if let timeSinceLastRun = timeSinceLastRun {
+            if let timeSinceLastRun {
                 properties[Keys.timeSinceLastRun] = Int64(timeSinceLastRun)
             }
 

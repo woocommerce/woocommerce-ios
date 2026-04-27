@@ -46,7 +46,7 @@ private extension Hardware.PaymentIntentParameters {
             builder.setStatementDescriptor(descriptor)
         }
 
-        if let applicationFee = applicationFee {
+        if let applicationFee {
             /// Stripe requires that "The amount must be provided as a boxed UInt in the currency's smallest unit."
             /// Smallest-unit and UInt conversion is done in the same way as for the total amount, but that does not need to be boxed.
             let applicationFeeForStripe = NSNumber(value: prepareAmountForStripe(applicationFee))
@@ -65,7 +65,7 @@ private extension Hardware.PaymentIntentParameters {
     /// Updates the existing PaymentIntentParameters metadata with our CardReader metadata, if any.
     ///
     func prepareMetadataForStripe(with meta: CardReaderMetadata? = nil) -> [String: String]? {
-        guard let meta = meta else {
+        guard let meta else {
             return metadata
         }
 

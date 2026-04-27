@@ -38,7 +38,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController = navigationController {
+        if let navigationController {
             navigationController.presentationController?.delegate = self
         } else {
             presentationController?.delegate = self
@@ -239,7 +239,7 @@ struct SingleAddressForm: View {
     var body: some View {
         content
             .onPreferenceChange(MaxWidthPreferenceKey.self) { value in
-                if let value = value {
+                if let value {
                     titleWidth = value
                 }
             }

@@ -155,7 +155,7 @@ final class CouponDetailsViewModel: ObservableObject {
 
     func syncCoupon() {
         let action = CouponAction.retrieveCoupon(siteID: coupon.siteID, couponID: coupon.couponID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let coupon):
                 self.coupon = coupon
@@ -177,7 +177,7 @@ final class CouponDetailsViewModel: ObservableObject {
         // Get "ancient" date to fetch all possible reports
         let startDate = Date(timeIntervalSince1970: 1)
         let action = CouponAction.loadCouponReport(siteID: siteID, couponID: coupon.couponID, startDate: startDate) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let report):
                 self.discountedOrdersCount = "\(report.ordersCount)"
@@ -187,7 +187,7 @@ final class CouponDetailsViewModel: ObservableObject {
                 DDLogError("⛔️ Error loading coupon report: \(error)")
 
                 self.retrieveAnalyticsSetting { [weak self] result in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     switch result {
                     case .success(let isEnabled):
                         if isEnabled {
@@ -280,7 +280,7 @@ private extension CouponDetailsViewModel {
 
     func createAddEditCouponViewModel(with coupon: Coupon) -> AddEditCouponViewModel {
         .init(existingCoupon: coupon, onSuccess: { [weak self] updatedCoupon in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateCoupon(updatedCoupon)
             self.onUpdate()
         })

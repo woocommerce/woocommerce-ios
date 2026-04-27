@@ -124,7 +124,7 @@ private extension LoginOnboardingViewController {
         button.applyPrimaryButtonStyle()
         button.setTitle(Localization.continueButtonTitle, for: .normal)
         button.on(.touchUpInside) { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
 
             guard self.pageViewController.goToNextPageIfPossible() else {
                 return self.onDismiss(.next)

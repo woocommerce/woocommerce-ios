@@ -70,7 +70,7 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModel: ObservableObject {
     }
 
     private func formatDate(_ date: Date?) -> String? {
-        guard let date = date else {
+        guard let date else {
             return nil
         }
         let dateFormatter = DateFormatter()

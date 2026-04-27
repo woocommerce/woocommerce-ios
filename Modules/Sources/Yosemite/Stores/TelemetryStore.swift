@@ -45,7 +45,7 @@ private extension TelemetryStore {
                        telemetryLastReportedTime: Date?,
                        installationDate: Date?,
                        onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        if let telemetryLastReportedTime = telemetryLastReportedTime,
+        if let telemetryLastReportedTime,
            Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports {
             // send telemetry for same store only after timeout
             onCompletion(.failure(TelemetryError.requestThrottled))

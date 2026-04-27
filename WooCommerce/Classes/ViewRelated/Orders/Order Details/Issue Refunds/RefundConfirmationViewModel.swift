@@ -111,7 +111,7 @@ final class RefundConfirmationViewModel {
         submissionUseCase.submitRefund(refund,
                                        showInProgressUI: showInProgressUI,
                                        onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success:
@@ -130,7 +130,7 @@ final class RefundConfirmationViewModel {
     ///
     func updateOrder(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = OrderAction.retrieveOrder(siteID: details.order.siteID, orderID: details.order.orderID) { _, error  in
-            if let error = error {
+            if let error {
                 return onCompletion(.failure(error))
             }
             onCompletion(.success(()))

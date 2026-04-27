@@ -29,7 +29,7 @@ struct InPersonPaymentsStripeAccountPending: View {
     }
 
     private var message: String {
-        guard let deadline = deadline else {
+        guard let deadline else {
             DDLogError("In-Person Payments not available. Stripe has pending requirements without known deadline")
             return Localization.messageUnknownDeadline
         }

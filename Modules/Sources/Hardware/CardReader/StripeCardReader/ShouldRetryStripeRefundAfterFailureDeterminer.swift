@@ -11,7 +11,7 @@ struct ShouldRetryStripeRefundAfterFailureDeterminer {
     /// - Returns: `true` if they can retry, `false` otherwise
     ///
     public func shouldRetryRefund(after stripeFailureReason: String?) -> Bool {
-        guard let stripeFailureReason = stripeFailureReason else {
+        guard let stripeFailureReason else {
             return false
         }
         switch DeclineReason(with: stripeFailureReason) {

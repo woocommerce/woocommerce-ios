@@ -197,7 +197,7 @@ struct AddressFormFields {
     ///
     var selectedState: Yosemite.StateOfACountry? {
         didSet {
-            if let selectedState = selectedState {
+            if let selectedState {
                 self.state = selectedState.name
             }
         }

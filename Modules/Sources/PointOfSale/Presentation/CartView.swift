@@ -458,7 +458,7 @@ private struct PurchasableItemsCartSection: View {
                 .accessibilityFocused($accessibilityFocusedItem, equals: cartItem.id)
             }
             .onChange(of: posModel.cart.accessibilityFocusedItemID) { _, itemID in
-                 if let itemID = itemID {
+                 if let itemID {
                      Task { @MainActor in
                          accessibilityFocusedItem = itemID
                      }

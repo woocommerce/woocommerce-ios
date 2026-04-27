@@ -111,7 +111,7 @@ private extension AccountStore {
             onCompletion(.success(site))
         } else {
             synchronizeSites(selectedSiteID: siteID) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 guard let site = self.storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return onCompletion(.failure(SynchronizeSiteError.unknownSite))
                 }
@@ -147,7 +147,7 @@ private extension AccountStore {
                 case .success(let sites):
                     return sites.publisher.flatMap { [weak self] site -> AnyPublisher<Site, Never> in
                         let sitePublisher = Just<Site>(site).eraseToAnyPublisher()
-                        guard let self = self else {
+                        guard let self else {
                             return sitePublisher
                         }
 

@@ -321,7 +321,7 @@ private extension ProductsViewController {
     @objc func scanProducts() {
         ServiceLocator.analytics.track(.productListProductBarcodeScanningTapped)
 
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 
@@ -329,7 +329,7 @@ private extension ProductsViewController {
 
         let productSKUBarcodeScannerCoordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                   onBarcodeScanned: { [weak self] scannedBarcode in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
             Task {
@@ -372,9 +372,9 @@ private extension ProductsViewController {
                     sourceView: UIView? = nil,
                     isFirstProduct: Bool) {
         let sourceView: AddProductCoordinator.SourceView? = {
-            if let sourceBarButtonItem = sourceBarButtonItem {
+            if let sourceBarButtonItem {
                 return .barButtonItem(sourceBarButtonItem)
-            } else if let sourceView = sourceView {
+            } else if let sourceView {
                 return .view(sourceView)
             } else {
                 assertionFailure("No source view for adding a product")
@@ -860,7 +860,7 @@ private extension ProductsViewController {
                 WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },
             onContactSupportButtonPressed: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 let supportForm = SupportFormHostingController(viewModel: .init())
                 supportForm.show(from: self)
             })
@@ -1383,7 +1383,7 @@ private extension ProductsViewController {
     /// Removes EmptyStateViewController child view controller if applicable.
     ///
     func removeAllOverlays() {
-        guard let emptyStateViewController = emptyStateViewController, emptyStateViewController.parent == self else {
+        guard let emptyStateViewController, emptyStateViewController.parent == self else {
             return
         }
 
@@ -1441,7 +1441,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                  productCategory: filters.productCategory,
                                  sortOrder: sortOrder,
                                  productIDs: (filters.favoriteProduct != nil) ? viewModel.favoriteProductIDs : []) { [weak self] result in
-                                    guard let self = self else {
+                                    guard let self else {
                                         return
                                     }
 

@@ -179,7 +179,7 @@ private extension ShippingLabelSuggestedAddressViewController {
             validationError: nil,
             countries: countries,
             completion: { [weak self] (newShippingLabelAddress) in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.onCompletion(newShippingLabelAddress)
                 self.navigationController?.popViewController(animated: true)
             })

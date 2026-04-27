@@ -610,7 +610,7 @@ private enum Localization {
         )
         var label = String(format: baseFormat, date, status)
 
-        if let email = email, email.isNotEmpty {
+        if let email, email.isNotEmpty {
             let emailFormat = NSLocalizedString(
                 "pos.orderDetailsView.headerBottomContent.accessibilityLabel.email",
                 value: "Customer email: %1$@",
@@ -624,7 +624,7 @@ private enum Localization {
 
     static func productRowAccessibilityLabel(name: String, attributes: String?, quantity: String, unitPrice: String, total: String) -> String {
         var label = name
-        if let attributes = attributes {
+        if let attributes {
             label += ", \(attributes)"
         }
         let format = NSLocalizedString(

@@ -216,7 +216,7 @@ private extension ShippingLabelPackagesFormViewModel {
             if index == packageIndex {
                 let (matchingItem, updatedItems) = package.partitionItems(using: productOrVariationID)
 
-                guard let matchingItem = matchingItem else {
+                guard let matchingItem else {
                     assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
                     return
                 }
@@ -259,7 +259,7 @@ private extension ShippingLabelPackagesFormViewModel {
         if !currentPackage.isOriginalPackaging {
             let (matchingItem, updatedItems) = currentPackage.partitionItems(using: productOrVariationID)
 
-            guard let matchingItem = matchingItem else {
+            guard let matchingItem else {
                 assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
                 return
             }
@@ -322,7 +322,7 @@ private extension ShippingLabelPackagesFormViewModel {
             }
         }
 
-        guard let itemToMove = itemToMove else {
+        guard let itemToMove else {
             assertionFailure("⛔️ Cannot find item with product or variationID \(productOrVariationID) in current package!")
             return
         }
@@ -344,7 +344,7 @@ private extension ShippingLabelPackagesFormViewModel {
                                                                selectedHazmatCategory: newPackage.selectedHazmatCategory)
         temporaryPackages[newPackageIndex] = updatedNewPackage
 
-        if let updatedCurrentPackage = updatedCurrentPackage {
+        if let updatedCurrentPackage {
             temporaryPackages[currentPackageIndex] = updatedCurrentPackage
         } else {
             // Remove current package from list
@@ -391,10 +391,10 @@ private extension ShippingLabelPackagesFormViewModel {
                                                                            orderItems: order.items,
                                                                            storageManager: storageManager,
            onProductReload: { [weak self] (products) in
-            guard let self = self else { return }
+            guard let self else { return }
             self.products = products
         }, onProductVariationsReload: { [weak self] (productVariations) in
-            guard let self = self else { return }
+            guard let self else { return }
             self.productVariations = productVariations
         })
 
@@ -408,7 +408,7 @@ private extension ShippingLabelPackagesFormViewModel {
 private extension ShippingLabelPackagesFormViewModel {
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductAction.requestMissingProducts(for: order) { (error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
                 return
@@ -422,7 +422,7 @@ private extension ShippingLabelPackagesFormViewModel {
 
     func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductVariationAction.requestMissingVariations(for: order) { error in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing missing variations in an Order: \(error)")
                 onCompletion?(error)
                 return

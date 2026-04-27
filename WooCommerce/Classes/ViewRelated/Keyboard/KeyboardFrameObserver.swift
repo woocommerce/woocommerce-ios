@@ -18,7 +18,7 @@ final class KeyboardFrameObserver {
 
     private var keyboardFrame: CGRect? {
         didSet {
-            if let keyboardFrame = keyboardFrame, oldValue != keyboardFrame {
+            if let keyboardFrame, oldValue != keyboardFrame {
                 onKeyboardFrameUpdate(keyboardFrame)
             }
         }

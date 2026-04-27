@@ -224,7 +224,7 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject {
     func purchaseLabel(markOrderComplete: Bool? = nil) async throws {
         guard let originAddress, let destinationAddress,
               let package = currentPackage,
-              let selectedRate = selectedRate else {
+              let selectedRate else {
             return
         }
 

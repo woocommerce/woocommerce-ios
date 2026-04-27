@@ -137,7 +137,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         }
 
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, giftCard: nil, fields: orderFields) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.performingNetworkRequest.send(false)
             switch result {
@@ -224,7 +224,7 @@ private extension Address {
     /// Needed because core has a validation where a billing address can only be a valid email or `nil`(instead of empty).
     ///
     func removingEmptyEmail() -> Yosemite.Address {
-        guard let email = email, email.isEmpty else {
+        guard let email, email.isEmpty else {
             return self
         }
         return copy(email: .some(nil))

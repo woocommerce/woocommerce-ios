@@ -23,7 +23,7 @@ final class AttributeOptionListSelectorCommand: ListSelectorCommand {
         self.navigationBarTitle = attribute.name
         self.data = [Row.anyOption(attribute.name)] + attribute.options.map { Row.option($0) }
 
-        if let selectedOption = selectedOption {
+        if let selectedOption {
             self.selected = .option(selectedOption.option)
         } else {
             self.selected = .anyOption(attribute.name)

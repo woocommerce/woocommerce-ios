@@ -26,7 +26,7 @@ extension MockCaptureDevicePermissionChecker: CaptureDevicePermissionChecker {
     }
 
     func requestAccess(for mediaType: AVMediaType, completionHandler handler: @escaping (_ isGranted: Bool) -> Void) {
-        if let updatedAuthorizationStatus = updatedAuthorizationStatus {
+        if let updatedAuthorizationStatus {
             authorizationStatus = updatedAuthorizationStatus
         }
         handler(isAccessGranted)

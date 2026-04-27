@@ -147,7 +147,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void) {
         preflightController.readerConnection.sink { [weak self] connectionResult in
-            guard let self = self else { return }
+            guard let self else { return }
             self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
@@ -156,7 +156,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                     paymentGatewayAccount: paymentGatewayAccount,
                                     channel: channel,
                                     onCompletion: { [weak self] result in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     // Inform about the collect payment state
                     switch result {
                     case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
@@ -170,7 +170,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                         self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
 
                         self.receiptEligibilityUseCase.isEligibleForBackendReceipts { [weak self] isEligible in
-                            guard let self = self else { return }
+                            guard let self else { return }
                             switch isEligible {
                             case true:
                                 self.presentBackendReceiptAlert(alertProvider: paymentAlertProvider, onCompleted: onCompleted)
@@ -228,7 +228,7 @@ private extension CollectOrderPaymentUseCase {
     /// Checks whether the amount to be collected is valid: (not nil, convertible to decimal, higher than minimum amount ...)
     ///
     func isTotalAmountValid() -> Bool {
-        guard let orderTotal = orderTotal else {
+        guard let orderTotal else {
             return false
         }
 
@@ -274,7 +274,7 @@ private extension CollectOrderPaymentUseCase {
         }))
 
         let action = OrderAction.retrieveOrderRemotely(siteID: order.siteID, orderID: order.orderID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let order):
@@ -311,7 +311,7 @@ private extension CollectOrderPaymentUseCase {
                         channel: PaymentChannel,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 return self.checkThenHandlePaymentFailureAndRetryPayment(error,
@@ -341,7 +341,7 @@ private extension CollectOrderPaymentUseCase {
                         }))
                     },
                     onWaitingForInput: { [weak self] inputMethods in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         self.alertsPresenter.present(
                             viewModel: paymentAlerts.tapOrInsertCard(
                                 title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
@@ -355,7 +355,7 @@ private extension CollectOrderPaymentUseCase {
                                 })
                         )
                     }, onCardInserted: { [weak self] in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         self.alertsPresenter.present(viewModel: paymentAlerts.cardInserted(
                             title: CollectOrderPaymentUseCaseDefinitions.Localization.collectPaymentTitle(
                                 username: self.order.billingAddress?.firstName),
@@ -367,14 +367,14 @@ private extension CollectOrderPaymentUseCase {
                             })
                         )
                     }, onProcessingMessage: { [weak self] in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         // Waiting message
                         self.alertsPresenter.present(
                             viewModel: paymentAlerts.processingTransaction(
                                 title: CollectOrderPaymentUseCaseDefinitions.Localization.processingPaymentTitle(
                                     username: self.order.billingAddress?.firstName)))
                     }, onDisplayMessage: { [weak self] message in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         // Reader messages. EG: Remove Card
                         self.alertsPresenter.present(viewModel: paymentAlerts.displayReaderMessage(message: message))
                     }, onProcessingCompletion: { [weak self] intent in
@@ -520,7 +520,7 @@ private extension CollectOrderPaymentUseCase {
                                            tryAgain: { [weak self] in
                                                // Cancel current payment
                                                self?.paymentOrchestrator.cancelPayment() { [weak self] result in
-                                                   guard let self = self else { return }
+                                                   guard let self else { return }
 
                                                    switch result {
                                                    case .success, .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
@@ -555,7 +555,7 @@ private extension CollectOrderPaymentUseCase {
                 error: error,
                 receiptState: receiptState,
                 tryAgain: { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
                         switch result {
                         case .failure(let error):
@@ -566,7 +566,7 @@ private extension CollectOrderPaymentUseCase {
                                                                                      onCompletion: onCompletion)
                         case .success:
                             self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
-                                guard let self = self else { return }
+                                guard let self else { return }
                                 switch result {
                                 case .success(let capturedPaymentData):
                                     self.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
@@ -653,7 +653,7 @@ private extension CollectOrderPaymentUseCase {
                              onCompleted: @escaping () -> ()) {
         // Present receipt alert
         alertsPresenter.present(viewModel: paymentAlerts.success(receiptState: .init(printReceipt: { [order, configuration, weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             guard let receiptParameters else {
                 return self.presentReceiptFailedNotice(
@@ -673,7 +673,7 @@ private extension CollectOrderPaymentUseCase {
                 onCompleted()
             }
         }, emailReceipt: { [order, analyticsTracker, paymentOrchestrator, weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             alertsPresenter.dismiss()
 
@@ -777,7 +777,7 @@ private extension CollectOrderPaymentUseCase {
                                                          emailReceiptAction: { [weak self] in
                     guard let self else { return }
                     self.presentSendReceiptAfterPayment { order in
-                        if let order  = order, let email = order.billingAddress?.email, email.isNotEmpty {
+                        if let order, let email = order.billingAddress?.email, email.isNotEmpty {
                             self.order = order
                             completion(.paymentSuccessEmailSent(email: email,
                                                                 printReceiptAction: presentBackendReceiptAction,
@@ -877,7 +877,7 @@ private enum CollectOrderPaymentUseCaseDefinitions {
         private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
                                                                     comment: "Subject of email sent with a card present payment receipt")
         static func emailSubject(storeName: String?) -> String {
-            guard let storeName = storeName, storeName.isNotEmpty else {
+            guard let storeName, storeName.isNotEmpty else {
                 return emailSubjectWithoutStoreName
             }
             return .localizedStringWithFormat(emailSubjectWithStoreName, storeName)
@@ -888,7 +888,7 @@ private enum CollectOrderPaymentUseCaseDefinitions {
         private static let collectPaymentWithName = NSLocalizedString("Collect payment from %1$@",
                                                                  comment: "Alert title when starting the collect payment flow with a user name.")
         static func collectPaymentTitle(username: String?) -> String {
-            guard let username = username, username.isNotEmpty else {
+            guard let username, username.isNotEmpty else {
                 return collectPaymentWithoutName
             }
             return .localizedStringWithFormat(collectPaymentWithName, username)
@@ -901,7 +901,7 @@ private enum CollectOrderPaymentUseCaseDefinitions {
             "Processing payment from %1$@",
             comment: "Alert title when processing a payment with a user name.")
         static func processingPaymentTitle(username: String?) -> String {
-            guard let username = username, username.isNotEmpty else {
+            guard let username, username.isNotEmpty else {
                 return processingPaymentWithoutName
             }
             return .localizedStringWithFormat(processingPaymentWithName, username)

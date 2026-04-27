@@ -14,7 +14,7 @@ public struct POSCoupon: Equatable, Hashable {
     }
 
     public var isExpired: Bool {
-        guard let dateExpires = dateExpires else {
+        guard let dateExpires else {
             return false
         }
         return dateExpires <= Date()

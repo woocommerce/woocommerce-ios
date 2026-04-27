@@ -32,7 +32,7 @@ final class SettingsViewController: UIViewController {
 
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        guard let self else { throw CloseAccountError.presenterDeallocated }
         try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.logOutUser()
@@ -333,7 +333,7 @@ private extension SettingsViewController {
 
     func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
             let action = AccountAction.closeAccount { result in
                 continuation.resume(with: result)
             }
@@ -365,11 +365,11 @@ private extension SettingsViewController {
 
     func switchStoreWasPressed() {
         ServiceLocator.analytics.track(.settingsSelectedStoreTapped)
-        if let navigationController = navigationController {
+        if let navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
             storePickerCoordinator?.onDismiss = { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
                 self.viewModel.onStorePickerDismiss()

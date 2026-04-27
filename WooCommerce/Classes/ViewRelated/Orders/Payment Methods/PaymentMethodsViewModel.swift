@@ -217,7 +217,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         trackCollectIntention(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
         orderDurationRecorder.recordCardPaymentStarted()
 
-        guard let rootViewController = rootViewController else {
+        guard let rootViewController else {
             DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
             return presentNoticeSubject.send(.error(Localization.genericCollectError))
         }
@@ -432,7 +432,7 @@ private extension PaymentMethodsViewModel {
                 orderID: orderID,
                 isCustomerNote: false,
                 note: Localization.scanToPayNoteText) { [weak self] orderNote, _ in
-                    if let orderNote = orderNote {
+                    if let orderNote {
                         self?.onNoteAdded?(orderNote)
                     }
                     continuation.resume(returning: ())

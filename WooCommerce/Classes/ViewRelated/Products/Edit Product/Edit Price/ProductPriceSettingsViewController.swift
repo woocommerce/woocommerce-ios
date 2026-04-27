@@ -269,7 +269,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         case .taxStatus:
             let command = ProductTaxStatusListSelectorCommand(selected: viewModel.taxStatus)
             let listSelectorViewController = ListSelectorViewController(command: command) { [weak self] selected in
-                                                                            if let selected = selected {
+                                                                            if let selected {
                                                                                 self?.viewModel.handleTaxStatusChange(selected)
                                                                             }
                                                                             self?.refreshViewContent()
@@ -289,7 +289,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in
-                                                        guard let self = self else {
+                                                        guard let self else {
                                                             return
                                                         }
                                                         self.viewModel.handleTaxClassChange(selected)
@@ -428,7 +428,7 @@ private extension ProductPriceSettingsViewController {
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
         cell.isOn = (viewModel.dateOnSaleStart != nil || viewModel.dateOnSaleEnd != nil) ? true : false
         cell.onChange = { [weak self] isOn in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -451,7 +451,7 @@ private extension ProductPriceSettingsViewController {
         }
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.viewModel.handleSaleStartDateChange(date)
@@ -474,7 +474,7 @@ private extension ProductPriceSettingsViewController {
         }
         cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.viewModel.handleSaleEndDateChange(date)

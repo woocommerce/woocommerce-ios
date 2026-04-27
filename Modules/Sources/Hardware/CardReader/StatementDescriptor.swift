@@ -19,7 +19,7 @@ public struct StatementDescriptor {
 
     public var wrappedValue: String? {
         get {
-            guard let value = value else {
+            guard let value else {
                 return nil
             }
 

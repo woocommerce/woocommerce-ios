@@ -42,7 +42,7 @@ final class FilteredOrdersHeaderBar: UIView {
             contentSizeTraitRegistration = registerForTraitChanges([
                 UITraitPreferredContentSizeCategory.self
             ]) { [weak self] (_: FilteredOrdersHeaderBar, _: UITraitCollection) in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.updateStackViewAxis(for: self.traitCollection)
             }
         } else {

@@ -350,7 +350,7 @@ private extension HelpAndSupportViewController {
     /// Help Center action
     ///
     func helpCenterWasPressed() {
-        if let customHelpCenterContent = customHelpCenterContent {
+        if let customHelpCenterContent {
             launchCustomHelpCenterWebPage(customHelpCenterContent)
         } else {
             ZendeskProvider.shared.showHelpCenter(from: self)
@@ -376,7 +376,7 @@ private extension HelpAndSupportViewController {
                 return
             }
 
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

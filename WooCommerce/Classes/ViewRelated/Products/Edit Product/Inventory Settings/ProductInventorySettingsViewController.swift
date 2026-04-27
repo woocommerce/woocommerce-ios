@@ -398,7 +398,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func startBarcodeScanning(onCompletion: @escaping (_ barcode: String) -> Void) {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 

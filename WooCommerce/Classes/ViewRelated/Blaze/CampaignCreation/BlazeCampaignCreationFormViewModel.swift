@@ -622,7 +622,7 @@ private extension BlazeCampaignCreationFormViewModel {
 
     func initializeAdTargetUrl() {
         // Default to promoting Product URL at the beginning.
-        if let productURL = productURL {
+        if let productURL {
             targetUrl = productURL
         }
     }

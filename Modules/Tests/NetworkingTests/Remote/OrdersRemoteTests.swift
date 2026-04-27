@@ -222,7 +222,7 @@ final class OrdersRemoteTests: XCTestCase {
         // When
         let order: Order = waitFor { promise in
             remote.loadOrder(for: self.sampleSiteID, orderID: self.sampleOrderID) { order, error in
-                if let order = order {
+                if let order {
                     promise(order)
                 }
             }

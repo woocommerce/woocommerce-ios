@@ -24,7 +24,7 @@ extension UIViewController {
         /// We can't make self the default value for the `target` parameter without a warning being added.
         /// The compiler-recommended fix for the warning causes a crash when the button is tapped.
         let targetOrSelf = target ?? self
-        if let title = title {
+        if let title {
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: title, style: .plain, target: targetOrSelf, action: action)
         }
         else {

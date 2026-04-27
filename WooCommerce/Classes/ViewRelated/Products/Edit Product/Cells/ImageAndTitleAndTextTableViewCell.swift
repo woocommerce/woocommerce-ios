@@ -262,7 +262,7 @@ private extension ImageAndTitleAndTextTableViewCell {
         cancellable = NotificationCenter.default
                 .publisher(for: UIContentSizeCategory.didChangeNotification)
                 .sink { [weak self] notification in
-                    guard let self = self,
+                    guard let self,
                           let contentSizeCategory = notification.userInfo?[UIContentSizeCategory.newValueUserInfoKey] as? UIContentSizeCategory else {
                         return
                     }

@@ -5,7 +5,7 @@ final class PhoneHelper {
     /// Call a specific phone number, and return success or failure
     ///
     static func callPhoneNumber(phone: String?) -> Bool {
-        guard let phone = phone, let url = URL(string: "tel://\(phone)"), UIApplication.shared.canOpenURL(url) else {
+        guard let phone, let url = URL(string: "tel://\(phone)"), UIApplication.shared.canOpenURL(url) else {
             return false
         }
 
@@ -14,7 +14,7 @@ final class PhoneHelper {
     }
 
     static func canCallPhoneNumber(phone: String?) -> Bool {
-        guard let phone = phone, let url = URL(string: "tel://\(phone)"), UIApplication.shared.canOpenURL(url) else {
+        guard let phone, let url = URL(string: "tel://\(phone)"), UIApplication.shared.canOpenURL(url) else {
             return false
         }
 

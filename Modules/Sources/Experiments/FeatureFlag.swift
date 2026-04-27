@@ -219,4 +219,12 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the feature flag override panel in the Help screen during the login flow
     ///
     case loggedOutFFPanel
+
+    /// Enables the AI-powered support chat
+    ///
+    case aiSupportChat
+
+    /// Enables the WooAI Assistant.
+    ///
+    case wooAIAssistant
 }

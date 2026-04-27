@@ -98,7 +98,7 @@ class FeatureAnnouncementCardViewModel: AnnouncementCardViewModelProtocol {
 
     private func updateShouldBeVisible() {
         let action = AppSettingsAction.getFeatureAnnouncementVisibility(campaign: config.campaign) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let visible):
                 self.shouldBeVisible = visible

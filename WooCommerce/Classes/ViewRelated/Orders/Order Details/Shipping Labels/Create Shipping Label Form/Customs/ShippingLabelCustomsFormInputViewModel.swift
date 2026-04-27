@@ -223,7 +223,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
         let groupTwo = $itn.combineLatest($restrictionType, $restrictionComments, $itemsValidation)
         groupOne.combineLatest(groupTwo)
             .map { [weak self] groupOne, groupTwo -> Bool in
-                guard let self = self else {
+                guard let self else {
                     return false
                 }
                 let (classesAbove2500usd, contentsType, contentExplanation) = groupOne
@@ -250,8 +250,8 @@ private extension ShippingLabelCustomsFormInputViewModel {
         itemViewModels.forEach { viewModel in
             viewModel.$validatedHSTariffNumber.combineLatest(viewModel.$validatedTotalValue)
                 .sink { [weak self] number, totalValue in
-                    if let number = number, number.isNotEmpty,
-                       let totalValue = totalValue {
+                    if let number, number.isNotEmpty,
+                       let totalValue {
                         self?.itemTariffNumbersAndValues[viewModel.productID] = (hsTariffNumber: number, totalValue: totalValue)
                     } else {
                         self?.itemTariffNumbersAndValues.removeValue(forKey: viewModel.productID)

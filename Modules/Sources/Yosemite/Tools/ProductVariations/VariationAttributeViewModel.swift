@@ -14,7 +14,7 @@ public struct VariationAttributeViewModel: Equatable {
     /// Returns the attribute value, e.g. "100g", or "Any \(name)" if the attribute value is nil or empty
     ///
     public var nameOrValue: String {
-        guard let value = value, !value.isEmpty else {
+        guard let value, !value.isEmpty else {
             return anyAttributeDescription
         }
         return value

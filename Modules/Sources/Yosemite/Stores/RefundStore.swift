@@ -51,7 +51,7 @@ private extension RefundStore {
     ///
     func createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
         remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] (refund, error) in
-            guard let refund = refund else {
+            guard let refund else {
                 onCompletion(nil, error)
                 return
             }
@@ -66,7 +66,7 @@ private extension RefundStore {
     ///
     func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
         remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
-            guard let refund = refund else {
+            guard let refund else {
                 if case NetworkError.notFound? = error {
                     self?.deleteStoredRefund(siteID: siteID, orderID: orderID, refundID: refundID) {
                         onCompletion(nil, error)
@@ -138,7 +138,7 @@ private extension RefundStore {
     ///
     func synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] (refunds, error) in
-            guard let refunds = refunds else {
+            guard let refunds else {
                 onCompletion(error)
                 return
             }

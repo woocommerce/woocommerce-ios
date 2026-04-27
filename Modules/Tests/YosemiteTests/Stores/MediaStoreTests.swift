@@ -736,7 +736,7 @@ private extension MediaStoreTests {
 
         let uploadableMedia = createSampleUploadableMedia(targetURL: targetURL)
         let mediaExportService = MockMediaExportService(uploadableMedia: uploadableMedia)
-        if let remote = remote {
+        if let remote {
             return MediaStore(mediaExportService: mediaExportService,
                               dispatcher: dispatcher,
                               storageManager: storageManager,

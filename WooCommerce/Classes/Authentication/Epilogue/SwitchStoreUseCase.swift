@@ -33,7 +33,7 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
     @MainActor
     func switchStore(with storeID: Int64) async -> Bool {
         await withCheckedContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
             self.switchStore(with: storeID) { siteChanged in
                 continuation.resume(returning: siteChanged)
             }

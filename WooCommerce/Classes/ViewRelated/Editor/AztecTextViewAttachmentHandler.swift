@@ -20,19 +20,19 @@ final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {
             let imageService = ServiceLocator.imageService
 
             imageService.retrieveImageFromCache(with: url) { image in
-                if let image = image {
+                if let image {
                     success(image)
                 }
             }
 
             let task = imageService.downloadImage(with: url, shouldCacheImage: true) { image, error in
-                guard let image = image else {
+                guard let image else {
                     failure()
                     return
                 }
                 success(image)
             }
-            if let task = task {
+            if let task {
                 activeImageTasks.append(task)
             }
         default:

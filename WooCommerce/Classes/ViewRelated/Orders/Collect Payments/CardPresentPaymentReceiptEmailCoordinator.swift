@@ -151,7 +151,7 @@ private extension CardPresentPaymentReceiptEmailCoordinator {
         private static let emailSubjectWithoutStoreName = NSLocalizedString("Your receipt",
                                                                             comment: "Subject of email sent with a card present payment receipt")
         static func emailSubject(storeName: String?) -> String {
-            guard let storeName = storeName, storeName.isNotEmpty else {
+            guard let storeName, storeName.isNotEmpty else {
                 return emailSubjectWithoutStoreName
             }
             return .localizedStringWithFormat(emailSubjectWithStoreName, storeName)
@@ -162,7 +162,7 @@ private extension CardPresentPaymentReceiptEmailCoordinator {
         private static let collectPaymentWithName = NSLocalizedString("Collect payment from %1$@",
                                                                       comment: "Alert title when starting the collect payment flow with a user name.")
         static func collectPaymentTitle(username: String?) -> String {
-            guard let username = username, username.isNotEmpty else {
+            guard let username, username.isNotEmpty else {
                 return collectPaymentWithoutName
             }
             return .localizedStringWithFormat(collectPaymentWithName, username)

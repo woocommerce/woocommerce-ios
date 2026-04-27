@@ -150,7 +150,7 @@ final class ReviewOrderViewModel {
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { error in
-                                                                    if let error = error {
+                                                                    if let error {
                                                                         DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
                                                                         ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
@@ -236,7 +236,7 @@ private extension ReviewOrderViewModel {
         let action = ShipmentAction.synchronizeShipmentTrackingData(
             siteID: siteID,
             orderID: orderID) { error in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
                 onCompletion?(error)
                 return
@@ -281,7 +281,7 @@ private extension ReviewOrderViewModel {
                     order.items.first(where: { $0.productID == product.productID}) != nil
                 }
                 .allSatisfy { $0.virtual == true }
-            guard let shippingAddress = shippingAddress, !orderContainsOnlyVirtualProducts else {
+            guard let shippingAddress, !orderContainsOnlyVirtualProducts else {
                 return nil
             }
             return Row.shippingAddress(address: shippingAddress)
@@ -406,7 +406,7 @@ private extension ReviewOrderViewModel {
         }
 
         trackingResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }
@@ -422,7 +422,7 @@ private extension ReviewOrderViewModel {
         }
 
         shippingLabelResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }
@@ -438,7 +438,7 @@ private extension ReviewOrderViewModel {
         }
 
         addOnGroupResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }
@@ -454,7 +454,7 @@ private extension ReviewOrderViewModel {
         }
 
         refundResultsController.onDidResetContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.refetchAllResultsControllers()
             onReload()
         }

@@ -998,7 +998,7 @@ private extension DashboardViewModel {
     ///
     func onInAppFeedbackCardAction() {
         let action = AppSettingsAction.updateFeedbackStatus(type: .general, status: .given(Date())) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -1014,7 +1014,7 @@ private extension DashboardViewModel {
     /// Calculates and updates the value of `isInAppFeedbackCardVisible`.
     func refreshIsInAppFeedbackCardVisibleValue() {
         let action = AppSettingsAction.loadFeedbackVisibility(type: .general) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

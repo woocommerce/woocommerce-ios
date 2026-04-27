@@ -274,7 +274,7 @@ private extension PointOfSaleObservableItemsController {
         }
 
         // Error state for data source observation
-        if let error = error, items.isEmpty {
+        if let error, items.isEmpty {
             return .error(errorType(error))
         }
 

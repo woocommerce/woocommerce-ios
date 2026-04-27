@@ -30,7 +30,7 @@ final class CardPresentModalNonRetryableErrorWithoutEmail: CardPresentPaymentsMo
     let bottomSubtitle: String? = nil
 
     var accessibilityLabel: String? {
-        guard let bottomTitle = bottomTitle else {
+        guard let bottomTitle else {
             return topTitle
         }
 

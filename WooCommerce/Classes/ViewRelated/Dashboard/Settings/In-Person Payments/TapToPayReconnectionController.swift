@@ -125,7 +125,7 @@ private extension TapToPayReconnectionController {
         let connectionController = tapToPayConnectionControllerForReconnection()
 
         connectionController.searchAndConnect(onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.adoptedConnectionCompletionHandler?(result)
             self.reset()
         })

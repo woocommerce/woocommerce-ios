@@ -68,7 +68,7 @@ public extension MockStorageManager {
         let newProductVariation = viewStorage.insertNewObject(ofType: StorageProductVariation.self)
         newProductVariation.update(with: readOnlyProductVariation)
 
-        if let readOnlyProduct = readOnlyProduct {
+        if let readOnlyProduct {
             let newProduct = viewStorage.insertNewObject(ofType: StorageProduct.self)
             newProduct.update(with: readOnlyProduct)
             newProductVariation.product = newProduct

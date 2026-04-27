@@ -168,7 +168,7 @@ private extension MediaAssetExporter {
     }
 
     func preferredExportTypeFor(uti: String?) -> String? {
-        guard let uti = uti else {
+        guard let uti else {
             return nil
         }
 

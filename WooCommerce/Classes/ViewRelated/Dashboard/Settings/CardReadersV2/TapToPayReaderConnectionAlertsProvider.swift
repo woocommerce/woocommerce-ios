@@ -50,7 +50,7 @@ struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidi
 
     func updatingFailed(tryAgain: (() -> Void)?,
                         close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if let tryAgain = tryAgain {
+        if let tryAgain {
             return CardPresentModalUpdateFailed(image: .tapToPayReaderError, tryAgain: tryAgain, close: close)
         } else {
             return CardPresentModalUpdateFailedNonRetryable(image: .tapToPayReaderError, close: close)

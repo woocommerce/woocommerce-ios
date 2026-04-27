@@ -81,7 +81,7 @@ private extension DefaultGoogleAdsEligibilityChecker {
     }
 
     func checkIfGoogleAdsIsSupported(plugin: SystemPlugin?) -> Bool {
-        guard let plugin = plugin, plugin.active else {
+        guard let plugin, plugin.active else {
             return false
         }
         return VersionHelpers.isVersionSupported(version: plugin.version,

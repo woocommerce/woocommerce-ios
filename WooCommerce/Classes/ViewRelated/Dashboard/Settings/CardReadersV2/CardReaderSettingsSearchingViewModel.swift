@@ -92,7 +92,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     private func beginConnectedReaderObservation() {
         // This completion should be called repeatedly as the list of connected readers changes
         let connectedAction = CardPresentPaymentAction.observeConnectedReaders() { [weak self] readers in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.noConnectedReader = readers.isEmpty ? .isTrue : .isFalse
@@ -107,7 +107,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
         let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionEvents in
             reconnectionEvents
                 .sink { [weak self] state in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     switch state {
                     case .reconnecting:

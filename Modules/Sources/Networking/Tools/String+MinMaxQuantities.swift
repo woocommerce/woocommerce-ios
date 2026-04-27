@@ -5,7 +5,7 @@ import Foundation
 ///
 extension Optional where Wrapped == String {
     var refinedMinMaxQuantityEmptyValue: String? {
-        guard let self = self else {
+        guard let self else {
             return nil
         }
 

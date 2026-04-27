@@ -141,7 +141,7 @@ private extension ShippingLabelFormViewController {
 
     func observeViewModel() {
         viewModel.onChange = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.tableView.reloadData()
         }
     }
@@ -257,7 +257,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shipFromCellTitle,
                        body: viewModel.originAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "origin_address_started"])
 
             // Skip remote validation and navigate to edit address
@@ -267,7 +267,7 @@ private extension ShippingLabelFormViewController {
                 return self.displayEditAddressFormVC(address: originAddress, email: nil, validationError: nil, type: .origin)
             }
             self.viewModel.validateAddress(type: .origin) { [weak self] (validationState, response) in
-                guard let self = self else { return }
+                guard let self else { return }
                 let shippingLabelAddress = self.viewModel.originAddress
                 switch validationState {
                 case .validated:
@@ -291,7 +291,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shipToCellTitle,
                        body: viewModel.destinationAddress?.fullNameWithCompanyAndAddress,
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "destination_address_started"])
 
             // Skip remote validation and navigate to edit address
@@ -306,7 +306,7 @@ private extension ShippingLabelFormViewController {
             }
 
             self.viewModel.validateAddress(type: .destination) { [weak self] (validationState, response) in
-                guard let self = self else { return }
+                guard let self else { return }
                 let shippingLabelAddress = self.viewModel.destinationAddress
                 switch validationState {
                 case .validated:
@@ -341,7 +341,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.packageDetailsCellTitle,
                        body: viewModel.getPackageDetailsBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.displayPackageDetailsVC(inputPackages: self.viewModel.selectedPackagesDetails)
         }
     }
@@ -352,7 +352,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.customsCellTitle,
                        body: viewModel.getCustomsFormBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.displayCustomsFormListVC(customsForms: self.viewModel.customsForms)
         }
     }
@@ -363,7 +363,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.shippingCarrierAndRatesCellTitle,
                        body: viewModel.getCarrierAndRatesBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.displayCarriersAndRatesVC(selectedRates: self.viewModel.selectedRates)
         }
     }
@@ -374,7 +374,7 @@ private extension ShippingLabelFormViewController {
                        title: Localization.paymentMethodCellTitle,
                        body: viewModel.getPaymentMethodBody(),
                        buttonTitle: Localization.continueButtonInCells) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.displayPaymentMethodVC()
         }
     }
@@ -388,13 +388,13 @@ private extension ShippingLabelFormViewController {
         } onSwitchChange: { [weak self] (switchIsOn) in
             self?.shouldMarkOrderComplete = switchIsOn
         } onButtonTouchUp: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_initiated",
                  "amount": self.viewModel.totalAmount,
                 "fulfill_order": self.shouldMarkOrderComplete])
             self.displayPurchaseProgressView()
             self.viewModel.purchaseLabel { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let totalDuration):
                     ServiceLocator.analytics.track(.shippingLabelPurchaseFlow, withProperties: ["state": "purchase_succeeded",
@@ -444,7 +444,7 @@ private extension ShippingLabelFormViewController {
             validationError: validationError,
             countries: viewModel.filteredCountries(for: type),
             completion: { [weak self] (newShippingLabelAddress) in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch type {
                 case .origin:
                     self.viewModel.handleOriginAddressValueChanges(address: newShippingLabelAddress,
@@ -543,7 +543,7 @@ private extension ShippingLabelFormViewController {
 
         let vm = ShippingLabelPaymentMethodsViewModel(accountSettings: accountSettings)
         let paymentMethod = ShippingLabelPaymentMethods(viewModel: vm) { [weak self] newSettings in
-            guard let self = self else { return }
+            guard let self else { return }
             self.viewModel.handlePaymentMethodValueChanges(settings: newSettings, editable: true)
         }
 
@@ -563,7 +563,7 @@ private extension ShippingLabelFormViewController {
     /// This prevents navigating back to the purchase form after successfully purchasing the label.
     ///
     func displayPrintShippingLabelVC() {
-        guard let navigationController = navigationController else {
+        guard let navigationController else {
             return
         }
 

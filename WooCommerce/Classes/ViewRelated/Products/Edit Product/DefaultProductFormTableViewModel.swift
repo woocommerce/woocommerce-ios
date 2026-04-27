@@ -348,7 +348,7 @@ private extension DefaultProductFormTableViewModel {
         var shippingDetails = [String]()
 
         // Weight[unit]
-        if let weight = product.weight, let weightUnit = weightUnit, !weight.isEmpty {
+        if let weight = product.weight, let weightUnit, !weight.isEmpty {
             let localizedWeight = shippingValueLocalizer.localized(shippingValue: weight) ?? weight
             shippingDetails.append(String.localizedStringWithFormat(Localization.weightFormat,
                                                                     localizedWeight, weightUnit))
@@ -362,7 +362,7 @@ private extension DefaultProductFormTableViewModel {
             .map({ shippingValueLocalizer.localized(shippingValue: $0) ?? $0 })
             .filter({ !$0.isEmpty })
 
-        if let dimensionUnit = dimensionUnit,
+        if let dimensionUnit,
             !dimensions.isEmpty {
             switch dimensions.count {
             case 1:

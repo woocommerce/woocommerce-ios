@@ -152,7 +152,7 @@ final class StorePickerViewController: UIViewController {
 
     private lazy var closeAccountCoordinator: CloseAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
-        guard let self = self else { throw CloseAccountError.presenterDeallocated }
+        guard let self else { throw CloseAccountError.presenterDeallocated }
         return try await self.closeAccount()
     } onRemoveSuccess: { [weak self] in
         self?.restartAuthentication()
@@ -295,7 +295,7 @@ private extension StorePickerViewController {
 
     func observeStateChange() {
         viewModel.$state.sink { [weak self] _ in
-            guard let self = self else { return }
+            guard let self else { return }
             self.preselectStoreIfPossible()
             self.reloadInterface()
             self.updateFooterViewIfNeeded()
@@ -784,7 +784,7 @@ extension StorePickerViewController: UITableViewDelegate {
 private extension StorePickerViewController {
     func closeAccount() async throws {
         try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
             let action = AccountAction.closeAccount { result in
                 continuation.resume(with: result)
             }
@@ -804,7 +804,7 @@ private extension StorePickerViewController {
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
             onSetupCompletion: { [weak self] siteID in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.viewModel.refreshSites(currentlySelectedSiteID: siteID)
                 self.delegate?.didSelectStore(with: siteID) { [weak self] in
@@ -817,14 +817,14 @@ private extension StorePickerViewController {
     }
 
     func checkRoleEligibility(for site: Site) {
-        guard let delegate = delegate else {
+        guard let delegate else {
             return
         }
 
         updateActionButtonAndTableState(animating: true, enabled: false)
 
         viewModel.checkEligibility(for: site.siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.updateActionButtonAndTableState(animating: false, enabled: true)
 

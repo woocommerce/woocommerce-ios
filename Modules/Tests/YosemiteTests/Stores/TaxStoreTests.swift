@@ -199,7 +199,7 @@ final class TaxStoreTests: XCTestCase {
 
         // When
         let result: Result<[Yosemite.TaxRate], Error> = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let action = TaxAction.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
                 promise(result)
@@ -218,7 +218,7 @@ final class TaxStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.TaxRate, Error> = waitFor { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let action = TaxAction.retrieveTaxRate(siteID: self.sampleSiteID, taxRateID: taxRateID) { result in
                 promise(result)

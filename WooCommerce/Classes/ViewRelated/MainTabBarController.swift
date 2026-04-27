@@ -832,7 +832,7 @@ private extension MainTabBarController {
 
     func observeSiteIDForViewControllers() {
         cancellableSiteID = stores.siteID.sink { [weak self] siteID in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             self.updateViewControllers(siteID: siteID)
@@ -996,7 +996,7 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
         viewModel.onOrdersBadgeReload = { [weak self] countReadableString in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -1019,7 +1019,7 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func observeProductImageUploadStatusUpdates() {
         productImageUploadErrorsSubscription = productImageUploader.errors.sink { [weak self] error in
-            guard let self = self else { return }
+            guard let self else { return }
             switch error.error {
             case .failedSavingProductAfterImageUpload:
                 self.handleErrorSavingProductAfterImageUpload(error)
@@ -1045,9 +1045,9 @@ private extension MainTabBarController {
                             notificationInfo: nil,
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await self.showProductDetails(for: error)
                 self.analytics.track(event: .ImageUpload
                     .failureSavingProductAfterImageUploadNoticeTapped(productOrVariation: error.productOrVariationEventProperty))
@@ -1068,9 +1068,9 @@ private extension MainTabBarController {
                             notificationInfo: nil,
                             actionTitle: Localization.imageUploadFailureNoticeActionTitle,
                             actionHandler: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             Task { @MainActor [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 await self.showProductDetails(for: error)
                 self.analytics.track(event: .ImageUpload
                     .failureUploadingImageNoticeTapped(productOrVariation: error.productOrVariationEventProperty))

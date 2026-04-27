@@ -70,14 +70,14 @@ struct ProductDetailsCellViewModel {
         }()
 
         self.total = {
-            guard let total = total else {
+            guard let total else {
                 return String()
             }
             return currencyFormatter.formatAmount(total, with: currency) ?? String()
         }()
 
         self.subtitle = {
-            guard let price = price else {
+            guard let price else {
                 return String()
             }
             let itemPrice = currencyFormatter.formatAmount(price, with: currency) ?? String()

@@ -41,7 +41,7 @@ private extension PaymentGatewayStore {
     /// Loads and stores all payment gateways for the provided `siteID`
     func synchronizePaymentGateways(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.loadAllPaymentGateways(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let paymentGateways):
@@ -64,7 +64,7 @@ private extension PaymentGatewayStore {
                       siteTimezone: TimeZone? = nil,
                       onCompletion: @escaping (Result<PaymentGateway, Error>) -> Void) {
         remote.updatePaymentGateway(paymentGateway) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))

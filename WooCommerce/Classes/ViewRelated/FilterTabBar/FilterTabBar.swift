@@ -69,7 +69,7 @@ final class FilterTabBar: UIControl {
 
     private var tabBarHeightConstraint: NSLayoutConstraint! {
         didSet {
-            if let oldValue = oldValue {
+            if let oldValue {
                 NSLayoutConstraint.deactivate([oldValue])
                 tabBarHeightConstraint.isActive = true
             }
@@ -152,11 +152,11 @@ final class FilterTabBar: UIControl {
     ///
     var accessoryView: UIView? = nil {
         didSet {
-            if let oldValue = oldValue {
+            if let oldValue {
                 oldValue.removeFromSuperview()
             }
 
-            if let accessoryView = accessoryView {
+            if let accessoryView {
                 accessoryView.setContentCompressionResistancePriority(.required, for: .horizontal)
                 stackView.insertArrangedSubview(accessoryView, at: 0)
             }
@@ -166,7 +166,7 @@ final class FilterTabBar: UIControl {
     // MARK: - Tab Sizing
     private var stackViewEdgeConstraints: [NSLayoutConstraint]! {
         didSet {
-            if let oldValue = oldValue {
+            if let oldValue {
                 NSLayoutConstraint.deactivate(oldValue)
             }
         }
@@ -174,7 +174,7 @@ final class FilterTabBar: UIControl {
 
     private var stackViewWidthConstraint: NSLayoutConstraint! {
         didSet {
-            if let oldValue = oldValue {
+            if let oldValue {
                 NSLayoutConstraint.deactivate([oldValue])
             }
         }
@@ -328,7 +328,7 @@ final class FilterTabBar: UIControl {
     }
 
     private func addColor(_ color: UIColor, toAttributedString attributedString: NSAttributedString?) -> NSAttributedString? {
-        guard let attributedString = attributedString else {
+        guard let attributedString else {
             return nil
         }
 

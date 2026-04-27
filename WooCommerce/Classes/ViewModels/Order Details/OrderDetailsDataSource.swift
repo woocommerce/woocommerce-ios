@@ -777,7 +777,7 @@ private extension OrderDetailsDataSource {
                        title: Titles.reprintShippingLabel,
                        topSpacing: 0,
                        bottomSpacing: 8) { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             guard let shippingLabel = self.shippingLabel(at: indexPath) else {
                 return
             }

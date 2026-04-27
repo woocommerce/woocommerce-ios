@@ -104,11 +104,11 @@ private extension SharingHelper {
         }
 
         var items: [Any] = []
-        if let title = title {
+        if let title {
             items.append(title)
         }
 
-        if let url = url {
+        if let url {
             items.append(url)
         }
 

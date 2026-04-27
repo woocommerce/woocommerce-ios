@@ -260,7 +260,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     private func makeCellProvider() -> UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>.CellProvider {
         return { [weak self] tableView, indexPath, objectID in
             let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
-            guard let self = self else {
+            guard let self else {
                 return cell
             }
 
@@ -301,7 +301,7 @@ private extension OrderListViewController {
 
         /// Update the `dataSource` whenever there is a new snapshot.
         viewModel.snapshot.sink { [weak self] snapshot in
-            guard let self = self else { return }
+            guard let self else { return }
 
             dataSource?.apply(snapshot)
 
@@ -317,7 +317,7 @@ private extension OrderListViewController {
         /// Update the top banner when needed
         viewModel.$topBanner
             .sink { [weak self] topBannerType in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch topBannerType {
                 case .none:
                     self.hideTopBannerView()
@@ -437,7 +437,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             pageSize: pageSize,
             reason: SyncReason(rawValue: reason ?? ""),
             lastFullSyncTimestamp: lastFullSyncTimestamp) { [weak self] totalDuration, error in
-                guard let self = self else {
+                guard let self else {
                     return
                 }
 
@@ -478,7 +478,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
     /// Sets the current top banner in the table view header
     ///
     private func showTopBannerView() {
-        guard let topBannerView = topBannerView else { return }
+        guard let topBannerView else { return }
 
         // Configure header container view
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: 0))
@@ -829,7 +829,7 @@ extension OrderListViewController: UITableViewDelegate {
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
 
-        guard let currentIndex = currentIndex else { return }
+        guard let currentIndex else { return }
 
         let allowOrderNavigation = splitViewController?.isCollapsed ?? true
         // There is no point of having order navigation in the order details view when we have a split screen,
@@ -951,14 +951,14 @@ private extension OrderListViewController {
             self?.tableView.updateHeaderHeight()
         },
         onTroubleshootButtonPressed: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             ServiceLocator.analytics.track(event: .ConnectivityTool.topBannerTroubleshootTapped())
             let connectivityToolViewController = ConnectivityToolViewController()
             self.show(connectivityToolViewController, sender: self)
         },
         onContactSupportButtonPressed: { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             let supportForm = SupportFormHostingController(viewModel: .init())
             supportForm.show(from: self)
         })

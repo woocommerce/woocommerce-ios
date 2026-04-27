@@ -6,6 +6,8 @@ import AutomatticTracks
 import Yosemite
 import WooFoundation
 import enum NetworkingCore.NetworkError
+import struct NetworkingCore.MetaContainer
+import struct NetworkingCore.Note
 import protocol Storage.StorageManagerType
 
 
@@ -298,7 +300,7 @@ extension PushNotificationsManager {
         if stores.isAuthenticatedWithoutWPCom == false {
             group.enter()
             unregisterDotcomDeviceIfPossible() { error in
-                if let error = error {
+                if let error {
                     DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
                 } else {
                     DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
@@ -317,7 +319,7 @@ extension PushNotificationsManager {
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind) {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
@@ -328,7 +330,7 @@ extension PushNotificationsManager {
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.resetForAllSites() { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
             self.removeAllNotifications()
             onCompletion()
@@ -337,7 +339,7 @@ extension PushNotificationsManager {
     }
 
     func reloadBadgeCount() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
@@ -493,7 +495,7 @@ extension PushNotificationsManager {
                                           subtitle: foregroundNotification.subtitle,
                                           message: foregroundNotification.message,
                                           actionTitle: Localization.viewInAppNotification) { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
                     self.analytics.track(.viewInAppPushNotificationPressed,
@@ -647,7 +649,7 @@ private extension PushNotificationsManager {
     }
 
     func postBadgeReloadNotifications(type: Note.Kind?) {
-        guard let type = type else {
+        guard let type else {
             postBadgeReloadNotification(type: .comment)
             postBadgeReloadNotification(type: .storeOrder)
             return
@@ -701,7 +703,7 @@ private extension PushNotificationsManager {
 
         if let typeString = userInfo.string(forKey: APNSKey.type),
            let type = Note.Kind(rawValue: typeString),
-           let siteID = siteID,
+           let siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
             // Badge: Update
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
@@ -922,7 +924,7 @@ private extension PushNotificationsManager {
             appVersion: Bundle.main.version,
             availableAsRESTRequest: isTargetSiteSelected
         ) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let tokenID):
@@ -1016,8 +1018,18 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: Any]()
 
+        // Determine notification source - Woo driven PNs don't have `note_id` in the payload
+        let isWooDriven = userInfo[APNSKey.identifier] == nil
+        properties[AnalyticKey.source] = isWooDriven ? NotificationSource.wooDriven : NotificationSource.wpcom
+
+        // Set identifier based on source
         if let noteID = userInfo.string(forKey: APNSKey.identifier) {
             properties[AnalyticKey.identifier] = noteID
+        } else if isWooDriven {
+            if let notification = PushNotification.from(userInfo: userInfo),
+               let localID = localIdentifier(kind: notification.kind, meta: notification.meta) {
+                properties[AnalyticKey.identifier] = localID
+            }
         }
 
         if let type = userInfo.string(forKey: APNSKey.type) {
@@ -1028,8 +1040,10 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.token] = theToken
         }
 
-        if let siteID = siteID,
-           let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
+        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        if stores.isAuthenticatedWithoutWPCom {
+            properties[AnalyticKey.fromSelectedSite] = true
+        } else if let siteID, let notificationSiteID {
             properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
         }
 
@@ -1040,6 +1054,31 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.appState] = applicationState.rawValue
             analytics.track(.pushNotificationReceived, withProperties: properties)
         }
+    }
+
+    /// Maps notification kind to the appropriate meta key for entity ID extraction.
+    func metaKey(for kind: Note.Kind) -> MetaContainer.Keys? {
+        switch kind {
+        case .storeOrder:
+            return .order
+        case .comment, .commentLike:
+            return .comment
+        case .blazePerformedNote, .blazeCancelledNote, .blazeRejectedNote, .blazeApprovedNote:
+            return .campaignID
+        default:
+            return nil
+        }
+    }
+
+    /// Generates a local identifier for Woo-driven notifications.
+    /// Format: <site-id>:<type>:<entity-id>
+    func localIdentifier(kind: Note.Kind, meta: MetaContainer?) -> String? {
+        guard let siteID = meta?.identifier(forKey: .site),
+              let key = metaKey(for: kind),
+              let entityID = meta?.identifier(forKey: key) else {
+            return nil
+        }
+        return "\(siteID):\(kind.rawValue):\(entityID)"
     }
 }
 
@@ -1094,6 +1133,12 @@ private enum AnalyticKey {
     static let token = "push_notification_token"
     static let fromSelectedSite = "is_from_selected_site"
     static let appState = "app_state"
+    static let source = "push_notification_source"
+}
+
+private enum NotificationSource {
+    static let wpcom = "wpcom"
+    static let wooDriven = "woo_driven"
 }
 
 private enum PushNotificationError: Error {

@@ -218,7 +218,7 @@ extension StripeCardReaderService: CardReaderService {
              * discovering mode before attempting a cancellation
              *
              */
-            guard let self = self,
+            guard let self,
                   let discoveryCancellable = self.discoveryCancellable,
                   self.discoveryStatusSubject.value == .discovering else {
                 return promise(.success(()))
@@ -241,7 +241,7 @@ extension StripeCardReaderService: CardReaderService {
                 // Horrible, terrible workaround.
                 // And yet, it is the classic "dispatch to the next run cycle".
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [discoveryLock] in
-                    guard let error = error else {
+                    guard let error else {
                         self?.switchStatusToIdle()
                         discoveryLock.unlock()
                         return promise(.success(()))
@@ -281,7 +281,7 @@ extension StripeCardReaderService: CardReaderService {
             /// (for example, starting a `tapToPay` connection after a BlueTooth reader has been disconnected)
             Terminal.shared.disconnectReader { error in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    if let error = error {
+                    if let error {
                         let underlyingError = Self.logAndDecodeError(error)
                         promise(.failure(CardReaderServiceError.disconnection(underlyingError: underlyingError)))
                     }
@@ -297,7 +297,7 @@ extension StripeCardReaderService: CardReaderService {
 
     public func waitForInsertedCardToBeRemoved() -> Future<Void, Never> {
         return Future() { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -362,7 +362,7 @@ extension StripeCardReaderService: CardReaderService {
     }
 
     public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
-        guard let activePaymentIntent = activePaymentIntent else {
+        guard let activePaymentIntent else {
             return Fail(error: CardReaderServiceError.retryNotPossibleNoActivePayment)
                 .eraseToAnyPublisher()
         }
@@ -420,7 +420,7 @@ extension StripeCardReaderService: CardReaderService {
 
     public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { [weak self] promise in
-            guard let self = self,
+            guard let self,
                   let activePaymentIntent = self.activePaymentIntent else {
                 promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
                 return
@@ -430,7 +430,7 @@ extension StripeCardReaderService: CardReaderService {
 
             let cancelPaymentIntent = { [weak self] in
                 Terminal.shared.cancelPaymentIntent(activePaymentIntent) { (intent, error) in
-                    if let error = error {
+                    if let error {
                         let underlyingError = Self.logAndDecodeError(error)
                         promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: underlyingError)))
                     }
@@ -488,7 +488,7 @@ extension StripeCardReaderService: CardReaderService {
 
     private func getBluetoothConfiguration(_ reader: StripeTerminal.Reader) -> Future<BluetoothConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
@@ -518,7 +518,7 @@ extension StripeCardReaderService: CardReaderService {
     private func getTapToPayConfiguration(_ reader: StripeTerminal.Reader,
                                              options: CardReaderConnectionOptions?) -> Future<TapToPayConnectionConfiguration, Error> {
         return Future() { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
@@ -554,20 +554,20 @@ extension StripeCardReaderService: CardReaderService {
         let batteryLevel = reader.batteryLevel?.doubleValue
 
         return Future { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
             Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
-                guard let self = self else {
+                guard let self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
                 }
                 // Clear cached readers, as per Stripe's documentation.
                 self.discoveredStripeReadersCache.clear()
 
-                if let error = error {
+                if let error {
                     let underlyingError = Self.logAndDecodeError(error)
                     // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
                     // Any error related to that will be reported here, but we don't want to treat it as a connection error
@@ -579,7 +579,7 @@ extension StripeCardReaderService: CardReaderService {
                     promise(.failure(serviceError))
                 }
 
-                if let reader = reader {
+                if let reader {
                     guard !self.connectionAttemptInvalidated else {
                         _ = self.disconnect()
                         promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
@@ -595,20 +595,20 @@ extension StripeCardReaderService: CardReaderService {
 
     public func connect(_ reader: StripeTerminal.Reader, configuration: TapToPayConnectionConfiguration) -> Future <CardReader, Error> {
         return Future { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 promise(.failure(CardReaderServiceError.connection()))
                 return
             }
 
             Terminal.shared.connectReader(reader, connectionConfig: configuration) { [weak self] (reader, error) in
-                guard let self = self else {
+                guard let self else {
                     promise(.failure(CardReaderServiceError.connection()))
                     return
                 }
                 // Clear cached readers, as per Stripe's documentation.
                 self.discoveredStripeReadersCache.clear()
 
-                if let error = error {
+                if let error {
                     let underlyingError = Self.logAndDecodeError(error)
                     // Starting with StripeTerminal 2.0, required software updates happen transparently on connection
                     // Any error related to that will be reported here, but we don't want to treat it as a connection error
@@ -620,7 +620,7 @@ extension StripeCardReaderService: CardReaderService {
                     promise(.failure(serviceError))
                 }
 
-                if let reader = reader {
+                if let reader {
                     guard !self.connectionAttemptInvalidated else {
                         _ = self.disconnect()
                         promise(.failure(CardReaderServiceError.connection(underlyingError: .connectionAttemptInvalidated)))
@@ -661,7 +661,7 @@ extension StripeCardReaderService: CardReaderService {
                     DDLogInfo("💳 Reconnection cancellation: reconnection already completed")
                     self?.reconnectionStateSubject.send(.idle)
                     promise(.success(()))
-                } else if let error = error {
+                } else if let error {
                     self?.connectedReadersSubject.send([])
                     self?.reconnectionStateSubject.send(.idle)
                     let underlyingError = Self.logAndDecodeError(error)
@@ -711,14 +711,14 @@ private extension StripeCardReaderService {
             }
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
-                if let error = error {
+                if let error {
                     let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.intentCreation(underlyingError: underlyingError)))
                 }
 
                 self?.activePaymentIntent = intent
 
-                if let intent = intent {
+                if let intent {
                     promise(.success(intent))
                 }
             }
@@ -731,7 +731,7 @@ private extension StripeCardReaderService {
             /// Because we are chaining promises, we need to retain a reference
             /// to this cancellable if we want to cancel
             self?.paymentCancellable = Terminal.shared.collectPaymentMethod(intent) { (intent, error) in
-                if let error = error {
+                if let error {
                     var underlyingError = Self.logAndDecodeError(error)
                     /// the completion block for collectPaymentMethod will be called
                     /// with error Canceled when collectPaymentMethod is canceled
@@ -752,7 +752,7 @@ private extension StripeCardReaderService {
                     promise(.failure(CardReaderServiceError.paymentMethodCollection(underlyingError: underlyingError)))
                 }
 
-                if let intent = intent {
+                if let intent {
                     self?.paymentCancellable = nil
                     self?.sendReaderEvent(.cardDetailsCollected)
                     promise(.success(intent))
@@ -780,8 +780,8 @@ private extension StripeCardReaderService {
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.confirmPaymentIntent(intent) { (intent, error) in
-                guard let self = self else { return }
-                if let error = error {
+                guard let self else { return }
+                if let error {
                     let underlyingError = Self.logAndDecodeError(error)
 
                     guard let paymentIntent = error.paymentIntent else {
@@ -802,7 +802,7 @@ private extension StripeCardReaderService {
                     }
                 }
 
-                if let intent = intent {
+                if let intent {
                     self.activePaymentIntent = nil
                     return promise(.success(intent))
                 }
@@ -861,7 +861,7 @@ extension StripeCardReaderService {
                 } else {
                     // Process refund
                     Terminal.shared.confirmRefund { [weak self] processedRefund, processError in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         self.refundCancellable = nil
                         if let error = processError {
                             promise(.failure(CardReaderServiceError.refundPayment(
@@ -921,7 +921,7 @@ extension StripeCardReaderService {
             }
 
             refundCancellable.cancel({ error in
-                if let error = error {
+                if let error {
                     let underlyingError = Self.logAndDecodeError(error)
                     promise(.failure(CardReaderServiceError.refundCancellation(underlyingError: underlyingError)))
                 }
@@ -965,7 +965,7 @@ extension StripeCardReaderService: MobileReaderDelegate {
     public func reader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         // Note that this function is called with an error when updates are cancelled, so this is enough to ensure we re-enable sleep.
         UIApplication.shared.isIdleTimerDisabled = false
-        if let error = error {
+        if let error {
             let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(
                 error: CardReaderServiceError.softwareUpdate(underlyingError: underlyingError,
@@ -1098,7 +1098,7 @@ extension StripeCardReaderService: TapToPayReaderDelegate {
 
     public func tapToPayReader(_ reader: Reader, didFinishInstallingUpdate update: ReaderSoftwareUpdate?, error: Error?) {
         UIApplication.shared.isIdleTimerDisabled = false
-        if let error = error {
+        if let error {
             let underlyingError = Self.logAndDecodeError(error)
             softwareUpdateSubject.send(.failed(
                 error: CardReaderServiceError.softwareUpdate(underlyingError: underlyingError,
@@ -1141,7 +1141,7 @@ private extension StripeCardReaderService {
     }
 
     func resetDiscoveredReadersSubject(error: Error? = nil) {
-        if let error = error {
+        if let error {
             let underlyingError = Self.logAndDecodeError(error)
             discoveredReadersSubject.send(completion:
                     .failure(CardReaderServiceError.discovery(underlyingError: underlyingError))

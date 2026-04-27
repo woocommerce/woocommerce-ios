@@ -189,7 +189,7 @@ extension ProductDownloadListViewController {
         let actions = viewModel.bottomSheetActions
         let dataSource = DownloadableFileBottomSheetListSelectorCommand(actions: actions) { [weak self] action in
             self?.dismiss(animated: true) { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch action {
                 case .deviceMedia:
                     self.showDeviceMediaLibraryPicker(origin: self)
@@ -260,7 +260,7 @@ private extension ProductDownloadListViewController {
                                                                                           name: fileName ?? "",
                                                                                           fileURL: fileURL)))
         case .edit:
-            if let indexPath = indexPath {
+            if let indexPath {
                 viewModel.update(at: indexPath.row,
                                  element: (ProductDownloadDragAndDrop(downloadableFile: ProductDownload(downloadID: fileID ?? "",
                                                                                                         name: fileName ?? "",
@@ -272,7 +272,7 @@ private extension ProductDownloadListViewController {
     }
 
     func onDownloadableFileDeletion(indexPath: IndexPath?) {
-        guard let indexPath = indexPath else {
+        guard let indexPath else {
             return
         }
         viewModel.remove(at: indexPath.row)

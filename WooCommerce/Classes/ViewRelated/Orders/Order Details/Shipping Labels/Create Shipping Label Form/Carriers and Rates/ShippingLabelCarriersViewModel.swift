@@ -94,7 +94,7 @@ final class ShippingLabelCarriersViewModel: ObservableObject {
                                                         signatureRate: signature,
                                                         adultSignatureRate: adultSignature,
                                                         currencySettings: currencySettings) { [weak self] (rate, signature, adultSignature) in
-                    guard let self = self else { return }
+                    guard let self else { return }
 
                     // update the existing selected rate for the package
                     if let index = self.selectedRates.firstIndex(where: { $0.packageID == resp.packageID }) {
@@ -150,7 +150,7 @@ private extension ShippingLabelCarriersViewModel {
                                                               originAddress: originAddress,
                                                               destinationAddress: destinationAddress,
                                                               packages: packages) { [weak self] (result) in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let response):
                 self.generateSections(response: response)

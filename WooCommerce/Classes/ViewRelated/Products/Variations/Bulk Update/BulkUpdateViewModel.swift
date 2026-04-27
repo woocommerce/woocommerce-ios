@@ -86,12 +86,12 @@ final class BulkUpdateViewModel {
         let pageNumber = Constants.pageNumber
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: numberOfObjects) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 switch result {
                 case .success:
                     self.configureResultsControllerAndFetchData { [weak self] error in
-                        guard let self = self else { return }
+                        guard let self else { return }
                         if error != nil {
                             self.syncState = .error
                         } else {
@@ -151,7 +151,7 @@ final class BulkUpdateViewModel {
     ///
     private func configureResultsControllerAndFetchData(onCompletion: @escaping (Error?) -> Void) {
         resultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.updateDataModel()
             onCompletion(nil)
         }

@@ -188,7 +188,7 @@ private extension RemoteOrderSynchronizer {
 
         setProduct.withLatestFrom(orderPublisher)
             .map { [weak self] productInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let localInput = self.replaceInputWithLocalIDIfNeeded(productInput)
                 let updatedOrder = ProductInputTransformer.update(input: localInput, on: order, shouldUpdateOrDeleteZeroQuantities: .update)
                 // Calculate order total locally while order is being synced
@@ -202,7 +202,7 @@ private extension RemoteOrderSynchronizer {
 
         setProducts.withLatestFrom(orderPublisher)
             .map { [weak self] productsInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
 
                 let localInputs = productsInput.map {
                     self.replaceInputWithLocalIDIfNeeded($0)
@@ -233,7 +233,7 @@ private extension RemoteOrderSynchronizer {
 
         setShipping.withLatestFrom(orderPublisher)
             .map { [weak self] shippingLineInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let updatedOrder = ShippingInputTransformer.update(input: shippingLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -259,7 +259,7 @@ private extension RemoteOrderSynchronizer {
 
         addFee.withLatestFrom(orderPublisher)
             .map { [weak self] feeLineInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let updatedOrder = FeesInputTransformer.append(input: feeLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -272,7 +272,7 @@ private extension RemoteOrderSynchronizer {
 
         updateFee.withLatestFrom(orderPublisher)
             .map { [weak self] feeLineInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let updatedOrder = FeesInputTransformer.update(input: feeLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -285,7 +285,7 @@ private extension RemoteOrderSynchronizer {
 
         removeFee.withLatestFrom(orderPublisher)
             .map { [weak self] feeLineInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let updatedOrder = FeesInputTransformer.remove(input: feeLineInput, from: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -298,7 +298,7 @@ private extension RemoteOrderSynchronizer {
 
         addCoupon.withLatestFrom(orderPublisher)
             .map { [weak self] couponLineInput, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let updatedOrder = CouponInputTransformer.append(input: couponLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -310,7 +310,7 @@ private extension RemoteOrderSynchronizer {
             .store(in: &subscriptions)
         removeCoupon.withLatestFrom(orderPublisher)
             .map { [weak self] couponCode, order -> Order in
-                guard let self = self else { return order }
+                guard let self else { return order }
                 let updatedOrder = CouponInputTransformer.remove(code: couponCode, from: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
@@ -374,7 +374,7 @@ private extension RemoteOrderSynchronizer {
     func bindOrderSync(flow: EditableOrderViewModel.Flow) {
         let syncTrigger: AnyPublisher<Order, Never> = orderSyncTrigger
             .compactMap { [weak self] order in
-                guard let self = self else { return nil }
+                guard let self else { return nil }
                 switch self.state {
                 case .syncing(blocking: true):
                     return nil // Don't continue if the current state is `blocking`.
@@ -400,7 +400,7 @@ private extension RemoteOrderSynchronizer {
                 $0.orderID == .zero
             }
             .flatMap(maxPublishers: .max(1)) { [weak self] order -> AnyPublisher<Order, Never> in // Only allow one request at a time.
-                guard let self = self else { return Empty().eraseToAnyPublisher() }
+                guard let self else { return Empty().eraseToAnyPublisher() }
                 self.state = .syncing(blocking: true) // Creating an order is always a blocking operation
 
                 return self.createOrderRemotely(order, type: .sync, includesGiftCard: false)
@@ -439,7 +439,7 @@ private extension RemoteOrderSynchronizer {
             })
             .debounce(for: .seconds(debounceDuration), scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
-                guard let self = self else { return Empty().eraseToAnyPublisher() }
+                guard let self else { return Empty().eraseToAnyPublisher() }
 
                 let syncType: OperationType = flow == .creation ? .sync : .commit
                 let includesGiftCard = flow != .creation
@@ -464,14 +464,14 @@ private extension RemoteOrderSynchronizer {
     ///
     func createOrderRemotely(_ order: Order, type: OperationType, includesGiftCard: Bool) -> AnyPublisher<Order, Error> {
         Future<Order, Error> { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let giftCard = includesGiftCard ? self.giftCardToApply: nil
 
             let apiOrderStatus = self.orderStatus(for: type)
             let draftOrder = order.copy(status: apiOrderStatus).sanitizingLocalItems()
             let action = OrderAction.createOrder(siteID: self.siteID, order: draftOrder, giftCard: giftCard) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 switch result {
                 case .success(let remoteOrder):
@@ -495,7 +495,7 @@ private extension RemoteOrderSynchronizer {
     ///
     func updateOrderRemotely(_ order: Order, type: OperationType, includesGiftCard: Bool) -> AnyPublisher<Order, Error> {
         Future<Order, Error> { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
@@ -504,7 +504,7 @@ private extension RemoteOrderSynchronizer {
                                                  order: orderToSubmit,
                                                  giftCard: giftCard,
                                                  fields: operationUpdateFields) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 switch result {
                 case .success(let remoteOrder):

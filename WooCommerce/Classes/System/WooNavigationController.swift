@@ -115,7 +115,7 @@ private extension WooNavigationControllerDelegate {
     func observeConnectivity() {
         connectivityObserver.statusPublisher
             .sink { [weak self] status in
-                guard let self = self, let currentController = self.currentController else { return }
+                guard let self, let currentController = self.currentController else { return }
                 self.configureOfflineBanner(for: currentController, status: status)
             }
             .store(in: &subscriptions)

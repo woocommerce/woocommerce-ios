@@ -2,7 +2,7 @@ import Foundation
 
 extension Optional where Wrapped == String {
     var isNilOrEmpty: Bool {
-        guard let self = self else {
+        guard let self else {
             return true
         }
         return self.isEmpty

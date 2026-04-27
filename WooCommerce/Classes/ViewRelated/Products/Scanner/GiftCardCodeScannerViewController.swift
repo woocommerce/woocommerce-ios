@@ -5,7 +5,7 @@ final class GiftCardCodeScannerViewController: UIViewController {
     private lazy var codeScannerChildViewController: CodeScannerViewController = {
         return CodeScannerViewController(instructionText: Localization.instructionText,
                                          format: .text(recognitionLevel: .accurate) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard self.hasDetectedCode == false else {
                 return
             }

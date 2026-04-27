@@ -105,7 +105,7 @@ private extension ProductVariationStore {
                                         context: nil,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize) { [weak self] (productVariations, error) in
-            guard let productVariations = productVariations else {
+            guard let productVariations else {
                 onCompletion(.failure(error ?? ProductVariationLoadError.unexpected))
                 return
             }
@@ -128,7 +128,7 @@ private extension ProductVariationStore {
     func retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64,
                                   onCompletion: @escaping (Result<ProductVariation, Error>) -> Void) {
         remote.loadProductVariation(for: siteID, productID: productID, variationID: variationID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {
@@ -154,7 +154,7 @@ private extension ProductVariationStore {
                                  newVariation: CreateProductVariation,
                                  onCompletion: @escaping (Result<ProductVariation, Error>) -> Void) {
         remote.createProductVariation(for: siteID, productID: productID, newVariation: newVariation) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {
@@ -187,7 +187,7 @@ private extension ProductVariationStore {
         remote.createProductVariations(siteID: siteID,
                                        productID: productID,
                                        productVariations: productVariations) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let productVariations):
                 self.productVariationStorageManager.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
@@ -210,7 +210,7 @@ private extension ProductVariationStore {
     ///
     func updateProductVariation(productVariation: ProductVariation, onCompletion: @escaping (Result<ProductVariation, ProductUpdateError>) -> Void) {
         remote.updateProductVariation(productVariation: productVariation) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {
@@ -241,7 +241,7 @@ private extension ProductVariationStore {
                                            productID: productID,
                                            variationID: variationID,
                                            image: image) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {
@@ -271,7 +271,7 @@ private extension ProductVariationStore {
         remote.updateProductVariations(siteID: siteID,
                                        productID: productID,
                                        productVariations: productVariations) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
@@ -308,7 +308,7 @@ private extension ProductVariationStore {
             remote.loadProductVariation(for: order.siteID,
                                         productID: orderItem.productID,
                                         variationID: orderItem.variationID) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .failure(let error):
                     results.append(.failure(error))
@@ -339,7 +339,7 @@ private extension ProductVariationStore {
         remote.deleteProductVariation(siteID: productVariation.siteID,
                                       productID: productVariation.productID,
                                       variationID: productVariation.productVariationID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let productVariation):
                 self.productVariationStorageManager.deleteStoredProductVariation(siteID: productVariation.siteID,

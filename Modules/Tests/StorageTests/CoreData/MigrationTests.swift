@@ -2631,6 +2631,50 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "bookingDurationUnit") as? String, "minute")
         XCTAssertEqual(migratedProduct.value(forKey: "bookingResourceIDs") as? [Int], [1, 2, 3])
     }
+
+    func test_migrating_from_136_to_137_adds_StoredSupportChat_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 136")
+        let sourceContext = sourceContainer.viewContext
+
+        // Verify StoredSupportChat entity does not exist in Model 136
+        let sourceEntities = sourceContainer.managedObjectModel.entities.map { $0.name }
+        XCTAssertFalse(sourceEntities.contains("StoredSupportChat"), "Precondition. Entity should not exist.")
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 137")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let targetEntities = targetContainer.managedObjectModel.entities.map { $0.name }
+        XCTAssertTrue(targetEntities.contains("StoredSupportChat"))
+
+        // Verify we can insert and save a StoredSupportChat
+        let now = Date()
+        let chat = NSEntityDescription.insertNewObject(forEntityName: "StoredSupportChat", into: targetContext)
+        chat.setValue(Int64(4504215), forKey: "chatID")
+        chat.setValue(Int64(114679597), forKey: "siteID")
+        chat.setValue(Int64(36517705), forKey: "wpcomUserID")
+        chat.setValue("woo-chat-allusers", forKey: "botSlug")
+        chat.setValue("How do I set up shipping zones?", forKey: "title")
+        chat.setValue(now, forKey: "createdAt")
+        chat.setValue(now, forKey: "updatedAt")
+
+        try targetContext.save()
+
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "StoredSupportChat")
+        let results = try targetContext.fetch(fetchRequest)
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results.first?.value(forKey: "chatID") as? Int64, 4504215)
+        XCTAssertEqual(results.first?.value(forKey: "siteID") as? Int64, 114679597)
+        XCTAssertEqual(results.first?.value(forKey: "wpcomUserID") as? Int64, 36517705)
+        XCTAssertEqual(results.first?.value(forKey: "botSlug") as? String, "woo-chat-allusers")
+        XCTAssertEqual(results.first?.value(forKey: "title") as? String, "How do I set up shipping zones?")
+        XCTAssertEqual(results.first?.value(forKey: "createdAt") as? Date, now)
+        XCTAssertEqual(results.first?.value(forKey: "updatedAt") as? Date, now)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -167,7 +167,7 @@ final class IssueRefundViewModel {
     /// confirm and submit the refund.
     func createRefundConfirmationViewModel(onCompletion: @escaping ((RefundConfirmationViewModel) -> Void)) {
         let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { [weak self] paymentGatewayAccount in
-            guard let self = self else { return }
+            guard let self else { return }
             let details = RefundConfirmationViewModel.Details(order: self.state.order,
                                                               charge: self.state.charge,
                                                               amount: "\(self.calculateRefundTotal())",
@@ -301,7 +301,7 @@ private extension IssueRefundViewModel {
 
     func observeCharge() {
         chargeResultsController?.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.state.charge = self.charge
         }
     }

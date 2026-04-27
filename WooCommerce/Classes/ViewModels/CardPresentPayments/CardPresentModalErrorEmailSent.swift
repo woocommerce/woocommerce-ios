@@ -30,7 +30,7 @@ final class CardPresentModalErrorEmailSent: CardPresentPaymentsModalViewModel {
     let bottomAttributedSubtitle: NSAttributedString?
 
     var accessibilityLabel: String? {
-        guard let bottomTitle = bottomTitle else {
+        guard let bottomTitle else {
             return topTitle
         }
         return topTitle + bottomTitle

@@ -107,6 +107,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return !buildConfig.isProduction
         case .aiSupportChat:
             return !buildConfig.isProduction
+        case .wooAIAssistant:
+            return !buildConfig.isProduction
         default:
             return true
         }

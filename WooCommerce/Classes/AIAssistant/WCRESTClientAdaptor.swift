@@ -5,6 +5,7 @@ import enum NetworkingCore.NetworkError
 import enum NetworkingCore.WooAPIVersion
 import protocol NetworkingCore.Network
 import struct Alamofire.HTTPMethod
+import enum WooAIAssistant.HTTPStatusClassification
 import struct WooAIAssistant.WCRESTResponse
 import protocol WooAIAssistant.WCRESTClient
 
@@ -46,15 +47,11 @@ struct WCRESTClientAdaptor: WCRESTClient {
             return WCRESTResponse(data: data, statusCode: 200)
         } catch let error as NetworkError {
             return WCRESTResponse(data: error.responseData ?? Data(),
-                                  statusCode: error.responseCode ?? Self.transportFailure)
+                                  statusCode: error.responseCode ?? HTTPStatusClassification.transportFailure)
         } catch {
-            return WCRESTResponse(data: Data(), statusCode: Self.transportFailure)
+            return WCRESTResponse(data: Data(), statusCode: HTTPStatusClassification.transportFailure)
         }
     }
-
-    /// Mirror of the module's `HTTPStatusClassification.transportFailure`
-    /// kept local so this adaptor avoids importing the module's internals.
-    private static let transportFailure: Int = 0
 
     private static func splitAPIVersion(from path: String) -> (apiVersion: WooAPIVersion, subpath: String) {
         let trimmed = path.hasPrefix("/") ? String(path.dropFirst()) : path

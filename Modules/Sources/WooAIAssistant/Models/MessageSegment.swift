@@ -1,5 +1,8 @@
 import Foundation
 
+/// Per-row card overrides keyed by row id, then key/value strings.
+public typealias CardRenderExtras = [String: [String: String]]
+
 /// A piece of content inside a `ChatMessage`. Messages hold an ordered list
 /// of these so a single assistant turn can interleave text, tool activity,
 /// rich cards, and confirmation prompts.
@@ -28,7 +31,7 @@ public enum MessageSegment: Identifiable, Equatable, Sendable {
                     toolCallID: String,
                     toolName: String,
                     payload: AnyCodableJSON,
-                    extras: [String: [String: String]]?)
+                    extras: CardRenderExtras?)
 
     /// A pending user confirmation for a destructive tool call. The status
     /// transitions from `.pending` to `.confirmed` or `.cancelled` once the

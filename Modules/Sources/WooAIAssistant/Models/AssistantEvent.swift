@@ -20,7 +20,7 @@ public enum AssistantEvent: Equatable, Sendable {
     /// `show_cards` selected a prior tool result for rich rendering, with
     /// optional per-row extras drawn beneath the card layout.
     case cardRender(toolCallID: String,
-                    extras: [String: [String: String]]?)
+                    extras: CardRenderExtras?)
 
     /// Safety policy paused the loop pending user approval. The UI renders
     /// a confirmation card built from the proposal.

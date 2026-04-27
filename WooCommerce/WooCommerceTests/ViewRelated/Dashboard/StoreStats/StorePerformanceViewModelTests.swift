@@ -364,6 +364,199 @@ final class StorePerformanceViewModelTests: XCTestCase {
         XCTAssertEqual(properties?["type"], "performance")
     }
 
+    // MARK: - Order type bottom sheet
+
+    @MainActor
+    func test_orderType_when_loadOrderType_succeeds_then_value_is_published() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsOrderDateType(_, onCompletion):
+                onCompletion(.success(.completed))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.orderType, .paid) // initial fallback
+        waitUntil {
+            viewModel.orderType == .completed
+        }
+    }
+
+    @MainActor
+    func test_orderType_when_loadOrderType_fails_then_value_falls_back_to_paid() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsOrderDateType(_, onCompletion):
+                onCompletion(.failure(NetworkError.unacceptableStatusCode(statusCode: 500)))
+            default:
+                break
+            }
+        }
+
+        // When
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // Then — orderType remains the default `.paid` after failed fetch
+        XCTAssertEqual(viewModel.orderType, .paid)
+    }
+
+    @MainActor
+    func test_didSelectOrderType_when_value_matches_current_then_no_action_dispatched() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        var updateActionDispatched = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType:
+                updateActionDispatched = true
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // When
+        await viewModel.didSelectOrderType(.paid)
+
+        // Then
+        XCTAssertFalse(updateActionDispatched)
+        XCTAssertNil(viewModel.orderTypeUpdateError)
+    }
+
+    @MainActor
+    func test_didSelectOrderType_when_save_succeeds_then_orderType_is_updated_and_error_is_nil() async {
+        // Given
+        var receivedValue: AnalyticsOrderDateType?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case let .updateAnalyticsOrderDateType(_, value, onCompletion):
+                receivedValue = value
+                onCompletion(.success(value))
+            default:
+                break
+            }
+        }
+        // Stub stats actions so reloadDataIfNeeded(forceRefresh:) doesn't hang.
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // When
+        await viewModel.didSelectOrderType(.completed)
+
+        // Then
+        XCTAssertEqual(receivedValue, .completed)
+        XCTAssertEqual(viewModel.orderType, .completed)
+        XCTAssertNil(viewModel.orderTypeUpdateError)
+        XCTAssertFalse(viewModel.isUpdatingOrderType)
+    }
+
+    @MainActor
+    func test_didSelectOrderType_when_save_fails_then_error_is_set_and_orderType_is_unchanged() async {
+        // Given
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case .updateAnalyticsOrderDateType(_, _, let onCompletion):
+                onCompletion(.failure(expectedError))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123, stores: stores, usageTracksEventEmitter: .init())
+
+        // When
+        await viewModel.didSelectOrderType(.allOrders)
+
+        // Then
+        XCTAssertEqual(viewModel.orderType, .paid)
+        XCTAssertEqual(viewModel.orderTypeUpdateError as? NetworkError, expectedError)
+        XCTAssertFalse(viewModel.isUpdatingOrderType)
+    }
+
+    @MainActor
+    func test_didSelectOrderType_tracks_selected_event_with_order_type_property() async throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case .retrieveAnalyticsOrderDateType(_, let onCompletion):
+                onCompletion(.success(.paid))
+            case let .updateAnalyticsOrderDateType(_, value, onCompletion):
+                onCompletion(.success(value))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
+            switch action {
+            case let .retrieveStats(_, _, _, _, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteVisitStats(_, _, _, _, onCompletion):
+                onCompletion(.success(()))
+            case let .retrieveSiteSummaryStats(_, _, _, _, _, _, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+        let viewModel = StorePerformanceViewModel(siteID: 123,
+                                                  stores: stores,
+                                                  usageTracksEventEmitter: .init(),
+                                                  analytics: analytics)
+
+        // When
+        await viewModel.didSelectOrderType(.allOrders)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "dashboard_main_stats_order_type_selected" }))
+        let properties = analyticsProvider.receivedProperties[index] as? [String: AnyHashable]
+        XCTAssertEqual(properties?["order_type"], "all_orders")
+    }
+
+    @MainActor
+    func test_trackOrderTypeChevronTapped_tracks_chevron_event() throws {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let viewModel = StorePerformanceViewModel(siteID: 123, usageTracksEventEmitter: .init(), analytics: analytics)
+
+        // When
+        viewModel.trackOrderTypeChevronTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("dashboard_main_stats_order_type_chevron_tapped"))
+    }
+
     @MainActor
     func test_given_existing_cached_data_when_timestamp_is_fresh_then_cached_data_is_shown() async {
         // Given

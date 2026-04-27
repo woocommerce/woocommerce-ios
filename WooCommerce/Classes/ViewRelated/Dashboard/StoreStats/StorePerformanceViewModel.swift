@@ -50,6 +50,10 @@ final class StorePerformanceViewModel: ObservableObject {
     /// merchant initiates a new selection.
     @Published var orderTypeUpdateError: Error?
 
+    /// Tracks whether the merchant has manually picked an order type during this session.
+    /// Prevents a late-arriving initial `loadOrderType` from clobbering a user selection.
+    private var hasUserSelectedOrderType = false
+
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
@@ -250,6 +254,7 @@ final class StorePerformanceViewModel: ObservableObject {
     @MainActor
     func didSelectOrderType(_ newOrderType: AnalyticsOrderDateType) async {
         guard !isUpdatingOrderType, orderType != newOrderType else { return }
+        hasUserSelectedOrderType = true
         analytics.track(event: .Dashboard.performanceCardOrderTypeSelected(newOrderType))
         isUpdatingOrderType = true
         orderTypeUpdateError = nil
@@ -452,6 +457,9 @@ private extension StorePerformanceViewModel {
                 }
                 stores.dispatch(action)
             }
+            // If the merchant already changed the order type while the initial fetch was in flight,
+            // honor their selection rather than overwriting it with the stale server value.
+            guard !hasUserSelectedOrderType else { return }
             orderType = dateType
         } catch {
             DDLogWarn("⚠️ Could not fetch analytics order date type, falling back to default: \(error)")

@@ -419,4 +419,3 @@ struct ConnectivityToolCard: View {
             .navigationBarTitleDisplayMode(.inline)
     }
 }
-

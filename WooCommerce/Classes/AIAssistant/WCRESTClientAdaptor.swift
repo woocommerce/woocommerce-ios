@@ -13,7 +13,11 @@ import protocol WooAIAssistant.WCRESTClient
 /// `JetpackRequest(availableAsRESTRequest: true)` routes the same way other
 /// remotes do: WPCOM-tunneled with the bearer token, or upgraded to a direct
 /// app-password REST call when the site supports it.
-struct WCRESTClientAdaptor: WCRESTClient {
+///
+/// `Network` is not declared `Sendable`, but the app constructs a single
+/// instance at launch and never mutates it; treating the adaptor as `Sendable`
+/// is sound at this integration boundary.
+struct WCRESTClientAdaptor: @unchecked Sendable, WCRESTClient {
     private let network: Network
     private let siteID: Int64
 

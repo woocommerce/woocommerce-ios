@@ -14,10 +14,8 @@ public enum AssistantEvent: Equatable, Sendable {
                     toolName: String,
                     payload: AnyCodableJSON)
 
-    /// `show_cards` selected a prior tool result for rich rendering; extras
-    /// are per-row overrides drawn beneath the card layout.
-    case cardRender(toolCallID: String,
-                    extras: CardRenderExtras?)
+    /// `show_cards` selected a prior tool result for rich rendering.
+    case cardRender(toolCallID: String)
 
     /// Safety policy pauses the loop until the user resolves this proposal.
     case confirmationRequired(proposal: ToolProposal)

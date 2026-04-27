@@ -32,23 +32,6 @@ struct AssistantEventTests {
     }
 
     @Test
-    func test_assistantEvent_when_cardRender_then_carries_extras() {
-        // Given
-        let extras = ["3551": ["last_note": "Customer asked for tracking"]]
-
-        // When
-        let event: AssistantEvent = .cardRender(toolCallID: "call_1", extras: extras)
-
-        // Then
-        guard case .cardRender(let toolCallID, let captured) = event else {
-            Issue.record("expected .cardRender, got \(event)")
-            return
-        }
-        #expect(toolCallID == "call_1")
-        #expect(captured == extras)
-    }
-
-    @Test
     func test_assistantEvent_when_toolResult_then_carries_payload_keyed_by_tool_call_id() {
         // Given
         let payload: AnyCodableJSON = .object(["count": .int(2)])

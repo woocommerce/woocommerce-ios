@@ -1,9 +1,5 @@
 import Foundation
 
-/// Outer key is the row id from the underlying tool result, inner is a
-/// flat string-keyed bag of overrides applied to that row.
-public typealias CardRenderExtras = [String: [String: String]]
-
 /// A single assistant turn can interleave text, tool activity, rich cards,
 /// and confirmation prompts; segments are the unit each can mutate
 /// independently as events stream in.
@@ -25,14 +21,13 @@ public enum MessageSegment: Identifiable, Equatable, Sendable {
                     toolName: String,
                     payload: AnyCodableJSON)
 
-    /// Snapshots the payload and extras at render time so the renderer
-    /// stays self-contained even if the source `toolResult` is later
-    /// replaced or the message is replayed from persistence.
+    /// Snapshots the payload at render time so the renderer stays
+    /// self-contained even if the source `toolResult` is later replaced
+    /// or the message is replayed from persistence.
     case cardRender(id: UUID,
                     toolCallID: String,
                     toolName: String,
-                    payload: AnyCodableJSON,
-                    extras: CardRenderExtras?)
+                    payload: AnyCodableJSON)
 
     /// Status mutates in place so the same `id` survives the transition
     /// from `.pending` to `.confirmed` or `.cancelled`.
@@ -47,7 +42,7 @@ public enum MessageSegment: Identifiable, Equatable, Sendable {
         case .text(let id, _),
              .toolCall(let id, _, _, _, _),
              .toolResult(let id, _, _, _),
-             .cardRender(let id, _, _, _, _),
+             .cardRender(let id, _, _, _),
              .confirmation(let id, _, _, _, _):
             return id
         }

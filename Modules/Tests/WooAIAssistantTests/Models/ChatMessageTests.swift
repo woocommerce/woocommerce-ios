@@ -142,4 +142,60 @@ struct ChatMessageTests {
         // Then
         #expect(message.isStreaming == false)
     }
+
+    @Test
+    func test_chatMessage_updateText_when_segments_empty_then_creates_text_segment() {
+        // Given
+        var message = ChatMessage(role: .assistant)
+
+        // When
+        message.updateText(appending: "Hello")
+
+        // Then
+        #expect(message.segments.count == 1)
+        guard case .text(_, let content) = message.segments[0] else {
+            Issue.record("expected .text, got \(message.segments[0])")
+            return
+        }
+        #expect(content == "Hello")
+    }
+
+    @Test
+    func test_chatMessage_updateConfirmation_when_proposalID_missing_then_segments_unchanged() {
+        // Given
+        let original: [MessageSegment] = [.confirmation(id: UUID(),
+                                                        proposalID: UUID(),
+                                                        toolName: "orders_update",
+                                                        preview: "Mark order #1 completed",
+                                                        status: .pending)]
+        var message = ChatMessage(role: .assistant, segments: original)
+
+        // When
+        message.updateConfirmation(proposalID: UUID(), to: .confirmed)
+
+        // Then
+        #expect(message.segments == original)
+    }
+
+    @Test
+    func test_chatMessage_updateConfirmation_when_pending_then_resolves_to_cancelled() {
+        // Given
+        let proposalID = UUID()
+        var message = ChatMessage(role: .assistant,
+                                  segments: [.confirmation(id: UUID(),
+                                                           proposalID: proposalID,
+                                                           toolName: "orders_update",
+                                                           preview: "Mark order #1 completed",
+                                                           status: .pending)])
+
+        // When
+        message.updateConfirmation(proposalID: proposalID, to: .cancelled)
+
+        // Then
+        guard case .confirmation(_, _, _, _, let status) = message.segments[0] else {
+            Issue.record("expected .confirmation, got \(message.segments[0])")
+            return
+        }
+        #expect(status == .cancelled)
+    }
 }

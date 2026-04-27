@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import Yosemite
 import protocol WooFoundation.Analytics
+import enum Networking.NetworkError
 
 /// View model for the AI support chat interface.
 ///
@@ -69,16 +70,27 @@ final class SupportChatViewModel {
     private let stores: StoresManager
     private let initialContext: [String: Any]?
     private let onContactHumanSupport: () -> Void
+    private let analytics: Analytics
+    private let entryPoint: WooAnalyticsEvent.SupportChat.EntryPoint
+    private let authState: WooAnalyticsEvent.SupportChat.AuthState
+    private var openedTracked = false
+    private var closedTracked = false
 
     // MARK: - Initialization
 
     init(botSlug: String = "woo-workflow-support_mobile_inapp",
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
+         entryPoint: WooAnalyticsEvent.SupportChat.EntryPoint = .connectivityTool,
+         authState: WooAnalyticsEvent.SupportChat.AuthState = .wpcom,
          initialContext: [String: Any]? = nil,
          chatID: Int64? = nil,
          onContactHumanSupport: @escaping () -> Void) {
         self.botSlug = botSlug
         self.stores = stores
+        self.analytics = analytics
+        self.entryPoint = entryPoint
+        self.authState = authState
         self.initialContext = initialContext
         self.chatID = chatID
         self.isResumedChat = chatID != nil
@@ -128,6 +140,9 @@ final class SupportChatViewModel {
         let wasNewChat = chatID == nil
         let firstUserMessage = trimmedText
 
+        analytics.track(event: .SupportChat.messageSent(chatID: chatID,
+                                                        entryPoint: entryPoint))
+
         let action = SupportChatAction.sendMessage(
             botSlug: botSlug,
             message: trimmedText,
@@ -143,7 +158,37 @@ final class SupportChatViewModel {
     }
 
     func contactHumanSupport() {
+        analytics.track(event: .SupportChat.contactHumanTapped(chatID: chatID))
         onContactHumanSupport()
+    }
+
+    /// Fires `support_chat_opened` exactly once per view lifetime.
+    /// Idempotent so repeat `.onAppear` calls (e.g. nav back-forward) don't double-track.
+    func trackOpenedIfNeeded() {
+        guard !openedTracked else { return }
+        openedTracked = true
+        analytics.track(event: .SupportChat.opened(entryPoint: entryPoint,
+                                                   authState: authState,
+                                                   chatResumed: isResumedChat))
+    }
+
+    /// Fires `support_chat_closed` exactly once per view lifetime, with funnel-friendly properties.
+    /// Resolution is derived from current state at close time.
+    func trackClosedIfNeeded() {
+        guard !closedTracked else { return }
+        closedTracked = true
+        let resolution: WooAnalyticsEvent.SupportChat.Resolution = {
+            if shouldPromptHumanSupport {
+                return .escalated
+            }
+            if chatID == nil {
+                return .dismissedNoMessageSent
+            }
+            return .completed
+        }()
+        analytics.track(event: .SupportChat.closed(chatID: chatID,
+                                                   resolution: resolution,
+                                                   messageCount: messages.count))
     }
 
     func dismissError() {
@@ -169,8 +214,19 @@ final class SupportChatViewModel {
                 )
                 messages.append(assistantMessage)
 
-                if let flags = lastBotMessage.context?.flags, flags.forwardToHumanSupport {
+                let flags = lastBotMessage.context?.flags
+                let sourcesCount = lastBotMessage.context?.sources.count ?? 0
+                analytics.track(event: .SupportChat.messageReceived(chatID: response.chatID,
+                                                                    botVersion: response.botVersion,
+                                                                    branch: flags?.branch,
+                                                                    cannedResponse: flags?.cannedResponse ?? false,
+                                                                    sourcesCount: sourcesCount))
+
+                if let flags, flags.forwardToHumanSupport {
                     shouldPromptHumanSupport = true
+                    analytics.track(event: .SupportChat.forwardToHumanTriggered(chatID: response.chatID,
+                                                                                messageID: lastBotMessage.messageID,
+                                                                                branch: flags.branch))
                 }
             }
 
@@ -178,8 +234,54 @@ final class SupportChatViewModel {
 
         case .failure(let error):
             DDLogError("⛔️ Support chat error: \(error)")
+            analytics.track(event: .SupportChat.messageFailed(errorClass: classify(error: error),
+                                                              httpStatus: httpStatus(for: error),
+                                                              chatID: chatID))
             state = .error(Localization.errorMessage)
         }
+    }
+
+    /// Buckets a generic `Error` into a coarse class for analytics. Avoids leaking server text.
+    private func classify(error: Error) -> WooAnalyticsEvent.SupportChat.ErrorClass {
+        if let networkError = error as? NetworkError {
+            switch networkError {
+            case .timeout:
+                return .timeout
+            case let .unacceptableStatusCode(statusCode, _):
+                if statusCode == 401 || statusCode == 403 {
+                    return .unauthorized
+                }
+                if statusCode == 429 {
+                    return .rateLimit
+                }
+                return .server
+            case .notFound:
+                return .server
+            case .invalidURL, .invalidCookieNonce:
+                return .network
+            }
+        }
+        let nsError = error as NSError
+        if nsError.domain == NSURLErrorDomain {
+            switch nsError.code {
+            case NSURLErrorTimedOut:
+                return .timeout
+            case NSURLErrorUserAuthenticationRequired:
+                return .unauthorized
+            default:
+                return .network
+            }
+        }
+        if error is DecodingError {
+            return .decoding
+        }
+        return .unknown
+    }
+
+    /// Best-effort HTTP status extraction. Returns nil when the error doesn't carry one.
+    private func httpStatus(for error: Error) -> Int? {
+        guard let networkError = error as? NetworkError else { return nil }
+        return networkError.responseCode
     }
 
     /// Maps a fetched transcript into local `ChatMessage` values. Unknown roles are dropped

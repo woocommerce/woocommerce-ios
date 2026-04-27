@@ -39,8 +39,12 @@ struct SupportChatView: View {
             }
         )
         .onAppear {
+            viewModel.trackOpenedIfNeeded()
             viewModel.showGreeting()
             viewModel.resumeIfNeeded()
+        }
+        .onDisappear {
+            viewModel.trackClosedIfNeeded()
         }
     }
 

@@ -469,8 +469,11 @@ private extension HelpAndSupportViewController {
     /// Pushes the support chat UI seeded with a prior `chatID` so the conversation
     /// continues on the assistant's side when the merchant sends the next message.
     private func resumeChat(for summary: SupportChatSummary) {
+        ServiceLocator.analytics.track(event: .SupportChat.historyResumed(chatID: summary.chatID))
+
         let chatViewModel = SupportChatViewModel(
             botSlug: summary.botSlug,
+            entryPoint: .helpSettings,
             chatID: summary.chatID,
             onContactHumanSupport: { [weak self] in
                 self?.navigationController?.popViewController(animated: true)

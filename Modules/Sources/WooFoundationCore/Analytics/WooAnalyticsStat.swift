@@ -1399,6 +1399,20 @@ public enum WooAnalyticsStat: String {
     case customFieldEditorDeleteTapped = "custom_field_editor_delete_tapped"
     case customFieldEditorDoneTapped = "custom_field_editor_done_tapped"
 
+    // MARK: AI Support Chat events
+    case supportChatOpened = "support_chat_opened"
+    case supportChatMessageSent = "support_chat_message_sent"
+    case supportChatMessageReceived = "support_chat_message_received"
+    case supportChatMessageFailed = "support_chat_message_failed"
+    case supportChatSourceTapped = "support_chat_source_tapped"
+    case supportChatFeedbackSubmitted = "support_chat_feedback_submitted"
+    case supportChatForwardToHumanTriggered = "support_chat_forward_to_human_triggered"
+    case supportChatContactHumanTapped = "support_chat_contact_human_tapped"
+    case supportChatClosed = "support_chat_closed"
+    case supportChatHistoryOpened = "support_chat_history_opened"
+    case supportChatHistoryResumed = "support_chat_history_resumed"
+    case supportChatHistoryDeleted = "support_chat_history_deleted"
+
     // MARK: Woo Shipping events
     case wooShippingCreateShippingLabelFormShown = "wcs_create_shipping_label_form_shown"
     case wooShippingEditingAddressStep = "wcs_editing_address_step"

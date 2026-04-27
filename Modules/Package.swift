@@ -272,11 +272,7 @@ let package = Package(
         ),
         .target(
             name: "WooAIAssistant",
-            dependencies: [
-                "Experiments",
-                "WooFoundation",
-                "Yosemite",
-            ]
+            dependencies: []
         ),
         .target(
             name: "NetworkingTestsResponsesFixtures",
@@ -364,8 +360,6 @@ let package = Package(
             name: "WooAIAssistantTests",
             dependencies: [
                 .target(name: "WooAIAssistant"),
-                "TestKit",
-                "WooFoundation",
             ]
         ),
         .binaryTarget(

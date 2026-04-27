@@ -5,14 +5,15 @@ import Foundation
 /// Concrete backends translate their wire protocols into these cases so the
 /// UI consumes one stream regardless of transport.
 public enum AssistantEvent: Equatable, Sendable {
-    /// The backend started a named tool call.
+    /// Emitted when a tool call begins. `cardRender` events resolve their
+    /// payload by matching this `id`.
     case toolCallStarted(id: String, name: String, argumentsJSON: String?)
 
     /// A previously started tool call completed with a raw JSON payload.
     case toolCallCompleted(id: String, name: String, resultJSON: String?)
 
-    /// Structured result of a tool call. Cached by `toolCallID` so a later
-    /// `cardRender` can resolve the payload it should render.
+    /// Structured result of a tool call. `cardRender` events resolve the
+    /// payload they should render by matching this `toolCallID`.
     case toolResult(toolCallID: String,
                     toolName: String,
                     payload: AnyCodableJSON)

@@ -1,8 +1,11 @@
 import Foundation
 
-/// Sealed `Sendable` JSON value used for tool result envelopes and JSON Schema fragments.
-/// Explicit cases avoid the `@unchecked Sendable` that an `Any`-backed type would force on
-/// every actor-isolated tool result.
+/// Sealed `Sendable` JSON value for tool parameter schemas and tool result envelopes.
+///
+/// Tool inputs and outputs are untyped JSON whose shape varies per tool, and results
+/// are re-serialized to the model's next turn. We need one value type that round-trips
+/// arbitrary JSON across actor boundaries. Explicit enum cases keep `Sendable`
+/// type-safe; an `Any`-backed type would force `@unchecked Sendable` on every result.
 public enum AnyCodableJSON: Codable, Sendable, Equatable {
     case null
     case bool(Bool)

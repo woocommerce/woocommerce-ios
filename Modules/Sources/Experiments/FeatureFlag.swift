@@ -223,4 +223,8 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the AI-powered support chat
     ///
     case aiSupportChat
+
+    /// Enables the WooAI Assistant.
+    ///
+    case wooAIAssistant
 }

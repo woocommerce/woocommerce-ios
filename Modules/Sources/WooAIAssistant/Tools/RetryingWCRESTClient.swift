@@ -3,11 +3,11 @@ import Foundation
 public struct RetryingWCRESTClient: WCRESTClient {
     private let inner: WCRESTClient
     private let policy: RESTRetryPolicy
-    private let sleep: @Sendable (TimeInterval) async -> Void
+    private let sleep: @Sendable (TimeInterval) async throws -> Void
 
     public init(inner: WCRESTClient,
                 policy: RESTRetryPolicy = .default,
-                sleep: @escaping @Sendable (TimeInterval) async -> Void = Self.realSleep) {
+                sleep: @escaping @Sendable (TimeInterval) async throws -> Void = Self.realSleep) {
         self.inner = inner
         self.policy = policy
         self.sleep = sleep
@@ -33,13 +33,17 @@ public struct RetryingWCRESTClient: WCRESTClient {
                                      attempt: attempt) else {
                 return response
             }
-            await sleep(policy.delay(forAttempt: attempt))
+            do {
+                try await sleep(policy.delay(forAttempt: attempt))
+            } catch {
+                return WCRESTResponse(data: Data(), statusCode: HTTPStatusClassification.transportFailure)
+            }
             attempt += 1
         }
     }
 
-    public static let realSleep: @Sendable (TimeInterval) async -> Void = { interval in
+    public static let realSleep: @Sendable (TimeInterval) async throws -> Void = { interval in
         let nanoseconds = UInt64(max(0, interval) * 1_000_000_000)
-        try? await Task.sleep(nanoseconds: nanoseconds)
+        try await Task.sleep(nanoseconds: nanoseconds)
     }
 }

@@ -148,6 +148,39 @@ struct WCRESTClientRetryTests {
     }
 
     @Test
+    func test_request_when_cancelled_during_backoff_then_returns_transportFailure_promptly() async {
+        // Given
+        let stub = StubWCRESTClient(responses: [
+            .status(503),
+            .status(200)
+        ])
+        let client = RetryingWCRESTClient(inner: stub,
+                                          policy: RESTRetryPolicy(maxRetries: 2, backoff: [60, 60]),
+                                          sleep: { interval in
+            try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
+        })
+
+        // When
+        let task = Task {
+            await client.request(method: "GET",
+                                 path: "wc/v3/orders",
+                                 query: nil,
+                                 body: nil,
+                                 headers: nil)
+        }
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        task.cancel()
+        let start = Date()
+        let response = await task.value
+        let elapsed = Date().timeIntervalSince(start)
+
+        // Then
+        #expect(response.statusCode == HTTPStatusClassification.transportFailure)
+        #expect(elapsed < 5)
+        #expect(stub.callCount == 1)
+    }
+
+    @Test
     func test_request_passes_idempotencyKey_header_through_unchanged() async {
         // Given
         let stub = StubWCRESTClient(responses: [.status(200)])
@@ -208,7 +241,7 @@ private final class StubWCRESTClient: WCRESTClient, @unchecked Sendable {
 private actor SleepRecorder {
     private(set) var delays: [TimeInterval] = []
 
-    func record(_ interval: TimeInterval) async {
+    func record(_ interval: TimeInterval) async throws {
         delays.append(interval)
     }
 }

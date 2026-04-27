@@ -15,6 +15,7 @@ import enum Yosemite.POSItemType
 import Combine
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct PointOfSaleAggregateModelTests {
     @MainActor struct OrderStageTests {
         @Test func inits_with_building_order_stage() async throws {

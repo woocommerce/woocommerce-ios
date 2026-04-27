@@ -6,6 +6,7 @@ import struct Yosemite.Address
 import protocol Yosemite.PaymentCaptureCelebrationProtocol
 @testable import PointOfSale
 
+@Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
     // MARK: - Init

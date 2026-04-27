@@ -17,6 +17,7 @@ import struct Yosemite.POSOrderRefund
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
+@Suite(.timeLimit(.minutes(5)))
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
     private let refundsService = MockPOSRefundsService()

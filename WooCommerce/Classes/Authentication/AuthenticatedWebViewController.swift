@@ -24,9 +24,6 @@ final class AuthenticatedWebViewController: UIViewController {
     /// Main web view
     private let webView: WKWebView
 
-    /// `true` when this controller hosts a JS-initiated popup web view returned to WebKit from `createWebViewWith`.
-    private let isPopup: Bool
-
     /// Progress bar for the web view
     private lazy var progressBar: UIProgressView = {
         let bar = UIProgressView(progressViewStyle: .bar)
@@ -51,8 +48,7 @@ final class AuthenticatedWebViewController: UIViewController {
         self.init(stores: stores,
                   viewModel: viewModel,
                   extraCredentials: extraCredentials,
-                  webView: WKWebView(frame: .zero),
-                  isPopup: false)
+                  webView: WKWebView(frame: .zero))
     }
 
     /// Hosts a JS-initiated popup web view supplied by WebKit's `createWebViewWith`.
@@ -61,18 +57,15 @@ final class AuthenticatedWebViewController: UIViewController {
         self.init(stores: ServiceLocator.stores,
                   viewModel: PopupAuthenticatedWebViewModel(),
                   extraCredentials: nil,
-                  webView: popupWebView,
-                  isPopup: true)
+                  webView: popupWebView)
     }
 
     private init(stores: StoresManager,
                  viewModel: AuthenticatedWebViewModel,
                  extraCredentials: Credentials?,
-                 webView: WKWebView,
-                 isPopup: Bool) {
+                 webView: WKWebView) {
         self.viewModel = viewModel
         self.webView = webView
-        self.isPopup = isPopup
         let currentCredentials = stores.sessionManager.defaultCredentials
 
         let siteCredentials: WordPressOrgCredentials? = {
@@ -158,17 +151,6 @@ final class AuthenticatedWebViewController: UIViewController {
 private extension AuthenticatedWebViewController {
     func configureNavigationBar() {
         title = viewModel.title
-        if isPopup {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(
-                barButtonSystemItem: .done,
-                target: self,
-                action: #selector(dismissPopup)
-            )
-        }
-    }
-
-    @objc func dismissPopup() {
-        dismiss(animated: true)
     }
 
     func configureWebView() {
@@ -370,9 +352,7 @@ extension AuthenticatedWebViewController: WKUIDelegate {
     }
 
     func webViewDidClose(_ webView: WKWebView) {
-        if isPopup {
-            dismiss(animated: true)
-        }
+        dismiss(animated: true)
     }
 }
 

@@ -10,7 +10,7 @@ struct EmptyState: View {
 
     var body: some View {
         VStack {
-            if let image = image {
+            if let image {
                 Image(uiImage: image)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -23,7 +23,7 @@ struct EmptyState: View {
             Text(title)
                 .multilineTextAlignment(.center)
                 .headlineStyle()
-            if let description = description {
+            if let description {
                 Text(description)
                     .multilineTextAlignment(.center)
                     .bodyStyle()

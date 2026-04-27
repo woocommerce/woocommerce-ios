@@ -252,7 +252,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
-            guard let self = self else { return }
+            guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
 
@@ -569,7 +569,7 @@ extension ProductFormViewModel {
 extension ProductFormViewModel {
     func saveProductRemotely(status: ProductStatus?, onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
         let productModelToSave: EditableProductModel = {
-            guard let status = status, status != product.status else {
+            guard let status, status != product.status else {
                 return product
             }
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
@@ -584,7 +584,7 @@ extension ProductFormViewModel {
                 case .failure(let error):
                     onCompletion(.failure(error))
                 case .success(let data):
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
                     self.resetProduct(data.product)
@@ -606,7 +606,7 @@ extension ProductFormViewModel {
                                               originalProduct: originalProduct,
                                               password: password,
                                               originalPassword: originalPassword) { [weak self] result in
-                                                guard let self = self else {
+                                                guard let self else {
                                                     return
                                                 }
                                                 switch result {
@@ -628,7 +628,7 @@ extension ProductFormViewModel {
 
         remoteActionUseCase.duplicateProduct(originalProduct: product,
                                              password: password) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -675,7 +675,7 @@ private extension ProductFormViewModel {
             .saveProductImagesWhenNoneIsPendingUploadAnymore(key: .init(siteID: product.siteID,
                                                                         productOrVariationID: .product(id: product.productID),
                                                                         isLocalID: !product.existsRemotely)) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
             switch result {
             case .success(let images):
                 let currentProduct = self.product
@@ -799,7 +799,7 @@ private extension ProductFormViewModel {
     ///
     func queryAddOnsFeatureState() {
         let action = AppSettingsAction.loadOrderAddOnsSwitchState { [weak self] result in
-            guard let self = self, case .success(let addOnsEnabled) = result else {
+            guard let self, case .success(let addOnsEnabled) = result else {
                 return
             }
             self.isAddOnsFeatureEnabled = addOnsEnabled

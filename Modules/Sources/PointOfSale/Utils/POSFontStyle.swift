@@ -66,7 +66,7 @@ enum POSFontStyle {
     private func scaledValue(_ value: CGFloat, maximumContentSizeCategory: UIContentSizeCategory?) -> CGFloat {
         let metrics = UIFontMetrics.default
         let scaledValue = metrics.scaledValue(for: value)
-        guard let maximumContentSizeCategory = maximumContentSizeCategory else {
+        guard let maximumContentSizeCategory else {
             return scaledValue
         }
 

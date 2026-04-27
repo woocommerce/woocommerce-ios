@@ -50,7 +50,7 @@ struct BluetoothReaderConnectionAlertsProvider: BluetoothReaderConnnectionAlerts
 
     func updatingFailed(tryAgain: (() -> Void)?,
                         close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        if let tryAgain = tryAgain {
+        if let tryAgain {
             return CardPresentModalUpdateFailed(tryAgain: tryAgain, close: close)
         } else {
             return CardPresentModalUpdateFailedNonRetryable(close: close)

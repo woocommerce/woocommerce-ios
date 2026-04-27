@@ -383,7 +383,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
         isLoading = true
         let action = CouponAction.createCoupon(coupon, siteTimezone: timezone) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.isLoading = false
             switch result {
             case .success(let coupon):
@@ -412,7 +412,7 @@ final class AddEditCouponViewModel: ObservableObject {
 
         isLoading = true
         let action = CouponAction.updateCoupon(coupon, siteTimezone: timezone) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.isLoading = false
             switch result {
             case .success(let updatedCoupon):

@@ -44,7 +44,7 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Result<Bool, Error>) -> Void)?) {
         let action = TaxAction.retrieveTaxClasses(siteID: siteID) { (taxClasses, error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing tax classes: \(error)")
                 onCompletion?(.failure(error))
                 return

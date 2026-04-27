@@ -384,7 +384,7 @@ private extension ProductStore {
     ///
     func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
         remote.loadProduct(for: siteID, productID: productID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -544,7 +544,7 @@ private extension ProductStore {
     /// Validates the Product SKU against other Products in storage.
     ///
     func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        guard let sku = sku, sku.isEmpty == false else {
+        guard let sku, sku.isEmpty == false else {
             // It is valid to not have a sku.
             onCompletion(true)
             return

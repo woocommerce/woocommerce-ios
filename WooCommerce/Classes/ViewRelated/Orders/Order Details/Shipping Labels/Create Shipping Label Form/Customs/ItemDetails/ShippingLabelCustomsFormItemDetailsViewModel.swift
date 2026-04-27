@@ -196,7 +196,7 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
         let groupTwo = $hsTariffNumber.combineLatest($originCountry)
         groupOne.combineLatest(groupTwo)
             .map { [weak self] groupOne, groupTwo -> Bool in
-                guard let self = self else {
+                guard let self else {
                     return false
                 }
                 let (description, value, weight) = groupOne
@@ -216,7 +216,7 @@ private extension ShippingLabelCustomsFormItemDetailsViewModel {
     func configureValidatedTotalValue() {
         $value
             .map { [weak self] value -> Decimal? in
-                guard let self = self,
+                guard let self,
                       let validatedValue = self.getValidatedValue(from: value) else {
                     return nil
                 }

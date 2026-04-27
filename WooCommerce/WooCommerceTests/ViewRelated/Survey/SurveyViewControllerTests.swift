@@ -206,7 +206,7 @@ private extension SurveyViewControllerTests {
 
         override var request: URLRequest {
             var urlComponents = URLComponents(url: WooConstants.URLs.inAppFeedback.asURL(), resolvingAgainstBaseURL: false) ?? URLComponents()
-            if let messageParameterValue = messageParameterValue {
+            if let messageParameterValue {
                 let item = URLQueryItem(name: "msg", value: messageParameterValue)
                 urlComponents.queryItems = [item]
             }

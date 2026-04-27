@@ -127,7 +127,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
     ///
     func deleteCoupon(siteID: Int64, couponID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         remote.deleteCoupon(for: siteID, couponID: couponID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -157,7 +157,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                       siteTimezone: TimeZone? = nil,
                       onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
         remote.updateCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -180,7 +180,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                       siteTimezone: TimeZone? = nil,
                       onCompletion: @escaping (Result<Coupon, Error>) -> Void) {
         remote.createCoupon(coupon, siteTimezone: siteTimezone) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -285,7 +285,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                         onCompletion: @escaping (_ result: Result<Coupon, Error>) -> Void) {
         remote.retrieveCoupon(for: siteID,
                               couponID: couponID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -306,7 +306,7 @@ internal class CouponStoreMethods: CouponStoreMethodsProtocol {
                      couponIDs: [Int64],
                      onCompletion: @escaping (_ result: Result<[Coupon], Error>) -> Void) {
         remote.loadCoupons(for: siteID, by: couponIDs) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))

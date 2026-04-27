@@ -98,7 +98,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
             ParameterKey.name: name
         ]
 
-        if let parentID = parentID {
+        if let parentID {
             parameters[ParameterKey.parent] = String(parentID)
         }
 

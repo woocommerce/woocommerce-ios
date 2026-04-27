@@ -192,7 +192,7 @@ public struct OrderItem: Codable, Equatable, Hashable, Sendable, GeneratedFakeab
             try container.encode(total, forKey: .total)
         }
 
-        if let image = image {
+        if let image {
             try container.encode(image, forKey: .image)
         }
 

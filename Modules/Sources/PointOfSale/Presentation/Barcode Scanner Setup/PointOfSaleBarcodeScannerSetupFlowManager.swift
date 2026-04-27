@@ -86,7 +86,7 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     }
 
     private func removeKeyboardObserver() {
-        if let keyboardObserver = keyboardObserver {
+        if let keyboardObserver {
             NotificationCenter.default.removeObserver(keyboardObserver)
             self.keyboardObserver = nil
         }

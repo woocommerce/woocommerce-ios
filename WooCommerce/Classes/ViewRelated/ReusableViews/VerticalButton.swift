@@ -16,7 +16,7 @@ class VerticalButton: UIButton {
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        guard let imageView = imageView, let image = imageView.image, let titleLabel = titleLabel else {
+        guard let imageView, let image = imageView.image, let titleLabel else {
             return
         }
 

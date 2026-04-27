@@ -255,7 +255,7 @@ extension OrderDetailsViewModel {
             }
 
             // Products require order.items data, so sync them only after the order is loaded
-            guard let self = self else { return }
+            guard let self else { return }
 
             group.enter()
             self.syncProducts { [weak self] _ in
@@ -386,7 +386,7 @@ extension OrderDetailsViewModel {
 
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         syncOrder { [weak self] (order, error) in
-            guard let self = self, let order = order else {
+            guard let self, let order else {
                 onCompletion?(error)
                 return
             }
@@ -619,7 +619,7 @@ extension OrderDetailsViewModel {
         case .seeLegacyReceipt:
             let countryCode = configurationLoader.configuration.countryCode
             ServiceLocator.analytics.track(event: .InPersonPayments.receiptViewTapped(countryCode: countryCode, source: .local))
-            guard let receipt = receipt else {
+            guard let receipt else {
                 return
             }
             let viewModel = LegacyReceiptViewModel(order: order, receipt: receipt, countryCode: countryCode)
@@ -675,7 +675,7 @@ extension OrderDetailsViewModel {
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] (orderNotes, error) in
-            guard let orderNotes = orderNotes else {
+            guard let orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
                 self?.orderNotes = []
                 onCompletion?(error)
@@ -693,7 +693,7 @@ extension OrderDetailsViewModel {
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductAction.requestMissingProducts(for: order) { (error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
 
@@ -708,7 +708,7 @@ extension OrderDetailsViewModel {
 
     func syncProductVariations(onCompletion: ((Error?) -> ())? = nil) {
         let action = ProductVariationAction.requestMissingVariations(for: order) { error in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing missing variations in an Order: \(error)")
                 onCompletion?(error)
                 return
@@ -728,7 +728,7 @@ extension OrderDetailsViewModel {
         }
 
         let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs, deleteStaleRefunds: true) { (error) in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
                 onCompletion?(error)
 
@@ -897,7 +897,7 @@ extension OrderDetailsViewModel {
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { error in
-                                                                    if let error = error {
+                                                                    if let error {
                                                                         DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
                                                                         ServiceLocator.analytics.track(.orderTrackingDeleteFailed,

@@ -151,7 +151,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
         throttler.throttle {
             DispatchQueue.main.async { [weak self] in
                 let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
                     self.skuIsValid = isValid
@@ -220,7 +220,7 @@ extension ProductInventorySettingsViewModel: ProductInventorySettingsActionHandl
     }
 
     func handleStockQuantityChange(_ stockQuantity: String?) {
-        guard let stockQuantity = stockQuantity else {
+        guard let stockQuantity else {
             return
         }
         self.stockQuantity = Decimal(string: stockQuantity)
@@ -307,7 +307,7 @@ private extension ProductInventorySettingsViewModel {
     func createSKUSection() -> Section {
         let skuError = errors.first { $0 == .invalidSKU || $0 == .duplicatedSKU }
 
-        if let skuError = skuError {
+        if let skuError {
             return Section(errorTitle: skuError.errorDescription, rows: [.sku])
         } else {
             return Section(rows: [.sku])

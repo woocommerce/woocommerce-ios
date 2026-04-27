@@ -250,7 +250,7 @@ private extension PaymentCaptureOrchestrator {
             return
         }
 
-        guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+        guard let walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
             return
         }
 

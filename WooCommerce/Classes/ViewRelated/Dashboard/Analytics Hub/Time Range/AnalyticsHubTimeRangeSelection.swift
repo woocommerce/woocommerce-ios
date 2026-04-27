@@ -55,7 +55,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// provided during initialization.
     /// - throws an `.selectedRangeGenerationFailed` error if the unwrap fails.
     func unwrapCurrentTimeRange() throws -> AnalyticsHubTimeRange {
-        guard let currentTimeRange = currentTimeRange else {
+        guard let currentTimeRange else {
             throw TimeRangeGeneratorError.selectedRangeGenerationFailed
         }
         return currentTimeRange
@@ -64,7 +64,7 @@ public class AnalyticsHubTimeRangeSelection {
     /// based on the `selectedTimeRange` provided during initialization.
     /// - throws a `.previousRangeGenerationFailed` error if the unwrap fails.
     func unwrapPreviousTimeRange() throws -> AnalyticsHubTimeRange {
-        guard let previousTimeRange = previousTimeRange else {
+        guard let previousTimeRange else {
             throw TimeRangeGeneratorError.previousRangeGenerationFailed
         }
         return previousTimeRange

@@ -51,7 +51,7 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
     }
 
     func removeCoupon() {
-        guard let initialCode = initialCode else {
+        guard let initialCode else {
             return
         }
 
@@ -81,7 +81,7 @@ final class CouponLineDetailsViewModel: Identifiable, ObservableObject {
 
 private extension CouponLineDetailsViewModel {
     func saveData() {
-        guard let initialCode = initialCode,
+        guard let initialCode,
              initialCode.isNotEmpty else {
             return didSelectSave(.added(newCode: code))
         }

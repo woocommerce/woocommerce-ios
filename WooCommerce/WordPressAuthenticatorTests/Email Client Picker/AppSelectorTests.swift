@@ -37,7 +37,7 @@ class AppSelectorTests: XCTestCase {
         XCTAssertNotNil(appSelector?.alertController)
         XCTAssertEqual(appSelector!.alertController.actions.count, 3)
         waitForExpectations(timeout: 4) { error in
-            if let error = error {
+            if let error {
                 XCTFail("waitForExpectationsWithTimeout errored: \(error)")
             }
         }
@@ -62,7 +62,7 @@ class AppSelectorTests: XCTestCase {
         // Then
         XCTAssertNil(appSelector)
         waitForExpectations(timeout: 4) { error in
-            if let error = error {
+            if let error {
                 XCTFail("waitForExpectationsWithTimeout errored: \(error)")
             }
         }

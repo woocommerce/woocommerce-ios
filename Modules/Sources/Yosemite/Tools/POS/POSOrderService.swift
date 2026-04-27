@@ -184,7 +184,7 @@ private extension POSOrderService {
 
     /// Extracts variation_id from error data dictionary
     func extractVariationID(from data: [String: AnyDecodable]?) -> Int64? {
-        guard let data = data,
+        guard let data,
               let variationIDValue = data["variation_id"]?.value else {
             return nil
         }
@@ -215,7 +215,7 @@ private extension POSOrderService {
         let productName: String
         let parentProductID: Int64
 
-        if let cartItem = cartItem,
+        if let cartItem,
            let variation = cartItem.item as? POSVariation {
             // Found the variation in the cart - use its parent product name and variation name
             productName = "\(variation.parentProductName) - \(variation.name)"

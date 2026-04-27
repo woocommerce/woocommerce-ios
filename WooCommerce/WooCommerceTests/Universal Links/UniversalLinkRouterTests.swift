@@ -212,7 +212,7 @@ private extension UniversalLinkRouterTests {
         } else {
             components.path = subPath
         }
-        if let queryItem = queryItem {
+        if let queryItem {
             components.queryItems = [
                 queryItem
             ]

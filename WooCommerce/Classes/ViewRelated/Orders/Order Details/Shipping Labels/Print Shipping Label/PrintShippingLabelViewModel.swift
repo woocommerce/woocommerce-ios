@@ -29,8 +29,8 @@ extension PrintShippingLabelViewModel {
             return
         }
         let action = ShippingLabelAction.loadShippingLabelSettings(shippingLabel: firstLabel) { [weak self] settings in
-            guard let self = self else { return }
-            guard let settings = settings, self.selectedPaperSize == nil else {
+            guard let self else { return }
+            guard let settings, self.selectedPaperSize == nil else {
                 return
             }
             // It is possible for the paper size setting (e.g. A4) to be unavailable in the paper sizes we support now (label, legal, and letter).

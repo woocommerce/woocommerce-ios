@@ -22,7 +22,7 @@ import WordPressUI
     /// Shared Instance.
     ///
     @objc public static var shared: WordPressAuthenticator {
-        guard let privateInstance = privateInstance else {
+        guard let privateInstance else {
             fatalError("WordPressAuthenticator wasn't initialized")
         }
 
@@ -186,7 +186,7 @@ import WordPressUI
         let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) { coder in
             SiteCredentialsViewController(coder: coder, isDismissible: true, onCompletion: onCompletion)
         }
-        guard let controller = controller else {
+        guard let controller else {
             WPAuthenticatorLogError("Failed to navigate from GetStartedViewController to SiteCredentialsViewController")
             return
         }
@@ -228,7 +228,7 @@ import WordPressUI
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.username = connectedEmail ?? String()
         controller.loginFields.meta.jetpackLogin = jetpackLogin
-        if let siteURL = siteURL {
+        if let siteURL {
             controller.loginFields.siteAddress = siteURL
         }
 
@@ -246,7 +246,7 @@ import WordPressUI
 
         controller.loginFields.restrictToWPCom = true
         controller.loginFields.meta.jetpackLogin = jetpackLogin
-        if let siteURL = siteURL {
+        if let siteURL {
             controller.loginFields.siteAddress = siteURL
         }
 

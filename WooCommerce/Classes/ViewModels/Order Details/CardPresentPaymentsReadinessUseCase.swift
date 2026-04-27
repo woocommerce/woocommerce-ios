@@ -39,7 +39,7 @@ final class CardPresentPaymentsReadinessUseCase {
     ///
     func checkCardPaymentReadiness() {
         let readerConnected = CardPresentPaymentAction.publishCardReaderConnections { [weak self] connectPublisher in
-            guard let self = self else { return }
+            guard let self else { return }
             let readerConnectedReadiness = connectPublisher
                 .map { readers -> CardPaymentReadiness in
                     if readers.isNotEmpty {

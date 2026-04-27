@@ -91,7 +91,7 @@ final class JustInTimeMessageViewModel {
     // MARK: - Actions
     func ctaTapped() {
         trackCtaTapped()
-        guard let url = url else {
+        guard let url else {
             return
         }
 

@@ -36,7 +36,7 @@ struct MockCardPresentPaymentActionHandler: MockActionHandler {
         let accounts = objectGraph.paymentGatewayAccounts(for: siteID)
 
         save(mocks: accounts, as: StoragePaymentGatewayAccount.self) { error in
-            if let error = error {
+            if let error {
                 onCompletion(.failure(error))
             } else {
                 onCompletion(.success(()))

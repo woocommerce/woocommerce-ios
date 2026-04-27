@@ -122,7 +122,7 @@ extension PaymentGateway: Codable {
         try container.encode(enabled, forKey: .enabled)
         try container.encode(features, forKey: .features)
 
-        guard let instructions = instructions else {
+        guard let instructions else {
             return
         }
         let settings = [Setting.Keys.instructions: instructions]

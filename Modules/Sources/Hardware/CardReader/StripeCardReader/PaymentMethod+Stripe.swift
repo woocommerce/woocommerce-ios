@@ -5,7 +5,7 @@ extension PaymentMethod {
     /// Failable initializer.
     /// Maps a SCPPaymentMethodDetails to PaymentMethod
     init?(method: StripeTerminal.PaymentMethodDetails?) {
-        guard let method = method else {
+        guard let method else {
             return nil
         }
 

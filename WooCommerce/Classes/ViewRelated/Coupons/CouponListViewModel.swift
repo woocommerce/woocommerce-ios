@@ -124,7 +124,7 @@ final class CouponListViewModel {
 
         state = .loading
         let action = SettingAction.enableCouponSetting(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 self.syncingCoordinator.synchronizeFirstPage(reason: nil, onCompletion: nil)
@@ -202,7 +202,7 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
             .synchronizeCoupons(siteID: siteID,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.handleCouponSyncResult(result: result, pageNumber: pageNumber)
                 onCompletion?(result.isSuccess)
         }
@@ -221,7 +221,7 @@ extension CouponListViewModel: SyncingCoordinatorDelegate {
             DDLogError("⛔️ Error synchronizing coupons: \(error)")
             ServiceLocator.analytics.track(.couponsLoadedFailed, withError: error)
             loadCouponSetting { [weak self] result in
-                guard let self = self else { return }
+                guard let self else { return }
                 switch result {
                 case .success(let isEnabled):
                     if isEnabled {

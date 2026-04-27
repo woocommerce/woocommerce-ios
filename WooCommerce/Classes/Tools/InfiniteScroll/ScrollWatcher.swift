@@ -26,7 +26,7 @@ final class ScrollWatcher {
 
     func startObservingScrollPosition(tableView: UITableView) {
         offsetObservation = tableView.observe(\UITableView.contentOffset, options: .new) { [weak self] tableView, change in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             guard let newContentOffsetY = change.newValue?.y else {

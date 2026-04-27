@@ -88,7 +88,7 @@ private extension LoginJetpackSetupCoordinator {
 
         // Tries re-syncing to get an updated store list
         stores.synchronizeEntities { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             let matcher = ULAccountMatcher()
             matcher.refreshStoredSites()
             guard let matchedSite = matcher.matchedSite(originalURL: self.siteURL) else {
@@ -142,7 +142,7 @@ private extension LoginJetpackSetupCoordinator {
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
             onSetupCompletion: { [weak self] siteID in
-                guard let self = self else { return }
+                guard let self else { return }
                 self.navigationController.popViewController(animated: true)
                 self.storePickerCoordinator?.didSelectStore(with: siteID, onCompletion: {})
         })

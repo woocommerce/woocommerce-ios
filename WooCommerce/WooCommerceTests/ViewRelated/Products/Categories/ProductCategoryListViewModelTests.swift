@@ -61,7 +61,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         let productCategory = ProductCategory(categoryID: 443, siteID: 123, parentID: 0, name: name, slug: "")
 
         let passedCategory: Yosemite.ProductCategory? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

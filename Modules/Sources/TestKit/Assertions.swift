@@ -36,7 +36,7 @@ public func assertThat(_ subject: String, contains value: String, file: StaticSt
 /// If `subject`'s type is just a subclass of `expectedType`, then this will fail.
 ///
 public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, file: StaticString = #file, line: UInt = #line) {
-    guard let subject = subject else {
+    guard let subject else {
         XCTFail("Expected nil to be an instance of \(expectedType)",
                 file: file,
                 line: line)

@@ -149,7 +149,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     private func setupUniversalLinkRouter() {
-        guard let tabBarController = tabBarController else { return }
+        guard let tabBarController else { return }
         universalLinkRouter = UniversalLinkRouter.defaultUniversalLinkRouter(tabBarController: tabBarController)
     }
 

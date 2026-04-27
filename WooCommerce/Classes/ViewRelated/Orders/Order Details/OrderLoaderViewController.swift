@@ -101,11 +101,11 @@ private extension OrderLoaderViewController {
         }
 
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
-            guard let order = order else {
+            guard let order else {
                 DDLogError("## Error loading Order \(self.siteID).\(self.orderID): \(error.debugDescription)")
                 self.state = .failure
                 return
@@ -288,7 +288,7 @@ private extension OrderLoaderViewController {
             startSpinner()
         case .success(let order):
             presentOrderDetails(for: order)
-            if let note = note {
+            if let note {
                 markNotificationAsReadIfNeeded(note: note)
             }
         case .failure:

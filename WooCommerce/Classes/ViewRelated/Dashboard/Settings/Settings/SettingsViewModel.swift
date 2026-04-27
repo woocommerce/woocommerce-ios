@@ -187,7 +187,7 @@ private extension SettingsViewModel {
 
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             guard let (announcement, _) = try? result.get(),
                     announcement.shownInThisAppVersion else {
                 return DDLogInfo("📣 There are no announcements to show!")
@@ -410,14 +410,14 @@ private extension SettingsViewModel {
 
         func configureResultsController<T>(_ resultsController: ResultsController<T>?,
                           onReload: @escaping () -> Void) where T: ResultsControllerMutableType {
-            guard let resultsController = resultsController else { return }
+            guard let resultsController else { return }
 
             resultsController.onDidChangeContent = {
                 onReload()
             }
 
             resultsController.onDidResetContent = { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 /// Refetching all the results controllers is necessary after a storage reset in `onDidResetContent` callback and before reloading UI that
                 /// involves more than one results controller.

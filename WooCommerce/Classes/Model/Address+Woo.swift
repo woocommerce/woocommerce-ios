@@ -14,7 +14,7 @@ extension Address {
         if fullName.isEmpty == false {
             output.append(fullName)
         }
-        if let company = company, company.isEmpty == false {
+        if let company, company.isEmpty == false {
             output.append(company)
         }
 
@@ -27,7 +27,7 @@ extension Address {
     var fullNameWithCompanyAndAddress: String {
         var output: [String] = [fullNameWithCompany]
 
-        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isEmpty == false {
+        if let formattedPostalAddress, formattedPostalAddress.isEmpty == false {
             output.append(formattedPostalAddress)
         }
 

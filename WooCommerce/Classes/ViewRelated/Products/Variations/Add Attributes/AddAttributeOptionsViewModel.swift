@@ -279,7 +279,7 @@ extension AddAttributeOptionsViewModel {
 
         state.isUpdating = true
         let action = ProductAction.updateProduct(product: newProduct) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.handleProductUpdate(requestStartDate: startDate, result: result, onCompletion: onCompletion)
         }
         stores.dispatch(action)
@@ -296,7 +296,7 @@ extension AddAttributeOptionsViewModel {
 
         state.isUpdating = true
         remoteActionUseCase.addProduct(product: productViewModel, password: nil) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             let productResult = result.map { $0.product.product }
             self.handleProductUpdate(requestStartDate: startDate, result: productResult, onCompletion: onCompletion)
         }
@@ -428,7 +428,7 @@ private extension AddAttributeOptionsViewModel {
     func synchronizeGlobalOptions(of attribute: ProductAttribute) {
         let fetchOptions = ProductAttributeTermAction.synchronizeProductAttributeTerms(siteID: attribute.siteID,
                                                                                        attributeID: attribute.attributeID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success:
                 self.state.existingOptions = self.existingOptionsResultsController.fetchedObjects.map { .global(option: $0) }

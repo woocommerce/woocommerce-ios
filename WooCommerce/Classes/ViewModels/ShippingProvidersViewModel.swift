@@ -258,8 +258,8 @@ extension ShippingProvidersViewModel {
 
     /// Indicates if the item at `indexPath` is the same as the currently selected provider.
     func isSelected(_ indexPath: IndexPath) -> Bool {
-        guard let selectedProvider = selectedProvider,
-            let selectedProviderGroupName = selectedProviderGroupName,
+        guard let selectedProvider,
+            let selectedProviderGroupName,
             let provider = provider(at: indexPath),
             let groupName = groupName(at: indexPath) else {
             return false

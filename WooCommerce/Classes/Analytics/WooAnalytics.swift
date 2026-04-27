@@ -229,7 +229,7 @@ private extension Analytics {
         let properties: [AnyHashable: Any]?
         let errorProperties = errorProperties(from: error)
 
-        if let passedProperties = passedProperties {
+        if let passedProperties {
             properties = passedProperties.merging(errorProperties ?? [:], uniquingKeysWith: { current, _ in
                 current
             })
@@ -240,7 +240,7 @@ private extension Analytics {
     }
 
     func errorProperties(from error: Error?) -> [AnyHashable: Any]? {
-        guard let error = error else {
+        guard let error else {
             return nil
         }
 
@@ -300,7 +300,7 @@ private extension WooAnalytics {
 
     @objc func trackApplicationOpened() {
         WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
-            guard let self = self else { return }
+            guard let self else { return }
             self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
         }
         applicationOpenedTime = Date()
@@ -312,7 +312,7 @@ private extension WooAnalytics {
     }
 
     func applicationClosedProperties() -> [String: Any]? {
-        guard let applicationOpenedTime = applicationOpenedTime else {
+        guard let applicationOpenedTime else {
             return nil
         }
 

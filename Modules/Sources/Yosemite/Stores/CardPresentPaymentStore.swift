@@ -29,7 +29,7 @@ public final class CardPresentPaymentStore: Store {
 
     /// Which backend is the store using? Default to WCPay until told otherwise
     private var usingBackend: CardPresentPaymentsPlugin {
-        guard let paymentGatewayAccount = paymentGatewayAccount else {
+        guard let paymentGatewayAccount else {
             return .wcPay
         }
 
@@ -520,7 +520,7 @@ private extension CardPresentPaymentStore {
 
         /// Fetch the WCPay account
         remote.loadAccount(for: siteID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -540,7 +540,7 @@ private extension CardPresentPaymentStore {
 
     func loadStripeAccount(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         stripeRemote.loadAccount(for: siteID) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

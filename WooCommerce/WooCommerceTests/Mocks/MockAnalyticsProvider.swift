@@ -41,7 +41,7 @@ public extension MockAnalyticsProvider {
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         lock.lock()
         _receivedEvents.append(eventName)
-        if let properties = properties {
+        if let properties {
             _receivedProperties.append(properties)
         }
         lock.unlock()

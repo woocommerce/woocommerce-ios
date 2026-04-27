@@ -28,12 +28,12 @@ struct InPersonPaymentsOnboardingError: View {
 
                 Spacer()
 
-                if let buttonViewModel = buttonViewModel {
+                if let buttonViewModel {
                     Button(buttonViewModel.text, action: buttonViewModel.action)
                         .buttonStyle(PrimaryButtonStyle())
                         .padding(.bottom, secondaryButtonViewModel == nil ? 24.0 : 0)
                 }
-                if let secondaryButtonViewModel = secondaryButtonViewModel {
+                if let secondaryButtonViewModel {
                     Button(secondaryButtonViewModel.text, action: secondaryButtonViewModel.action)
                         .buttonStyle(SecondaryButtonStyle())
                 }

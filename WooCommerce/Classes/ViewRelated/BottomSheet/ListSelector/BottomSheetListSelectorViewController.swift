@@ -17,7 +17,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
 
     /// Used for calculating the full content height in `DrawerPresentable` implementation.
     var contentSize: CGSize {
-        guard let tableView = tableView else {
+        guard let tableView else {
             return .zero
         }
         return tableView.contentSize

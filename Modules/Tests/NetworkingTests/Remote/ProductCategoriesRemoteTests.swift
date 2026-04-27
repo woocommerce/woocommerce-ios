@@ -36,7 +36,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
         // When
         let result: (categories: [ProductCategory]?, error: Error?) = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -59,7 +59,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
         // When
         let result: (categories: [ProductCategory]?, error: Error?) = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -106,7 +106,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
         // When
         let result: Result<ProductCategory, Error>? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -168,7 +168,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
         // When
         let result: Result<ProductCategory, Error>? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 
@@ -190,7 +190,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
         // When
         let result: Result<ProductCategory, Error>? = waitFor { [weak self] promise in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

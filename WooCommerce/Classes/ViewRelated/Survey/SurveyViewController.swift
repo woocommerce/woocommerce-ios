@@ -172,13 +172,13 @@ extension URL {
                      storeUUID: String?,
                      storeURL: String?) -> URL {
         var url = self
-        if let siteID = siteID {
+        if let siteID {
             url = url.appendingQueryItem(URLQueryItem(name: Tags.surveyRequestSiteIdTag, value: "\(siteID)"))
         }
-        if let storeUUID = storeUUID {
+        if let storeUUID {
             url = url.appendingQueryItem(URLQueryItem(name: Tags.surveyRequestStoreUUIDTag, value: storeUUID))
         }
-        if let storeURL = storeURL {
+        if let storeURL {
             url = url.appendingQueryItem(URLQueryItem(name: Tags.surveyRequestStoreURLTag, value: storeURL))
         }
         return url

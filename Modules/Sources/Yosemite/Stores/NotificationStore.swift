@@ -149,7 +149,7 @@ private extension NotificationStore {
     ///
     func synchronizeNotifications(onCompletion: @escaping (Error?) -> Void) {
         remote.loadHashes(pageSize: Constants.maximumPageSize) { [weak self] (hashes, error) in
-            guard let hashes = hashes else {
+            guard let hashes else {
                 onCompletion(error)
                 return
             }
@@ -162,7 +162,7 @@ private extension NotificationStore {
                 }
 
                 self?.remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { result in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
                     switch result {
@@ -187,7 +187,7 @@ private extension NotificationStore {
     ///
     func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
         remote.loadNotes(noteIDs: [noteID]) { [weak self] result in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             switch result {

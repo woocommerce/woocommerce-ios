@@ -64,7 +64,7 @@ class OrderNoteStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
             XCTAssertNil(error)
-            guard let orderNotes = orderNotes else {
+            guard let orderNotes else {
                 XCTFail()
                 return
             }

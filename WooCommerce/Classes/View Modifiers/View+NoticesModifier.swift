@@ -56,7 +56,7 @@ struct NoticeModifier: ViewModifier {
     /// Builds a notice view at the bottom of the screen.
     ///
     @ViewBuilder private func buildNoticeStack() -> some View {
-        if let notice = notice {
+        if let notice {
             // Geometry reader to provide the correct view width.
             GeometryReader { geometry in
                 // VStack with spacer to push content to the bottom
@@ -163,7 +163,7 @@ struct NoticeModifier: ViewModifier {
     /// Sends haptic feedback if required.
     ///
     private func provideHapticFeedbackIfNecessary(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType?) {
-        if let feedbackType = feedbackType {
+        if let feedbackType {
             feedbackGenerator.notificationOccurred(feedbackType)
         }
     }
@@ -200,7 +200,7 @@ extension UIHostingController {
             parent?.isBeingDismissed ?? false   // when it's parent is being dismissed as modal (EG: inside a navigation controller)
         }()
 
-        if let notice = notice, isBeingRemoved {
+        if let notice, isBeingRemoved {
             noticePresenter.enqueue(notice: notice)
         }
     }

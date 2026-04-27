@@ -43,7 +43,7 @@ public final class WordPressOrgNetwork: Network {
     public func responseData(for request: URLRequestConvertible) async throws -> Data? {
         let request = requestConverter.convert(request)
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.alamofireSession.request(request)
                 .validate()
@@ -139,7 +139,7 @@ public final class WordPressOrgNetwork: Network {
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         let request = requestConverter.convert(request)
         return Future() { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
             self.alamofireSession.request(request).validate().responseData { response in
                 do {
                     try self.validateResponse(response.data)

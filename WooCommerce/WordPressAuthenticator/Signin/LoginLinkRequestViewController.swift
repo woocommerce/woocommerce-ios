@@ -77,7 +77,7 @@ class LoginLinkRequestViewController: LoginViewController {
     }
 
     private func configureUsePasswordButton() {
-        guard let usePasswordButton = usePasswordButton else {
+        guard let usePasswordButton else {
             return
         }
         WPStyleGuide.configureTextButton(usePasswordButton)

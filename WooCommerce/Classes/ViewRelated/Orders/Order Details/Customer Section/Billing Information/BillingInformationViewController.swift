@@ -577,7 +577,7 @@ private extension BillingInformationViewController {
     ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
     ///
     func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
+        guard var text, text.isEmpty == false else {
             return
         }
         if includeTrailingNewline {

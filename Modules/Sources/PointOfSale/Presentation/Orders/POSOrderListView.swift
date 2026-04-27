@@ -432,7 +432,7 @@ extension POSOrderListView {
             )
             var label = String(format: baseFormat, orderNumber, total, date, status)
 
-            if let email = email, email.isNotEmpty {
+            if let email, email.isNotEmpty {
                 let emailFormat = NSLocalizedString(
                     "pos.orderListView.orderRow.accessibilityLabel.email",
                     value: "Email: %1$@",

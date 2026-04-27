@@ -48,7 +48,7 @@ class LearnMoreViewModel: ObservableObject {
     }
 
     func learnMoreTapped() {
-        guard let tappedAnalyticEvent = tappedAnalyticEvent else {
+        guard let tappedAnalyticEvent else {
             return
         }
 

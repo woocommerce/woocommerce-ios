@@ -49,7 +49,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     /// If the `viewModel` is not given, then the UI will be set to empty.
     ///
     func configureCell(viewModel: OrderListCellViewModel?) {
-        guard let viewModel = viewModel else {
+        guard let viewModel else {
             resetLabels()
             return
         }

@@ -83,7 +83,7 @@ extension ShippingLabelAddNewPackageViewModel {
             onCompletion(success)
 
             // On success, reset tab state and save new package details
-            guard let self = self, success else { return }
+            guard let self, success else { return }
             self.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self.onCompletion(newCustomPackage, nil, self.packagesResponse)
         }
@@ -92,7 +92,7 @@ extension ShippingLabelAddNewPackageViewModel {
     /// Activates the selected service package remotely and updates the package details to select the new package
     ///
     func activateServicePackage(onCompletion: @escaping (Bool) -> Void) {
-        guard let selectedServicePackage = selectedServicePackage,
+        guard let selectedServicePackage,
               let shippingProvider = servicePackageVM.predefinedOptions.first(where: { $0.predefinedPackages.contains(selectedServicePackage) } ) else {
             onCompletion(false)
             return
@@ -106,7 +106,7 @@ extension ShippingLabelAddNewPackageViewModel {
             onCompletion(success)
 
             // On success, reset tab state and save new package details
-            guard let self = self, success else { return }
+            guard let self, success else { return }
             self.customPackageVM = ShippingLabelCustomPackageFormViewModel()
             self.servicePackageVM = ShippingLabelServicePackageListViewModel(packagesResponse: self.packagesResponse)
             self.onCompletion(nil, selectedServicePackage, self.packagesResponse)
@@ -131,7 +131,7 @@ private extension ShippingLabelAddNewPackageViewModel {
         let action = ShippingLabelAction.createPackage(siteID: siteID,
                                                        customPackage: customPackage,
                                                        predefinedOption: predefinedOption) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success:
@@ -165,7 +165,7 @@ private extension ShippingLabelAddNewPackageViewModel {
     ///
     func syncPackageDetails(onCompletion: ((Bool) -> Void)? = nil) {
         let action = ShippingLabelAction.packagesDetails(siteID: siteID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let value):

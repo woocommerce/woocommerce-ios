@@ -56,7 +56,7 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
         }
 
         let action = UserAction.retrieveUser(siteID: storeID) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             switch result {
             case .success(let user):
                 let roles = user.roles.compactMap { User.Role(rawValue: $0) }

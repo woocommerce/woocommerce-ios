@@ -33,7 +33,7 @@ extension MockProductReviewsRemote: ProductReviewsRemoteProtocol {
                            reviewID: Int64,
                            completion: @escaping (Result<ProductReview, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
 

@@ -250,7 +250,7 @@ private extension BookingListContainerViewModel {
             dateRange: filters.dateRange
         )
         let action = AppSettingsAction.upsertBookingFilters(siteID: siteID, filters: persistedFilters) { error in
-            if let error = error {
+            if let error {
                 DDLogError("⛔️ Error saving booking filters: \(error)")
             }
         }

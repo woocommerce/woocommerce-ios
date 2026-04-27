@@ -121,7 +121,7 @@ public extension PaymentIntent {
         metadata[PaymentIntent.MetadataKeys.customerName] = customerName
         metadata[PaymentIntent.MetadataKeys.customerEmail] = customerEmail
         metadata[PaymentIntent.MetadataKeys.siteURL] = siteURL
-        if let orderID = orderID {
+        if let orderID {
             metadata[PaymentIntent.MetadataKeys.orderID] = String(orderID)
         }
         metadata[PaymentIntent.MetadataKeys.orderKey] = orderKey

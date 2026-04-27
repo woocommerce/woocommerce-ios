@@ -300,7 +300,7 @@ extension PushNotificationsManager {
         if stores.isAuthenticatedWithoutWPCom == false {
             group.enter()
             unregisterDotcomDeviceIfPossible() { error in
-                if let error = error {
+                if let error {
                     DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
                 } else {
                     DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
@@ -319,7 +319,7 @@ extension PushNotificationsManager {
     /// Resets the Badge Count.
     ///
     func resetBadgeCount(type: Note.Kind) {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         let action = NotificationCountAction.reset(siteID: siteID, type: type) { [weak self] in
@@ -330,7 +330,7 @@ extension PushNotificationsManager {
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
         let action = NotificationCountAction.resetForAllSites() { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.configuration.application.applicationIconBadgeNumber = AppIconBadgeNumber.clearsBadgeAndPotentiallyAllPushNotifications
             self.removeAllNotifications()
             onCompletion()
@@ -339,7 +339,7 @@ extension PushNotificationsManager {
     }
 
     func reloadBadgeCount() {
-        guard let siteID = siteID else {
+        guard let siteID else {
             return
         }
         loadNotificationCountAndUpdateApplicationBadgeNumber(siteID: siteID, type: nil, postNotifications: true)
@@ -495,7 +495,7 @@ extension PushNotificationsManager {
                                           subtitle: foregroundNotification.subtitle,
                                           message: foregroundNotification.message,
                                           actionTitle: Localization.viewInAppNotification) { [weak self] in
-                    guard let self = self else { return }
+                    guard let self else { return }
                     self.presentDetails(for: foregroundNotification)
                     self.foregroundNotificationsToViewSubject.send(foregroundNotification)
                     self.analytics.track(.viewInAppPushNotificationPressed,
@@ -649,7 +649,7 @@ private extension PushNotificationsManager {
     }
 
     func postBadgeReloadNotifications(type: Note.Kind?) {
-        guard let type = type else {
+        guard let type else {
             postBadgeReloadNotification(type: .comment)
             postBadgeReloadNotification(type: .storeOrder)
             return
@@ -703,7 +703,7 @@ private extension PushNotificationsManager {
 
         if let typeString = userInfo.string(forKey: APNSKey.type),
            let type = Note.Kind(rawValue: typeString),
-           let siteID = siteID,
+           let siteID,
            let notificationSiteID = userInfo[APNSKey.siteID] as? Int64 {
             // Badge: Update
             incrementNotificationCount(siteID: notificationSiteID, type: type, incrementCount: 1) { [weak self] in
@@ -924,7 +924,7 @@ private extension PushNotificationsManager {
             appVersion: Bundle.main.version,
             availableAsRESTRequest: isTargetSiteSelected
         ) { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
 
             switch result {
             case .success(let tokenID):

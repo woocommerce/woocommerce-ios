@@ -40,11 +40,11 @@ struct StoreStatsChart: View {
                                              endPoint: .bottom))
 
             // Vertical line for a selected point
-            if let selectedDate = selectedDate, viewModel.hasRevenue {
+            if let selectedDate, viewModel.hasRevenue {
                 RuleMark(x: .value(Localization.xSelectedValue, selectedDate))
                     .foregroundStyle(Constants.chartHighlightLineColor)
 
-                if let selectedRevenue = selectedRevenue {
+                if let selectedRevenue {
                     PointMark(x: .value(Localization.xSelectedValue, selectedDate),
                               y: .value(Localization.ySelectedValue, selectedRevenue))
                     .foregroundStyle(Constants.chartHighlightLineColor)

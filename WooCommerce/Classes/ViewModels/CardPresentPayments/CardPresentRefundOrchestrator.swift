@@ -50,7 +50,7 @@ final class CardPresentRefundOrchestrator {
                 break
             }
         }, onCompletion: { [weak self] result in
-            guard let self = self else { return }
+            guard let self else { return }
             self.allowPassPresentation()
             onProcessingMessage()
             onCompletion(result)
@@ -105,7 +105,7 @@ private extension CardPresentRefundOrchestrator {
             return
         }
 
-        guard let walletSuppressionRequestToken = walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
+        guard let walletSuppressionRequestToken, walletSuppressionRequestToken != 0 else {
             return
         }
 

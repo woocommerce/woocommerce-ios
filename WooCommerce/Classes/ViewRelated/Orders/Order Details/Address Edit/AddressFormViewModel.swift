@@ -79,7 +79,7 @@ open class AddressFormViewModel: ObservableObject {
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
             self.bindSyncTrigger()
             self.bindNavigationTrailingItemPublisher()
             self.bindHasPendingChangesPublisher()
@@ -366,7 +366,7 @@ private extension AddressFormViewModel {
 
         // Updates the initial fields when/if the data store changes(after sync).
         countriesResultsController.onDidChangeContent = { [weak self] in
-            guard let self = self else { return }
+            guard let self else { return }
 
             self.refreshCountryAndStateObjects()
         }
@@ -408,7 +408,7 @@ private extension AddressFormViewModel {
     ///
     func makeSyncCountriesFuture() -> AnyPublisher<Void, EditAddressError> {
         Future<Void, EditAddressError> { [weak self] promise in
-            guard let self = self else { return }
+            guard let self else { return }
 
             let action = DataAction.synchronizeCountries(siteID: self.siteID) { result in
                 let newResult = result

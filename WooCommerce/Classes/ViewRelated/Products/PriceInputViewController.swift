@@ -57,7 +57,7 @@ private extension PriceInputViewController {
             }.store(in: &subscriptions)
 
         viewModel.$inputValidationError.sink { [weak self] error in
-            guard let error = error else {
+            guard let error else {
                 return
             }
             self?.displayNoticeForError(error)

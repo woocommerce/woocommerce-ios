@@ -102,7 +102,7 @@ struct PluginDetailsRowUpdateAvailable: View {
             Image(systemName: Constants.softwareUpdateSymbolName)
             Text(Localization.updateAvailableTitle)
             Spacer()
-            if let versionLatest = versionLatest {
+            if let versionLatest {
                 Text(versionLatest)
             }
         }

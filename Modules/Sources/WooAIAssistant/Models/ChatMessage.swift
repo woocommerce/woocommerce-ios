@@ -41,11 +41,10 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
         }
     }
 
-    /// Update the status (and optional summary) of an in-flight `.toolCall`
-    /// segment matched by `toolCallID`. No-op when the segment is missing.
+    /// Update the status of an in-flight `.toolCall` segment matched by
+    /// `toolCallID`. No-op when the segment is missing.
     public mutating func updateToolCall(id toolCallID: String,
-                                        to status: ToolCallStatus,
-                                        summary: String? = nil) {
+                                        to status: ToolCallStatus) {
         for index in segments.indices {
             if case .toolCall(let segmentID, let existingID, let name, let args, _) = segments[index],
                existingID == toolCallID {

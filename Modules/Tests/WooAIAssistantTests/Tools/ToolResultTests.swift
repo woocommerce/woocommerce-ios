@@ -157,6 +157,36 @@ struct ToolResultTests {
     }
 
     @Test
+    func test_anyCodableJSON_when_decoding_integer_versus_decimal_then_preserves_distinction() throws {
+        // Given
+        let integerJSON = Data("1".utf8)
+        let decimalJSON = Data("1.0".utf8)
+
+        // When
+        let decodedInteger = try JSONDecoder().decode(AnyCodableJSON.self, from: integerJSON)
+        let decodedDecimal = try JSONDecoder().decode(AnyCodableJSON.self, from: decimalJSON)
+        let reencodedInteger = String(data: try JSONEncoder().encode(decodedInteger), encoding: .utf8)
+        let reencodedDecimal = String(data: try JSONEncoder().encode(decodedDecimal), encoding: .utf8)
+        let reencodedExplicitDouble = String(data: try JSONEncoder().encode(AnyCodableJSON.double(1.0)), encoding: .utf8)
+        let reencodedExplicitFractional = String(data: try JSONEncoder().encode(AnyCodableJSON.double(1.5)), encoding: .utf8)
+
+        // Then
+        // JSON `1` decodes as `.int(1)` and re-encodes as `1`.
+        #expect(decodedInteger == .int(1))
+        #expect(reencodedInteger == "1")
+
+        // JSON `1.0` decodes as `.int(1)` because `Int64` decoding accepts integral floats and
+        // is tried before `Double`. Re-encodes as `1`. Pinned to surface intentional changes.
+        #expect(decodedDecimal == .int(1))
+        #expect(reencodedDecimal == "1")
+
+        // Explicit `.double(1.0)` encoder output is also `1` (JSONEncoder drops trailing `.0`).
+        // Non-integral doubles keep their decimal form.
+        #expect(reencodedExplicitDouble == "1")
+        #expect(reencodedExplicitFractional == "1.5")
+    }
+
+    @Test
     func test_renderedCardPayload_when_round_tripped_through_uiStructured_then_preserves_all_fields() {
         // Given
         let element = AnyCodableJSON.object([

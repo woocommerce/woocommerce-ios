@@ -207,6 +207,10 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case clientSideDashboardBanner
 
+    /// Enables configurable store stats widgets
+    ///
+    case configurableStoreStatsWidgets
+
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///

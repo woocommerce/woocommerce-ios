@@ -60,51 +60,20 @@ struct PointOfSaleOrderControllerTests {
                                              receiptSender: mockReceiptSender,
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
+        mockOrderService.orderToReturn = MockOrders().sampleOrder()
 
-        // Block the sync so it doesn't complete until we manually resume it
-        mockOrderService.blockNextSync()
-
-        // Start the first sync in a detached task so it runs concurrently
-        let firstSyncTask = Task.detached {
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState.isSyncing == true)
+            await sut?.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2),
+                                                              makeItem(quantity: 5)]),
+                                 retryHandler: {})
         }
 
-        // Wait for the order state to actually become syncing
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    _ = sut.orderState
-                } onChange: {
-                    Task { @MainActor in
-                        if sut.orderState.isSyncing {
-                            continuation.resume()
-                        } else {
-                            observeOrderState()
-                        }
-                    }
-                }
-            }
-            observeOrderState()
-        }
+        // When
+        _ = await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 1)]), retryHandler: {})
 
-        // Verify the state is actually syncing
-        #expect(sut.orderState.isSyncing == true)
-        #expect(mockOrderService.syncOrderWasCalled == true)
-
-        // Reset the flag after confirming the sync has started
-        mockOrderService.syncOrderWasCalled = false
-
-        // When - try to sync while the first sync is still in progress
-        await sut.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2),
-                                                          makeItem(quantity: 5)]),
-                            retryHandler: {})
-
-        // Then - the second sync should have been skipped
-        #expect(mockOrderService.syncOrderWasCalled == false)
-
-        // Cleanup - allow the first sync to complete
-        mockOrderService.resumeBlockedSync()
-        _ = await firstSyncTask.result
+        // Then
+        #expect(mockOrderService.syncOrderCallCount == 1)
     }
 
     @Test func syncOrder_with_no_previous_order_calls_orderService() async throws {

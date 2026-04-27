@@ -66,6 +66,24 @@ public class SettingStore: Store {
                     onCompletion(.failure(error))
                 }
             }
+        case let .retrieveAnalyticsOrderDateType(siteID, onCompletion):
+            Task { @MainActor in
+                do {
+                    let dateType = try await methods.retrieveAnalyticsOrderDateType(siteID: siteID)
+                    onCompletion(.success(dateType))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
+        case let .updateAnalyticsOrderDateType(siteID, value, onCompletion):
+            Task { @MainActor in
+                do {
+                    let dateType = try await methods.updateAnalyticsOrderDateType(siteID: siteID, value: value)
+                    onCompletion(.success(dateType))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         }
     }
 }

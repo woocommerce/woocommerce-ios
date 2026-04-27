@@ -17,6 +17,8 @@ internal protocol SettingStoreMethodsProtocol {
     func enableAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void)
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void)
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool
+    func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws -> AnalyticsOrderDateType
 }
 
 internal class SettingStoreMethods: SettingStoreMethodsProtocol {
@@ -170,6 +172,30 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     ///
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool {
         try await siteSettingsRemote.isFeatureEnabled(for: siteID, feature: feature)
+    }
+
+    /// Retrieves the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    /// Throws `SettingError.parseError` if the response value cannot be mapped to a known type.
+    ///
+    func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType {
+        let setting = try await siteSettingsRemote.loadAnalyticsOrderDateType(for: siteID)
+        guard let dateType = AnalyticsOrderDateType(rawValue: setting.value) else {
+            throw SettingError.parseError
+        }
+        return dateType
+    }
+
+    /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
+    ///
+    /// Throws `SettingError.parseError` if the response value cannot be mapped to a known type.
+    ///
+    func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws -> AnalyticsOrderDateType {
+        let setting = try await siteSettingsRemote.updateAnalyticsOrderDateType(for: siteID, value: value.rawValue)
+        guard let dateType = AnalyticsOrderDateType(rawValue: setting.value) else {
+            throw SettingError.parseError
+        }
+        return dateType
     }
 }
 

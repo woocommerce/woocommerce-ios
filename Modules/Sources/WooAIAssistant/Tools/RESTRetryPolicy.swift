@@ -8,8 +8,8 @@ import Foundation
 ///      4xx (except 429) and auth are not - they will not become 2xx if we
 ///      try again with the same payload.
 ///   2. Non-idempotent methods (POST, PUT, PATCH, DELETE) never auto-retry.
-///      Idempotency keys land in a follow-up change; until then we refuse to
-///      double-charge a customer because the network blipped.
+///      Without an idempotency key the same write reaching the upstream twice
+///      would risk double-billing or duplicate inventory mutations.
 public struct RESTRetryPolicy: Sendable, Equatable {
     public let maxRetries: Int
     public let backoff: [TimeInterval]

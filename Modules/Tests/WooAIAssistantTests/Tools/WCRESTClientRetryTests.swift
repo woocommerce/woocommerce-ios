@@ -102,8 +102,8 @@ struct WCRESTClientRetryTests {
 
     @Test
     func test_request_when_post_returns_5xx_then_does_not_retry() async {
-        // Given - writes are non-idempotent until idempotency keys land, so a
-        // failed POST must not auto-retry even on a normally-retryable status.
+        // Given - writes are non-idempotent here, so a failed POST must not
+        // auto-retry even on a normally-retryable status.
         let stub = StubWCRESTClient(responses: [.status(503)])
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,

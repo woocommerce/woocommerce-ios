@@ -1,9 +1,8 @@
 import Foundation
 
 /// Concrete `ToolRegistry` whose tools call into the merchant's WooCommerce
-/// REST API through `WCRESTClient`. Constructable empty so this PR proves the
-/// dispatch loop end-to-end; the real read and write tools register through
-/// the same surface in follow-up work.
+/// REST API through `WCRESTClient`. Constructable empty so the dispatch loop
+/// works without any tools registered.
 ///
 /// Unknown tool names short-circuit to `.failed(kind: .invalidToolCall)` so
 /// the orchestrator never has to guard against typos before dispatch - one

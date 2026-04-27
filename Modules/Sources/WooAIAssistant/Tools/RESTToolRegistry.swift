@@ -1,12 +1,9 @@
 import Foundation
 
-/// Concrete `ToolRegistry` whose tools call into the merchant's WooCommerce
-/// REST API through `WCRESTClient`. Constructable empty so the dispatch loop
-/// works without any tools registered.
-///
-/// Unknown tool names short-circuit to `.failed(kind: .invalidToolCall)` so
-/// the orchestrator never has to guard against typos before dispatch - one
-/// classification path, one place errors live.
+/// `ToolRegistry` whose tools call into the merchant's WooCommerce REST API
+/// through `WCRESTClient`. Unknown tool names short-circuit to
+/// `.failed(kind: .invalidToolCall)` so callers never need a typo guard
+/// before dispatch.
 public struct RESTToolRegistry: ToolRegistry {
     private let client: WCRESTClient
     private let tools: [String: RESTTool]
@@ -31,10 +28,6 @@ public struct RESTToolRegistry: ToolRegistry {
     }
 }
 
-/// Pairs an `AITool` schema with the `@Sendable` async executor that runs
-/// when the model calls it. The executor returns a fully-formed `ToolResult`
-/// rather than throwing so retry classification, safety rejections, and
-/// confirmation flows live behind one return type.
 public struct RESTTool: Sendable {
     public let definition: AITool
     public let executor: @Sendable (_ arguments: String, _ client: WCRESTClient) async -> ToolResult

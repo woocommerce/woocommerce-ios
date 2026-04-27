@@ -1,11 +1,7 @@
-/// Maps HTTP status codes to the assistant's typed error vocabulary so the
-/// retry policy and tool executors share one classifier. Centralising the
-/// mapping keeps the "what counts as auth vs upstream vs validation" rule
-/// out of every tool body.
 public enum HTTPStatusClassification {
-    /// Sentinel used by `WCRESTClient` for transport-level failures (no HTTP
-    /// response - dropped connection, DNS, timeout). Treated as retryable
-    /// network kind by the policy.
+    /// Sentinel for transport-level failures (no HTTP response: dropped
+    /// connection, DNS, timeout). Mapped to the network error kind so the
+    /// retry policy treats it like a 5xx instead of a hard error.
     public static let transportFailure: Int = 0
 
     public static func isSuccess(_ statusCode: Int) -> Bool {

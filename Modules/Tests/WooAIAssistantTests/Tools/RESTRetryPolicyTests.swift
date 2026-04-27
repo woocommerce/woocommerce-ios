@@ -40,7 +40,7 @@ struct RESTRetryPolicyTests {
         // Given
         let policy = RESTRetryPolicy.default
 
-        // When / Then - writes are non-idempotent without an idempotency key.
+        // When / Then
         #expect(!policy.shouldRetry(method: "POST", statusCode: 500, attempt: 0))
         #expect(!policy.shouldRetry(method: "PUT", statusCode: 503, attempt: 0))
         #expect(!policy.shouldRetry(method: "PATCH", statusCode: 429, attempt: 0))

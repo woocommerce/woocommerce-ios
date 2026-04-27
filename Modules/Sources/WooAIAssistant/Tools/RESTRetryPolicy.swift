@@ -1,15 +1,10 @@
 import Foundation
 
-/// Decision-only retry policy for `WCRESTClient` requests. Pure value type so
-/// the policy can be unit-tested without sleeping or running networking.
+/// Decision-only retry policy for `WCRESTClient` requests.
 ///
-/// Two rules drive the decision:
-///   1. Transient transport faults (connection drop, 5xx, 429) are retryable.
-///      4xx (except 429) and auth are not - they will not become 2xx if we
-///      try again with the same payload.
-///   2. Non-idempotent methods (POST, PUT, PATCH, DELETE) never auto-retry.
-///      Without an idempotency key the same write reaching the upstream twice
-///      would risk double-billing or duplicate inventory mutations.
+/// Non-idempotent methods (POST, PUT, PATCH, DELETE) never auto-retry: without
+/// an idempotency key the same write reaching the upstream twice could double
+/// charge or duplicate inventory mutations.
 public struct RESTRetryPolicy: Sendable, Equatable {
     public let maxRetries: Int
     public let backoff: [TimeInterval]
@@ -20,8 +15,6 @@ public struct RESTRetryPolicy: Sendable, Equatable {
         self.backoff = backoff
     }
 
-    /// Default policy per the assistant transport spec: two retries with 200ms
-    /// then 800ms backoff. Three attempts total at most.
     public static let `default` = RESTRetryPolicy()
 
     public func shouldRetry(method: String, statusCode: Int, attempt: Int) -> Bool {

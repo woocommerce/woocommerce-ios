@@ -1,8 +1,5 @@
 import Foundation
 
-/// `WCRESTClient` wrapper that re-issues retryable requests per `RESTRetryPolicy`.
-/// The inner client and the sleep are injected so tests can drive the loop
-/// without real networking or wall-clock waits.
 public struct RetryingWCRESTClient: WCRESTClient {
     private let inner: WCRESTClient
     private let policy: RESTRetryPolicy

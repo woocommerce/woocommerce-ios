@@ -57,10 +57,8 @@ struct POSPaymentModelTests {
         #expect(service.collectPaymentWasCalled == false)
 
         // Connect the reader and wait for the Combine chain to trigger collectPayment
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = {
-                continuation.resume()
-            }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         }
 
@@ -680,13 +678,11 @@ struct POSPaymentModelTests {
 
         // Wait for cardReaderConnectionStatus to update, proving the Combine
         // chain fully processed the connection event.
-        await withCheckedContinuation { continuation in
+        await fireOnce { fire in
             withObservationTracking {
                 _ = sut.cardReaderConnectionStatus
             } onChange: {
-                Task { @MainActor in
-                    continuation.resume()
-                }
+                Task { @MainActor in fire() }
             }
             service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         }
@@ -1000,10 +996,8 @@ struct POSPaymentModelTests {
         // Then: subscription should be restored - connecting a reader triggers payment
         #expect(service.collectPaymentWasCalled == false)
 
-        await withCheckedContinuation { continuation in
-            service.onCollectPaymentCalled = {
-                continuation.resume()
-            }
+        await fireOnce { fire in
+            service.onCollectPaymentCalled = { fire() }
             service.connectedReader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.5)
         }
 
@@ -1043,10 +1037,8 @@ struct POSPaymentModelTests {
         let sut = makePaymentController(cardPresentPaymentService: service)
 
         // When
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = {
-                continuation.resume()
-            }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
             sut.connectCardReader()
         }
@@ -1063,21 +1055,15 @@ struct POSPaymentModelTests {
         let sut = makePaymentController(cardPresentPaymentService: service)
 
         // When - first connect call completes
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = {
-                continuation.resume()
-                service.onConnectReaderCalled = nil
-            }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
         #expect(service.connectReaderCallCount == 1)
 
         // When - second connect call after first completed
-        await withCheckedContinuation { continuation in
-            service.onConnectReaderCalled = {
-                continuation.resume()
-                service.onConnectReaderCalled = nil
-            }
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
             sut.connectCardReader()
         }
 
@@ -1092,16 +1078,33 @@ struct POSPaymentModelTests {
         let service = MockCardPresentPaymentService()
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        // When/Then
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+        // When/Then: while the first call's mock body is running, a second
+        // call hits the SUT's task guard and is skipped.
+        await fireOnce { fire in
             service.onConnectReaderCalled = {
                 sut.connectCardReader()
                 #expect(service.connectReaderCallCount == 1)
-                continuation.resume()
-                service.onConnectReaderCalled = nil
+                fire()
             }
             sut.connectCardReader()
         }
+
+        // After the first connect propagates to cardReaderConnectionStatus,
+        // verify no observer reactions caused a spurious re-call.
+        let reader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
+        await fireOnce { fire in
+            withObservationTracking {
+                _ = sut.cardReaderConnectionStatus
+            } onChange: {
+                Task { @MainActor in
+                    if case .connected = sut.cardReaderConnectionStatus {
+                        fire()
+                    }
+                }
+            }
+            service.connectedReader = reader
+        }
+        #expect(service.connectReaderCallCount == 1)
     }
 }
 

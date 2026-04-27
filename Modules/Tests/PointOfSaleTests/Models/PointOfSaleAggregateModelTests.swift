@@ -654,13 +654,8 @@ struct PointOfSaleAggregateModelTests {
             await sut.checkOut()
             #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
 
-            await withCheckedContinuation { continuation in
-                let once = OnceFlag()
-                cardPresentPaymentService.onCollectPaymentCalled = {
-                    if once.tryFire() {
-                        continuation.resume()
-                    }
-                }
+            await fireOnce { fire in
+                cardPresentPaymentService.onCollectPaymentCalled = { fire() }
 
                 // When: the card reader connects
                 cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -721,13 +716,8 @@ struct PointOfSaleAggregateModelTests {
             await cardPresentPaymentService.disconnectReader()
             cardPresentPaymentService.collectPaymentWasCalled = false
 
-            await withCheckedContinuation { continuation in
-                let once = OnceFlag()
-                cardPresentPaymentService.onCollectPaymentCalled = {
-                    if once.tryFire() {
-                        continuation.resume()
-                    }
-                }
+            await fireOnce { fire in
+                cardPresentPaymentService.onCollectPaymentCalled = { fire() }
 
                 // When: the card reader is reconnected
                 cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
@@ -881,14 +871,8 @@ struct PointOfSaleAggregateModelTests {
             orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
 
             // When card payment succeeds
-            await withCheckedContinuation { continuation in
-                let once = OnceFlag()
-                coordinator.onPerformIncrementalSyncCalled = {
-                    if once.tryFire() {
-                        continuation.resume()
-                    }
-                }
-
+            await fireOnce { fire in
+                coordinator.onPerformIncrementalSyncCalled = { fire() }
                 Task { @MainActor in
                     await sut.checkOut()
                 }
@@ -901,14 +885,8 @@ struct PointOfSaleAggregateModelTests {
             coordinator.performIncrementalSyncSiteID = 0
 
             // When cash payment succeeds
-            await withCheckedContinuation { continuation in
-                let once = OnceFlag()
-                coordinator.onPerformIncrementalSyncCalled = {
-                    if once.tryFire() {
-                        continuation.resume()
-                    }
-                }
-
+            await fireOnce { fire in
+                coordinator.onPerformIncrementalSyncCalled = { fire() }
                 Task { @MainActor in
                     try await sut.collectCashPayment(changeDueAmount: "0.00")
                 }
@@ -1118,13 +1096,8 @@ struct PointOfSaleAggregateModelTests {
             sut.addToCart(makePurchasableItem(price: "10.00"))
 
             // Then: set the callback before checkOut so it fires when the fire-and-forget Task runs
-            await withCheckedContinuation { continuation in
-                let once = OnceFlag()
-                catalogSyncCoordinator.onPerformIncrementalSyncCalled = {
-                    if once.tryFire() {
-                        continuation.resume()
-                    }
-                }
+            await fireOnce { fire in
+                catalogSyncCoordinator.onPerformIncrementalSyncCalled = { fire() }
 
                 // When
                 Task { @MainActor in await sut.checkOut() }
@@ -1273,17 +1246,4 @@ private func makePointOfSaleAggregateModel(
         catalogSyncCoordinator: catalogSyncCoordinator,
         sunsetWarningChecker: sunsetWarningChecker
     )
-}
-
-private final class OnceFlag: @unchecked Sendable {
-    private let lock = NSLock()
-    private var fired = false
-
-    func tryFire() -> Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        guard !fired else { return false }
-        fired = true
-        return true
-    }
 }

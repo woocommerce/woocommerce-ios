@@ -1,49 +1,39 @@
 import Foundation
 
-/// Backend-agnostic event emitted while the assistant is processing a turn.
-///
-/// Concrete backends translate their wire protocols into these cases so the
-/// UI consumes one stream regardless of transport.
+/// Backends translate their wire protocols into these cases so the UI
+/// consumes one stream regardless of transport.
 public enum AssistantEvent: Equatable, Sendable {
-    /// Emitted when a tool call begins. `cardRender` events resolve their
-    /// payload by matching this `id`.
+    /// `cardRender` events resolve their payload by matching this `id`.
     case toolCallStarted(id: String, name: String, argumentsJSON: String?)
 
-    /// A previously started tool call completed with a raw JSON payload.
     case toolCallCompleted(id: String, name: String, resultJSON: String?)
 
-    /// Structured result of a tool call. `cardRender` events resolve the
-    /// payload they should render by matching this `toolCallID`.
+    /// `cardRender` events resolve the payload they should render by
+    /// matching this `toolCallID`.
     case toolResult(toolCallID: String,
                     toolName: String,
                     payload: AnyCodableJSON)
 
-    /// `show_cards` selected a prior tool result for rich rendering, with
-    /// optional per-row extras drawn beneath the card layout.
+    /// `show_cards` selected a prior tool result for rich rendering; extras
+    /// are per-row overrides drawn beneath the card layout.
     case cardRender(toolCallID: String,
                     extras: CardRenderExtras?)
 
-    /// Safety policy paused the loop pending user approval. The UI renders
-    /// a confirmation card built from the proposal.
+    /// Safety policy pauses the loop until the user resolves this proposal.
     case confirmationRequired(proposal: ToolProposal)
 
-    /// A previously emitted confirmation got a decision.
     case confirmationResolved(proposalID: UUID, approved: Bool)
 
-    /// A chunk of assistant-authored text. Streaming backends emit several;
-    /// non-streaming backends emit one with the whole reply.
+    /// Streaming backends emit several; non-streaming backends emit one
+    /// with the whole reply.
     case textChunk(String)
 
-    /// The turn finished successfully. `routeConfidence` is optional
-    /// metadata some backends expose in the 0.0...1.0 range.
+    /// `routeConfidence` is in the 0.0...1.0 range when present.
     case completed(routeConfidence: Double?)
 
-    /// The turn failed. `error` is user-visible.
     case failed(AssistantError)
 }
 
-/// Pending user-approval payload that pauses the loop until the user
-/// confirms or cancels.
 public struct ToolProposal: Equatable, Sendable {
     public let id: UUID
     public let toolName: String
@@ -61,10 +51,9 @@ public struct ToolProposal: Equatable, Sendable {
     }
 }
 
-/// User-visible failure carried by `AssistantEvent.failed`. `kind` lets the
-/// UI distinguish typed states (e.g. `outcome_unknown` for in-flight write
-/// cancellations) from generic failures. Use `.unknown` when the cause is
-/// genuinely unidentified.
+/// `kind` is non-optional so the UI can always branch on a typed failure
+/// state (e.g. `outcomeUnknown` for in-flight write cancellations). Use
+/// `.unknown` when the cause is genuinely unidentified.
 public struct AssistantError: Error, Equatable, Sendable {
     public let kind: AssistantErrorKind
     public let code: String?

@@ -1,6 +1,5 @@
-/// Identifies an assistant conversation. `sessionID` is required and stable
-/// for the lifetime of the conversation; `taskID` is optional and present
-/// when the conversation is bound to a discrete task scope.
+/// `sessionID` is stable for the lifetime of the conversation; `taskID` is
+/// set only when the conversation is bound to a discrete task scope.
 public struct AssistantSession: Equatable, Sendable {
     public let sessionID: String
     public let taskID: String?

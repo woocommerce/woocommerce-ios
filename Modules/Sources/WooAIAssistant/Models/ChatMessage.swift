@@ -1,8 +1,8 @@
 import Foundation
 
-/// One turn in the assistant transcript. Holds an ordered list of segments
-/// that the controller mutates as text streams in, tools dispatch, and
-/// confirmations resolve.
+/// One transcript turn. Segments are mutated in place as text streams in,
+/// tools dispatch, and confirmations resolve, so views observing the
+/// message see the message identity stay constant across updates.
 public struct ChatMessage: Identifiable, Equatable, Sendable {
     public enum Role: Sendable, Equatable {
         case user
@@ -31,8 +31,8 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
         segments.append(segment)
     }
 
-    /// Append `chunk` to the trailing `.text` segment, or start a new one
-    /// when the latest segment is a non-text type.
+    /// Coalesces consecutive text chunks into a single segment so the
+    /// transcript renders as one paragraph instead of fragmenting per chunk.
     public mutating func updateText(appending chunk: String) {
         if case .text(let id, let current) = segments.last {
             segments[segments.count - 1] = .text(id: id, content: current + chunk)
@@ -41,8 +41,8 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
         }
     }
 
-    /// Update the status of an in-flight `.toolCall` segment matched by
-    /// `toolCallID`. No-op when the segment is missing.
+    /// No-op when the segment is missing so out-of-order events from a
+    /// reconnected stream can't crash the controller.
     public mutating func updateToolCall(id toolCallID: String,
                                         to status: ToolCallStatus) {
         for index in segments.indices {
@@ -58,8 +58,8 @@ public struct ChatMessage: Identifiable, Equatable, Sendable {
         }
     }
 
-    /// Resolve a pending `.confirmation` segment matched by `proposalID`.
-    /// No-op when the segment is missing.
+    /// No-op when the segment is missing so a late confirmation event for
+    /// a discarded message can't crash the controller.
     public mutating func updateConfirmation(proposalID: UUID,
                                             to status: ConfirmationStatus) {
         for index in segments.indices {

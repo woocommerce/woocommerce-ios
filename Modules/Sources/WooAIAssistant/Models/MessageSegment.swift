@@ -1,41 +1,41 @@
 import Foundation
 
-/// Per-row card overrides keyed by row id, then key/value strings.
+/// Outer key is the row id from the underlying tool result, inner is a
+/// flat string-keyed bag of overrides applied to that row.
 public typealias CardRenderExtras = [String: [String: String]]
 
-/// A piece of content inside a `ChatMessage`. Messages hold an ordered list
-/// of these so a single assistant turn can interleave text, tool activity,
-/// rich cards, and confirmation prompts.
+/// A single assistant turn can interleave text, tool activity, rich cards,
+/// and confirmation prompts; segments are the unit each can mutate
+/// independently as events stream in.
 public enum MessageSegment: Identifiable, Equatable, Sendable {
-    /// Assistant-authored prose.
     case text(id: UUID, content: String)
 
-    /// A tool the assistant is invoking. `status` evolves in place as the
-    /// dispatch progresses.
+    /// `status` mutates in place so the same `id` survives the transition
+    /// from `.running` through `.completed`/`.failed`.
     case toolCall(id: UUID,
                   toolCallID: String,
                   toolName: String,
                   argumentsPreview: String?,
                   status: ToolCallStatus)
 
-    /// Structured result of a tool call kept in the transcript so the UI
-    /// can resolve a card-render reference back to its underlying payload.
+    /// Kept in the transcript so a later `cardRender` segment can resolve
+    /// its payload locally instead of holding a reference into the stream.
     case toolResult(id: UUID,
                     toolCallID: String,
                     toolName: String,
                     payload: AnyCodableJSON)
 
-    /// A card requested by a `show_cards` tool call. Captures the snapshotted
-    /// payload plus any per-row extras so the renderer is self-contained.
+    /// Snapshots the payload and extras at render time so the renderer
+    /// stays self-contained even if the source `toolResult` is later
+    /// replaced or the message is replayed from persistence.
     case cardRender(id: UUID,
                     toolCallID: String,
                     toolName: String,
                     payload: AnyCodableJSON,
                     extras: CardRenderExtras?)
 
-    /// A pending user confirmation for a destructive tool call. The status
-    /// transitions from `.pending` to `.confirmed` or `.cancelled` once the
-    /// user resolves the prompt.
+    /// Status mutates in place so the same `id` survives the transition
+    /// from `.pending` to `.confirmed` or `.cancelled`.
     case confirmation(id: UUID,
                       proposalID: UUID,
                       toolName: String,

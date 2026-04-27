@@ -1,5 +1,6 @@
 import Foundation
 import enum Yosemite.StatsTimeRangeV4
+import enum Yosemite.AnalyticsOrderDateType
 import struct Yosemite.Site
 
 extension WooAnalyticsEvent {
@@ -10,6 +11,7 @@ extension WooAnalyticsEvent {
             static let localTimezone = "local_timezone"
             static let storeTimezone = "store_timezone"
             static let siteConnectionType = "site_connection_type"
+            static let orderType = "order_type"
         }
 
         /// Tracked once per session when the site connection type is identified on the dashboard.
@@ -53,6 +55,41 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .dashboardStoreTimezoneDifferFromDevice,
                                      properties: [Keys.storeTimezone: storeTimezoneText,
                                                   Keys.localTimezone: localTimezoneText])
+        }
+
+        // MARK: Order type bottom sheet
+
+        /// Tracked when the merchant taps the chevron next to the order type label on the Performance card.
+        static func performanceCardOrderTypeChevronTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardMainStatsOrderTypeChevronTapped, properties: [:])
+        }
+
+        /// Tracked when the merchant selects an order type from the bottom sheet.
+        /// - Parameter orderType: The selected order type.
+        static func performanceCardOrderTypeSelected(_ orderType: AnalyticsOrderDateType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardMainStatsOrderTypeSelected,
+                              properties: [Keys.orderType: orderType.analyticsValue])
+        }
+
+        /// Tracked when updating the order type setting fails.
+        /// - Parameter error: The error reported by the data layer.
+        static func performanceCardOrderTypeUpdateFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .dashboardMainStatsOrderTypeUpdateFailed,
+                              properties: [:],
+                              error: error)
+        }
+    }
+}
+
+private extension AnalyticsOrderDateType {
+    var analyticsValue: String {
+        switch self {
+        case .paid:
+            return "paid"
+        case .allOrders:
+            return "all_orders"
+        case .completed:
+            return "completed"
         }
     }
 }

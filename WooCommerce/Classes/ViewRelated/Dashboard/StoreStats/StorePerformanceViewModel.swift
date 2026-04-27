@@ -39,6 +39,17 @@ final class StorePerformanceViewModel: ObservableObject {
 
     @Published private(set) var loadingError: Error?
 
+    /// Currently applied analytics order date type. Defaults to `.paid` (the WooCommerce backend default)
+    /// while the value is being loaded for the first time.
+    @Published private(set) var orderType: AnalyticsOrderDateType = .paid
+
+    /// `true` while an order type update is in flight.
+    @Published private(set) var isUpdatingOrderType = false
+
+    /// Set when the most recent order type update fails. Cleared when a save succeeds or when the
+    /// merchant initiates a new selection.
+    @Published var orderTypeUpdateError: Error?
+
     let siteID: Int64
     let siteTimezone: TimeZone
     private let stores: StoresManager
@@ -115,6 +126,10 @@ final class StorePerformanceViewModel: ObservableObject {
 
         Task { @MainActor in
             self.timeRange = await loadLastTimeRange() ?? .today
+        }
+
+        Task { @MainActor in
+            await loadOrderType()
         }
     }
 
@@ -222,6 +237,39 @@ final class StorePerformanceViewModel: ObservableObject {
     func onViewAppear() {
         /// tracks `used_analytics`
         usageTracksEventEmitter.interacted()
+    }
+
+    /// Tracks the chevron tap on the Performance card order type label.
+    func trackOrderTypeChevronTapped() {
+        analytics.track(event: .Dashboard.performanceCardOrderTypeChevronTapped())
+    }
+
+    /// Updates the analytics order date type setting and refreshes dashboard stats.
+    /// No-op if `newOrderType` matches the current selection.
+    /// On failure, sets `orderTypeUpdateError` so the bottom sheet can present an inline error.
+    @MainActor
+    func didSelectOrderType(_ newOrderType: AnalyticsOrderDateType) async {
+        guard !isUpdatingOrderType, orderType != newOrderType else { return }
+        analytics.track(event: .Dashboard.performanceCardOrderTypeSelected(newOrderType))
+        isUpdatingOrderType = true
+        orderTypeUpdateError = nil
+        defer { isUpdatingOrderType = false }
+        do {
+            let saved: AnalyticsOrderDateType = try await withCheckedThrowingContinuation { continuation in
+                let action = SettingAction.updateAnalyticsOrderDateType(siteID: siteID, value: newOrderType) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            orderType = saved
+            // Server-side filter changed: invalidate the cached timestamp so the next sync hits the network.
+            DashboardTimestampStore.removeTimestamp(for: .performance, at: timeRange.timestampRange)
+            await reloadDataIfNeeded(forceRefresh: true)
+        } catch {
+            DDLogError("⛔️ Error updating analytics order date type: \(error)")
+            orderTypeUpdateError = error
+            analytics.track(event: .Dashboard.performanceCardOrderTypeUpdateFailed(error: error))
+        }
     }
 }
 
@@ -389,6 +437,24 @@ private extension StorePerformanceViewModel {
                 continuation.resume(returning: timeRange)
             }
             stores.dispatch(action)
+        }
+    }
+
+    /// Loads the current analytics order date type from the backend. Falls back to the existing
+    /// `orderType` value (default `.paid`) if the request fails — the merchant still gets a usable
+    /// default and can re-open the bottom sheet to retry.
+    @MainActor
+    func loadOrderType() async {
+        do {
+            let dateType: AnalyticsOrderDateType = try await withCheckedThrowingContinuation { continuation in
+                let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: siteID) { result in
+                    continuation.resume(with: result)
+                }
+                stores.dispatch(action)
+            }
+            orderType = dateType
+        } catch {
+            DDLogWarn("⚠️ Could not fetch analytics order date type, falling back to default: \(error)")
         }
     }
 

@@ -1,6 +1,16 @@
 import SwiftUI
 import WidgetKit
 
+/// Local routing flag for the medium home-screen widget.
+///
+/// `false`: render the legacy `StoreInfoView` / `StatsCard` (consumes pre-formatted String fields).
+/// `true`: render the metric-catalog driven `StoreInfoMetricsView` / `StoreInfoMetricsCard`.
+///
+/// Hard-coded for now so the new path can be exercised in dev without affecting shipped builds.
+/// A later step will read the same intent from App Group `UserDefaults` so the main app can flip it.
+///
+private let useMetricsHomescreenWidget = false
+
 /// Entry point for StoreInfo Home Screen Widget
 ///
 struct StoreInfoHomescreenWidget: View {
@@ -14,12 +24,19 @@ struct StoreInfoHomescreenWidget: View {
         case .error:
             UnableToFetchView()
         case .data(let data):
-            StoreInfoView(entryData: data)
+            if useMetricsHomescreenWidget {
+                StoreInfoMetricsView(entryData: data)
+            } else {
+                StoreInfoView(entryData: data)
+            }
         }
     }
 }
 
-/// StoreInfo Widget View
+/// StoreInfo Widget View (legacy path).
+///
+/// Reads the pre-formatted String fields off `StoreInfoData`. Kept side-by-side with
+/// `StoreInfoMetricsView` while the metric catalog is being validated end-to-end.
 ///
 private struct StoreInfoView: View {
     // Stats data to render
@@ -59,7 +76,7 @@ private struct StoreInfoView: View {
     }
 }
 
-/// Stats card sub view.
+/// Stats card sub view (legacy path).
 /// To be used inside `StoreInfoView`.
 ///
 private struct StatsCard: View {
@@ -269,14 +286,22 @@ private extension UnableToFetchView {
 import class WooFoundation.CurrencySettings
 
 struct StoreWidgets_Previews: PreviewProvider {
-    static var exampleData = StoreInfoData(range: "Today",
-                                           name: "Ernest Shop",
-                                           revenue: StoreInfoFormatter.formattedAmountString(for: Decimal(123456789), with: CurrencySettings()),
-                                           revenueCompact: StoreInfoFormatter.formattedAmountCompactString(for: Decimal(123456789), with: CurrencySettings()),
-                                           visitors: "67",
-                                           orders: "23",
-                                           conversion: "34%",
-                                           updatedTime: "10:24 PM")
+    static var exampleData = StoreInfoData(
+        range: "Today",
+        name: "Ernest Shop",
+        revenue: "$123,456,789",
+        revenueCompact: "$123M",
+        visitors: "67",
+        orders: "23",
+        conversion: "34%",
+        updatedTime: "10:24 PM",
+        metrics: [
+            .init(type: .revenue, value: .currency(123_456_789, CurrencySettings())),
+            .init(type: .visitors, value: .count(67)),
+            .init(type: .orders, value: .count(23)),
+            .init(type: .conversion, value: .percentage(23.0 / 67.0))
+        ]
+    )
 
     static var previews: some View {
         StoreInfoView(entryData: exampleData)

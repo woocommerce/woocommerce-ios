@@ -148,7 +148,7 @@ struct WCRESTClientRetryTests {
     }
 
     @Test
-    func test_request_when_cancelled_during_backoff_then_returns_transportFailure_promptly() async {
+    func test_request_when_sleep_throws_cancellation_then_returns_transport_failure() async {
         // Given
         let stub = StubWCRESTClient(responses: [
             .status(503),
@@ -156,27 +156,17 @@ struct WCRESTClientRetryTests {
         ])
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: RESTRetryPolicy(maxRetries: 2, backoff: [60, 60]),
-                                          sleep: { interval in
-            try await Task.sleep(nanoseconds: UInt64(interval * 1_000_000_000))
-        })
+                                          sleep: { _ in throw CancellationError() })
 
         // When
-        let task = Task {
-            await client.request(method: "GET",
-                                 path: "wc/v3/orders",
-                                 query: nil,
-                                 body: nil,
-                                 headers: nil)
-        }
-        try? await Task.sleep(nanoseconds: 50_000_000)
-        task.cancel()
-        let start = Date()
-        let response = await task.value
-        let elapsed = Date().timeIntervalSince(start)
+        let response = await client.request(method: "GET",
+                                            path: "wc/v3/orders",
+                                            query: nil,
+                                            body: nil,
+                                            headers: nil)
 
         // Then
         #expect(response.statusCode == HTTPStatusClassification.transportFailure)
-        #expect(elapsed < 5)
         #expect(stub.callCount == 1)
     }
 

@@ -12,11 +12,11 @@ struct SupportChatView: View {
 
             if viewModel.shouldPromptHumanSupport {
                 humanSupportBanner
+            } else {
+                Divider()
+
+                inputArea
             }
-
-            Divider()
-
-            inputArea
         }
         .background(Color(.listBackground))
         .navigationTitle(Localization.title)

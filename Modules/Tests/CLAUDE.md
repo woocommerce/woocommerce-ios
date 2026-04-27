@@ -116,25 +116,61 @@ final class MockOrderService: OrderServiceProtocol {
 }
 ```
 
-### Continuation-Based Mocks for Async Control
+### Mock Callback Hooks for In-Flight Observation
+
+When a test needs to assert state or mutate the SUT *while* it is awaiting the mock, expose a synchronous callback that the mock fires inside its body:
+
 ```swift
 final class MockRefundsService: RefundsServiceProtocol {
-    private var continuation: CheckedContinuation<Void, Never>?
+    var loadOrderRefundsResultToReturn: [POSOrderRefund] = []
+    var onLoadOrderRefundsCalled: (@MainActor (POSOrder) -> Void)?
 
-    var shouldSuspend = false
-
-    func awaitServiceCall() async {
-        await withCheckedContinuation { cont in
-            continuation = cont
-        }
-    }
-
-    func resumeService() {
-        continuation?.resume()
-        continuation = nil
+    @MainActor
+    func loadOrderRefunds(for order: POSOrder) async throws -> [POSOrderRefund] {
+        onLoadOrderRefundsCalled?(order)
+        return loadOrderRefundsResultToReturn
     }
 }
 ```
+
+The hook runs on the same actor as the SUT, so the test can call `sut.selectOrder(otherOrder)` or assert `sut.isLoading == true` synchronously, then the mock returns and the SUT proceeds. No `Task`, no continuations, no race surface.
+
+For tests where the in-flight body itself needs to do async work, make the hook async:
+
+```swift
+var onSyncOrderCalled: (@MainActor () async -> Void)?
+
+func syncOrder(...) async throws -> Order {
+    await onSyncOrderCalled?()
+    ...
+}
+```
+
+### Anti-Pattern: Mock Suspension via `awaitX` / `resumeX`
+
+Do not write mocks that hold themselves open with one continuation while signalling readiness through a second one:
+
+```swift
+// DON'T
+var shouldSuspend = false
+func awaitServiceCall() async { ... stores call signal continuation ... }
+func resumeService() { ... resumes suspension continuation ... }
+
+func service(...) async {
+    callSignalContinuation?.resume()                 // signal "I've been called"
+    if shouldSuspend {
+        await withCheckedContinuation { cont in
+            suspensionContinuation = cont            // park HERE — too late
+        }
+    }
+}
+```
+
+The two continuations are written and read from different actors, so the test's `resumeService()` can fire before the mock has stored the suspension continuation. The `?.resume()` no-ops on a still-nil reference and the mock waits on a continuation no one will resume — the test hangs forever (3-hour CI burns; see #16980). Fixing it with `@MainActor` only paper-overs the race; use the callback hook pattern instead.
+
+### Cap Suite Runtime With `.timeLimit`
+
+Add `@Suite(.timeLimit(.minutes(5)))` to any test suite that uses async patterns (continuations, callback hooks, `withObservationTracking`). If a regression in this category lands, it surfaces as a failed test in seconds instead of consuming a job-level timeout.
 
 ## Test Data Factories
 Use static factory methods for consistent test data:

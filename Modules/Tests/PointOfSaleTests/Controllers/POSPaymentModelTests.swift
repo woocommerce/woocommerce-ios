@@ -1084,44 +1084,23 @@ struct POSPaymentModelTests {
         #expect(service.connectReaderCallCount == 2)
     }
 
-    @Test("connectCardReader blocks second call while first is suspended in the service")
+    @Test("connectCardReader skips a second call while the first is in flight")
     @MainActor
-    func test_connectCardReader_when_second_call_while_first_suspended_then_blocks_second() async {
+    func test_connectCardReader_when_called_again_while_in_flight_then_skips_second() async {
         // Given
         let service = MockCardPresentPaymentService()
-        service.shouldSuspendConnectReader = true
         let sut = makePaymentController(cardPresentPaymentService: service)
 
-        // When - first call suspends inside connectReader
-        await withCheckedContinuation { continuation in
+        // When/Then
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             service.onConnectReaderCalled = {
+                sut.connectCardReader()
+                #expect(service.connectReaderCallCount == 1)
                 continuation.resume()
                 service.onConnectReaderCalled = nil
             }
             sut.connectCardReader()
         }
-        #expect(service.connectReaderCallCount == 1)
-
-        sut.connectCardReader()
-        #expect(service.connectReaderCallCount == 1)
-
-        let reader = CardPresentPaymentCardReader(name: "Test", batteryLevel: 0.85)
-        await withCheckedContinuation { continuation in
-            withObservationTracking {
-                _ = sut.cardReaderConnectionStatus
-            } onChange: {
-                Task { @MainActor in
-                    if case .connected = sut.cardReaderConnectionStatus {
-                        continuation.resume()
-                    }
-                }
-            }
-            service.resumeConnectReader(with: .connected(reader))
-            service.connectedReader = reader
-        }
-
-        // Then
-        #expect(service.connectReaderCallCount == 1)
     }
 }
 

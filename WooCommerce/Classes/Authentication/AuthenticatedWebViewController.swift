@@ -365,6 +365,12 @@ private extension AuthenticatedWebViewController {
 
         let childWebView = WKWebView(frame: .zero, configuration: configuration)
         let popupViewController = AuthenticatedWebViewController(popupWebView: childWebView)
+        popupViewController.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            systemItem: .done,
+            primaryAction: UIAction { [weak popupViewController] _ in
+                popupViewController?.dismiss(animated: true)
+            }
+        )
         let navigationController = UINavigationController(rootViewController: popupViewController)
         navigationController.modalPresentationStyle = .pageSheet
         topmostViewController().present(navigationController, animated: true)

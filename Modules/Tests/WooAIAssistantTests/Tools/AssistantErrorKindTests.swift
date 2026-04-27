@@ -6,7 +6,9 @@ struct AssistantErrorKindTests {
     @Test
     func test_assistantErrorKind_when_decoded_from_snake_case_then_matches_enum_case() throws {
         // Given
-        let json = Data(#"["network","auth","rate_limit","timeout","upstream_failure","tool_failed","invalid_tool_call","outcome_unknown","cancelled","unknown"]"#.utf8)
+        let raws = ["network", "auth", "rate_limit", "timeout", "upstream_failure",
+                    "tool_failed", "invalid_tool_call", "outcome_unknown", "cancelled", "unknown"]
+        let json = try JSONEncoder().encode(raws)
 
         // When
         let decoded = try JSONDecoder().decode([AssistantErrorKind].self, from: json)

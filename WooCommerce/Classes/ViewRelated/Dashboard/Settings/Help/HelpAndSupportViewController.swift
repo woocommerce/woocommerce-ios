@@ -78,7 +78,7 @@ final class HelpAndSupportViewController: UIViewController {
         developerFFPanelEnabled: !ServiceLocator.stores.isAuthenticated
             && ServiceLocator.featureFlagService.isFeatureFlagEnabled(.loggedOutFFPanel),
         isAIChatEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-            && ServiceLocator.stores.sessionManager.defaultSite?.isJetpackConnected == true
+            && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false
     )
 
     private var isMacCatalyst: Bool {

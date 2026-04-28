@@ -411,17 +411,15 @@ struct ConnectivityToolViewModelTests {
 
     // MARK: - isBotChatSupported
 
-    @Test func test_isBotChatSupported_when_feature_flag_enabled_and_site_is_jetpack_connected_then_returns_true() {
+    @Test func test_isBotChatSupported_when_feature_flag_enabled_and_wpcom_authenticated_then_returns_true() {
         // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
-        let jetpackConnectedSite = Site.fake().copy(siteID: 123, isJetpackConnected: true)
-        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: jetpackConnectedSite)
-        let stores = MockStoresManager(sessionManager: session)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
 
         // When
         let sut = ConnectivityToolViewModel(
-            session: session,
+            session: SessionManager.makeForTesting(authenticated: true),
             stores: stores,
             featureFlagService: featureFlagService
         )
@@ -431,16 +429,14 @@ struct ConnectivityToolViewModelTests {
     }
 
     @Test func test_isBotChatSupported_when_feature_flag_disabled_then_returns_false() {
-        // Given — even with a JP-connected site, flag-off means hidden.
+        // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = false
-        let jetpackConnectedSite = Site.fake().copy(siteID: 123, isJetpackConnected: true)
-        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: jetpackConnectedSite)
-        let stores = MockStoresManager(sessionManager: session)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
 
         // When
         let sut = ConnectivityToolViewModel(
-            session: session,
+            session: SessionManager.makeForTesting(authenticated: true),
             stores: stores,
             featureFlagService: featureFlagService
         )
@@ -449,30 +445,11 @@ struct ConnectivityToolViewModelTests {
         #expect(sut.isBotChatSupported == false)
     }
 
-    @Test func test_isBotChatSupported_when_site_is_not_jetpack_connected_then_returns_false() {
-        // Given — flag on, but the site is app-password-only / not JP-connected.
+    @Test func test_isBotChatSupported_when_authenticated_without_wpcom_then_returns_false() {
+        // Given
         let featureFlagService = MockFeatureFlagService()
         featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
-        let nonJetpackSite = Site.fake().copy(siteID: 123, isJetpackConnected: false)
-        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: nonJetpackSite)
-        let stores = MockStoresManager(sessionManager: session)
-
-        // When
-        let sut = ConnectivityToolViewModel(
-            session: session,
-            stores: stores,
-            featureFlagService: featureFlagService
-        )
-
-        // Then
-        #expect(sut.isBotChatSupported == false)
-    }
-
-    @Test func test_isBotChatSupported_when_no_default_site_then_returns_false() {
-        // Given — guards against an unauthenticated / no-site state slipping through.
-        let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.aiSupportChat] = true
-        let session = SessionManager.makeForTesting(authenticated: true)
+        let session = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
         let stores = MockStoresManager(sessionManager: session)
 
         // When

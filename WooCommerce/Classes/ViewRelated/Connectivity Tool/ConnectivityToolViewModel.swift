@@ -47,11 +47,11 @@ final class ConnectivityToolViewModel {
     @Published private(set) var showContactSupportButton = false
 
     /// Whether the AI support chat is supported.
-    /// Only available when the feature flag is enabled and the current site is Jetpack-connected.
+    /// Only available when the feature flag is enabled and user is authenticated with WPCom
+    /// (not application password), since the chatbot requires WPCom authentication.
     ///
     var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat)
-            && stores.sessionManager.defaultSite?.isJetpackConnected == true
+        featureFlagService.isFeatureFlagEnabled(.aiSupportChat) && stores.isAuthenticatedWithoutWPCom == false
     }
 
     /// Remote used to check the connection to WPCom servers.

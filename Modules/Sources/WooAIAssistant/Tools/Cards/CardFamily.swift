@@ -32,7 +32,7 @@ struct CardFamily: Sendable {
                                             query: ["include": includeValue],
                                             body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
-            let reason = CardFetchOutcome.rejection(forStatusCode: response.statusCode)
+            let reason = CardRefRejectionReason.forStatusCode(response.statusCode)
             return Dictionary(uniqueKeysWithValues: ids.map { ($0, .rejected(reason)) })
         }
         guard let payload = RESTResponseParsing.decodeJSON(response.data),
@@ -115,16 +115,5 @@ struct CardFamily: Sendable {
 enum CardFetchOutcome: Sendable {
     case found(AnyCodableJSON)
     case rejected(CardRefRejectionReason)
-
-    /// Default REST status to rejection mapping. Status-only cases route here;
-    /// 2xx-with-trashed-payload routes through `.staleReference` directly.
-    static func rejection(forStatusCode statusCode: Int) -> CardRefRejectionReason {
-        switch statusCode {
-        case 401, 403: return .notPermitted
-        case 404: return .notFound
-        case 410: return .staleReference
-        default: return .fetchFailed
-        }
-    }
 }
 

@@ -29,4 +29,15 @@ enum CardRefRejectionReason: String, Sendable, Codable, Equatable {
         case missing
         case rejected
     }
+
+    /// Default REST status to rejection mapping. Status-only cases route here;
+    /// 2xx-with-trashed-payload routes through `.staleReference` directly.
+    static func forStatusCode(_ statusCode: Int) -> CardRefRejectionReason {
+        switch statusCode {
+        case 401, 403: return .notPermitted
+        case 404: return .notFound
+        case 410: return .staleReference
+        default: return .fetchFailed
+        }
+    }
 }

@@ -36,7 +36,7 @@ struct ARParcelSizingView: View {
 
     var body: some View {
         ZStack {
-            ARCuboidView(
+            ARParcelSceneView(
                 dimensions: dimensionsInMeters(length: length, width: width, height: height),
                 isPlaced: $isPlaced,
                 resetTrigger: resetTrigger

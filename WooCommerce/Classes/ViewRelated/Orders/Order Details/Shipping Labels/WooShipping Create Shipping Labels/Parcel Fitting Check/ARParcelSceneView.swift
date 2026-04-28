@@ -2,25 +2,17 @@ import SwiftUI
 import RealityKit
 import ARKit
 
-/// Shared AR cuboid component used by both `ARParcelSizingView` (Custom flow,
-/// resize enabled) and `ARParcelFitCheckView` (Carrier flow, resize disabled).
-///
-/// The cuboid looks and behaves identically in both contexts; the difference
-/// lives in the parent view (which slider/picker chrome is shown). Dimensions
-/// are always supplied externally — the component itself just renders the
-/// cuboid at the current size and handles placement, drag (translate on the
-/// detected horizontal plane) and 2-finger yaw rotation.
+/// AR scene controller that manages the session, coaching overlay,
+/// tap-to-place, drag, and two-finger rotation for the parcel fitting
+/// check. The visual cuboid itself is built by `ARCuboidEntity`.
 ///
 /// State machine:
-/// - Pre-placement: user taps anywhere on the AR view to place the cuboid
-///   at that surface position.
-/// - Post-placement: the cuboid is anchored, gestures are active, the trash
-///   button (in the parent) returns to pre-placement state.
-struct ARCuboidView: UIViewRepresentable {
-    /// Cuboid dimensions in metres: `x = length`, `y = height`, `z = width`.
+/// - Pre-placement: user taps anywhere on the AR view to place the cuboid.
+/// - Post-placement: drag to translate, two-finger twist to rotate. The
+///   trash button (in the parent) returns to pre-placement state.
+struct ARParcelSceneView: UIViewRepresentable {
     let dimensions: SIMD3<Float>
     @Binding var isPlaced: Bool
-    /// Increment to remove the cuboid and return to placement state.
     let resetTrigger: Int
 
     func makeCoordinator() -> Coordinator {
@@ -32,16 +24,12 @@ struct ARCuboidView: UIViewRepresentable {
 
         let config = ARWorldTrackingConfiguration()
         config.planeDetection = [.horizontal]
-        // Stop ARKit's automatic light-probe estimation. Otherwise the
-        // PBR fill material re-shades every time the camera moves, causing
-        // dark patches to drift across the cuboid as the user pans around.
         config.isLightEstimationEnabled = false
         if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
             config.sceneReconstruction = .mesh
         }
         arView.session.run(config)
 
-        // Visual feedback for finding a horizontal plane.
         let coaching = ARCoachingOverlayView()
         coaching.session = arView.session
         coaching.goal = .horizontalPlane
@@ -56,14 +44,8 @@ struct ARCuboidView: UIViewRepresentable {
         ])
 
         arView.environment.sceneUnderstanding.options = [.occlusion]
-
-        // Disable RealityKit's automatic grounding shadow. Otherwise the
-        // contact shadow under the cuboid is visible through the
-        // translucent fill and looks like an interior shadow.
         arView.renderOptions.insert(.disableGroundingShadows)
 
-        // Tap-to-place: user taps anywhere on the scene to drop the cuboid.
-        // Disabled after placement; re-enabled on reset.
         let tap = UITapGestureRecognizer(
             target: context.coordinator,
             action: #selector(Coordinator.handleTap(_:))
@@ -72,8 +54,6 @@ struct ARCuboidView: UIViewRepresentable {
         arView.addGestureRecognizer(tap)
         context.coordinator.tapGesture = tap
 
-        // Screen-wide two-finger rotation (like ParcelBroker AR). Starts
-        // disabled; enabled once the cuboid is placed.
         let rotation = UIRotationGestureRecognizer(
             target: context.coordinator,
             action: #selector(Coordinator.handleRotation(_:))
@@ -100,6 +80,8 @@ struct ARCuboidView: UIViewRepresentable {
         uiView.session.pause()
     }
 
+    // MARK: - Coordinator
+
     final class Coordinator: NSObject, UIGestureRecognizerDelegate {
         weak var arView: ARView?
 
@@ -108,12 +90,10 @@ struct ARCuboidView: UIViewRepresentable {
         var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
         var lastResetTrigger: Int = 0
 
-        // Placed cuboid
         private var cuboidAnchor: AnchorEntity?
         private var cuboidEntity: ModelEntity?
         private var installedGestures: [EntityGestureRecognizer] = []
 
-        // Gestures
         var tapGesture: UITapGestureRecognizer?
         var rotationGesture: UIRotationGestureRecognizer?
         private var rotationStartYaw: Float = 0
@@ -132,8 +112,8 @@ struct ARCuboidView: UIViewRepresentable {
                 return
             }
 
-            buildCuboid(at: world)
-            installCuboidGestures()
+            placeCuboid(at: world)
+            installGestures()
             DispatchQueue.main.async { [weak self] in
                 self?.isPlaced = true
             }
@@ -142,7 +122,7 @@ struct ARCuboidView: UIViewRepresentable {
         // MARK: Public actions
 
         func removeCuboid() {
-            uninstallCuboidGestures()
+            uninstallGestures()
             if let cuboidAnchor, let arView {
                 arView.scene.removeAnchor(cuboidAnchor)
             }
@@ -153,19 +133,38 @@ struct ARCuboidView: UIViewRepresentable {
             }
         }
 
-        private func installCuboidGestures() {
+        func updateDimensions(_ dims: SIMD3<Float>) {
+            dimensions = dims
+            cuboidEntity?.transform.scale = dims
+        }
+
+        // MARK: Placement
+
+        private func placeCuboid(at world: SIMD3<Float>) {
+            guard let arView else { return }
+
+            let entity = ARCuboidEntity.build()
+            entity.position = world
+            entity.transform.scale = dimensions
+
+            let anchor = AnchorEntity(world: matrix_identity_float4x4)
+            anchor.addChild(entity)
+            arView.scene.addAnchor(anchor)
+
+            cuboidAnchor = anchor
+            cuboidEntity = entity
+        }
+
+        // MARK: Gestures
+
+        private func installGestures() {
             guard let arView, let cuboidEntity else { return }
-            // Collision shape for RealityKit's translation gesture.
             cuboidEntity.collision = CollisionComponent(
                 shapes: [
                     .generateBox(size: SIMD3(1, 1, 1))
                         .offsetBy(translation: SIMD3(0, 0.5, 0))
                 ]
             )
-            // Translation via entity-targeted gesture (drag on the cuboid).
-            // Rotation is handled separately via a screen-wide
-            // UIRotationGestureRecognizer so the user can two-finger twist
-            // anywhere — not just on the wireframe edges.
             installedGestures = arView.installGestures(
                 [.translation],
                 for: cuboidEntity
@@ -174,7 +173,7 @@ struct ARCuboidView: UIViewRepresentable {
             rotationGesture?.isEnabled = true
         }
 
-        private func uninstallCuboidGestures() {
+        private func uninstallGestures() {
             guard let arView else { return }
             for gesture in installedGestures {
                 arView.removeGestureRecognizer(gesture)
@@ -183,8 +182,6 @@ struct ARCuboidView: UIViewRepresentable {
             tapGesture?.isEnabled = true
             rotationGesture?.isEnabled = false
         }
-
-        // MARK: Screen-wide rotation
 
         @objc func handleRotation(_ gesture: UIRotationGestureRecognizer) {
             guard let cuboidEntity else { return }
@@ -209,89 +206,6 @@ struct ARCuboidView: UIViewRepresentable {
             shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer
         ) -> Bool {
             true
-        }
-
-        func updateDimensions(_ dims: SIMD3<Float>) {
-            dimensions = dims
-            cuboidEntity?.transform.scale = dims
-        }
-        // MARK: Cuboid construction
-
-        private func buildCuboid(at world: SIMD3<Float>) {
-            guard let arView else { return }
-
-            // Root must be a `ModelEntity` so RealityKit's translation
-            // gesture can target it. The root itself has no model; only
-            // the wireframe edges are children.
-            let root = ModelEntity()
-            root.position = world
-            root.transform.scale = dimensions
-
-            // Wireframe edges only — no fill. ParcelBroker AR uses the same
-            // approach: the cuboid is just 12 glowing edges.
-            let edgeMaterial = UnlitMaterial(color: .systemBlue)
-            for edge in unitBoxEdges() {
-                let bar = ModelEntity(
-                    mesh: .generateBox(size: edge.size),
-                    materials: [edgeMaterial]
-                )
-                bar.position = edge.center
-                root.addChild(bar)
-            }
-
-            let anchor = AnchorEntity(world: matrix_identity_float4x4)
-            anchor.addChild(root)
-            arView.scene.addAnchor(anchor)
-
-            cuboidAnchor = anchor
-            cuboidEntity = root
-        }
-
-        private struct EdgeSpec {
-            let center: SIMD3<Float>
-            let size: SIMD3<Float>
-        }
-
-        /// Edges of a unit cube whose bottom face sits on the surface (y=0)
-        /// and top face at y=1, x and z in [-0.5, 0.5].
-        private func unitBoxEdges() -> [EdgeSpec] {
-            let h: Float = 0.5
-            let t: Float = 0.006          // regular edge thickness
-            let bottomT: Float = 0.012    // emphasised bottom-face edges so
-                                          // the contact line with the floor
-                                          // reads clearly
-            var edges: [EdgeSpec] = []
-
-            // Edges along X — thicker on the bottom face (y == 0).
-            for y in [Float(0), 1] {
-                let thickness = y == 0 ? bottomT : t
-                for z in [-h, h] {
-                    edges.append(EdgeSpec(
-                        center: SIMD3(0, y, z),
-                        size: SIMD3(1, thickness, thickness)
-                    ))
-                }
-            }
-            // Edges along Y — vertical, uniform thickness.
-            for x in [-h, h] {
-                for z in [-h, h] {
-                    edges.append(EdgeSpec(
-                        center: SIMD3(x, 0.5, z),
-                        size: SIMD3(t, 1, t)
-                    ))
-                }
-            }
-            // Edges along Z — thicker on the bottom face (y == 0).
-            for x in [-h, h] {
-                for y in [Float(0), 1] {
-                    let thickness = y == 0 ? bottomT : t
-                    edges.append(EdgeSpec(
-                        center: SIMD3(x, y, 0),
-                        size: SIMD3(thickness, thickness, 1)
-                    ))
-                }
-            }
-            return edges
         }
 
         // MARK: Helpers
@@ -328,8 +242,6 @@ struct ARCuboidView: UIViewRepresentable {
 
 // MARK: - Dimension unit helpers
 
-/// Conversion factor from the store's configured dimension unit to metres
-/// (which is what RealityKit / ARKit use internally).
 enum DimensionUnitConversion {
     static func metersPerUnit(_ unit: String) -> Float {
         switch unit.lowercased() {
@@ -365,25 +277,8 @@ enum DimensionUnitConversion {
     }
 }
 
-// MARK: - Shared chrome for AR Cuboid views
+// MARK: - Shared chrome
 
-/// Small centre reticle. Hosted by the parent so it can be hidden once the
-/// cuboid is placed.
-struct ARCuboidReticle: View {
-    let active: Bool
-
-    var body: some View {
-        let color: Color = active ? .blue : .white
-        Circle()
-            .stroke(color, lineWidth: 1.5)
-            .frame(width: 18, height: 18)
-            .overlay(Circle().fill(color).frame(width: 3, height: 3))
-            .shadow(color: .black.opacity(0.5), radius: 1.5)
-            .animation(.easeInOut(duration: 0.15), value: active)
-    }
-}
-
-/// Small dark circular icon button used for the trash action.
 struct ARCuboidCircleIconButton: View {
     let systemName: String
     let action: () -> Void
@@ -396,27 +291,5 @@ struct ARCuboidCircleIconButton: View {
                 .frame(width: 40, height: 40)
                 .background(.black.opacity(0.5), in: Circle())
         }
-    }
-}
-
-/// Large yellow "+" button used to place the cuboid. Disabled until the
-/// reticle has a valid target.
-struct ARCuboidPlaceButton: View {
-    let active: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Image(systemName: "plus")
-                .font(.title.weight(.semibold))
-                .foregroundStyle(active ? Color.black : Color.white.opacity(0.6))
-                .frame(width: 64, height: 64)
-                .background(
-                    active ? AnyShapeStyle(.blue) : AnyShapeStyle(.black.opacity(0.5)),
-                    in: Circle()
-                )
-        }
-        .disabled(!active)
-        .animation(.easeInOut(duration: 0.15), value: active)
     }
 }

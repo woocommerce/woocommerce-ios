@@ -32,8 +32,7 @@ final class StubbedWCRESTClient: WCRESTClient, @unchecked Sendable {
     func request(method: String,
                  path: String,
                  query: [String: String]?,
-                 body: Data?,
-                 headers: [String: String]?) async -> WCRESTResponse {
+                 body: Data?) async -> WCRESTResponse {
         lock.lock()
         _calls.append(path)
         let response = routes["\(method) \(path)"]

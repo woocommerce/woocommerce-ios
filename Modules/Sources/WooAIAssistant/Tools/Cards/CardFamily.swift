@@ -30,8 +30,7 @@ public struct CardFamily: Sendable {
         let response = await client.request(method: "GET",
                                             path: listPath,
                                             query: ["include": includeValue],
-                                            body: nil,
-                                            headers: nil)
+                                            body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
             let reason = CardFetchOutcome.rejection(forStatusCode: response.statusCode)
             return Dictionary(uniqueKeysWithValues: ids.map { ($0, .rejected(reason)) })

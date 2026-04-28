@@ -117,5 +117,7 @@ def run_in_build_tools(cmd:)
 end
 
 def run_in_swift_package(dir:, cmd:)
-  sh "pushd #{dir} && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && #{cmd} && popd"
+  sh "pushd #{dir} && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && #{cmd} && popd" do |ok, status|
+    exit(status.exitstatus || 1) unless ok
+  end
 end

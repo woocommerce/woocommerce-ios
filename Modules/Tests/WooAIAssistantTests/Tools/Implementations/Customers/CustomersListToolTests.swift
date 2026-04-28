@@ -12,7 +12,7 @@ struct CustomersListToolTests {
             {"id": 73, "first_name": "Pat", "last_name": "Jones", "email": "pat@example.com"}
         ]
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = CustomersListTool.make()
 
         // When
@@ -43,7 +43,7 @@ struct CustomersListToolTests {
     @Test
     func test_customers_list_when_include_passed_then_query_carries_csv_ids() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = CustomersListTool.make()
 
         // When
@@ -56,7 +56,7 @@ struct CustomersListToolTests {
     @Test
     func test_customers_list_when_response_is_401_then_returns_failed_with_auth_kind() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 401))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 401))
         let tool = CustomersListTool.make()
 
         // When

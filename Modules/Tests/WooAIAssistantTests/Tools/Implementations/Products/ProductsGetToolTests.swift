@@ -24,7 +24,7 @@ struct ProductsGetToolTests {
             "images": [{"src": "https://example.com/scarf.jpg"}]
         }
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsGetTool.make()
 
         // When
@@ -61,7 +61,7 @@ struct ProductsGetToolTests {
     @Test
     func test_products_get_when_id_missing_then_returns_failed_invalid_tool_call() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = ProductsGetTool.make()
 
         // When
@@ -79,7 +79,7 @@ struct ProductsGetToolTests {
     @Test
     func test_products_get_when_response_is_404_then_returns_failed() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 404))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 404))
         let tool = ProductsGetTool.make()
 
         // When

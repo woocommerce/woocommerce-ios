@@ -14,7 +14,7 @@ struct AnalyticsOrdersToolTests {
             ]
         }
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = AnalyticsOrdersTool.make()
 
         // When
@@ -44,7 +44,7 @@ struct AnalyticsOrdersToolTests {
     @Test
     func test_analytics_orders_when_required_dates_missing_then_returns_failed_invalid_tool_call() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = AnalyticsOrdersTool.make()
 
         // When
@@ -62,7 +62,7 @@ struct AnalyticsOrdersToolTests {
     @Test
     func test_analytics_orders_when_response_is_500_then_returns_failed_with_upstream_failure() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 500))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 500))
         let tool = AnalyticsOrdersTool.make()
 
         // When

@@ -1,7 +1,7 @@
 import Foundation
 @testable import WooAIAssistant
 
-final class RecordingWCRESTClient: WCRESTClient, @unchecked Sendable {
+final class MockWCRESTClient: WCRESTClient, @unchecked Sendable {
     struct Recorded: Equatable {
         let method: String
         let path: String

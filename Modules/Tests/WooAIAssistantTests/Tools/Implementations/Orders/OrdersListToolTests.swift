@@ -13,7 +13,7 @@ struct OrdersListToolTests {
             {"id": 3540, "number": "3540", "status": "completed", "total": "480.00", "currency": "USD"}
         ]
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = OrdersListTool.make()
 
         // When
@@ -46,7 +46,7 @@ struct OrdersListToolTests {
     @Test
     func test_orders_list_when_per_page_above_50_then_query_clamps_to_50() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = OrdersListTool.make()
 
         // When
@@ -59,7 +59,7 @@ struct OrdersListToolTests {
     @Test
     func test_orders_list_when_status_is_any_then_status_param_omitted() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = OrdersListTool.make()
 
         // When
@@ -72,7 +72,7 @@ struct OrdersListToolTests {
     @Test
     func test_orders_list_when_response_is_500_then_returns_failed_with_upstream_failure() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 500, body: "boom"))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 500, body: "boom"))
         let tool = OrdersListTool.make()
 
         // When
@@ -90,7 +90,7 @@ struct OrdersListToolTests {
     @Test
     func test_orders_list_when_arguments_not_json_then_returns_failed_with_invalid_tool_call() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = OrdersListTool.make()
 
         // When

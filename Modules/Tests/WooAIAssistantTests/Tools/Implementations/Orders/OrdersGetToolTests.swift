@@ -20,7 +20,7 @@ struct OrdersGetToolTests {
             "meta_data": [{"id": 1, "key": "_pmpro_pin", "value": "abc"}]
         }
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = OrdersGetTool.make()
 
         // When
@@ -57,7 +57,7 @@ struct OrdersGetToolTests {
     @Test
     func test_orders_get_when_response_is_404_then_returns_failed_with_unknown_kind() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 404, body: "{\"code\":\"woocommerce_rest_shop_order_invalid_id\"}"))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 404, body: "{\"code\":\"woocommerce_rest_shop_order_invalid_id\"}"))
         let tool = OrdersGetTool.make()
 
         // When
@@ -75,7 +75,7 @@ struct OrdersGetToolTests {
     @Test
     func test_orders_get_when_id_missing_then_returns_failed_with_invalid_tool_call() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = OrdersGetTool.make()
 
         // When

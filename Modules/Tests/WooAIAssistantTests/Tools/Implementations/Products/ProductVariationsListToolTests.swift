@@ -12,7 +12,7 @@ struct ProductVariationsListToolTests {
             {"id": 1002, "stock_status": "outofstock", "price": "25.00"}
         ]
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductVariationsListTool.make()
 
         // When
@@ -41,7 +41,7 @@ struct ProductVariationsListToolTests {
     @Test
     func test_product_variations_list_when_product_id_missing_then_returns_failed_invalid_tool_call() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductVariationsListTool.make()
 
         // When
@@ -59,7 +59,7 @@ struct ProductVariationsListToolTests {
     @Test
     func test_product_variations_list_when_per_page_above_50_then_query_clamps_to_50() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductVariationsListTool.make()
 
         // When

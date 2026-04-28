@@ -13,7 +13,7 @@ struct ProductsListToolTests {
             {"id": 103, "name": "Jacket", "sku": "JAC-1", "price": "120.00", "stock_status": "instock"}
         ]
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = ProductsListTool.make()
 
         // When
@@ -44,7 +44,7 @@ struct ProductsListToolTests {
     @Test
     func test_products_list_when_search_passed_then_query_carries_search_param() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("[]"))
+        let client = MockWCRESTClient(response: StubResponses.ok("[]"))
         let tool = ProductsListTool.make()
 
         // When
@@ -58,7 +58,7 @@ struct ProductsListToolTests {
     @Test
     func test_products_list_when_response_is_403_then_returns_failed_with_auth_kind() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 403))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 403))
         let tool = ProductsListTool.make()
 
         // When

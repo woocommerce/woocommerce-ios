@@ -15,7 +15,7 @@ struct AnalyticsRevenueToolTests {
             ]
         }
         """
-        let client = RecordingWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
         let tool = AnalyticsRevenueTool.make()
 
         // When
@@ -47,7 +47,7 @@ struct AnalyticsRevenueToolTests {
     @Test
     func test_analytics_revenue_when_dates_invalid_then_returns_failed_invalid_tool_call() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.ok("{}"))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = AnalyticsRevenueTool.make()
 
         // When
@@ -65,7 +65,7 @@ struct AnalyticsRevenueToolTests {
     @Test
     func test_analytics_revenue_when_response_is_429_then_returns_failed_with_rate_limit_kind() async {
         // Given
-        let client = RecordingWCRESTClient(response: StubResponses.failure(statusCode: 429))
+        let client = MockWCRESTClient(response: StubResponses.failure(statusCode: 429))
         let tool = AnalyticsRevenueTool.make()
 
         // When

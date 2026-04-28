@@ -1,6 +1,7 @@
 import SwiftUI
 import TipKit
 import WooFoundation
+import struct Yosemite.POSCustomAmount
 
 struct CartView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -26,7 +27,8 @@ struct CartView: View {
 
     @State private var headerSize: CGSize = .zero
     @State private var showBarcodeScanningModal: Bool = false
-    @State private var showAddCustomAmountSheet: Bool = false
+    @State private var showCustomAmountSheet: Bool = false
+    @State private var editingCustomAmount: POSCustomAmount?
 
     var body: some View {
         ZStack {
@@ -36,7 +38,7 @@ struct CartView: View {
                     shouldShowClearCartButton: shouldShowClearCartButton,
                     itemCount: posModel.cart.purchasableItems.count,
                     backgroundColor: backgroundColor,
-                    onAddCustomAmountTapped: { showAddCustomAmountSheet = true }
+                    onAddCustomAmountTapped: presentAddCustomAmount
                 )
                 .zIndex(1)
                 .trackSize(size: $headerSize)
@@ -45,7 +47,8 @@ struct CartView: View {
                     CartScrollViewContent(
                         offSetPosition: $offSetPosition,
                         cartContentHeight: $cartContentHeight,
-                        scrollViewHeight: $scrollViewHeight
+                        scrollViewHeight: $scrollViewHeight,
+                        onEditCustomAmount: presentEditCustomAmount
                     )
                 } else {
                     Spacer()
@@ -64,12 +67,20 @@ struct CartView: View {
             .posModal(isPresented: $showBarcodeScanningModal) {
                 POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
             }
-            .posFullScreenCover(isPresented: $showAddCustomAmountSheet) {
+            .posFullScreenCover(isPresented: $showCustomAmountSheet) {
                 AddCustomAmountView(
-                    isPresented: $showAddCustomAmountSheet,
+                    isPresented: $showCustomAmountSheet,
                     currencySettings: currencyProvider.currencySettings,
-                    onSubmit: { _ in
-                        // Real wiring lands on the next branch.
+                    editing: editingCustomAmount,
+                    onSubmit: { customAmount in
+                        let isEditing = editingCustomAmount != nil
+                        analytics.track(
+                            event: .PointOfSale.customAmountSubmitted(
+                                mode: isEditing ? .edit : .add,
+                                isTaxable: customAmount.isTaxable
+                            )
+                        )
+                        posModel.upsertCustomAmount(customAmount)
                     }
                 )
             }
@@ -84,6 +95,16 @@ struct CartView: View {
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-cart-view")
         }
+    }
+
+    private func presentAddCustomAmount() {
+        editingCustomAmount = nil
+        showCustomAmountSheet = true
+    }
+
+    private func presentEditCustomAmount(_ customAmount: POSCustomAmount) {
+        editingCustomAmount = customAmount
+        showCustomAmountSheet = true
     }
 }
 
@@ -354,6 +375,7 @@ private struct CartScrollViewContent: View {
     @Binding var offSetPosition: CGFloat
     @Binding var cartContentHeight: CGFloat
     @Binding var scrollViewHeight: CGFloat
+    let onEditCustomAmount: (POSCustomAmount) -> Void
 
     @State private var shouldShowItemImages: Bool = false
 
@@ -365,6 +387,10 @@ private struct CartScrollViewContent: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(spacing: Constants.cartItemSpacing) {
+                    if posModel.cart.customAmounts.isNotEmpty {
+                        CustomAmountsCartSection(onEditCustomAmount: onEditCustomAmount)
+                    }
+
                     if posModel.cart.coupons.isNotEmpty {
                         CouponsCartSection(shouldShowItemImages: $shouldShowItemImages)
                     }
@@ -416,6 +442,7 @@ private struct CartScrollViewContent: View {
         }
         .animation(Constants.cartAnimation, value: posModel.cart.purchasableItems.map(\.id))
         .animation(Constants.cartAnimation, value: posModel.cart.coupons.map(\.id))
+        .animation(Constants.cartAnimation, value: posModel.cart.customAmounts.map(\.id))
         .geometryGroup()
     }
 
@@ -450,6 +477,36 @@ private struct CartScrollViewContent: View {
             450
         @unknown default:
             450
+        }
+    }
+}
+
+private struct CustomAmountsCartSection: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
+
+    let onEditCustomAmount: (POSCustomAmount) -> Void
+
+    var body: some View {
+        LazyVStack(spacing: Constants.cartItemSpacing) {
+            ForEach(posModel.cart.customAmounts, id: \.id) { customAmount in
+                let isInteractive = posModel.orderStage == .building
+                CustomAmountRowView(
+                    customAmount: customAmount,
+                    onEdit: isInteractive ? { onEditCustomAmount(customAmount) } : nil,
+                    onRemove: isInteractive ? {
+                        analytics.track(
+                            event: .PointOfSale.itemRemovedFromCart(
+                                sourceView: .cart,
+                                itemType: .customAmount
+                            )
+                        )
+                        posModel.removeCustomAmount(id: customAmount.id)
+                    } : nil
+                )
+                .id(customAmount.id)
+                .transition(.opacity)
+            }
         }
     }
 }

@@ -1,8 +1,7 @@
 import XCTest
-import TestKit
 import Fakes
+import Networking
 
-@testable import WooCommerce
 @testable import Yosemite
 
 class FeesInputTransformerTests: XCTestCase {

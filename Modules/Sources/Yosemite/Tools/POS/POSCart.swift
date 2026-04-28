@@ -6,10 +6,14 @@ import Foundation
 public struct POSCart {
     public let items: [POSCartItem]
     public let coupons: [POSCoupon]
+    public let customAmounts: [POSCustomAmount]
 
-    public init(items: [POSCartItem] = [], coupons: [POSCoupon] = []) {
+    public init(items: [POSCartItem] = [],
+                coupons: [POSCoupon] = [],
+                customAmounts: [POSCustomAmount] = []) {
         self.items = items
         self.coupons = coupons
+        self.customAmounts = customAmounts
     }
 }
 
@@ -23,9 +27,28 @@ public struct POSCartItem {
     }
 }
 
+public struct POSCustomAmount: Equatable, Hashable, Identifiable {
+    public let id: UUID
+    public let name: String
+    public let amount: String
+    public let isTaxable: Bool
+
+    public init(id: UUID = UUID(),
+                name: String,
+                amount: String,
+                isTaxable: Bool) {
+        self.id = id
+        self.name = name
+        self.amount = amount
+        self.isTaxable = isTaxable
+    }
+}
+
 public extension POSCart {
     func matches(order: Order?) -> Bool {
-        return items.matches(order: order) && coupons.matches(order: order)
+        return items.matches(order: order)
+            && coupons.matches(order: order)
+            && customAmounts.matches(order: order)
     }
 
     func compareWithOrder(_ order: Order?) -> CartOrderComparison {
@@ -244,5 +267,23 @@ extension [POSCoupon] {
         let orderCoupons = Set(order.coupons.map(\.code))
         let cartCoupons = Set(self.map(\.code))
         return orderCoupons == cartCoupons
+    }
+}
+
+extension [POSCustomAmount] {
+    func matches(order: Order?) -> Bool {
+        let activeOrderFees = order?.fees.filter { !$0.isDeleted } ?? []
+        guard self.count == activeOrderFees.count else {
+            return false
+        }
+
+        let cartSummaries = Set(self.map { CustomAmountSummary(name: $0.name, amount: $0.amount) })
+        let orderSummaries = Set(activeOrderFees.map { CustomAmountSummary(name: $0.name ?? "", amount: $0.total) })
+        return cartSummaries == orderSummaries
+    }
+
+    private struct CustomAmountSummary: Hashable {
+        let name: String
+        let amount: String
     }
 }

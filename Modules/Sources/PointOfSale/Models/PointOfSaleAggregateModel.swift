@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.POSCoupon
+import struct Yosemite.POSCustomAmount
 import enum Yosemite.POSItem
 import enum Yosemite.SystemStatusAction
 import protocol Yosemite.POSSearchHistoryProviding
@@ -192,6 +193,8 @@ extension PointOfSaleAggregateModel {
             cart.purchasableItems.removeAll { $0.id == cartItem.id }
         case .coupon:
             cart.coupons.removeAll { $0.id == cartItem.id }
+        case .customAmount:
+            cart.removeCustomAmount(id: cartItem.id)
         }
     }
 
@@ -206,8 +209,19 @@ extension PointOfSaleAggregateModel {
                 cart.purchasableItems.removeAll()
             case .coupon:
                 cart.coupons.removeAll()
+            case .customAmount:
+                cart.customAmounts.removeAll()
             }
         }
+    }
+
+    func upsertCustomAmount(_ customAmount: POSCustomAmount) {
+        trackCustomerInteractionStarted()
+        cart.upsertCustomAmount(customAmount)
+    }
+
+    func removeCustomAmount(id: UUID) {
+        cart.removeCustomAmount(id: id)
     }
 
     @MainActor

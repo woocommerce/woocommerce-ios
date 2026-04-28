@@ -102,6 +102,48 @@ struct POSOrderServiceTests {
     }
 
     @Test
+    func syncOrder_adds_cart_custom_amounts_to_new_order() async throws {
+        // Given
+        let cart = POSCart(
+            items: [makePOSCartItem(productID: 100, quantity: 1)],
+            customAmounts: [
+                POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true),
+                POSCustomAmount(name: "Delivery", amount: "5.50", isTaxable: false)
+            ]
+        )
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let createdOrderFees = try #require(mockOrdersRemote.spyCreatePOSOrder?.fees)
+        #expect(createdOrderFees.count == 2)
+
+        let serviceFee = try #require(createdOrderFees.first(where: { $0.name == "Service fee" }))
+        #expect(serviceFee.total == "10.00")
+        #expect(serviceFee.taxStatus == .taxable)
+
+        let delivery = try #require(createdOrderFees.first(where: { $0.name == "Delivery" }))
+        #expect(delivery.total == "5.50")
+        #expect(delivery.taxStatus == .none)
+    }
+
+    @Test
+    func syncOrder_includes_feeLines_in_request_fields_when_cart_has_custom_amounts() async throws {
+        // Given
+        let cart = POSCart(
+            customAmounts: [POSCustomAmount(name: "Tip", amount: "3.00", isTaxable: false)]
+        )
+
+        // When
+        _ = try await sut.syncOrder(cart: cart, currency: .USD)
+
+        // Then
+        let fields = try #require(mockOrdersRemote.spyCreatePOSOrderFields)
+        #expect(fields.contains(.feeLines))
+    }
+
+    @Test
     func syncOrder_sanitizes_items_before_sending_to_remote() async throws {
         // Given
         let cart = POSCart(items: [

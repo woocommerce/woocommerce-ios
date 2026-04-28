@@ -527,11 +527,15 @@ actor AgenticLoopOrchestrator {
                     if next.role == .tool,
                        let content = next.content,
                        let data = content.data(using: .utf8),
-                       let parsed = try? JSONSerialization.jsonObject(with: data),
-                       let array = parsed as? [Any],
-                       array.isEmpty,
                        isListLikeTool {
-                        emptyListTools.insert(name)
+                        do {
+                            let parsed = try JSONSerialization.jsonObject(with: data)
+                            if let array = parsed as? [Any], array.isEmpty {
+                                emptyListTools.insert(name)
+                            }
+                        } catch {
+                            DDLogError("AgenticLoopOrchestrator empty-list nudge parse failed: \(error)")
+                        }
                     }
                 }
             }
@@ -587,23 +591,24 @@ actor AgenticLoopOrchestrator {
     // MARK: - Error JSON encoding
 
     private static func payloadIsErrorOrCancelled(_ payload: String) -> Bool {
-        guard let data = payload.data(using: .utf8),
-              let parsed = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+        guard let data = payload.data(using: .utf8) else { return false }
+        do {
+            let parsed = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            if parsed?["error"] != nil { return true }
+            if let status = parsed?["status"] as? String, status == "user_cancelled" { return true }
+            return false
+        } catch {
+            DDLogError("AgenticLoopOrchestrator payloadIsErrorOrCancelled parse failed: \(error)")
             return false
         }
-        if parsed["error"] != nil {
-            return true
-        }
-        if let status = parsed["status"] as? String, status == "user_cancelled" {
-            return true
-        }
-        return false
     }
 
     private static func errorJSON(_ message: String) -> String {
-        if let data = try? JSONSerialization.data(withJSONObject: ["error": message]),
-           let json = String(data: data, encoding: .utf8) {
-            return json
+        do {
+            let data = try JSONSerialization.data(withJSONObject: ["error": message])
+            if let json = String(data: data, encoding: .utf8) { return json }
+        } catch {
+            DDLogError("AgenticLoopOrchestrator errorJSON encode failed: \(error)")
         }
         return #"{"error":"unknown"}"#
     }
@@ -618,9 +623,11 @@ actor AgenticLoopOrchestrator {
             "tool": toolName,
             "advice": "Ask the merchant to verify the operation by viewing the order in the native UI."
         ]
-        if let data = try? JSONSerialization.data(withJSONObject: body, options: [.sortedKeys]),
-           let json = String(data: data, encoding: .utf8) {
-            return json
+        do {
+            let data = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
+            if let json = String(data: data, encoding: .utf8) { return json }
+        } catch {
+            DDLogError("AgenticLoopOrchestrator outcomeUnknownJSON encode failed: \(error)")
         }
         return #"{"outcome":"unknown"}"#
     }
@@ -634,9 +641,11 @@ actor AgenticLoopOrchestrator {
                     "Answer the merchant now using show_cards or plain text. " +
                     "Do not call this tool again."
         ]
-        if let data = try? JSONSerialization.data(withJSONObject: body, options: [.sortedKeys]),
-           let json = String(data: data, encoding: .utf8) {
-            return json
+        do {
+            let data = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
+            if let json = String(data: data, encoding: .utf8) { return json }
+        } catch {
+            DDLogError("AgenticLoopOrchestrator perToolCapJSON encode failed: \(error)")
         }
         return #"{"error":"per_tool_cap_exceeded"}"#
     }
@@ -670,15 +679,21 @@ actor AgenticLoopOrchestrator {
         if isEscalated {
             body["stop_reason"] = "duplicate_tool_call"
         }
-        if let bytes = cachedPayload.data(using: .utf8),
-           let parsed = try? JSONSerialization.jsonObject(with: bytes, options: [.fragmentsAllowed]) {
-            body["data"] = parsed
+        if let bytes = cachedPayload.data(using: .utf8) {
+            do {
+                body["data"] = try JSONSerialization.jsonObject(with: bytes, options: [.fragmentsAllowed])
+            } catch {
+                DDLogError("AgenticLoopOrchestrator duplicateReplayJSON cached payload parse failed: \(error)")
+                body["data_raw"] = cachedPayload
+            }
         } else {
             body["data_raw"] = cachedPayload
         }
-        if let data = try? JSONSerialization.data(withJSONObject: body, options: [.sortedKeys]),
-           let json = String(data: data, encoding: .utf8) {
-            return json
+        do {
+            let data = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
+            if let json = String(data: data, encoding: .utf8) { return json }
+        } catch {
+            DDLogError("AgenticLoopOrchestrator duplicateReplayJSON encode failed: \(error)")
         }
         return #"{"status":"cached_result_reused"}"#
     }
@@ -686,13 +701,21 @@ actor AgenticLoopOrchestrator {
     /// Canonical (name, args) key. Re-serializes with sorted keys so reorderings collapse to the same
     /// signature; malformed JSON args fall back to the raw string.
     static func canonicalCallSignature(name: String, argumentsJSON: String) -> String {
-        guard let data = argumentsJSON.data(using: .utf8),
-              let obj = try? JSONSerialization.jsonObject(with: data) else {
+        guard let data = argumentsJSON.data(using: .utf8) else {
             return "\(name)|\(argumentsJSON)"
         }
-        if let canonical = try? JSONSerialization.data(withJSONObject: obj, options: [.sortedKeys]),
-           let str = String(data: canonical, encoding: .utf8) {
-            return "\(name)|\(str)"
+        let obj: Any
+        do {
+            obj = try JSONSerialization.jsonObject(with: data)
+        } catch {
+            DDLogError("AgenticLoopOrchestrator canonicalCallSignature args parse failed: \(error)")
+            return "\(name)|\(argumentsJSON)"
+        }
+        do {
+            let canonical = try JSONSerialization.data(withJSONObject: obj, options: [.sortedKeys])
+            if let str = String(data: canonical, encoding: .utf8) { return "\(name)|\(str)" }
+        } catch {
+            DDLogError("AgenticLoopOrchestrator canonicalCallSignature canonical encode failed: \(error)")
         }
         return "\(name)|\(argumentsJSON)"
     }

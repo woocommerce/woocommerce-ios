@@ -21,7 +21,6 @@ struct ARParcelSizingView: View {
     @State private var isPlaced: Bool = false
     @State private var placeTrigger: Int = 0
     @State private var resetTrigger: Int = 0
-    @State private var showFill: Bool = false
 
     init(initialLength: Double? = nil,
          initialWidth: Double? = nil,
@@ -41,7 +40,6 @@ struct ARParcelSizingView: View {
         ZStack {
             ARCuboidView(
                 dimensions: dimensionsInMeters(length: length, width: width, height: height),
-                showFill: showFill,
                 hasValidTarget: $hasValidTarget,
                 isPlaced: $isPlaced,
                 placeTrigger: placeTrigger,
@@ -81,11 +79,6 @@ struct ARParcelSizingView: View {
             ARCuboidCircleIconButton(systemName: "xmark", action: onCancel)
             Spacer()
             if isPlaced {
-                ARCuboidCircleIconButton(
-                    systemName: showFill ? "cube.fill" : "cube"
-                ) {
-                    showFill.toggle()
-                }
                 ARCuboidCircleIconButton(systemName: "trash") {
                     resetTrigger += 1
                 }

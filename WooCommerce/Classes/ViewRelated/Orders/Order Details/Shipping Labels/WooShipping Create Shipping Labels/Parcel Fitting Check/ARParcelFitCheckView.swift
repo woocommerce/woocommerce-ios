@@ -21,7 +21,6 @@ struct ARParcelFitCheckView: View {
     @State private var isPlaced: Bool = false
     @State private var placeTrigger: Int = 0
     @State private var resetTrigger: Int = 0
-    @State private var showFill: Bool = false
 
     init(availableCarriers: [WooShippingCarrierPackages],
          initialPackageID: String? = nil,
@@ -48,7 +47,6 @@ struct ARParcelFitCheckView: View {
         ZStack {
             ARCuboidView(
                 dimensions: dimensionsInMeters,
-                showFill: showFill,
                 hasValidTarget: $hasValidTarget,
                 isPlaced: $isPlaced,
                 placeTrigger: placeTrigger,
@@ -90,11 +88,6 @@ struct ARParcelFitCheckView: View {
             ARCuboidCircleIconButton(systemName: "xmark", action: onCancel)
             Spacer()
             if isPlaced {
-                ARCuboidCircleIconButton(
-                    systemName: showFill ? "cube.fill" : "cube"
-                ) {
-                    showFill.toggle()
-                }
                 ARCuboidCircleIconButton(systemName: "trash") {
                     resetTrigger += 1
                 }

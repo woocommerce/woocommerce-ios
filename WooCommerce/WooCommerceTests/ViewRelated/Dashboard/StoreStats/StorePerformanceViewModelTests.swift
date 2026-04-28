@@ -10,7 +10,7 @@ import YosemiteTestHelpers
 
 
 final class StorePerformanceViewModelTests: XCTestCase {
-    private var storageManager: StorageManagerType!
+    private var storageManager: MockStorageManager!
     private var storage: StorageType {
         storageManager.viewStorage
     }

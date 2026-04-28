@@ -1,6 +1,7 @@
 import Foundation
 import class WooFoundationCore.CurrencyFormatter
 import struct NetworkingCore.Order
+import struct NetworkingCore.OrderFeeLine
 import struct NetworkingCore.OrderItem
 import struct NetworkingCore.OrderItemAttribute
 import struct NetworkingCore.OrderRefundCondensed
@@ -22,6 +23,10 @@ struct POSOrderMapper {
         let customerEmail = order.billingAddress?.email
 
         let posLineItems = try order.items.map { try map(orderItem: $0, currency: order.currency) }
+
+        let posCustomAmounts = order.fees
+            .filter { !$0.isDeleted }
+            .map { map(fee: $0, currency: order.currency) }
 
         let posRefunds = order.refunds.map { map(orderRefund: $0, currency: order.currency) }
 
@@ -56,6 +61,7 @@ struct POSOrderMapper {
             paymentMethodID: order.paymentMethodID,
             paymentMethodTitle: order.paymentMethodTitle,
             lineItems: posLineItems,
+            customAmounts: posCustomAmounts,
             refunds: posRefunds,
             formattedDiscountTotal: formattedDiscountTotal,
             formattedTotalTax: currencyFormatter.formatAmount(order.totalTax, with: order.currency) ?? "",
@@ -91,6 +97,14 @@ struct POSOrderMapper {
             formattedTotal: formattedTotal,
             imageSrc: orderItem.image?.src,
             attributes: orderItem.attributes
+        )
+    }
+
+    private func map(fee: OrderFeeLine, currency: String) -> POSOrderCustomAmount {
+        POSOrderCustomAmount(
+            id: fee.feeID,
+            name: fee.name ?? "",
+            formattedTotal: currencyFormatter.formatAmount(fee.total, with: currency) ?? fee.total
         )
     }
 

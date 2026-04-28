@@ -101,8 +101,8 @@ struct ARParcelFitCheckView: View {
             VStack(spacing: 12) {
                 pickers
 
-                if let dimensions = currentPackageDimensionsLabel {
-                    Text(dimensions)
+                if let package = currentPackage {
+                    Text("\(package.length) × \(package.width) × \(package.height) in")
                         .font(.subheadline.monospacedDigit())
                         .foregroundStyle(.white)
                 }
@@ -181,11 +181,6 @@ struct ARParcelFitCheckView: View {
 
     private var currentPackage: (any WooShippingPackageDataRepresentable)? {
         currentCarrierPackages.first { $0.id == selectedPackageID }
-    }
-
-    private var currentPackageDimensionsLabel: String? {
-        guard let package = currentPackage else { return nil }
-        return "\(package.length) × \(package.width) × \(package.height) in"
     }
 
     /// Inches → metres mapping for ARKit. AR uses (X = length, Y = height,

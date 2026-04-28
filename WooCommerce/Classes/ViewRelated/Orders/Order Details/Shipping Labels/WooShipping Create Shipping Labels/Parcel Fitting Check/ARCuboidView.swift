@@ -129,7 +129,13 @@ struct ARCuboidView: UIViewRepresentable {
             clearGhost()
             buildCuboid(at: target)
             installCuboidGestures()
-            isPlaced = true
+            // Defer the @Binding write — `placeAtTarget` is called from
+            // `updateUIView` which is itself inside a SwiftUI view-update
+            // pass. State writes during a render pass are silently
+            // dropped, so the parent never switches to the "placed" UI.
+            DispatchQueue.main.async { [weak self] in
+                self?.isPlaced = true
+            }
         }
 
         func removeCuboid() {
@@ -139,7 +145,9 @@ struct ARCuboidView: UIViewRepresentable {
             }
             cuboidAnchor = nil
             cuboidEntity = nil
-            isPlaced = false
+            DispatchQueue.main.async { [weak self] in
+                self?.isPlaced = false
+            }
         }
 
         private func installCuboidGestures() {

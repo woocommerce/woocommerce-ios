@@ -101,7 +101,8 @@ struct WriteResultMapperTests {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind != .outcomeUnknown)    }
+        #expect(failed.kind != .outcomeUnknown)
+    }
 
     @Test
     func test_mapEntity_when_response_has_no_id_then_succeeds_without_card() {

@@ -68,7 +68,8 @@ struct OrdersGetToolTests {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind == .unknown)    }
+        #expect(failed.kind == .unknown)
+    }
 
     @Test
     func test_orders_get_when_id_missing_then_returns_failed_with_invalid_tool_call() async {

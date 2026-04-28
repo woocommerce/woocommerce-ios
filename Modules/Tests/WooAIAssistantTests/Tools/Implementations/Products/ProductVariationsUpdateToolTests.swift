@@ -121,5 +121,6 @@ struct ProductVariationsUpdateToolTests {
             Issue.record("expected failed, got \(result)")
             return
         }
-        #expect(failed.kind == .outcomeUnknown)    }
+        #expect(failed.kind == .outcomeUnknown)
+    }
 }
